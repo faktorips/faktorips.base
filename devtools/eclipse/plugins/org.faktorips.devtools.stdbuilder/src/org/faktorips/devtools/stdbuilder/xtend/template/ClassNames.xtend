@@ -38,7 +38,6 @@ import org.faktorips.runtime.IRuntimeRepositoryLookup
 import org.faktorips.runtime.IUnresolvedReference
 import org.faktorips.runtime.IValidationContext
 import org.faktorips.runtime.IllegalRepositoryModificationException
-import org.faktorips.runtime.InMemoryRuntimeRepository
 import org.faktorips.runtime.IpsPropertyChangeSupport
 import org.faktorips.runtime.Message
 import org.faktorips.runtime.MessageList
@@ -72,6 +71,7 @@ import org.faktorips.valueset.UnrestrictedValueSet
 import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
 import org.faktorips.runtime.IpsEnumToXmlWriter
+import org.faktorips.runtime.IModifiableRuntimeRepository
 
 @SuppressFBWarnings
 class ClassNames {
@@ -181,7 +181,7 @@ class ClassNames {
 
     def static IRuntimeRepositoryLookup(AbstractGeneratorModelNode it) { addImport(typeof(IRuntimeRepositoryLookup)) }
 
-    def static InMemoryRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(InMemoryRuntimeRepository)) }
+    def static IModifiableRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(IModifiableRuntimeRepository)) }
 
     def static DateTime(AbstractGeneratorModelNode it) { addImport(typeof(DateTime)) }
 

@@ -18,7 +18,7 @@ class ProductCmptCreateBuilderTmpl {
         *
         * @generated
         */
-        public «IF isStatic»static«ENDIF» «implClassName» «builder(InMemoryRuntimeRepository + " runtimeRepository", "String id", "String kindId", "String versionId")» {
+        public «IF isStatic»static«ENDIF» «implClassName» «builder(IModifiableRuntimeRepository + " runtimeRepository", "String id", "String kindId", "String versionId")» {
             «typeImplClassName» product = new «typeImplClassName»(runtimeRepository, id, kindId, versionId);
             product.«setValidFrom("new " + DateTime + "(1900,1,1)")»;
             runtimeRepository.«putProductComponent("product")»;
@@ -41,7 +41,7 @@ class ProductCmptCreateBuilderTmpl {
         *
         * @generated
         */
-        public «IF isStatic»static«ENDIF» «implClassName» «builder(InMemoryRuntimeRepository + " runtimeRepository", "String id", "String kindId", "String versionId", DateTime + " validFrom")» {
+        public «IF isStatic»static«ENDIF» «implClassName» «builder(IModifiableRuntimeRepository + " runtimeRepository", "String id", "String kindId", "String versionId", DateTime + " validFrom")» {
             «typeImplClassName» product = new «typeImplClassName»(runtimeRepository,id,kindId,versionId);
             product.«setValidFrom("validFrom")»;
             runtimeRepository.«putProductComponent("product")»;
@@ -62,7 +62,7 @@ class ProductCmptCreateBuilderTmpl {
         *
         * @generated
         */
-        public «IF isStatic»static«ENDIF» «implClassName» «builder(InMemoryRuntimeRepository + " runtimeRepository", "String prodCmptId")» {
+        public «IF isStatic»static«ENDIF» «implClassName» «builder(IModifiableRuntimeRepository + " runtimeRepository", "String prodCmptId")» {
             «typeImplClassName» product =  («typeImplClassName») runtimeRepository.getProductComponent(prodCmptId);
 
             if(product == null){
@@ -84,7 +84,7 @@ class ProductCmptCreateBuilderTmpl {
         public «implClassName» «modify()» «IF genInterface»;
         «ELSE»
             {
-                return «implClassName».«from("this", "(" + InMemoryRuntimeRepository + ") this.getRepository()")»;
+                return «implClassName».«from("this", "(" + IModifiableRuntimeRepository + ") this.getRepository()")»;
             }
         «ENDIF»
     '''

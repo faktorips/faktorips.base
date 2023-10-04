@@ -78,7 +78,7 @@ def private static extendSuperclass (XProductBuilder it) '''
 
 
 //    The method generates variables that are needed in this class. They are:
-//    1. The InMemoryRuntimeRepository, which is needed to add changes to the product class at runtime.
+//    1. The IModifiableRuntimeRepository, which is needed to add changes to the product class at runtime.
 //    2. The product that is actually built by the class.
 //    In case the product is changing over time, a field is also generated to store a generation to edit.
 //
@@ -89,7 +89,7 @@ def private static variableDeclaration (XProductBuilder it) '''
         /**
         * @generated
         */
-        private final «InMemoryRuntimeRepository» runtimeRepository;
+        private final «IModifiableRuntimeRepository» runtimeRepository;
 
         /**
         * @generated
@@ -124,9 +124,9 @@ def private static constructors (XProductBuilder it) '''
     */
     «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     «IF changingOverTime»
-        protected «method(implClassName, typeImplClassName, "product", InMemoryRuntimeRepository, "runtimeRepository", prodGenImplClassName, "currentGeneration")»{
+        protected «method(implClassName, typeImplClassName, "product", IModifiableRuntimeRepository, "runtimeRepository", prodGenImplClassName, "currentGeneration")»{
     «ELSE»
-        protected «method(implClassName, typeImplClassName, "product", InMemoryRuntimeRepository, "runtimeRepository")»{
+        protected «method(implClassName, typeImplClassName, "product", IModifiableRuntimeRepository, "runtimeRepository")»{
     «ENDIF»
         «IF hasSupertype()»««« supertype has to be changing too
             super(product, runtimeRepository «IF changingOverTime», currentGeneration«ENDIF»);
@@ -259,7 +259,7 @@ def private static getBuilderValue (XProductBuilder it) '''
         *
         * @generated
         */
-        public «InMemoryRuntimeRepository» «getRepository» {
+        public «IModifiableRuntimeRepository» «getRepository» {
             return this.runtimeRepository;
         }
     «ENDIF»
@@ -329,7 +329,7 @@ def private static from (XProductBuilder it) '''
         *
         * @generated
         */
-        public static «implClassName» «from»(«productPublishedInterfaceName» product, «InMemoryRuntimeRepository» runtimeRepository, «prodGenImplClassName» currentGeneration) {
+        public static «implClassName» «from»(«productPublishedInterfaceName» product, «IModifiableRuntimeRepository» runtimeRepository, «prodGenImplClassName» currentGeneration) {
             return new «implClassName»(«castToImplementation(typeImplClassName)» product, runtimeRepository, currentGeneration);
         }
     «ENDIF»
@@ -340,7 +340,7 @@ def private static from (XProductBuilder it) '''
     *
     * @generated
     */
-    public static «implClassName» «from»(«productPublishedInterfaceName» product, «InMemoryRuntimeRepository» runtimeRepository) {
+    public static «implClassName» «from»(«productPublishedInterfaceName» product, «IModifiableRuntimeRepository» runtimeRepository) {
         «IF changingOverTime»
             return new «implClassName»(«castToImplementation(typeImplClassName)»product, runtimeRepository, («prodGenImplClassName») runtimeRepository.«getLatestProductComponentGeneration("product")»);
         «ELSE»
