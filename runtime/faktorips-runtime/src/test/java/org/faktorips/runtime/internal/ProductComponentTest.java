@@ -120,8 +120,11 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         Element prodCmptElement = mock(Element.class);
         Document ownerDocument = mock(Document.class);
         Element validToElement = mock(Element.class);
+        NodeList childList = mock(NodeList.class);
         when(document.createElement("ProductCmpt")).thenReturn(prodCmptElement);
         when(prodCmptElement.getOwnerDocument()).thenReturn(ownerDocument);
+        when(prodCmptElement.getChildNodes()).thenReturn(childList);
+        when(childList.getLength()).thenReturn(0);
         when(ownerDocument.createElement("validTo")).thenReturn(validToElement);
         when(cmpt.getRepository().getNumberOfProductComponentGenerations(cmpt)).thenReturn(1);
         doNothing().when(prodCmptElement).setAttribute(anyString(), anyString());
