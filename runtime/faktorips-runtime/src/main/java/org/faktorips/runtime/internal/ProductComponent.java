@@ -12,8 +12,6 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,8 +31,6 @@ import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Base class for all product components.
@@ -454,69 +450,21 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
                 prodCmptElement.appendChild(gen.toXml(document));
             }
         }
-
         return sortAttributeNodesInAlphabeticalOrder(prodCmptElement);
     }
 
     private Element sortAttributeNodesInAlphabeticalOrder(Element prodCmptElement) {
-        NodeList attributeValueElements = prodCmptElement.getElementsByTagName("AttributeValue");
-        if (attributeValueElements != null && attributeValueElements.getLength() != 0) {
-            sortAttributeValueNodes(prodCmptElement, attributeValueElements);
-        }
-
-        NodeList configuredDefaultElements = prodCmptElement.getElementsByTagName("ConfiguredDefault");
-        NodeList configuredValueSetElements = prodCmptElement.getElementsByTagName("ConfiguredValueSet");
-        if (configuredDefaultElements != null && configuredDefaultElements.getLength() != 0) {
-            sortConfiguredDefaultAndValueSetNodes(prodCmptElement, configuredDefaultElements,
-                    configuredValueSetElements);
-        }
+        // Structure:
+        // ProdComp
+        // |-- Generations
+        // |---- AttributeValue
+        // |------ ConfiguredValueSet
+        // |------ ConfiguredDefault
+        // |-- AttributeValue
+        // |---- ConfiguredValueSet
+        // \---- ConfiguredDefault
 
         return prodCmptElement;
-    }
-
-    private void sortConfiguredDefaultAndValueSetNodes(Element prodCmptElement,
-            NodeList configuredDefaultElements,
-            NodeList configuredValueSetElements) {
-        List<Element> sortedConfiguredDefaultElements = sortAttributes(configuredDefaultElements);
-        List<Element> sortedConfiguredValueSetElements = sortAttributes(configuredValueSetElements);
-        Node nextNodeAfterConfiguredDefaultElements = configuredDefaultElements
-                .item(configuredDefaultElements.getLength() - 1).getNextSibling();
-
-        for (int i = 0; i < configuredDefaultElements.getLength(); i++) {
-            Node newConfiguredDefaultElement = sortedConfiguredDefaultElements.get(i);
-            Node newConfiguredValueSetElement = sortedConfiguredValueSetElements.get(i);
-
-            prodCmptElement.insertBefore(newConfiguredValueSetElement, nextNodeAfterConfiguredDefaultElements);
-            prodCmptElement.insertBefore(newConfiguredDefaultElement, nextNodeAfterConfiguredDefaultElements);
-        }
-    }
-
-    private void sortAttributeValueNodes(Element prodCmptElement, NodeList attributeValueElements) {
-        List<Element> sortedAttributeValueElements = sortAttributes(attributeValueElements);
-        Node nextNodeAfterAttributeValueElements = attributeValueElements
-                .item(attributeValueElements.getLength() - 1).getNextSibling();
-
-        for (int i = 0; i < sortedAttributeValueElements.size(); i++) {
-            Node newAttributeValueElement = sortedAttributeValueElements.get(i);
-            prodCmptElement.insertBefore(newAttributeValueElement, nextNodeAfterAttributeValueElements);
-        }
-    }
-
-    private List<Element> sortAttributes(NodeList nodeList) {
-        List<Element> nodes = new ArrayList<Element>();
-        for (int i = 0; i < nodeList.getLength(); i++) {
-            nodes.add((Element)nodeList.item(i));
-        }
-
-        Collections.sort(nodes, new Comparator<Element>() {
-            @Override
-            public int compare(Element o1, Element o2) {
-                return o1.getAttribute("attribute").compareTo(
-                        o2.getAttribute("attribute"));
-            }
-        });
-
-        return nodes;
     }
 
     private void writeValidFromToXml(Element prodCmptElement) {
