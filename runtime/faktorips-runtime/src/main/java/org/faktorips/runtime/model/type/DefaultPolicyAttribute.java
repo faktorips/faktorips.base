@@ -13,11 +13,7 @@ package org.faktorips.runtime.model.type;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -34,7 +30,6 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -47,7 +42,6 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     public static final String PROPERTY_DEFAULT_VALUE = "defaultValue";
     public static final String PROPERTY_VALUE_SET = "valueSet";
 
-    private static final String RESOURCE_BUNDLE_NAME = DefaultPolicyAttribute.class.getName();
     private static final String MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET = "Validation.DefaultValueNotInValueSet";
     private static final String MSGKEY_VALUE_SET_NOT_IN_VALUE_SET = "Validation.ValueSetNotInValueSet";
 
@@ -305,27 +299,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 PROPERTY_VALUE_SET);
     }
 
-    // CSOFF: ParameterNumber
-    private <V, R> void validate(MessageList list,
-            IValidationContext context,
-            Supplier<V> valueGetter,
-            Supplier<R> referenceValueGetter,
-            BiPredicate<V, R> valueChecker,
-            String msgCode,
-            String msgKey,
-            String property) {
-        V value = valueGetter.get();
-        if (!ObjectUtil.isNull(value)) {
-            R referenceValue = referenceValueGetter.get();
-            if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
-                Locale locale = context.getLocale();
-                ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, locale);
-                list.newError(msgCode,
-                        String.format(messages.getString(msgKey), value, getLabel(locale), referenceValue),
-                        this, property);
-            }
-        }
+    @Override
+    protected String getResourceBundleName() {
+        return DefaultPolicyAttribute.class.getName();
     }
-    // CSON: ParameterNumber
-
 }

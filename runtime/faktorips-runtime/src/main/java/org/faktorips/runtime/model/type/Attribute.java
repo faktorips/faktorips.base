@@ -15,6 +15,9 @@ import static java.util.Objects.requireNonNull;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -23,6 +26,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
@@ -204,5 +208,30 @@ public abstract class Attribute extends TypePart {
     public <T> T getDefaultValueFromModel() {
         return (T)modelDefaultValue.get().orElseGet(() -> NullObjects.of(getDatatype()));
     }
+
+    // CSOFF: ParameterNumber
+    protected <V, R> void validate(MessageList list,
+            IValidationContext context,
+            Supplier<V> valueGetter,
+            Supplier<R> referenceValueGetter,
+            BiPredicate<V, R> valueChecker,
+            String msgCode,
+            String msgKey,
+            String property) {
+        V value = valueGetter.get();
+        if (!ObjectUtil.isNull(value)) {
+            R referenceValue = referenceValueGetter.get();
+            if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
+                Locale locale = context.getLocale();
+                ResourceBundle messages = ResourceBundle.getBundle(getResourceBundleName(), locale);
+                list.newError(msgCode,
+                        String.format(messages.getString(msgKey), value, getLabel(locale), referenceValue),
+                        this, property);
+            }
+        }
+    }
+    // CSON: ParameterNumber
+
+    protected abstract String getResourceBundleName();
 
 }

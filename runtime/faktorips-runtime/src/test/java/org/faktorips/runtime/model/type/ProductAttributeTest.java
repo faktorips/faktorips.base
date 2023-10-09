@@ -10,9 +10,11 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,11 +24,17 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -286,6 +294,40 @@ public class ProductAttributeTest {
         ProductAttribute attribute = productCmptType.getAttribute("attrGen");
 
         assertThat(attribute.getValueSetFromModel(), is(new StringLengthValueSet(10)));
+    }
+
+    @Test
+    public void testValidate() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setAttr1("123456789");
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("attr1");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_LongerThanAllowed() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setAttr1("12345678910");
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("attr1");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(not(nullValue())));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("attr1"));
+        assertThat(message.getText(), containsString("12345678910"));
+        assertThat(message.getText(), containsString("StringLengthValueSet (10)"));
     }
 
     @IpsProductCmptType(name = "ProductXYZ")

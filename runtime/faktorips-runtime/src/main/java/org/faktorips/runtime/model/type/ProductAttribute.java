@@ -23,11 +23,16 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.valueset.ValueSet;
 
 /**
  * Represents an attribute in a IpsProductCmptType.
  */
 public class ProductAttribute extends Attribute {
+
+    public static final String MSGCODE_VALUE_NOT_IN_VALUE_SET = "PRODUCT_ATTRIBUTE-VALUE_NOT_IN_VALUE_SET";
+
+    private static final String MSGKEY_VALUE_NOT_IN_VALUE_SET = "Validation.ValueNotInValueSet";
 
     private final Method getter;
 
@@ -118,7 +123,22 @@ public class ProductAttribute extends Attribute {
             IProductComponent product,
             Calendar effectiveDate) {
         super.validate(list, context, product, effectiveDate);
-        // TODO FIPS-10498 validateValue(list, context, product, effectiveDate);
+        validateValue(list, context, product, effectiveDate);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void validateValue(MessageList list,
+            IValidationContext context,
+            IProductComponent product,
+            Calendar effectiveDate) {
+
+        validate(list, context,
+                () -> (T)getValue(product, effectiveDate),
+                () -> (ValueSet<T>)getValueSetFromModel(),
+                (value, valueSet) -> valueSet.contains(value),
+                MSGCODE_VALUE_NOT_IN_VALUE_SET,
+                MSGKEY_VALUE_NOT_IN_VALUE_SET,
+                getName());
     }
 
     @SuppressWarnings("unchecked")
@@ -142,6 +162,11 @@ public class ProductAttribute extends Attribute {
         } else {
             throw new IllegalArgumentException("can't find class for " + type.toString());
         }
+    }
+
+    @Override
+    protected String getResourceBundleName() {
+        return ProductAttribute.class.getName();
     }
 
 }
