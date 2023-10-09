@@ -72,6 +72,7 @@ import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
 import org.faktorips.runtime.IpsEnumToXmlWriter
 import org.faktorips.runtime.IModifiableRuntimeRepository
+import org.faktorips.valueset.DerivedValueSet
 
 @SuppressFBWarnings
 class ClassNames {
@@ -215,6 +216,10 @@ class ClassNames {
 
     def static EnumValues(AbstractGeneratorModelNode it) {
         addImport(typeof(EnumValues))
+    }
+    
+    def static DerivedValueSet(AbstractGeneratorModelNode it, String genericType) { 
+        addImport(typeof(DerivedValueSet))  + "<" + genericType + ">"
     }
 
     def static Range(AbstractGeneratorModelNode it) { addImport(typeof(Range)) }

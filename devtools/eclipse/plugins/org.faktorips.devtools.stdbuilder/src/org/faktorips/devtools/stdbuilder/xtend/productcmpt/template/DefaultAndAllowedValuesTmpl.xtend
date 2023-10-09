@@ -171,7 +171,9 @@ class DefaultAndAllowedValuesTmpl {
             }
             Element valueSetElement = configMap.get(«CONFIGURED_VALUE_SET_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
             if (valueSetElement != null) {
-                «IF valueSetUnrestricted || valueSetConfiguredDynamic »
+                «IF valueSetDerived»
+                     «fieldNameValueSet» = «newDerivedValueSetInstance»;
+                «ELSEIF valueSetUnrestricted || valueSetConfiguredDynamic »
                     «IF ipsEnum»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
                         «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "unrestrictedValueSet.containsNull()")»;
@@ -234,8 +236,14 @@ class DefaultAndAllowedValuesTmpl {
                     valueSetElement.setAttribute(«XML_ATTRIBUTE_ABSTRACT», "true");
                 «ENDIF»
                 
+                «IF valueSetDerived»
+                    if («fieldNameValueSet» instanceof «DerivedValueSet("?")») {
+                        Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_DERIVED»);
+                        valueSetElement.appendChild(valueElement);
+                    }
+                «ENDIF»
                 «IF valueSetUnrestricted || valueSetDerived»
-                    if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
+                    if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")» && !(«fieldNameValueSet» instanceof «DerivedValueSet("?")»)) {
                         Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES»);
                         valueElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
                         valueSetElement.appendChild(valueElement);

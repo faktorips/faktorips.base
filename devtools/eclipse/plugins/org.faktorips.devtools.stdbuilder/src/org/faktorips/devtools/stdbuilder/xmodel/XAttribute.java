@@ -29,6 +29,7 @@ import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.DerivedValueSet;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -156,7 +157,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         addImport(fragment.getImportDeclaration());
         return fragment.getSourcecode();
     }
-
+    
     /**
      * Returns <code>true</code> if this attributes data type is an enumeration-type with values in
      * type and separated content.
@@ -410,6 +411,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
             result = new JavaCodeFragment("new ");
             result.appendClassName(StringLengthValueSet.class);
             result.append(String.format("(%1$s, %2$s)", stringy.getMaximumLength(), stringy.isContainsNull()));
+        } else if (isValueSetDerived()) {
+           return newDerivedValueSetInstance();
         } else {
             result = getUnrestrictedValueSetCode();
         }
@@ -425,6 +428,16 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         result.append(getAttribute().getValueSet().isContainsNull());
         result.appendln(")"); //$NON-NLS-1$
         return result;
+    }
+
+    public String newDerivedValueSetInstance() {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        frag.append("new "); //$NON-NLS-1$
+        frag.appendClassName(DerivedValueSet.class);
+        frag.append("<>"); //$NON-NLS-1$
+        frag.append("()"); //$NON-NLS-1$
+        addImport(DerivedValueSet.class);
+        return frag.getSourcecode();
     }
 
     private JavaCodeFragment createCastExpression(String bound) {
