@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-<Link association="Coverage" defaultCardinality="2" maxCardinality="3" minCardinality="2" target="Coverage 2022-12" targetRuntimeId="petp.Coverage 2022-12"/>
-<Link association="Coverage" defaultCardinality="1" maxCardinality="*" minCardinality="1" target="Coverage 2022-12" targetRuntimeId="petp.Coverage 2022-12"/>
-<Link association="Coverage" defaultCardinality="0" maxCardinality="0" minCardinality="0" target="Coverage 2022-12" targetRuntimeId="petp.Coverage 2022-12"/>
+<Link association="Coverage" defaultCardinality="2" maxCardinality="3" minCardinality="2" target="Coverage 2022-12" targetRuntimeId="petp.Coverage 2022-12">
+<Description locale="de">Die Beschreibung 1</Description>
+<Description locale="en">The Description 1</Description>
+</Link>
+<Link association="Coverage" defaultCardinality="1" maxCardinality="*" minCardinality="1" target="Coverage 2022-12" targetRuntimeId="petp.Coverage 2022-12">
+<Description locale="de">Die Beschreibung 2</Description>
+<Description locale="en">The Description 2</Description>
+</Link>
+<Link association="Coverage" defaultCardinality="0" maxCardinality="0" minCardinality="0" target="Coverage 2022-12" targetRuntimeId="petp.Coverage 2022-12">
+<Description locale="de">Die Beschreibung 3</Description>
+<Description locale="en">The Description 3</Description>
+</Link>
 </root>

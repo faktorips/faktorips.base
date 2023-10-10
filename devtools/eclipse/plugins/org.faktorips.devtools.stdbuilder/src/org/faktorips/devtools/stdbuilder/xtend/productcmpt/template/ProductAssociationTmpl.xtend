@@ -468,22 +468,14 @@ class ProductAssociationTmpl {
              */
             private void «method(methodNameWriteToXml, Element, " element")» {
                 «IF oneToMany»
-                    // TODO FIPS-10649
                     for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
                         Element linkNode = ((«IXmlPersistenceSupport»)link).«toXml("element.getOwnerDocument()")»;
-                        Element descriptionElement = element.getOwnerDocument().createElement(«XML_TAG_DESCRIPTION(it)»);
-                        descriptionElement.setAttribute("locale", "en");
-                        linkNode.appendChild(descriptionElement);
                         element.appendChild(linkNode);
                     }
                 «ELSE»
-                    // TODO FIPS-10649
                     if («fieldName» != null) {
                        Element linkNode = ((«IXmlPersistenceSupport»)«fieldName»).«toXml("element.getOwnerDocument()")»;
-                        Element descriptionElement = element.getOwnerDocument().createElement(«XML_TAG_DESCRIPTION(it)»);
-                        descriptionElement.setAttribute("locale", "en");
-                        linkNode.appendChild(descriptionElement);
-                        element.appendChild(linkNode);
+                       element.appendChild(linkNode);
                     }
                 «ENDIF»
             }
