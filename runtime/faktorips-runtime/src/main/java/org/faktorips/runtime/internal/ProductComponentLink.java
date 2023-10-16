@@ -232,6 +232,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         return source;
     }
 
+    @Override
     public String getDescription(Locale locale) {
         String string = description.get(locale);
         if (string == null) {
