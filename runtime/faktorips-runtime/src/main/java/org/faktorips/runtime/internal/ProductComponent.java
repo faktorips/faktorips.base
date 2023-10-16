@@ -425,14 +425,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         prodCmptElement.setAttribute(TocEntry.PROPERTY_IMPLEMENTATION_CLASS, getClass().getName());
         prodCmptElement.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
 
-        // TODO FIPS-10628 prüfen ob validateIpsSchema=true in .ipsproject
-        String version = "24.1";
-        String schemaName = "ProductCmpt";
-        String xmlSchemaLocation = String.format(XmlUtil.FAKTOR_IPS_SCHEMA_URL + "%s/%s.xsd", version, schemaName);
-        prodCmptElement.setAttribute(XmlUtil.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
-        prodCmptElement.setAttributeNS(XmlUtil.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-                "xsi:schemaLocation", XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + xmlSchemaLocation);
-
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
         writeDescriptionToXml(prodCmptElement);
@@ -458,7 +450,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeReferencesToXml(prodCmptElement);
         writeValidationRuleConfigsToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
-        
+
         return sortAttributeNodesInAlphabeticalOrder(prodCmptElement);
     }
 
