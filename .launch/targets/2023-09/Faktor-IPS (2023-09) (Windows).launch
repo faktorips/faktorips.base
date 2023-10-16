@@ -235,10 +235,11 @@
         <setEntry value="org.eclipse.jdt.apt.core@default:default"/>
         <setEntry value="org.eclipse.jdt.apt.pluggable.core@default:default"/>
         <setEntry value="org.eclipse.jdt.apt.ui@default:default"/>
-        <setEntry value="org.eclipse.jdt.core.compiler.batch@default:default"/>
+        <setEntry value="org.eclipse.jdt.core*3.35.50.v20230920-0333_BETA_JAVA21@default:default"/>
+        <setEntry value="org.eclipse.jdt.core.compiler.batch*3.35.50.v20230920-0333_BETA_JAVA21@default:default"/>
         <setEntry value="org.eclipse.jdt.core.formatterapp@default:default"/>
-        <setEntry value="org.eclipse.jdt.core.manipulation@default:default"/>
-        <setEntry value="org.eclipse.jdt.core@default:default"/>
+        <setEntry value="org.eclipse.jdt.core.manipulation*1.19.150.v20230920-0334_BETA_JAVA21@default:default"/>
+        <setEntry value="org.eclipse.jdt.debug*3.21.150.v20230919-0708_BETA_JAVA21@default:default"/>
         <setEntry value="org.eclipse.jdt.debug.ui@default:default"/>
         <setEntry value="org.eclipse.jdt.debug@default:default"/>
         <setEntry value="org.eclipse.jdt.doc.user@default:default"/>
@@ -247,8 +248,8 @@
         <setEntry value="org.eclipse.jdt.junit4.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit@default:default"/>
-        <setEntry value="org.eclipse.jdt.launching@default:default"/>
-        <setEntry value="org.eclipse.jdt.ui@default:default"/>
+        <setEntry value="org.eclipse.jdt.launching*3.20.150.v20230920-0333_BETA_JAVA21@default:default"/>
+        <setEntry value="org.eclipse.jdt.ui*3.30.50.v20230920-0334_BETA_JAVA21@default:default"/>
         <setEntry value="org.eclipse.jdt@default:default"/>
         <setEntry value="org.eclipse.jetty.http@default:default"/>
         <setEntry value="org.eclipse.jetty.io@default:default"/>
