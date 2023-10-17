@@ -327,7 +327,10 @@ public class ProductAttributeTest {
         assertThat(message.getSeverity(), is(Severity.ERROR));
         assertThat(message.getText(), containsString("attr1"));
         assertThat(message.getText(), containsString("12345678910"));
-        assertThat(message.getText(), containsString("StringLengthValueSet (10)"));
+        assertThat(message.getText(), containsString("String length ≤ 10"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
     }
 
     @IpsProductCmptType(name = "ProductXYZ")

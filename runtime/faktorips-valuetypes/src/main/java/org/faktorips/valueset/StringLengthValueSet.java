@@ -89,7 +89,7 @@ public class StringLengthValueSet implements ValueSet<String> {
 
     @Override
     public String toString() {
-        return String.format("StringLengthValueSet (%1$s)", getMaximumLength());
+        return String.format("String length ≤ %1$s", getMaximumLength());
     }
 
     @Override

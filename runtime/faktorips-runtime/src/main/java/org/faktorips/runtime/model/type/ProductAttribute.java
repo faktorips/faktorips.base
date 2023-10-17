@@ -26,13 +26,15 @@ import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.valueset.ValueSet;
 
 /**
- * Represents an attribute in a IpsProductCmptType.
+ * Represents an attribute in a {@link ProductCmptType}.
  */
 public class ProductAttribute extends Attribute {
 
     public static final String MSGCODE_VALUE_NOT_IN_VALUE_SET = "PRODUCT_ATTRIBUTE-VALUE_NOT_IN_VALUE_SET";
 
-    private static final String MSGKEY_VALUE_NOT_IN_VALUE_SET = "Validation.ValueNotInValueSet";
+    public static final String MSGKEY_VALUE_NOT_IN_VALUE_SET = "Validation.ValueNotInValueSet";
+
+    public static final String PROPERTY_VALUE = "value";
 
     private final Method getter;
 
@@ -138,7 +140,7 @@ public class ProductAttribute extends Attribute {
                 (value, valueSet) -> valueSet.contains(value),
                 MSGCODE_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_VALUE_NOT_IN_VALUE_SET,
-                getName());
+                PROPERTY_VALUE);
     }
 
     @SuppressWarnings("unchecked")
