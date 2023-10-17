@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.testdependencies"
       label="Testdependencies for Faktor-IPS"
-      version="24.1.0.a20231017-01"
+      version="24.1.0.qualifier"
       provider-name="Faktor Zehn GmbH">
 
    <description url="http://www.example.com/description">
