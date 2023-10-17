@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.core.refactor
 Bundle-SymbolicName: org.faktorips.devtools.core.refactor.test
-Bundle-Version: 24.1.0.qualifier
+Bundle-Version: 24.1.0.a20231017-01
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.core.refactor
 Bundle-RequiredExecutionEnvironment: JavaSE-17

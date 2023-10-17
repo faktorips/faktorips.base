@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.license"
       label="License for Faktor-IPS"
-      version="24.1.0.qualifier"
+      version="24.1.0.a20231017-01"
       provider-name="Faktor Zehn GmbH">
 
    <description url="http://faktorzehn.org">
