@@ -14,11 +14,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -313,10 +313,21 @@ public class ProductCmptType extends Type {
 
     public <T extends Annotation> Optional<Field> findDeclaredFieldFromGeneration(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
-        return Arrays.stream(getGenerationDeclarationClass().getDeclaredFields())
-                .filter(field -> (field.isAnnotationPresent(annotationClass)
-                        && matcher.matches(field.getAnnotation(annotationClass))))
+        Class<?> genDeclarationClass = getGenerationDeclarationClass();
+        Stream<Field> fields = Stream.of(genDeclarationClass.getDeclaredFields());
+        if (genDeclarationClass.isInterface()) {
+            fields = Stream.concat(fields, Stream.of(getGenerationJavaClass().getDeclaredFields()));
+        }
+        return fields
+                .filter(field -> isMatchingField(annotationClass, matcher, field))
                 .findFirst();
+    }
+
+    private <T extends Annotation> boolean isMatchingField(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher,
+            Field field) {
+        return field.isAnnotationPresent(annotationClass)
+                && matcher.matches(field.getAnnotation(annotationClass));
     }
 
     @Override

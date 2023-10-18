@@ -19,16 +19,20 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
@@ -45,8 +49,13 @@ import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
+import org.faktorips.values.Decimal;
+import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -54,6 +63,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.w3c.dom.Element;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ProductAttributeTest {
@@ -333,6 +343,152 @@ public class ProductAttributeTest {
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
     }
 
+    @Test
+    public void testValidate_GenerationWithInterface_publishedWithoutAdj() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("publishedAttribute");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_publishedWithoutAdj_validationError() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        ((ProductWithUnAndPublishedAttributes)product).setPublishedAttribute(Decimal.valueOf(100));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("publishedAttribute");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("publishedAttribute"));
+        assertThat(message.getText(), containsString("100"));
+        assertThat(message.getText(), containsString("[1.0, 1.5, 2]"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_publishedWithAdj() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("publishedAttributeAdj");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_publishedWithAdj_validationError() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        IProductComponentGeneration productGen = product.getLatestProductComponentGeneration();
+        ((ProductWithUnAndPublishedAttributesAdj)productGen).setPublishedAttributeAdj(100);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("publishedAttributeAdj");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("publishedAttributeAdj"));
+        assertThat(message.getText(), containsString("100"));
+        assertThat(message.getText(), containsString("0-10, 2"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_unPublishedWithoutAdj() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("unpublishedAttribute");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_unPublishedWithoutAdj_validationError() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        ((ProductWithUnAndPublishedAttributes)product).setUnpublishedAttribute(Decimal.valueOf(100));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("unpublishedAttribute");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("unpublishedAttribute"));
+        assertThat(message.getText(), containsString("100"));
+        assertThat(message.getText(), containsString("[2, 2.5, 3]"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_unPublishedWithAdj() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("unpublishedAttributeAdj");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_GenerationWithInterface_unPublishedWithAdj_validationError() {
+        IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
+        IProductComponentGeneration productGen = product.getLatestProductComponentGeneration();
+        ((ProductWithUnAndPublishedAttributesAdj)productGen).setUnpublishedAttributeAdj(100);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute("unpublishedAttributeAdj");
+
+        attribute1.validate(ml, context, product, effectiveDate);
+
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("publishedAttributeAdj"));
+        assertThat(message.getText(), containsString("100"));
+        assertThat(message.getText(), containsString("10-20, 2"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
     @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute" })
@@ -527,4 +683,189 @@ public class ProductAttributeTest {
         // concrete
     }
 
+    @IpsPublishedInterface(implementation = ProductWithUnAndPublishedAttributes.class)
+    @IpsProductCmptType(name = "ProductWithUnAndPublishedAttributes")
+    @IpsAttributes({ "publishedAttributeAdj", "unpublishedAttributeAdj", "publishedAttribute", "unpublishedAttribute" })
+    @IpsChangingOverTime(IProductWithUnAndPublishedAttributesAdj.class)
+    @IpsDocumented(bundleName = "test.model-label-and-descriptions", defaultLocale = "en")
+    private interface IProductWithUnAndPublishedAttributes extends IProductComponent {
+
+        String PROPERTY_PUBLISHEDATTRIBUTE = "publishedAttribute";
+
+        @IpsAllowedValues("publishedAttribute")
+        OrderedValueSet<Decimal> MAX_ALLOWED_VALUES_FOR_PUBLISHED_ATTRIBUTE = new OrderedValueSet<>(
+                false, Decimal.NULL, Decimal.valueOf("1.0"), Decimal.valueOf("1.5"), Decimal.valueOf("2"));
+
+        @IpsDefaultValue("publishedAttribute")
+        Decimal DEFAULT_VALUE_FOR_PUBLISHED_ATTRIBUTE = Decimal.valueOf("1");
+
+        @IpsAttribute(name = "publishedAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        Decimal getPublishedAttribute();
+
+        Decimal getUnpublishedAttribute();
+
+        IProductWithUnAndPublishedAttributesAdj getProductWithUnAndPublishedAttributesAdj(
+                Calendar effectiveDate);
+    }
+
+    @IpsPublishedInterface(implementation = ProductWithUnAndPublishedAttributesAdj.class)
+    private interface IProductWithUnAndPublishedAttributesAdj extends IProductComponentGeneration {
+
+        String PROPERTY_PUBLISHEDATTRIBUTEADJ = "publishedAttributeAdj";
+
+        @IpsAllowedValues("publishedAttributeAdj")
+        IntegerRange MAX_ALLOWED_RANGE_FOR_PUBLISHED_ATTRIBUTE_ADJ = IntegerRange
+                .valueOf(Integer.valueOf("0"), Integer.valueOf(10), Integer.valueOf(2), false);
+
+        @IpsDefaultValue("publishedAttributeAdj")
+        Integer DEFAULT_VALUE_FOR_PUBLISHED_ATTRIBUTE_ADJ = Integer.valueOf(2);
+
+        @IpsAttribute(name = "publishedAttributeAdj", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Range)
+        Integer getPublishedAttributeAdj();
+
+        Integer getUnpublishedAttributeAdj();
+
+        IProductWithUnAndPublishedAttributes getProductWithUnAndPublishedAttributes();
+    }
+
+    private static class ProductWithUnAndPublishedAttributes extends ProductComponent
+            implements IProductWithUnAndPublishedAttributes {
+        public static final String PROPERTY_UNPUBLISHEDATTRIBUTE = "unpublishedAttribute";
+
+        @IpsAllowedValues("unpublishedAttribute")
+        public static final OrderedValueSet<Decimal> MAX_ALLOWED_VALUES_FOR_UNPUBLISHED_ATTRIBUTE = new OrderedValueSet<>(
+                false, Decimal.NULL, Decimal.valueOf("2"), Decimal.valueOf("2.5"), Decimal.valueOf("3"));
+
+        @IpsDefaultValue("unpublishedAttribute")
+        public static final Decimal DEFAULT_VALUE_FOR_UNPUBLISHED_ATTRIBUTE = Decimal.valueOf("2");
+
+        private Decimal publishedAttribute = DEFAULT_VALUE_FOR_PUBLISHED_ATTRIBUTE;
+
+        private Decimal unpublishedAttribute = DEFAULT_VALUE_FOR_UNPUBLISHED_ATTRIBUTE;
+
+        private IProductWithUnAndPublishedAttributesAdj adjustment = new ProductWithUnAndPublishedAttributesAdj(this);
+
+        public ProductWithUnAndPublishedAttributes(IRuntimeRepository repository) {
+            super(repository, "id", "kindId", "versionId");
+        }
+
+        @Override
+        public IProductWithUnAndPublishedAttributesAdj getProductWithUnAndPublishedAttributesAdj(
+                Calendar effectiveDate) {
+            return (IProductWithUnAndPublishedAttributesAdj)getRepository().getProductComponentGeneration(getId(),
+                    effectiveDate);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+
+        @Override
+        public Decimal getPublishedAttribute() {
+            return publishedAttribute;
+        }
+
+        public void setPublishedAttribute(Decimal newValue) {
+            publishedAttribute = newValue;
+        }
+
+        @IpsAttribute(name = "unpublishedAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        @Override
+        public Decimal getUnpublishedAttribute() {
+            return unpublishedAttribute;
+        }
+
+        @IpsAttributeSetter("unpublishedAttribute")
+        public void setUnpublishedAttribute(Decimal newValue) {
+            unpublishedAttribute = newValue;
+        }
+
+        @Override
+        protected void doInitPropertiesFromXml(Map<String, Element> configMap) {
+            // empty
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            throw new UnsupportedOperationException(
+                    "This product component type does not configure a policy component type.");
+        }
+
+        @Override
+        public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
+            return adjustment;
+        }
+
+        @Override
+        public IProductComponentGeneration getLatestProductComponentGeneration() {
+            return adjustment;
+        }
+    }
+
+    private static class ProductWithUnAndPublishedAttributesAdj extends ProductComponentGeneration
+            implements IProductWithUnAndPublishedAttributesAdj {
+
+        public static final String PROPERTY_UNPUBLISHEDATTRIBUTEADJ = "unpublishedAttributeAdj";
+
+        @IpsAllowedValues("unpublishedAttributeAdj")
+        public static final IntegerRange MAX_ALLOWED_RANGE_FOR_UNPUBLISHED_ATTRIBUTE_ADJ = IntegerRange
+                .valueOf(Integer.valueOf(10), Integer.valueOf(20), Integer.valueOf(2), false);
+
+        @IpsDefaultValue("unpublishedAttributeAdj")
+        public static final Integer DEFAULT_VALUE_FOR_UNPUBLISHED_ATTRIBUTE_ADJ = Integer.valueOf(12);
+
+        private Integer publishedAttributeAdj = DEFAULT_VALUE_FOR_PUBLISHED_ATTRIBUTE_ADJ;
+
+        private Integer unpublishedAttributeAdj = DEFAULT_VALUE_FOR_UNPUBLISHED_ATTRIBUTE_ADJ;
+
+        public ProductWithUnAndPublishedAttributesAdj(ProductWithUnAndPublishedAttributes productCmpt) {
+            super(productCmpt);
+        }
+
+        @Override
+        public Integer getPublishedAttributeAdj() {
+            return publishedAttributeAdj;
+        }
+
+        public void setPublishedAttributeAdj(Integer newValue) {
+            publishedAttributeAdj = newValue;
+        }
+
+        @IpsAttribute(name = "unpublishedAttributeAdj", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Range)
+        @Override
+        public Integer getUnpublishedAttributeAdj() {
+            return unpublishedAttributeAdj;
+        }
+
+        @IpsAttributeSetter("unpublishedAttributeAdj")
+        public void setUnpublishedAttributeAdj(Integer newValue) {
+            unpublishedAttributeAdj = newValue;
+        }
+
+        @Override
+        public IProductWithUnAndPublishedAttributes getProductWithUnAndPublishedAttributes() {
+            return (IProductWithUnAndPublishedAttributes)getProductComponent();
+        }
+
+        @Override
+        protected void doInitPropertiesFromXml(Map<String, Element> configMap) {
+            // empty
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+        @Override
+        public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
+            return null;
+        }
+
+        @Override
+        public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
+            return new ArrayList<>();
+        }
+    }
 }
