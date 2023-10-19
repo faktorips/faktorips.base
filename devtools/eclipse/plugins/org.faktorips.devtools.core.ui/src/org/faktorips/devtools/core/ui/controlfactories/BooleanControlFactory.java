@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -81,11 +81,8 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     private void registerUpdateListener(final IValueSetOwner valueSetOwner,
             final ValueDatatype datatype,
             final RadioButtonGroup<String> radioButtonGroup) {
-        final ContentsChangeListener contentChangeListener = event -> {
-            if (event.isAffected(valueSetOwner)) {
-                updateButtonEnablement(valueSetOwner.getValueSet(), datatype, radioButtonGroup);
-            }
-        };
+        final ContentsChangeListener contentChangeListener = ContentsChangeListener.forEventsAffecting(valueSetOwner,
+                $ -> updateButtonEnablement(valueSetOwner.getValueSet(), datatype, radioButtonGroup));
         valueSetOwner.getIpsModel().addChangeListener(contentChangeListener);
         radioButtonGroup.getComposite()
                 .addDisposeListener(e -> valueSetOwner.getIpsModel().removeChangeListener(contentChangeListener));

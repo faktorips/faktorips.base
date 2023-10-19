@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -38,15 +39,17 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * A factory to create controls and edit fields that allow to edit values for one or more value
  * datatypes.
- * 
+ *
  * @author Joerg Ortmann
  */
 public abstract class ValueDatatypeControlFactory {
 
+    private static final int ARROW_DOWN_BUTTON_WIDTH = 22;
+
     /**
      * Returns <code>true</code> if this factory can create controls for the given datatype,
      * otherwise <code>false</code>.
-     * 
+     *
      * @param datatype Datatype controls are needed for - might be <code>null</code>.
      */
     public abstract boolean isFactoryFor(ValueDatatype datatype);
@@ -54,13 +57,13 @@ public abstract class ValueDatatypeControlFactory {
     /**
      * Creates a control and edit field that allows to edit a value of one of the value datatypes
      * this is a factory for.
-     * 
+     *
      * @param toolkit The toolkit used to create the control.
      * @param parent The parent composite to which the control is added.
      * @param datatype The value datatype a control should be created for.
      * @param valueSet An optional @Deprecated valueset. Future Implementations should use
      *            ValueSetOwner instead.
-     * 
+     * @param ipsProject The project the value set's parent object belongs to.
      */
     public abstract EditField<String> createEditField(UIToolkit toolkit,
             Composite parent,
@@ -70,7 +73,7 @@ public abstract class ValueDatatypeControlFactory {
 
     /**
      * Creates a control that allows to edit a value of the value datatype this is a factory for.
-     * 
+     *
      * @param toolkit The toolkit used to create the control.
      * @param parent The parent composite to which the control is added.
      * @param datatype The value datatype a control should be created for.
@@ -99,7 +102,7 @@ public abstract class ValueDatatypeControlFactory {
     /**
      * In case a value set is defined ,enumeration support is added to the text control by adding an
      * {@link EnumerationProposalProvider}.
-     * 
+     *
      * @param toolkit The toolkit used to create the control.
      * @param textControl the text control to add enumeration support to
      * @param valueSet the value set that provides the values
@@ -112,13 +115,38 @@ public abstract class ValueDatatypeControlFactory {
             IValueSet valueSet,
             ValueDatatype datatype,
             IIpsProject ipsProject) {
-        if (requiresEnumValueProposal(valueSet)) {
+        if (valueSet != null) {
             IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();
             IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet, ipsProject);
             Button button = createArrowDownButton(toolkit, textControl.getParent());
-            EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, button, datatype, valueSetOwner,
+            EnumerationProposalAdapter proposalAdapter = EnumerationProposalAdapter.createAndActivateOnAnyKey(
+                    textControl, button, datatype, valueSetOwner,
                     inputFormat);
+            registerUpdateListener(valueSet.getValueSetOwner(), button, proposalAdapter);
+            updateRequiresEnumValueProposal(button, proposalAdapter, valueSet);
         }
+    }
+
+    private void registerUpdateListener(IValueSetOwner valueSetOwner,
+            Button button,
+            EnumerationProposalAdapter proposalAdapter) {
+        final ContentsChangeListener contentChangeListener = ContentsChangeListener.forEventsAffecting(valueSetOwner,
+                $ -> updateRequiresEnumValueProposal(button, proposalAdapter, valueSetOwner.getValueSet()));
+        valueSetOwner.getIpsModel().addChangeListener(contentChangeListener);
+        button.addDisposeListener(e -> valueSetOwner.getIpsModel().removeChangeListener(contentChangeListener));
+    }
+
+    private void updateRequiresEnumValueProposal(
+            Button button,
+            EnumerationProposalAdapter proposalAdapter,
+            IValueSet newValueSet) {
+        boolean requiresEnumValueProposal = requiresEnumValueProposal(newValueSet);
+        button.setVisible(requiresEnumValueProposal);
+        proposalAdapter.setEnabled(requiresEnumValueProposal);
+        GridData layoutData = (GridData)button.getLayoutData();
+        layoutData.widthHint = requiresEnumValueProposal ? ARROW_DOWN_BUTTON_WIDTH : 0;
+        button.setLayoutData(layoutData);
+        button.getParent().layout();
     }
 
     /**
@@ -127,7 +155,7 @@ public abstract class ValueDatatypeControlFactory {
      * <li>the value set is not <code>null</code> and at the same time</li>
      * <li>the value set is an enum</li>
      * </ul>
-     * 
+     *
      * For enum datatypes, content proposal will be added by the implementation in
      * {@link EnumerationControlFactory} .
      */
@@ -152,7 +180,7 @@ public abstract class ValueDatatypeControlFactory {
      * case of an enum datatype or enum value set.
      * <p>
      * Layout is optimized for Win7. Sorry linux users. :-/
-     * 
+     *
      * @see ValueDatatypeControlFactory#createArrowDownButton(UIToolkit, Composite)
      */
     protected Text createPotentialEnumTextControl(UIToolkit toolkit, Composite parent, int textStyle) {
@@ -178,7 +206,7 @@ public abstract class ValueDatatypeControlFactory {
      * case of an enum datatype or enum value set.
      * <p>
      * Layout is optimized for Win7. Sorry linux users. :-/
-     * 
+     *
      * @see ValueDatatypeControlFactory#createArrowDownButton(UIToolkit, Composite)
      */
     protected Text createPotentialEnumTextControl(UIToolkit toolkit, Composite parent) {
@@ -187,7 +215,7 @@ public abstract class ValueDatatypeControlFactory {
 
     /**
      * Creates an button with an arrow down image that opens the context proposal for enum values.
-     * 
+     *
      */
     protected Button createArrowDownButton(UIToolkit toolkit, Composite parent) {
         Button button = toolkit.createButton(parent, IpsStringUtils.EMPTY);
@@ -195,7 +223,7 @@ public abstract class ValueDatatypeControlFactory {
         // Matches height of the text field in Win7
         buttonData.heightHint = 28;
         // minimum width so the arrow is still visible
-        buttonData.widthHint = 22;
+        buttonData.widthHint = ARROW_DOWN_BUTTON_WIDTH;
         button.setLayoutData(buttonData);
 
         Image arrowDown = IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown_grey.gif", true); //$NON-NLS-1$
@@ -207,7 +235,7 @@ public abstract class ValueDatatypeControlFactory {
     /**
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory
      * for.
-     * 
+     *
      * @deprecated use {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
      *                 instead.
      */
@@ -225,7 +253,7 @@ public abstract class ValueDatatypeControlFactory {
     /**
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory
      * for.
-     * 
+     *
      * @param toolkit The ui toolkit to use for creating ui elements.
      * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
      * @param valueSet An optional valueset.
@@ -264,7 +292,7 @@ public abstract class ValueDatatypeControlFactory {
      * This method is called by the default implementation of
      * {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
      * . If subclasses override createTableCellEditor() this method can be ignored.
-     * 
+     *
      * @param ipsProject The ipsProject where the control belongs to.
      */
     protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
