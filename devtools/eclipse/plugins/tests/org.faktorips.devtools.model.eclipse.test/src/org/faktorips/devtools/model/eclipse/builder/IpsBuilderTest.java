@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,6 +39,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -104,7 +105,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * A common base class for builder tests.
- * 
+ *
  * @author Jan Ortmann
  */
 // IMPORTANT: in the test methods the test builder set has to be set to the model after the
@@ -638,13 +639,33 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), null);
             ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
             Set<AMarker> markers = file.findMarkers(IMarker.PROBLEM, true, AResourceTreeTraversalDepth.RESOURCE_ONLY);
-            boolean isMessageThere = false;
-            for (AMarker marker : markers) {
-                String msg = (String)marker.getAttribute(IMarker.MESSAGE);
-                if (msg != null && msg.equals(Messages.IpsBuilder_ipsSrcFileNotParsable)) {
-                    isMessageThere = true;
-                }
-            }
+            boolean isMessageThere = markers.stream()
+                    .map(m -> (String)m.getAttribute(IMarker.MESSAGE))
+                    .anyMatch(Predicate.isEqual(Messages.IpsBuilder_ipsSrcFileNotParsable));
+            assertTrue("The expected message could not be found", isMessageThere);
+        }
+    }
+
+    @Test
+    public void testMarkerForXmlValidation() throws IpsException, UnsupportedEncodingException {
+        if (Abstractions.isEclipseRunning()) {
+            setProjectProperty(ipsProject, p -> p.setValidateIpsSchema(true));
+
+            AFile file = ((AContainer)root.getCorrespondingResource())
+                    .getFile(java.nio.file.Path.of("test." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension()));
+            String xml = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <PolicyCmptType xmlns="http://www.faktorzehn.org" configurableByProductCmptType="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/23.6/PolicyCmptType.xsd" xml:space="preserve" >
+                    <Foo />\
+                    </PolicyCmptType>""";
+            suppressLoggingDuringExecutionOfThisTestCase();
+            file.create(new ByteArrayInputStream(xml.getBytes(ipsProject.getXmlFileCharset())), null);
+            ipsProject.getProject().build(ABuildKind.INCREMENTAL, new NullProgressMonitor());
+            Set<AMarker> markers = file.findMarkers(IMarker.PROBLEM, true, AResourceTreeTraversalDepth.RESOURCE_ONLY);
+            boolean isMessageThere = markers.stream()
+                    .map(m -> (String)m.getAttribute(IMarker.MESSAGE))
+                    .anyMatch(msg -> msg != null && msg.contains(
+                            "cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://www.faktorzehn.org\":Foo}'."));
             assertTrue("The expected message could not be found", isMessageThere);
         }
     }

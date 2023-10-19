@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsSrcFileContent {
@@ -199,7 +199,8 @@ public class IpsSrcFileContent {
     private void validateXMLSchema(Document document) throws Exception {
         IpsObjectType type = getIpsSrcFile().getIpsObjectType();
 
-        Validator validator = org.faktorips.devtools.model.util.XmlUtil.getXsdValidator(type, getXsdValidationHandler());
+        Validator validator = org.faktorips.devtools.model.util.XmlUtil.getXsdValidator(type,
+                getXsdValidationHandler());
         validator.validate(new DOMSource(document));
     }
 
@@ -225,11 +226,6 @@ public class IpsSrcFileContent {
 
                 if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
                     validateXMLSchema(doc);
-                    if (!getXsdValidationHandler().getXsdValidationErrors().isEmpty()) {
-                        parsable = false;
-                        ipsObject.markAsFromUnparsableFile();
-                        return;
-                    }
                 }
 
                 ipsObject.initFromXml(doc.getDocumentElement());
@@ -348,6 +344,9 @@ public class IpsSrcFileContent {
                 ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
                 AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
                 file.setContents(is, true, monitor1);
+                if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
+                    getXsdValidationHandler().clear();
+                }
                 modificationStamp = file.getModificationStamp();
                 if (modStampsAfterSave == null) {
                     modStampsAfterSave = new ArrayList<>(1);
