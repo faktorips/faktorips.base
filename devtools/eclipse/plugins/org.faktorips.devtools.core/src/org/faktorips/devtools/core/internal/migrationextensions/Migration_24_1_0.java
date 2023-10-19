@@ -45,7 +45,7 @@ public class Migration_24_1_0 extends MarkAsDirtyMigration {
     public Migration_24_1_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate,
                 featureId,
-                Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS),
+                Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS, IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE),
                 VERSION,
                 Messages.Migration_24_1_0_description);
     }
