@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
@@ -338,6 +339,35 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         String string = XmlUtil.nodeToString(doc, "UTF-8", true);
         assertThat(string, containsString(
                 "For&#160;some&#8239;reason,&#65279;someone&#8192;used&#8193;a&#8194;lot&#8195;of&#8196;different&#8197;spaces.&#8198;Thanks&#8199;to&#8200;apache&#8201;commons&#8202;we&#8287;can&#12288;replace them."));
+    }
+
+    @Test
+    public void testEscapeUnicodeControlCharactersToXml() throws TransformerException {
+        Document doc = getTestDocument();
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
+        for (char c = 0; c <= 31; c++) {
+            String unicodeEntity = "" + c;
+            String escapedEntity = "&#" + (int)c + ";";
+            Element el = doc.createElement("ElementWithControlCharacter");
+            el.setTextContent("prefix" + unicodeEntity + "suffix" + (int)c);
+            docElement.appendChild(el);
+
+            String string = XmlUtil.nodeToString(doc, "UTF-8", true);
+            if (c == '\t' || c == '\n') {
+                assertThat(string, containsString(unicodeEntity));
+                assertThat(string, not(containsString(escapedEntity)));
+                assertThat(string, containsString(unicodeEntity + "suffix" + (int)c));
+            } else if (c == '\r') {
+                assertThat(string, not(containsString(escapedEntity)));
+                assertThat(string, containsString("prefixsuffix" + (int)c));
+            } else {
+                assertThat(string, not(containsString(unicodeEntity)));
+                assertThat(string, not(containsString(escapedEntity)));
+                assertThat(string, containsString("prefixsuffix" + (int)c));
+            }
+
+            docElement.removeChild(el);
+        }
     }
 
     private String internalNodeToString(Element rootElement) throws TransformerException {

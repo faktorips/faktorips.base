@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -497,9 +498,9 @@ public class XmlUtil {
     }
 
     /**
-     * Will always replace Duplicate Windows Line Breaks. If escapeBlanks is {@code true} this
-     * method will also escape non standard blanks with the corresponding XML entity (e.g. non
-     * breaking space {@code U+00A0} to {@code &#160;}).
+     * Will always replace Duplicate Windows Line Breaks and Unicode Control Characters. If
+     * escapeBlanks is {@code true} this method will also escape non standard blanks with the
+     * corresponding XML entity (e.g. non breaking space {@code U+00A0} to {@code &#160;}).
      * <p>
      * Supported space characters are:
      * <ul>
@@ -526,34 +527,41 @@ public class XmlUtil {
      * @return the replaced XML
      */
     private static String removeOrEscapeUnwantedCharacters(String xml, boolean escapeBlanks) {
-        String[] searchList = null;
-        String[] replacementList = null;
+        ArrayList<String> searchList = new ArrayList<>();
+        ArrayList<String> replacementList = new ArrayList<>();
 
-        if (escapeBlanks) {
-            searchList = new String[] { NO_BREAK, NARROW_NO_BREAK,
-                    ZERO_WIDTH_NO_BREAK, EN_QUAD,
-                    EM_QUAD, EN_SPACE,
-                    EM_SPACE, THREE_PER_EM,
-                    FOUR_PER_EM, SIX_PER_EM,
-                    FIGURE, PUNCTUATION,
-                    THIN, HAIR,
-                    MEDIUM_MATH, IDEOGRAPHIC,
-                    DOUBLE_CARRIAGE_RETURN };
-            replacementList = new String[] { NO_BREAK_ESC, NARROW_NO_BREAK_ESC,
-                    ZERO_WIDTH_NO_BREAK_ESC, EN_QUAD_ESC,
-                    EM_QUAD_ESC, EN_SPACE_ESC,
-                    EM_SPACE_ESC, THREE_PER_EM_ESC,
-                    FOUR_PER_EM_ESC, SIX_PER_EM_ESC,
-                    FIGURE_ESC, PUNCTUATION_ESC,
-                    THIN_ESC, HAIR_ESC,
-                    MEDIUM_MATH_ESC, IDEOGRAPHIC_ESC,
-                    CARRIAGE_RETURN };
-        } else {
-            searchList = new String[] { DOUBLE_CARRIAGE_RETURN };
-            replacementList = new String[] { CARRIAGE_RETURN };
+        searchList.addAll(Arrays.asList(NO_BREAK, NARROW_NO_BREAK,
+                ZERO_WIDTH_NO_BREAK, EN_QUAD,
+                EM_QUAD, EN_SPACE,
+                EM_SPACE, THREE_PER_EM,
+                FOUR_PER_EM, SIX_PER_EM,
+                FIGURE, PUNCTUATION,
+                THIN, HAIR,
+                MEDIUM_MATH, IDEOGRAPHIC,
+                DOUBLE_CARRIAGE_RETURN));
+        replacementList.addAll(Arrays.asList(NO_BREAK_ESC, NARROW_NO_BREAK_ESC,
+                ZERO_WIDTH_NO_BREAK_ESC, EN_QUAD_ESC,
+                EM_QUAD_ESC, EN_SPACE_ESC,
+                EM_SPACE_ESC, THREE_PER_EM_ESC,
+                FOUR_PER_EM_ESC, SIX_PER_EM_ESC,
+                FIGURE_ESC, PUNCTUATION_ESC,
+                THIN_ESC, HAIR_ESC,
+                MEDIUM_MATH_ESC, IDEOGRAPHIC_ESC,
+                CARRIAGE_RETURN));
+
+        for (int i = 0; i <= 31; i++) {
+            if (i != '\t' && i != '\n') {
+                String unicodeControlCharacter = "&#" + i + ";";
+                searchList.add(unicodeControlCharacter);
+                replacementList.add("");
+            }
         }
 
-        return IpsStringUtils.replaceEach(xml, searchList, replacementList);
+        String[] searchArray = searchList.toArray(new String[searchList.size()]);
+        String[] replacementArray = replacementList.toArray(new String[replacementList.size()]);
+
+        return IpsStringUtils.replaceEach(xml, searchArray,
+                replacementArray);
     }
 
     /**
