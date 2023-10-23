@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,9 +12,11 @@ package org.faktorips.devtools.stdbuilder.xmodel.policycmptbuilder;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
@@ -49,7 +51,7 @@ public class XPolicyBuilder extends XPolicyCmptClass
     /**
      * {@inheritDoc} No import statement is added. For import statement, see
      * {@link #getImplClassName()}
-     * 
+     *
      * @return Name of the builder
      */
     @Override
@@ -59,7 +61,7 @@ public class XPolicyBuilder extends XPolicyCmptClass
 
     /**
      * No import statement added
-     * 
+     *
      * @return name of the policy class
      */
     public String getPolicyName() {
@@ -69,7 +71,7 @@ public class XPolicyBuilder extends XPolicyCmptClass
 
     /**
      * Adds import statement for the policy class
-     * 
+     *
      * @return name of the policy class
      */
     @Override
@@ -114,11 +116,18 @@ public class XPolicyBuilder extends XPolicyCmptClass
         return xpBuilderUtil.getSuperAttributes();
     }
 
+    public Set<XPolicyAttribute> withThisGeneratorConfig(Set<XPolicyAttribute> superAttributes) {
+        return superAttributes.stream()
+                .map(a -> new XPolicyAttribute(a.getAttribute(), getContext(), getModelService(),
+                        getGeneratorConfig()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     /**
      * First checks if XPolicyAssociation is cashed. If yes return cashed associations. If not,
      * associations are retrieved from getType() and added to cache. Only associations that are not
      * inverse composition nor derived are added to the set to return.
-     * 
+     *
      * @return set of associations of the policy that are not derived or inverseComposition, casted
      *             to XPolicyBuilderAssociations
      */
@@ -182,7 +191,7 @@ public class XPolicyBuilder extends XPolicyCmptClass
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Explicitly override super method to avoid errors in XPAND template.
      */
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,8 +12,10 @@ package org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
@@ -50,7 +52,7 @@ public class XProductBuilder extends XProductCmptClass
     /**
      * {@inheritDoc} No import statement is added. For import statement, see
      * {@link #getImplClassName()}
-     * 
+     *
      * @return Name of the builder
      */
     @Override
@@ -60,7 +62,7 @@ public class XProductBuilder extends XProductCmptClass
 
     /**
      * No import statement added
-     * 
+     *
      * @return name of the product class
      */
     public String getProductName() {
@@ -69,7 +71,7 @@ public class XProductBuilder extends XProductCmptClass
 
     /**
      * Adds import statement for the policy class
-     * 
+     *
      * @return name of the product class
      */
     @Override
@@ -134,6 +136,13 @@ public class XProductBuilder extends XProductCmptClass
         return xpBuilderUtil.getSuperAttributes();
     }
 
+    public Set<XProductAttribute> withThisGeneratorConfig(Set<XProductAttribute> superAttributes) {
+        return superAttributes.stream()
+                .map(a -> new XProductAttribute(a.getAttribute(), getContext(), getModelService(),
+                        getGeneratorConfig()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     /**
      * Overwritten to also get changing associations
      */
@@ -183,7 +192,7 @@ public class XProductBuilder extends XProductCmptClass
     }
 
     /**
-     * 
+     *
      * @return true if @Override is needed for method of product generation, else false.
      */
     public boolean isNeedOverrideForProductGenSetter() {

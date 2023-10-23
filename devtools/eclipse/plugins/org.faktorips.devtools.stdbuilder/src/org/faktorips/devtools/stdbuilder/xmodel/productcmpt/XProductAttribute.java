@@ -22,6 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -40,12 +41,24 @@ import org.faktorips.values.ListUtil;
  */
 public class XProductAttribute extends XAttribute {
 
+    private GeneratorConfig generatorConfigOverride;
+
     /**
      * Default constructor as expected by {@link ModelService}
      */
     public XProductAttribute(IProductCmptTypeAttribute attribute, GeneratorModelContext context,
             ModelService modelService) {
         super(attribute, context, modelService);
+    }
+
+    /**
+     * Creates a product attribute with a generator config override, for example to generate code
+     * for a non-overwritten supertype attribute with a child type's config.
+     */
+    public XProductAttribute(IProductCmptTypeAttribute attribute, GeneratorModelContext context,
+            ModelService modelService, GeneratorConfig generatorConfigOverride) {
+        this(attribute, context, modelService);
+        this.generatorConfigOverride = generatorConfigOverride;
     }
 
     @Override
@@ -73,6 +86,14 @@ public class XProductAttribute extends XAttribute {
                 return super.getDatatypeHelper();
             }
         }
+    }
+
+    @Override
+    public GeneratorConfig getGeneratorConfig() {
+        if (generatorConfigOverride != null) {
+            return generatorConfigOverride;
+        }
+        return super.getGeneratorConfig();
     }
 
     public String addImport() {

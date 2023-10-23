@@ -34,14 +34,34 @@ import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
 
+    private GeneratorConfig generatorConfigOverride;
+
     public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext modelContext,
             ModelService modelService) {
         super(attribute, modelContext, modelService);
     }
 
+    /**
+     * Creates a policy attribute with a generator config override, for example to generate code for
+     * a non-overwritten supertype attribute with a child type's config.
+     */
+    public XPolicyAttribute(IPolicyCmptTypeAttribute attribute, GeneratorModelContext modelContext,
+            ModelService modelService, GeneratorConfig generatorConfigOverride) {
+        this(attribute, modelContext, modelService);
+        this.generatorConfigOverride = generatorConfigOverride;
+    }
+
     @Override
     public IPolicyCmptTypeAttribute getIpsObjectPartContainer() {
         return (IPolicyCmptTypeAttribute)super.getIpsObjectPartContainer();
+    }
+
+    @Override
+    public GeneratorConfig getGeneratorConfig() {
+        if (generatorConfigOverride != null) {
+            return generatorConfigOverride;
+        }
+        return super.getGeneratorConfig();
     }
 
     /**

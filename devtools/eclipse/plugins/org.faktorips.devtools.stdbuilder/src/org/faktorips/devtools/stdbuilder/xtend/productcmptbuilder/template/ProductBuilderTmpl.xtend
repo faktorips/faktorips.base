@@ -31,7 +31,7 @@ class ProductBuilderTmpl{
 
             «IF hasSupertype»
                 ««« Generates setter for attributes of the supertypes that are not overwritten in order to override the return type
-                «FOR attribute : superAttributes»«attributeSetter(attribute,true)»«ENDFOR»
+                «FOR attribute : withThisGeneratorConfig(superAttributes)»«attributeSetter(attribute,true)»«ENDFOR»
             «ENDIF»
             
             «IF configurationForPolicyCmptType»
