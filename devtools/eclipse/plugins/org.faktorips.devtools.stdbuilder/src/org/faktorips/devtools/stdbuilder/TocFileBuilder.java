@@ -197,7 +197,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xml = null;
         try {
             Document doc = XmlUtil.getDocumentBuilder().newDocument();
-            IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersion();
+            IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersionForToC();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,6 +40,9 @@ public class MavenVersion implements IVersion<MavenVersion> {
     public String getUnqualifiedVersion() {
         String versionString = asString();
         if (versionString.equals(version.getQualifier())) {
+            if (versionString.startsWith("mvn:")) {
+                return versionString;
+            }
             return ""; //$NON-NLS-1$
         }
         int firstIndexOfSeperator = versionString.indexOf('-');

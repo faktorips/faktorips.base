@@ -10,9 +10,12 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -109,6 +112,9 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         if (productDataVersion == null) {
             productDataVersion = "0";
         }
+        if (productDataVersion.startsWith("mvn:")) {
+            productDataVersion = fromMaven(productDataVersion);
+        }
         NodeList nl = tocElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -117,6 +123,24 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
                         getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(entryElement));
             }
         }
+    }
+
+    private String fromMaven(String mga) {
+        String[] split = mga.split(":");
+        String groupId = split[1];
+        String artifactId = split[2];
+        String fallbackVersion = split[3];
+        String pomPropertiesResourceName = String.format("META-INF/maven/%s/%s/pom.properties", groupId, artifactId);
+        try (InputStream is = classLoader.getResourceAsStream(pomPropertiesResourceName)) {
+            if (is != null) {
+                Properties p = new Properties();
+                p.load(is);
+                return p.getProperty("version");
+            }
+        } catch (IOException e) {
+            // there is no pom.properties file or it is not readable, use the fallback
+        }
+        return fallbackVersion;
     }
 
     /**

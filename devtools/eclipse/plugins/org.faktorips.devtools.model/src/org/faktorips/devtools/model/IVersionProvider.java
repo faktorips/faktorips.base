@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,16 +20,16 @@ import org.faktorips.devtools.model.ipsproject.IVersionFormat;
  * <p>
  * The generic type K specifies the type of version that is handled by this {@link IVersionProvider}
  * . This ensures that versions of different kinds cannot be mixed within one version provider.
- * 
+ *
  */
 public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat {
 
     /**
      * Creates a new version by using the parameter string.
-     * 
+     *
      * @param versionAsString The String that should be converted into a version instance.
      * @return the new Version that reflects the specified versionString
-     * 
+     *
      * @throws IllegalArgumentException if the version string could not be parsed by this
      *             {@link IVersionProvider}. Use {@link #isCorrectVersionFormat(String)} to make
      *             sure to only get valid results.
@@ -39,14 +39,22 @@ public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat 
     /**
      * Returns the version of the project this {@link IVersionProvider} belongs to. If there is no
      * valid version this method returns an empty version.
-     * 
+     *
      * @return IVersion of the according project
      */
     IVersion<K> getProjectVersion();
 
     /**
+     * Returns the version to be written to the table of contents file. This is usually the same as
+     * the {@linkplain #getProjectVersion() project version}.
+     */
+    default IVersion<K> getProjectVersionForToC() {
+        return getProjectVersion();
+    }
+
+    /**
      * Sets the given Version in the project this {@link IVersionProvider} belongs to.
-     * 
+     *
      * @param version of the according model
      */
     void setProjectVersion(IVersion<K> version);

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -115,6 +115,13 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
         } else {
             return new MavenVersion("0.0"); //$NON-NLS-1$
         }
+    }
+
+    @Override
+    public IVersion<MavenVersion> getProjectVersionForToC() {
+        return new MavenVersion(
+                "mvn:" + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ":"
+                        + getProjectVersion().asString());
     }
 
     @Override

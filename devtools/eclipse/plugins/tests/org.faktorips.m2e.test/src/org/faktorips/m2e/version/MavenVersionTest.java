@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ public class MavenVersionTest {
         assertThat(new MavenVersion("").isEmptyVersion(), is(true));
         assertThat(new MavenVersion("1.0").isEmptyVersion(), is(false));
         assertThat(new MavenVersion("FooBar").isEmptyVersion(), is(false));
+        assertThat(new MavenVersion("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT").isEmptyVersion(), is(false));
     }
 
     @Test
@@ -33,6 +34,7 @@ public class MavenVersionTest {
         assertThat(MavenVersion.isCorrectVersionFormat("1.0.5"), is(true));
         assertThat(MavenVersion.isCorrectVersionFormat("1.0-SNAPSHOT"), is(true));
         assertThat(MavenVersion.isCorrectVersionFormat("2.3.4-Wrdlbrmpft"), is(true));
+        assertThat(MavenVersion.isCorrectVersionFormat("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT"), is(false));
     }
 
     @Test
@@ -48,5 +50,7 @@ public class MavenVersionTest {
         assertThat(new MavenVersion("1.2.3-SNAPSHOT").getUnqualifiedVersion(), is("1.2.3"));
         assertThat(new MavenVersion("1.5.7-9").getUnqualifiedVersion(), is("1.5.7"));
         assertThat(new MavenVersion("1.5.7-9-BLUB").getUnqualifiedVersion(), is("1.5.7"));
+        assertThat(new MavenVersion("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT").getUnqualifiedVersion(),
+                is("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT"));
     }
 }
