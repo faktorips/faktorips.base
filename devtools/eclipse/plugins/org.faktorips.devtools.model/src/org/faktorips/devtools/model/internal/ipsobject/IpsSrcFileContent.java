@@ -61,7 +61,7 @@ public class IpsSrcFileContent {
     private Map<String, String> rootProperties = null;
 
     /** This flag is <code>true</code> if the content has been modified. */
-    private boolean modified = false;
+    private volatile boolean modified = false;
 
     /**
      * The corresponding file's modification stamp at the time of reading the content from it.
@@ -86,7 +86,7 @@ public class IpsSrcFileContent {
     }
 
     public void updateState(String xml, boolean newModified) {
-        boolean wasModified = newModified;
+        boolean wasModified = modified;
 
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         ByteArrayInputStream is = null;
@@ -336,29 +336,34 @@ public class IpsSrcFileContent {
         }
         ICoreRunnable runnable = monitor1 -> {
             try {
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
+                synchronized (IpsSrcFileContent.this) {
+                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                        System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
+                    }
+                    Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+                    String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+                    Element xml = getIpsObject().toXml(doc);
+                    org.faktorips.devtools.model.util.XmlUtil.removeIds(xml);
+                    String newXml = XmlUtil.nodeToString(xml, encoding,
+                            ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
+                    ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
+                    AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
+                    file.setContents(is, true, monitor1);
+                    if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
+                        getXsdValidationHandler().clear();
+                    }
+                    modificationStamp = file.getModificationStamp();
+                    if (modStampsAfterSave == null) {
+                        modStampsAfterSave = new ArrayList<>(1);
+                    }
+                    modStampsAfterSave.add(Long.valueOf(modificationStamp));
+                    markAsUnmodified();
+                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                                + IpsSrcFileContent.this);
+                    }
+                    clearRootPropertyCache();
                 }
-                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
-                String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-                Element xml = getIpsObject().toXml(doc);
-                XmlUtil.removeIds(xml);
-                String newXml = XmlUtil.nodeToString(xml, encoding,
-                        ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
-                ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
-                AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
-                file.setContents(is, true, monitor1);
-                modificationStamp = file.getModificationStamp();
-                if (modStampsAfterSave == null) {
-                    modStampsAfterSave = new ArrayList<>(1);
-                }
-                modStampsAfterSave.add(Long.valueOf(modificationStamp));
-                markAsUnmodified();
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
-                            + IpsSrcFileContent.this);
-                }
-                clearRootPropertyCache();
                 // CSOFF: IllegalCatch
             } catch (Exception e) {
                 // CSON: IllegalCatch
