@@ -42,7 +42,7 @@ public class ProductAttribute extends Attribute {
 
     public ProductAttribute(Type type, boolean changingOverTime, Method getter, Method setter) {
         super(type, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
-                getInnermostGenericClass(getter.getGenericReturnType()), changingOverTime, Deprecation.of(getter));
+                findDatatype(getter), changingOverTime, Deprecation.of(getter));
         this.getter = getter;
         this.setter = setter;
     }
@@ -153,14 +153,30 @@ public class ProductAttribute extends Attribute {
         return defaultValue;
     }
 
-    private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type) {
+    private static final Class<?> findDatatype(Method getter) {
+        return getInnermostGenericClass(getter.getGenericReturnType(),
+                getter.getAnnotation(IpsAttribute.class).primitive());
+    }
+
+    private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type, boolean primitive) {
         if (type instanceof Class) {
-            return (Class<?>)type;
+            Class<?> clazz = (Class<?>)type;
+            if (primitive && !clazz.isPrimitive()) {
+                // multi-value primitive attributes have type List<Wrapper-Type>, so get the
+                // primitive type from the wrapper class
+                try {
+                    clazz = (Class<?>)clazz.getDeclaredField("TYPE").get(null);
+                } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+                        | SecurityException e) {
+                    throw new IllegalArgumentException("can't find class for " + type.toString(), e);
+                }
+            }
+            return clazz;
         }
         if (type instanceof ParameterizedType) {
-            return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0]);
+            return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0], primitive);
         } else if (type instanceof WildcardType) {
-            return getInnermostGenericClass(((WildcardType)type).getUpperBounds()[0]);
+            return getInnermostGenericClass(((WildcardType)type).getUpperBounds()[0], primitive);
         } else {
             throw new IllegalArgumentException("can't find class for " + type.toString());
         }

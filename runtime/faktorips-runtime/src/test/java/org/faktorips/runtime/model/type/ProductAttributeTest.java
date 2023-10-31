@@ -216,10 +216,19 @@ public class ProductAttributeTest {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         assertThat(productCmptType.getAttribute("attr1").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));
+        assertThat(productCmptType.getAttribute("attr2").getDatatype().isPrimitive(), is(false));
         assertThat(productCmptType.getAttribute("attrGen").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("multiString").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("multiEnum").getDatatype(),
                 is(equalTo((Object)AbstractEnumType.class)));
+        assertThat(productCmptType.getAttribute("primitiveIntAttr").getDatatype(), is(equalTo((Object)int.class)));
+        assertThat(int.class.isAssignableFrom(productCmptType.getAttribute("primitiveIntAttr").getDatatype()),
+                is(true));
+        assertThat(productCmptType.getAttribute("primitiveIntAttr").getDatatype().isPrimitive(), is(true));
+        assertThat(productCmptType.getAttribute("multiPrimitiveIntAttr").getDatatype(), is(equalTo((Object)int.class)));
+        assertThat(int.class.isAssignableFrom(productCmptType.getAttribute("multiPrimitiveIntAttr").getDatatype()),
+                is(true));
+        assertThat(productCmptType.getAttribute("multiPrimitiveIntAttr").getDatatype().isPrimitive(), is(true));
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getDatatype(), is(equalTo((Object)String.class)));
         assertThat(productCmptType.getAttribute("attr2").getDatatype(), is(equalTo((Object)Integer.class)));
@@ -491,7 +500,8 @@ public class ProductAttributeTest {
 
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
-    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute" })
+    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute",
+            "primitiveIntAttr", "multiPrimitiveIntAttr" })
     private static class Produkt extends ProductComponent {
 
         @IpsDefaultValue("attr1")
@@ -504,6 +514,8 @@ public class ProductAttributeTest {
         private String attr1 = "foo";
         private Integer attr2 = 42;
         private List<String> multiString = Arrays.asList("hello", "world");
+        private int primitiveIntAttr = 23;
+        private List<Integer> multiPrimitiveIntAttr = Arrays.asList(1, 2, 3);
 
         public Produkt(IRuntimeRepository repository) {
             super(repository, "id", "kindId", "versionId");
@@ -548,6 +560,26 @@ public class ProductAttributeTest {
         @Deprecated
         public int getDeprecatedAttribute() {
             return -1;
+        }
+
+        @IpsAttribute(name = "primitiveIntAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, primitive = true)
+        public int getPrimitiveIntAttr() {
+            return primitiveIntAttr;
+        }
+
+        @IpsAttributeSetter("primitiveIntAttr")
+        public void setPrimitiveIntAttr(int newValue) {
+            primitiveIntAttr = newValue;
+        }
+
+        @IpsAttribute(name = "multiPrimitiveIntAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, primitive = true)
+        public List<Integer> getMultiPrimitiveIntAttr() {
+            return multiPrimitiveIntAttr;
+        }
+
+        @IpsAttributeSetter("multiPrimitiveIntAttr")
+        public void setMultiPrimitiveIntAttr(List<Integer> newValue) {
+            multiPrimitiveIntAttr = newValue;
         }
 
         @Override
