@@ -353,6 +353,27 @@ public class ProductAttributeTest {
     }
 
     @Test
+    public void testValidate_DuplicateValue() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setMultiPrimitiveIntAttr(Arrays.asList(1, 2, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("multiPrimitiveIntAttr");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_DUPLICATE_VALUE);
+        assertThat(message, is(not(nullValue())));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("1, 2, 1"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
     public void testValidate_GenerationWithInterface_publishedWithoutAdj() {
         IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);

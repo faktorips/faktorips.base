@@ -15,6 +15,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
@@ -33,6 +34,10 @@ public class ProductAttribute extends Attribute {
     public static final String MSGCODE_VALUE_NOT_IN_VALUE_SET = "PRODUCT_ATTRIBUTE-VALUE_NOT_IN_VALUE_SET";
 
     public static final String MSGKEY_VALUE_NOT_IN_VALUE_SET = "Validation.ValueNotInValueSet";
+
+    public static final String MSGCODE_DUPLICATE_VALUE = "PRODUCT_ATTRIBUTE-DUPLICATE_VALUE";
+
+    public static final String MSGKEY_DUPLICATE_VALUE = "Validation.DuplicateValue";
 
     public static final String PROPERTY_VALUE = "value";
 
@@ -133,13 +138,19 @@ public class ProductAttribute extends Attribute {
             IValidationContext context,
             IProductComponent product,
             Calendar effectiveDate) {
-
         validate(list, context,
                 () -> (T)getValue(product, effectiveDate),
                 () -> (ValueSet<T>)getValueSetFromModel(),
                 (value, valueSet) -> valueSet.contains(value),
                 MSGCODE_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_VALUE_NOT_IN_VALUE_SET,
+                PROPERTY_VALUE);
+        validate(list, context,
+                () -> (T)getValue(product, effectiveDate),
+                this::isMultiValue,
+                (value, multiValue) -> !multiValue || new HashSet<>((List<T>)value).size() == ((List<T>)value).size(),
+                MSGCODE_DUPLICATE_VALUE,
+                MSGKEY_DUPLICATE_VALUE,
                 PROPERTY_VALUE);
     }
 
