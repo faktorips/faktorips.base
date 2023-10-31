@@ -17,12 +17,12 @@ public class PrimitiveLongHelperTest {
     }
 
     @Test
-    public void testLongValueNeedsLIfLargerThanInt() {
-        assertThat(helper.newInstance("1"), is(new JavaCodeFragment("1"))); //$NON-NLS-1$ //$NON-NLS-2$
-        assertThat(helper.newInstance("123"), is(new JavaCodeFragment("123"))); //$NON-NLS-1$ //$NON-NLS-2$
-        assertThat(helper.newInstance("2147483647"), is(new JavaCodeFragment("2147483647"))); //$NON-NLS-1$ //$NON-NLS-2$
+    public void testLongLiteral() {
+        assertThat(helper.newInstance("1"), is(new JavaCodeFragment("1L"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThat(helper.newInstance("123"), is(new JavaCodeFragment("123L"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThat(helper.newInstance("2147483647"), is(new JavaCodeFragment("2147483647L"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertThat(helper.newInstance("2147483648"), is(new JavaCodeFragment("2147483648L"))); //$NON-NLS-1$ //$NON-NLS-2$
-        assertThat(helper.newInstance("-2147483648"), is(new JavaCodeFragment("-2147483648"))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThat(helper.newInstance("-2147483648"), is(new JavaCodeFragment("-2147483648L"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertThat(helper.newInstance("-2147483649"), is(new JavaCodeFragment("-2147483649L"))); //$NON-NLS-1$ //$NON-NLS-2$
         assertThat(helper.newInstance("+2147483649"), is(new JavaCodeFragment("+2147483649L"))); //$NON-NLS-1$ //$NON-NLS-2$
     }
