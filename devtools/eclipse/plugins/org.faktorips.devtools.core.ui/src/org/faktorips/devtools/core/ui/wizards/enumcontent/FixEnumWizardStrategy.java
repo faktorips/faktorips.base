@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, IEnumAttribute> {
 
     private IEnumContent enumContent;
+    private IEnumType selectedContentType;
 
     public FixEnumWizardStrategy(IEnumContent enumContent) {
         this.enumContent = enumContent;
@@ -38,8 +39,13 @@ public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, 
     }
 
     @Override
-    public IEnumType findContentType(IIpsProject ipsProject) {
-        return enumContent.findEnumType(ipsProject);
+    public IEnumType findContentType(IIpsProject ipsProject, String qName) {
+        if (qName == null && selectedContentType == null) {
+            selectedContentType = enumContent.findEnumType(ipsProject);
+        } else if (qName != null) {
+            selectedContentType = ipsProject.findEnumType(qName);
+        }
+        return selectedContentType;
     }
 
     @Override
@@ -97,9 +103,8 @@ public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, 
 
     @Override
     public boolean checkForCorrectDataType(String currentComboText, int i) {
-        IEnumType contentType = findContentType(getIpsProject());
-        if (contentType != null) {
-            String datatypeDestination = contentType.findAllEnumAttributes(false, getIpsProject()).get(i)
+        if (selectedContentType != null) {
+            String datatypeDestination = selectedContentType.findAllEnumAttributes(false, getIpsProject()).get(i)
                     .getDatatype();
             if ("String".equals(datatypeDestination)) { //$NON-NLS-1$
                 // all datatypes can be written to a String
@@ -108,7 +113,7 @@ public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, 
             // need to cut off the prefix of the combo text
             String modifiedComboText = currentComboText
                     .substring(AssignContentAttributesPage.AVAIABLECOLUMN_PREFIX.length());
-            IEnumAttribute enumAttribute = contentType.getEnumAttribute(modifiedComboText);
+            IEnumAttribute enumAttribute = selectedContentType.getEnumAttribute(modifiedComboText);
             if (enumAttribute != null) {
                 String datatypeSource = enumAttribute.getDatatype();
                 return datatypeDestination.equals(datatypeSource);

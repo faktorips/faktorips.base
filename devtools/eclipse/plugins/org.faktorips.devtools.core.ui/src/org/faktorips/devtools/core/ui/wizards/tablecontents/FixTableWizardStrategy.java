@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributes
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.Messages;
 import org.faktorips.devtools.model.IPartReference;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IColumn;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStructure, IColumn> {
 
     private ITableContents tableContents;
+    private ITableStructure selectedContentType;
 
     public FixTableWizardStrategy(ITableContents tableContents) {
         this.tableContents = tableContents;
@@ -39,8 +41,13 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
     }
 
     @Override
-    public ITableStructure findContentType(IIpsProject ipsProject) {
-        return tableContents.findTableStructure(getIpsProject());
+    public ITableStructure findContentType(IIpsProject ipsProject, String qName) {
+        if (qName == null && selectedContentType == null) {
+            selectedContentType = tableContents.findTableStructure(ipsProject);
+        } else {
+            selectedContentType = (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, qName);
+        }
+        return selectedContentType;
     }
 
     @Override
@@ -84,7 +91,7 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
     @Override
     public List<IColumn> getContentAttributesIncludeSupertypeCopies(ITableStructure newContentType,
             boolean includeLiteralName) {
-        return Arrays.asList(findContentType(getIpsProject()).getColumns());
+        return Arrays.asList(selectedContentType.getColumns());
     }
 
     @Override
@@ -96,9 +103,8 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
 
     @Override
     public boolean checkForCorrectDataType(String currentComboText, int i) {
-        ITableStructure structure = findContentType(getIpsProject());
-        if (structure != null) {
-            String datatypeDestination = structure.getColumn(i).getDatatype();
+        if (selectedContentType != null) {
+            String datatypeDestination = selectedContentType.getColumn(i).getDatatype();
             if ("String".equals(datatypeDestination)) { //$NON-NLS-1$
                 // all datatypes can be written to a String
                 return true;
@@ -106,7 +112,7 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
             // need to cut off the prefix of the combo text
             String modifiedComboText = currentComboText
                     .substring(AssignContentAttributesPage.AVAIABLECOLUMN_PREFIX.length());
-            IColumn column = structure.getColumn(modifiedComboText);
+            IColumn column = selectedContentType.getColumn(modifiedComboText);
             if (column != null) {
                 String datatypeSource = column.getDatatype();
                 return datatypeDestination.equals(datatypeSource);
@@ -117,5 +123,4 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
         }
         return false;
     }
-
 }

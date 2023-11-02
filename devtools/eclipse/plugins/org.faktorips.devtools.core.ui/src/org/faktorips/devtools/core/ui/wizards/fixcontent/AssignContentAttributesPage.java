@@ -55,15 +55,13 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
      * {@code ContentType}.
      */
     private Label[] labels;
-    private T contentType;
     private Checkbox fillNewColumnsWithNull;
 
     /** Creates the {@code AssignContentAttributesPage}. */
-    public AssignContentAttributesPage(T contentType, UIToolkit uiToolkit,
+    public AssignContentAttributesPage(UIToolkit uiToolkit,
             DeltaFixWizardStrategy<T, E> contentStrategy) {
         super(Messages.FixContentWizard_assignColumnsPageTitle);
         setTitle(Messages.FixContentWizard_assignColumnsPageTitle);
-        this.contentType = contentType;
         this.uiToolkit = uiToolkit;
         this.contentStrategy = contentStrategy;
         availableColumns = new ArrayList<>();
@@ -86,7 +84,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
 
     /** Refreshes the controls of this page. */
     public void refreshControl() {
-        contentType = contentStrategy.findContentType(contentStrategy.getIpsProject());
+        T contentType = contentStrategy.findContentType(contentStrategy.getIpsProject(), null);
         if (contentType == null || getControl() == null) {
             return;
         }

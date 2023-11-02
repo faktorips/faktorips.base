@@ -21,11 +21,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
-import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.tablestructure.IColumn;
-import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * This wizard is available through the {@code ContentEditor} if the {@code  Content} to edit does
@@ -47,9 +45,6 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
  */
 public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> extends Wizard {
 
-    /** The new {@link IEnumType} or {@link ITableStructure} that has been chosen. */
-    private T contentType;
-
     /** The UI toolkit to create new UI elements with. */
     private UIToolkit uiToolkit;
 
@@ -65,6 +60,8 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
 
     private TabularContentStrategy<T, E> contentStrategy;
 
+    private DeltaFixWizardStrategy<T, E> wizardStrategy;
+
     /**
      * Creates a new {@link FixContentWizard}.
      * 
@@ -77,16 +74,14 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
         setWindowTitle(title);
         setNeedsProgressMonitor(false);
         this.contentStrategy = contentStrategy;
-        this.contentType = contentStrategy.findContentType(contentStrategy.getIpsProject());
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(contentStrategy.getImage()));
-
+        wizardStrategy = contentStrategy.createContentPageStrategy();
     }
 
     @Override
     public void addPages() {
-        DeltaFixWizardStrategy<T, E> wizardStrategy = contentStrategy.createContentPageStrategy();
-        assignContentAttributesPage = new AssignContentAttributesPage<>(contentType, uiToolkit, wizardStrategy);
-        chooseContentTypePage = new ChooseContentTypePage<>(contentType, uiToolkit, wizardStrategy,
+        assignContentAttributesPage = new AssignContentAttributesPage<>(uiToolkit, wizardStrategy);
+        chooseContentTypePage = new ChooseContentTypePage<>(uiToolkit, wizardStrategy,
                 assignContentAttributesPage);
         convertContentTypePage = new FixValueTypePage(contentStrategy);
 
@@ -119,6 +114,7 @@ public class FixContentWizard<T extends IIpsObject, E extends ILabeledElement> e
                 if (contentStrategy.getContentValuesCount() > 0) {
                     moveAttributeValues();
                 }
+                T contentType = wizardStrategy.findContentType(contentStrategy.getIpsProject(), null);
                 contentStrategy.setContentType((contentType).getQualifiedName());
                 contentStrategy.fixAllContentAttributeValues();
             };
