@@ -457,11 +457,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     public MessageList validate() {
         MessageList list = new MessageList();
         if (!isOutputDefinedPerSrcFolder()) {
-            if (outputFolderMergableSources == null) {
-                list.add(new Message(MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED, MessageFormat.format(
-                        Messages.IpsObjectPath_msgOutputFolderMergableMissing, getIpsProject()), Message.ERROR, this));
-            } else {
-                list.add(validateFolder(outputFolderMergableSources));
+            if (!(ipsProject.isProductDefinitionProject() && !ipsProject.isModelProject())) {
+                if (outputFolderMergableSources == null) {
+                    list.add(new Message(MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED, MessageFormat.format(
+                            Messages.IpsObjectPath_msgOutputFolderMergableMissing, getIpsProject()), Message.ERROR,
+                            this));
+                } else {
+                    list.add(validateFolder(outputFolderMergableSources));
+                }
             }
             if (outputFolderDerivedSources == null) {
                 list.add(new Message(MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED, MessageFormat.format(
@@ -476,8 +479,8 @@ public class IpsObjectPath implements IIpsObjectPath {
                     Message.ERROR, this));
         }
         IIpsObjectPathEntry[] objectPathEntries = getEntries();
-        for (IIpsObjectPathEntry objectPathEntrie : objectPathEntries) {
-            MessageList ml = objectPathEntrie.validate();
+        for (IIpsObjectPathEntry objectPathEntry : objectPathEntries) {
+            MessageList ml = objectPathEntry.validate();
             list.add(ml);
         }
 

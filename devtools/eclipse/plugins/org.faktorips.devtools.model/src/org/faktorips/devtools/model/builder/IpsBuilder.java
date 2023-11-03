@@ -443,7 +443,11 @@ public class IpsBuilder {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.isBasedOnSourceFolder()) {
-                removeEmptyFolders((AFolder)root.getArtefactDestination(false).getResource(), false);
+                APackageFragmentRoot artefactDestination = root.getArtefactDestination(false);
+                if (artefactDestination == null) {
+                    continue;
+                }
+                removeEmptyFolders((AFolder)artefactDestination.getResource(), false);
             }
         }
     }

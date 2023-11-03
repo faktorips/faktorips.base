@@ -335,9 +335,11 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     private MessageList validateOutputFolder() {
         MessageList result = new MessageList();
-        if (outputFolderMergable == null) {
-            result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING,
-                    Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR, this));
+        if (!(getIpsProject().isProductDefinitionProject() && !getIpsProject().isModelProject())) {
+            if (outputFolderMergable == null) {
+                result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING,
+                        Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR, this));
+            }
         }
         if (outputFolderDerived == null) {
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING,

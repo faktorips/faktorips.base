@@ -60,6 +60,12 @@ private void executePostprocessor() {
     String isJaxbSupport = properties.get("IPS-IsJaxbSupport")
     JaxbSupport jaxbSupport = new JaxbSupport(projectPath, lineSeparator)
     jaxbSupport.setJaxbSupport(isJaxbSupport)
+    
+    String isModelProject = properties.get("IPS-IsModelProject")
+    String isProductDefinitionProject = properties.get("IPS-IsProductDefinitionProject")
+    String packageName = properties.get("package")
+    IpsObjectPathUtil ipsObjectPathUtil = new IpsObjectPathUtil(projectPath, isModelProject, isProductDefinitionProject, packageName)
+    ipsObjectPathUtil.setOutputFolderMergableSources()
 }
 
 //////////////////////////////////////////////////////////////
@@ -630,6 +636,48 @@ class JaxbSupport {
 
         private String getDependency() {
             return dependency
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////
+// Ips Object Path Util
+//////////////////////////////////////////////////////////////
+/**
+ * Sets the attribute outputFolderMergableSources based on the project type
+ */
+class IpsObjectPathUtil {
+
+    private final String OUTPUT_FOLDER_MERGABLE_SOURCES = '$OutputFolderMergableSources$'
+    private final String IPS_PROJECT = ".ipsproject"
+    private final String srcMainJavaPath = "src/main/java"
+    private final String isModelProject
+    private final String isProductDefinitionProject
+    private final Path projectPath
+    private final File srcMainJavaDirectory
+    private final File packageDirectory
+
+    IpsObjectPathUtil(Path projectPath, String isModelProject, String isProductDefinitionProject, String packageName) {
+        this.projectPath = projectPath
+        this.isModelProject = isModelProject
+        this.isProductDefinitionProject = isProductDefinitionProject
+        this.srcMainJavaDirectory = new File(projectPath.resolve(srcMainJavaPath).toString())
+        this.packageDirectory = new File(projectPath.resolve(srcMainJavaPath).resolve(packageName).toString())
+    }
+
+    /**
+     * Sets the outputFolderMergableSources attribute value in the .ipsproject.
+     */
+    void setOutputFolderMergableSources() {
+        File ipsProject = new File(projectPath.resolve(IPS_PROJECT).toString())
+        if (Boolean.valueOf(isModelProject)) {
+            String newValue = ipsProject.text.replace(OUTPUT_FOLDER_MERGABLE_SOURCES, srcMainJavaPath)
+            ipsProject.text = newValue
+        } else if(Boolean.valueOf(isProductDefinitionProject)) {
+            packageDirectory.delete()
+            srcMainJavaDirectory.delete()
+            String newValue = ipsProject.text.replace(OUTPUT_FOLDER_MERGABLE_SOURCES, "")
+            ipsProject.text = newValue
         }
     }
 }

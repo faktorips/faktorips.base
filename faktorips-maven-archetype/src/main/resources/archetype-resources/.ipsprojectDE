@@ -237,7 +237,7 @@
              reexported="false" type="container" />
           </Entry>
     -->
- <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="src/main/java">
+ <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="$OutputFolderMergableSources$">
   <Entry basePackageDerived="" basePackageMergable="" outputFolderDerived="" outputFolderMergable="" reexported="true" sourceFolder="\${IPS-SourceFolder}" tocPath="\${IPS-TocXML}.xml" type="src" validationMessagesBundle="\${IPS-ValidationMessageBundle}"/>
   <Entry container="JDTClasspathContainer" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" reexported="true" type="container"/>
  </IpsObjectPath>
