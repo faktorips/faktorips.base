@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,14 +22,16 @@ import org.w3c.dom.Element;
 /**
  * Implementation of <code>IEnumLiteralNameAttributeValue</code>, see the corresponding interface
  * for more details.
- * 
+ *
  * @see IEnumLiteralNameAttributeValue
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 3.0
  */
 public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements IEnumLiteralNameAttributeValue {
+
+    private static final String UNDERLINE = "_";
 
     public EnumLiteralNameAttributeValue(EnumValue parent, String id) {
         super(parent, id);
@@ -49,15 +51,22 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
                     : Character
                             .isJavaIdentifierPart(characters[i]);
             if (!validCharacter) {
-                String text = MessageFormat.format(
-                        Messages.EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier,
-                        getValue());
-                Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER, text,
-                        Message.ERROR, this, PROPERTY_VALUE);
-                list.add(msg);
+                createErrorMessage(list);
                 break;
             }
         }
+        if (UNDERLINE.equals(getValue().getContentAsString())) {
+            createErrorMessage(list);
+        }
+    }
+
+    private void createErrorMessage(MessageList list) {
+        String text = MessageFormat.format(
+                Messages.EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier,
+                getValue());
+        Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER, text,
+                Message.ERROR, this, PROPERTY_VALUE);
+        list.add(msg);
     }
 
     @Override
