@@ -296,8 +296,8 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         addButton = createAddButton(buttonComposite);
         removeButton = createRemoveButton(buttonComposite);
         addSpacer(buttonComposite);
-        upButton = createMoveButton(buttonComposite, "Move up", true); //$NON-NLS-1$
-        downButton = createMoveButton(buttonComposite, "Move down", false); //$NON-NLS-1$
+        upButton = createMoveButton(buttonComposite, Messages.EditTableControlUIBuilder_UpButtonLabel, true); //$NON-NLS-1$
+        downButton = createMoveButton(buttonComposite, Messages.EditTableControlUIBuilder_DownButtonLabel, false); //$NON-NLS-1$
 
         updateButtonsEnabledState();
     }
@@ -328,7 +328,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private Button createAddButton(Composite buttonComposite) {
         Button button = new Button(buttonComposite, SWT.PUSH);
-        button.setText("Add"); //$NON-NLS-1$
+        button.setText(Messages.EditTableControlUIBuilder_AddButtonLabel); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -347,7 +347,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private Button createRemoveButton(Composite buttonComposite) {
         final Button button = new Button(buttonComposite, SWT.PUSH);
-        button.setText("Remove"); //$NON-NLS-1$
+        button.setText(Messages.EditTableControlUIBuilder_RemoveButtonLabel); //$NON-NLS-1$
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.addSelectionListener(new RemoveButtonSelectionListener());
         return button;
