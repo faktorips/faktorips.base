@@ -120,7 +120,7 @@ public class ProductAttribute extends Attribute {
      * values, {@link #getDatatype()} will still return the class of a single value, but
      * {@link #getValue(IProductComponent, Calendar)} will return a {@link List}.
      */
-    public Boolean isMultiValue() {
+    public boolean isMultiValue() {
         return getter.getReturnType().equals(List.class);
     }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.w3c.dom.NodeList;
  * attribute values.
  * <p>
  * This class should only contains static utility method mainly called by generated runtime code.
- * 
+ *
  * @author dirmeier
  * @author widmaier
  */
@@ -36,7 +36,7 @@ public enum MultiValueXmlHelper {
      * Reads String values from the an XML structure. Given the below XML (in this case an
      * AttributeValue-Element), this method will return a List containing three strings: {null,
      * "foo", "bar"}.
-     * 
+     *
      * <pre>
      * &lt;AttributeValue&gt;
      *      &lt;Value&gt;
@@ -48,7 +48,7 @@ public enum MultiValueXmlHelper {
      *      &lt;/Value&gt;
      * &lt;/AttributeValue&gt;
      * </pre>
-     * 
+     *
      * @param attrValueElement the element to extract multiple values from
      * @return a list containing all values in the given element as strings
      * @throws NullPointerException if the outer value-tag or the MultiValue-Tag can not be found
@@ -70,7 +70,7 @@ public enum MultiValueXmlHelper {
 
     /**
      * Reads {@link DefaultInternationalString} values from the XML structure.
-     * 
+     *
      * @param attrValueElement the element to extract multiple values from
      * @return a list containing all values in the given element as international strings
      * @throws NullPointerException if the outer value-tag or the MultiValue-Tag cannot be found
@@ -93,7 +93,7 @@ public enum MultiValueXmlHelper {
 
     /**
      * Throws a {@link NullPointerException} in case the given element is <code>null</code>.
-     * 
+     *
      * @param element the element to check
      * @param xmlTagName the tag name that was expected
      */
@@ -108,7 +108,7 @@ public enum MultiValueXmlHelper {
      * Adds all values in the given list as a "multi-value" child element to the given element. A
      * list containing the values {"foo", null, "bar"} will add the following elements to the given
      * element.
-     * 
+     *
      * <pre>
      * &lt;Value&gt;
      *     &lt;MultiValue&gt;
@@ -121,6 +121,7 @@ public enum MultiValueXmlHelper {
      */
     public static void addValuesToElement(Element element, List<String> stringList) {
         Element outerValueElement = element.getOwnerDocument().createElement(XML_TAG_VALUE);
+        outerValueElement.setAttribute("valueType", "MultiValue");
         element.appendChild(outerValueElement);
 
         Element multiValueElement = outerValueElement.getOwnerDocument().createElement(XML_TAG_MULTIVALUE);
@@ -138,6 +139,7 @@ public enum MultiValueXmlHelper {
     public static void addInternationalStringsToElement(Element element,
             List<DefaultInternationalString> internationalStringList) {
         Element outerValueElement = element.getOwnerDocument().createElement(XML_TAG_VALUE);
+        outerValueElement.setAttribute("valueType", "MultiValue");
         element.appendChild(outerValueElement);
 
         Element multiValueElement = outerValueElement.getOwnerDocument().createElement(XML_TAG_MULTIVALUE);

@@ -212,7 +212,6 @@ class ProductAttributeTmpl {
             private void «method(methodNameWriteToXml, Element, "element")» {
                 Element attributeElement = «ValueToXmlHelper».«deleteExistingElementAndCreateNewElement("element", XML_TAG_ATTRIBUTE_VALUE, constantNamePropertyName)»;
                 «IF multiValue»
-                    attributeElement.setAttribute("valueType", "MultiValue");
                     «IF multiValueDirectXmlHandling»
                         «MultiValueXmlHelper».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
                     «ELSE»
