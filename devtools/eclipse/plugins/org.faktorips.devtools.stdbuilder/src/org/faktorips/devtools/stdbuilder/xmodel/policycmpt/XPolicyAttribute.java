@@ -15,10 +15,10 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -30,6 +30,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.template.ClassNames;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
@@ -224,14 +225,17 @@ public class XPolicyAttribute extends XAttribute {
 
     /**
      * Returns true if the data type is an enumeration defined as Faktor-IPS Enum.
-     *
      */
     public boolean isIpsEnum() {
         return getDatatype() instanceof EnumTypeDatatypeAdapter;
     }
 
-    public boolean isJavaEnum() {
-        return getDatatype().isEnum();
+    /**
+     * Returns whether the datatype is an enumeration that can be queried to get all of its values.
+     */
+    public boolean hasAllValuesMethod() {
+        return getDatatype().isEnum() && getDatatype() instanceof GenericValueDatatype generic
+                && IpsStringUtils.isNotBlank(generic.getAllValuesMethodName());
     }
 
     public boolean isRangeSupported() {
@@ -625,7 +629,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getAllJavaEnumValuesCode() {
-        DynamicEnumDatatype datatype = (DynamicEnumDatatype)getDatatype();
+        GenericValueDatatype datatype = (GenericValueDatatype)getDatatype();
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
 
         if (isAllValuesMethodWithCollection(datatype)) {
@@ -639,7 +643,7 @@ public class XPolicyAttribute extends XAttribute {
         return javaCodeFragment.getSourcecode();
     }
 
-    private boolean isAllValuesMethodWithCollection(DynamicEnumDatatype datatype) {
+    private boolean isAllValuesMethodWithCollection(GenericValueDatatype datatype) {
         return datatype.getAllValuesMethod().invokeStatic("") instanceof java.util.Collection;
     }
 
