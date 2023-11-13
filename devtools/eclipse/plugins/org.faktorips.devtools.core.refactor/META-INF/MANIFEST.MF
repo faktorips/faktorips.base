@@ -4,7 +4,6 @@ Bundle-Name: Refactoring
 Bundle-SymbolicName: org.faktorips.devtools.core.refactor;singleton:=true
 Bundle-Version: 24.1.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.core.manipulation,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
  org.eclipse.jdt.ui,

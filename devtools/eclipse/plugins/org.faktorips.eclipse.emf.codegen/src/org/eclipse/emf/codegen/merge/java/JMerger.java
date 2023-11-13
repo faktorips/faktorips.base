@@ -1,15 +1,15 @@
 /**
  * <copyright>
- * 
+ *
  * Copyright (c) 2006-2008 IBM Corporation and others. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors: IBM - Initial API and implementation
- * 
+ *
  * </copyright>
- * 
+ *
  * $Id: JMerger.java,v 1.27 2008/12/22 14:25:30 emerks Exp $
  */
 package org.eclipse.emf.codegen.merge.java;
@@ -49,6 +49,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JPackage;
 import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJMethod;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJNode;
 import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -85,15 +86,11 @@ public class JMerger {
 
     protected boolean noAbstractTypeConversion = true;
 
-    private List<String> additionalImports;
-
-    private List<String> additionalAnnotations;
+    private AnnotationGenerationSettings annotationGenerationSettings;
 
     private List<ASTNode> additionalAnnotationNodes;
 
     private List<ImportDeclaration> additionalImportDeclarations;
-
-    private Set<String> retainedAnnotations;
 
     /**
      * This creates an empty instances, an when used as a runnable.
@@ -102,9 +99,10 @@ public class JMerger {
         super();
     }
 
-    public JMerger(JControlModel controlModel) {
+    public JMerger(JControlModel controlModel, AnnotationGenerationSettings annotationGenerationSettings) {
         this();
         this.controlModel = controlModel;
+        this.annotationGenerationSettings = annotationGenerationSettings;
         setFixInterfaceBrace(getControlModel().getFacadeHelper().fixInterfaceBrace());
     }
 
@@ -187,7 +185,7 @@ public class JMerger {
     private List<ASTJNode<?>> getAdditionalAnnotationsNodes() {
         if (additionalAnnotationNodes == null) {
             String source = "";
-            for (String annotation : getAdditionalAnnotations()) {
+            for (String annotation : annotationGenerationSettings.additionalAnnotations()) {
                 source += "@" + annotation + "\n";
             }
             source += "class A{}";
@@ -216,7 +214,7 @@ public class JMerger {
 
     private String getImportStatements() {
         String source = "";
-        for (String importStatement : getAdditionalImports()) {
+        for (String importStatement : annotationGenerationSettings.additionalImports()) {
             source += "import " + importStatement + ";";
         }
         return source;
@@ -232,23 +230,6 @@ public class JMerger {
         newParser.setSource(source.toCharArray());
         ASTNode createAST = newParser.createAST(null);
         return (CompilationUnit)createAST;
-    }
-
-    public List<String> getAdditionalImports() {
-        return additionalImports;
-    }
-
-    public List<String> getAdditionalAnnotations() {
-        return additionalAnnotations;
-    }
-
-    public void setAdditionalAnnotations(List<String> additionalImports, List<String> additionalAnnotations) {
-        this.additionalImports = additionalImports;
-        this.additionalAnnotations = additionalAnnotations;
-    }
-
-    public void setRetainedAnnotations(List<String> retainedAnnotations) {
-        this.retainedAnnotations = new HashSet<>(retainedAnnotations);
     }
 
     public void remerge() {
@@ -544,7 +525,10 @@ public class JMerger {
                             continue;
                         }
                     }
-                    addAnnotatedNode(targetNode);
+
+                    if (!(targetNode instanceof ASTJMethod method) || isGenerateForRestrainedModifiable(method)) {
+                        addAnnotatedNode(targetNode);
+                    }
 
                     Method sourceGetMethod = pullRule.getSourceGetFeature().getFeatureMethod();
                     Object value = sourceGetMethod.invoke(sourceNode, NO_ARGUMENTS);
@@ -707,6 +691,13 @@ public class JMerger {
         }
     }
 
+    private boolean isGenerateForRestrainedModifiable(ASTJMethod method) {
+        return switch (annotationGenerationSettings.additionalAnnotationsLocation()) {
+            case GeneratedAndRestrainedModifiable -> true;
+            case OnlyGenerated -> method.getComment().contains("@generated");
+        };
+    }
+
     private boolean addAnnotatedNode(JNode targetNode) {
         return additionallyAnnotatedMembers.add(targetNode);
     }
@@ -728,7 +719,8 @@ public class JMerger {
     }
 
     protected boolean applySweepRules(JNode targetNode) {
-        if (targetNode instanceof JAnnotation && retainedAnnotations.contains(((JAnnotation)targetNode).getName())) {
+        if (targetNode instanceof JAnnotation
+                && annotationGenerationSettings.retainedAnnotations().contains(((JAnnotation)targetNode).getName())) {
             return false;
         }
         for (JControlModel.SweepRule sweepRule : getControlModel().getSweepRules()) {
@@ -769,7 +761,7 @@ public class JMerger {
      * <p>
      * This method must always return <code>false</code> if target node can have children that can
      * not be added to source node.
-     * 
+     *
      * @param sourceNode
      * @param targetNode
      * @return <code>true</code> if nodes can be merged, <code>false</code> otherwise
@@ -780,7 +772,7 @@ public class JMerger {
 
     /**
      * Converts the target abstract type to be compatible with the given source node class
-     * 
+     *
      * @param targetAbstractType
      * @param sourceClass the class to which to convert the node.
      * @return <code>null</code> when conversion not possible, converted node otherwise
@@ -869,7 +861,7 @@ public class JMerger {
      * If the push rule does not match the node, but the push rule is defined for the same node
      * class, then the node will not be marked up, unless any of the following push rules will match
      * the node.
-     * 
+     *
      * @param node
      * @return <code>true</code> if node should be pushed, <code>false</code> otherwise
      */
@@ -913,7 +905,7 @@ public class JMerger {
 
     /**
      * Maps the specified source and target nodes.
-     * 
+     *
      * @param sourceNode
      * @param targetNode
      */

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.codegen.AdditionalAnnotationsLocation;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -123,21 +124,21 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     /**
      * Configuration property that enables/disables the generation of a copy method.
-     * 
+     *
      * @see ICopySupport
      */
     public static final String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of delta computation.
-     * 
+     *
      * @see IDeltaSupport
      */
     public static final String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
 
     /**
      * Configuration property that enables/disables the generation of the visitor support.
-     * 
+     *
      * @see IDeltaSupport
      */
     public static final String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
@@ -175,7 +176,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     /**
      * Configuration property that enables/disables the generation of serializable support on policy
      * components.
-     * 
+     *
      * @see Serializable
      */
     public static final String CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT = "serializablePolicyCmpts"; //$NON-NLS-1$
@@ -210,6 +211,15 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      * {@link ITableStructure} and {@link ITableContents}
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that defines whether restrained modifiable methods should be included
+     * when generating additional annotations. The default value is
+     * {@link AdditionalAnnotationsLocation#GeneratedAndRestrainedModifiable} and therefore the
+     * annotations should be generated above {@code @generated} as well as
+     * {@code @restrainedmodifiable} methods.
+     */
+    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS_LOCATION = "additionalAnnotationsLocation"; //$NON-NLS-1$
 
     /**
      * Configuration property that defines annotations that are not removed from generated methods
@@ -431,7 +441,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     /**
      * Returns all builders registered with the standard builder set through the extension point
      * "artefactBuilder".
-     * 
+     *
      * @return a list containing all builders that extend this builder set.
      */
     private List<IIpsArtefactBuilder> getExtendingArtefactBuilders() {
@@ -495,7 +505,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     /**
      * Returns the qualified class name for the given datatype.
-     * 
+     *
      * @param datatype datatype to retrieve the class name for
      */
     public String getJavaClassName(Datatype datatype) {
@@ -504,7 +514,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     /**
      * Resolves the qualified class name for the given datatype.
-     * 
+     *
      * @param datatype datatype to retrieve the class name for.
      * @param interfaces flag indicating whether the class name should be resolved to the published
      *            interface type
@@ -599,6 +609,11 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     protected String getConfiguredAdditionalAnnotations() {
         return generatorModelContext.getBaseGeneratorConfig().getConfiguredAdditionalAnnotations();
+    }
+
+    @Override
+    public String getAdditionalAnnotationsLocation() {
+        return generatorModelContext.getBaseGeneratorConfig().getAdditionalAnnotationsLocation();
     }
 
     @Override
