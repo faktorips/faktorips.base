@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -57,6 +57,15 @@ public class EclipseContainerTest extends EclipseAbstractionTestSetup {
         assertThat(members.isEmpty(), is(false));
         assertThat(members.first(), is(aFile));
         assertThat(members.last(), is(aFolder));
+    }
+
+    @Test
+    public void testGetMembers_NonExistant() {
+        AFolder srcFolder = testProject.getFolder("foo");
+
+        SortedSet<? extends AResource> members = srcFolder.getMembers();
+
+        assertThat(members.isEmpty(), is(true));
     }
 
     @Test
