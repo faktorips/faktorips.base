@@ -154,7 +154,7 @@
             <xsd:attributeGroup ref="id" />
             <xsd:attributeGroup ref="cardinality" />
             <xsd:attribute name="target" type="qualifiedProductName" use="required" />            
-            <xsd:attribute name="targetRuntimeId" type="qualifiedProductName" use="required" />
+            <xsd:attribute name="targetRuntimeId" type="xsd:string" use="required" />
             <xsd:attributeGroup ref="templateValueStatus" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInLink">
