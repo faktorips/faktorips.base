@@ -101,7 +101,7 @@ public class StringLengthValueSet implements ValueSet<String> {
     public boolean equals(Object o) {
         return (o instanceof StringLengthValueSet
                 && (containsNull() == ((StringLengthValueSet)o).containsNull())
-                && (getMaximumLength().equals(((StringLengthValueSet)o).getMaximumLength())));
+                && Objects.equals(getMaximumLength(), ((StringLengthValueSet)o).getMaximumLength()));
     }
 
     /**

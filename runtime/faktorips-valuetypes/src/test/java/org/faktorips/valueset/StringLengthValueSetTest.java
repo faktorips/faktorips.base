@@ -15,6 +15,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -197,6 +199,32 @@ public class StringLengthValueSetTest {
         assertThat(new StringLengthValueSet(null, false), is(subsetOf(new StringLengthValueSet(null, false))));
         assertThat(new StringLengthValueSet(null, true), is(not(subsetOf(new StringLengthValueSet(null, false)))));
         assertThat(new StringLengthValueSet(null, true), is(not(subsetOf(new StringLengthValueSet(10, true)))));
+    }
+
+    @Test
+    public void testEquals() {
+        StringLengthValueSet str = new StringLengthValueSet(10, false);
+
+        StringLengthValueSet same = new StringLengthValueSet(10, false);
+        assertTrue(str.equals(same));
+
+        StringLengthValueSet containsNull = new StringLengthValueSet(10, true);
+        assertFalse(str.equals(containsNull));
+
+        StringLengthValueSet differentMaxLength = new StringLengthValueSet(20, false);
+        assertFalse(str.equals(differentMaxLength));
+    }
+
+    @Test
+    public void testEquals_MaximumLengthIsNull() {
+        StringLengthValueSet unlimitedSize = new StringLengthValueSet();
+
+        StringLengthValueSet same = new StringLengthValueSet();
+        assertTrue(unlimitedSize.equals(same));
+
+        StringLengthValueSet withMaxLength = new StringLengthValueSet(10);
+        assertFalse(unlimitedSize.equals(withMaxLength));
+
     }
 
 }
