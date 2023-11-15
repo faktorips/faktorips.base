@@ -342,6 +342,19 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testDontEscapeSpacesToXml() throws TransformerException {
+        Document doc = getTestDocument();
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$
+        Element el = doc.createElement("ElementWithNonBreakingSpace");
+        el.setTextContent(
+                "For\u00A0some\u202Freason,\uFEFFsomeone\u2000used\u2001a\u2002lot\u2003of\u2004different\u2005spaces.\u2006Thanks\u2007to\u2008apache\u2009commons\u200Awe\u205Fcan\u3000replace them.");
+        docElement.appendChild(el);
+        String string = XmlUtil.nodeToString(doc, "UTF-8", false);
+        assertThat(string, containsString(
+                "For\u00A0some\u202Freason,\uFEFFsomeone\u2000used\u2001a\u2002lot\u2003of\u2004different\u2005spaces.\u2006Thanks\u2007to\u2008apache\u2009commons\u200Awe\u205Fcan\u3000replace them."));
+    }
+
+    @Test
     public void testEscapeUnicodeControlCharactersToXml() throws TransformerException {
         Document doc = getTestDocument();
         Element docElement = XmlUtil.getFirstElement(doc, "DocElement"); //$NON-NLS-1$

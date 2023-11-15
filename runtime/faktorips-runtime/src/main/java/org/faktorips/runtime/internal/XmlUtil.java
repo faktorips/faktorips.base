@@ -530,24 +530,29 @@ public class XmlUtil {
         ArrayList<String> searchList = new ArrayList<>();
         ArrayList<String> replacementList = new ArrayList<>();
 
-        searchList.addAll(Arrays.asList(NO_BREAK, NARROW_NO_BREAK,
-                ZERO_WIDTH_NO_BREAK, EN_QUAD,
-                EM_QUAD, EN_SPACE,
-                EM_SPACE, THREE_PER_EM,
-                FOUR_PER_EM, SIX_PER_EM,
-                FIGURE, PUNCTUATION,
-                THIN, HAIR,
-                MEDIUM_MATH, IDEOGRAPHIC,
-                DOUBLE_CARRIAGE_RETURN));
-        replacementList.addAll(Arrays.asList(NO_BREAK_ESC, NARROW_NO_BREAK_ESC,
-                ZERO_WIDTH_NO_BREAK_ESC, EN_QUAD_ESC,
-                EM_QUAD_ESC, EN_SPACE_ESC,
-                EM_SPACE_ESC, THREE_PER_EM_ESC,
-                FOUR_PER_EM_ESC, SIX_PER_EM_ESC,
-                FIGURE_ESC, PUNCTUATION_ESC,
-                THIN_ESC, HAIR_ESC,
-                MEDIUM_MATH_ESC, IDEOGRAPHIC_ESC,
-                CARRIAGE_RETURN));
+        if (escapeBlanks) {
+            searchList.addAll(Arrays.asList(NO_BREAK, NARROW_NO_BREAK,
+                    ZERO_WIDTH_NO_BREAK, EN_QUAD,
+                    EM_QUAD, EN_SPACE,
+                    EM_SPACE, THREE_PER_EM,
+                    FOUR_PER_EM, SIX_PER_EM,
+                    FIGURE, PUNCTUATION,
+                    THIN, HAIR,
+                    MEDIUM_MATH, IDEOGRAPHIC,
+                    DOUBLE_CARRIAGE_RETURN));
+            replacementList.addAll(Arrays.asList(NO_BREAK_ESC, NARROW_NO_BREAK_ESC,
+                    ZERO_WIDTH_NO_BREAK_ESC, EN_QUAD_ESC,
+                    EM_QUAD_ESC, EN_SPACE_ESC,
+                    EM_SPACE_ESC, THREE_PER_EM_ESC,
+                    FOUR_PER_EM_ESC, SIX_PER_EM_ESC,
+                    FIGURE_ESC, PUNCTUATION_ESC,
+                    THIN_ESC, HAIR_ESC,
+                    MEDIUM_MATH_ESC, IDEOGRAPHIC_ESC,
+                    CARRIAGE_RETURN));
+        } else {
+            searchList.add(DOUBLE_CARRIAGE_RETURN);
+            replacementList.add(CARRIAGE_RETURN);
+        }
 
         for (int i = 0; i <= 31; i++) {
             if (i != '\t' && i != '\n') {
@@ -560,8 +565,7 @@ public class XmlUtil {
         String[] searchArray = searchList.toArray(new String[searchList.size()]);
         String[] replacementArray = replacementList.toArray(new String[replacementList.size()]);
 
-        return IpsStringUtils.replaceEach(xml, searchArray,
-                replacementArray);
+        return IpsStringUtils.replaceEach(xml, searchArray, replacementArray);
     }
 
     /**
