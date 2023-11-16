@@ -139,7 +139,11 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         frag.append(newValueInstance(null));
         for (String value : values) {
             frag.append(", "); //$NON-NLS-1$
-            frag.append(newValueInstance(value));
+            if (values.length == 1 && null == value) {
+                frag.append(createCastExpression(value));
+            } else {
+                frag.append(newValueInstance(value));
+            }
         }
         frag.appendln(")"); //$NON-NLS-1$
         return frag;
