@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-sites</artifactId>
-        <version>23.6.5.release</version>
+        <version>23.6.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.p2repository.test</artifactId>
