@@ -21,9 +21,15 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 public class MavenVersion implements IVersion<MavenVersion> {
 
     private final DefaultArtifactVersion version;
+    private final String fakeVersion;
 
     public MavenVersion(String version) {
-        this.version = new DefaultArtifactVersion(version);
+        fakeVersion = version;
+        if (fakeVersion.startsWith("mvn:")) {
+            this.version = new DefaultArtifactVersion(version.split(":")[2]);
+        } else {
+            this.version = new DefaultArtifactVersion(version);
+        }
     }
 
     @Override
@@ -38,11 +44,11 @@ public class MavenVersion implements IVersion<MavenVersion> {
 
     @Override
     public String getUnqualifiedVersion() {
+        if (fakeVersion.startsWith("mvn:")) {
+            return fakeVersion;
+        }
         String versionString = asString();
         if (versionString.equals(version.getQualifier())) {
-            if (versionString.startsWith("mvn:")) {
-                return versionString;
-            }
             return ""; //$NON-NLS-1$
         }
         int firstIndexOfSeperator = versionString.indexOf('-');

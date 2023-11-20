@@ -52,5 +52,7 @@ public class MavenVersionTest {
         assertThat(new MavenVersion("1.5.7-9-BLUB").getUnqualifiedVersion(), is("1.5.7"));
         assertThat(new MavenVersion("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT").getUnqualifiedVersion(),
                 is("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT"));
+        assertThat(new MavenVersion("mvn:org.faktorips-test:test-products:24.1.0-SNAPSHOT").getUnqualifiedVersion(),
+                is("mvn:org.faktorips-test:test-products:24.1.0-SNAPSHOT"));
     }
 }
