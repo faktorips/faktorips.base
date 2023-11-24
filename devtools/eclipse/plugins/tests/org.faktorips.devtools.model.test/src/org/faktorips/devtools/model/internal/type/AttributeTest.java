@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,7 +50,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class AttributeTest extends AbstractIpsPluginTest {
@@ -261,11 +261,27 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals(1, messageList.size());
         List<ObjectProperty> invalidObjectProperties = messageList.getMessage(0).getInvalidObjectProperties();
         assertEquals(1, invalidObjectProperties.size());
+    }
 
+    @Test
+    public void testOverwrittenAttribute_superAttributeNullIcompatible() {
+        String superTypeQName = "SuperPCType";
+        PolicyCmptType superPCType = newPolicyCmptType(ipsProject, superTypeQName);
+        PolicyCmptType pCType = newPolicyCmptType(ipsProject, "PCType");
+        pCType.setSupertype(superTypeQName);
+
+        IPolicyCmptTypeAttribute attr = superPCType.newPolicyCmptTypeAttribute("attr");
+        IPolicyCmptTypeAttribute overwritingAttr = pCType.newPolicyCmptTypeAttribute("attr");
+        attr.setDatatype("Integer");
+        overwritingAttr.setDatatype("Integer");
+        overwritingAttr.setOverwrite(true);
+
+        List<String> listWithNull = list(null, "1", "2", "3", "4");
+        List<String> normalValues = list("1", "9", "99", "999");
         attr.setValueSetCopy(new EnumValueSet(attr, normalValues, "partId"));
         overwritingAttr.setValueSetCopy(new EnumValueSet(overwritingAttr, listWithNull, "partId"));
 
-        messageList = overwritingAttr.validate(ipsProject);
+        MessageList messageList = overwritingAttr.validate(ipsProject);
         assertEquals(2, messageList.size());
         assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET,
                 messageList.getMessage(0).getCode());

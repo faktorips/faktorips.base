@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -45,7 +45,7 @@ import org.junit.Before;
 
 /**
  * Provides convenient methods to start Faktor-IPS refactorings and provides a basic model.
- * 
+ *
  * @author Alexander Weickmann
  */
 // TODO AW 02-05-2011: Refactor subclasses so this class is no longer needed
@@ -308,7 +308,8 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
         productCmpt = newProductCmpt(productCmptType, PRODUCT_NAME);
         productCmptGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGeneration.setValidFrom(new GregorianCalendar(2010, 3, 10));
-        productCmptGeneration.newPropertyValue(policyCmptTypeAttribute, IConfiguredDefault.class);
+        // productCmptGeneration.newPropertyValue(policyCmptTypeAttribute,
+        // IConfiguredDefault.class);
         productCmptGenerationConfiguredDefault = productCmptGeneration.newPropertyValue(policyCmptTypeAttribute,
                 IConfiguredDefault.class);
         productCmptGenerationConfiguredValueSet = productCmptGeneration.newPropertyValue(policyCmptTypeAttribute,

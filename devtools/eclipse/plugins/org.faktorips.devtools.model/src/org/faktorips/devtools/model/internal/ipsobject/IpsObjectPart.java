@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
@@ -156,11 +157,18 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         int result = super.hashCode();
 
         // result = 31 * result + ((parent == null) ? 0 : parent.hashCode());
-        return 31 * result + ((id == null) ? 0 : id.hashCode());
+        return 31 * result + ((id == null) ? getNameHashCode() : id.hashCode());
+    }
+
+    private int getNameHashCode() {
+        return StringUtils.isBlank(getName()) ? 0 : getName().hashCode();
     }
 
     /**
-     * Two parts are equal if they have the same parent and the same id.
+     * Two parts are equal if they have the same parent and the same name. Since the {@link #id} is
+     * no longer stored in the XML but generated anew during reading, the {@link #id} changes upon
+     * saving. That's why the {@link #getName()} is used, although this could lead to problems when
+     * renaming.
      */
     @Override
     public boolean equals(Object obj) {
@@ -169,6 +177,10 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         }
         if (!(obj instanceof IpsObjectPart other)) {
             return false;
+        }
+        if (StringUtils.isNotBlank(getName())) {
+            return Objects.equals(getName(), other.getName())
+                    && Objects.equals(getParent(), other.getParent());
         }
         return Objects.equals(id, other.id)
                 && Objects.equals(getParent(), other.getParent());
