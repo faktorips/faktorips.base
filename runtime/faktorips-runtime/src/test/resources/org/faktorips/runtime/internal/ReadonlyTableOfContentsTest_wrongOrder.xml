@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<FaktorIps-TableOfContents>
+ <ProductComponent implementationClass="org.faktorips.sample.b.Product" ipsObjectId="b.Product" ipsObjectQualifiedName="b.Product"/>
+ <ProductComponent implementationClass="org.faktorips.sample.Coverage" ipsObjectId="Coverage" ipsObjectQualifiedName="Coverage"/>
+ <ProductComponent generationImplClassName="org.faktorips.sample.ProductWithGenAdj" implementationClass="org.faktorips.sample.ProductWithGen" ipsObjectId="ProductWithGen" ipsObjectQualifiedName="ProductWithGen">
+  <Generation implementationClass="org.faktorips.sample.ProductWithGenAdj" validFrom="2023-01-01"/>
+ </ProductComponent>
+ <ProductComponent implementationClass="org.faktorips.sample.Product" ipsObjectId="Product" ipsObjectQualifiedName="Product"/>
+ <EnumContent implementationClass="org.faktorips.sample.a.Enum" ipsObjectId="a.Enum" ipsObjectQualifiedName="a.Enum"/>
+ <EnumContent implementationClass="org.faktorips.sample.a.Enum2" ipsObjectId="a.Enum2" ipsObjectQualifiedName="a.Enum2"/>
+</FaktorIps-TableOfContents>

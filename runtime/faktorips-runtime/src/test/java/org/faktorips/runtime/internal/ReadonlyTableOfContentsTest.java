@@ -14,9 +14,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.junit.Test;
 
 /**
@@ -70,6 +73,22 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
 
         toc.initFromXml(getTestDocument().getDocumentElement());
         assertThat(toc.getProductDataVersion(), is(""));
+    }
+
+    @Test
+    public void testGetEntries() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+
+        toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_wrongOrder.xml").getDocumentElement());
+
+        List<TocEntryObject> entries = toc.getEntries();
+
+        assertEquals("Coverage", entries.get(0).getIpsObjectQualifiedName());
+        assertEquals("Product", entries.get(1).getIpsObjectQualifiedName());
+        assertEquals("ProductWithGen", entries.get(2).getIpsObjectQualifiedName());
+        assertEquals("a.Enum", entries.get(3).getIpsObjectQualifiedName());
+        assertEquals("a.Enum2", entries.get(4).getIpsObjectQualifiedName());
+        assertEquals("b.Product", entries.get(5).getIpsObjectQualifiedName());
     }
 
 }

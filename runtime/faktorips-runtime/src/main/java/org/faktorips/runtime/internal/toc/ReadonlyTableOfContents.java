@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import static java.util.Comparator.comparing;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.faktorips.runtime.IRuntimeObject;
 import org.faktorips.runtime.ITable;
@@ -282,17 +286,20 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     public List<TocEntryObject> getEntries() {
-        List<TocEntryObject> results = new ArrayList<>();
-        results.addAll(pcIdTocEntryMap.values());
-        results.addAll(tableContentNameTocEntryMap.values());
-        results.addAll(testCaseNameTocEntryMap.values());
-        results.addAll(modelTypeNameTocEntryMap.values());
-        results.addAll(enumContentImplClassTocEntryMap.values());
-        results.addAll(enumXmlAdapterTocEntryMap.values());
+        SortedSet<TocEntryObject> sortedEntries = new TreeSet<>(
+                comparing(TocEntryObject::getPackageName)
+                        .thenComparing(TocEntryObject::getUnqualifiedName)
+                        .thenComparing(TocEntry::getXmlElementTag));
+        sortedEntries.addAll(pcIdTocEntryMap.values());
+        sortedEntries.addAll(tableContentNameTocEntryMap.values());
+        sortedEntries.addAll(testCaseNameTocEntryMap.values());
+        sortedEntries.addAll(modelTypeNameTocEntryMap.values());
+        sortedEntries.addAll(enumContentImplClassTocEntryMap.values());
+        sortedEntries.addAll(enumXmlAdapterTocEntryMap.values());
         for (Map<String, CustomTocEntryObject<?>> otherTocEntryMap : otherTocEntryMaps.values()) {
-            results.addAll(otherTocEntryMap.values());
+            sortedEntries.addAll(otherTocEntryMap.values());
         }
-        return results;
+        return new ArrayList<>(sortedEntries);
     }
 
     @Override
@@ -325,5 +332,4 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
         return list;
     }
-
 }
