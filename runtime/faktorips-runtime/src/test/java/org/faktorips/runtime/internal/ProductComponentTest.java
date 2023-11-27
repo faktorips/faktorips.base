@@ -10,6 +10,10 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -135,6 +139,58 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         verify(cmpt).writeTableUsagesToXml(prodCmptElement);
         verify(cmpt).writeReferencesToXml(prodCmptElement);
         verify(cmpt).writeExtensionPropertiesToXml(prodCmptElement);
+    }
+
+    @Test
+    public void testSortAttributesValueSetsAndDefaultValues() {
+        Document document = XmlUtil.getDocumentBuilder().newDocument();
+        ProductComponentTestClass cmpt = new ProductComponentTestClass(repository) {
+            @Override
+            public void writePropertiesToXml(Element parent) {
+                addElement(parent, "f", XML_TAG_ATTRIBUTE_VALUE);
+                addElement(parent, "b", XML_TAG_CONFIGURED_VALUE_SET);
+                addElement(parent, "b", XML_TAG_CONFIGURED_DEFAULT);
+                // the order of default values and value sets might be different when written with
+                // older versions of Faktor-IPS
+                addElement(parent, "d", XML_TAG_CONFIGURED_DEFAULT);
+                addElement(parent, "d", XML_TAG_CONFIGURED_VALUE_SET);
+                addElement(parent, "a", XML_TAG_CONFIGURED_DEFAULT);
+                addElement(parent, "c", XML_TAG_ATTRIBUTE_VALUE);
+                addElement(parent, "a", XML_TAG_CONFIGURED_VALUE_SET);
+                addElement(parent, "e", XML_TAG_ATTRIBUTE_VALUE);
+            }
+
+            private void addElement(Element parent, String attribute, String xmlTag) {
+                Element childElement = document.createElement(xmlTag);
+                childElement.setAttribute(XML_ATTRIBUTE_ATTRIBUTE, attribute);
+                parent.appendChild(childElement);
+            }
+        };
+        when(cmpt.getRepository().getNumberOfProductComponentGenerations(cmpt)).thenReturn(0);
+
+        Element xml = cmpt.toXml(document, false);
+
+        List<Element> childElements = XmlUtil.getChildElements(xml, XML_TAG_ATTRIBUTE_VALUE,
+                XML_TAG_CONFIGURED_VALUE_SET, XML_TAG_CONFIGURED_DEFAULT);
+        assertThat(childElements.size(), is(9));
+        assertThat(childElements.get(0).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("c"));
+        assertThat(childElements.get(0).getNodeName(), is(XML_TAG_ATTRIBUTE_VALUE));
+        assertThat(childElements.get(1).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("e"));
+        assertThat(childElements.get(1).getNodeName(), is(XML_TAG_ATTRIBUTE_VALUE));
+        assertThat(childElements.get(2).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("f"));
+        assertThat(childElements.get(2).getNodeName(), is(XML_TAG_ATTRIBUTE_VALUE));
+        assertThat(childElements.get(3).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("a"));
+        assertThat(childElements.get(3).getNodeName(), is(XML_TAG_CONFIGURED_VALUE_SET));
+        assertThat(childElements.get(4).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("a"));
+        assertThat(childElements.get(4).getNodeName(), is(XML_TAG_CONFIGURED_DEFAULT));
+        assertThat(childElements.get(5).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("b"));
+        assertThat(childElements.get(5).getNodeName(), is(XML_TAG_CONFIGURED_VALUE_SET));
+        assertThat(childElements.get(6).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("b"));
+        assertThat(childElements.get(6).getNodeName(), is(XML_TAG_CONFIGURED_DEFAULT));
+        assertThat(childElements.get(7).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("d"));
+        assertThat(childElements.get(7).getNodeName(), is(XML_TAG_CONFIGURED_VALUE_SET));
+        assertThat(childElements.get(8).getAttribute(XML_ATTRIBUTE_ATTRIBUTE), is("d"));
+        assertThat(childElements.get(8).getNodeName(), is(XML_TAG_CONFIGURED_DEFAULT));
     }
 
     @Test

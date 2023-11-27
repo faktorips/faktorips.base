@@ -19,8 +19,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
@@ -241,14 +243,25 @@ public class XmlUtil {
      * @return all child elements with the matching tag name
      */
     public static final List<Element> getElements(Node parent, String tagName) {
+        return getChildElements(parent, tagName);
+    }
+
+    /**
+     * Returns all child elements with any of the given tag name(s). Considers only direct children.
+     * Use {@link Element#getElementsByTagName(String)} to search <em>all</em> descendants.
+     *
+     * @param parent the parent node
+     * @param tagNames the desired element tag names
+     * @return all child elements with the matching tag name
+     */
+    public static List<Element> getChildElements(Node parent, String... tagNames) {
+        Set<String> allowedNames = new HashSet<>(Arrays.asList(tagNames));
         List<Element> elements = new ArrayList<>();
-        NodeList nl = parent.getChildNodes();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element element = (Element)nl.item(i);
-                if (element.getNodeName().equals(tagName)) {
-                    elements.add(element);
-                }
+        NodeList childNodes = parent.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            if (item instanceof Element && allowedNames.contains(item.getNodeName())) {
+                elements.add((Element)item);
             }
         }
         return elements;

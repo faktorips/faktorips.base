@@ -10,9 +10,9 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -136,6 +136,20 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         for (int i = 0; i <= 2; i++) {
             assertEquals(Integer.toString(i), elements.get(i).getAttribute("id"));
         }
+    }
+
+    @Test
+    public void testGetElements_multipleTags() {
+        Document doc = getTestDocument();
+        Element docElement = XmlUtil.getFirstElement(doc, "DocElement");
+
+        List<Element> elements = XmlUtil.getChildElements(docElement, "ChildA", "ChildC");
+
+        assertEquals(4, elements.size());
+        for (int i = 0; i <= 2; i++) {
+            assertEquals(Integer.toString(i), elements.get(i).getAttribute("id"));
+        }
+        assertThat(elements.get(3).getNodeName(), is("ChildC"));
     }
 
     @Test

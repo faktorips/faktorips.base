@@ -10,19 +10,22 @@
 
 package org.faktorips.runtime.internal;
 
+import static java.util.Comparator.comparing;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.TimeZone;
-import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -54,15 +57,16 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
 
     private static final String XML_ELEMENT_DESCRIPTION = "Description";
-    private static final String XML_ELEMENT_ATTRIBUTE_VALUE = "AttributeValue";
     private static final String XML_ELEMENT_GENERATION = "Generation";
-    private static final String XML_ELEMENT_CONFIGURED_VALUE_SET = "ConfiguredValueSet";
 
     private static final String XML_ATTRIBUTE_LOCALE = "locale";
-    private static final String XML_ATTRIBUTE_ATTRIBUTE = "attribute";
     private static final String XML_ATTRIBUTE_VALID_FROM = "validFrom";
     private static final String XML_ATTRIBUTE_IS_NULL = "isNull";
     private static final String XML_ATTRIBUTE_VALID_TO = "validTo";
+
+    private static final Comparator<Element> BY_ATTRIBUTE_NAME = comparing(
+            e -> e.getAttribute(XML_ATTRIBUTE_ATTRIBUTE));
+    private static final Comparator<Element> VALUE_SET_BEFORE_DEFAULT = comparing(Element::getNodeName).reversed();
 
     /**
      * The component's id that identifies it in the repository
@@ -438,7 +442,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         }
         if (includeGenerations) {
             List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
-            Collections.sort(generations, Comparator.comparing(IProductComponentGeneration::getValidFrom));
+            Collections.sort(generations, comparing(IProductComponentGeneration::getValidFrom));
             for (IProductComponentGeneration generation : generations) {
                 ProductComponentGeneration gen = (ProductComponentGeneration)generation;
                 prodCmptElement.appendChild(gen.toXml(document));
@@ -469,67 +473,26 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return prodCmptElement;
     }
 
-    private void sortAttributeValues(Element root) {
-        List<Node> nodes = getChildNodes(root);
-        List<Element> toSort = new ArrayList<>();
-
-        for (Node node : nodes) {
-            if (node.getNodeName().equals(XML_ELEMENT_ATTRIBUTE_VALUE)) {
-                toSort.add((Element)node);
-            }
-        }
-        Collections.sort(toSort,
-                (o1, o2) -> o1.getAttribute(XML_ATTRIBUTE_ATTRIBUTE)
-                        .compareTo(o2.getAttribute(XML_ATTRIBUTE_ATTRIBUTE)));
-
-        Node refChild = getFirstNodeOf(nodes, XML_ELEMENT_ATTRIBUTE_VALUE);
-        for (Element element : toSort) {
-            if (!element.equals(refChild)) {
-                root.insertBefore(element, refChild);
-            }
-            refChild = element.getNextSibling();
-        }
+    private static void sortAttributeValues(Element root) {
+        sortElements(root, BY_ATTRIBUTE_NAME, XML_TAG_ATTRIBUTE_VALUE);
     }
 
-    private void sortConfiguredValues(Element root) {
-        List<Node> nodes = getChildNodes(root);
-        Map<Element, Element> toSort = new TreeMap<>(
-                (o1, o2) -> o1.getAttribute(XML_ATTRIBUTE_ATTRIBUTE)
-                        .compareTo(o2.getAttribute(XML_ATTRIBUTE_ATTRIBUTE)));
-
-        for (Iterator<Node> iterator = nodes.iterator(); iterator.hasNext();) {
-            Node node = iterator.next();
-            if (node.getNodeName().equals(XML_ELEMENT_CONFIGURED_VALUE_SET)) {
-                toSort.put((Element)node, (Element)iterator.next());
-            }
-        }
-
-        Node refChild = getFirstNodeOf(nodes, XML_ELEMENT_CONFIGURED_VALUE_SET);
-        for (Entry<Element, Element> e : toSort.entrySet()) {
-            Element valueSet = e.getKey();
-            Element defaultValue = e.getValue();
-            root.insertBefore(valueSet, refChild);
-            root.insertBefore(defaultValue, valueSet.getNextSibling());
-            refChild = defaultValue.getNextSibling();
-        }
+    private static void sortConfiguredValues(Element root) {
+        sortElements(root, BY_ATTRIBUTE_NAME.thenComparing(VALUE_SET_BEFORE_DEFAULT),
+                XML_TAG_CONFIGURED_VALUE_SET, XML_TAG_CONFIGURED_DEFAULT);
     }
 
-    private Node getFirstNodeOf(List<Node> nodes, String name) {
-        Node refChild = null;
-        Optional<Node> ft = nodes.stream().filter(n -> n.getNodeName().equals(name)).findFirst();
-        if (ft.isPresent()) {
-            refChild = ft.get();
+    private static void sortElements(Element root, Comparator<Element> comparator, String... allowedNodeNames) {
+        List<Element> nodes = XmlUtil.getChildElements(root, allowedNodeNames);
+        if (nodes.size() > 0) {
+            AtomicReference<Node> refChild = new AtomicReference<>(nodes.get(0));
+            nodes.stream()
+                    .sorted(comparator)
+                    .forEach(e -> {
+                        root.insertBefore(e, refChild.get());
+                        refChild.set(e.getNextSibling());
+                    });
         }
-        return refChild;
-    }
-
-    private List<Node> getChildNodes(Element prodCmptElement) {
-        List<Node> nodes = new ArrayList<>();
-        NodeList childNodes = prodCmptElement.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            nodes.add(childNodes.item(i));
-        }
-        return nodes;
     }
 
     private void writeValidFromToXml(Element prodCmptElement) {
