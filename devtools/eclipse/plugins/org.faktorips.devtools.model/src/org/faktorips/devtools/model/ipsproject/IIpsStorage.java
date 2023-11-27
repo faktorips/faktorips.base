@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,11 +20,11 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 
 /**
- * 
+ *
  * This {@link IIpsStorage} is an interface, which allows storing Faktor-IPS-Files outside of the
  * source folders of an {@link IIpsProject}. This interface has several methods to access such a
  * storage.
- * 
+ *
  * @author dicker
  */
 public interface IIpsStorage {
@@ -95,12 +95,22 @@ public interface IIpsStorage {
      * Returns the content of a file with the given path. Returns <code>null</code> if path is
      * <code>null</code>. Throws a CoreException if no Entry with the given path is found within
      * this {@link IIpsArchive}.
-     * 
+     *
      * @throws IpsException if no Entry with the given path is found within this
      *             {@link IIpsArchive}, or if problems are encountered opening, reading or writing
      *             this archive.
      */
     InputStream getResourceAsStream(String path);
+
+    /**
+     * Returns the resource path of a given element path in a corresponding bundle.
+     *
+     * @param elementPath The {@link Path} of an element.
+     *
+     * @return The resource {@link Path} of an element.
+     *
+     */
+    Path getResourcePath(Path elementPath);
 
     /**
      * Returns the name of the base package for the mergeable artifacts (XML-Files, Java source
@@ -117,14 +127,14 @@ public interface IIpsStorage {
     /**
      * Check weather this archive is valid or not. A archive is valid if the corresponding file
      * exists and the file is a readable IPS archive.
-     * 
+     *
      * @return true if the archive exists and is readable
      */
     boolean isValid();
 
     /**
      * Returns true, if this archive is part of the provided delta or one of its children.
-     * 
+     *
      * @see IIpsArchiveEntry#isAffectedBy(AResourceDelta)
      */
     boolean isAffectedBy(AResourceDelta delta);
@@ -133,7 +143,7 @@ public interface IIpsStorage {
      * Returns an IResource only if the resource can be located in the workspace. If the path is
      * relative it have to be located in the roots project project. The file does not have exists
      * but have to be relative (to the project) or the first segment must match an existing project.
-     * 
+     *
      * @return The found {@link AResource} if the path is workspace or project relative. Returns
      *             null if the path is not valid.
      */

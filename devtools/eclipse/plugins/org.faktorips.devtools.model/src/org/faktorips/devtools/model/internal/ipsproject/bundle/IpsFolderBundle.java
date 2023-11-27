@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * This subclass of {@link AbstractIpsBundle} represents a folder version of an IPS bundle. The
  * class handles every reading access to the folder structure like reading any resources or giving
  * information about included files.
- * 
+ *
  * @author dicker
  */
 public class IpsFolderBundle extends AbstractIpsBundle {
@@ -81,11 +81,14 @@ public class IpsFolderBundle extends AbstractIpsBundle {
         return true;
     }
 
-    public static class IOFactory {
+    @Override
+    public Path getResourcePath(Path element) {
+        return getRootFolder(element).resolve(element);
+    }
 
+    public static class IOFactory {
         public FileInputStream createInputStream(File file) throws FileNotFoundException {
             return new FileInputStream(file);
         }
-
     }
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedMap;
@@ -55,7 +56,7 @@ import org.faktorips.util.StreamUtil;
  * An archive for IPS objects. It is physically stored in a jar file. This class gives read-only
  * access to the archive's content. A new archive can be created with the
  * {@link CreateIpsArchiveOperation}.
- * 
+ *
  * @see org.faktorips.devtools.model.CreateIpsArchiveOperation
  */
 public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
@@ -406,6 +407,13 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     @Override
+    public Path getResourcePath(Path elementPath) {
+        return Optional.ofNullable(getLocation())
+                .map(root -> root.resolve(elementPath))
+                .orElse(null);
+    }
+
+    @Override
     public String getName() {
         if (archivePath == null) {
             return IpsStringUtils.EMPTY;
@@ -429,4 +437,5 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         }
 
     }
+
 }

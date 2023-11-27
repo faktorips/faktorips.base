@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +34,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -86,7 +86,7 @@ public class IpsJarBundleTest {
     public void testInitJarFile() throws Exception {
         Manifest manifest = mock(Manifest.class);
         when(jarFile.getManifest()).thenReturn(manifest);
-        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
+        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<>()));
 
         ipsJarBundle.initBundle();
 
@@ -97,11 +97,22 @@ public class IpsJarBundleTest {
     public void testIsValid() throws Exception {
         Manifest manifest = mock(Manifest.class);
         when(jarFile.getManifest()).thenReturn(manifest);
-        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
+        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<>()));
         ipsJarBundle.initBundle();
         mockObjectDirs();
 
         assertTrue(ipsJarBundle.isValid());
+    }
+
+    @Test
+    public void testGetResourcePath() {
+        Path rootFolder = Path.of(ROOT_PATH);
+        Path element = Path.of(ANY_PATH);
+        when(ipsJarBundle.getRootFolder(element)).thenReturn(rootFolder);
+
+        Path result = ipsJarBundle.getResourcePath(element);
+
+        assertThat(result, is(rootFolder.resolve(element)));
     }
 
     private void mockObjectDirs() {
@@ -126,7 +137,7 @@ public class IpsJarBundleTest {
     public void testIsValid_invalid_EmptyObjectDirs() throws Exception {
         Manifest manifest = mock(Manifest.class);
         when(jarFile.getManifest()).thenReturn(manifest);
-        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
+        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<>()));
         ipsJarBundle.initBundle();
 
         assertFalse(ipsJarBundle.isValid());
@@ -194,7 +205,7 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetNonEmptyPackages_empty() throws Exception {
-        when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(new HashSet<String>());
+        when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(new HashSet<>());
 
         String[] nonEmptyPackages = ipsJarBundle.getNonEmptyPackages();
 
