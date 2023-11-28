@@ -49,7 +49,6 @@ import org.eclipse.emf.codegen.merge.java.facade.JPackage;
 import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
-import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJMethod;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJNode;
 import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -166,7 +165,7 @@ public class JMerger {
     }
 
     private void addAdditionalAnnotations(JNode target) {
-        if (target instanceof JMethod) {
+        if (target instanceof JMethod method && isGenerateForRestrainedModifiable(method)) {
             List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
             for (ASTJNode<?> astjNode : annotations) {
                 if (isNotExistingAnnotation(target, astjNode.getName())) {
@@ -526,9 +525,7 @@ public class JMerger {
                         }
                     }
 
-                    if (!(targetNode instanceof ASTJMethod method) || isGenerateForRestrainedModifiable(method)) {
-                        addAnnotatedNode(targetNode);
-                    }
+                    addAnnotatedNode(targetNode);
 
                     Method sourceGetMethod = pullRule.getSourceGetFeature().getFeatureMethod();
                     Object value = sourceGetMethod.invoke(sourceNode, NO_ARGUMENTS);
@@ -691,7 +688,7 @@ public class JMerger {
         }
     }
 
-    private boolean isGenerateForRestrainedModifiable(ASTJMethod method) {
+    private boolean isGenerateForRestrainedModifiable(JMethod method) {
         return switch (annotationGenerationSettings.additionalAnnotationsLocation()) {
             case GeneratedAndRestrainedModifiable -> true;
             case OnlyGenerated -> method.getComment().contains("@generated");

@@ -78,6 +78,9 @@
    <!--Hier können die qualifizierten Namen für zusätzliche Annotationen eingestellt werden, die an alle generierten Methoden angehängt werden (z.B. org.faktorips.runtime.annotation.IpsGenerated (um generierten Code von der Analyse durch SonarQube/JaCoCo auszuschließen) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Mehrere Annotationen werden mit Strichpunkt getrennt.-->
    <Property name="additionalAnnotations" value="org.faktorips.runtime.annotation.IpsGenerated"/>
 
+   <!--Legt fest ob die Generierung von zusätzlichen Annotationen für alle Methoden oder nur für @generated-Methoden erfolgen soll. Von Hand geschriebene, @restrainedmodifiable Methoden können von der Generierung von zusätzlichen Annotationen ausgeschlossen werden, wenn sie beispielsweise zur Steuerung der Code-Abdeckung verwendet werden. Erlaubte Werte sind 'GeneratedAndRestrainedModifiable' (Defaultwert) und 'OnlyGenerated'.-->
+   <Property name="additionalAnnotationsLocation" value="GeneratedAndRestrainedModifiable"/>
+
    <!--Konstantennamen für Camel-Case-Properties mit Unterstrich trennen.-->
    <Property name="camelCaseSeparated" value="true"/>
 
