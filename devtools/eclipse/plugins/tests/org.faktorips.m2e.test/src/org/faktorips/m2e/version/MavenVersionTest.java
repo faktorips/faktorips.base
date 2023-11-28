@@ -22,7 +22,7 @@ public class MavenVersionTest {
         assertThat(new MavenVersion("").isEmptyVersion(), is(true));
         assertThat(new MavenVersion("1.0").isEmptyVersion(), is(false));
         assertThat(new MavenVersion("FooBar").isEmptyVersion(), is(false));
-        assertThat(new MavenVersion("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT").isEmptyVersion(), is(false));
+        assertThat(new MavenVersion("mvn:org.faktorips:testproducts").isEmptyVersion(), is(false));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class MavenVersionTest {
         assertThat(MavenVersion.isCorrectVersionFormat("1.0.5"), is(true));
         assertThat(MavenVersion.isCorrectVersionFormat("1.0-SNAPSHOT"), is(true));
         assertThat(MavenVersion.isCorrectVersionFormat("2.3.4-Wrdlbrmpft"), is(true));
-        assertThat(MavenVersion.isCorrectVersionFormat("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT"), is(false));
+        assertThat(MavenVersion.isCorrectVersionFormat("mvn:org.faktorips:testproducts"), is(false));
     }
 
     @Test
@@ -50,9 +50,9 @@ public class MavenVersionTest {
         assertThat(new MavenVersion("1.2.3-SNAPSHOT").getUnqualifiedVersion(), is("1.2.3"));
         assertThat(new MavenVersion("1.5.7-9").getUnqualifiedVersion(), is("1.5.7"));
         assertThat(new MavenVersion("1.5.7-9-BLUB").getUnqualifiedVersion(), is("1.5.7"));
-        assertThat(new MavenVersion("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT").getUnqualifiedVersion(),
-                is("mvn:org.faktorips:testproducts:24.1.0-SNAPSHOT"));
-        assertThat(new MavenVersion("mvn:org.faktorips-test:test-products:24.1.0-SNAPSHOT").getUnqualifiedVersion(),
-                is("mvn:org.faktorips-test:test-products:24.1.0-SNAPSHOT"));
+        assertThat(new MavenVersion("mvn:org.faktorips:testproducts").getUnqualifiedVersion(),
+                is("mvn:org.faktorips:testproducts"));
+        assertThat(new MavenVersion("mvn:org.faktorips-test:test-products").getUnqualifiedVersion(),
+                is("mvn:org.faktorips-test:test-products"));
     }
 }

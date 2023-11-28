@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="WINDOWS-1252"?>
-<TableOfContents productDataVersion="mvn:org.foo:bar:1.2.3-SNAPSHOT">
+<TableOfContents productDataVersion="mvn:org.foo:bar">
 	<EnumContent implementationClass="org.faktorips.sample.Option1" ipsObjectId="sample:OptionContent1.ipsenumcontent" ipsObjectQualifiedName="OptionContent1" xmlResource="org/faktorips/sample/OptionContent1.xml"/>
 	<EnumContent implementationClass="org.faktorips.sample.Option2" ipsObjectId="sample:OptionContent2.ipsenumcontent" ipsObjectQualifiedName="OptionContent2.Type" xmlResource=""/>
   <EnumContent implementationClass="org.faktorips.sample.Option2" ipsObjectId="sample:OptionContent2.ipsenumcontent" ipsObjectQualifiedName="OptionContent2" xmlResource="org/faktorips/sample/OptionContent2.xml"/>

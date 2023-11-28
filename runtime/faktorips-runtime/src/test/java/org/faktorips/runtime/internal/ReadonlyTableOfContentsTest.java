@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -64,7 +65,7 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
         AbstractReadonlyTableOfContents toc = new ReadonlyTableOfContents();
 
         toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_withMavenNoPom.xml").getDocumentElement());
-        assertThat(toc.getProductDataVersion(), is("1.2.3-SNAPSHOT"));
+        assertThat(toc.getProductDataVersion(), startsWith("0.0.0.local"));
     }
 
     @Test

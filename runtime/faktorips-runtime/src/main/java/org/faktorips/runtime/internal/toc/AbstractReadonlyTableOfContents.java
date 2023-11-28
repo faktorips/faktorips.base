@@ -129,7 +129,6 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         String[] split = mga.split(":");
         String groupId = split[1];
         String artifactId = split[2];
-        String fallbackVersion = split[3];
         String pomPropertiesResourceName = String.format("META-INF/maven/%s/%s/pom.properties", groupId, artifactId);
         try (InputStream is = classLoader.getResourceAsStream(pomPropertiesResourceName)) {
             if (is != null) {
@@ -140,7 +139,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         } catch (IOException e) {
             // there is no pom.properties file or it is not readable, use the fallback
         }
-        return fallbackVersion;
+        return "0.0.0.local" + System.currentTimeMillis();
     }
 
     /**

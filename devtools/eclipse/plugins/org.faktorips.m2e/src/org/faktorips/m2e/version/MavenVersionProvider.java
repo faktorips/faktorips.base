@@ -119,9 +119,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
 
     @Override
     public IVersion<MavenVersion> getProjectVersionForToC() {
-        return new MavenVersion(
-                "mvn:" + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ":"
-                        + getProjectVersion().asString());
+        return new MavenVersion("mvn:" + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId());
     }
 
     @Override
