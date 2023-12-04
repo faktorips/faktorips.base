@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,14 +40,14 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * Returns a path of the source folder relativ to its project e.g. {@code src} will get
      * {@code Project/src}.
-     * 
+     *
      * @return the path of the source folder
      */
     public abstract Path srcFolder();
 
     /**
      * Returns a list of folders to create, relativ to their project.
-     * 
+     *
      * @return a list of folders.
      */
     public abstract List<Path> additionalFolders();
@@ -55,14 +55,14 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * Returns a list of files to create, relativ to their project. The files are created without
      * content.
-     * 
+     *
      * @return a list of files to create
      */
     public abstract List<Path> files();
 
     /**
      * Adds other projects the {@code project} depends on.
-     * 
+     *
      * @param project the dependent project
      * @param dependencies the dependencies for the {@code project}
      */
@@ -70,7 +70,7 @@ public abstract class AbstractAbstractionTestSetup {
 
     /**
      * Creates an java project. For example in Eclipse it will add the java nature to the project.
-     * 
+     *
      * @param project the project
      * @return the java project
      */
@@ -78,14 +78,14 @@ public abstract class AbstractAbstractionTestSetup {
 
     /**
      * Creates an IPS project. For example in Eclipse it will add the IPS nature to the project.
-     * 
+     *
      * @param project the project
      */
     protected abstract void toIpsProjectImpl(AProject project);
 
     /**
      * Creates an empty Project.
-     * 
+     *
      * @param name the name of the project.
      * @return the project
      */
@@ -95,7 +95,7 @@ public abstract class AbstractAbstractionTestSetup {
      * Specifically creates a new simple IPS project, depending on the execution environment. This
      * simple IPS project has the expected files and folders, but no content e.g. the .ipsproject
      * file is empty. In an Eclipse environment it also adds the IpsNature to the project.
-     * 
+     *
      * @param name the name of the project to create.
      * @param dependencies other projects this project depends on
      * @return the created IPS project
@@ -111,7 +111,7 @@ public abstract class AbstractAbstractionTestSetup {
      * Specifically creates a new IPS project, depending on the execution environment. This simple
      * IPS project has the expected files and folders, but no content e.g. the .ipsproject file is
      * empty. In an Eclipse environment it also adds the IpsNature to the project.
-     * 
+     *
      * @param name the name of the project to create.
      * @return the created IPS project
      */
@@ -124,7 +124,7 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * Creates a new project, depending on the execution environment. See {@link Abstractions} for
      * details.
-     * 
+     *
      * @param name the name of the project to create.
      * @param dependencies other projects this project depends on
      * @return the created project
@@ -142,12 +142,22 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * Creates a new project, depending on the execution environment. See {@link Abstractions} for
      * details. Also all configured files and folders are created.
-     * 
+     *
      * @param name the name of the project to create.
      * @return the created project
      */
     public AProject newAbstractionProject(String name) {
         AProject project = newProjectImpl(name);
+        return setupAbstractionProject(project);
+    }
+
+    /**
+     * Creates configured files and folders to set up a given project.
+     *
+     * @param project an empty project
+     * @return the set up project
+     */
+    public AProject setupAbstractionProject(AProject project) {
         createFolder(project, srcFolder());
         for (Path folder : additionalFolders()) {
             createFolder(project, folder);
@@ -162,7 +172,7 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * Adds IPS to a project and creates expected empty files and folders. In Eclipse environment
      * also the IpsNature.
-     * 
+     *
      * @param project the project
      */
     public void toIpsProject(AProject project) {
@@ -180,7 +190,7 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * A convenience method to read an {@link String} from an {@link InputStream}. Uses the default
      * encoding {@link Charset#defaultCharset()}
-     * 
+     *
      * @param is the input stream to read from
      * @return the content of the input stream
      * @throws RuntimeException if an IO error occurs.
@@ -198,7 +208,7 @@ public abstract class AbstractAbstractionTestSetup {
     /**
      * A convenience method to write an {@link String} to an {@link InputStream}. Uses the default
      * encoding {@link Charset#defaultCharset()}
-     * 
+     *
      * @param content the string to write
      * @return an input stream with the {@code content}
      */

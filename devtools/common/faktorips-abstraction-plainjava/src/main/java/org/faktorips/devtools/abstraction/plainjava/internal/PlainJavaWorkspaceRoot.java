@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,11 +19,15 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -35,6 +39,7 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     private PlainJavaWorkspace workspace;
 
     private final Map<Path, PlainJavaResource> resources = new ConcurrentHashMap<>();
+    private final Map<String, AProject> projectsByName = new ConcurrentHashMap<>();
 
     public PlainJavaWorkspaceRoot(PlainJavaWorkspace workspace) {
         super(workspace.unwrap());
@@ -53,7 +58,10 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
 
     @Override
     public AProject getProject(String name) {
-        return project(directory().toPath().resolve(name));
+        AProject project = projectsByName.computeIfAbsent(name, n -> project(directory().toPath().resolve(n)));
+        // put it with it's own name again, as this may differ for off-root projects
+        projectsByName.put(project.getName(), project);
+        return project;
     }
 
     @Override
@@ -71,13 +79,14 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     @Override
     public Set<AProject> getProjects() {
         refreshInternal();
-        return getMembers().stream()
+        return Stream.concat(getMembers().stream()
                 .filter(PlainJavaFolder.class::isInstance)
                 .map(PlainJavaFolder.class::cast)
                 .map(PlainJavaFolder::directory)
                 .map(File::toPath)
                 // FIPS-8693: Müssen ggf. .git- und andere Ordner ignoriert werden?
-                .map(this::project)
+                .map(this::project), projectsByName.values().stream())
+                .distinct()
                 .collect(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(AProject::getName))));
     }
@@ -159,5 +168,14 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
             return project;
         }
         throw new IllegalArgumentException(path + " is not a project"); //$NON-NLS-1$
+    }
+
+    void deleteProject(PlainJavaProject plainJavaProject) {
+        for (Iterator<Entry<String, AProject>> iterator = projectsByName.entrySet().iterator(); iterator.hasNext();) {
+            Map.Entry<String, AProject> entry = iterator.next();
+            if (Objects.equals(entry.getValue(), plainJavaProject)) {
+                iterator.remove();
+            }
+        }
     }
 }
