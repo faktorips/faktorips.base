@@ -48,8 +48,9 @@ public class MavenVersionTest {
         assertThat(new MavenVersion("42.23#432").getUnqualifiedVersion(), is(""));
         assertThat(new MavenVersion("11.8.05-SNAPSHOT").getUnqualifiedVersion(), is(""));
         assertThat(new MavenVersion("1.2.3-SNAPSHOT").getUnqualifiedVersion(), is("1.2.3"));
-        assertThat(new MavenVersion("1.5.7-9").getUnqualifiedVersion(), is("1.5.7"));
-        assertThat(new MavenVersion("1.5.7-9-BLUB").getUnqualifiedVersion(), is("1.5.7"));
+        assertThat(new MavenVersion("2024-1.0.0-SNAPSHOT").getUnqualifiedVersion(), is("2024-1.0.0"));
+        assertThat(new MavenVersion("1.5.7-9").getUnqualifiedVersion(), is("1.5.7-9"));
+        assertThat(new MavenVersion("1.5.7-9-BLUB").getUnqualifiedVersion(), is("1.5.7-9"));
         assertThat(new MavenVersion("mvn:org.faktorips:testproducts").getUnqualifiedVersion(),
                 is("mvn:org.faktorips:testproducts"));
         assertThat(new MavenVersion("mvn:org.faktorips-test:test-products").getUnqualifiedVersion(),

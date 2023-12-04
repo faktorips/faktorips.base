@@ -48,15 +48,20 @@ public class MavenVersion implements IVersion<MavenVersion> {
             return fakeVersion;
         }
         String versionString = asString();
-        if (versionString.equals(version.getQualifier())) {
+        String qualifier = version.getQualifier();
+        if (versionString.equals(qualifier)) {
             return ""; //$NON-NLS-1$
         }
-        int firstIndexOfSeperator = versionString.indexOf('-');
-        if (firstIndexOfSeperator > -1) {
-            return versionString.substring(0, firstIndexOfSeperator);
-        } else {
-            return versionString;
+        if (IpsStringUtils.isNotBlank(qualifier)) {
+            DefaultArtifactVersion qualifierVersion = new DefaultArtifactVersion(qualifier);
+            String qualifierQualifier = qualifierVersion.getQualifier();
+            if (!qualifierVersion.toString().equals(qualifierQualifier)) {
+                // FIPS-10931: Weird version format
+                return versionString.replace('-' + qualifier, "") + '-'
+                        + qualifier.replace('-' + qualifierQualifier, "");
+            }
         }
+        return versionString.replace('-' + qualifier, "");
     }
 
     @Override
