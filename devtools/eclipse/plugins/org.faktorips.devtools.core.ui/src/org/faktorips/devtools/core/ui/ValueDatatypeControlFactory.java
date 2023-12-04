@@ -122,16 +122,17 @@ public abstract class ValueDatatypeControlFactory {
             EnumerationProposalAdapter proposalAdapter = EnumerationProposalAdapter.createAndActivateOnAnyKey(
                     textControl, button, datatype, valueSetOwner,
                     inputFormat);
-            registerUpdateListener(valueSet.getValueSetOwner(), button, proposalAdapter);
-            updateRequiresEnumValueProposal(button, proposalAdapter, valueSet);
+            registerUpdateListener(valueSet.getValueSetOwner(), button, proposalAdapter, datatype);
+            updateRequiresEnumValueProposal(button, proposalAdapter, valueSet, datatype);
         }
     }
 
     private void registerUpdateListener(IValueSetOwner valueSetOwner,
             Button button,
-            EnumerationProposalAdapter proposalAdapter) {
+            EnumerationProposalAdapter proposalAdapter,
+            ValueDatatype datatype) {
         final ContentsChangeListener contentChangeListener = ContentsChangeListener.forEventsAffecting(valueSetOwner,
-                $ -> updateRequiresEnumValueProposal(button, proposalAdapter, valueSetOwner.getValueSet()));
+                $ -> updateRequiresEnumValueProposal(button, proposalAdapter, valueSetOwner.getValueSet(), datatype));
         valueSetOwner.getIpsModel().addChangeListener(contentChangeListener);
         button.addDisposeListener(e -> valueSetOwner.getIpsModel().removeChangeListener(contentChangeListener));
     }
@@ -139,8 +140,9 @@ public abstract class ValueDatatypeControlFactory {
     private void updateRequiresEnumValueProposal(
             Button button,
             EnumerationProposalAdapter proposalAdapter,
-            IValueSet newValueSet) {
-        boolean requiresEnumValueProposal = requiresEnumValueProposal(newValueSet);
+            IValueSet newValueSet,
+            ValueDatatype datatype) {
+        boolean requiresEnumValueProposal = requiresEnumValueProposal(newValueSet) || datatype.isEnum();
         button.setVisible(requiresEnumValueProposal);
         proposalAdapter.setEnabled(requiresEnumValueProposal);
         GridData layoutData = (GridData)button.getLayoutData();
