@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.tableconversion
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion.test
-Bundle-Version: 22.12.16.release
+Bundle-Version: 22.12.17.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
