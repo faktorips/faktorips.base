@@ -1,0 +1,105 @@
+library 'fips-jenkins-library@main'
+ 
+def p2Server = 'hudson@update.faktorzehn.org'
+def ps2MirrorDir = '/var/www/update.faktorzehn.org/p2repositories'
+def pomString = """<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.faktorips.p2mirror</groupId>
+    <artifactId>org.faktorips.p2mirror.${eclipseVersion}</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <source.encoding>UTF-8</source.encoding>
+        <tycho-version>4.0.4</tycho-version>
+        <eclipse-version>${eclipseVersion}</eclipse-version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho.extras</groupId>
+                <artifactId>tycho-p2-extras-plugin</artifactId>
+                <version>\${tycho-version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>mirror</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>
+                    <!-- source repositories to mirror from -->
+                        <repository>
+                            <url>https://download.eclipse.org/releases/\${eclipse-version}/</url>
+                            <layout>p2</layout>
+                        </repository>
+                    </source>
+                    <destination>\${mirror.destination}</destination>
+                    <followStrictOnly>false</followStrictOnly>
+                    <includeOptional>true</includeOptional>
+                    <includeNonGreedy>true</includeNonGreedy>
+                    <latestVersionOnly>false</latestVersionOnly>
+                    <mirrorMetadataOnly>false</mirrorMetadataOnly>
+                    <compress>true</compress>
+                    <append>true</append>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+"""
+
+pipeline {
+    agent any
+
+    parameters {
+        string description: 'Eclipse Version z.B: 2023-12', name: 'eclipseVersion'
+    }
+
+    tools {
+        jdk 'JDK21'
+        maven 'maven 3.9.3'
+    }
+
+    options {
+        skipDefaultCheckout true
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    stages {
+        stage('Create Mirror') {
+            steps {
+                script {
+                    sh "mkdir -p /tmp/mirror/${eclipseVersion}"
+                    writeFile encoding: 'UTF-8', file: "/tmp/mirror/${eclipseVersion}/mirror.pom.xml", text: "${pomString}"
+                    osSpecificMaven commands: [
+                        "mvn -U -V tycho-p2-extras:mirror -f /tmp/mirror/${eclipseVersion}/mirror.pom.xml -Dmirror.destination=/tmp/mirror/${eclipseVersion}"
+                    ]
+                }
+            }
+        }
+
+        stage('Copy Mirror') {
+            steps {
+                sshagent(credentials: ['hudson.jenkins-f10org'], ignoreMissing: true) {
+                    replaceOnServer server:p2Server, port:'22', localFolder:"/tmp/mirror/${eclipseVersion}", remoteFolder:"${ps2MirrorDir}/${eclipseVersion}"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                echo "Cleanup /tmp/mirror/${eclipseVersion}"
+                sh "rm -rf /tmp/mirror/${eclipseVersion}"
+            }
+        }
+        unsuccessful {
+            failedEmail to: 'fips@faktorzehn.de'
+        }
+    }
+}
