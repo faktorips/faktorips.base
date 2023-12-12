@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test-Extensions for Faktor-IPS Extension Points
 Bundle-SymbolicName: org.faktorips.testextensions;singleton:=true
-Bundle-Version: 24.1.0.qualifier
+Bundle-Version: 24.1.0.release
 Automatic-Module-Name: org.faktorips.testextensions
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Vendor: Faktor Zehn GmbH
