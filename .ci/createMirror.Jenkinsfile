@@ -61,7 +61,7 @@ pipeline {
 
     tools {
         jdk 'JDK21'
-        maven 'maven 3.9.3'
+        maven 'maven 3.9'
     }
 
     options {
