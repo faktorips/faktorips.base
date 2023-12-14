@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,8 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.DatatypeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedLinkTemplateMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedPropertyTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -34,6 +37,7 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.WrongRunti
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -53,6 +57,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.value.ValueType;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -124,6 +129,24 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
             if (link.getTemplateValueStatus() != TemplateValueStatus.DEFINED && isLinkAbsent(link, templateContainer)) {
                 addEntry(new RemovedTemplateLinkEntry(link));
             }
+            checkInheritedFromTemplateMismatch(link);
+        }
+    }
+
+    private void checkInheritedFromTemplateMismatch(IProductCmptLink link) {
+        if (link.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            Cardinality internalValue = (Cardinality)link.getInternalValueGetter().apply(link);
+            IProductCmptLink templatePropertyValue = link.findTemplateProperty(ipsProject);
+            if (templatePropertyValue != null) {
+                Cardinality templateValue = templatePropertyValue.getCardinality();
+                if (internalValue.compareTo(templateValue) != 0) {
+                    IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()
+                            .findAssociation(link.getAssociation(), getIpsProject());
+                    InheritedLinkTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedLinkTemplateMismatchEntry(
+                            association, link, internalValue, templateValue);
+                    addEntry(valueSetTemplateMismatchEntry);
+                }
+            }
         }
     }
 
@@ -179,39 +202,61 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
-        List<? extends IPropertyValue> values = propertyValueContainer.getAllPropertyValues();
-        for (IPropertyValue value : values) {
-            IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
+        List<? extends IPropertyValue> propertyValues = propertyValueContainer.getAllPropertyValues();
+        for (IPropertyValue propertyValue : propertyValues) {
+            IProductCmptProperty property = propertiesMap.get(propertyValue.getPropertyName());
             if (property == null || !propertyValueContainer.isContainerFor(property)) {
-                ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(value);
+                ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(propertyValue);
                 addEntry(valueWithoutPropertyEntry);
             } else {
-                if (!property.getPropertyValueTypes().contains(value.getPropertyValueType())) {
+                PropertyValueType propertyValueType = propertyValue.getPropertyValueType();
+                checkInheritedFromTemplateMismatch(propertyValueType, property, propertyValue);
+                if (!property.getPropertyValueTypes().contains(propertyValueType)) {
                     PropertyTypeMismatchEntry propertyTypeMismatchEntry = new PropertyTypeMismatchEntry(
-                            propertyValueContainer, property, value);
+                            propertyValueContainer, property, propertyValue);
                     addEntry(propertyTypeMismatchEntry);
                 } else {
-                    if (PropertyValueType.CONFIGURED_VALUESET.equals(value.getPropertyValueType())) {
-                        checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfiguredValueSet)value);
+                    if (PropertyValueType.CONFIGURED_VALUESET.equals(propertyValueType)) {
+                        checkForValueSetMismatch((IPolicyCmptTypeAttribute)property,
+                                (IConfiguredValueSet)propertyValue);
                     }
-                    if (PropertyValueType.ATTRIBUTE_VALUE.equals(value.getPropertyValueType())) {
-                        checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
-                        checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
-                        checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    if (PropertyValueType.ATTRIBUTE_VALUE.equals(propertyValueType)) {
+                        checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)propertyValue);
+                        checkForMultilingualMismatch((IProductCmptTypeAttribute)property,
+                                (IAttributeValue)propertyValue);
+                        checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property,
+                                (IAttributeValue)propertyValue);
                     }
                 }
             }
         }
-        entries.addAll(DatatypeMismatchEntry.forEachMismatch(values));
+        entries.addAll(DatatypeMismatchEntry.forEachMismatch(propertyValues));
+    }
+
+    private void checkInheritedFromTemplateMismatch(PropertyValueType propertyValueType,
+            IProductCmptProperty property,
+            IPropertyValue propertyValue) {
+        if (propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            Object internalValue = propertyValueType.getInternalValueGetter().apply(propertyValue);
+            IPropertyValue templatePropertyValue = propertyValue.findTemplateProperty(ipsProject);
+            Object templateValue = propertyValueType.getValueGetter().apply(templatePropertyValue);
+            Comparator<Object> valueComparator = propertyValueType.getValueComparator();
+            if (valueComparator.compare(internalValue, templateValue) != 0) {
+                InheritedPropertyTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedPropertyTemplateMismatchEntry(
+                        property, propertyValue, templatePropertyValue, internalValue, templateValue);
+                addEntry(valueSetTemplateMismatchEntry);
+            }
+        }
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
+        IValueSet valueSet = element.getValueSet();
         if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()
                 || attribute.getValueSet().isStringLength()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }
-        if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {
+        if (!valueSet.isSameTypeOfValueSet(attribute.getValueSet())) {
             ValueSetMismatchEntry valueSetMismatchEntry = new ValueSetMismatchEntry(attribute, element);
             addEntry(valueSetMismatchEntry);
         }

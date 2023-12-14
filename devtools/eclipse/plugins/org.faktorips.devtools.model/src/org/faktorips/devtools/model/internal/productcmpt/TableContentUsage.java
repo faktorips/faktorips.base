@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,7 +37,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Thorsten Guenther
  */
 public class TableContentUsage extends AbstractSimplePropertyValue implements ITableContentUsage {
@@ -131,6 +131,10 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
             return ""; //$NON-NLS-1$
         }
 
+        return tableContentName;
+    }
+
+    public String getInternalTableContentName() {
         return tableContentName;
     }
 

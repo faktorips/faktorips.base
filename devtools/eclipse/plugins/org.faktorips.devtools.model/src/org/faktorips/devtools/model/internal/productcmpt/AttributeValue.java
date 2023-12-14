@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class AttributeValue extends AbstractSimplePropertyValue implements IAttributeValue {
@@ -90,6 +90,15 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
         if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return getUndefinedValueHolder();
         }
+        return valueHolder;
+    }
+
+    /**
+     * Returns the internal value holder, independent of the template settings.
+     *
+     * @since 24.1.1
+     */
+    public IValueHolder<?> getValueHolderInternal() {
         return valueHolder;
     }
 

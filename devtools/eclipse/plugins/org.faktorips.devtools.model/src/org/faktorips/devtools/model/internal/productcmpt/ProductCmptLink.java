@@ -28,8 +28,6 @@ import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.model.ipsobject.IDescription;
-import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -516,6 +514,17 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     @Override
     public Function<IProductCmptLink, Object> getValueGetter() {
         return IProductCmptLink::getCardinality;
+    }
+
+    @Override
+    public Function<IProductCmptLink, Object> getInternalValueGetter() {
+        return o -> {
+            if (o instanceof ProductCmptLink productCmptLink) {
+                return productCmptLink.cardinality;
+            } else {
+                throw new IllegalArgumentException("Illegal parameter " + o);
+            }
+        };
     }
 
     @Override

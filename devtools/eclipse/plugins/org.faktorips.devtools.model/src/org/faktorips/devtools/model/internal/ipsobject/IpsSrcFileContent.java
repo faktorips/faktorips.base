@@ -34,11 +34,16 @@ import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.XsdValidationHandler;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.DeltaType;
+import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.model.util.BeanUtil;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -359,6 +364,9 @@ public class IpsSrcFileContent {
                                 + IpsSrcFileContent.this);
                     }
                     clearRootPropertyCache();
+                    if (ipsObject instanceof ProductCmpt productCmpt && productCmpt.isProductTemplate()) {
+                        updateTemplatedProductCmpts(productCmpt);
+                    }
                 }
                 // CSOFF: IllegalCatch
             } catch (Exception e) {
@@ -370,6 +378,34 @@ public class IpsSrcFileContent {
             }
         };
         Abstractions.getWorkspace().run(runnable, monitor);
+    }
+
+    private void updateTemplatedProductCmpts(ProductCmpt productCmpt) {
+        productCmpt.getIpsProject()
+                .findTemplateHierarchy(productCmpt)
+                .getAllElements().stream()
+                .forEach(srcFile -> {
+                    boolean dirty = srcFile.isDirty();
+                    ProductCmpt templatedProductCmpt = (ProductCmpt)srcFile.getIpsObject();
+                    IPropertyValueContainerToTypeDelta delta = templatedProductCmpt
+                            .computeDeltaToModel(srcFile.getIpsProject());
+                    fixTemplateDifferences(delta);
+                    if (!dirty) {
+                        srcFile.save(null);
+                    }
+                });
+    }
+
+    private void fixTemplateDifferences(IFixDifferencesComposite delta) {
+        if (delta instanceof IPropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta) {
+            IDeltaEntry[] entries = propertyValueContainerToTypeDelta.getEntries(DeltaType.INHERITED_TEMPLATE_MISMATCH);
+            for (IDeltaEntry deltaEntry : entries) {
+                deltaEntry.fix();
+            }
+        }
+        for (IFixDifferencesComposite child : delta.getChildren()) {
+            fixTemplateDifferences(child);
+        }
     }
 
     /**
