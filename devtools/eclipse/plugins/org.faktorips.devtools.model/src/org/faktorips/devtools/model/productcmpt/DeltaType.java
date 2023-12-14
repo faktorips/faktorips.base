@@ -37,7 +37,8 @@ public enum DeltaType {
             IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                     .getGenerationConceptNamePlural(true)),
             Kind.DELETE),
-    DATATYPE_MISMATCH(Messages.DeltaType_datatypeMissmatch, Kind.MODIFY);
+    DATATYPE_MISMATCH(Messages.DeltaType_datatypeMissmatch, Kind.MODIFY),
+    INHERITED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedTemplateMismatch, Kind.MODIFY);
 
     private final String description;
 

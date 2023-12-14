@@ -142,13 +142,16 @@ public abstract class ValueDatatypeControlFactory {
             EnumerationProposalAdapter proposalAdapter,
             IValueSet newValueSet,
             ValueDatatype datatype) {
-        boolean requiresEnumValueProposal = requiresEnumValueProposal(newValueSet) || datatype.isEnum();
-        button.setVisible(requiresEnumValueProposal);
-        proposalAdapter.setEnabled(requiresEnumValueProposal);
-        GridData layoutData = (GridData)button.getLayoutData();
-        layoutData.widthHint = requiresEnumValueProposal ? ARROW_DOWN_BUTTON_WIDTH : 0;
-        button.setLayoutData(layoutData);
-        button.getParent().layout();
+        if (!button.isDisposed()) {
+            boolean requiresEnumValueProposal = requiresEnumValueProposal(newValueSet)
+                    || (datatype != null && datatype.isEnum());
+            button.setVisible(requiresEnumValueProposal);
+            proposalAdapter.setEnabled(requiresEnumValueProposal);
+            GridData layoutData = (GridData)button.getLayoutData();
+            layoutData.widthHint = requiresEnumValueProposal ? ARROW_DOWN_BUTTON_WIDTH : 0;
+            button.setLayoutData(layoutData);
+            button.getParent().layout();
+        }
     }
 
     /**

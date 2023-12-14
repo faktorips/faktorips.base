@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.PropertyTy
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.RemovedTemplateLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueSetMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueSetTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.WrongRuntimeIdForLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -53,6 +54,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.value.ValueType;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -206,12 +208,23 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
+        IValueSet valueSet = element.getValueSet();
+        if (element.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            valueSet = ((ConfiguredValueSet)element).getValueSetInternal();
+            IConfiguredValueSet templateConfiguredValueSet = element.findTemplateProperty(ipsProject);
+            IValueSet templateValueSet = templateConfiguredValueSet.getValueSet();
+            if (valueSet.compareTo(templateValueSet) != 0) {
+                ValueSetTemplateMismatchEntry valueSetTemplateMismatchEntry = new ValueSetTemplateMismatchEntry(
+                        attribute, element, templateConfiguredValueSet, valueSet, templateValueSet);
+                addEntry(valueSetTemplateMismatchEntry);
+            }
+        }
         if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()
                 || attribute.getValueSet().isStringLength()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }
-        if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {
+        if (!valueSet.isSameTypeOfValueSet(attribute.getValueSet())) {
             ValueSetMismatchEntry valueSetMismatchEntry = new ValueSetMismatchEntry(attribute, element);
             addEntry(valueSetMismatchEntry);
         }

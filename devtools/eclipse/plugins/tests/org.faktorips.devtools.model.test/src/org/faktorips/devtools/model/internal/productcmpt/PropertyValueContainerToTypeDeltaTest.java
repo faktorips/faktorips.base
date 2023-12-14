@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingTemplateLinkEntry;
@@ -651,6 +654,54 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
 
         verify(propertyValueContainerToTypeDelta, never()).addEntry(any(IDeltaEntry.class));
+    }
+
+    @Test
+    public void testValueSetTemplateMismatch_ConfiguredValueSet() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setValueSetConfiguredByProduct(true);
+        attr.setChangingOverTime(false);
+        attr.setName("a1");
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        policyCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IConfiguredValueSet templateValueSet = productTemplate.getPropertyValue("a1", IConfiguredValueSet.class);
+        templateValueSet.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet templateRange = (IRangeValueSet)templateValueSet.getValueSet();
+        templateRange.setLowerBound("1");
+        templateRange.setUpperBound("10");
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        ConfiguredValueSet valueSet = (ConfiguredValueSet)productCmpt.getPropertyValue("a1", IConfiguredValueSet.class);
+        valueSet.setValueSetType(ValueSetType.RANGE);
+        valueSet.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        IRangeValueSet range = (IRangeValueSet)valueSet.getValueSet();
+        range.setLowerBound("1");
+        range.setUpperBound("10");
+        valueSet.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+        templateRange.setUpperBound("5");
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(((IRangeValueSet)valueSet.getValueSetInternal()).getUpperBound(), is("10"));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.CONFIGURED_VALUESET));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(((IRangeValueSet)valueSet.getValueSetInternal()).getUpperBound(), is("5"));
     }
 
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,7 +42,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * This enum contains methods providing information about the relationship of product component
  * properties to their corresponding property values. It also provides a convenient way to create
  * property values for given product component properties.
- * 
+ *
  * @see IPropertyValue
  */
 public enum PropertyValueType {
@@ -84,6 +84,12 @@ public enum PropertyValueType {
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
             };
+        }
+
+        @Override
+        public Function<IPropertyValue, Object> getInternalValueGetter() {
+            // TODO FIPS-11022
+            return getValueGetter();
         }
 
         @Override
@@ -134,6 +140,12 @@ public enum PropertyValueType {
         }
 
         @Override
+        public Function<IPropertyValue, Object> getInternalValueGetter() {
+            // TODO FIPS-11023
+            return getValueGetter();
+        }
+
+        @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
         }
@@ -178,6 +190,12 @@ public enum PropertyValueType {
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
             };
+        }
+
+        @Override
+        public Function<IPropertyValue, Object> getInternalValueGetter() {
+            // TODO FIPS-11025
+            return getValueGetter();
         }
 
         @Override
@@ -242,13 +260,23 @@ public enum PropertyValueType {
         }
 
         @Override
+        public Function<IPropertyValue, Object> getInternalValueGetter() {
+            return propertyValue -> {
+                if (propertyValue instanceof IConfiguredValueSet configuredValueSet) {
+                    return ((ConfiguredValueSet)configuredValueSet).getValueSetInternal();
+                }
+                throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
+            };
+        }
+
+        @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
         }
 
         /**
          * Creates a {@link Comparator} that compares two value set by the following rules:
-         * 
+         *
          * Comparing two value sets by checking whether one valueset is contained in the other. If
          * both value set are contained in each other they are equal (0). If the first value set
          * contains the second one the comparator assumes that the first one is greater and will
@@ -313,6 +341,12 @@ public enum PropertyValueType {
         }
 
         @Override
+        public Function<IPropertyValue, Object> getInternalValueGetter() {
+            // TODO FIPS-11021
+            return getValueGetter();
+        }
+
+        @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
         }
@@ -372,6 +406,12 @@ public enum PropertyValueType {
         }
 
         @Override
+        public Function<IPropertyValue, Object> getInternalValueGetter() {
+            // TODO FIPS-11024
+            return getValueGetter();
+        }
+
+        @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.VALIDATION_RULE;
         }
@@ -411,7 +451,7 @@ public enum PropertyValueType {
      * If you have the concrete class of the {@link IPropertyValue} you want to create, use the
      * typesafe method
      * {@link #createPropertyValue(IPropertyValueContainer, IProductCmptProperty, String, Class)}
-     * 
+     *
      * @param container The {@link IPropertyValueContainer} the new part is created for
      * @param property The {@link IProductCmptProperty} a new value is created for
      * @param partId The new parts's id
@@ -423,6 +463,22 @@ public enum PropertyValueType {
     public abstract Function<IPropertyValue, Object> getValueGetter();
 
     public abstract BiConsumer<IPropertyValue, Object> getValueSetter();
+
+    /**
+     * Returns the getter for the internal value, independent of the template settings.
+     *
+     * @since 24.1.1
+     */
+    public abstract Function<IPropertyValue, Object> getInternalValueGetter();
+
+    /**
+     * Copies the value from one {@link IPropertyValue} to the other.
+     *
+     * @since 24.1.1
+     */
+    public void copyValue(IPropertyValue from, IPropertyValue to) {
+        getValueSetter().accept(to, getValueGetter().apply(from));
+    }
 
     public <T> Comparator<T> getValueComparator() {
         return new NullSafeComparableComparator<>();
@@ -482,7 +538,7 @@ public enum PropertyValueType {
      * <p>
      * However, if the given class is not part of the {@link IPropertyValue} hierarchy, this method
      * returns null.
-     * 
+     *
      * @param partType The class a {@link PropertyValueType} is searched for
      */
     public static PropertyValueType getTypeForValueClass(Class<? extends IIpsObjectPart> partType) {
@@ -499,7 +555,7 @@ public enum PropertyValueType {
      * given XML tag name.
      * <p>
      * Returns null if no appropriate property type is found.
-     * 
+     *
      * @param xmlTagName The XML tag name a {@link PropertyValueType} is searched for
      */
     public static PropertyValueType getTypeForXmlTag(String xmlTagName) {
@@ -525,7 +581,7 @@ public enum PropertyValueType {
      * type to be created by setting the correct type parameter. If the parameter is not null, the
      * concrete type is obtained from this parameter and the caller has to ensure that the given
      * type is the same as the type obtained from the {@link IProductCmptProperty}'s type.
-     * 
+     *
      * @param parent The container that is used as parent object, the created element is
      *            <strong>not</strong> added to it
      * @param productCmptProperty The {@link IProductCmptProperty} that may be set in the new value
