@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +21,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.DatatypeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -29,7 +31,6 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.PropertyTy
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.RemovedTemplateLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueSetMismatchEntry;
-import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueSetTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.WrongRuntimeIdForLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -181,30 +182,51 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap) {
-        List<? extends IPropertyValue> values = propertyValueContainer.getAllPropertyValues();
-        for (IPropertyValue value : values) {
-            IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
+        List<? extends IPropertyValue> propertyValues = propertyValueContainer.getAllPropertyValues();
+        for (IPropertyValue propertyValue : propertyValues) {
+            IProductCmptProperty property = propertiesMap.get(propertyValue.getPropertyName());
             if (property == null || !propertyValueContainer.isContainerFor(property)) {
-                ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(value);
+                ValueWithoutPropertyEntry valueWithoutPropertyEntry = new ValueWithoutPropertyEntry(propertyValue);
                 addEntry(valueWithoutPropertyEntry);
             } else {
-                if (!property.getPropertyValueTypes().contains(value.getPropertyValueType())) {
+                PropertyValueType propertyValueType = propertyValue.getPropertyValueType();
+                checkInheritedFromTemplateMismatch(propertyValueType, property, propertyValue);
+                if (!property.getPropertyValueTypes().contains(propertyValueType)) {
                     PropertyTypeMismatchEntry propertyTypeMismatchEntry = new PropertyTypeMismatchEntry(
-                            propertyValueContainer, property, value);
+                            propertyValueContainer, property, propertyValue);
                     addEntry(propertyTypeMismatchEntry);
                 } else {
-                    if (PropertyValueType.CONFIGURED_VALUESET.equals(value.getPropertyValueType())) {
-                        checkForValueSetMismatch((IPolicyCmptTypeAttribute)property, (IConfiguredValueSet)value);
+                    if (PropertyValueType.CONFIGURED_VALUESET.equals(propertyValueType)) {
+                        checkForValueSetMismatch((IPolicyCmptTypeAttribute)property,
+                                (IConfiguredValueSet)propertyValue);
                     }
-                    if (PropertyValueType.ATTRIBUTE_VALUE.equals(value.getPropertyValueType())) {
-                        checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
-                        checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
-                        checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    if (PropertyValueType.ATTRIBUTE_VALUE.equals(propertyValueType)) {
+                        checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)propertyValue);
+                        checkForMultilingualMismatch((IProductCmptTypeAttribute)property,
+                                (IAttributeValue)propertyValue);
+                        checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property,
+                                (IAttributeValue)propertyValue);
                     }
                 }
             }
         }
-        entries.addAll(DatatypeMismatchEntry.forEachMismatch(values));
+        entries.addAll(DatatypeMismatchEntry.forEachMismatch(propertyValues));
+    }
+
+    private void checkInheritedFromTemplateMismatch(PropertyValueType propertyValueType,
+            IProductCmptProperty property,
+            IPropertyValue propertyValue) {
+        if (propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            Object internalValue = propertyValueType.getInternalValueGetter().apply(propertyValue);
+            IPropertyValue templatePropertyValue = propertyValue.findTemplateProperty(ipsProject);
+            Object templateValue = propertyValueType.getValueGetter().apply(templatePropertyValue);
+            Comparator<Object> valueComparator = propertyValueType.getValueComparator();
+            if (valueComparator.compare(internalValue, templateValue) != 0) {
+                InheritedTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedTemplateMismatchEntry(
+                        property, propertyValue, templatePropertyValue, internalValue, templateValue);
+                addEntry(valueSetTemplateMismatchEntry);
+            }
+        }
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
@@ -214,7 +236,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
             IConfiguredValueSet templateConfiguredValueSet = element.findTemplateProperty(ipsProject);
             IValueSet templateValueSet = templateConfiguredValueSet.getValueSet();
             if (valueSet.compareTo(templateValueSet) != 0) {
-                ValueSetTemplateMismatchEntry valueSetTemplateMismatchEntry = new ValueSetTemplateMismatchEntry(
+                InheritedTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedTemplateMismatchEntry(
                         attribute, element, templateConfiguredValueSet, valueSet, templateValueSet);
                 addEntry(valueSetTemplateMismatchEntry);
             }

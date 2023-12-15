@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.productcmpt;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -88,8 +89,12 @@ public enum PropertyValueType {
 
         @Override
         public Function<IPropertyValue, Object> getInternalValueGetter() {
-            // TODO FIPS-11022
-            return getValueGetter();
+            return propertyValue -> {
+                if (propertyValue instanceof AttributeValue attributeValue) {
+                    return attributeValue.getValueHolderInternal();
+                }
+                throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
+            };
         }
 
         @Override
@@ -111,6 +116,11 @@ public enum PropertyValueType {
         @Override
         public boolean isPartOfComposite() {
             return false;
+        }
+
+        @Override
+        public Function<Object, String> getValueToString() {
+            return o -> (o instanceof IValueHolder valueHolder ? valueHolder.getStringValue() : Objects.toString(o));
         }
 
     },
@@ -262,8 +272,8 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getInternalValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof IConfiguredValueSet configuredValueSet) {
-                    return ((ConfiguredValueSet)configuredValueSet).getValueSetInternal();
+                if (propertyValue instanceof ConfiguredValueSet configuredValueSet) {
+                    return configuredValueSet.getValueSetInternal();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
             };
@@ -296,6 +306,11 @@ public enum PropertyValueType {
                     throw new IllegalArgumentException();
                 }
             };
+        }
+
+        @Override
+        public Function<Object, String> getValueToString() {
+            return o -> (o instanceof IValueSet valueSet ? valueSet.toShortString() : Objects.toString(o));
         }
 
         @Override
@@ -527,6 +542,14 @@ public enum PropertyValueType {
     }
 
     public abstract boolean isPartOfComposite();
+
+    /**
+     * Returns the function to use to get a compact String representation of a value of the
+     * {@link PropertyValueType}.
+     */
+    public Function<Object, String> getValueToString() {
+        return Objects::toString;
+    }
 
     /**
      * Searches and returns a {@link PropertyValueType} that can create IPS object parts for the

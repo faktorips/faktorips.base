@@ -20,6 +20,7 @@ public class Messages extends NLS {
     public static String DeletedTemplateLinkEntry_removeInheritedTemplateLink;
     public static String DeletedTemplateLinkEntry_removeUndefinedTemplateLink;
     public static String HiddenAttributeMismatchEntry_desc;
+    public static String InheritedTemplateMismatchEntry_desc;
     public static String InvalidGenerationsDeltaEntry_description;
     public static String LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt;
     public static String LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen;
@@ -38,7 +39,6 @@ public class Messages extends NLS {
     public static String ValueMismatchEntry_convertMultiToSingleValue;
     public static String ValueMismatchEntry_convertSingleToMultiValue;
     public static String ValueSetMismatchEntry_desc;
-    public static String ValueSetTemplateMismatchEntry_desc;
     public static String WrongRuntimeIdForLinkEntry_Description;
 
     static {

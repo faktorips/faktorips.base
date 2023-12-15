@@ -54,6 +54,7 @@ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -702,6 +703,48 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         delta.fixAllDifferencesToModel();
 
         assertThat(((IRangeValueSet)valueSet.getValueSetInternal()).getUpperBound(), is("5"));
+    }
+
+    @Test
+    public void testValueSetTemplateMismatch_AttributeValue() {
+        IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute("a1");
+        attr.setChangingOverTime(false);
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        productCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IAttributeValue templateAttributeValue = productTemplate.getPropertyValue("a1", IAttributeValue.class);
+        SingleValueHolder templateValueHolder = new SingleValueHolder(templateAttributeValue, "10");
+        templateAttributeValue.setValueHolder(templateValueHolder);
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        AttributeValue attributeValue = (AttributeValue)productCmpt.getPropertyValue("a1", IAttributeValue.class);
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "10");
+        attributeValue.setValueHolder(valueHolder);
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+        templateValueHolder.setValue(ValueFactory.createStringValue("5"));
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(attributeValue.getValueHolderInternal().getStringValue(), is("10"));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.ATTRIBUTE_VALUE));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(attributeValue.getValueHolderInternal().getStringValue(), is("5"));
     }
 
 }
