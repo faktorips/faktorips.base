@@ -706,6 +706,49 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
+    public void testValueSetTemplateMismatch_ConfiguredDefault() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setValueSetConfiguredByProduct(true);
+        attr.setChangingOverTime(false);
+        attr.setName("a1");
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        policyCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IConfiguredDefault templateConfiguredDefault = productTemplate.getPropertyValue("a1", IConfiguredDefault.class);
+        templateConfiguredDefault.setValue("1");
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        ConfiguredDefault configuredDefault = (ConfiguredDefault)productCmpt.getPropertyValue("a1",
+                IConfiguredDefault.class);
+        configuredDefault.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        configuredDefault.setValue("1");
+        configuredDefault.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+        templateConfiguredDefault.setValue("2");
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(configuredDefault.getValueInternal(), is("1"));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.CONFIGURED_DEFAULT));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(configuredDefault.getValueInternal(), is("2"));
+    }
+
+    @Test
     public void testValueSetTemplateMismatch_AttributeValue() {
         IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute("a1");
         attr.setChangingOverTime(false);

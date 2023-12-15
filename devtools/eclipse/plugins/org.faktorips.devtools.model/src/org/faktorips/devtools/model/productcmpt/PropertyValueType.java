@@ -357,8 +357,12 @@ public enum PropertyValueType {
 
         @Override
         public Function<IPropertyValue, Object> getInternalValueGetter() {
-            // TODO FIPS-11021
-            return getValueGetter();
+            return propertyValue -> {
+                if (propertyValue instanceof ConfiguredDefault configuredDefault) {
+                    return configuredDefault.getValueInternal();
+                }
+                throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
+            };
         }
 
         @Override
