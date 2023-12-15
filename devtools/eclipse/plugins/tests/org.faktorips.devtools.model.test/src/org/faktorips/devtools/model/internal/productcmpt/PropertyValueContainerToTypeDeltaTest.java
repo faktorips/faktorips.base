@@ -48,12 +48,14 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
@@ -788,6 +790,45 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         delta.fixAllDifferencesToModel();
 
         assertThat(attributeValue.getValueHolderInternal().getStringValue(), is("5"));
+    }
+
+    @Test
+    public void testValueSetTemplateMismatch_TableContentUsage() {
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setChangingOverTime(false);
+        structureUsage.setRoleName("s1");
+        productCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        ITableContentUsage templateUsage = productTemplate.getPropertyValue("s1", ITableContentUsage.class);
+        templateUsage.setTableContentName("c1");
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        TableContentUsage usage = (TableContentUsage)productCmpt.getPropertyValue("s1", ITableContentUsage.class);
+        usage.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        usage.setTableContentName("c1");
+        usage.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+        templateUsage.setTableContentName("c2");
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(usage.getInternalTableContentName(), is("c1"));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.TABLE_CONTENT_USAGE));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(usage.getInternalTableContentName(), is("c2"));
     }
 
 }
