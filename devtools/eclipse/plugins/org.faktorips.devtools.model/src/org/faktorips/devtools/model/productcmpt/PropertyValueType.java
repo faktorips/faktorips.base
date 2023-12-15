@@ -208,8 +208,12 @@ public enum PropertyValueType {
 
         @Override
         public Function<IPropertyValue, Object> getInternalValueGetter() {
-            // TODO FIPS-11025
-            return getValueGetter();
+            return propertyValue -> {
+                if (propertyValue instanceof Formula formula) {
+                    return formula.getExpressionInternal();
+                }
+                throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
+            };
         }
 
         @Override

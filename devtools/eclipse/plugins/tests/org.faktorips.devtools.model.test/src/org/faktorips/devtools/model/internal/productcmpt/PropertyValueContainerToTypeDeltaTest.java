@@ -44,6 +44,7 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntryForProperty;
+import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -55,6 +56,7 @@ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
@@ -870,5 +872,43 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         delta.fixAllDifferencesToModel();
 
         assertThat(ruleConfig.isActiveInternal(), is(true));
+    }
+
+    @Test
+    public void testValueSetTemplateMismatch_Formula() {
+        IProductCmptTypeMethod formulaSignature = productCmptType.newFormulaSignature("s1");
+        formulaSignature.setChangingOverTime(false);
+        productCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IFormula templateFormula = productTemplate.getPropertyValue("s1", IFormula.class);
+        templateFormula.setExpression("foo");
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        Formula formula = (Formula)productCmpt.getPropertyValue("s1", IFormula.class);
+        formula.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        formula.setExpression("foo");
+        formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+        templateFormula.setExpression("bar");
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(formula.getExpressionInternal(), is("foo"));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.FORMULA));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(formula.getExpressionInternal(), is("bar"));
     }
 }

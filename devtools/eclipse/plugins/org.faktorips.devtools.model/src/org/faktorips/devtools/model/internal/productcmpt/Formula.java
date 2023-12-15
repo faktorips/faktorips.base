@@ -120,6 +120,10 @@ public class Formula extends Expression implements IFormula {
         return super.getExpression();
     }
 
+    public String getExpressionInternal() {
+        return super.getExpression();
+    }
+
     private String findTemplateExpression() {
         IFormula templateFormula = findTemplateProperty(getIpsProject());
         if (templateFormula == null) {
