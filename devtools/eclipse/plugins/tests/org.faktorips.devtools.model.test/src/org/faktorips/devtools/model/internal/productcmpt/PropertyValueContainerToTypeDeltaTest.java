@@ -831,4 +831,44 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertThat(usage.getInternalTableContentName(), is("c2"));
     }
 
+    @Test
+    public void testValueSetTemplateMismatch_ValidationRuleConfig() {
+        IValidationRule rule = policyCmptType.newRule();
+        rule.setConfigurableByProductComponent(true);
+        rule.setChangingOverTime(false);
+        rule.setName("r1");
+        policyCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IValidationRuleConfig templateRuleConfig = productTemplate.getPropertyValue("r1", IValidationRuleConfig.class);
+        templateRuleConfig.setActive(false);
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        ValidationRuleConfig ruleConfig = (ValidationRuleConfig)productCmpt.getPropertyValue("r1",
+                IValidationRuleConfig.class);
+        ruleConfig.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        ruleConfig.setActive(false);
+        ruleConfig.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+        templateRuleConfig.setActive(true);
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(ruleConfig.isActiveInternal(), is(false));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.VALIDATION_RULE_CONFIG));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(ruleConfig.isActiveInternal(), is(true));
+    }
 }

@@ -430,8 +430,12 @@ public enum PropertyValueType {
 
         @Override
         public Function<IPropertyValue, Object> getInternalValueGetter() {
-            // TODO FIPS-11024
-            return getValueGetter();
+            return propertyValue -> {
+                if (propertyValue instanceof ValidationRuleConfig ruleConfig) {
+                    return ruleConfig.isActiveInternal();
+                }
+                throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
+            };
         }
 
         @Override
