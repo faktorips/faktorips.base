@@ -35,7 +35,6 @@ import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
@@ -518,9 +517,14 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public Function<? extends ITemplatedValue, Object> getInternalValueGetter() {
-        // TODO FIPS-11026
-        return null;
+    public Function<IProductCmptLink, Object> getInternalValueGetter() {
+        return o -> {
+            if (o instanceof ProductCmptLink productCmptLink) {
+                return productCmptLink.cardinality;
+            } else {
+                throw new IllegalArgumentException("Illegal parameter " + o);
+            }
+        };
     }
 
     @Override

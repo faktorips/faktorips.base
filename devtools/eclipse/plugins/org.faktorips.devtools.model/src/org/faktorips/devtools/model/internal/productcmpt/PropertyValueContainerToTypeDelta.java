@@ -21,7 +21,8 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.DatatypeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
-import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedTemplateMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedLinkTemplateMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedPropertyTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.WrongRunti
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -126,6 +128,24 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         for (IProductCmptLink link : getLinkContainer().getLinksAsList()) {
             if (link.getTemplateValueStatus() != TemplateValueStatus.DEFINED && isLinkAbsent(link, templateContainer)) {
                 addEntry(new RemovedTemplateLinkEntry(link));
+            }
+            checkInheritedFromTemplateMismatch(link);
+        }
+    }
+
+    private void checkInheritedFromTemplateMismatch(IProductCmptLink link) {
+        if (link.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            Cardinality internalValue = (Cardinality)link.getInternalValueGetter().apply(link);
+            IProductCmptLink templatePropertyValue = link.findTemplateProperty(ipsProject);
+            if (templatePropertyValue != null) {
+                Cardinality templateValue = templatePropertyValue.getCardinality();
+                if (internalValue.compareTo(templateValue) != 0) {
+                    IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()
+                            .findAssociation(link.getAssociation(), getIpsProject());
+                    InheritedLinkTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedLinkTemplateMismatchEntry(
+                            association, link, internalValue, templateValue);
+                    addEntry(valueSetTemplateMismatchEntry);
+                }
             }
         }
     }
@@ -222,7 +242,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
             Object templateValue = propertyValueType.getValueGetter().apply(templatePropertyValue);
             Comparator<Object> valueComparator = propertyValueType.getValueComparator();
             if (valueComparator.compare(internalValue, templateValue) != 0) {
-                InheritedTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedTemplateMismatchEntry(
+                InheritedPropertyTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedPropertyTemplateMismatchEntry(
                         property, propertyValue, templatePropertyValue, internalValue, templateValue);
                 addEntry(valueSetTemplateMismatchEntry);
             }
@@ -231,16 +251,6 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
         IValueSet valueSet = element.getValueSet();
-        if (element.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
-            valueSet = ((ConfiguredValueSet)element).getValueSetInternal();
-            IConfiguredValueSet templateConfiguredValueSet = element.findTemplateProperty(ipsProject);
-            IValueSet templateValueSet = templateConfiguredValueSet.getValueSet();
-            if (valueSet.compareTo(templateValueSet) != 0) {
-                InheritedTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedTemplateMismatchEntry(
-                        attribute, element, templateConfiguredValueSet, valueSet, templateValueSet);
-                addEntry(valueSetTemplateMismatchEntry);
-            }
-        }
         if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()
                 || attribute.getValueSet().isStringLength()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {

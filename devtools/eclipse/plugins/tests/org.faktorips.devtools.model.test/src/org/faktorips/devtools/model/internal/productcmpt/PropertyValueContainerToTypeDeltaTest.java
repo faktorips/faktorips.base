@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -30,6 +31,7 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedLinkTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingTemplateLinkEntry;
@@ -38,6 +40,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
@@ -795,6 +798,44 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
+    public void testValueSetTemplateMismatch_Link() {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+        productCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IProductCmptLink templateLink = productTemplate.newLink(association);
+        templateLink.setCardinality(new Cardinality(0, 10, 0));
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        ProductCmptLink link = (ProductCmptLink)productCmpt.newLink(association);
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        link.setCardinality(new Cardinality(0, 10, 0));
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+
+        templateLink.setCardinality(new Cardinality(0, 5, 0));
+        productTemplate.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(((Cardinality)link.getInternalValueGetter().apply(link)).getMax(), is(10));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntry entry = delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_TEMPLATE_MISMATCH));
+        assertThat(entry, is(instanceOf(InheritedLinkTemplateMismatchEntry.class)));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(((Cardinality)link.getInternalValueGetter().apply(link)).getMax(), is(5));
+    }
+
     public void testValueSetTemplateMismatch_TableContentUsage() {
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
         structureUsage.setChangingOverTime(false);

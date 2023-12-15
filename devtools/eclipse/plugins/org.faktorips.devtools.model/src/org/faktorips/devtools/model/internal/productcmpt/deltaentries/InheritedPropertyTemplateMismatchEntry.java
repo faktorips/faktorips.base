@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
  *
  * @since 24.1.1
  */
-public class InheritedTemplateMismatchEntry extends AbstractDeltaEntryForProperty {
+public class InheritedPropertyTemplateMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private IProductCmptProperty property;
     private IPropertyValue propertyValue;
@@ -33,7 +33,7 @@ public class InheritedTemplateMismatchEntry extends AbstractDeltaEntryForPropert
     private Object templateValue;
     private PropertyValueType propertyValueType;
 
-    public InheritedTemplateMismatchEntry(IProductCmptProperty property, IPropertyValue propertyValue,
+    public InheritedPropertyTemplateMismatchEntry(IProductCmptProperty property, IPropertyValue propertyValue,
             IPropertyValue templatePropertyValue, Object internalValue, Object templateValue) {
         super(propertyValue);
         this.property = property;
