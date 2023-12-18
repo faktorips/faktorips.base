@@ -696,7 +696,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         valueSet.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         productCmpt.getIpsSrcFile().save(null);
         templateRange.setUpperBound("5");
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
@@ -739,7 +739,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         configuredDefault.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         productCmpt.getIpsSrcFile().save(null);
         templateConfiguredDefault.setValue("2");
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
@@ -781,7 +781,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         productCmpt.getIpsSrcFile().save(null);
         templateValueHolder.setValue(ValueFactory.createStringValue("5"));
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
@@ -820,7 +820,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         productCmpt.getIpsSrcFile().save(null);
 
         templateLink.setCardinality(new Cardinality(0, 5, 0));
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
@@ -858,7 +858,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         usage.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         productCmpt.getIpsSrcFile().save(null);
         templateUsage.setTableContentName("c2");
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
@@ -899,7 +899,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         ruleConfig.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         productCmpt.getIpsSrcFile().save(null);
         templateRuleConfig.setActive(true);
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
@@ -937,7 +937,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         productCmpt.getIpsSrcFile().save(null);
         templateFormula.setExpression("bar");
-        productTemplate.getIpsSrcFile().save(null);
+        // productTemplate.getIpsSrcFile().save(null);
 
         delta = productCmpt.computeDeltaToModel(ipsProject);
 
