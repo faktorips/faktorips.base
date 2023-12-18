@@ -112,6 +112,50 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         assertFalse(ipsExtendableVersionManager.isCurrentVersionCompatibleWith(currentVersion + ".zzz"));
     }
 
+    @Test
+    public void testGetMigrationOperations_ForSameAsCurrent_RConRC() throws Exception {
+        currentVersion = AVersion.parse("24.1.0.rc01");
+        mockMigrationOperations("22.12", "23.6", "24.1");
+
+        IIpsProject ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature"))
+                .thenReturn("24.1.0.rc01");
+
+        AbstractIpsProjectMigrationOperation[] migrationOperations = ipsExtendableVersionManager
+                .getMigrationOperations(ipsProject);
+        assertEquals(1, migrationOperations.length);
+        assertEquals("24.1", migrationOperations[0].getTargetVersion());
+    }
+
+    @Test
+    public void testGetMigrationOperations_ForSameAsCurrent_ReleaseOnRC() throws Exception {
+        currentVersion = AVersion.parse("24.1.0.release");
+        mockMigrationOperations("22.12", "23.6", "24.1");
+
+        IIpsProject ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature"))
+                .thenReturn("24.1.0.rc01");
+
+        AbstractIpsProjectMigrationOperation[] migrationOperations = ipsExtendableVersionManager
+                .getMigrationOperations(ipsProject);
+        assertEquals(1, migrationOperations.length);
+        assertEquals("24.1", migrationOperations[0].getTargetVersion());
+    }
+
+    @Test
+    public void testGetMigrationOperations_ForSameAsCurrent_ReleaseOnReleasee() throws Exception {
+        currentVersion = AVersion.parse("24.1.0.release");
+        mockMigrationOperations("22.12", "23.6", "24.1");
+
+        IIpsProject ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature"))
+                .thenReturn("24.1.0.release");
+
+        AbstractIpsProjectMigrationOperation[] migrationOperations = ipsExtendableVersionManager
+                .getMigrationOperations(ipsProject);
+        assertEquals(0, migrationOperations.length);
+    }
+
     private void mockMigrationOperations() {
         ipsProjectMigrationOperation1 = mockMigrationOperation("0.1.0");
         ipsProjectMigrationOperation2 = mockMigrationOperation(currentVersion + ".zzz");
