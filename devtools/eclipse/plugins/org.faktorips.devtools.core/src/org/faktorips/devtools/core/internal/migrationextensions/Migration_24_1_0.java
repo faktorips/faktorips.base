@@ -43,10 +43,15 @@ public class Migration_24_1_0 extends MarkAsDirtyMigration {
             "<" + IpsObjectType.PRODUCT_CMPT.getXmlElementName());
 
     public Migration_24_1_0(IIpsProject projectToMigrate, String featureId) {
+        this(projectToMigrate, featureId, VERSION);
+    }
+
+    Migration_24_1_0(IIpsProject projectToMigrate, String featureId, String migrationVersion) {
         super(projectToMigrate,
                 featureId,
-                Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS, IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE),
-                VERSION,
+                Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS,
+                        IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE),
+                migrationVersion,
                 Messages.Migration_24_1_0_description);
     }
 

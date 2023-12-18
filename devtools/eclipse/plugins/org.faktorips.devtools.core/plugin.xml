@@ -255,6 +255,9 @@
       <migrationOperation
             class="org.faktorips.devtools.core.internal.migrationextensions.Migration_24_1_0$Factory"
             targetVersion="24.1.0" />
+      <migrationOperation
+            class="org.faktorips.devtools.core.internal.migrationextensions.Migration_24_1_1$Factory"
+            targetVersion="24.1.1" />
    </extension>
    <extension point="org.faktorips.devtools.model.ipsModelPreferences">
       <ipsModelPreferences provider="org.faktorips.devtools.core.internal.CoreIpsModelPreferencesProvider" />
