@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests for Maven-Eclipse Plugin Extension for Faktor-IPS
 Fragment-Host: org.faktorips.m2e
 Bundle-SymbolicName: org.faktorips.m2e.test;singleton:=true
-Bundle-Version: 24.1.1.qualifier
+Bundle-Version: 24.1.1.release
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0",
  org.eclipse.jdt.core;bundle-version="3.10.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-17

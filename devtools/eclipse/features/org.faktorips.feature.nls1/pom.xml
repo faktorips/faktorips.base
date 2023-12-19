@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-features</artifactId>
-        <version>24.1.1-SNAPSHOT</version>
+        <version>24.1.1.release</version>
     </parent>
 
     <artifactId>org.faktorips.feature.nls1</artifactId>

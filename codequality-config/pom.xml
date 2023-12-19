@@ -3,7 +3,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>codequality-config</artifactId>
-    <version>24.1.1-SNAPSHOT</version>
+    <version>24.1.1.release</version>
 
     <name>Faktor-IPS Code-Quality-Tool-Configurations</name>
 
