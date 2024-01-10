@@ -141,7 +141,7 @@ public class ProductAttribute extends Attribute {
         validate(list, context,
                 () -> (T)getValue(product, effectiveDate),
                 () -> (ValueSet<T>)getValueSetFromModel(),
-                (value, valueSet) -> valueSet.contains(value),
+                ProductAttribute::contains,
                 MSGCODE_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_VALUE_NOT_IN_VALUE_SET,
                 PROPERTY_VALUE);
@@ -152,6 +152,15 @@ public class ProductAttribute extends Attribute {
                 MSGCODE_DUPLICATE_VALUE,
                 MSGKEY_DUPLICATE_VALUE,
                 PROPERTY_VALUE);
+    }
+
+    private static <T> boolean contains(T value, ValueSet<T> valueSet) {
+        if (value instanceof List) {
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            List<T> values = (List)value;
+            return values.stream().allMatch(valueSet::contains);
+        }
+        return valueSet.contains(value);
     }
 
     @SuppressWarnings("unchecked")
