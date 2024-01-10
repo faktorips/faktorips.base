@@ -54,6 +54,7 @@ import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
 import org.faktorips.values.Decimal;
+import org.faktorips.values.ListUtil;
 import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
@@ -374,6 +375,42 @@ public class ProductAttributeTest {
     }
 
     @Test
+    public void testValidate_MultiValue_Enum_OK() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setMultiText(Arrays.asList("a", "b"));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("multiText");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_MultiValue_Enum() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setMultiText(Arrays.asList("a", "d"));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("multiText");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(not(nullValue())));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("[a, d]"));
+        assertThat(message.getText(), containsString("[a, b, c]"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
     public void testValidate_GenerationWithInterface_publishedWithoutAdj() {
         IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
@@ -522,7 +559,7 @@ public class ProductAttributeTest {
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
     @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute",
-            "primitiveIntAttr", "multiPrimitiveIntAttr" })
+            "primitiveIntAttr", "multiPrimitiveIntAttr", "multiText" })
     private static class Produkt extends ProductComponent {
 
         @IpsDefaultValue("attr1")
@@ -531,12 +568,20 @@ public class ProductAttributeTest {
         @IpsAllowedValues("attr1")
         public static final ValueSet<String> ALLOWED_VALUES_ATTR1 = new StringLengthValueSet(10);
 
+        @IpsAllowedValues("multiText")
+        public static final OrderedValueSet<String> MAX_ALLOWED_VALUES_FOR_MULTI_TEXT = new OrderedValueSet<>(false,
+                null,
+                "a", "b", "c");
+        @IpsDefaultValue("multiText")
+        public static final List<String> DEFAULT_VALUE_FOR_MULTI_TEXT = ListUtil.newList(null);
+
         private final ProduktGen produktGen = new ProduktGen(this);
         private String attr1 = "foo";
         private Integer attr2 = 42;
         private List<String> multiString = Arrays.asList("hello", "world");
         private int primitiveIntAttr = 23;
         private List<Integer> multiPrimitiveIntAttr = Arrays.asList(1, 2, 3);
+        private List<String> multiText = DEFAULT_VALUE_FOR_MULTI_TEXT;
 
         public Produkt(IRuntimeRepository repository) {
             super(repository, "id", "kindId", "versionId");
@@ -601,6 +646,16 @@ public class ProductAttributeTest {
         @IpsAttributeSetter("multiPrimitiveIntAttr")
         public void setMultiPrimitiveIntAttr(List<Integer> newValue) {
             multiPrimitiveIntAttr = newValue;
+        }
+
+        @IpsAttribute(name = "multiText", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        public List<String> getMultiText() {
+            return new ArrayList<>(multiText);
+        }
+
+        @IpsAttributeSetter("multiText")
+        public void setMultiText(List<String> newValue) {
+            multiText = newValue;
         }
 
         @Override
@@ -743,8 +798,6 @@ public class ProductAttributeTest {
     @IpsDocumented(bundleName = "test.model-label-and-descriptions", defaultLocale = "en")
     private interface IProductWithUnAndPublishedAttributes extends IProductComponent {
 
-        String PROPERTY_PUBLISHEDATTRIBUTE = "publishedAttribute";
-
         @IpsAllowedValues("publishedAttribute")
         OrderedValueSet<Decimal> MAX_ALLOWED_VALUES_FOR_PUBLISHED_ATTRIBUTE = new OrderedValueSet<>(
                 false, Decimal.NULL, Decimal.valueOf("1.0"), Decimal.valueOf("1.5"), Decimal.valueOf("2"));
@@ -764,8 +817,6 @@ public class ProductAttributeTest {
     @IpsPublishedInterface(implementation = ProductWithUnAndPublishedAttributesAdj.class)
     private interface IProductWithUnAndPublishedAttributesAdj extends IProductComponentGeneration {
 
-        String PROPERTY_PUBLISHEDATTRIBUTEADJ = "publishedAttributeAdj";
-
         @IpsAllowedValues("publishedAttributeAdj")
         IntegerRange MAX_ALLOWED_RANGE_FOR_PUBLISHED_ATTRIBUTE_ADJ = IntegerRange
                 .valueOf(Integer.valueOf("0"), Integer.valueOf(10), Integer.valueOf(2), false);
@@ -783,8 +834,6 @@ public class ProductAttributeTest {
 
     private static class ProductWithUnAndPublishedAttributes extends ProductComponent
             implements IProductWithUnAndPublishedAttributes {
-        public static final String PROPERTY_UNPUBLISHEDATTRIBUTE = "unpublishedAttribute";
-
         @IpsAllowedValues("unpublishedAttribute")
         public static final OrderedValueSet<Decimal> MAX_ALLOWED_VALUES_FOR_UNPUBLISHED_ATTRIBUTE = new OrderedValueSet<>(
                 false, Decimal.NULL, Decimal.valueOf("2"), Decimal.valueOf("2.5"), Decimal.valueOf("3"));
@@ -858,8 +907,6 @@ public class ProductAttributeTest {
 
     private static class ProductWithUnAndPublishedAttributesAdj extends ProductComponentGeneration
             implements IProductWithUnAndPublishedAttributesAdj {
-
-        public static final String PROPERTY_UNPUBLISHEDATTRIBUTEADJ = "unpublishedAttributeAdj";
 
         @IpsAllowedValues("unpublishedAttributeAdj")
         public static final IntegerRange MAX_ALLOWED_RANGE_FOR_UNPUBLISHED_ATTRIBUTE_ADJ = IntegerRange
