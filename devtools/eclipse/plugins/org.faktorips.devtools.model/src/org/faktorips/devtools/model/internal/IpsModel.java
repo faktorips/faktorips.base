@@ -617,7 +617,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$
         }
         IIpsModelExtensions.get().getWorkspaceInteractions()
-                .runInDisplayThreadSync(new RunnableModificationStatusChangeListenerImplementation(event));
+                .runInDisplayThreadAsync(new RunnableModificationStatusChangeListenerImplementation(event));
     }
 
     @Override
