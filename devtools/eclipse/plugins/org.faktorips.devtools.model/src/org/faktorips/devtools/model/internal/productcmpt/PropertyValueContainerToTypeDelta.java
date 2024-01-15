@@ -23,6 +23,8 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.DatatypeMi
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedLinkTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedPropertyTemplateMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedUndefinedLinkTemplateMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedUndefinedPropertyTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -146,6 +148,12 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                             association, link, internalValue, templateValue);
                     addEntry(valueSetTemplateMismatchEntry);
                 }
+            } else {
+                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)getProductCmptType()
+                        .findAssociation(link.getAssociation(), getIpsProject());
+                InheritedUndefinedLinkTemplateMismatchEntry undefinedLinkTemplateMismatchEntry = new InheritedUndefinedLinkTemplateMismatchEntry(
+                        association, link);
+                addEntry(undefinedLinkTemplateMismatchEntry);
             }
         }
     }
@@ -239,12 +247,18 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         if (propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
             Object internalValue = propertyValueType.getInternalValueGetter().apply(propertyValue);
             IPropertyValue templatePropertyValue = propertyValue.findTemplateProperty(ipsProject);
-            Object templateValue = propertyValueType.getValueGetter().apply(templatePropertyValue);
-            Comparator<Object> valueComparator = propertyValueType.getValueComparator();
-            if (valueComparator.compare(internalValue, templateValue) != 0) {
-                InheritedPropertyTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedPropertyTemplateMismatchEntry(
-                        property, propertyValue, templatePropertyValue, internalValue, templateValue);
-                addEntry(valueSetTemplateMismatchEntry);
+            if (templatePropertyValue != null) {
+                Object templateValue = propertyValueType.getValueGetter().apply(templatePropertyValue);
+                Comparator<Object> valueComparator = propertyValueType.getValueComparator();
+                if (valueComparator.compare(internalValue, templateValue) != 0) {
+                    InheritedPropertyTemplateMismatchEntry valueSetTemplateMismatchEntry = new InheritedPropertyTemplateMismatchEntry(
+                            property, propertyValue, templatePropertyValue, internalValue, templateValue);
+                    addEntry(valueSetTemplateMismatchEntry);
+                }
+            } else {
+                InheritedUndefinedPropertyTemplateMismatchEntry undefinedPropertyTemplateMismatchEntry = new InheritedUndefinedPropertyTemplateMismatchEntry(
+                        property, propertyValue);
+                addEntry(undefinedPropertyTemplateMismatchEntry);
             }
         }
     }

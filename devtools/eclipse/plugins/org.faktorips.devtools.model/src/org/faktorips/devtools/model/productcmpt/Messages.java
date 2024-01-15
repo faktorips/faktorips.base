@@ -21,6 +21,7 @@ public class Messages extends NLS {
     public static String DeltaType_datatypeMissmatch;
     public static String DeltaType_hiddenAttributeMismatch;
     public static String DeltaType_InheritedTemplateMismatch;
+    public static String DeltaType_InheritedUndefinedTemplateMismatch;
     public static String DeltaType_invalidGenerations;
     public static String DeltaType_LinksNotFoundInTheModel;
     public static String DeltaType_LinksWithWrongParent;
