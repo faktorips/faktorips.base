@@ -32,6 +32,7 @@ import java.util.List;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedLinkTemplateMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedUndefinedLinkTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingTemplateLinkEntry;
@@ -755,6 +756,46 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertThat(configuredDefault.getValueInternal(), is("2"));
     }
 
+    // FIPS-11075
+    @Test
+    public void testValueSetTemplateMismatch_FakeInherited() {
+        IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute("a1");
+        attr.setChangingOverTime(false);
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        productCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IAttributeValue templateAttributeValue = productTemplate.getPropertyValue("a1", IAttributeValue.class);
+        templateAttributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        AttributeValue attributeValue = (AttributeValue)productCmpt.getPropertyValue("a1", IAttributeValue.class);
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "10");
+        attributeValue.setValueHolder(valueHolder);
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(attributeValue.getValueHolderInternal().getStringValue(), is("10"));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_UNDEFINED_TEMPLATE_MISMATCH));
+        assertThat(entry.getPropertyType(), is(PropertyValueType.ATTRIBUTE_VALUE));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(attributeValue.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+    }
+
     @Test
     public void testValueSetTemplateMismatch_AttributeValue() {
         IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute("a1");
@@ -834,6 +875,42 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         delta.fixAllDifferencesToModel();
 
         assertThat(((Cardinality)link.getInternalValueGetter().apply(link)).getMax(), is(5));
+    }
+
+    @Test
+    public void testValueSetTemplateMismatch_Link_FakeInherited() {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+        productCmptType.getIpsSrcFile().save(null);
+
+        ProductCmpt productTemplate = newProductTemplate(productCmptType, "ProductTemplate");
+        IPropertyValueContainerToTypeDelta delta = productTemplate.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IProductCmptLink templateLink = productTemplate.newLink(association);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        productTemplate.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(productTemplate.getQualifiedName());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        ProductCmptLink link = (ProductCmptLink)productCmpt.newLink(association);
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        link.setCardinality(new Cardinality(0, 10, 0));
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        productCmpt.getIpsSrcFile().save(null);
+
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+
+        assertThat(((Cardinality)link.getInternalValueGetter().apply(link)).getMax(), is(10));
+        assertFalse(delta.isEmpty());
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntry entry = delta.getEntries()[0];
+        assertThat(entry.getDeltaType(), is(DeltaType.INHERITED_UNDEFINED_TEMPLATE_MISMATCH));
+        assertThat(entry, is(instanceOf(InheritedUndefinedLinkTemplateMismatchEntry.class)));
+
+        delta.fixAllDifferencesToModel();
+
+        assertThat(link.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     public void testValueSetTemplateMismatch_TableContentUsage() {

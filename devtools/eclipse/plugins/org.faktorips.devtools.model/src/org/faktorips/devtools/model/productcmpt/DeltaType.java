@@ -38,7 +38,10 @@ public enum DeltaType {
                     .getGenerationConceptNamePlural(true)),
             Kind.DELETE),
     DATATYPE_MISMATCH(Messages.DeltaType_datatypeMissmatch, Kind.MODIFY),
-    INHERITED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedTemplateMismatch, Kind.MODIFY);
+    /* @since 24.1.1 */
+    INHERITED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedTemplateMismatch, Kind.MODIFY),
+    /* @since 24.1.2 */
+    INHERITED_UNDEFINED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedUndefinedTemplateMismatch, Kind.MODIFY);
 
     private final String description;
 

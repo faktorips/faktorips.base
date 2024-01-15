@@ -21,6 +21,7 @@ public class Messages extends NLS {
     public static String DeletedTemplateLinkEntry_removeUndefinedTemplateLink;
     public static String HiddenAttributeMismatchEntry_desc;
     public static String InheritedTemplateMismatchEntry_desc;
+    public static String InheritedUndefinedTemplateMismatchEntry_desc;
     public static String InvalidGenerationsDeltaEntry_description;
     public static String LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt;
     public static String LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen;
