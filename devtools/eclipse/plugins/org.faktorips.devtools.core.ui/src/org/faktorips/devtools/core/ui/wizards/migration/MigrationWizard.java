@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,7 +34,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Supports migration for an IpsProject
- * 
+ *
  * @author Thorsten Guenther
  */
 public class MigrationWizard extends Wizard implements IWorkbenchWizard {
@@ -98,7 +98,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
 
     class MigrateProjects implements IRunnableWithProgress {
 
-        private MessageList messageList;
+        private MessageList messageList = MessageList.of();
 
         @Override
         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -112,7 +112,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
                             .getMigrationOperation(project);
                     setSelectedMigrationOptions(migrationOperation);
                     migrationOperation.run(subProgressMonitor);
-                    messageList = migrationOperation.getMessageList();
+                    messageList.add(migrationOperation.getMessageList());
                 } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
