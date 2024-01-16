@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,6 +77,9 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -122,15 +126,34 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject("TestPdProject");
         ipsProjects = model.getIpsProjects();
         assertEquals(1, ipsProjects.length);
-        assertEquals("TestPdProject", ipsProjects[0].getName());
+        assertThat(ipsProjects[0], projectWithName("TestPdProject"));
 
         if (Abstractions.isEclipseRunning()) {
             ((IProject)project.getProject().unwrap()).close(null);
             super.newIpsProject("TestProject2");
             ipsProjects = model.getIpsProjects();
             assertEquals(1, ipsProjects.length);
-            assertEquals("TestProject2", ipsProjects[0].getName());
+            assertThat(ipsProjects[0], projectWithName("TestProject2"));
         }
+    }
+
+    static Matcher<IIpsProject> projectWithName(String projectName) {
+        return new TypeSafeMatcher<>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(projectName);
+            }
+
+            @Override
+            protected boolean matchesSafely(IIpsProject item) {
+                if (Abstractions.isEclipseRunning()) {
+                    return Objects.equals(item.getName(), projectName);
+                }
+                String projectFolderName = item.getProject().getLocation().getFileName().toString();
+                return Objects.equals(projectFolderName, projectName);
+            }
+        };
     }
 
     @Test

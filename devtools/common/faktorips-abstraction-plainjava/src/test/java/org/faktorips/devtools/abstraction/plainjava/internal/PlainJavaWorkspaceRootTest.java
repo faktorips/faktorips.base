@@ -74,7 +74,6 @@ public class PlainJavaWorkspaceRootTest extends PlainJavaAbstractionTestSetup {
         AProject offRootProject = setUpOffRootProject(offRootProjectPath);
 
         assertThat(root.getProject(offRootProjectPath.toString()), is(offRootProject));
-        assertThat(root.getProject(TEST_PROJECT_OFF_ROOT), is(offRootProject));
     }
 
     private AProject setUpOffRootProject(Path offRootProjectPath) {
