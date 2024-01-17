@@ -1,13 +1,13 @@
-## Repositories and additional plugins
+## Repositories and Additional Plugins
 
 The repositories used to find the required Faktor-IPS and Eclipse plugins can be configured as follows: 
 
-### Configured defaults
+### Configured Defaults
 Per default the standard Faktor-IPS repositories are used by the plugin. These repositories do not have to be added manually, also the version of Faktor-IPS can be configured by the `faktorips.repository.version` property in your pom file. See [Table of properties](properties.html) for more.
 
 ```
     <properties>
-        <faktorips.repository.version><!-- The desired Faktor-IPS Version e.g.: -->22.12.0-rfinal</faktorips.repository.version>
+        <faktorips.repository.version><!-- The desired Faktor-IPS Version e.g.: -->24.1</faktorips.repository.version>
     </properties>
 ...
         <plugins>
@@ -23,9 +23,9 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
                            <url>https://update.faktorzehn.org/faktorips/${faktorips.repository.version}</url>
                         </repository>
                         <repository>
-                           <id>eclipse-2022-03</id>
+                           <id>eclipse-2022-12</id>
                            <layout>p2</layout>
-                           <url>https://download.eclipse.org/eclipse/updates/4.23/</url>
+                           <url>https://download.eclipse.org/eclipse/updates/4.26/</url>
                         </repository>
                     </repositories>
                     -->
@@ -40,7 +40,7 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
                 </executions>
             </plugin>
 ```
-Also the parameters `fipsRepository` and `eclipseRepository` can be used to override only the URLs of the default repositories.
+Also the parameters `fipsRepository` and `eclipseRepository` can be used to override only the URLs of the default repositories. Alternatively, the user properties `repository.fips` and `repository.eclipse` can be provided in the Maven properties or as command line parameters.
 
 ```
         <plugins>
@@ -48,8 +48,8 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
                 <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-maven-plugin</artifactId>
                 <configuration>
-                    <fipsRepository>https://myfipsmirror.firma.de/fips/22.12.0-rfinal</fipsRepository>
-                    <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2022-03</eclipseRepository>
+                    <fipsRepository>https://myfipsmirror.firma.de/fips/24.1.1.release</fipsRepository>
+                    <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2022-12</eclipseRepository>
                 </configuration>
                 <executions>
                     <execution>
@@ -62,19 +62,22 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
             </plugin>
 ```
 
-### Using additional plugins
+#### ⚠ Compatibility with Eclipse Versions
+
+Not all Eclipse versions work with the same Faktor-IPS plugins. Although you can provide the URL to any Eclipse version as `eclipseRepository`, only those listed in the compatibility list on [faktorzehn.org](https://www.faktorzehn.org/en/download/) may work. A known exception is Eclipse 2023-06 that does not work with this maven plugin even though it is listed as compatible with the Faktor-IPS Eclipse plugin.
+
+### Using Additional Plugins
 
 If additional plugins are needed to compile a Faktor-IPS workspace they can be added as `additionalPlugins`.
 Also it is possible to add `additionalRepositories` to the Eclipse-Runtime. These additional repositories will be added to the configured repositories in `repositories`.
 
-#### Additionally using the Productvariant Plugin
+#### Additionally Using the Productvariant Plugin
 ```
         <plugins>
             <plugin>
                 <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-maven-plugin</artifactId>
                 <configuration>
-                    <jdkId>JavaSE-11</jdkId>
                     <additionalPlugins>
                         <dependency>
                             <artifactId>org.faktorips.productvariant.core</artifactId>
@@ -85,7 +88,7 @@ Also it is possible to add `additionalRepositories` to the Eclipse-Runtime. Thes
                         <repository>
                             <id>productvariants</id>
                             <layout>p2</layout>
-                            <url>https://update.faktorzehn.org/faktorips/productvariants/22.12</url>
+                            <url>https://update.faktorzehn.org/faktorips/productvariants/24.1</url>
                         </repository>
                     </additionalRepositories>
                 </configuration>
@@ -99,7 +102,7 @@ Also it is possible to add `additionalRepositories` to the Eclipse-Runtime. Thes
                 </executions>
             </plugin>
 ```
-### Adding Junit as integrated Eclipse library
+### Adding Junit as Integrated Eclipse Library
 ```
     <additionalPlugins>
         <dependency>
