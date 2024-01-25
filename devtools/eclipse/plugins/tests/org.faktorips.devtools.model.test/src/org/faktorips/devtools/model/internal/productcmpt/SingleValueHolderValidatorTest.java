@@ -163,7 +163,7 @@ public class SingleValueHolderValidatorTest {
 
         IIpsProjectProperties projectProperties = mock(IIpsProjectProperties.class);
         when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
-        when(projectProperties.getSupportedLanguages()).thenReturn(new HashSet<ISupportedLanguage>());
+        when(projectProperties.getSupportedLanguages()).thenReturn(new HashSet<>());
 
         when(datatype.checkReadyToUse()).thenReturn(new MessageList());
         when(datatype.isParsable(anyString())).thenReturn(true);

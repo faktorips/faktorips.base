@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <properties>
         <java.version>17</java.version>
-        <target-platform>eclipse-2022-12</target-platform>
+        <target-platform>eclipse-2023-12</target-platform>
         <version.kind>ci</version.kind>
         <maven.site.skip>true</maven.site.skip>
     </properties>

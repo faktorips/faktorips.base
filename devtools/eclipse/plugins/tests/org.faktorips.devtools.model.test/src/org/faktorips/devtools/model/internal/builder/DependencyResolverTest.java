@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -191,7 +191,7 @@ public class DependencyResolverTest {
             DependencyType.VALIDATION);
 
     /**
-     * 
+     *
      * <strong>Scenario:</strong><br>
      * For better understanding of the test scenarios see the file
      * DependencyResolverTestDiagrams.png or for editing DependencyResovlerTestDiagrams.uxf. To edit
@@ -912,7 +912,7 @@ public class DependencyResolverTest {
     }
 
     private MultiMap<IIpsProject, IDependency> collectDependenciesOf(QualifiedNameType objectNameType) {
-        dependencyResolver.collectDependencies(objectNameType, new HashSet<IIpsProject>(),
+        dependencyResolver.collectDependencies(objectNameType, new HashSet<>(),
                 EnumSet.allOf(DependencyType.class));
         return dependencyResolver.getCollectedDependencies();
     }

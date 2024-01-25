@@ -9,145 +9,146 @@
     </parent>
     <artifactId>eclipse-platform-dependencies</artifactId>
     <packaging>pom</packaging>
-    <name>Eclipse Platform Dependencies of Release 2022-12</name>
-    <description>The same dependencies as in the target platform 2022-12</description>
+    <name>Eclipse Platform Dependencies of Release 2023-12</name>
+    <description>The same dependencies as in the target platform 2023-12</description>
+    <!-- inspired by https://github.com/jmini/ecentral, reduced to our actual dependencies -->
     <properties>
-        <icu4j.version>72.1</icu4j.version>
-        <jna.version>5.12.1</jna.version>
-        <jna-platform.version>5.12.1</jna-platform.version>
+        <icu4j.version>74.1</icu4j.version>
+        <jna.version>5.13.0</jna.version>
+        <jna-platform.version>5.13.0</jna-platform.version>
         <javax-inject.version>1</javax-inject.version>
         <commons-codec.version>1.14</commons-codec.version>
         <commons-logging.version>1.2</commons-logging.version>
         <org-apache-felix-gogo-command.version>1.1.2</org-apache-felix-gogo-command.version>
         <org-apache-felix-gogo-runtime.version>1.1.6</org-apache-felix-gogo-runtime.version>
         <org-apache-felix-gogo-shell.version>1.1.4</org-apache-felix-gogo-shell.version>
-        <org-eclipse-ant-core.version>3.6.500</org-eclipse-ant-core.version>
-        <org-eclipse-compare.version>3.8.500</org-eclipse-compare.version>
-        <org-eclipse-compare-core.version>3.7.100</org-eclipse-compare-core.version>
-        <org-eclipse-core-commands.version>3.10.300</org-eclipse-core-commands.version>
-        <org-eclipse-core-contenttype.version>3.8.200</org-eclipse-core-contenttype.version>
-        <org-eclipse-core-databinding.version>1.11.200</org-eclipse-core-databinding.version>
-        <org-eclipse-core-databinding-beans.version>1.9.0</org-eclipse-core-databinding-beans.version>
-        <org-eclipse-core-databinding-observable.version>1.12.100</org-eclipse-core-databinding-observable.version>
-        <org-eclipse-core-databinding-property.version>1.9.100</org-eclipse-core-databinding-property.version>
-        <org-eclipse-core-expressions.version>3.8.200</org-eclipse-core-expressions.version>
-        <org-eclipse-core-filebuffers.version>3.7.200</org-eclipse-core-filebuffers.version>
-        <org-eclipse-core-filesystem.version>1.9.500</org-eclipse-core-filesystem.version>
-        <org-eclipse-core-jobs.version>3.13.200</org-eclipse-core-jobs.version>
-        <org-eclipse-core-net.version>1.4.0</org-eclipse-core-net.version>
-        <org-eclipse-core-resources.version>3.18.100</org-eclipse-core-resources.version>
-        <org-eclipse-core-runtime.version>3.26.100</org-eclipse-core-runtime.version>
-        <org-eclipse-core-variables.version>3.5.100</org-eclipse-core-variables.version>
-        <org-eclipse-debug-core.version>3.20.0</org-eclipse-debug-core.version>
-        <org-eclipse-debug-ui.version>3.17.100</org-eclipse-debug-ui.version>
-        <org-eclipse-e4-core-commands.version>1.0.300</org-eclipse-e4-core-commands.version>
-        <org-eclipse-e4-core-contexts.version>1.11.0</org-eclipse-e4-core-contexts.version>
-        <org-eclipse-e4-core-di.version>1.8.300</org-eclipse-e4-core-di.version>
-        <org-eclipse-e4-core-di-annotations.version>1.7.200</org-eclipse-e4-core-di-annotations.version>
-        <org-eclipse-e4-core-di-extensions.version>0.17.200</org-eclipse-e4-core-di-extensions.version>
-        <org-eclipse-e4-core-di-extensions-supplier.version>0.16.400</org-eclipse-e4-core-di-extensions-supplier.version>
-        <org-eclipse-e4-core-services.version>2.3.400</org-eclipse-e4-core-services.version>
-        <org-eclipse-e4-emf-xpath.version>0.3.100</org-eclipse-e4-emf-xpath.version>
-        <org-eclipse-e4-ui-bindings.version>0.13.200</org-eclipse-e4-ui-bindings.version>
-        <org-eclipse-e4-ui-css-core.version>0.13.400</org-eclipse-e4-ui-css-core.version>
-        <org-eclipse-e4-ui-css-swt.version>0.14.700</org-eclipse-e4-ui-css-swt.version>
-        <org-eclipse-e4-ui-css-swt-theme.version>0.13.200</org-eclipse-e4-ui-css-swt-theme.version>
-        <org-eclipse-e4-ui-di.version>1.4.100</org-eclipse-e4-ui-di.version>
-        <org-eclipse-e4-ui-dialogs.version>1.3.400</org-eclipse-e4-ui-dialogs.version>
-        <org-eclipse-e4-ui-ide.version>3.16.200</org-eclipse-e4-ui-ide.version>
-        <org-eclipse-e4-ui-model-workbench.version>2.2.300</org-eclipse-e4-ui-model-workbench.version>
-        <org-eclipse-e4-ui-services.version>1.5.100</org-eclipse-e4-ui-services.version>
-        <org-eclipse-e4-ui-swt-gtk.version>1.1.200</org-eclipse-e4-ui-swt-gtk.version>
-        <org-eclipse-e4-ui-swt-win32.version>1.1.100</org-eclipse-e4-ui-swt-win32.version>
-        <org-eclipse-e4-ui-widgets.version>1.3.100</org-eclipse-e4-ui-widgets.version>
-        <org-eclipse-e4-ui-workbench.version>1.14.0</org-eclipse-e4-ui-workbench.version>
-        <org-eclipse-e4-ui-workbench-addons-swt.version>1.4.500</org-eclipse-e4-ui-workbench-addons-swt.version>
-        <org-eclipse-e4-ui-workbench-renderers-swt.version>0.15.700</org-eclipse-e4-ui-workbench-renderers-swt.version>
-        <org-eclipse-e4-ui-workbench-renderers-swt-cocoa.version>0.13.0</org-eclipse-e4-ui-workbench-renderers-swt-cocoa.version>
-        <org-eclipse-e4-ui-workbench-swt.version>0.16.700</org-eclipse-e4-ui-workbench-swt.version>
-        <org-eclipse-e4-ui-workbench3.version>0.16.100</org-eclipse-e4-ui-workbench3.version>
-        <org-eclipse-ecf.version>3.10.0</org-eclipse-ecf.version>
-        <org-eclipse-ecf-filetransfer.version>5.1.102</org-eclipse-ecf-filetransfer.version>
-        <org-eclipse-ecf-identity.version>3.9.402</org-eclipse-ecf-identity.version>
-        <org-eclipse-ecf-provider-filetransfer.version>3.2.800</org-eclipse-ecf-provider-filetransfer.version>
-        <org-eclipse-emf-common.version>2.27.0</org-eclipse-emf-common.version>
-        <org-eclipse-emf-ecore.version>2.29.0</org-eclipse-emf-ecore.version>
-        <org-eclipse-emf-ecore-change.version>2.14.0</org-eclipse-emf-ecore-change.version>
-        <org-eclipse-emf-ecore-xmi.version>2.17.0</org-eclipse-emf-ecore-xmi.version>
-        <org-eclipse-equinox-app.version>1.6.200</org-eclipse-equinox-app.version>
-        <org-eclipse-equinox-bidi.version>1.4.200</org-eclipse-equinox-bidi.version>
-        <org-eclipse-equinox-common.version>3.17.0</org-eclipse-equinox-common.version>
-        <org-eclipse-equinox-concurrent.version>1.2.100</org-eclipse-equinox-concurrent.version>
-        <org-eclipse-equinox-console.version>1.4.500</org-eclipse-equinox-console.version>
-        <org-eclipse-equinox-event.version>1.6.100</org-eclipse-equinox-event.version>
-        <org-eclipse-equinox-frameworkadmin.version>2.2.100</org-eclipse-equinox-frameworkadmin.version>
-        <org-eclipse-equinox-frameworkadmin-equinox.version>1.2.200</org-eclipse-equinox-frameworkadmin-equinox.version>
-        <org-eclipse-equinox-launcher.version>1.6.400</org-eclipse-equinox-launcher.version>
-        <org-eclipse-equinox-p2-artifact-repository.version>1.4.600</org-eclipse-equinox-p2-artifact-repository.version>
-        <org-eclipse-equinox-p2-core.version>2.9.200</org-eclipse-equinox-p2-core.version>
-        <org-eclipse-equinox-p2-director.version>2.5.400</org-eclipse-equinox-p2-director.version>
-        <org-eclipse-equinox-p2-director-app.version>1.2.300</org-eclipse-equinox-p2-director-app.version>
-        <org-eclipse-equinox-p2-engine.version>2.7.500</org-eclipse-equinox-p2-engine.version>
-        <org-eclipse-equinox-p2-garbagecollector.version>1.2.100</org-eclipse-equinox-p2-garbagecollector.version>
-        <org-eclipse-equinox-p2-jarprocessor.version>1.2.300</org-eclipse-equinox-p2-jarprocessor.version>
-        <org-eclipse-equinox-p2-metadata.version>2.6.300</org-eclipse-equinox-p2-metadata.version>
-        <org-eclipse-equinox-p2-metadata-repository.version>1.4.100</org-eclipse-equinox-p2-metadata-repository.version>
-        <org-eclipse-equinox-p2-publisher.version>1.7.200</org-eclipse-equinox-p2-publisher.version>
-        <org-eclipse-equinox-p2-publisher-eclipse.version>1.4.200</org-eclipse-equinox-p2-publisher-eclipse.version>
-        <org-eclipse-equinox-p2-repository.version>2.6.300</org-eclipse-equinox-p2-repository.version>
-        <org-eclipse-equinox-p2-repository-tools.version>2.3.200</org-eclipse-equinox-p2-repository-tools.version>
-        <org-eclipse-equinox-p2-touchpoint-eclipse.version>2.3.300</org-eclipse-equinox-p2-touchpoint-eclipse.version>
-        <org-eclipse-equinox-p2-touchpoint-natives.version>1.4.400</org-eclipse-equinox-p2-touchpoint-natives.version>
-        <org-eclipse-equinox-p2-transport-ecf.version>1.3.300</org-eclipse-equinox-p2-transport-ecf.version>
-        <org-eclipse-equinox-p2-updatesite.version>1.2.300</org-eclipse-equinox-p2-updatesite.version>
-        <org-eclipse-equinox-preferences.version>3.10.100</org-eclipse-equinox-preferences.version>
-        <org-eclipse-equinox-registry.version>3.11.200</org-eclipse-equinox-registry.version>
-        <org-eclipse-equinox-security.version>1.3.1000</org-eclipse-equinox-security.version>
-        <org-eclipse-equinox-simpleconfigurator.version>1.4.200</org-eclipse-equinox-simpleconfigurator.version>
-        <org-eclipse-equinox-simpleconfigurator-manipulator.version>2.2.100</org-eclipse-equinox-simpleconfigurator-manipulator.version>
-        <org-eclipse-help.version>3.9.100</org-eclipse-help.version>
-        <org-eclipse-jdt-core.version>3.32.0</org-eclipse-jdt-core.version>
-        <org-eclipse-jdt-core-manipulation.version>1.17.0</org-eclipse-jdt-core-manipulation.version>
-        <org-eclipse-jdt-debug.version>3.20.0</org-eclipse-jdt-debug.version>
-        <org-eclipse-jdt-debug-ui.version>3.12.900</org-eclipse-jdt-debug-ui.version>
-        <org-eclipse-jdt-junit-runtime.version>3.7.0</org-eclipse-jdt-junit-runtime.version>
+        <org-eclipse-ant-core.version>3.7.200</org-eclipse-ant-core.version>
+        <org-eclipse-compare.version>3.9.300</org-eclipse-compare.version>
+        <org-eclipse-compare-core.version>3.8.300</org-eclipse-compare-core.version>
+        <org-eclipse-core-commands.version>3.11.200</org-eclipse-core-commands.version>
+        <org-eclipse-core-contenttype.version>3.9.200</org-eclipse-core-contenttype.version>
+        <org-eclipse-core-databinding.version>1.13.100</org-eclipse-core-databinding.version>
+        <org-eclipse-core-databinding-beans.version>1.10.100</org-eclipse-core-databinding-beans.version>
+        <org-eclipse-core-databinding-observable.version>1.13.100</org-eclipse-core-databinding-observable.version>
+        <org-eclipse-core-databinding-property.version>1.10.100</org-eclipse-core-databinding-property.version>
+        <org-eclipse-core-expressions.version>3.9.200</org-eclipse-core-expressions.version>
+        <org-eclipse-core-filebuffers.version>3.8.200</org-eclipse-core-filebuffers.version>
+        <org-eclipse-core-filesystem.version>1.10.200</org-eclipse-core-filesystem.version>
+        <org-eclipse-core-jobs.version>3.15.100</org-eclipse-core-jobs.version>
+        <org-eclipse-core-net.version>1.5.200</org-eclipse-core-net.version>
+        <org-eclipse-core-resources.version>3.20.0</org-eclipse-core-resources.version>
+        <org-eclipse-core-runtime.version>3.30.0</org-eclipse-core-runtime.version>
+        <org-eclipse-core-variables.version>3.6.200</org-eclipse-core-variables.version>
+        <org-eclipse-debug-core.version>3.21.200</org-eclipse-debug-core.version>
+        <org-eclipse-debug-ui.version>3.18.200</org-eclipse-debug-ui.version>
+        <org-eclipse-e4-core-commands.version>1.1.200</org-eclipse-e4-core-commands.version>
+        <org-eclipse-e4-core-contexts.version>1.12.400</org-eclipse-e4-core-contexts.version>
+        <org-eclipse-e4-core-di.version>1.9.200</org-eclipse-e4-core-di.version>
+        <org-eclipse-e4-core-di-annotations.version>1.8.200</org-eclipse-e4-core-di-annotations.version>
+        <org-eclipse-e4-core-di-extensions.version>0.18.100</org-eclipse-e4-core-di-extensions.version>
+        <org-eclipse-e4-core-di-extensions-supplier.version>0.17.300</org-eclipse-e4-core-di-extensions-supplier.version>
+        <org-eclipse-e4-core-services.version>2.4.200</org-eclipse-e4-core-services.version>
+        <org-eclipse-e4-emf-xpath.version>0.4.100</org-eclipse-e4-emf-xpath.version>
+        <org-eclipse-e4-ui-bindings.version>0.14.200</org-eclipse-e4-ui-bindings.version>
+        <org-eclipse-e4-ui-css-core.version>0.14.200</org-eclipse-e4-ui-css-core.version>
+        <org-eclipse-e4-ui-css-swt.version>0.15.200</org-eclipse-e4-ui-css-swt.version>
+        <org-eclipse-e4-ui-css-swt-theme.version>0.14.200</org-eclipse-e4-ui-css-swt-theme.version>
+        <org-eclipse-e4-ui-di.version>1.5.200</org-eclipse-e4-ui-di.version>
+        <org-eclipse-e4-ui-dialogs.version>1.4.100</org-eclipse-e4-ui-dialogs.version>
+        <org-eclipse-e4-ui-ide.version>3.17.100</org-eclipse-e4-ui-ide.version>
+        <org-eclipse-e4-ui-model-workbench.version>2.4.100</org-eclipse-e4-ui-model-workbench.version>
+        <org-eclipse-e4-ui-services.version>1.6.200</org-eclipse-e4-ui-services.version>
+        <org-eclipse-e4-ui-swt-gtk.version>1.2.100</org-eclipse-e4-ui-swt-gtk.version>
+        <org-eclipse-e4-ui-swt-win32.version>1.2.100</org-eclipse-e4-ui-swt-win32.version>
+        <org-eclipse-e4-ui-widgets.version>1.4.0</org-eclipse-e4-ui-widgets.version>
+        <org-eclipse-e4-ui-workbench.version>1.15.200</org-eclipse-e4-ui-workbench.version>
+        <org-eclipse-e4-ui-workbench-addons-swt.version>1.5.200</org-eclipse-e4-ui-workbench-addons-swt.version>
+        <org-eclipse-e4-ui-workbench-renderers-swt.version>0.16.200</org-eclipse-e4-ui-workbench-renderers-swt.version>
+        <org-eclipse-e4-ui-workbench-renderers-swt-cocoa.version>0.14.200</org-eclipse-e4-ui-workbench-renderers-swt-cocoa.version>
+        <org-eclipse-e4-ui-workbench-swt.version>0.17.200</org-eclipse-e4-ui-workbench-swt.version>
+        <org-eclipse-e4-ui-workbench3.version>0.17.200</org-eclipse-e4-ui-workbench3.version>
+        <org-eclipse-ecf.version>3.11.0</org-eclipse-ecf.version>
+        <org-eclipse-ecf-filetransfer.version>5.1.103</org-eclipse-ecf-filetransfer.version>
+        <org-eclipse-ecf-identity.version>3.10.0</org-eclipse-ecf-identity.version>
+        <org-eclipse-ecf-provider-filetransfer.version>3.3.0</org-eclipse-ecf-provider-filetransfer.version>
+        <org-eclipse-emf-common.version>2.29.0</org-eclipse-emf-common.version>
+        <org-eclipse-emf-ecore.version>2.35.0</org-eclipse-emf-ecore.version>
+        <org-eclipse-emf-ecore-change.version>2.15.0</org-eclipse-emf-ecore-change.version>
+        <org-eclipse-emf-ecore-xmi.version>2.36.0</org-eclipse-emf-ecore-xmi.version>
+        <org-eclipse-equinox-app.version>1.6.400</org-eclipse-equinox-app.version>
+        <org-eclipse-equinox-bidi.version>1.4.400</org-eclipse-equinox-bidi.version>
+        <org-eclipse-equinox-common.version>3.18.200</org-eclipse-equinox-common.version>
+        <org-eclipse-equinox-concurrent.version>1.2.200</org-eclipse-equinox-concurrent.version>
+        <org-eclipse-equinox-console.version>1.4.600</org-eclipse-equinox-console.version>
+        <org-eclipse-equinox-event.version>1.6.300</org-eclipse-equinox-event.version>
+        <org-eclipse-equinox-frameworkadmin.version>2.3.0</org-eclipse-equinox-frameworkadmin.version>
+        <org-eclipse-equinox-frameworkadmin-equinox.version>1.3.0</org-eclipse-equinox-frameworkadmin-equinox.version>
+        <org-eclipse-equinox-launcher.version>1.6.600</org-eclipse-equinox-launcher.version>
+        <org-eclipse-equinox-p2-artifact-repository.version>1.5.200</org-eclipse-equinox-p2-artifact-repository.version>
+        <org-eclipse-equinox-p2-core.version>2.10.200</org-eclipse-equinox-p2-core.version>
+        <org-eclipse-equinox-p2-director.version>2.6.200</org-eclipse-equinox-p2-director.version>
+        <org-eclipse-equinox-p2-director-app.version>1.3.200</org-eclipse-equinox-p2-director-app.version>
+        <org-eclipse-equinox-p2-engine.version>2.9.0</org-eclipse-equinox-p2-engine.version>
+        <org-eclipse-equinox-p2-garbagecollector.version>1.3.100</org-eclipse-equinox-p2-garbagecollector.version>
+        <org-eclipse-equinox-p2-jarprocessor.version>1.3.200</org-eclipse-equinox-p2-jarprocessor.version>
+        <org-eclipse-equinox-p2-metadata.version>2.8.0</org-eclipse-equinox-p2-metadata.version>
+        <org-eclipse-equinox-p2-metadata-repository.version>1.5.200</org-eclipse-equinox-p2-metadata-repository.version>
+        <org-eclipse-equinox-p2-publisher.version>1.9.0</org-eclipse-equinox-p2-publisher.version>
+        <org-eclipse-equinox-p2-publisher-eclipse.version>1.5.200</org-eclipse-equinox-p2-publisher-eclipse.version>
+        <org-eclipse-equinox-p2-repository.version>2.8.0</org-eclipse-equinox-p2-repository.version>
+        <org-eclipse-equinox-p2-repository-tools.version>2.4.200</org-eclipse-equinox-p2-repository-tools.version>
+        <org-eclipse-equinox-p2-touchpoint-eclipse.version>2.4.100</org-eclipse-equinox-p2-touchpoint-eclipse.version>
+        <org-eclipse-equinox-p2-touchpoint-natives.version>1.5.100</org-eclipse-equinox-p2-touchpoint-natives.version>
+        <org-eclipse-equinox-p2-transport-ecf.version>1.4.100</org-eclipse-equinox-p2-transport-ecf.version>
+        <org-eclipse-equinox-p2-updatesite.version>1.3.200</org-eclipse-equinox-p2-updatesite.version>
+        <org-eclipse-equinox-preferences.version>3.10.400</org-eclipse-equinox-preferences.version>
+        <org-eclipse-equinox-registry.version>3.11.400</org-eclipse-equinox-registry.version>
+        <org-eclipse-equinox-security.version>1.4.100</org-eclipse-equinox-security.version>
+        <org-eclipse-equinox-simpleconfigurator.version>1.5.0</org-eclipse-equinox-simpleconfigurator.version>
+        <org-eclipse-equinox-simpleconfigurator-manipulator.version>2.3.0</org-eclipse-equinox-simpleconfigurator-manipulator.version>
+        <org-eclipse-help.version>3.10.200</org-eclipse-help.version>
+        <org-eclipse-jdt-core.version>3.36.0</org-eclipse-jdt-core.version>
+        <org-eclipse-jdt-core-manipulation.version>1.20.0</org-eclipse-jdt-core-manipulation.version>
+        <org-eclipse-jdt-debug.version>3.21.200</org-eclipse-jdt-debug.version>
+        <org-eclipse-jdt-debug-ui.version>3.13.200</org-eclipse-jdt-debug-ui.version>
+        <org-eclipse-jdt-junit-runtime.version>3.7.300</org-eclipse-jdt-junit-runtime.version>
         <org-eclipse-jdt-junit4-runtime.version>1.3.0</org-eclipse-jdt-junit4-runtime.version>
-        <org-eclipse-jdt-launching.version>3.19.800</org-eclipse-jdt-launching.version>
-        <org-eclipse-jdt-ui.version>3.27.100</org-eclipse-jdt-ui.version>
-        <org-eclipse-jface.version>3.28.0</org-eclipse-jface.version>
-        <org-eclipse-jface-databinding.version>1.14.0</org-eclipse-jface-databinding.version>
-        <org-eclipse-jface-notifications.version>0.5.100</org-eclipse-jface-notifications.version>
-        <org-eclipse-jface-text.version>3.22.0</org-eclipse-jface-text.version>
-        <org-eclipse-ltk-core-refactoring.version>3.13.0</org-eclipse-ltk-core-refactoring.version>
-        <org-eclipse-ltk-ui-refactoring.version>3.12.200</org-eclipse-ltk-ui-refactoring.version>
-        <org-eclipse-osgi.version>3.18.200</org-eclipse-osgi.version>
-        <org-eclipse-osgi-compatibility-state.version>1.2.800</org-eclipse-osgi-compatibility-state.version>
-        <org-eclipse-osgi-services.version>3.11.100</org-eclipse-osgi-services.version>
-        <org-eclipse-osgi-util.version>3.7.100</org-eclipse-osgi-util.version>
-        <org-eclipse-rcp.version>4.26.0</org-eclipse-rcp.version>
-        <org-eclipse-search.version>3.14.300</org-eclipse-search.version>
-        <org-eclipse-swt.version>3.122.0</org-eclipse-swt.version>
-        <org-eclipse-team-core.version>3.9.600</org-eclipse-team-core.version>
-        <org-eclipse-team-ui.version>3.9.500</org-eclipse-team-ui.version>
-        <org-eclipse-text.version>3.12.300</org-eclipse-text.version>
-        <org-eclipse-ui.version>3.201.200</org-eclipse-ui.version>
-        <org-eclipse-ui-cocoa.version>1.3.0</org-eclipse-ui-cocoa.version>
-        <org-eclipse-ui-console.version>3.11.400</org-eclipse-ui-console.version>
-        <org-eclipse-ui-editors.version>3.14.400</org-eclipse-ui-editors.version>
-        <org-eclipse-ui-forms.version>3.11.500</org-eclipse-ui-forms.version>
-        <org-eclipse-ui-ide.version>3.20.0</org-eclipse-ui-ide.version>
-        <org-eclipse-ui-ide-application.version>1.4.600</org-eclipse-ui-ide-application.version>
-        <org-eclipse-ui-navigator.version>3.10.400</org-eclipse-ui-navigator.version>
-        <org-eclipse-ui-navigator-resources.version>3.8.500</org-eclipse-ui-navigator-resources.version>
-        <org-eclipse-ui-views.version>3.11.300</org-eclipse-ui-views.version>
-        <org-eclipse-ui-views-properties-tabbed.version>3.9.300</org-eclipse-ui-views-properties-tabbed.version>
-        <org-eclipse-ui-workbench.version>3.127.0</org-eclipse-ui-workbench.version>
-        <org-eclipse-ui-workbench-texteditor.version>3.16.600</org-eclipse-ui-workbench-texteditor.version>
-        <org-eclipse-update-configurator.version>3.4.1000</org-eclipse-update-configurator.version>
-        <org-eclipse-urischeme.version>1.2.200</org-eclipse-urischeme.version>
-        <opentest4j.version>1.2.0</opentest4j.version>
+        <org-eclipse-jdt-launching.version>3.21.0</org-eclipse-jdt-launching.version>
+        <org-eclipse-jdt-ui.version>3.31.0</org-eclipse-jdt-ui.version>
+        <org-eclipse-jface.version>3.32.0</org-eclipse-jface.version>
+        <org-eclipse-jface-databinding.version>1.15.100</org-eclipse-jface-databinding.version>
+        <org-eclipse-jface-notifications.version>0.7.0</org-eclipse-jface-notifications.version>
+        <org-eclipse-jface-text.version>3.24.200</org-eclipse-jface-text.version>
+        <org-eclipse-ltk-core-refactoring.version>3.14.200</org-eclipse-ltk-core-refactoring.version>
+        <org-eclipse-ltk-ui-refactoring.version>3.13.200</org-eclipse-ltk-ui-refactoring.version>
+        <org-eclipse-osgi.version>3.18.600</org-eclipse-osgi.version>
+        <org-eclipse-osgi-compatibility-state.version>1.2.900</org-eclipse-osgi-compatibility-state.version>
+        <org-eclipse-osgi-services.version>3.11.200</org-eclipse-osgi-services.version>
+        <org-eclipse-osgi-util.version>3.7.300</org-eclipse-osgi-util.version>
+        <org-eclipse-rcp.version>4.30.0</org-eclipse-rcp.version>
+        <org-eclipse-search.version>3.16.0</org-eclipse-search.version>
+        <org-eclipse-swt.version>3.124.200</org-eclipse-swt.version>
+        <org-eclipse-team-core.version>3.10.200</org-eclipse-team-core.version>
+        <org-eclipse-team-ui.version>3.10.200</org-eclipse-team-ui.version>
+        <org-eclipse-text.version>3.13.100</org-eclipse-text.version>
+        <org-eclipse-ui.version>3.205.0</org-eclipse-ui.version>
+        <org-eclipse-ui-cocoa.version>1.3.100</org-eclipse-ui-cocoa.version>
+        <org-eclipse-ui-console.version>3.13.100</org-eclipse-ui-console.version>
+        <org-eclipse-ui-editors.version>3.17.100</org-eclipse-ui-editors.version>
+        <org-eclipse-ui-forms.version>3.13.100</org-eclipse-ui-forms.version>
+        <org-eclipse-ui-ide.version>3.22.0</org-eclipse-ui-ide.version>
+        <org-eclipse-ui-ide-application.version>1.5.200</org-eclipse-ui-ide-application.version>
+        <org-eclipse-ui-navigator.version>3.12.200</org-eclipse-ui-navigator.version>
+        <org-eclipse-ui-navigator-resources.version>3.9.100</org-eclipse-ui-navigator-resources.version>
+        <org-eclipse-ui-views.version>3.12.100</org-eclipse-ui-views.version>
+        <org-eclipse-ui-views-properties-tabbed.version>3.10.100</org-eclipse-ui-views-properties-tabbed.version>
+        <org-eclipse-ui-workbench.version>3.131.0</org-eclipse-ui-workbench.version>
+        <org-eclipse-ui-workbench-texteditor.version>3.17.200</org-eclipse-ui-workbench-texteditor.version>
+        <org-eclipse-update-configurator.version>3.5.200</org-eclipse-update-configurator.version>
+        <org-eclipse-urischeme.version>1.3.100</org-eclipse-urischeme.version>
+        <opentest4j.version>1.3.0</opentest4j.version>
         <org-osgi-service-cm.version>1.6.1</org-osgi-service-cm.version>
-        <org-osgi-service-component.version>1.5.0</org-osgi-service-component.version>
+        <org-osgi-service-component.version>1.5.1</org-osgi-service-component.version>
         <org-osgi-service-device.version>1.1.1</org-osgi-service-device.version>
         <org-osgi-service-event.version>1.4.1</org-osgi-service-event.version>
         <org-osgi-service-metatype.version>1.4.1</org-osgi-service-metatype.version>
@@ -159,7 +160,7 @@
         <org-osgi-util-function.version>1.2.0</org-osgi-util-function.version>
         <org-osgi-util-measurement.version>1.0.2</org-osgi-util-measurement.version>
         <org-osgi-util-position.version>1.0.1</org-osgi-util-position.version>
-        <org-osgi-util-promise.version>1.2.0</org-osgi-util-promise.version>
+        <org-osgi-util-promise.version>1.3.0</org-osgi-util-promise.version>
         <org-osgi-util-xml.version>1.0.2</org-osgi-util-xml.version>
         <org-ow2-sat4j-core.version>2.3.6</org-ow2-sat4j-core.version>
         <org-ow2-sat4j-pb.version>2.3.6</org-ow2-sat4j-pb.version>

@@ -41,7 +41,7 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
     @Test
     public void testFindCommonType_NoTypes() {
         assertThat(finder.findCommonType(null), is(nullValue()));
-        assertThat(finder.findCommonType(new ArrayList<IProductCmpt>()), is(nullValue()));
+        assertThat(finder.findCommonType(new ArrayList<>()), is(nullValue()));
     }
 
     /**

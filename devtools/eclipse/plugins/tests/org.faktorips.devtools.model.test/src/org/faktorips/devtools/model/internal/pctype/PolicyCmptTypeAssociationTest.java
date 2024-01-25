@@ -1110,7 +1110,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     @Test
     public void testFindCorrectMatchingPolicyCmptTypeRecoursive_null() throws Exception {
         boolean result = association.findCorrectMatchingPolicyCmptTypeRecoursive(null, ipsProject,
-                new HashSet<IPolicyCmptType>());
+                new HashSet<>());
 
         assertFalse(result);
     }

@@ -40,7 +40,6 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -52,12 +51,13 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
+import org.faktorips.m2e.AbstractMavenIpsProjectTest;
 import org.faktorips.m2e.version.MavenVersionFormatter;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
+public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest {
 
     private static final String POM_SCENARIO_1 = "pom_scenario1.xml";
     private static final String POM_SCENARIO_2 = "pom_scenario2.xml";

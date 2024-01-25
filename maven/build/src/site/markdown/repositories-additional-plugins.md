@@ -23,9 +23,9 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
                            <url>https://update.faktorzehn.org/faktorips/${faktorips.repository.version}</url>
                         </repository>
                         <repository>
-                           <id>eclipse-2022-12</id>
+                           <id>eclipse-2023-12</id>
                            <layout>p2</layout>
-                           <url>https://download.eclipse.org/eclipse/updates/4.26/</url>
+                           <url>https://download.eclipse.org/eclipse/updates/4.30/</url>
                         </repository>
                     </repositories>
                     -->
@@ -49,7 +49,7 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
                 <artifactId>faktorips-maven-plugin</artifactId>
                 <configuration>
                     <fipsRepository>https://myfipsmirror.firma.de/fips/24.1.1.release</fipsRepository>
-                    <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2022-12</eclipseRepository>
+                    <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2023-12</eclipseRepository>
                 </configuration>
                 <executions>
                     <execution>
@@ -64,7 +64,7 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
 
 #### ⚠ Compatibility with Eclipse Versions
 
-Not all Eclipse versions work with the same Faktor-IPS plugins. Although you can provide the URL to any Eclipse version as `eclipseRepository`, only those listed in the compatibility list on [faktorzehn.org](https://www.faktorzehn.org/en/download/) may work. A known exception is Eclipse 2023-06 that does not work with this maven plugin even though it is listed as compatible with the Faktor-IPS Eclipse plugin.
+Not all Eclipse versions work with the same Faktor-IPS plugins. Although you can provide the URL to any Eclipse version as `eclipseRepository`, only those listed in the compatibility list on [faktorzehn.org](https://www.faktorzehn.org/en/download/) may work.
 
 ### Using Additional Plugins
 
