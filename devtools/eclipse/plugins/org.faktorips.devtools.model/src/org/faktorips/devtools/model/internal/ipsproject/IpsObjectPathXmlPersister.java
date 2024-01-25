@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
 /**
  * This class is able to write an {@link IpsObjectPath} to XML or create an {@link IpsObjectPath}
  * from XML.
- * 
+ *
  * @author dicker
  */
 public class IpsObjectPathXmlPersister {
@@ -42,7 +42,7 @@ public class IpsObjectPathXmlPersister {
     /**
      * Stores the given {@link IpsObjectPath} in the given {@link Document}, which represents the
      * .ipsproject file.
-     * 
+     *
      * @return the {@link Element} within the given Document, which represents the
      *             {@link IpsObjectPath} in the .ipsproject file.
      */
@@ -79,7 +79,7 @@ public class IpsObjectPathXmlPersister {
 
     /**
      * Reads and returns the {@link IpsObjectPath} from the .ipsproject file.
-     * 
+     *
      * @param ipsProject the {@link IIpsProject} of the {@link IpsObjectPath}
      * @param element the {@link Element}, the {@link IpsObjectPath} is stored
      * @throws IllegalStateException if the {@link IpsObjectPath} should be managed within the
@@ -169,6 +169,14 @@ public class IpsObjectPathXmlPersister {
                 + IpsSrcFolderEntry.getXmlFormatDescription() + System.lineSeparator()
                 + " " + System.lineSeparator() //$NON-NLS-1$
                 + IpsProjectRefEntry.getXmlFormatDescription() + " " + System.lineSeparator() //$NON-NLS-1$
-                + IpsArchiveEntry.getXmlFormatDescription();
+                + IpsArchiveEntry.getXmlFormatDescription() + " " + System.lineSeparator() //$NON-NLS-1$
+                + "Maven:" + System.lineSeparator() //$NON-NLS-1$
+                + "  <" + IpsObjectPathEntry.XML_ELEMENT + System.lineSeparator() //$NON-NLS-1$
+                + "     container=\"JDTClasspathContainer\"                      When using maven, the referenced projects can be replaced by the Maven-Classpath-Container." //$NON-NLS-1$
+                + System.lineSeparator()
+                + "     path=\"org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER\"      This entry should be the last entry in the IpsObjectPath." //$NON-NLS-1$
+                + System.lineSeparator()
+                + "     reexported=\"false\" type=\"container\" />" + System.lineSeparator()//$NON-NLS-1$
+                + "  </" + IpsObjectPathEntry.XML_ELEMENT + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

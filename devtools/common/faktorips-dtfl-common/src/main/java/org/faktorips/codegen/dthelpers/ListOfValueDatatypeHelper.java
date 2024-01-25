@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,6 +20,7 @@ import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A helper class for lists of values. There is no data type for lists though. The data type
@@ -27,7 +28,7 @@ import org.faktorips.datatype.ValueDatatype;
  * {@link #valueOfExpression(String)} expects a list as expression and returns code that creates a
  * copy of that list. {@link #newInstance(String)} returns code that creates an empty list. The
  * given value will be ignored.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
@@ -74,7 +75,7 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
     /**
      * Expects a list as expression and returns code that creates a copy of that list.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -90,7 +91,7 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
     /**
      * Returns code that creates a list where the given expression is used as a constructor
      * argument.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -112,6 +113,43 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
         builder.appendClassName(List.class);
         builder.appendGenerics(getBasicJavaClassName());
         return builder.getFragment();
+    }
+
+    @Override
+    public String getValueSetJavaClassName() {
+        return elementDatatypeHelper.getValueSetJavaClassName();
+    }
+
+    @Override
+    public String getRangeJavaClassName(boolean useTypesafeCollections) {
+        return elementDatatypeHelper.getRangeJavaClassName(useTypesafeCollections);
+    }
+
+    @Override
+    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+            JavaCodeFragment upperBoundExp,
+            JavaCodeFragment stepExp,
+            JavaCodeFragment containsNullExp,
+            boolean useTypesafeCollections) {
+        return elementDatatypeHelper.newRangeInstance(lowerBoundExp, upperBoundExp, stepExp, containsNullExp,
+                useTypesafeCollections);
+    }
+
+    @Override
+    public JavaCodeFragment createCastExpression(String bound) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        if (IpsStringUtils.isEmpty(bound) && !elementDatatypeHelper.getDatatype().hasNullObject()) {
+            frag.append('(');
+            frag.appendClassName(elementDatatypeHelper.getJavaClassName());
+            frag.append(')');
+        }
+        frag.append(elementDatatypeHelper.newInstance(bound));
+        return frag;
+    }
+
+    @Override
+    public JavaCodeFragment newValueInstance(String value) {
+        return elementDatatypeHelper.newInstance(value);
     }
 
 }

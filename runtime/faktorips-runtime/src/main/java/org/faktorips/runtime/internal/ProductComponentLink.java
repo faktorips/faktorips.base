@@ -10,15 +10,18 @@
 
 package org.faktorips.runtime.internal;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IProductComponentLinkSource;
-import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
+import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,11 +36,15 @@ import org.w3c.dom.Element;
 public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject
         implements IProductComponentLink<T>, IXmlPersistenceSupport {
 
+    private static final String XML_ELEMENT_DESCRIPTION = "Description";
+    private static final String XML_ATTRIBUTE_LOCALE = "locale";
+
     private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
     private String targetName;
     private String targetId;
     private String associationName;
+    private InternationalString description;
 
     /**
      * Creates a new link for the given product component generation. Target and cardinality must be
@@ -118,7 +125,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
             throw new NullPointerException("The targetId for the ProductComponentLink may not be null.");
         }
         targetId = target.getId();
-        targetName = getQualifiedName(targetId);
+        targetName = target.getQualifiedName();
         if (cardinality == null) {
             throw new NullPointerException("The cardinality for the ProductComponentLink may not be null.");
         }
@@ -161,8 +168,13 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
 
         Integer minCardinality = Integer.valueOf(element.getAttribute("minCardinality"));
         Integer defaultCardinality = Integer.valueOf(element.getAttribute("defaultCardinality"));
-        cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
+        if (maxCardinality == null || Integer.valueOf(0).equals(maxCardinality)) {
+            cardinality = CardinalityRange.EXCLUDED;
+        } else {
+            cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
+        }
         initExtensionPropertiesFromXml(element);
+        initDescriptions(element);
     }
 
     @Override
@@ -177,6 +189,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         linkElement.setAttribute("target", targetName);
         linkElement.setAttribute("targetRuntimeId", getTargetId());
         writeExtensionPropertiesToXml(linkElement);
+        writeDescriptionToXml(linkElement);
         return linkElement;
     }
 
@@ -219,28 +232,37 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         return source;
     }
 
-    private String getQualifiedName(String runtimeId) {
-        // FIXME FIPS-10630 Hack ausbauen
-        IRuntimeRepository repository = getSource().getRepository();
-        try {
-            Method getQualifiedNameOfProductComponent = repository.getClass()
-                    .getMethod("getQualifiedNameOfProductComponent", IProductComponent.class);
-            return (String)getQualifiedNameOfProductComponent.invoke(repository, runtimeId);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
-            // fallback? can we find the name from the file?
+    @Override
+    public String getDescription(Locale locale) {
+        String string = description.get(locale);
+        if (string == null) {
+            return IpsStringUtils.EMPTY;
+        } else {
+            return string;
         }
-        if (runtimeId == null) {
-            return null;
-        }
-        int index = runtimeId.lastIndexOf('.');
-        if (index == -1) {
-            return runtimeId;
-        }
-        if (index == runtimeId.length() - 1) {
-            return ""; //$NON-NLS-1$
-        }
-        return runtimeId.substring(index + 1);
     }
 
+    private void initDescriptions(Element cmptElement) {
+        List<Element> descriptionElements = XmlUtil.getElements(cmptElement, XML_ELEMENT_DESCRIPTION);
+        List<LocalizedString> descriptions = new ArrayList<>(descriptionElements.size());
+        for (Element descriptionElement : descriptionElements) {
+            String localeCode = descriptionElement.getAttribute(XML_ATTRIBUTE_LOCALE);
+            Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
+            String text = descriptionElement.getTextContent();
+            descriptions.add(new LocalizedString(locale, text));
+        }
+        description = new DefaultInternationalString(descriptions,
+                descriptions.isEmpty() ? null : descriptions.get(0).getLocale());
+    }
+
+    private void writeDescriptionToXml(Element linkElement) {
+        if (description != null) {
+            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
+                Element descriptionElement = linkElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
+                descriptionElement.setAttribute(XML_ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
+                descriptionElement.setTextContent(localizedString.getValue());
+                linkElement.appendChild(descriptionElement);
+            }
+        }
+    }
 }

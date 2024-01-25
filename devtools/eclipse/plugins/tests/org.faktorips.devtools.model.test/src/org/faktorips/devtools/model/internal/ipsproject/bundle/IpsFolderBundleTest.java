@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -58,6 +60,9 @@ public class IpsFolderBundleTest {
 
     @Mock
     private Path myPath;
+
+    @Mock
+    private AbstractIpsBundleContentIndex bundleContentIndex;
 
     private IpsFolderBundle ipsFolderBundle;
 
@@ -110,6 +115,20 @@ public class IpsFolderBundleTest {
         InputStream inputStream = ipsFolderBundle.getResourceAsStream(myPath);
 
         assertEquals(expectedInputStream, inputStream);
+    }
+
+    @Test
+    public void testGetResourcePath() {
+        ipsFolderBundle = new IpsFolderBundle(ipsProject, folder);
+        ipsFolderBundle.setIOFactory(ioFactory);
+        ipsFolderBundle.setBundleContentIndex(bundleContentIndex);
+        Path rootFolder = Path.of("any/folder/test");
+        Path element = Path.of("anyPath");
+        when(ipsFolderBundle.getRootFolder(element)).thenReturn(rootFolder);
+
+        Path result = ipsFolderBundle.getResourcePath(element);
+
+        assertThat(result, is(rootFolder.resolve(element)));
     }
 
 }

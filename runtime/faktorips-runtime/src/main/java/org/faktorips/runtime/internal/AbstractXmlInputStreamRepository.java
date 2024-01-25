@@ -116,18 +116,19 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
     @Override
     protected IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry) {
         Element prodCmptElement = getDocumentElement(tocEntry);
+        ProductComponent productCmpt;
         if (!getProductVariantHelper().isProductVariantXML(prodCmptElement)) {
-            ProductComponent productCmpt = createProductComponentInstance(tocEntry.getImplementationClassName(),
+            productCmpt = createProductComponentInstance(tocEntry.getImplementationClassName(),
                     tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId());
             productCmpt.initFromXml(prodCmptElement);
-            return productCmpt;
         } else {
             ProductComponent originalProdCmpt = getProductVariantHelper().getOriginalProdCmpt(this, prodCmptElement);
-            ProductComponent productCmpt = createProductComponentInstance(originalProdCmpt.getClass().getName(),
+            productCmpt = createProductComponentInstance(originalProdCmpt.getClass().getName(),
                     tocEntry.getIpsObjectId(), tocEntry.getKindId(), tocEntry.getVersionId());
             getProductVariantHelper().initProductComponentVariation(originalProdCmpt, productCmpt, prodCmptElement);
-            return productCmpt;
         }
+        productCmpt.setQualifiedName(tocEntry.getIpsObjectQualifiedName());
+        return productCmpt;
     }
 
     @Override

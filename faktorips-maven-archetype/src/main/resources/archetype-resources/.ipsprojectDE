@@ -30,7 +30,7 @@
         <OptionalConstraints/>                             Definition of optional constraints. Details below.
         <SupportedLanguages/>                              List of supported natural languages. Details below.
     </IpsProject>
---><IpsProject xmlns="http://www.faktorzehn.org" changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/22.12/ipsProjectProperties.xsd">
+--><IpsProject xmlns="http://www.faktorzehn.org" changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/$IPS-MinVersion$/ipsProjectProperties.xsd">
 
  <!--
         Required Ips-Features
@@ -78,6 +78,9 @@
    <!--Hier können die qualifizierten Namen für zusätzliche Annotationen eingestellt werden, die an alle generierten Methoden angehängt werden (z.B. org.faktorips.runtime.annotation.IpsGenerated (um generierten Code von der Analyse durch SonarQube/JaCoCo auszuschließen) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Mehrere Annotationen werden mit Strichpunkt getrennt.-->
    <Property name="additionalAnnotations" value="org.faktorips.runtime.annotation.IpsGenerated"/>
 
+   <!--Legt fest ob die Generierung von zusätzlichen Annotationen für alle Methoden oder nur für @generated-Methoden erfolgen soll. Von Hand geschriebene, @restrainedmodifiable Methoden können von der Generierung von zusätzlichen Annotationen ausgeschlossen werden, wenn sie beispielsweise zur Steuerung der Code-Abdeckung verwendet werden. Erlaubte Werte sind 'GeneratedAndRestrainedModifiable' (Defaultwert) und 'OnlyGenerated'.-->
+   <Property name="additionalAnnotationsLocation" value="GeneratedAndRestrainedModifiable"/>
+
    <!--Konstantennamen für Camel-Case-Properties mit Unterstrich trennen.-->
    <Property name="camelCaseSeparated" value="true"/>
 
@@ -94,7 +97,7 @@
    <Property name="retainAnnotations" value=""/>
 
    <!--Legt fest wohin Formeln kompiliert werden.-->
-   <Property name="formulaCompiling" value="Both"/>
+   <Property name="formulaCompiling" value="XML"/>
 
    <!--Die Sprache in der Code und Dokumentation generiert werden. Derzeit werden die Werte de und en unterstützt.-->
    <Property name="generatorLocale" value="de"/>
@@ -137,6 +140,9 @@
 
    <!--Legt fest ob die ValueSet-Methoden für alle ValueSet-Implementierungen vereinheitlicht werden sollen oder wie ursprünglich ihren Typ im Methodennamen widerspiegeln sollen. Wird ein Manifest verwendet sollte diese Einstellung auch dort gepflegt werden.-->
    <Property name="valueSetMethods" value="Unified"/>
+   
+   <!--Legt fest ob die Methode getEffectiveFromAsCalendar() generiert werden soll. Funktioniert nur in Kombination mit der Einstellung "Basisklasse für Vertragsklassen".-->
+   <Property name="generateGetEffectiveFromAsCalendar" value="true"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 
@@ -226,8 +232,15 @@
              type="archive"
              file="base.ipsar">      The archive file.
           </Entry>
+         
+        Maven:
+          <Entry
+             container="JDTClasspathContainer"                      When using maven, the referenced projects can be replaced by the Maven-Classpath-Container.
+             path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"      This entry should be the last entry in the IpsObjectPath.
+             reexported="false" type="container" />
+          </Entry>
     -->
- <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="src/main/java">
+ <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="$OutputFolderMergableSources$">
   <Entry basePackageDerived="" basePackageMergable="" outputFolderDerived="" outputFolderMergable="" reexported="true" sourceFolder="\${IPS-SourceFolder}" tocPath="\${IPS-TocXML}.xml" type="src" validationMessagesBundle="\${IPS-ValidationMessageBundle}"/>
   <Entry container="JDTClasspathContainer" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" reexported="true" type="container"/>
  </IpsObjectPath>
@@ -368,7 +381,7 @@
             <!- - Severity for validation messages when model and persistence constraints don't match.
                 Possible values are ERROR, WARNING, INFO, and NONE. - ->
             <Setting name="persistenceColumnSizeChecksSeverity" value="ERROR"/>
-            <!- - Severity for validation messages when a custom datatype is used in an dependend project but is not configured in this project.
+            <!- - Severity for validation messages when a custom datatype is used for an attribute but not listed in the <DataTypes> section.
                 Possible values are ERROR, WARNING, INFO, and NONE. - ->
             <Setting name="missingDatatypeSeverity" value="ERROR"/>
             <!- - Format for table content data.
@@ -377,6 +390,8 @@
             <Setting name="tableContentFormat" value="XML"/>
             <!- - Default value for 'generate validation class' property on new PolicyCmptTypes.
             <Setting name="generateValidatorClassDefault" value="true"/>
+            <!- - Whether non-standard blanks such as the non-breaking space should be escaped as XML entities when writing XML files.
+            <Setting name="escapeNonStandardBlanks" value="false"/>
             <!- - Whether Ips-Files should be validated against their XSD schema.
             <Setting name="validateIpsSchema" value="true"/>
         </AdditionalSettings>
@@ -396,6 +411,8 @@
   <Setting name="missingDatatypeSeverity" value="WARNING"/>
   <Setting name="tableContentFormat" value="XML"/>
   <Setting enabled="false" name="generateValidatorClassDefault"/>
+  <Setting enabled="false" name="genericValidationDefault"/>
+  <Setting enabled="false" name="escapeNonStandardBlanks"/>
   <Setting enabled="true" name="validateIpsSchema"/>
  </AdditionalSettings>
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,9 +29,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * <p>
  * The information about included objects are read from MANIFEST.MF. A detailed description is
  * provided by {@link IpsBundleManifest}.
- * 
+ *
  * @see IpsBundleManifest
- * 
+ *
  * @author dicker
  */
 public abstract class AbstractIpsBundle extends AbstractIpsStorage {
@@ -73,7 +73,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
 
     /**
      * reads the MANIFEST.MF and initializes the bundle based on it.
-     * 
+     *
      */
     public abstract void initBundle() throws IOException;
 
@@ -142,14 +142,19 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
         return getResourceAsStream(rootFolder.resolve(path));
     }
 
+    @Override
+    public Path getResourcePath(Path element) {
+        return getRootFolder(element).resolve(element);
+    }
+
     /**
      * Returns the InputStream of the resource specified by the given path. The path is relative to
      * the root of this bundle.
      * <p>
      * The caller is responsible for closing the {@link InputStream}.
-     * 
+     *
      * @param resourcePath The path to the requested resource, relative to this bundle's root
-     * 
+     *
      * @return An InputStream that represents the content of the requested resource.
      */
     protected abstract InputStream getResourceAsStream(Path resourcePath);

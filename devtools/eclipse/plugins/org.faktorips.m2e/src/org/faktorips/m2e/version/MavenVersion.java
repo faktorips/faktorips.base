@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,9 +21,15 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 public class MavenVersion implements IVersion<MavenVersion> {
 
     private final DefaultArtifactVersion version;
+    private final String fakeVersion;
 
     public MavenVersion(String version) {
-        this.version = new DefaultArtifactVersion(version);
+        fakeVersion = version;
+        if (fakeVersion.startsWith("mvn:")) {
+            this.version = new DefaultArtifactVersion(version.split(":")[2]);
+        } else {
+            this.version = new DefaultArtifactVersion(version);
+        }
     }
 
     @Override
@@ -38,16 +44,24 @@ public class MavenVersion implements IVersion<MavenVersion> {
 
     @Override
     public String getUnqualifiedVersion() {
+        if (fakeVersion.startsWith("mvn:")) {
+            return fakeVersion;
+        }
         String versionString = asString();
-        if (versionString.equals(version.getQualifier())) {
+        String qualifier = version.getQualifier();
+        if (versionString.equals(qualifier)) {
             return ""; //$NON-NLS-1$
         }
-        int firstIndexOfSeperator = versionString.indexOf('-');
-        if (firstIndexOfSeperator > -1) {
-            return versionString.substring(0, firstIndexOfSeperator);
-        } else {
-            return versionString;
+        if (IpsStringUtils.isNotBlank(qualifier)) {
+            DefaultArtifactVersion qualifierVersion = new DefaultArtifactVersion(qualifier);
+            String qualifierQualifier = qualifierVersion.getQualifier();
+            if (!qualifierVersion.toString().equals(qualifierQualifier)) {
+                // FIPS-10931: Weird version format
+                return versionString.replace('-' + qualifier, "") + '-'
+                        + qualifier.replace('-' + qualifierQualifier, "");
+            }
         }
+        return versionString.replace('-' + qualifier, "");
     }
 
     @Override

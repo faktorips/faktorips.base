@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -53,7 +55,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 // TODO test mit pfad relativ zum workspace Testprojekt/lib/archive.jar
@@ -377,7 +379,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
 
     /**
      * Test Archive with default package only.
-     * 
+     *
      * ArchiveIpsPackageFragment#getChildIpsPackageFragments
      */
     @Test
@@ -443,6 +445,18 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         InputStream inStream = ipsArchive.getResourceAsStream("test.gif");
         inStream.read(fileContent);
         assertEquals("test", new String(fileContent));
+    }
+
+    @Test
+    public void testGetResourcePath() {
+        Path path = project.getProject().getFile("test.ipsar").getLocation();
+        CreateIpsArchiveOperation op = new CreateIpsArchiveOperation(project, path.toFile());
+        op.run(new NullProgressMonitor());
+        IpsArchive ipsArchive = new IpsArchive(project, path);
+        Path element = Path.of("archive");
+        Path result = ipsArchive.getResourcePath(element);
+
+        assertThat(result, is(path.resolve(element)));
     }
 
     @Test

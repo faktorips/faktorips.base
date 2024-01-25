@@ -31,9 +31,10 @@ public interface DeltaFixWizardStrategy<T extends IIpsObject, E extends ILabeled
      * 
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
      *            necessarily the project this ContentAttribute is part of.
+     * @param name The name of the new ContentType
      * @throws NullPointerException If {@link IIpsProject} is {@code null}.
      */
-    T findContentType(IIpsProject ipsProject);
+    T findContentType(IIpsProject ipsProject, String name);
 
     /**
      * Returns the {@link IIpsProject} of the content which is currently being fixed.
@@ -87,7 +88,7 @@ public interface DeltaFixWizardStrategy<T extends IIpsObject, E extends ILabeled
      * Gives back the correct description of the content type.
      */
     String getContentTypeString();
-
+    
     IpsObjectRefControl createContentTypeRefControl(UIToolkit uitoolkit, Composite workArea);
 
     void createControl(T contentType, IpsObjectRefControl contentTypeRefControl);

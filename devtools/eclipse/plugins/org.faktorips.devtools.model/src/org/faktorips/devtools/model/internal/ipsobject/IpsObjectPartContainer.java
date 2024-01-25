@@ -27,6 +27,7 @@ import java.util.Set;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -39,7 +40,6 @@ import org.faktorips.devtools.model.internal.ValidationResultCache;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.internal.method.Method;
-import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -161,7 +161,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             IVersion<?> version = versionProvider.getProjectVersion();
             if (version.isNotEmptyVersion()) {
-                return version.getUnqualifiedVersion();
+                if (IIpsModelExtensions.get().getReleaseExtension(getIpsProject()).isPresent()) {
+                    return version.asString();
+                } else {
+                    return version.getUnqualifiedVersion();
+                }
             }
         }
         return IpsStringUtils.EMPTY;

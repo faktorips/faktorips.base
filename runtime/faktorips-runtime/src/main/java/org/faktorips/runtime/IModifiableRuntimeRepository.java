@@ -19,7 +19,7 @@ import org.faktorips.values.InternationalString;
 
 /**
  * An extension of the {@link IRuntimeRepository} that allows to put files in the repository.
- * 
+ *
  * @since 24.1
  */
 public interface IModifiableRuntimeRepository extends IRuntimeRepository {
@@ -44,13 +44,13 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
     /**
      * Puts the given enum values in the repository replacing all existing values for the given
      * enumType, removing any description.
-     * 
+     *
      * @see #putEnumValues(Class, List, InternationalString)
-     * 
+     *
      * @param enumTypeClass The Java class representing the enumeration type.
      * @param enumValues The value of the enumeration type as list.
      */
-    public default <T> void putEnumValues(Class<T> enumTypeClass, List<T> enumValues) {
+    default <T> void putEnumValues(Class<T> enumTypeClass, List<T> enumValues) {
         putEnumValues(enumTypeClass, enumValues, DefaultInternationalString.EMPTY);
     }
 
@@ -70,7 +70,7 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      *
      * @see IRuntimeRepository#isModifiable()
      */
-    void putProductCmptGeneration(IProductComponentGeneration generation, String qName);
+    void putProductCmptGeneration(IProductComponentGeneration generation);
 
     /**
      * Puts the product component into the repository. If the repository already contains a
@@ -80,7 +80,7 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      *
      * @see IRuntimeRepository#isModifiable()
      */
-    void putProductComponent(IProductComponent productCmpt, String qName);
+    void putProductComponent(IProductComponent productCmpt);
 
     /**
      * Puts the table into the repository. Replaces any table instance of the same class or any of

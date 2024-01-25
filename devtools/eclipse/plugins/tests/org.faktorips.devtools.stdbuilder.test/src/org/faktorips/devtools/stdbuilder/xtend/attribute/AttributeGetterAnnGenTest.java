@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
@@ -86,6 +89,45 @@ public class AttributeGetterAnnGenTest {
     }
 
     @Test
+    public void testCreateAnnotation_product_MultiValuePrimitive() throws Exception {
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.UNRESTRICTED, true);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, primitive = true)"
+                                + System.lineSeparator())));
+    }
+
+    @Test
+    public void testCreateAnnotation_product_stringlength() throws Exception {
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.STRINGLENGTH);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.StringLength)"
+                                + System.lineSeparator())));
+    }
+
+    @Test
+    public void testCreateAnnotation_product_derived() throws Exception {
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.DERIVED);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Derived)"
+                                + System.lineSeparator())));
+    }
+
+    @Test
     public void testCreateAnnotation_policy_changeable_enum() throws Exception {
         XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE, ValueSetType.ENUM);
 
@@ -122,6 +164,34 @@ public class AttributeGetterAnnGenTest {
                 codeFragment.getSourcecode(),
                 is(equalTo(
                         ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator()))));
+    }
+
+    @Test
+    public void testCreateAnnotation_policy_changeable_stringlength() throws Exception {
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.STRINGLENGTH);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xPolicyAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.StringLength)"
+                                + System.lineSeparator()))));
+    }
+
+    @Test
+    public void testCreateAnnotation_policy_changeable_derived() throws Exception {
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.DERIVED);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xPolicyAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Derived)"
                                 + System.lineSeparator()))));
     }
 
@@ -209,15 +279,35 @@ public class AttributeGetterAnnGenTest {
         IValueSet valueSet = mock(IValueSet.class);
         when(valueSet.getValueSetType()).thenReturn(valueSetType);
         when(policyCmptTypeAttribute.getValueSet()).thenReturn(valueSet);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(policyCmptTypeAttribute.getIpsProject()).thenReturn(ipsProject);
+        when(policyCmptTypeAttribute.getDatatype()).thenReturn("fake");
+        DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
+        ValueDatatype datatype = mock(ValueDatatype.class);
+        when(datatype.isPrimitive()).thenReturn(false);
+        when(datatypeHelper.getDatatype()).thenReturn(datatype);
+        when(ipsProject.findDatatypeHelper("fake")).thenReturn(datatypeHelper);
         return new XPolicyAttribute(policyCmptTypeAttribute, modelContext, null);
     }
 
     private XProductAttribute xProductAttribute(String name, ValueSetType valueSetType) {
+        return xProductAttribute(name, valueSetType, false);
+    }
+
+    private XProductAttribute xProductAttribute(String name, ValueSetType valueSetType, boolean primitive) {
         IProductCmptTypeAttribute productCmptTypeAttribute = mock(IProductCmptTypeAttribute.class);
         when(productCmptTypeAttribute.getName()).thenReturn(name);
         IValueSet valueSet = mock(IValueSet.class);
         when(valueSet.getValueSetType()).thenReturn(valueSetType);
         when(productCmptTypeAttribute.getValueSet()).thenReturn(valueSet);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(productCmptTypeAttribute.getIpsProject()).thenReturn(ipsProject);
+        when(productCmptTypeAttribute.getDatatype()).thenReturn("fake");
+        DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
+        ValueDatatype datatype = mock(ValueDatatype.class);
+        when(datatype.isPrimitive()).thenReturn(primitive);
+        when(datatypeHelper.getDatatype()).thenReturn(datatype);
+        when(ipsProject.findDatatypeHelper("fake")).thenReturn(datatypeHelper);
         return new XProductAttribute(productCmptTypeAttribute, modelContext, null);
     }
 

@@ -11,6 +11,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonG
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
 class ProductAttributeTmpl {
 
@@ -25,6 +26,32 @@ class ProductAttributeTmpl {
             public static final String «field(constantNamePropertyName)» = "«name»";
     '''
 
+  def package static constantForValueSet(XProductAttribute it) '''
+    «IF generateConstantForValueSet»
+      /**
+       *«localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
+      «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+       *
+       * @generated
+       */
+      «getAnnotations(AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES)»
+      public static final «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(constantNameValueSet)» = «valuesetCode»;
+    «ENDIF»
+  '''
+  
+    def package static constantForDefaultValue(XProductAttribute it) '''
+    «IF generateField»
+      /**
+       *«localizedJDoc("FIELD_DEFAULTVALUE_CONSTANT", name)»
+      «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+       *
+       * @generated
+       */
+      «getAnnotations(AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT)»
+      public static final «javaClassName» «field(constantNameDefaultValue)» = «defaultValueCode»;
+    «ENDIF»
+  '''
+
     def package static memberField (XProductAttribute it) '''
             /**
              *«localizedJDoc("FIELD_VALUE", name.toFirstUpper)»
@@ -33,7 +60,7 @@ class ProductAttributeTmpl {
              * @generated
              */
             «getAnnotations(PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)»
-            private «javaClassName» «field(fieldName)»;
+            private «javaClassName» «field(fieldName)» = «constantNameDefaultValue»;
     '''
 
     def package static abstractGetter (XProductAttribute it) '''
@@ -184,7 +211,6 @@ class ProductAttributeTmpl {
              */
             private void «method(methodNameWriteToXml, Element, "element")» {
                 Element attributeElement = «ValueToXmlHelper».«deleteExistingElementAndCreateNewElement("element", XML_TAG_ATTRIBUTE_VALUE, constantNamePropertyName)»;
-                
                 «IF multiValue»
                     «IF multiValueDirectXmlHandling»
                         «MultiValueXmlHelper».«addMultiValueToElement("attributeElement", "this." + fieldName)»;

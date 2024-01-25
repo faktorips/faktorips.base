@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -78,6 +78,18 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
     @Test
     public void testValidateLeadingNumber() {
         literalNameAttributeValue.setValue(ValueFactory.createStringValue("42ab"));
+        MessageList messages = literalNameAttributeValue.validate(ipsProject);
+        assertEquals(1, messages.getNoOfMessages(Message.ERROR));
+        Message message = messages.getFirstMessage(Message.ERROR);
+        assertEquals(message.getCode(),
+                IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER);
+        assertEquals(message.getInvalidObjectProperties().get(0), new ObjectProperty(literalNameAttributeValue,
+                IEnumAttributeValue.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidateUnderscore() {
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue("_"));
         MessageList messages = literalNameAttributeValue.validate(ipsProject);
         assertEquals(1, messages.getNoOfMessages(Message.ERROR));
         Message message = messages.getFirstMessage(Message.ERROR);

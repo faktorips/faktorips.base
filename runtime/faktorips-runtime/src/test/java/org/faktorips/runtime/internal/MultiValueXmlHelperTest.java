@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,9 +15,13 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -65,6 +69,7 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
         NodeList outerValueElementNodeList = attrValueElement.getChildNodes();
         assertEquals(1, outerValueElementNodeList.getLength());
         Element outerValueElement = (Element)outerValueElementNodeList.item(0);
+        assertEquals("MultiValue", outerValueElement.getAttribute("valueType"));
 
         NodeList multiValueElementNodeList = outerValueElement.getChildNodes();
         assertEquals(1, multiValueElementNodeList.getLength());
@@ -76,6 +81,36 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
         assertNull(ValueToXmlHelper.getValueFromElement((Element)valueElementNodeList.item(1)));
         assertEquals("bar", ValueToXmlHelper.getValueFromElement((Element)valueElementNodeList.item(2)));
         assertEquals("4711", ValueToXmlHelper.getValueFromElement((Element)valueElementNodeList.item(3)));
+    }
+
+    @Test
+    public void testAddInternationalStringsToElement() {
+        List<DefaultInternationalString> stringList = new ArrayList<>();
+        stringList.add(new DefaultInternationalString(
+                Arrays.asList(new LocalizedString(Locale.GERMAN, "Eins"), new LocalizedString(Locale.ENGLISH, "One")),
+                Locale.GERMAN));
+        stringList.add(new DefaultInternationalString(
+                Arrays.asList(new LocalizedString(Locale.GERMAN, "Zwei"), new LocalizedString(Locale.ENGLISH, "Two")),
+                Locale.GERMAN));
+
+        Element attrValueElement = getTestDocument().createElement(ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE);
+        MultiValueXmlHelper.addInternationalStringsToElement(attrValueElement, stringList);
+
+        NodeList outerValueElementNodeList = attrValueElement.getChildNodes();
+        assertEquals(1, outerValueElementNodeList.getLength());
+        Element outerValueElement = (Element)outerValueElementNodeList.item(0);
+        assertEquals("MultiValue", outerValueElement.getAttribute("valueType"));
+
+        List<DefaultInternationalString> internationalStringsFromXML = MultiValueXmlHelper
+                .getInternationalStringsFromXML(attrValueElement);
+
+        assertEquals(2, internationalStringsFromXML.size());
+        assertEquals("Eins", internationalStringsFromXML.get(0).get(Locale.GERMAN));
+        assertEquals("One", internationalStringsFromXML.get(0).get(Locale.ENGLISH));
+        assertEquals(Locale.GERMAN, internationalStringsFromXML.get(0).getDefaultLocale());
+        assertEquals("Zwei", internationalStringsFromXML.get(1).get(Locale.GERMAN));
+        assertEquals("Two", internationalStringsFromXML.get(1).get(Locale.ENGLISH));
+        assertEquals(Locale.GERMAN, internationalStringsFromXML.get(1).getDefaultLocale());
     }
 
     @Test

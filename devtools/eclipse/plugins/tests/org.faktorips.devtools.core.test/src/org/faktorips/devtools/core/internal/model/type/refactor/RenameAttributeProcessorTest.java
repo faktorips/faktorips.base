@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -120,14 +120,14 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     /**
      * Creates one generated valueSet{@link IValidationRule} and one manually set
      * {@link IValidationRule}, both referencing the same {@link IPolicyCmptTypeAttribute}.
-     * 
+     *
      * Tests if the references of the {@link IPolicyCmptTypeAttribute} inside the
      * {@link IValidationRule}s are correctly updated after a rename Attribute refactoring. Also
      * checks if the {@link IValidationRule} names and message codes are properly updated.
-     * 
+     *
      * Generated value Set {@link IValidationRule}s names with a generated ruleName should be
      * adjusted to renamed {@link IPolicyCmptTypeAttribute}.
-     * 
+     *
      * Manually set {@link IValidationRule} names and message codes should not be renamed.
      */
     @Test
@@ -203,12 +203,12 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     /**
      * Creates another attribute in the second {@link IPolicyCmptType} that that corresponds exactly
      * to the attribute of the already existing {@link IPolicyCmptType}.
-     * 
+     *
      * This other {@link IPolicyCmptType} is configured by a new {@link IProductCmptType}. Based on
      * that {@link IProductCmptType} exists an {@link IProductCmptType}. The refactoring of the
      * original {@link IPolicyCmptTypeAttribute} may not cause modifications to this new
      * {@link IProductCmpt}s {@link IConfigElement}s.
-     * 
+     *
      * Also creates another {@link ITestCaseType} based on the new {@link IPolicyCmptType}
      * {@link IPolicyCmptTypeAttribute}. The new {@link ITestCaseType} may not be modified by the
      * refactoring, too.

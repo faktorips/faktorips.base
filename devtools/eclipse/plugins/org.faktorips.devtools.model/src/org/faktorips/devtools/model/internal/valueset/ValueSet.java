@@ -104,7 +104,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        if(abstractFlag) {
+        if (abstractFlag) {
             element.setAttribute(PROPERTY_ABSTRACT, Boolean.toString(abstractFlag));
         }
     }

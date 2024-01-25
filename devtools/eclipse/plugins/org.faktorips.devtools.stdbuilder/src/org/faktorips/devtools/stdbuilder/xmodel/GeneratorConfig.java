@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,7 +47,7 @@ public class GeneratorConfig {
     /**
      * Returns the {@link GeneratorConfig} from the {@link StandardBuilderSet} associated with the
      * given object's {@link IIpsPackageFragmentRoot}.
-     * 
+     *
      * @see GeneratorModelContext#getGeneratorConfig(IIpsObject)
      */
     public static GeneratorConfig forIpsObject(IIpsObject ipsObject) {
@@ -58,7 +58,7 @@ public class GeneratorConfig {
     /**
      * Returns the {@link GeneratorConfig} from the {@link StandardBuilderSet} associated with the
      * given file's {@link IIpsPackageFragmentRoot}.
-     * 
+     *
      * @see GeneratorModelContext#getGeneratorConfig(IIpsSrcFile)
      */
     public static GeneratorConfig forIpsSrcFile(IIpsSrcFile ipsSrcFile) {
@@ -85,7 +85,7 @@ public class GeneratorConfig {
      * Returns whether the method names should be unified ({@link ValueSetMethods#Unified}), should
      * reflect the {@link ValueSetType} in their name ({@link ValueSetMethods#ByValueSetType}) or
      * both ({@link ValueSetMethods#Both}).
-     * 
+     *
      * @see StandardBuilderSet#CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS
      */
     public ValueSetMethods getValueSetMethods() {
@@ -107,7 +107,7 @@ public class GeneratorConfig {
      * For example if this property is true, the constant for the property
      * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the
      * property is false the constant name would be CHECKANYTHINGANDDOSOMETHING.
-     * 
+     *
      * @see StandardBuilderSet#CONFIG_PROPERTY_CAMELCASE_SEPARATED
      */
     public boolean isGenerateSeparatedCamelCase() {
@@ -143,11 +143,11 @@ public class GeneratorConfig {
     /**
      * Returns <code>true</code> if the given project is configured to generate published
      * interfaces, <code>false</code> else.
-     * 
+     *
      * This method uses the context's own {@link IIpsArtefactBuilderSetConfig}. This is important as
      * the project's {@link IIpsArtefactBuilderSetConfig config} may not be available during
      * initialization of the builder set.
-     * 
+     *
      * @param ipsProject The project in which the property is configured
      * @return <code>true</code> if the project is configured to generate published interfaces,
      *             <code>false</code> if not.
@@ -255,6 +255,16 @@ public class GeneratorConfig {
 
     public String getConfiguredAdditionalAnnotations() {
         return getStringProperty(StandardBuilderSet.CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS, IpsStringUtils.EMPTY);
+    }
+
+    /**
+     * Returns whether the annotations configured in {@link #getConfiguredAdditionalAnnotations}
+     * should be generated on restrained modifiable methods.
+     *
+     * @since 24.1
+     */
+    public String getAdditionalAnnotationsLocation() {
+        return config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS_LOCATION);
     }
 
     public String getConfiguredRetainedAnnotations() {

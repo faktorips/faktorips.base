@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.productcmpt;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -118,8 +119,8 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
     /**
      * Finds the product component type association this link is an instance of. Note that the
-     * method searches not only the direct product component type this product component
-     * is based on, but also it's super type hierarchy.
+     * method searches not only the direct product component type this product component is based
+     * on, but also it's super type hierarchy.
      *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
@@ -260,6 +261,12 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
     @Override
     IProductCmptLink findTemplateProperty(IIpsProject ipsProject);
+
+    @Override
+    Function<IProductCmptLink, Object> getValueGetter();
+
+    @Override
+    Function<IProductCmptLink, Object> getInternalValueGetter();
 
     /** A class that can be used to identify links by means of their association and target. */
     class LinkIdentifier implements ITemplatedValueIdentifier {

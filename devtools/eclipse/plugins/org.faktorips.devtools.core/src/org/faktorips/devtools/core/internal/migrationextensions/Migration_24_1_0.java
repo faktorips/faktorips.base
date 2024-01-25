@@ -9,7 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -33,12 +37,21 @@ import org.faktorips.runtime.MessageList;
 public class Migration_24_1_0 extends MarkAsDirtyMigration {
 
     private static final String VERSION = "24.1.0"; //$NON-NLS-1$
+    private static final Set<String> ALLOWED_XML_CONTENT = Set.of(
+            "<" + IpsObjectType.TABLE_CONTENTS.getXmlElementName(),
+            "<" + IpsObjectType.ENUM_CONTENT.getXmlElementName(),
+            "<" + IpsObjectType.PRODUCT_CMPT.getXmlElementName());
 
     public Migration_24_1_0(IIpsProject projectToMigrate, String featureId) {
+        this(projectToMigrate, featureId, VERSION);
+    }
+
+    Migration_24_1_0(IIpsProject projectToMigrate, String featureId, String migrationVersion) {
         super(projectToMigrate,
                 featureId,
-                Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS),
-                VERSION,
+                Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS,
+                        IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE),
+                migrationVersion,
                 Messages.Migration_24_1_0_description);
     }
 
@@ -79,19 +92,31 @@ public class Migration_24_1_0 extends MarkAsDirtyMigration {
             if (member.getType() == AResourceType.FOLDER) {
                 deleteDerivedFolder(monitor, (AFolder)member);
             }
-            if (isXml(member)) {
+            if (isFipsXml(member)) {
                 member.delete(monitor);
             }
         }
     }
 
-    private boolean isXml(AResource member) {
+    private boolean isFipsXml(AResource member) {
         String fileName = member.getName();
         int lastDot = fileName.lastIndexOf(".");
-        if (lastDot < 0) {
+        if (lastDot < 0 || !".xml".equalsIgnoreCase(fileName.substring(lastDot))) {
             return false;
         }
-        return ".xml".equalsIgnoreCase(fileName.substring(lastDot));
+        String line = readSecondLine(member.getLocation());
+        return ALLOWED_XML_CONTENT.stream().anyMatch(s -> line.startsWith(s));
+    }
+
+    private String readSecondLine(Path fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName.toFile()));) {
+            // ignore first line
+            br.readLine();
+            String secondLine = br.readLine();
+            return secondLine == null ? "" : secondLine;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

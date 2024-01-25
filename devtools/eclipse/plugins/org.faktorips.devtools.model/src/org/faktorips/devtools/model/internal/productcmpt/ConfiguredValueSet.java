@@ -65,6 +65,20 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         return TemplateValueFinder.findTemplateValue(this, IConfiguredValueSet.class);
     }
 
+    /**
+     * Returns the internal value set, independent of the template settings.
+     *
+     * @since 24.1.1
+     */
+    public IValueSet getValueSetInternal() {
+        return valueSet;
+    }
+
+    @Override
+    public IValueSet getNonTemplateValueSet() {
+        return valueSet;
+    }
+
     @Override
     public boolean hasTemplateForProperty(IIpsProject ipsProject) {
         return TemplateValueFinder.hasTemplateForValue(this, IConfiguredValueSet.class);
@@ -273,7 +287,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     }
 
     @Override
-    protected void templateValueChanged() {
+    public void templateValueChanged() {
         valueSet = getValueSet().copy(this, getNextPartId());
     }
 

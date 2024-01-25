@@ -10,15 +10,10 @@
 
 package org.faktorips.runtime.model.type;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -27,7 +22,6 @@ import org.faktorips.runtime.IProductComponentLinkSource;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
@@ -36,9 +30,6 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
-import org.faktorips.values.Decimal;
-import org.faktorips.values.Money;
-import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -51,27 +42,16 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     public static final String PROPERTY_DEFAULT_VALUE = "defaultValue";
     public static final String PROPERTY_VALUE_SET = "valueSet";
 
-    private static final Map<Class<?>, Object> NULL_OBJECTS = new HashMap<>();
-
-    private static final String RESOURCE_BUNDLE_NAME = DefaultPolicyAttribute.class.getName();
     private static final String MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET = "Validation.DefaultValueNotInValueSet";
     private static final String MSGKEY_VALUE_SET_NOT_IN_VALUE_SET = "Validation.ValueSetNotInValueSet";
-
-    static {
-        NULL_OBJECTS.put(Decimal.class, Decimal.NULL);
-        NULL_OBJECTS.put(Money.class, Money.NULL);
-        NULL_OBJECTS.put(String.class, IpsStringUtils.EMPTY);
-    }
 
     private final Method getter;
     private final Method setter;
 
     private Method defaultValueGetter;
     private Method defaultValueSetter;
-    private Field defaultValueField;
 
     private Map<Type, Method> valueSetMethods = new HashMap<>(2);
-    private Map<Type, Field> valueSetFields = new HashMap<>(2);
     private Method allowedValuesSetter;
 
     public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
@@ -110,26 +90,12 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     @Override
     public Object getDefaultValue(IModelObject modelObject) {
         if (!isProductRelevant()) {
-            return invokeField(getDefaultValueField(), modelObject);
+            return IpsModel.getPolicyCmptType(modelObject).getAttribute(getName()).getDefaultValueFromModel();
         } else {
             IConfigurableModelObject configurableModelObject = (IConfigurableModelObject)modelObject;
             return getDefaultValue(configurableModelObject.getProductComponent(),
                     configurableModelObject.getEffectiveFromAsCalendar());
         }
-    }
-
-    private Field getDefaultValueField() {
-        if (defaultValueField == null) {
-            defaultValueField = findDefaultValueField(getType());
-        }
-        return defaultValueField;
-    }
-
-    private Field findDefaultValueField(Type type) {
-        return type.findDeclaredField(IpsDefaultValue.class, a -> a.value().equals(getName()))
-                .orElseThrow(() -> new IllegalStateException(
-                        "No field found for retrieving the default value of attribute: " + getType().getName()
-                                + '.' + getName()));
     }
 
     @Override
@@ -204,16 +170,6 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         return getValueSet(valueSetMethod, productObject, context);
     }
 
-    @Override
-    public ValueSet<?> getValueSetFromModel() {
-        Field valueSetField = getValueSetField(getType());
-        try {
-            return valueSetField == null ? new UnrestrictedValueSet<>() : (ValueSet<?>)valueSetField.get(null);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException("The value can not be retrieved.");
-        }
-    }
-
     // CSOFF: CyclomaticComplexity
     private ValueSet<?> getValueSet(Method valueSetMethod, Object object, IValidationContext context) {
         if (valueSetMethod == null) {
@@ -259,16 +215,6 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         }
     }
 
-    private Field getValueSetField(Type model) {
-        if (valueSetFields.containsKey(model)) {
-            return valueSetFields.get(model);
-        } else {
-            Field valueSetField = findValueSetField(model);
-            valueSetFields.put(model, valueSetField);
-            return valueSetField;
-        }
-    }
-
     @Override
     public DefaultPolicyAttribute createOverwritingAttributeFor(Type subType) {
         return new DefaultPolicyAttribute((PolicyCmptType)subType, getter, setter, isChangingOverTime());
@@ -276,10 +222,6 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     private Method findValueSetMethod(Type type) {
         return type.searchDeclaredMethod(IpsAllowedValues.class, a -> a.value().equals(getName()));
-    }
-
-    private Field findValueSetField(Type type) {
-        return type.findDeclaredField(IpsAllowedValues.class, a -> a.value().equals(getName())).orElse(null);
     }
 
     @Override
@@ -316,7 +258,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     @Override
     public void removeValue(IModelObject modelObject) {
-        setValue(modelObject, NULL_OBJECTS.get(getDatatype()));
+        setValue(modelObject, NullObjects.of(getDatatype()));
     }
 
     @Override
@@ -357,27 +299,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 PROPERTY_VALUE_SET);
     }
 
-    // CSOFF: ParameterNumber
-    private <V, R> void validate(MessageList list,
-            IValidationContext context,
-            Supplier<V> valueGetter,
-            Supplier<R> referenceValueGetter,
-            BiPredicate<V, R> valueChecker,
-            String msgCode,
-            String msgKey,
-            String property) {
-        V value = valueGetter.get();
-        if (!ObjectUtil.isNull(value)) {
-            R referenceValue = referenceValueGetter.get();
-            if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
-                Locale locale = context.getLocale();
-                ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, locale);
-                list.newError(msgCode,
-                        String.format(messages.getString(msgKey), value, getLabel(locale), referenceValue),
-                        this, property);
-            }
-        }
+    @Override
+    protected String getResourceBundleName() {
+        return DefaultPolicyAttribute.class.getName();
     }
-    // CSON: ParameterNumber
-
 }

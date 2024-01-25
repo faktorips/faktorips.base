@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -40,7 +41,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class Formula extends Expression implements IFormula {
@@ -116,6 +117,10 @@ public class Formula extends Expression implements IFormula {
             return ""; //$NON-NLS-1$
         }
 
+        return super.getExpression();
+    }
+
+    public String getExpressionInternal() {
         return super.getExpression();
     }
 
@@ -246,6 +251,11 @@ public class Formula extends Expression implements IFormula {
     @Override
     public Function<IPropertyValue, Object> getValueGetter() {
         return getPropertyValueType().getValueGetter();
+    }
+
+    @Override
+    public Function<? extends ITemplatedValue, Object> getInternalValueGetter() {
+        return getPropertyValueType().getInternalValueGetter();
     }
 
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -112,6 +112,7 @@ public class IpsProjectBuilder {
     }
 
     private IIpsProject newIpsProject() {
+        String newName = name;
         if (Abstractions.isEclipseRunning()) {
             ICoreRunnable runnable = $ -> {
                 AProject project = new PlatformProjectBuilder().name(name).description(description).build();
@@ -129,9 +130,10 @@ public class IpsProjectBuilder {
                 throw new IpsException(e);
             }
             ipsPluginTest.addIpsCapabilities(project);
+            newName = project.getName();
         }
 
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(name);
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(newName);
         IIpsProjectProperties properties = ipsProject.getProperties();
 
         properties.setChangingOverTimeDefault(changingOverTimeDefault);

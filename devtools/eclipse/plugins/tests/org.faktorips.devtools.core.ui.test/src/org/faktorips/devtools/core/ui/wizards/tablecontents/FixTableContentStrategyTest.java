@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -93,6 +94,22 @@ public class FixTableContentStrategyTest extends AbstractIpsPluginTest {
         tableStrategy.createNewContentAttributeValues(assignTableAttributesPage);
 
         assertEquals(3, table.getColumnReferencesCount());
+        assertEquals("", table.getTableRows().getRow(0).getValue(2));
+        assertEquals("", table.getTableRows().getRow(1).getValue(2));
+    }
+
+    @Test
+    public void testCreateNewContentAttributeValues_DefaultNull() {
+        int[] notAssignedColumnsList = { 1, 2, 0 };
+        when(assignTableAttributesPage.getColumnOrder()).thenReturn(notAssignedColumnsList);
+        when(assignTableAttributesPage.isFillNewColumnsWithNull()).thenReturn(true);
+        IColumn newColumn = structure.newColumn();
+        newColumn.setName("Deutsch");
+        tableStrategy.createNewContentAttributeValues(assignTableAttributesPage);
+
+        assertEquals(3, table.getColumnReferencesCount());
+        assertNull(table.getTableRows().getRow(0).getValue(2));
+        assertNull(table.getTableRows().getRow(1).getValue(2));
     }
 
     @Test

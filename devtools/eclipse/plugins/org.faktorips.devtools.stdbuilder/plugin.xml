@@ -181,6 +181,18 @@
             type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
+            defaultValue="GeneratedAndRestrainedModifiable"
+            description="%additionalAnnotationsLocationDescription"
+            disableValue="GeneratedAndRestrainedModifiable"
+            label="%additionalAnnotationsLocationLabel"
+            name="additionalAnnotationsLocation"
+            type="enum">
+            <discreteValues>
+               <value value="GeneratedAndRestrainedModifiable" />
+               <value value="OnlyGenerated" />
+            </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
             defaultValue=""
             description="%retainAnnotationsDescription"
             disableValue=""

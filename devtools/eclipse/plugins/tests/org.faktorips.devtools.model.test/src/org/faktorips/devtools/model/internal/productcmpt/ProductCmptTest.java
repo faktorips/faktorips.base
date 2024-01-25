@@ -133,7 +133,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = newIpsProject(new ArrayList<Locale>());
+        ipsProject = newIpsProject(new ArrayList<>());
         root = ipsProject.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
@@ -1601,18 +1601,18 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         List<IValidationRuleConfig> rules = productCmpt.getValidationRuleConfigs();
         assertEquals(0, rules.size());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
         rules = productCmpt.getValidationRuleConfigs();
         assertEquals(1, rules.size());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule2");
         rules = productCmpt.getValidationRuleConfigs();
         assertEquals(2, rules.size());
     }
 
-    private IValidationRuleConfig newValidationRuleConfig() {
+    private IValidationRuleConfig newValidationRuleConfig(String ruleName) {
         IValidationRule rule = mock(IValidationRule.class);
-        when(rule.getPropertyName()).thenReturn("newRule");
+        when(rule.getPropertyName()).thenReturn(ruleName);
         when(rule.isActivatedByDefault()).thenReturn(false);
         when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE);
         return productCmpt.newValidationRuleConfig(rule);
@@ -1622,10 +1622,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testGetNumValidationRules() {
         assertEquals(0, productCmpt.getNumOfValidationRules());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
         assertEquals(1, productCmpt.getNumOfValidationRules());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule2");
         assertEquals(2, productCmpt.getNumOfValidationRules());
     }
 
@@ -1633,10 +1633,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testNewValidationRule() {
         assertEquals(0, productCmpt.getNumOfValidationRules());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
         assertEquals(1, productCmpt.getChildren().length);
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule2");
         assertEquals(2, productCmpt.getChildren().length);
     }
 

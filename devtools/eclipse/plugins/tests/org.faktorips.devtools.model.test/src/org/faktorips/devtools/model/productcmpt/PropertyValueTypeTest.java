@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,6 +21,8 @@ import static org.mockito.Mockito.when;
 import java.util.Comparator;
 
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
+import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -188,6 +190,38 @@ public class PropertyValueTypeTest {
     public void testGetValueSetter_RuleConfig() throws Exception {
         PropertyValueType.VALIDATION_RULE_CONFIG.getValueSetter().accept(ruleConfig, true);
         verify(ruleConfig).setActive(true);
+    }
+
+    @Test
+    public void testGetValueGetterInternal_attributeValue() throws Exception {
+        AttributeValue attributeValue = mock(AttributeValue.class);
+        IValueHolder<?> value = mock(IValueHolder.class);
+        doReturn(value).when(attributeValue).getValueHolderInternal();
+
+        assertThat(PropertyValueType.ATTRIBUTE_VALUE.getInternalValueGetter().apply(attributeValue), is((Object)value));
+    }
+
+    @Test
+    public void testGetValueGetterInternal_configuredValueSet() throws Exception {
+        ConfiguredValueSet configuredValueSet = mock(ConfiguredValueSet.class);
+        doReturn(valueSet1).when(configuredValueSet).getValueSetInternal();
+
+        assertThat(PropertyValueType.CONFIGURED_VALUESET.getInternalValueGetter().apply(configuredValueSet),
+                is((Object)valueSet1));
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test
+    public void testCopyValue() {
+        IAttributeValue attributeValue2 = mock(IAttributeValue.class);
+        IValueHolder<?> value = mock(IValueHolder.class);
+        IValueHolder<?> valueCopy = mock(IValueHolder.class);
+        when(value.copy(attributeValue2)).thenReturn((IValueHolder)valueCopy);
+        doReturn(value).when(attributeValue).getValueHolder();
+
+        PropertyValueType.ATTRIBUTE_VALUE.copyValue(attributeValue, attributeValue2);
+
+        verify(attributeValue2).setValueHolder(valueCopy);
     }
 
 }

@@ -27,17 +27,15 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
     private AssignContentAttributesPage<T, E> assignContentAttributesPage;
     private UIToolkit uiToolkit;
     private IIpsObject content;
-    private IIpsObject contentType;
 
     /** Creates the {@link ChooseContentTypePage}. */
-    public ChooseContentTypePage(IIpsObject contentType, UIToolkit uiToolkit,
+    public ChooseContentTypePage(UIToolkit uiToolkit,
             DeltaFixWizardStrategy<T, E> contentStrategy,
             AssignContentAttributesPage<T, E> assignContentAttributesPage) {
         super(NLS.bind(Messages.FixContentWizard_chooseContentTypePageTitle, contentStrategy.getContentTypeString()));
         setTitle(
                 NLS.bind(Messages.FixContentWizard_chooseContentTypePageTitle, contentStrategy.getContentTypeString()));
         setPageComplete(false);
-        this.contentType = contentType;
         this.uiToolkit = uiToolkit;
         this.contentStrategy = contentStrategy;
         this.content = contentStrategy.getContent();
@@ -56,7 +54,7 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
                 workArea);
         contentTypeRefControl.getTextControl().addModifyListener($ -> contentTypeModified(contentTypeRefControl));
 
-        T newContentType = contentStrategy.findContentType(contentStrategy.getIpsProject());
+        T newContentType = contentStrategy.findContentType(contentStrategy.getIpsProject(), null);
 
         contentStrategy.createControl(newContentType, contentTypeRefControl);
 
@@ -77,7 +75,7 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
 
         String text = contentTypeRefControl.getText();
 
-        contentType = contentStrategy.findContentType(contentStrategy.getIpsProject());
+        T contentType = contentStrategy.findContentType(contentStrategy.getIpsProject(), text);
 
         setErrorMessage(null);
         boolean pageComplete = true;

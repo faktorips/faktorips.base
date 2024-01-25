@@ -30,7 +30,7 @@
         <OptionalConstraints/>                             Definition of optional constraints. Details below.
         <SupportedLanguages/>                              List of supported natural languages. Details below.
     </IpsProject>
---><IpsProject xmlns="http://www.faktorzehn.org" changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/22.12/ipsProjectProperties.xsd">
+--><IpsProject xmlns="http://www.faktorzehn.org" changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/$IPS-MinVersion$/ipsProjectProperties.xsd">
 
  <!--
         Required Ips-Features
@@ -78,6 +78,9 @@
    <!--Define the qualified names of annotations which are added for every generated method (for example org.faktorips.runtime.annotation.IpsGenerated (to mark generated code as ignored by SonarQube/JaCoCo) / java.lang.SuppressWarnings / edu.umd.cs.findbugs.annotations.SuppressFBWarnings). Multiple annotations are separated by semicolon.-->
    <Property name="additionalAnnotations" value="org.faktorips.runtime.annotation.IpsGenerated"/>
 
+   <!--Whether additional annotations should be generated on all methods or only on @generated ones, therefore excluding @restrainedmodifiable methods. Handwritten, @restrainedmodifiable methods can be excluded from the 'Generate additional annotations' setting, for instance, if they should be included in code coverage. Possible values are 'GeneratedAndRestrainedModifiable' (default) and 'OnlyGenerated'.-->
+   <Property name="additionalAnnotationsLocation" value="GeneratedAndRestrainedModifiable"/>
+
    <!--Separate constant names for camel case properties with an underscore-->
    <Property name="camelCaseSeparated" value="true"/>
 
@@ -94,7 +97,7 @@
    <Property name="retainAnnotations" value=""/>
 
    <!--Specifies the kind of formula compiling.-->
-   <Property name="formulaCompiling" value="Both"/>
+   <Property name="formulaCompiling" value="XML"/>
 
    <!--The language in which the code and documentation is generated. Currently supported are the values de and en.-->
    <Property name="generatorLocale" value="en"/>
@@ -137,6 +140,9 @@
 
    <!--Whether the value set methods should be unified for all ValueSet implementations, or as originally reflect their type in the method name. The three options are Unified, ByValueSetType or Both. This option should be mirrored in the manifest if one is used.-->
    <Property name="valueSetMethods" value="Unified"/>
+
+   <!--Enables the generation of the getter method getEffectiveFromAsCalendar(). Only works with the setting "Base class of policy components".-->
+   <Property name="generateGetEffectiveFromAsCalendar" value="true"/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 
@@ -198,7 +204,7 @@
             tocPath="motor/motor-reposiory-toc.xml" 
                                             The partial path of the resource containing the runtime repository table of content (toc).
                                              The full path is derived from the basePackageMergeable by adding this partial path.
-                                             The file is not part of the published interface so it is places in the internal package.
+                                             The file is not part of the published interface so it is placed in the internal package.
             validationMessagesBundle="motor.validation-messages" 
                                             The partial name of the resource bundle containing the validation messages.
                                              The full resource bundle name is derived from basePackageDerived adding this parial name.
@@ -226,8 +232,15 @@
              type="archive"
              file="base.ipsar">      The archive file.
           </Entry>
+         
+        Maven:
+          <Entry
+             container="JDTClasspathContainer"                      When using maven, the referenced projects can be replaced by the Maven-Classpath-Container.
+             path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"      This entry should be the last entry in the IpsObjectPath.
+             reexported="false" type="container" />
+          </Entry>
     -->
- <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="src/main/java">
+ <IpsObjectPath basePackageDerived="\${package}" basePackageMergable="\${package}" outputDefinedPerSrcFolder="false" outputFolderDerivedSources="src/main/resources" outputFolderMergableSources="$OutputFolderMergableSources$">
   <Entry basePackageDerived="" basePackageMergable="" outputFolderDerived="" outputFolderMergable="" reexported="true" sourceFolder="\${IPS-SourceFolder}" tocPath="\${IPS-TocXML}.xml" type="src" validationMessagesBundle="\${IPS-ValidationMessageBundle}"/>
   <Entry container="JDTClasspathContainer" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" reexported="true" type="container"/>
  </IpsObjectPath>
@@ -368,7 +381,7 @@
             <!- - Severity for validation messages when model and persistence constraints don't match.
                 Possible values are ERROR, WARNING, INFO, and NONE. - ->
             <Setting name="persistenceColumnSizeChecksSeverity" value="ERROR"/>
-            <!- - Severity for validation messages when a custom datatype is used in an dependend project but is not configured in this project.
+            <!- - Severity for validation messages when a custom datatype is used for an attribute but not listed in the <DataTypes> section.
                 Possible values are ERROR, WARNING, INFO, and NONE. - ->
             <Setting name="missingDatatypeSeverity" value="ERROR"/>
             <!- - Format for table content data.
@@ -377,6 +390,8 @@
             <Setting name="tableContentFormat" value="XML"/>
             <!- - Default value for 'generate validation class' property on new PolicyCmptTypes.
             <Setting name="generateValidatorClassDefault" value="true"/>
+            <!- - Whether non-standard blanks such as the non-breaking space should be escaped as XML entities when writing XML files.
+            <Setting name="escapeNonStandardBlanks" value="false"/>
             <!- - Whether Ips-Files should be validated against their XSD schema.
             <Setting name="validateIpsSchema" value="true"/>
         </AdditionalSettings>
@@ -396,6 +411,8 @@
   <Setting name="missingDatatypeSeverity" value="WARNING"/>
   <Setting name="tableContentFormat" value="XML"/>
   <Setting enabled="false" name="generateValidatorClassDefault"/>
+  <Setting enabled="false" name="genericValidationDefault"/>
+  <Setting enabled="false" name="escapeNonStandardBlanks"/>
   <Setting enabled="true" name="validateIpsSchema"/>
  </AdditionalSettings>
 

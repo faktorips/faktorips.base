@@ -60,6 +60,12 @@ private void executePostprocessor() {
     String isJaxbSupport = properties.get("IPS-IsJaxbSupport")
     JaxbSupport jaxbSupport = new JaxbSupport(projectPath, lineSeparator)
     jaxbSupport.setJaxbSupport(isJaxbSupport)
+    
+    String isModelProject = properties.get("IPS-IsModelProject")
+    String isProductDefinitionProject = properties.get("IPS-IsProductDefinitionProject")
+    String packageName = properties.get("package")
+    IpsObjectPathUtil ipsObjectPathUtil = new IpsObjectPathUtil(projectPath, isModelProject, isProductDefinitionProject, packageName)
+    ipsObjectPathUtil.setOutputFolderMergableSources()
 }
 
 //////////////////////////////////////////////////////////////
@@ -117,7 +123,7 @@ class VersionSupport {
 
     private final String IPS_PROJECT = '.ipsproject'
 
-    private final String MIN_VERSION_REGEX = '([0-9]+[.]){2}[0-9]+'
+    private final String MIN_VERSION_REGEX = '([0-9]+[.][0-9]+)[.][0-9]+'
 
     private final String MIN_VERSION_TEMPLATE = '$IPS-MinVersion$'
 
@@ -138,7 +144,7 @@ class VersionSupport {
         File ipsProject = new File(projectPath.resolve(IPS_PROJECT).toString())
         Matcher filteredVersion = (version =~ MIN_VERSION_REGEX)
         if (filteredVersion != null && filteredVersion.find()) {
-            String minVersion = filteredVersion.group()
+            String minVersion = filteredVersion.group(1)
             if (version.startsWith(minVersion)) {
                 String dependency = ipsProject.text.replace(MIN_VERSION_TEMPLATE, minVersion)
                 ipsProject.text = dependency
@@ -167,7 +173,7 @@ class FaktoripsMavenPluginSupport {
 
     // Using the version provided by the generated pom.xml
     // Single quotes are used here because interpolation is not required
-    private final String VERSION = '\${faktor-ips.version}'
+    private final String VERSION = '\${faktorips.version}'
 
     // ATTENTION: this dependency uses the version specified within the existing pom.xml
     // Single quotes are necessary to escape the dollar sign
@@ -231,7 +237,7 @@ class GroovySupport {
 
     // Using the version provided by the generated pom.xml
     // Single quotes are used here because interpolation is not required
-    private final String VERSION = '\${faktor-ips.version}'
+    private final String VERSION = '\${faktorips.version}'
 
     // ATTENTION: this dependency uses the version specified within the existing pom.xml
     // Single quotes are necessary to escape the dollar sign
@@ -284,6 +290,7 @@ class PersistenceSupport {
     // Names of required files
     private final String POM = "pom.xml"
     private final String IPS_PROJECT = ".ipsproject"
+    private final String MANIFEST = "META-INF/MANIFEST.MF"
 
     // Names of possible persistence supports
     private final String ECLIPSE_LINK_25 = "EclipseLink 2.5"
@@ -353,12 +360,17 @@ class PersistenceSupport {
     void setPersistenceSupport(String isPersistenceSupport) {
         File pom = new File(projectPath.resolve(POM).toString())
         File ipsProject = new File(projectPath.resolve(IPS_PROJECT).toString())
+        File manifest = new File(projectPath.resolve(MANIFEST).toString())
         if (Boolean.valueOf(isPersistenceSupport)) {
             PersistenceApi persistenceApi = getPersistenceApi()
-
+            
             // Adjusting the .ipsproject
             String newName = ipsProject.text.replace(IPS_PROJECT_TEMPLATE, persistenceApi.name)
             ipsProject.text = newName
+            
+            // Adjusting the mainfest
+            String newNameInManifest = manifest.text.replace(IPS_PROJECT_TEMPLATE, persistenceApi.name)
+            manifest.text = newNameInManifest
 
             // Adjusting the maven dependencies
             String newDependency = pom.text.replace(MAVEN_DEPENDENCY_TEMPLATE, persistenceApi.dependency)
@@ -367,6 +379,8 @@ class PersistenceSupport {
             // Has to be set in order to have a valid .ipsproject
             String newName = ipsProject.text.replace(IPS_PROJECT_TEMPLATE, GENERIC_JPA_21)
             ipsProject.text = newName
+            String newNameInManifest = manifest.text.replace(IPS_PROJECT_TEMPLATE, GENERIC_JPA_21)
+            manifest.text = newNameInManifest
             String newDependency = pom.text.replace(MAVEN_DEPENDENCY_TEMPLATE, "")
             pom.text = newDependency
         }
@@ -507,7 +521,7 @@ class JaxbSupport {
     // Names of required files
     private final String POM = "pom.xml"
     private final String IPS_PROJECT = ".ipsproject"
-    private final String VERSION = '\${faktor-ips.version}'
+    private final String VERSION = '\${faktorips.version}'
 
     // Names of possible jaxb support variants
     private final String NONE = "None"
@@ -622,6 +636,48 @@ class JaxbSupport {
 
         private String getDependency() {
             return dependency
+        }
+    }
+}
+
+//////////////////////////////////////////////////////////////
+// Ips Object Path Util
+//////////////////////////////////////////////////////////////
+/**
+ * Sets the attribute outputFolderMergableSources based on the project type
+ */
+class IpsObjectPathUtil {
+
+    private final String OUTPUT_FOLDER_MERGABLE_SOURCES = '$OutputFolderMergableSources$'
+    private final String IPS_PROJECT = ".ipsproject"
+    private final String srcMainJavaPath = "src/main/java"
+    private final String isModelProject
+    private final String isProductDefinitionProject
+    private final Path projectPath
+    private final File srcMainJavaDirectory
+    private final File packageDirectory
+
+    IpsObjectPathUtil(Path projectPath, String isModelProject, String isProductDefinitionProject, String packageName) {
+        this.projectPath = projectPath
+        this.isModelProject = isModelProject
+        this.isProductDefinitionProject = isProductDefinitionProject
+        this.srcMainJavaDirectory = new File(projectPath.resolve(srcMainJavaPath).toString())
+        this.packageDirectory = new File(projectPath.resolve(srcMainJavaPath).resolve(packageName).toString())
+    }
+
+    /**
+     * Sets the outputFolderMergableSources attribute value in the .ipsproject.
+     */
+    void setOutputFolderMergableSources() {
+        File ipsProject = new File(projectPath.resolve(IPS_PROJECT).toString())
+        if (Boolean.valueOf(isModelProject)) {
+            String newValue = ipsProject.text.replace(OUTPUT_FOLDER_MERGABLE_SOURCES, srcMainJavaPath)
+            ipsProject.text = newValue
+        } else if(Boolean.valueOf(isProductDefinitionProject)) {
+            packageDirectory.delete()
+            srcMainJavaDirectory.delete()
+            String newValue = ipsProject.text.replace(OUTPUT_FOLDER_MERGABLE_SOURCES, "")
+            ipsProject.text = newValue
         }
     }
 }

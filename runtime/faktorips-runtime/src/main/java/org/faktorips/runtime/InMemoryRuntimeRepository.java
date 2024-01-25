@@ -223,19 +223,10 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      * 
      * @see IRuntimeRepository#isModifiable()
      */
+    @Override
     public void putProductComponent(IProductComponent productCmpt) {
         Objects.requireNonNull(productCmpt);
         productCmpts.put(productCmpt.getId(), productCmpt);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * The {@link IModifiableRuntimeRepository} ignores the {@code qName}
-     */
-    @Override
-    public void putProductComponent(IProductComponent productCmpt, String qName) {
-        putProductComponent(productCmpt);
     }
 
     @Override
@@ -270,20 +261,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      * 
      * @see IRuntimeRepository#isModifiable()
      */
+    @Override
     public void putProductCmptGeneration(IProductComponentGeneration generation) {
         Objects.requireNonNull(generation);
         getGenerationSortedSet(generation.getProductComponent().getId()).add(generation);
         putProductComponent(generation.getProductComponent());
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * The {@link IModifiableRuntimeRepository} ignores the {@code qName}
-     */
-    @Override
-    public void putProductCmptGeneration(IProductComponentGeneration generation, String qName) {
-        putProductCmptGeneration(generation);
     }
 
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {

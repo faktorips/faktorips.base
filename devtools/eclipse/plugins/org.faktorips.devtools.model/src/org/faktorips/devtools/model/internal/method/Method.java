@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.method;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.faktorips.datatype.Datatype;
@@ -43,7 +44,7 @@ import org.w3c.dom.Element;
  * <p>
  * Especially the methods to read and create the xml use the delegation to keep the xml of the
  * {@link IType types} compatible to the previous releases.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class Method extends TypePart implements IMethod {
@@ -153,7 +154,7 @@ public abstract class Method extends TypePart implements IMethod {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * This implementation calls {@link IBaseMethod#toXml(Document)} in order to keep the xml of the
      * {@link IType types} compatible to previous releases. The properties and parts, which are
      * delegated to the {@link #method} are already within the returned element.
@@ -288,6 +289,25 @@ public abstract class Method extends TypePart implements IMethod {
     @Override
     public int[] moveParameters(int[] indices, boolean up) {
         return method.moveParameters(indices, up);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if ((obj == null) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        Method other = (Method)obj;
+        return Objects.equals(getId(), other.getId())
+                && Objects.equals(getParent(), other.getParent());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        return 31 * result + ((getId() == null) ? 0 : getId().hashCode());
     }
 
     class OverridingMethodFinder extends TypeHierarchyVisitor<IType> {

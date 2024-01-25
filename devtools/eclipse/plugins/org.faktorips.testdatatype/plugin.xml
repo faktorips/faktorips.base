@@ -8,4 +8,11 @@
             helperClass="org.faktorips.codegen.dthelpers.StringHelper">
       </datatypeDefinition>
    </extension>
+   <extension
+         point="org.faktorips.devtools.model.datatypeDefinition">
+      <datatypeDefinition
+            datatypeClass="org.faktorips.testdatatype.LanguageDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.StringHelper">
+      </datatypeDefinition>
+   </extension>
 </plugin>

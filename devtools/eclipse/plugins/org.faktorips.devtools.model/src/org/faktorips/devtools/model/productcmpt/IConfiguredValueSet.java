@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -78,9 +78,9 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * by the project are returned. Otherwise the attribute's value set type is returned. If the
      * attribute does not exist, this method returns the type of the current configuration element's
      * value set.
-     * 
+     *
      * @throws IpsException if an error occurs.
-     * 
+     *
      * @see IIpsProject#getValueSetTypes(ValueDatatype)
      * @see IPolicyCmptTypeAttribute#getValueSet()
      * @see IValueSet#isUnrestricted()
@@ -102,10 +102,10 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * a {@link BooleanDatatype} or a {@link PrimitiveBooleanDatatype}, the values true, false are
      * added to the value set enumeration; in case of {@link BooleanDatatype}, null is also added to
      * the set.
-     * 
+     *
      * @return the new enumeration value set or the unchanged set if it has already been of type
      *             enumeration.
-     * 
+     *
      * @since 3.9
      */
     IEnumValueSet convertValueSetToEnumType();
@@ -113,9 +113,9 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     /**
      * Returns the element's value data type, or <code>null</code> if it can't be found. The
      * configuration element's data type is the attribute's data type the element is based on.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
+     *
      */
     @Override
     ValueDatatype findValueDatatype(IIpsProject ipsProject);
@@ -130,9 +130,11 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
      * {@code IConfiguredValueSet}.
-     * 
+     *
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
     IConfiguredValueSet findTemplateProperty(IIpsProject ipsProject);
+
+    IValueSet getNonTemplateValueSet();
 }

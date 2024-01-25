@@ -443,7 +443,11 @@ public class IpsBuilder {
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.isBasedOnSourceFolder()) {
-                removeEmptyFolders((AFolder)root.getArtefactDestination(false).getResource(), false);
+                APackageFragmentRoot artefactDestination = root.getArtefactDestination(false);
+                if (artefactDestination == null) {
+                    continue;
+                }
+                removeEmptyFolders((AFolder)artefactDestination.getResource(), false);
             }
         }
     }
@@ -706,7 +710,7 @@ public class IpsBuilder {
         }
     }
 
-    private void updateMarkers(MultiStatus buildStatus, IIpsObject object) {
+    private void updateMarkers(MultiStatus buildStatus, IIpsObject object, Set<AMarker> xmlValidationMarkers) {
         if (object == null) {
             return;
         }
@@ -717,6 +721,8 @@ public class IpsBuilder {
         try {
 
             MessageList list = object.validate(object.getIpsProject());
+            xmlValidationMarkers.forEach(marker -> list
+                    .add(new Message((String)marker.getAttribute(IMarker.MESSAGE), getMessageSeverity(marker))));
             createMarkersFromMessageList(resource, list, IpsBuilder.PROBLEM_MARKER);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
@@ -758,14 +764,28 @@ public class IpsBuilder {
 
     private int getMarkerSeverity(Message msg) {
         Severity msgSeverity = msg.getSeverity();
-        if (msgSeverity == Severity.ERROR) {
-            return IMarker.SEVERITY_ERROR;
-        } else if (msgSeverity == Severity.WARNING) {
-            return IMarker.SEVERITY_WARNING;
-        } else if (msgSeverity == Severity.INFO) {
-            return IMarker.SEVERITY_INFO;
+        if (msgSeverity == null) {
+            throw new IllegalArgumentException("Unknown severity " + msgSeverity);
         }
-        throw new RuntimeException("Unknown severity " + msgSeverity); //$NON-NLS-1$
+        return switch (msgSeverity) {
+            case ERROR -> IMarker.SEVERITY_ERROR;
+            case WARNING -> IMarker.SEVERITY_WARNING;
+            case INFO -> IMarker.SEVERITY_INFO;
+            default -> throw new IllegalArgumentException("Unknown severity " + msgSeverity);
+        };
+    }
+
+    private Severity getMessageSeverity(AMarker marker) {
+        Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
+        if (severity == null) {
+            throw new IllegalArgumentException("Unknown severity " + severity);
+        }
+        return switch (severity) {
+            case IMarker.SEVERITY_ERROR -> Severity.ERROR;
+            case IMarker.SEVERITY_WARNING -> Severity.WARNING;
+            case IMarker.SEVERITY_INFO -> Severity.INFO;
+            default -> throw new IllegalArgumentException("Unknown severity " + severity); //$NON-NLS-1$
+        };
     }
 
     /**
@@ -776,18 +796,20 @@ public class IpsBuilder {
             IIpsSrcFile file,
             MultiStatus buildStatus,
             IProgressMonitor monitor) {
+        // in case of error clear the markers
+        file.getCorrespondingResource().deleteMarkers(IpsBuilder.PROBLEM_MARKER, false,
+                AResourceTreeTraversalDepth.RESOURCE_ONLY);
+
+        Set<AMarker> xmlValidationMarkers = new LinkedHashSet<>();
+
+        for (String xsdError : file.getXsdValidationErrors()) {
+            AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
+            marker.setAttribute(IMarker.MESSAGE, xsdError);
+            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            xmlValidationMarkers.add(marker);
+        }
 
         if (!file.isContentParsable()) {
-            // in case of error clear the markers
-            file.getCorrespondingResource().deleteMarkers(IpsBuilder.PROBLEM_MARKER, false,
-                    AResourceTreeTraversalDepth.RESOURCE_ONLY);
-
-            for (String xsdError : file.getXsdValidationErrors()) {
-                AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
-                marker.setAttribute(IMarker.MESSAGE, xsdError);
-                marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-            }
-
             AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, Messages.IpsBuilder_ipsSrcFileNotParsable);
             marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
@@ -798,6 +820,7 @@ public class IpsBuilder {
             AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, xsdWarning);
             marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+            xmlValidationMarkers.add(marker);
         }
 
         IIpsObject ipsObject = file.getIpsObject();
@@ -808,7 +831,7 @@ public class IpsBuilder {
             fillMultiStatusWithMessageList(newStatus, ipsObject.validate(ipsProject));
             buildStatus.add(newStatus);
         }
-        updateMarkers(buildStatus, ipsObject);
+        updateMarkers(buildStatus, ipsObject, xmlValidationMarkers);
         return ipsObject;
     }
 

@@ -1,18 +1,21 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal.toc;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -31,7 +34,7 @@ import org.w3c.dom.NodeList;
  * <em>The table of contents can be extended to read toc entries for new object types by
  * implementing and registering a {@link ITocEntryFactory}.</em>
  * </p>
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableOfContents {
@@ -47,7 +50,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     /**
      * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
      * implementations via {@link ServiceLoader}.
-     * 
+     *
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations
      */
@@ -90,7 +93,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      * loader.
      *
      * @param newTocEntryFactoriesByXmlTag the new Map being initialized
-     * 
+     *
      * @see ServiceLoader
      */
     @SuppressWarnings("rawtypes")
@@ -109,6 +112,9 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         if (productDataVersion == null) {
             productDataVersion = "0";
         }
+        if (productDataVersion.startsWith("mvn:")) {
+            productDataVersion = fromMaven(productDataVersion);
+        }
         NodeList nl = tocElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
@@ -117,6 +123,23 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
                         getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(entryElement));
             }
         }
+    }
+
+    private String fromMaven(String mga) {
+        String[] split = mga.split(":");
+        String groupId = split[1];
+        String artifactId = split[2];
+        String pomPropertiesResourceName = String.format("META-INF/maven/%s/%s/pom.properties", groupId, artifactId);
+        try (InputStream is = classLoader.getResourceAsStream(pomPropertiesResourceName)) {
+            if (is != null) {
+                Properties p = new Properties();
+                p.load(is);
+                return p.getProperty("version");
+            }
+        } catch (IOException e) {
+            // there is no pom.properties file or it is not readable, use the fallback
+        }
+        return "0.0.0.local" + System.currentTimeMillis();
     }
 
     /**
@@ -213,6 +236,10 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         StringBuilderJoiner.join(sb, getTableTocEntries(), System.lineSeparator());
         sb.append(System.lineSeparator());
         StringBuilderJoiner.join(sb, getTestCaseTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getModelTypeTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getEnumXmlAdapterTocEntries(), System.lineSeparator());
         sb.append(System.lineSeparator());
         return sb.toString();
     }

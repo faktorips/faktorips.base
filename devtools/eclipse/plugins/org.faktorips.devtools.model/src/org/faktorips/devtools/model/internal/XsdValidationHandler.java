@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -72,5 +72,10 @@ public class XsdValidationHandler implements ErrorHandler {
 
     private String createLogMessage(String localizedMessage) {
         return new StringBuilder().append("XSD validation: ").append(localizedMessage).toString(); //$NON-NLS-1$
+    }
+
+    public void clear() {
+        xsdValidationErrors.clear();
+        xsdValidationWarnings.clear();
     }
 }

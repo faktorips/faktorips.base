@@ -33,6 +33,10 @@ class Constants {
     def static XML_TAG_ALL_VALUES(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_TAG_ALL_VALUES"
     }
+    
+    def static XML_TAG_DERIVED(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_TAG_DERIVED"
+    }
 
     def static XML_TAG_ENUM(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_TAG_ENUM"

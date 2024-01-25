@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,7 +33,7 @@ public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
 
     /**
      * Constructs a new helper for the given primitive long datatype.
-     * 
+     *
      * @throws IllegalArgumentException if datatype is <code>null</code>.
      */
     public PrimitiveLongHelper(PrimitiveLongDatatype datatype) {
@@ -56,19 +56,15 @@ public class PrimitiveLongHelper extends AbstractPrimitiveDatatypeHelper {
     }
 
     /**
-     * Appends a trailing 'L' to the given value if it is a number larger than
-     * {@link Integer#MAX_VALUE}.
+     * Appends a trailing 'L' to the given value if it is a number
      * <p>
      * see {@link Long#parseLong(String, int)} for the length check.
      */
     protected static String longLiteral(String value) {
         String longLiteral = value;
-        if (longLiteral != null && longLiteral.length() > 1) {
+        if (longLiteral != null && longLiteral.length() >= 1) {
             if (DIGITS.matcher(longLiteral).matches()) {
-                long longValue = Long.parseLong(longLiteral);
-                if (longValue > Integer.MAX_VALUE || longValue < Integer.MIN_VALUE) {
-                    longLiteral += L;
-                }
+                longLiteral += L;
             }
         }
         return longLiteral;

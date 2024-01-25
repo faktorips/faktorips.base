@@ -61,6 +61,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     @Test
     public void shouldLoadNormalProductComponentNormally() {
         ProductCmptTocEntry entry = mock(ProductCmptTocEntry.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
+        when(entry.getIpsObjectQualifiedName()).thenReturn("qualified.Name");
         Element element = mock(Element.class);
         ProductComponent newProdCmptInstance = mock(ProductComponent.class);
 
@@ -72,12 +73,14 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         repo.createProductCmpt(entry);
 
         verify(newProdCmptInstance).initFromXml(element);
-        verifyNoMoreInteractions(loadedProdCmpt);
+        verify(newProdCmptInstance).setQualifiedName("qualified.Name");
+        verifyNoMoreInteractions(newProdCmptInstance);
     }
 
     @Test
     public void shouldLoadVariedProductComponent() {
         ProductCmptTocEntry entry = mock(ProductCmptTocEntry.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
+        when(entry.getIpsObjectQualifiedName()).thenReturn("qualified.Name");
         Element element = mock(Element.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
         Element copyElement = mock(Element.class);
         Document docMock = mock(Document.class);
@@ -95,6 +98,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
 
         verify(newProdCmptInstance).initFromXml(element);
         verify(newProdCmptInstance).initFromXml(copyElement);
+        verify(newProdCmptInstance).setQualifiedName("qualified.Name");
         verifyNoMoreInteractions(newProdCmptInstance);
     }
 

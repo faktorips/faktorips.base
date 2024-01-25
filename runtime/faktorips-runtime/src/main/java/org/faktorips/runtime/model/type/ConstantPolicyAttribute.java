@@ -114,4 +114,9 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
         throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
     }
 
+    @Override
+    protected String getResourceBundleName() {
+        return ConstantPolicyAttribute.class.getName();
+    }
+
 }

@@ -15,6 +15,9 @@ import static java.util.Objects.requireNonNull;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -23,6 +26,9 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.ObjectUtil;
+import org.faktorips.valueset.UnrestrictedValueSet;
+import org.faktorips.valueset.ValueSet;
 
 /**
  * A {@link Attribute} represents an attribute from a PolicyCmptType or a ProductCmptType.
@@ -35,12 +41,18 @@ public abstract class Attribute extends TypePart {
 
     private final boolean changingOverTime;
 
+    private final FieldFinder.ModelValueSet modelValueSet;
+
+    private final FieldFinder.ModelDefaultValue modelDefaultValue;
+
     public Attribute(Type type, IpsAttribute attributeAnnotation, IpsExtensionProperties extensionProperties,
             Class<?> datatype, boolean changingOverTime, Optional<Deprecation> deprecation) {
         super(attributeAnnotation.name(), type, extensionProperties, deprecation);
         this.attributeAnnotation = attributeAnnotation;
         this.datatype = datatype;
         this.changingOverTime = changingOverTime;
+        modelValueSet = new FieldFinder.ModelValueSet(type, getName(), changingOverTime);
+        modelDefaultValue = new FieldFinder.ModelDefaultValue(type, getName(), changingOverTime);
     }
 
     /**
@@ -177,5 +189,49 @@ public abstract class Attribute extends TypePart {
         requireNonNull(context, "context must not be null");
         requireNonNull(product, "product must not be null");
     }
+
+    /**
+     * Returns the value set defined in the model for this attribute.
+     *
+     * @since 24.1
+     */
+    public ValueSet<?> getValueSetFromModel() {
+        return modelValueSet.get().orElseGet(UnrestrictedValueSet::new);
+    }
+
+    /**
+     * Returns the default value defined in the model for this attribute.
+     *
+     * @since 24.1
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getDefaultValueFromModel() {
+        return (T)modelDefaultValue.get().orElseGet(() -> NullObjects.of(getDatatype()));
+    }
+
+    // CSOFF: ParameterNumber
+    protected <V, R> void validate(MessageList list,
+            IValidationContext context,
+            Supplier<V> valueGetter,
+            Supplier<R> referenceValueGetter,
+            BiPredicate<V, R> valueChecker,
+            String msgCode,
+            String msgKey,
+            String property) {
+        V value = valueGetter.get();
+        if (!ObjectUtil.isNull(value)) {
+            R referenceValue = referenceValueGetter.get();
+            if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
+                Locale locale = context.getLocale();
+                ResourceBundle messages = ResourceBundle.getBundle(getResourceBundleName(), locale);
+                list.newError(msgCode,
+                        String.format(messages.getString(msgKey), value, getLabel(locale), referenceValue),
+                        this, property);
+            }
+        }
+    }
+    // CSON: ParameterNumber
+
+    protected abstract String getResourceBundleName();
 
 }

@@ -88,7 +88,7 @@ public class StringLengthValueSet implements ValueSet<String> {
 
     @Override
     public String toString() {
-        return String.format("StringLengthValueSet (%1$s)", getMaximumLength());
+        return String.format("String length ≤ %1$s", getMaximumLength());
     }
 
     @Override
@@ -100,7 +100,7 @@ public class StringLengthValueSet implements ValueSet<String> {
     public boolean equals(Object o) {
         return (o instanceof StringLengthValueSet
                 && (containsNull() == ((StringLengthValueSet)o).containsNull())
-                && (getMaximumLength().equals(((StringLengthValueSet)o).getMaximumLength())));
+                && Objects.equals(getMaximumLength(), ((StringLengthValueSet)o).getMaximumLength()));
     }
 
     /**

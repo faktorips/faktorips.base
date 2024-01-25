@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.GenericEnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
@@ -663,5 +664,27 @@ public class XPolicyAttributeTest {
         when(datatypeHelper.getDatatype()).thenReturn(abstractDatatype);
 
         assertThat(xPolicyAttribute.isAbstract(), is(false));
+    }
+
+    @Test
+    public void testHasAllValuesMethod() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        var genericEnumDatatype = mock(GenericEnumDatatype.class);
+        when(genericEnumDatatype.getAllValuesMethodName()).thenReturn("getAllValues");
+        when(genericEnumDatatype.isEnum()).thenReturn(true);
+        when(xPolicyAttribute.getDatatype()).thenReturn(genericEnumDatatype);
+
+        assertThat(xPolicyAttribute.hasAllValuesMethod(), is(true));
+    }
+
+    @Test
+    public void testHasAllValuesMethod_Not() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        var genericEnumDatatype = mock(GenericEnumDatatype.class);
+        when(genericEnumDatatype.getAllValuesMethodName()).thenReturn("");
+        when(genericEnumDatatype.isEnum()).thenReturn(true);
+        when(xPolicyAttribute.getDatatype()).thenReturn(genericEnumDatatype);
+
+        assertThat(xPolicyAttribute.hasAllValuesMethod(), is(false));
     }
 }

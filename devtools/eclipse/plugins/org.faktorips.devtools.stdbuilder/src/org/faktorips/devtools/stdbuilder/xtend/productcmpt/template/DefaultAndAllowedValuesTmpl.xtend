@@ -171,11 +171,13 @@ class DefaultAndAllowedValuesTmpl {
             }
             Element valueSetElement = configMap.get(«CONFIGURED_VALUE_SET_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
             if (valueSetElement != null) {
-                «IF valueSetUnrestricted || valueSetConfiguredDynamic »
+                «IF valueSetDerived»
+                     «fieldNameValueSet» = «newDerivedValueSetInstance»;
+                «ELSEIF valueSetUnrestricted || valueSetConfiguredDynamic »
                     «IF ipsEnum»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
                         «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "unrestrictedValueSet.containsNull()")»;
-                    «ELSEIF javaEnum»
+                    «ELSEIF hasAllValuesMethod»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
                         «fieldNameValueSet» = «newEnumValueSetInstance(getAllJavaEnumValuesCode(), "unrestrictedValueSet.containsNull()")»;
                     «ELSE»
@@ -234,14 +236,20 @@ class DefaultAndAllowedValuesTmpl {
                     valueSetElement.setAttribute(«XML_ATTRIBUTE_ABSTRACT», "true");
                 «ENDIF»
                 
-                «IF valueSetUnrestricted»
-                    if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
+                «IF valueSetDerived»
+                    if («fieldNameValueSet» instanceof «DerivedValueSet("?")») {
+                        Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_DERIVED»);
+                        valueSetElement.appendChild(valueElement);
+                    }
+                «ENDIF»
+                «IF valueSetUnrestricted || valueSetDerived»
+                    if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")» && !(«fieldNameValueSet» instanceof «DerivedValueSet("?")»)) {
                         Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES»);
                         valueElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
                         valueSetElement.appendChild(valueElement);
                     }
                 «ENDIF»
-                «IF (valueSetUnrestricted || valueSetStringLength) && rangeSupported»
+                «IF (valueSetUnrestricted || valueSetDerived || valueSetStringLength) && rangeSupported»
                     if («fieldNameValueSet» instanceof «qnameRange("?")») {
                         «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
                         «writeRange("range", it)»
@@ -249,7 +257,7 @@ class DefaultAndAllowedValuesTmpl {
                 «ELSEIF valueSetRange»
                     «writeRange(fieldNameValueSet, it)»
                 «ENDIF»
-                «IF (valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported»
+                «IF (valueSetUnrestricted || valueSetDerived || valueSetStringLength) && enumValueSetSupported»
                     if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
                         «writeEnumValueSet»
                     }

@@ -221,7 +221,7 @@ class PolicyCmptAttributeTmpl {
        «IF isGetAllowedValuesMethodDeprecated(rule)»
         *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
        «ENDIF»
-       *«IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
+       *«IF isValueSetDerived && !genInterface»@restrainedmodifiable«ELSE»@generated«ENDIF»
        */
       «IF isPublishedInterfaceModifierRelevant(rule)»
          «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»

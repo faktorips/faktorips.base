@@ -10,13 +10,22 @@
 
 package org.faktorips.runtime.internal;
 
+import static java.util.Comparator.comparing;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -31,6 +40,8 @@ import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Base class for all product components.
@@ -45,17 +56,17 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
 
-    private static final String ATTRIBUTE_LOCALE = "locale";
-
     private static final String XML_ELEMENT_DESCRIPTION = "Description";
+    private static final String XML_ELEMENT_GENERATION = "Generation";
 
-    private static final String IS_NULL = "isNull";
+    private static final String XML_ATTRIBUTE_LOCALE = "locale";
+    private static final String XML_ATTRIBUTE_VALID_FROM = "validFrom";
+    private static final String XML_ATTRIBUTE_IS_NULL = "isNull";
+    private static final String XML_ATTRIBUTE_VALID_TO = "validTo";
 
-    private static final String GENERATION = "Generation";
-
-    private static final String VALID_FROM = "validFrom";
-
-    private static final String VALID_TO = "validTo";
+    private static final Comparator<Element> BY_ATTRIBUTE_NAME = comparing(
+            e -> e.getAttribute(XML_ATTRIBUTE_ATTRIBUTE));
+    private static final Comparator<Element> VALUE_SET_BEFORE_DEFAULT = comparing(Element::getNodeName).reversed();
 
     /**
      * The component's id that identifies it in the repository
@@ -105,6 +116,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private final ValidationRules validationRules;
 
+    private String qualifiedName;
+
     /**
      * Creates a new product component with the indicate id, kind id and version id.
      *
@@ -151,6 +164,15 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 
     @Override
@@ -270,10 +292,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     @Override
     public void initFromXml(Element cmptElement) {
-        String validFromValue = cmptElement.getAttribute(VALID_FROM);
+        String validFromValue = cmptElement.getAttribute(XML_ATTRIBUTE_VALID_FROM);
         validFrom = DateTime.parseIso(validFromValue);
-        Element validToNode = (Element)cmptElement.getElementsByTagName(VALID_TO).item(0);
-        if (validToNode == null || Boolean.parseBoolean(validToNode.getAttribute(IS_NULL))) {
+        Element validToNode = (Element)cmptElement.getElementsByTagName(XML_ATTRIBUTE_VALID_TO).item(0);
+        if (validToNode == null || Boolean.parseBoolean(validToNode.getAttribute(XML_ATTRIBUTE_IS_NULL))) {
             validTo = null;
         } else {
             validTo = DateTime.parseIso(validToNode.getTextContent());
@@ -361,7 +383,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         List<Element> descriptionElements = XmlUtil.getElements(cmptElement, XML_ELEMENT_DESCRIPTION);
         List<LocalizedString> descriptions = new ArrayList<>(descriptionElements.size());
         for (Element descriptionElement : descriptionElements) {
-            String localeCode = descriptionElement.getAttribute(ATTRIBUTE_LOCALE);
+            String localeCode = descriptionElement.getAttribute(XML_ATTRIBUTE_LOCALE);
             Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
             String text = descriptionElement.getTextContent();
             descriptions.add(new LocalizedString(locale, text));
@@ -407,24 +429,24 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         prodCmptElement.setAttribute(TocEntry.PROPERTY_IMPLEMENTATION_CLASS, getClass().getName());
         prodCmptElement.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
 
-        // TODO FIPS-10628 prüfen ob validateIpsSchema=true in .ipsproject
-        String version = "24.1";
-        String schemaName = "ProductCmpt";
-        String xmlSchemaLocation = String.format(XmlUtil.FAKTOR_IPS_SCHEMA_URL + "%s/%s.xsd", version, schemaName);
-        prodCmptElement.setAttribute(XmlUtil.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
-        prodCmptElement.setAttributeNS(XmlUtil.W3C_XML_SCHEMA_INSTANCE_NS_URI,
-                "xsi:schemaLocation", XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + xmlSchemaLocation);
-
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
         writeDescriptionToXml(prodCmptElement);
 
         if (getRepository().getNumberOfProductComponentGenerations(this) == 0) {
-            Element emptyGenerationElement = prodCmptElement.getOwnerDocument().createElement(GENERATION);
+            Element emptyGenerationElement = prodCmptElement.getOwnerDocument().createElement(XML_ELEMENT_GENERATION);
             if (validFrom != null) {
-                emptyGenerationElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
+                emptyGenerationElement.setAttribute(XML_ATTRIBUTE_VALID_FROM, validFrom.toIsoFormat());
             }
             prodCmptElement.appendChild(emptyGenerationElement);
+        }
+        if (includeGenerations) {
+            List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
+            Collections.sort(generations, comparing(IProductComponentGeneration::getValidFrom));
+            for (IProductComponentGeneration generation : generations) {
+                ProductComponentGeneration gen = (ProductComponentGeneration)generation;
+                prodCmptElement.appendChild(gen.toXml(document));
+            }
         }
         ((IToXmlSupport)this).writePropertiesToXml(prodCmptElement);
         writeTableUsagesToXml(prodCmptElement);
@@ -432,28 +454,59 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeReferencesToXml(prodCmptElement);
         writeValidationRuleConfigsToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
-        if (includeGenerations) {
-            List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
-            for (IProductComponentGeneration generation : generations) {
-                ProductComponentGeneration gen = (ProductComponentGeneration)generation;
-                prodCmptElement.appendChild(gen.toXml(document));
+
+        return sortAttributeNodesInAlphabeticalOrder(prodCmptElement);
+    }
+
+    private Element sortAttributeNodesInAlphabeticalOrder(Element prodCmptElement) {
+        sortAttributeValues(prodCmptElement);
+        sortConfiguredValues(prodCmptElement);
+
+        NodeList childNodes = prodCmptElement.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node node = childNodes.item(i);
+            if (node.getNodeName().equals(XML_ELEMENT_GENERATION)) {
+                sortAttributeValues((Element)node);
+                sortConfiguredValues((Element)node);
             }
         }
         return prodCmptElement;
     }
 
+    private static void sortAttributeValues(Element root) {
+        sortElements(root, BY_ATTRIBUTE_NAME, XML_TAG_ATTRIBUTE_VALUE);
+    }
+
+    private static void sortConfiguredValues(Element root) {
+        sortElements(root, BY_ATTRIBUTE_NAME.thenComparing(VALUE_SET_BEFORE_DEFAULT),
+                XML_TAG_CONFIGURED_VALUE_SET, XML_TAG_CONFIGURED_DEFAULT);
+    }
+
+    private static void sortElements(Element root, Comparator<Element> comparator, String... allowedNodeNames) {
+        List<Element> nodes = XmlUtil.getChildElements(root, allowedNodeNames);
+        if (nodes.size() > 0) {
+            AtomicReference<Node> refChild = new AtomicReference<>(nodes.get(0));
+            nodes.stream()
+                    .sorted(comparator)
+                    .forEach(e -> {
+                        root.insertBefore(e, refChild.get());
+                        refChild.set(e.getNextSibling());
+                    });
+        }
+    }
+
     private void writeValidFromToXml(Element prodCmptElement) {
         if (validFrom != null) {
-            prodCmptElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
+            prodCmptElement.setAttribute(XML_ATTRIBUTE_VALID_FROM, validFrom.toIsoFormat());
         }
     }
 
     private void writeValidToToXml(Element prodCmptElement) {
-        Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
+        Element validToElement = prodCmptElement.getOwnerDocument().createElement(XML_ATTRIBUTE_VALID_TO);
         if (validTo != null) {
             validToElement.setTextContent(validTo.toIsoFormat());
         } else {
-            validToElement.setAttribute(IS_NULL, Boolean.TRUE.toString());
+            validToElement.setAttribute(XML_ATTRIBUTE_IS_NULL, Boolean.TRUE.toString());
         }
         prodCmptElement.appendChild(validToElement);
     }
@@ -486,7 +539,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         if (description != null) {
             for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
                 Element descriptionElement = prodCmptElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
-                descriptionElement.setAttribute(ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
+                descriptionElement.setAttribute(XML_ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
                 descriptionElement.setTextContent(localizedString.getValue());
                 prodCmptElement.appendChild(descriptionElement);
             }

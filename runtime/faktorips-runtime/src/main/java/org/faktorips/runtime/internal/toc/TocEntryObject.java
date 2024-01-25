@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
  * A toc entry that represents a product component, a table, a test case or an enum content
  * identified by the qualified name. Each entry gives access to the class implementing either the
  * product component, the table, the test case or the enum content.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class TocEntryObject extends TocEntry {
@@ -91,6 +91,27 @@ public abstract class TocEntryObject extends TocEntry {
         return Objects.equals(ipsObjectId, other.ipsObjectId)
                 && Objects.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)
                 && super.equals(obj);
+    }
+
+    String getPackageName() {
+        String qualifiedName = getIpsObjectQualifiedName();
+        int index = qualifiedName.lastIndexOf(".");
+        if (index == -1) {
+            return ""; //$NON-NLS-1$
+        }
+        return qualifiedName.substring(0, index);
+    }
+
+    String getUnqualifiedName() {
+        String qualifiedName = getIpsObjectQualifiedName();
+        int index = qualifiedName.lastIndexOf(".");
+        if (index == -1) {
+            return qualifiedName;
+        }
+        if (index == qualifiedName.length() - 1) {
+            return ""; //$NON-NLS-1$
+        }
+        return qualifiedName.substring(index + 1);
     }
 
 }

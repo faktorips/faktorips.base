@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,11 +34,16 @@ import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.XsdValidationHandler;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.productcmpt.DeltaType;
+import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.model.util.BeanUtil;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
@@ -48,7 +53,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsSrcFileContent {
@@ -61,7 +66,7 @@ public class IpsSrcFileContent {
     private Map<String, String> rootProperties = null;
 
     /** This flag is <code>true</code> if the content has been modified. */
-    private boolean modified = false;
+    private volatile boolean modified = false;
 
     /**
      * The corresponding file's modification stamp at the time of reading the content from it.
@@ -86,7 +91,7 @@ public class IpsSrcFileContent {
     }
 
     public void updateState(String xml, boolean newModified) {
-        boolean wasModified = newModified;
+        boolean wasModified = modified;
 
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         ByteArrayInputStream is = null;
@@ -199,7 +204,8 @@ public class IpsSrcFileContent {
     private void validateXMLSchema(Document document) throws Exception {
         IpsObjectType type = getIpsSrcFile().getIpsObjectType();
 
-        Validator validator = org.faktorips.devtools.model.util.XmlUtil.getXsdValidator(type, getXsdValidationHandler());
+        Validator validator = org.faktorips.devtools.model.util.XmlUtil.getXsdValidator(type,
+                getXsdValidationHandler());
         validator.validate(new DOMSource(document));
     }
 
@@ -225,11 +231,6 @@ public class IpsSrcFileContent {
 
                 if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
                     validateXMLSchema(doc);
-                    if (!getXsdValidationHandler().getXsdValidationErrors().isEmpty()) {
-                        parsable = false;
-                        ipsObject.markAsFromUnparsableFile();
-                        return;
-                    }
                 }
 
                 ipsObject.initFromXml(doc.getDocumentElement());
@@ -336,29 +337,37 @@ public class IpsSrcFileContent {
         }
         ICoreRunnable runnable = monitor1 -> {
             try {
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
+                synchronized (IpsSrcFileContent.this) {
+                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                        System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
+                    }
+                    Document doc = XmlUtil.getDocumentBuilder().newDocument();
+                    String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+                    Element xml = getIpsObject().toXml(doc);
+                    org.faktorips.devtools.model.util.XmlUtil.removeIds(xml);
+                    String newXml = XmlUtil.nodeToString(xml, encoding,
+                            ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
+                    ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
+                    AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
+                    file.setContents(is, true, monitor1);
+                    if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
+                        getXsdValidationHandler().clear();
+                    }
+                    modificationStamp = file.getModificationStamp();
+                    if (modStampsAfterSave == null) {
+                        modStampsAfterSave = new ArrayList<>(1);
+                    }
+                    modStampsAfterSave.add(Long.valueOf(modificationStamp));
+                    markAsUnmodified();
+                    if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+                        System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                                + IpsSrcFileContent.this);
+                    }
+                    clearRootPropertyCache();
+                    if (ipsObject instanceof ProductCmpt productCmpt && productCmpt.isProductTemplate()) {
+                        updateTemplatedProductCmpts(productCmpt);
+                    }
                 }
-                Document doc = XmlUtil.getDocumentBuilder().newDocument();
-                String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-                Element xml = getIpsObject().toXml(doc);
-                org.faktorips.devtools.model.util.XmlUtil.removeIds(xml);
-                String newXml = XmlUtil.nodeToString(xml, encoding,
-                        ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
-                ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
-                AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
-                file.setContents(is, true, monitor1);
-                modificationStamp = file.getModificationStamp();
-                if (modStampsAfterSave == null) {
-                    modStampsAfterSave = new ArrayList<>(1);
-                }
-                modStampsAfterSave.add(Long.valueOf(modificationStamp));
-                markAsUnmodified();
-                if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                    System.out.println("IpsSrcFileContent.save() finished. ModStamp=" + modificationStamp + ", " //$NON-NLS-1$ //$NON-NLS-2$
-                            + IpsSrcFileContent.this);
-                }
-                clearRootPropertyCache();
                 // CSOFF: IllegalCatch
             } catch (Exception e) {
                 // CSON: IllegalCatch
@@ -369,6 +378,34 @@ public class IpsSrcFileContent {
             }
         };
         Abstractions.getWorkspace().run(runnable, monitor);
+    }
+
+    private void updateTemplatedProductCmpts(ProductCmpt productCmpt) {
+        productCmpt.getIpsProject()
+                .findTemplateHierarchy(productCmpt)
+                .getAllElements().stream()
+                .forEach(srcFile -> {
+                    boolean dirty = srcFile.isDirty();
+                    ProductCmpt templatedProductCmpt = (ProductCmpt)srcFile.getIpsObject();
+                    IPropertyValueContainerToTypeDelta delta = templatedProductCmpt
+                            .computeDeltaToModel(srcFile.getIpsProject());
+                    fixTemplateDifferences(delta);
+                    if (!dirty) {
+                        srcFile.save(null);
+                    }
+                });
+    }
+
+    private void fixTemplateDifferences(IFixDifferencesComposite delta) {
+        if (delta instanceof IPropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta) {
+            IDeltaEntry[] entries = propertyValueContainerToTypeDelta.getEntries(DeltaType.INHERITED_TEMPLATE_MISMATCH);
+            for (IDeltaEntry deltaEntry : entries) {
+                deltaEntry.fix();
+            }
+        }
+        for (IFixDifferencesComposite child : delta.getChildren()) {
+            fixTemplateDifferences(child);
+        }
     }
 
     /**

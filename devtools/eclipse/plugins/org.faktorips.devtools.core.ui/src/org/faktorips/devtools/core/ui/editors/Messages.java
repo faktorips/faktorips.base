@@ -57,8 +57,8 @@ public class Messages extends NLS {
     public static String IpsPartsComposite_buttonUp;
     public static String IpsPartsComposite_buttonDown;
     public static String IpsPartsComposite_override;
-    public static String IpsPartsComposite_deleteAttribute;
-    public static String IpsPartsComposite_deleteAttributeConfirm;
+    public static String IpsPartsComposite_deleteElement;
+    public static String IpsPartsComposite_deleteElementConfirm;
 
     public static String IpsPartEditDialog2_inheritOverriddenElementMessage;
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<TableOfContents productDataVersion="mvn:org.foo:bar">
+	<EnumContent implementationClass="org.faktorips.sample.Option1" ipsObjectId="sample:OptionContent1.ipsenumcontent" ipsObjectQualifiedName="OptionContent1" xmlResource="org/faktorips/sample/OptionContent1.xml"/>
+	<EnumContent implementationClass="org.faktorips.sample.Option2" ipsObjectId="sample:OptionContent2.ipsenumcontent" ipsObjectQualifiedName="OptionContent2.Type" xmlResource=""/>
+  <EnumContent implementationClass="org.faktorips.sample.Option2" ipsObjectId="sample:OptionContent2.ipsenumcontent" ipsObjectQualifiedName="OptionContent2" xmlResource="org/faktorips/sample/OptionContent2.xml"/>
+  <EnumContent implementationClass="org.faktorips.sample.Option3" ipsObjectId="sample:OptionContent3.ipsenumcontent" ipsObjectQualifiedName="OptionContent3" xmlResource="org/faktorips/sample/OptionContent3.xml"/>
+  <EnumContent implementationClass="org.faktorips.sample.Option3" ipsObjectId="sample:OptionContent3.ipsenumcontent" ipsObjectQualifiedName="OptionContent3.Type"/>
+    <ProductComponent xmlResource="org/faktorips/sample/model/internal/motor/MotorProduct2005.xml" implementationClass="org.faktorips.sample.model.internal.motor.MotorPolicyPkImpl" ipsObjectId="motor.MotorProduct2005" policyCmptClass="org.faktorips.sample.model.motor.MotorPolicy">
+        <Generation xmlResource="org/faktorips/sample/model/internal/motor/MotorProduct2005.xml" implementationClass="" validFrom="2005-01-01"/>
+    </ProductComponent>
+    <PolicyCmptType xmlResource="MotorPolicy.xml" implementationClass="org.faktorips.sample.MotorPolicy" ipsObjectId="sample:MotorPolicy" ipsObjectQualifiedName="sample:MotorPolicy"/>    
+    <ProductCmptType xmlResource="MotorProduct.xml" implementationClass="org.faktorips.sample.MotorProduct" ipsObjectId="sample:MotorProduct" ipsObjectQualifiedName="sample.MotorProduct"/>    
+</TableOfContents>
+

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -77,7 +77,6 @@ import org.w3c.dom.Element;
 public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
-    private IPolicyCmptTypeAttribute attribute;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
@@ -88,6 +87,11 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation association;
     private IProductCmpt target;
 
+    private IPolicyCmptTypeAttribute attribute1;
+    private IPolicyCmptTypeAttribute attribute4;
+    private IPolicyCmptTypeAttribute attribute3;
+    private IPolicyCmptTypeAttribute attribute2;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -95,8 +99,14 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject("TestProject");
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
-        attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setName("attribute");
+        attribute1 = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute1.setName("attribute1");
+        attribute2 = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute2.setName("attribute2");
+        attribute3 = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute3.setName("attribute3");
+        attribute4 = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute4.setName("attribute4");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
@@ -236,13 +246,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ITableContentUsage tcu1 = generation.newTableContentUsage();
         ITableContentUsage tcu2 = generation.newTableContentUsage();
         ITableContentUsage tcu3 = generation.newTableContentUsage();
-        IConfiguredDefault defaultValue1 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
-        IConfiguredDefault defaultValue2 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
-        IConfiguredDefault defaultValue3 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
-        IConfiguredDefault defaultValue4 = generation.newPropertyValue(attribute, IConfiguredDefault.class);
-        IConfiguredValueSet valueSet1 = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
-        IConfiguredValueSet valueSet2 = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
-        IConfiguredValueSet valueSet3 = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        IConfiguredDefault defaultValue1 = generation.newPropertyValue(attribute1, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue2 = generation.newPropertyValue(attribute2, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue3 = generation.newPropertyValue(attribute3, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue4 = generation.newPropertyValue(attribute4, IConfiguredDefault.class);
+        IConfiguredValueSet valueSet1 = generation.newPropertyValue(attribute1, IConfiguredValueSet.class);
+        IConfiguredValueSet valueSet2 = generation.newPropertyValue(attribute2, IConfiguredValueSet.class);
+        IConfiguredValueSet valueSet3 = generation.newPropertyValue(attribute3, IConfiguredValueSet.class);
 
         List<? extends IPropertyValue> values = generation.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE
                 .getInterfaceClass());
@@ -292,8 +302,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     @Test
     public void testToXmlElement() {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
-        generation.newPropertyValue(attribute, IConfiguredDefault.class);
-        generation.newPropertyValue(attribute, IConfiguredValueSet.class);
+        generation.newPropertyValue(attribute1, IConfiguredDefault.class);
+        generation.newPropertyValue(attribute1, IConfiguredValueSet.class);
         generation.newLink("coverage");
         generation.newLink("coverage");
         generation.newLink("coverage");
@@ -301,8 +311,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newFormula();
         generation.newAttributeValue();
         generation.newTableContentUsage();
-        newValidationRuleConfig();
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
+        newValidationRuleConfig("rule2");
 
         Element element = generation.toXml(newDocument());
 
@@ -444,7 +454,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetChildren() {
-        IConfiguredDefault defaultValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredDefault defaultValue = generation.newPropertyValue(attribute1, IConfiguredDefault.class);
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
         IFormula formula = generation.newFormula();
@@ -560,18 +570,18 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
         assertEquals(0, rules.size());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
         rules = generation.getValidationRuleConfigs();
         assertEquals(1, rules.size());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule2");
         rules = generation.getValidationRuleConfigs();
         assertEquals(2, rules.size());
     }
 
-    private IValidationRuleConfig newValidationRuleConfig() {
+    private IValidationRuleConfig newValidationRuleConfig(String ruleName) {
         IValidationRule rule = mock(IValidationRule.class);
-        when(rule.getPropertyName()).thenReturn("newRule");
+        when(rule.getPropertyName()).thenReturn(ruleName);
         when(rule.isActivatedByDefault()).thenReturn(false);
         when(rule.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.VALIDATION_RULE);
         return generation.newValidationRuleConfig(rule);
@@ -581,10 +591,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testGetNumValidationRules() {
         assertEquals(0, generation.getNumOfValidationRules());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
         assertEquals(1, generation.getNumOfValidationRules());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule2");
         assertEquals(2, generation.getNumOfValidationRules());
     }
 
@@ -592,10 +602,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testNewValidationRule() {
         assertEquals(0, generation.getNumOfValidationRules());
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule1");
         assertEquals(1, generation.getChildren().length);
 
-        newValidationRuleConfig();
+        newValidationRuleConfig("rule2");
         assertEquals(2, generation.getChildren().length);
     }
 
@@ -784,7 +794,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testAddPartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
-        IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredDefault configDefault = generation.newPropertyValue(attribute1, IConfiguredDefault.class);
 
         assertThat(generation.addPartThis(configDefault), is(true));
     }
@@ -793,9 +803,9 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testRemovePartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
-        IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
+        IConfiguredDefault configDefault = generation.newPropertyValue(attribute1, IConfiguredDefault.class);
 
         assertThat(generation.removePartThis(configDefault), is(true));
-        assertNull(generation.getPropertyValue(attribute, IConfiguredDefault.class));
+        assertNull(generation.getPropertyValue(attribute1, IConfiguredDefault.class));
     }
 }

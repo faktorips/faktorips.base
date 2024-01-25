@@ -29,7 +29,7 @@ class PolicyBuilderTmpl {
         
             «FOR attribute : attributesIncludingAbstract» «attributeSetter(it, attribute)» «ENDFOR»
             «IF hasSupertype»
-                «FOR attribute: superAttributes» «superAttributeSetter(it, attribute)» «ENDFOR»
+                «FOR attribute: withThisGeneratorConfig(superAttributes)» «superAttributeSetter(it, attribute)» «ENDFOR»
             «ENDIF»
         
             «getPolicy»

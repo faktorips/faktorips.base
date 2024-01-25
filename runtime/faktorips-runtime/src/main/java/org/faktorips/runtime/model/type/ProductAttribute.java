@@ -13,19 +13,33 @@ package org.faktorips.runtime.model.type;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.valueset.ValueSet;
 
 /**
- * Represents an attribute in a IpsProductCmptType.
+ * Represents an attribute in a {@link ProductCmptType}.
  */
 public class ProductAttribute extends Attribute {
+
+    public static final String MSGCODE_VALUE_NOT_IN_VALUE_SET = "PRODUCT_ATTRIBUTE-VALUE_NOT_IN_VALUE_SET";
+
+    public static final String MSGKEY_VALUE_NOT_IN_VALUE_SET = "Validation.ValueNotInValueSet";
+
+    public static final String MSGCODE_DUPLICATE_VALUE = "PRODUCT_ATTRIBUTE-DUPLICATE_VALUE";
+
+    public static final String MSGKEY_DUPLICATE_VALUE = "Validation.DuplicateValue";
+
+    public static final String PROPERTY_VALUE = "value";
 
     private final Method getter;
 
@@ -33,7 +47,7 @@ public class ProductAttribute extends Attribute {
 
     public ProductAttribute(Type type, boolean changingOverTime, Method getter, Method setter) {
         super(type, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
-                getInnermostGenericClass(getter.getGenericReturnType()), changingOverTime, Deprecation.of(getter));
+                findDatatype(getter), changingOverTime, Deprecation.of(getter));
         this.getter = getter;
         this.setter = setter;
     }
@@ -81,8 +95,9 @@ public class ProductAttribute extends Attribute {
      * @param effectiveDate (optional) the date to use for selecting the product component's
      *            generation, if this attribute {@link #isChangingOverTime()}
      */
-    public Object getValue(IProductComponent productComponent, Calendar effectiveDate) {
-        return invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(IProductComponent productComponent, Calendar effectiveDate) {
+        return (T)invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
     }
 
     /**
@@ -105,7 +120,7 @@ public class ProductAttribute extends Attribute {
      * values, {@link #getDatatype()} will still return the class of a single value, but
      * {@link #getValue(IProductComponent, Calendar)} will return a {@link List}.
      */
-    public Boolean isMultiValue() {
+    public boolean isMultiValue() {
         return getter.getReturnType().equals(List.class);
     }
 
@@ -115,20 +130,81 @@ public class ProductAttribute extends Attribute {
             IProductComponent product,
             Calendar effectiveDate) {
         super.validate(list, context, product, effectiveDate);
-        // TODO FIPS-10498 validateValue(list, context, product, effectiveDate);
+        validateValue(list, context, product, effectiveDate);
     }
 
-    private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type) {
+    @SuppressWarnings("unchecked")
+    private <T> void validateValue(MessageList list,
+            IValidationContext context,
+            IProductComponent product,
+            Calendar effectiveDate) {
+        validate(list, context,
+                () -> (T)getValue(product, effectiveDate),
+                () -> (ValueSet<T>)getValueSetFromModel(),
+                ProductAttribute::contains,
+                MSGCODE_VALUE_NOT_IN_VALUE_SET,
+                MSGKEY_VALUE_NOT_IN_VALUE_SET,
+                PROPERTY_VALUE);
+        validate(list, context,
+                () -> (T)getValue(product, effectiveDate),
+                this::isMultiValue,
+                (value, multiValue) -> !multiValue || new HashSet<>((List<T>)value).size() == ((List<T>)value).size(),
+                MSGCODE_DUPLICATE_VALUE,
+                MSGKEY_DUPLICATE_VALUE,
+                PROPERTY_VALUE);
+    }
+
+    private static <T> boolean contains(T value, ValueSet<T> valueSet) {
+        if (value instanceof List) {
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            List<T> values = (List)value;
+            return values.stream().allMatch(valueSet::contains);
+        }
+        return valueSet.contains(value);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getDefaultValueFromModel() {
+        T defaultValue = super.getDefaultValueFromModel();
+        if (isMultiValue() && IpsStringUtils.EMPTY.equals(defaultValue)) {
+            return (T)Arrays.asList(defaultValue);
+        }
+        return defaultValue;
+    }
+
+    private static final Class<?> findDatatype(Method getter) {
+        return getInnermostGenericClass(getter.getGenericReturnType(),
+                getter.getAnnotation(IpsAttribute.class).primitive());
+    }
+
+    private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type, boolean primitive) {
         if (type instanceof Class) {
-            return (Class<?>)type;
+            Class<?> clazz = (Class<?>)type;
+            if (primitive && !clazz.isPrimitive()) {
+                // multi-value primitive attributes have type List<Wrapper-Type>, so get the
+                // primitive type from the wrapper class
+                try {
+                    clazz = (Class<?>)clazz.getDeclaredField("TYPE").get(null);
+                } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException
+                        | SecurityException e) {
+                    throw new IllegalArgumentException("can't find class for " + type.toString(), e);
+                }
+            }
+            return clazz;
         }
         if (type instanceof ParameterizedType) {
-            return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0]);
+            return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0], primitive);
         } else if (type instanceof WildcardType) {
-            return getInnermostGenericClass(((WildcardType)type).getUpperBounds()[0]);
+            return getInnermostGenericClass(((WildcardType)type).getUpperBounds()[0], primitive);
         } else {
             throw new IllegalArgumentException("can't find class for " + type.toString());
         }
+    }
+
+    @Override
+    protected String getResourceBundleName() {
+        return ProductAttribute.class.getName();
     }
 
 }

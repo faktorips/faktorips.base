@@ -3,3 +3,14 @@ Fips-BasePackage: \${package}
 Fips-SourcecodeOutput: src/main/java
 Fips-ResourceOutput: src/main/resources
 Fips-ObjectDir: \${IPS-SourceFolder};toc="\${IPS-TocXML}.xml";validation-messages="\${IPS-ValidationMessageBundle}"
+Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset
+ ;additionalAnnotations="org.faktorips.runtime.annotation.IpsGenerated";
+ builderClasses="All";camelCaseSeparated="true";changesInTimeNamingConve
+ ntion="\${IPS-NamingConvention}";formulaCompiling="XML";generateChangeListener="false";gene
+ rateConvenienceGetters="false";generateCopySupport="true";generateDelta
+ Support="true";generateGetEffectiveFromAsCalendar="true";generateJaxbSu
+ pport="None";generatePublishedInterfaces="false";generateVisitorSupport
+ ="true";generatorLocale="\${IPS-Language}";localDateDatatypeHelperVariant="java8";mar
+ kNoneMergeableResourcesAsDerived="false";minimalJavadoc="false";persist
+ enceProvider="$IPS-PersistenceDatabase$";retainAnnotations="";serializablePolicyC
+ mpts="false";toXMLSupport="false";valueSetMethods="Unified"

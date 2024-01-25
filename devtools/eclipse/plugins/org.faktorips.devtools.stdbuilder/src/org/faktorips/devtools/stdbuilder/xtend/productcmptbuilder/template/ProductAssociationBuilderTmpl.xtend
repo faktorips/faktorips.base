@@ -289,7 +289,7 @@ class ProductAssociationBuilderTmpl {
         /**
         * @generated
         */
-        protected «InMemoryRuntimeRepository» «getRepository» {
+        protected «IModifiableRuntimeRepository» «getRepository» {
             return productBuilder.«getRepository»;
         }
         «ENDIF»

@@ -686,8 +686,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
                 editPartCanceled();
             } else if (dialog.getReturnCode() == Window.OK) {
-
-                newPartConfirmed(newPart);
+                newPartConfirmed(newPart);   
+                tableViewer.setSelection(new StructuredSelection(newPart), true);
             }
         } catch (IpsException ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
@@ -750,10 +750,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (getSelection().isEmpty()) {
             return;
         }
-        String deleteDialogMessage = NLS.bind(Messages.IpsPartsComposite_deleteAttributeConfirm,
+        String deleteDialogMessage = NLS.bind(Messages.IpsPartsComposite_deleteElementConfirm,
                 getSelectedPart().getName());
         boolean deleteAttribute = MessageDialog.openConfirm(getShell(),
-                Messages.IpsPartsComposite_deleteAttribute,
+                Messages.IpsPartsComposite_deleteElement,
                 deleteDialogMessage);
         if (deleteAttribute) {
             try {

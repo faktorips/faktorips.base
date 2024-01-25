@@ -42,9 +42,17 @@ class ProductComponentTmpl {
 
              «FOR it : associations» «privateConstants»«ENDFOR»
 
+             «FOR it : overwritingAttributes»
+                 «IF !generatePublishedInterfaces || !published »
+                     «constantForValueSet»
+                     «constantForDefaultValue»
+                 «ENDIF»
+             «ENDFOR»
              «FOR it : attributes»
                  «IF !generatePublishedInterfaces || !published »
                      «constantForPropertyName»
+                     «constantForValueSet»
+                     «constantForDefaultValue»
                  «ENDIF»
              «ENDFOR»
 

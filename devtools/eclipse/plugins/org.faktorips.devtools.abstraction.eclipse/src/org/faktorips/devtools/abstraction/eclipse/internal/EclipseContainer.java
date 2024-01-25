@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.SortedSet;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -39,7 +40,10 @@ public abstract class EclipseContainer extends EclipseResource implements AConta
 
     @Override
     public SortedSet<AResource> getMembers() {
-        return wrapSupplier(container()::members).asSortedSetOf(AResource.class);
+        return wrapSupplier(() -> {
+            IContainer container = container();
+            return container.exists() ? container.members() : new IResource[0];
+        }).asSortedSetOf(AResource.class);
     }
 
     @Override

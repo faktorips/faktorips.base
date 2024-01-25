@@ -200,7 +200,7 @@ class ClassEnumTypeTmpl {
          * @generated
          */
         private Object writeReplace() {
-          return new SerializationProxy(«identifierAttribute.name», getRepositoryLookup());
+          return new SerializationProxy(«identifierAttribute.memberVarName», getRepositoryLookup());
         }
         
         /**
@@ -232,14 +232,14 @@ class ClassEnumTypeTmpl {
         private static class SerializationProxy implements «Serializable» {
           private static final long serialVersionUID = 1L;
         
-          private final «identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name»;
+          private final «identifierAttribute.datatypeNameForConstructor» «identifierAttribute.memberVarName»;
           private final «IRuntimeRepositoryLookup» runtimeRepositoryLookup;
         
           /**
          * @generated
          */
-          SerializationProxy(«identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name», «IRuntimeRepositoryLookup» runtimeRepositoryLookup) {
-            this.«identifierAttribute.name» = «identifierAttribute.name»;
+          SerializationProxy(«identifierAttribute.datatypeNameForConstructor» «identifierAttribute.memberVarName», «IRuntimeRepositoryLookup» runtimeRepositoryLookup) {
+            this.«identifierAttribute.memberVarName» = «identifierAttribute.memberVarName»;
             this.runtimeRepositoryLookup = runtimeRepositoryLookup;
           }
         
@@ -247,7 +247,7 @@ class ClassEnumTypeTmpl {
          * @generated
          */
           private Object readResolve() {
-            return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.name»);
+            return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.memberVarName»);
           }
         }
     '''
@@ -261,7 +261,7 @@ class ClassEnumTypeTmpl {
             @Override
             public void «writePropertiesToXml(Element + " element")» {
                 «FOR attribute : it.allAttributesWithoutLiteralName»
-                    «ValueToXmlHelper».«attribute.addToElement(attribute.getToStringExpression(attribute.name) , "element", IpsEnumToXmlWriter+".XML_ELEMENT_ENUMATTRIBUTEVALUE")»;
+                    «ValueToXmlHelper».«attribute.addToElement(attribute.getToStringExpression(attribute.memberVarName) , "element", IpsEnumToXmlWriter+".XML_ELEMENT_ENUMATTRIBUTEVALUE")»;
                 «ENDFOR»
             }
         «ENDIF»

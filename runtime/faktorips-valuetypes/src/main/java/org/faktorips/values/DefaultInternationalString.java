@@ -31,7 +31,7 @@ public class DefaultInternationalString implements InternationalString {
      * 
      * @since 24.1
      **/
-    public static final InternationalString EMPTY = new DefaultInternationalString(List.of(),
+    public static final DefaultInternationalString EMPTY = new DefaultInternationalString(List.of(),
             Locale.ROOT);
 
     private static final long serialVersionUID = -4599838166284499045L;
