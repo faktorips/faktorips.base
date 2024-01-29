@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
 
-import static java.util.Arrays.asList;
+import static java.util.List.of;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -291,7 +291,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject addedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createChildDeltas(delta, emptyList(), asList(addedChild1, addedChild2), "children", options);
+        ModelObjectDelta.createChildDeltas(delta, emptyList(), of(addedChild1, addedChild2), "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
         assertEquals(2, childDeltas.size());
@@ -312,7 +312,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject addedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition().withSubtreeDelta();
 
-        ModelObjectDelta.createChildDeltas(delta, emptyList(), asList(addedChild1, addedChild2), "children", options);
+        ModelObjectDelta.createChildDeltas(delta, emptyList(), of(addedChild1, addedChild2), "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
         assertEquals(2, childDeltas.size());
@@ -337,8 +337,8 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject newUnchangedChild = new TestModelObject("Child0", new TestModelObject("Grandchild0"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createChildDeltas(delta, asList(oldUnchangedChild),
-                asList(newUnchangedChild, addedChild1, addedChild2), "children", options);
+        ModelObjectDelta.createChildDeltas(delta, of(oldUnchangedChild),
+                of(newUnchangedChild, addedChild1, addedChild2), "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
         assertEquals(2, childDeltas.size());
@@ -359,7 +359,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject removedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createChildDeltas(delta, asList(removedChild1, removedChild2), emptyList(), "children",
+        ModelObjectDelta.createChildDeltas(delta, of(removedChild1, removedChild2), emptyList(), "children",
                 options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -381,7 +381,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject removedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition().withSubtreeDelta();
 
-        ModelObjectDelta.createChildDeltas(delta, asList(removedChild1, removedChild2), emptyList(), "children",
+        ModelObjectDelta.createChildDeltas(delta, of(removedChild1, removedChild2), emptyList(), "children",
                 options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -407,7 +407,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+        ModelObjectDelta.createChildDeltas(delta, of(oldChild1, oldChild2), of(newChild2, newChild1),
                 "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -434,7 +434,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
         IDeltaComputationOptions options = computationByPosition().withSubtreeDelta();
 
-        ModelObjectDelta.createChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+        ModelObjectDelta.createChildDeltas(delta, of(oldChild1, oldChild2), of(newChild2, newChild1),
                 "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -460,7 +460,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject addedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, emptyList(), asList(addedChild1, addedChild2), "children",
+        ModelObjectDelta.createAssociatedChildDeltas(delta, emptyList(), of(addedChild1, addedChild2), "children",
                 options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -482,7 +482,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject addedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition().withSubtreeDelta();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, emptyList(), asList(addedChild1, addedChild2), "children",
+        ModelObjectDelta.createAssociatedChildDeltas(delta, emptyList(), of(addedChild1, addedChild2), "children",
                 options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -506,8 +506,8 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject newUnchangedChild = new TestModelObject("Child0", new TestModelObject("Grandchild0"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(oldUnchangedChild),
-                asList(newUnchangedChild, addedChild1, addedChild2), "children", options);
+        ModelObjectDelta.createAssociatedChildDeltas(delta, of(oldUnchangedChild),
+                of(newUnchangedChild, addedChild1, addedChild2), "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
         assertEquals(2, childDeltas.size());
@@ -528,7 +528,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject removedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(removedChild1, removedChild2), emptyList(),
+        ModelObjectDelta.createAssociatedChildDeltas(delta, of(removedChild1, removedChild2), emptyList(),
                 "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -550,7 +550,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject removedChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
         IDeltaComputationOptions options = computationByPosition().withSubtreeDelta();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(removedChild1, removedChild2), emptyList(),
+        ModelObjectDelta.createAssociatedChildDeltas(delta, of(removedChild1, removedChild2), emptyList(),
                 "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -574,7 +574,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
         IDeltaComputationOptions options = computationByPosition();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+        ModelObjectDelta.createAssociatedChildDeltas(delta, of(oldChild1, oldChild2), of(newChild2, newChild1),
                 "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
@@ -600,7 +600,7 @@ public class ModelObjectDeltaChildrenByPositionTest extends AbstractModelObjectD
         TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
         IDeltaComputationOptions options = computationByPosition().withSubtreeDelta();
 
-        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+        ModelObjectDelta.createAssociatedChildDeltas(delta, of(oldChild1, oldChild2), of(newChild2, newChild1),
                 "children", options);
 
         List<IModelObjectDelta> childDeltas = delta.getChildDeltas();

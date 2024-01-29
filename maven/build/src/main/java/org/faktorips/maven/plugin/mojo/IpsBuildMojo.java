@@ -362,7 +362,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Path to the update site to install Eclipse.
      */
-    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.26/")
+    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.30/")
     private String eclipseRepository;
 
     /**
@@ -650,7 +650,7 @@ public class IpsBuildMojo extends AbstractMojo {
                     .filter(p -> new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists())
                     .collect(Collectors.toList());
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     private boolean usesCustomJdk() {

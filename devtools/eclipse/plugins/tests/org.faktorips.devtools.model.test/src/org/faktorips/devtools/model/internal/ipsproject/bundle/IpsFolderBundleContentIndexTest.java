@@ -75,7 +75,7 @@ public class IpsFolderBundleContentIndexTest {
 
         when(indexer.getFiles(srcPathAbsolute)).thenReturn(srcFiles);
 
-        when(indexer.getFolders(srcCoveragesPath)).thenReturn(new ArrayList<Path>());
+        when(indexer.getFolders(srcCoveragesPath)).thenReturn(new ArrayList<>());
 
         srcFileCoverage = Path.of("coverage/basecoverage.ipsproductcmpttype");
         srcFileCoverage2 = Path.of("coverage/additionalcoverage.ipsproductcmpttype");
@@ -85,10 +85,10 @@ public class IpsFolderBundleContentIndexTest {
                 ressourceFileCoverage);
         when(indexer.getFiles(srcCoveragesPath)).thenReturn(srcFilesCoverage);
 
-        when(indexer.getFolders(srcEmptyPath)).thenReturn(new ArrayList<Path>());
-        when(indexer.getFiles(srcEmptyPath)).thenReturn(new ArrayList<Path>());
+        when(indexer.getFolders(srcEmptyPath)).thenReturn(new ArrayList<>());
+        when(indexer.getFiles(srcEmptyPath)).thenReturn(new ArrayList<>());
 
-        when(indexer.getFolders(testPathAbsolute)).thenReturn(new ArrayList<Path>());
+        when(indexer.getFolders(testPathAbsolute)).thenReturn(new ArrayList<>());
 
         testFile = Path.of("test.ipstestcasetype");
         List<Path> testFiles = makeAbsolutePaths(testPathAbsolute, testFile);

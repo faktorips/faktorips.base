@@ -25,9 +25,9 @@ public class ProductAssociationCollector
     public ProductAssociationCollector() {
         super(Arrays.<AnnotationProcessor<?, ProductAssociationDescriptor>> asList(new ProductIpsAssociationProcessor(),
                 new IpsAssociationLinksProcessor<>(),
-                new IpsAssociationAdderProcessorNoCardinality<ProductAssociationCollector.ProductAssociationDescriptor>(),
+                new IpsAssociationAdderProcessorNoCardinality<>(),
                 new IpsAssociationAdderProcessorWithCardinality<>(),
-                new IpsAssociationRemoverProcessor<ProductAssociationDescriptor>()));
+                new IpsAssociationRemoverProcessor<>()));
     }
 
     @Override

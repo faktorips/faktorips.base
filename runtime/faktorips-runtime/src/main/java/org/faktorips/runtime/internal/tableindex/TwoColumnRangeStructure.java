@@ -58,7 +58,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
         MergeAndCopyStructure<TwoColumnRangeStructure<K, V, R>> {
 
     TwoColumnRangeStructure() {
-        super(new TreeMap<TwoColumnRange<K>, V>());
+        super(new TreeMap<>());
     }
 
     /**
@@ -175,7 +175,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
 
     @Override
     public TwoColumnRangeStructure<K, V, R> copy() {
-        return fillCopy(new TwoColumnRangeStructure<K, V, R>());
+        return fillCopy(new TwoColumnRangeStructure<>());
     }
 
     /**

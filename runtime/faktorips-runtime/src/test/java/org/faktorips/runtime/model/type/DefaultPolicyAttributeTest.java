@@ -20,10 +20,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -267,7 +267,7 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_Product_ExtensibleEnum() {
         TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
-        repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
+        repository.putEnumValues(TestExtensibleEnum.class, List.of(testExtensibleEnum));
         Produkt source = new Produkt(repository);
         ProduktGen produktGen = new ProduktGen(source);
         repository.putProductCmptGeneration(produktGen);
@@ -381,7 +381,7 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_ModelObject_ExtensibleEnum() {
         TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
-        repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
+        repository.putEnumValues(TestExtensibleEnum.class, List.of(testExtensibleEnum));
         ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -398,7 +398,7 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testGetValueSet_ModelObject_ExtensibleEnum_NoProduct() {
         TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
-        repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
+        repository.putEnumValues(TestExtensibleEnum.class, List.of(testExtensibleEnum));
         ConfVertrag vertrag = new ConfVertrag((Produkt)null);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 

@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -595,7 +594,7 @@ public class InMemoryRuntimeRepositoryTest {
 
             @Override
             public Set<String> getExtensionPropertyIds() {
-                return Collections.emptySet();
+                return Set.of();
             }
 
             @Override

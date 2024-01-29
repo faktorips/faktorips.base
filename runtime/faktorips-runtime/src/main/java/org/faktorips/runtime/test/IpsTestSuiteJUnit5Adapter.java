@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,12 +20,12 @@ import org.junit.jupiter.api.DynamicTest;
  * Adapter between JUnit 5 test suites and Faktor-IPS test suites.
  * <p>
  * Code example to show how the adapter can be integrated:
- * 
+ *
  * <pre>
  * <code>
  * import org.junit.jupiter.api.DynamicTest;
  * import org.junit.jupiter.api.TestFactory;
- * 
+ *
  * public class HomeInsuranceJUnitTest extends IpsTestSuiteJUnit5Adapter {
  *      &#64;TestFactory
  *       public Stream&#60;DynamicTest&#62; getTests() {
@@ -36,6 +36,7 @@ import org.junit.jupiter.api.DynamicTest;
  * </code>
  * </pre>
  */
+@SuppressWarnings("exports")
 public class IpsTestSuiteJUnit5Adapter {
 
     public Stream<DynamicTest> createTests(IpsTest2 test) {

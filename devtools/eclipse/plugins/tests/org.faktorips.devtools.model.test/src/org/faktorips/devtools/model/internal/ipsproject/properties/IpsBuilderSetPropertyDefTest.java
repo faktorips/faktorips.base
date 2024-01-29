@@ -62,7 +62,7 @@ public class IpsBuilderSetPropertyDefTest {
                 new IConfigurationElement[0]);
 
         TestConfigurationElement discreteValuesEl = new TestConfigurationElement("discreteValues",
-                new HashMap<String, String>(), null,
+                new HashMap<>(), null,
                 new IConfigurationElement[] { discreteValue1, discreteValue2, discreteValue3 });
 
         attributes = new HashMap<>();
@@ -275,7 +275,7 @@ public class IpsBuilderSetPropertyDefTest {
                     new IConfigurationElement[] {});
 
             TestConfigurationElement jdkCompliances = new TestConfigurationElement("jdkComplianceLevels",
-                    new HashMap<String, String>(), null, new IConfigurationElement[] { jdk14, jdk15, jdk16 });
+                    new HashMap<>(), null, new IConfigurationElement[] { jdk14, jdk15, jdk16 });
 
             attributes = new HashMap<>();
             attributes.put("name", "logLevel");

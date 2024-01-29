@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -157,7 +156,7 @@ public class AbstractRuntimeRepositoryJaxbTest {
 
         @Override
         protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         @Override
@@ -197,7 +196,7 @@ public class AbstractRuntimeRepositoryJaxbTest {
 
         @Override
         protected List<IIpsXmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         @Override

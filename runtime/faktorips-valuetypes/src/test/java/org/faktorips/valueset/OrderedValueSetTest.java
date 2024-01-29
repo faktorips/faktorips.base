@@ -90,7 +90,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testOf_Collection_WithNullObject() {
-        List<Money> values = Arrays.asList(Money.euro(1), Money.euro(2), Money.NULL, Money.euro(3));
+        List<Money> values = List.of(Money.euro(1), Money.euro(2), Money.NULL, Money.euro(3));
         OrderedValueSet<Money> valueSet = OrderedValueSet.of(values);
         assertThat(valueSet.getValues(), hasItems(values.toArray(new Money[0])));
         assertThat(valueSet.containsNull(), is(true));

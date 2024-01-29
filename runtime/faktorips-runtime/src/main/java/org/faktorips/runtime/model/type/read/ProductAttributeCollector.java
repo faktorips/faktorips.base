@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.faktorips.runtime.model.type.read;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.List;
 
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
@@ -23,8 +23,7 @@ public class ProductAttributeCollector
         extends AttributeCollector<ProductAttribute, ProductAttributeCollector.ProductAttributeDescriptor> {
 
     public ProductAttributeCollector() {
-        super(Arrays.asList(new ProductIpsAttributeProcessor(),
-                new IpsAttributeSetterProcessor<ProductAttributeDescriptor>()));
+        super(List.of(new ProductIpsAttributeProcessor(), new IpsAttributeSetterProcessor<>()));
     }
 
     @Override

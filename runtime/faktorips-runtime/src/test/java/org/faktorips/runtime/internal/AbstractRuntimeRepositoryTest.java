@@ -19,9 +19,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -548,7 +546,7 @@ public class AbstractRuntimeRepositoryTest {
 
         @Override
         public List<Void> getAllRows() {
-            return Collections.emptyList();
+            return List.of();
         }
 
         @Override
@@ -603,7 +601,7 @@ public class AbstractRuntimeRepositoryTest {
         private final TestConcreteExtensibleEnum extendedValue2 = new TestConcreteExtensibleEnum(3, "E2",
                 "Extended Value 2");
 
-        private final List<TestAbstractEnum> values = Arrays.asList(TestConcreteExtensibleEnum.CLASS_VALUE_1,
+        private final List<TestAbstractEnum> values = List.of(TestConcreteExtensibleEnum.CLASS_VALUE_1,
                 TestConcreteExtensibleEnum.CLASS_VALUE_2, extendedValue1, extendedValue2);
 
         @Override
@@ -640,7 +638,7 @@ public class AbstractRuntimeRepositoryTest {
         private final TestConcreteExtensibleEnum extendedValue2 = new TestConcreteExtensibleEnum(3, "E2",
                 "Extended Value 2");
 
-        private final List<TestConcreteExtensibleEnum> values = Arrays.asList(TestConcreteExtensibleEnum.CLASS_VALUE_1,
+        private final List<TestConcreteExtensibleEnum> values = List.of(TestConcreteExtensibleEnum.CLASS_VALUE_1,
                 TestConcreteExtensibleEnum.CLASS_VALUE_2, extendedValue1, extendedValue2);
 
         @Override

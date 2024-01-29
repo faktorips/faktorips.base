@@ -12,10 +12,10 @@
     <packaging>bundle</packaging>
 
     <name>Faktor-IPS Runtime</name>
-    <description>Runtime library for Faktor-IPS. 
-    When using Java 9 or newer, you need to provide the jaxb-api. 
+    <description>Runtime library for Faktor-IPS.
+    When using the JAXB support use either faktorips-runtime-jakarta-xml or faktorips-runtime-javax-xml as dependency.
     When using CSV to read tables, add the optional dependencies to opencsv, commons-lang3 and commons-text. 
-    If you want to run Faktor-IPS tests as JUnit-Tests, you need to provide either junit (JUnit 4) or junit-jupiter-api (JUnit 5)</description>
+    If you want to run Faktor-IPS tests as JUnit tests, you need to provide either junit (JUnit 4) or junit-jupiter-api (JUnit 5).</description>
 
     <build>
         <plugins>
@@ -35,33 +35,38 @@
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.runtime {
-                                    requires transitive org.faktorips.valuetypes;
-                                    requires transitive com.opencsv;
-                                    requires transitive junit;
-                                    requires transitive java.desktop;
-                                    requires transitive java.xml;
-                                    requires static transitive java.xml.bind;
-                                    exports org.faktorips.runtime;
-                                    exports org.faktorips.runtime.annotation;
-                                    exports org.faktorips.runtime.caching;
-                                    exports org.faktorips.runtime.formula;
-                                    exports org.faktorips.runtime.internal;
-                                    exports org.faktorips.runtime.internal.tableindex;
-                                    exports org.faktorips.runtime.internal.toc;
-                                    exports org.faktorips.runtime.jakarta.xml;
-                                    exports org.faktorips.runtime.jaxb;
-                                    exports org.faktorips.runtime.model;
-                                    exports org.faktorips.runtime.model.annotation;
-                                    exports org.faktorips.runtime.model.enumtype;
-                                    exports org.faktorips.runtime.model.table;
-                                    exports org.faktorips.runtime.model.type;
-                                    exports org.faktorips.runtime.model.type.read;
-                                    exports org.faktorips.runtime.productdataprovider;
-                                    exports org.faktorips.runtime.test;
-                                    exports org.faktorips.runtime.util;
-                                    exports org.faktorips.runtime.util.function;
-                                    exports org.faktorips.runtime.validation;
-                                    exports org.faktorips.runtime.xml;
+                                        requires transitive org.faktorips.valuetypes;
+                                        requires transitive java.desktop;
+                                        requires transitive java.sql;
+                                        requires transitive java.xml;
+                                        requires static com.github.spotbugs.annotations;
+                                        requires static junit;
+                                        requires static org.junit.jupiter.api;
+                                        requires static com.opencsv;
+                                        requires static java.xml.bind;
+                                        exports org.faktorips.runtime;
+                                        exports org.faktorips.runtime.annotation;
+                                        exports org.faktorips.runtime.caching;
+                                        exports org.faktorips.runtime.formula;
+                                        exports org.faktorips.runtime.internal;
+                                        exports org.faktorips.runtime.internal.productvariant;
+                                        exports org.faktorips.runtime.internal.tableindex;
+                                        exports org.faktorips.runtime.internal.toc;
+                                        exports org.faktorips.runtime.internal.xml;
+                                        exports org.faktorips.runtime.jaxb;
+                                        exports org.faktorips.runtime.model;
+                                        exports org.faktorips.runtime.model.annotation;
+                                        exports org.faktorips.runtime.model.enumtype;
+                                        exports org.faktorips.runtime.model.table;
+                                        exports org.faktorips.runtime.model.type;
+                                        exports org.faktorips.runtime.model.type.read;
+                                        exports org.faktorips.runtime.productdataprovider;
+                                        exports org.faktorips.runtime.test;
+                                        exports org.faktorips.runtime.util;
+                                        exports org.faktorips.runtime.util.function;
+                                        exports org.faktorips.runtime.validation;
+                                        exports org.faktorips.runtime.xml;
+                                        uses org.faktorips.runtime.internal.toc.ITocEntryFactory;
                                     }
                                 </moduleInfoSource>
                             </module>
@@ -142,11 +147,6 @@
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

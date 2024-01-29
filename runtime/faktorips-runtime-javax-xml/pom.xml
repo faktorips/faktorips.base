@@ -13,7 +13,9 @@
     <packaging>bundle</packaging>
 
     <name>Faktor-IPS Runtime JAXB Extension</name>
-    <description>Faktor-IPS Runtime Extension for XML binding with classic JAXB as included in Java 8 and Java EE up to 8.</description>
+    <description>Faktor-IPS Runtime Extension for XML binding with classic JAXB as included in Java 8 and Java EE up to 8.
+    You need to provide the jaxb-api as dependency. It is marked as provided here because it is often included in application servers and any version required by Faktor-IPS might collide with them.
+    </description>
 
     <build>
         <plugins>
@@ -34,7 +36,8 @@
                                 <moduleInfoSource>
                                     module org.faktorips.runtime.xml.javax {
                                         requires transitive org.faktorips.runtime;
-                                        requires static transitive java.xml.bind;
+                                        requires transitive java.xml.bind;
+                                        requires static com.github.spotbugs.annotations;
                                         exports org.faktorips.runtime.xml.javax;
                                     }
                                 </moduleInfoSource>

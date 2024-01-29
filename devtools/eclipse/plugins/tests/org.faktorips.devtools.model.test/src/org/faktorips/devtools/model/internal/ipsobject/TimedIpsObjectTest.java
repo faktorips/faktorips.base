@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
@@ -43,7 +42,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         super.setUp();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        IIpsProject project = newIpsProject(new ArrayList<Locale>());
+        IIpsProject project = newIpsProject(new ArrayList<>());
         timedObject = newProductCmpt(project, "Product");
         ((ProductCmpt)timedObject).setRuntimeId("abc");
     }

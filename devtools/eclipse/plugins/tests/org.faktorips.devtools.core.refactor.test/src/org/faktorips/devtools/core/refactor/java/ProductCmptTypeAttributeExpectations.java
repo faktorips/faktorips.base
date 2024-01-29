@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,11 @@ import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getP
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
+import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -85,6 +89,13 @@ final class ProductCmptTypeAttributeExpectations {
         assertTrue(productGenInterface.getMethod("get" + newNameCamelCase, new String[0]).exists());
         assertTrue(productGenClass.getField(newName).exists());
         assertTrue(productGenClass.getMethod("get" + newNameCamelCase, new String[0]).exists());
+        try {
+            IMethod[] methods = productGenClass.getMethods();
+            Arrays.stream(methods).forEach(System.out::println);
+        } catch (JavaModelException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         assertTrue(productGenClass.getMethod("set" + newNameCamelCase, new String[] { datatypeSignature }).exists());
         assertTrue(policyClass.getMethod("get" + newNameCamelCase, new String[0]).exists());
     }

@@ -33,7 +33,7 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
      * This is a thread local variable because the document builder is not thread safe. For every
      * thread the method {@link #createDocumentBuilder()} is called automatically
      */
-    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
+    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<>() {
         @Override
         protected DocumentBuilder initialValue() {
             return createDocumentBuilder();

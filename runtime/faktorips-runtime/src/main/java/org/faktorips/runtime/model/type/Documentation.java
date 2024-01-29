@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.enumtype.EnumAttribute;
 import org.faktorips.runtime.util.MessagesHelper;
@@ -44,13 +43,13 @@ public class Documentation {
      * <p>
      * In the case that the documentation is still empty and the element is not a {@link TypePart},
      * the given fallback value is returned.
-     * 
+     *
      * @param element the documented element
      * @param type the documentation type
      * @param locale the desired locale
      * @param fallback the text to be returned when no documentation is found
      * @param superElementGetter provides access to the element's super-element if necessary
-     * 
+     *
      * @param <E> the model element's type, to make sure the super-element getter matches the type
      */
     public static <E extends ModelElement> String of(E element,
@@ -61,7 +60,8 @@ public class Documentation {
         String documentation = fallback;
         MessagesHelper messageHelper = element.getMessageHelper();
         if (messageHelper != null) {
-            String docFallback = (element instanceof TypePart || element instanceof EnumAttribute) ? StringUtils.EMPTY
+            String docFallback = (element instanceof TypePart || element instanceof EnumAttribute)
+                    ? IpsStringUtils.EMPTY
                     : fallback;
             documentation = messageHelper.getMessageOr(element.getMessageKey(type), locale, docFallback);
             if (IpsStringUtils.isEmpty(documentation)) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.faktorips.runtime.model.type.read;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.List;
 
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.type.ConstantPolicyAttribute;
@@ -25,8 +25,7 @@ public class PolicyAttributeCollector
         extends AttributeCollector<PolicyAttribute, PolicyAttributeCollector.PolicyAttributeDescriptor> {
 
     public PolicyAttributeCollector() {
-        super(Arrays.asList(new IpsAttributeProcessor<PolicyAttributeDescriptor>(),
-                new IpsAttributeSetterProcessor<PolicyAttributeDescriptor>()));
+        super(List.of(new IpsAttributeProcessor<>(), new IpsAttributeSetterProcessor<>()));
     }
 
     @Override

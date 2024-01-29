@@ -234,7 +234,7 @@ public class PolicyAssociationTest {
     public void testAddTargetObjects_ToN_DoNothingIfEmptyList() {
         Source source = new Source();
 
-        association1ToN.addTargetObjects(source, new ArrayList<IModelObject>());
+        association1ToN.addTargetObjects(source, new ArrayList<>());
         assertEquals(0, source.getTargets1toN().size());
     }
 
@@ -373,7 +373,7 @@ public class PolicyAssociationTest {
         Target target = new Target();
         source.addTargets1toN(target);
 
-        association1ToN.removeTargetObjects(source, new ArrayList<IModelObject>());
+        association1ToN.removeTargetObjects(source, new ArrayList<>());
         assertSame(target, source.getTargets1toN().get(0));
     }
 
@@ -478,7 +478,7 @@ public class PolicyAssociationTest {
         @IpsMatchingAssociation(source = Product.class, name = "Matching")
         @IpsInverseAssociation("Inverse")
         public List<Target> getTargets() {
-            return Arrays.asList(target);
+            return List.of(target);
         }
 
         @IpsAssociation(name = "targets1toN", pluralName = "targets", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
@@ -584,7 +584,7 @@ public class PolicyAssociationTest {
 
         @IpsAssociation(name = "Matching", pluralName = "Matching", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
         public List<Target> getMatchings() {
-            return Arrays.asList(target);
+            return List.of(target);
         }
     }
 

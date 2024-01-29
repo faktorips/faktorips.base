@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * A test suite is a container for tests.
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsTestSuite extends IpsTest2 {
@@ -67,7 +67,7 @@ public class IpsTestSuite extends IpsTest2 {
     /**
      * Returns the test with the given name. This method does not search recursively in suites that
      * are contained in this suite.
-     * 
+     *
      * @param name The unqualified name of the test that identifies the test in this suite.
      */
     public IpsTest2 getTest(String name) {

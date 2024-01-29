@@ -50,7 +50,7 @@ public class TwoColumnRangeTest {
     public void testEquals_infinite() throws Exception {
         assertEquals(new TwoColumnRange<>(null, 2), new TwoColumnRange<>(null, 2));
         assertEquals(new TwoColumnRange<>(1, null), new TwoColumnRange<>(1, null));
-        assertEquals(new TwoColumnRange<Integer>(null, null), new TwoColumnRange<Integer>(null, null));
+        assertEquals(new TwoColumnRange<>(null, null), new TwoColumnRange<>(null, null));
         assertEquals(new TwoColumnRange<>(3, 5), new TwoColumnRange<>(3, null));
         assertFalse(new TwoColumnRange<>(1, null).equals(new TwoColumnRange<>(3, null)));
     }

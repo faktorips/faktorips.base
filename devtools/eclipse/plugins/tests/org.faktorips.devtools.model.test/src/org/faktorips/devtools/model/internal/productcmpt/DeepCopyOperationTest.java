@@ -258,8 +258,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
 
         DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(),
-                new HashSet<IProductCmptStructureReference>(Arrays.asList(toCopy)),
-                new HashSet<IProductCmptStructureReference>(Arrays.asList(toRefer)), handles, new GregorianCalendar(),
+                new HashSet<>(Arrays.asList(toCopy)),
+                new HashSet<>(Arrays.asList(toRefer)), handles, new GregorianCalendar(),
                 new GregorianCalendar());
         dco.setIpsPackageFragmentRoot(comfortMotorProduct.getIpsPackageFragment().getRoot());
         dco.setSourceIpsPackageFragment(comfortMotorProduct.getIpsPackageFragment());
@@ -325,7 +325,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         }
 
         DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new HashSet<>(), handles, new GregorianCalendar(),
                 new GregorianCalendar(1990, 1, 1));
         dco.setIpsPackageFragmentRoot(product.getIpsPackageFragment().getRoot());
         dco.setSourceIpsPackageFragment(product.getIpsPackageFragment());
@@ -757,7 +757,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             IpsPackageFragment sourcePackageFragment,
             IIpsPackageFragment targetPackageFragment) {
         DeepCopyOperation dco = new DeepCopyOperation(structure.getRoot(), toCopy,
-                new HashSet<IProductCmptStructureReference>(), handles, new GregorianCalendar(),
+                new HashSet<>(), handles, new GregorianCalendar(),
                 new GregorianCalendar());
         dco.setIpsPackageFragmentRoot(sourcePackageFragment.getRoot());
         dco.setSourceIpsPackageFragment(sourcePackageFragment);

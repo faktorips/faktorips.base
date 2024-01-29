@@ -488,7 +488,7 @@ public class ProductSwitchTest {
     }
 
     public static Matcher<ProductSwitchResult> isSuccessfulSwitch(IProductComponent from, IProductComponent to) {
-        return new TypeSafeMatcher<ProductSwitchResult>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -526,7 +526,7 @@ public class ProductSwitchTest {
     }
 
     public static Matcher<ProductSwitchResult> isFailedSwitch() {
-        return new TypeSafeMatcher<ProductSwitchResult>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {

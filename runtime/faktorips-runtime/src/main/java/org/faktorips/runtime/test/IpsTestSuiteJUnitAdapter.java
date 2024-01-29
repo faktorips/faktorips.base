@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,12 +17,12 @@ import junit.framework.TestSuite;
  * Adapter between JUnit 3/4 test suites and Faktor-IPS test suites.
  * <p>
  * Code example to show how the adapter can be integrated:
- * 
+ *
  * <pre>
  * <code>
  * import org.faktorips.runtime.test.IpsTestSuiteJUnitAdapter;
  * import junit.framework.Test;
- * 
+ *
  * public class HomeInsuranceJUnitTest extends IpsTestSuiteJUnitAdapter {
  *      public static Test suite() {
  *          IRuntimeRepository repository = [...];
@@ -32,6 +32,7 @@ import junit.framework.TestSuite;
  * </code>
  * </pre>
  */
+@SuppressWarnings("exports")
 public class IpsTestSuiteJUnitAdapter extends TestSuite {
 
     public IpsTestSuiteJUnitAdapter() {

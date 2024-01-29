@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,25 +20,26 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.m2e.AbstractMavenIpsProjectTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MavenVersionProviderTest extends AbstractIpsPluginTest {
+public class MavenVersionProviderTest extends AbstractMavenIpsProjectTest {
 
     private static final String POM_XML = "pom.xml";
 
     // @formatter:off
 	private static final String POM_CONTENT =
-	        "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "	xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n"
-            + "	<modelVersion>4.0.0</modelVersion>\n"
-            + "	<groupId>org.faktorips.test</groupId>\n"
-            + "	<artifactId>maven-ips-project</artifactId>\n"
-            + "	<version>1.2.3-SNAPSHOT</version>\n"
-            + "</project>";
+	        """
+    	<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    		<modelVersion>4.0.0</modelVersion>
+    		<groupId>org.faktorips.test</groupId>
+    		<artifactId>maven-ips-project</artifactId>
+    		<version>1.2.3-SNAPSHOT</version>
+    	</project>""";
     // @formatter:on
 
     private IIpsProject ipsProject;

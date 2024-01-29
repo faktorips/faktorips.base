@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 
 /**
  * Abstract class for all ips test runner implementation.
- * 
+ *
  * @author Joerg Ortmann
  */
 public abstract class AbstractIpsTestRunner implements IpsTestListener {
@@ -43,11 +43,11 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     /**
      * Counts all ips test cases in the given packages.<br>
      * The format of the input string is:<br>
-     * 
+     *
      * <pre>
      * {packageName in repository1}{packageName in repository2}{...}
      * </pre>
-     * 
+     *
      * @throws Exception if an error occurs.
      */
     public int countTests(String names) throws Exception {
@@ -68,7 +68,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      */
     public List<IpsTest2> getTests() {
         if (testSuite == null) {
-            return new ArrayList<>(0);
+            return List.of();
         }
 
         return testSuite.getTests();
@@ -79,7 +79,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
      * If the repositories currently not exists in memory create the repositories first.<br>
      * The repository will be created by the to be implemented method:
      * <code>createRepositories()</code>
-     * 
+     *
      * @throws Exception if an error occurs.
      */
     protected List<IRuntimeRepository> getRepositories() throws Exception {
@@ -126,11 +126,11 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     /**
      * Run the all ips test cases in the given packages.<br>
      * The format of the input string is:<br>
-     * 
+     *
      * <pre>
      * {packageName in repository1}{packageName in repository2}{...}
      * </pre>
-     * 
+     *
      * @throws Exception if an error occurs.
      */
     public void run(String names) throws Exception {
@@ -143,7 +143,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
     /**
      * Returns a list of repository names from a given string of repositories.<br>
      * The format of the input string is:<br>
-     * 
+     *
      * <pre>
      * {repositoryName1}{repositoryName2}{...}
      * </pre>
@@ -199,7 +199,7 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
 
     /*
      * Returns an ips test object containing all tests inside the given package.
-     * 
+     *
      * @params names contains the names in all repositories, format: {<name in repository1>}{<name
      * in repository2>}{<...>}...
      */

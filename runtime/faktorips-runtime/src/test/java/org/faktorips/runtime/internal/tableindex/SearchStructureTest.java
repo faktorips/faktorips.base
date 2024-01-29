@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,8 +15,8 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -75,7 +75,7 @@ public class SearchStructureTest {
 
     private void setUpResultSet(Object... expectedObject) {
         Set<Object> resultSet = new HashSet<>();
-        resultSet.addAll(Arrays.asList(expectedObject));
+        resultSet.addAll(List.of(expectedObject));
         doReturn(resultSet).when(structure).get();
     }
 

@@ -1,9 +1,9 @@
 package org.faktorips.runtime.testrepository.testenum.modell;
 
-import org.faktorips.runtime.model.annotation.IpsDocumented;
-import org.faktorips.runtime.model.annotation.IpsEnumType;
-import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.annotation.IpsGenerated;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 
 /**
  *

@@ -15,7 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.DefaultCacheFactory;
@@ -40,7 +39,7 @@ public class AbstractTocBasedRuntimeRepositoryTest {
         ClassLoader cl = getClass().getClassLoader();
         IReadonlyTableOfContents referencedToc = mock(IReadonlyTableOfContents.class);
         when(referencedToc.getEnumContentTocEntries()).thenReturn(
-                Arrays.asList(new EnumContentTocEntry("enumC", "my.EnumC", "my.EnumC.xml", EnumC.class.getName()),
+                List.of(new EnumContentTocEntry("enumC", "my.EnumC", "my.EnumC.xml", EnumC.class.getName()),
                         // Entry for Type with content in product repository
                         new EnumContentTocEntry("enumA", "my.EnumA.Type", "", EnumC.class.getName()),
                         // Entry for Java Enum
@@ -49,7 +48,7 @@ public class AbstractTocBasedRuntimeRepositoryTest {
                 referencedToc);
         IReadonlyTableOfContents toc = mock(IReadonlyTableOfContents.class);
         when(toc.getEnumContentTocEntries()).thenReturn(
-                Arrays.asList(new EnumContentTocEntry("enumA", "my.EnumA", "my.EnumA.xml", EnumA.class.getName()),
+                List.of(new EnumContentTocEntry("enumA", "my.EnumA", "my.EnumA.xml", EnumA.class.getName()),
                         new EnumContentTocEntry("enumB", "my.EnumB", "my.EnumB.xml", EnumB.class.getName())));
         AbstractTocBasedRuntimeRepository repository = new TestAbstractTocBasedRuntimeRepository("r", cl, toc);
         repository.addDirectlyReferencedRepository(referencedRepository);

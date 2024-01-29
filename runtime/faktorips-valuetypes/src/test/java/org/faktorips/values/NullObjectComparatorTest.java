@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class NullObjectComparatorTest {
 
-    private static final Matcher<Integer> negative = new TypeSafeMatcher<Integer>() {
+    private static final Matcher<Integer> negative = new TypeSafeMatcher<>() {
 
         @Override
         public void describeTo(Description description) {
@@ -26,7 +26,7 @@ public class NullObjectComparatorTest {
         }
     };
 
-    private static final Matcher<Integer> positive = new TypeSafeMatcher<Integer>() {
+    private static final Matcher<Integer> positive = new TypeSafeMatcher<>() {
 
         @Override
         public void describeTo(Description description) {

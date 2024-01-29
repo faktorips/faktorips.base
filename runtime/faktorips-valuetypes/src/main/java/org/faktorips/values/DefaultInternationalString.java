@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public class DefaultInternationalString implements InternationalString {
      * 
      * @since 24.1
      **/
-    public static final DefaultInternationalString EMPTY = new DefaultInternationalString(Collections.emptyList(),
+    public static final DefaultInternationalString EMPTY = new DefaultInternationalString(List.of(),
             Locale.ROOT);
 
     private static final long serialVersionUID = -4599838166284499045L;

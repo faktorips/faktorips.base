@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - www.faktorzehn.de
- * 
+ *
  * All Rights Reserved - Alle Rechte vorbehalten.
  *******************************************************************************/
 
@@ -16,6 +16,7 @@ import java.time.format.DateTimeParseException;
 
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class MonthDayAdapterTest {
 
     @Test

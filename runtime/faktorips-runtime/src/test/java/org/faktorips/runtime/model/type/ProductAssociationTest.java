@@ -778,7 +778,7 @@ public class ProductAssociationTest {
 
         @IpsAssociation(name = "asso3", pluralName = "assos3", min = 1, max = 10, kind = AssociationKind.Association, targetClass = Target.class)
         public List<Target> getTargets() {
-            return Arrays.asList(target);
+            return List.of(target);
         }
 
         @IpsAssociation(name = "asso4", pluralName = "assos4", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
@@ -983,7 +983,7 @@ public class ProductAssociationTest {
 
         @IpsAssociation(name = "Matching", pluralName = "Matching", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
         public List<Target> getMatchings() {
-            return Arrays.asList(target);
+            return List.of(target);
         }
     }
 }

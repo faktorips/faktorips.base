@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.junit.Test;
@@ -93,12 +94,12 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoin_Iterable_Single() {
-        assertEquals("a", join(Arrays.asList("a")));
+        assertEquals("a", join(List.of("a")));
     }
 
     @Test
     public void testJoin_Iterable_Mult() {
-        assertEquals("a, 3", join(Arrays.asList("a", 3)));
+        assertEquals("a, 3", join(List.of("a", 3)));
     }
 
     @Test
@@ -138,12 +139,12 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoin_Iterable_Separator_Single() {
-        assertEquals("a", join(Arrays.asList("a"), "|"));
+        assertEquals("a", join(List.of("a"), "|"));
     }
 
     @Test
     public void testJoin_Iterable_Separator_Mult() {
-        assertEquals("a|3", join(Arrays.asList("a", 3), "|"));
+        assertEquals("a|3", join(List.of("a", 3), "|"));
     }
 
     @Test
@@ -153,7 +154,7 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoin_Iterable_NullSeparator_Mult() {
-        assertEquals("a3", join(Arrays.asList("a", 3), (String)null));
+        assertEquals("a3", join(List.of("a", 3), (String)null));
     }
 
     @Test
@@ -163,12 +164,12 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoin_Iterable_Function_Separator_Single() {
-        assertEquals("A", join(Arrays.asList("a"), String::toUpperCase, "|"));
+        assertEquals("A", join(List.of("a"), String::toUpperCase, "|"));
     }
 
     @Test
     public void testJoin_Iterable_Function_Separator_Mult() {
-        assertEquals("A|B", join(Arrays.asList("a", "b"), String::toUpperCase, "|"));
+        assertEquals("A|B", join(List.of("a", "b"), String::toUpperCase, "|"));
     }
 
     @Test
@@ -179,7 +180,7 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoin_Iterable_Function_NullSeparator_Mult() {
-        assertEquals("AB", join(Arrays.asList("a", "b"), String::toUpperCase, null));
+        assertEquals("AB", join(List.of("a", "b"), String::toUpperCase, null));
     }
 
     @Test
@@ -192,17 +193,17 @@ public class IpsStringUtilsTest {
 
     @Test
     public void testJoin_Iterable_Function_Single() {
-        assertEquals("A", join(Arrays.asList("a"), String::toUpperCase));
+        assertEquals("A", join(List.of("a"), String::toUpperCase));
     }
 
     @Test
     public void testJoin_Iterable_Function_Mult() {
-        assertEquals("A, B", join(Arrays.asList("a", "b"), String::toUpperCase));
+        assertEquals("A, B", join(List.of("a", "b"), String::toUpperCase));
     }
 
     public void testJoin_Iterable_Function_Null() {
         assertEquals("A, NULL, B",
-                join(Arrays.asList("a", null, "b"), o -> Objects.toString(o).toUpperCase()));
+                join(List.of("a", null, "b"), o -> Objects.toString(o).toUpperCase()));
     }
 
     @Test

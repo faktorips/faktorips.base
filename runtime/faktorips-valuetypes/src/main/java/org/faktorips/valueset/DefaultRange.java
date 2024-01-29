@@ -12,7 +12,6 @@ package org.faktorips.valueset;
 
 import static org.faktorips.values.ObjectUtil.isNull;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -382,7 +381,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         }
 
         if (isEmpty()) {
-            return Collections.emptySet();
+            return Set.of();
         }
 
         int numberOfEntries = sizeForDiscreteValuesExcludingNull();

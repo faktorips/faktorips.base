@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -219,7 +218,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(0, copy.getInvalidObjectProperties().size());
         assertEquals(0, copy.getReplacementParameters().size());
 
-        List<MsgReplacementParameter> params = Arrays.asList(new MsgReplacementParameter("sumInsured", Money.euro(100)),
+        List<MsgReplacementParameter> params = List.of(new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", Integer.valueOf(18)));
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
         copy = new Message(msg);
@@ -548,7 +547,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testInvalideObjects_ArrayListOfInvalideObjectProperties() {
-        List<ObjectProperty> objectProperties = Arrays.asList(new ObjectProperty(this, "prop1"),
+        List<ObjectProperty> objectProperties = List.of(new ObjectProperty(this, "prop1"),
                 new ObjectProperty(this, "prop2"));
         Message message = Message.error("messageText").invalidObjects(objectProperties).create();
 
@@ -605,7 +604,7 @@ public class MessageTest extends XmlAbstractTestCase {
                 .markers(markers) //
                 .create();
 
-        List<ObjectProperty> invalidObjectProperties = Arrays.asList(new ObjectProperty("O2"),
+        List<ObjectProperty> invalidObjectProperties = List.of(new ObjectProperty("O2"),
                 new ObjectProperty("O3"));
         Message messageCreated = new Builder(message).invalidObjects(invalidObjectProperties).create();
 

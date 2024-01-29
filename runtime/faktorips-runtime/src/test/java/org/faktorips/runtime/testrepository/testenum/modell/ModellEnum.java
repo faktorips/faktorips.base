@@ -1,11 +1,12 @@
 package org.faktorips.runtime.testrepository.testenum.modell;
 
-import org.faktorips.runtime.model.annotation.IpsDocumented;
-import org.faktorips.runtime.model.annotation.IpsEnumType;
-import java.util.Map;
 import java.util.HashMap;
-import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import java.util.Map;
+
 import org.faktorips.runtime.annotation.IpsGenerated;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 
 /**
  *

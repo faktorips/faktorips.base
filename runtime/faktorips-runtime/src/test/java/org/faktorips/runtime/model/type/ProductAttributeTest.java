@@ -20,9 +20,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -97,13 +95,13 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
         productComponent = new SubProdukt(repository);
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)23)));
         assertThat(productCmptType.getAttribute("attr3").getValue(productComponent, effectiveDate),
@@ -124,13 +122,13 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
                 is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
 
         productComponent = new SubProdukt(repository);
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)23)));
         assertThat(productCmptType.getAttribute("attr3").getValue(productComponent, null),
                 is(equalTo((Object)"foofoo")));
@@ -146,7 +144,7 @@ public class ProductAttributeTest {
         productCmptType.getAttribute("attr2").setValue(productComponent, effectiveDate, 1);
         productCmptType.getAttribute("attrGen").setValue(productComponent, effectiveDate, "newValue");
         productCmptType.getAttribute("multiString").setValue(productComponent, effectiveDate,
-                Arrays.asList("new", "value"));
+                List.of("new", "value"));
 
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"newValue")));
@@ -155,7 +153,7 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"newValue")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)Arrays.asList("new", "value"))));
+                is(equalTo((Object)List.of("new", "value"))));
     }
 
     @Test
@@ -166,7 +164,7 @@ public class ProductAttributeTest {
         productCmptType.getAttribute("attr2").setValue(productComponent, null, 1);
         productCmptType.getAttribute("attrGen").setValue(productComponent, null, "newValue");
         productCmptType.getAttribute("multiString").setValue(productComponent, null,
-                Arrays.asList("new", "value"));
+                List.of("new", "value"));
 
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null),
                 is(equalTo((Object)"newValue")));
@@ -175,7 +173,7 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
                 is(equalTo((Object)"newValue")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
-                is(equalTo((Object)Arrays.asList("new", "value"))));
+                is(equalTo((Object)List.of("new", "value"))));
     }
 
     @Test
@@ -356,7 +354,7 @@ public class ProductAttributeTest {
     @Test
     public void testValidate_DuplicateValue() {
         Produkt productComponent = new Produkt(repository);
-        productComponent.setMultiPrimitiveIntAttr(Arrays.asList(1, 2, 1));
+        productComponent.setMultiPrimitiveIntAttr(List.of(1, 2, 1));
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         ProductAttribute attribute1 = productCmptType.getAttribute("multiPrimitiveIntAttr");
         MessageList ml = new MessageList();
@@ -377,7 +375,7 @@ public class ProductAttributeTest {
     @Test
     public void testValidate_MultiValue_Enum_OK() {
         Produkt productComponent = new Produkt(repository);
-        productComponent.setMultiText(Arrays.asList("a", "b"));
+        productComponent.setMultiText(List.of("a", "b"));
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         ProductAttribute attribute1 = productCmptType.getAttribute("multiText");
         MessageList ml = new MessageList();
@@ -391,7 +389,7 @@ public class ProductAttributeTest {
     @Test
     public void testValidate_MultiValue_Enum() {
         Produkt productComponent = new Produkt(repository);
-        productComponent.setMultiText(Arrays.asList("a", "d"));
+        productComponent.setMultiText(List.of("a", "d"));
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         ProductAttribute attribute1 = productCmptType.getAttribute("multiText");
         MessageList ml = new MessageList();
@@ -578,9 +576,9 @@ public class ProductAttributeTest {
         private final ProduktGen produktGen = new ProduktGen(this);
         private String attr1 = "foo";
         private Integer attr2 = 42;
-        private List<String> multiString = Arrays.asList("hello", "world");
+        private List<String> multiString = List.of("hello", "world");
         private int primitiveIntAttr = 23;
-        private List<Integer> multiPrimitiveIntAttr = Arrays.asList(1, 2, 3);
+        private List<Integer> multiPrimitiveIntAttr = List.of(1, 2, 3);
         private List<String> multiText = DEFAULT_VALUE_FOR_MULTI_TEXT;
 
         public Produkt(IRuntimeRepository repository) {
@@ -619,7 +617,7 @@ public class ProductAttributeTest {
 
         @IpsAttribute(name = "multiEnum", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public List<? extends AbstractEnumType> getMultiEnum() {
-            return Collections.emptyList();
+            return List.of();
         }
 
         @IpsAttribute(name = "deprecatedAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -650,7 +648,7 @@ public class ProductAttributeTest {
 
         @IpsAttribute(name = "multiText", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
         public List<String> getMultiText() {
-            return new ArrayList<>(multiText);
+            return multiText;
         }
 
         @IpsAttributeSetter("multiText")
@@ -712,7 +710,7 @@ public class ProductAttributeTest {
     private static class SubProdukt extends Produkt {
 
         private final SubProduktGen subProduktGen = new SubProduktGen(this);
-        private final List<ConcreteEnumType> multiEnum = Arrays.asList(new ConcreteEnumType());
+        private final List<ConcreteEnumType> multiEnum = List.of(new ConcreteEnumType());
 
         public SubProdukt(IRuntimeRepository repository) {
             super(repository);

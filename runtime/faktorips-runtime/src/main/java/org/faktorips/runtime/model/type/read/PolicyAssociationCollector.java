@@ -21,9 +21,9 @@ public class PolicyAssociationCollector
 
     public PolicyAssociationCollector() {
         super(Arrays.<AnnotationProcessor<?, PolicyAssociationDescriptor>> asList(
-                new IpsAssociationProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
-                new IpsAssociationAdderProcessorNoCardinality<PolicyAssociationCollector.PolicyAssociationDescriptor>(),
-                new IpsAssociationRemoverProcessor<PolicyAssociationCollector.PolicyAssociationDescriptor>()));
+                new IpsAssociationProcessor<>(),
+                new IpsAssociationAdderProcessorNoCardinality<>(),
+                new IpsAssociationRemoverProcessor<>()));
     }
 
     @Override

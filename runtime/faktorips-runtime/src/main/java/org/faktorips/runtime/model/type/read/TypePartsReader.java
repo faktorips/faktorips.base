@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,7 +11,6 @@
 package org.faktorips.runtime.model.type.read;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
@@ -27,14 +26,14 @@ import org.faktorips.runtime.model.annotation.IpsAttributes;
  * <p>
  * At the end the collectors have collected all relevant methods and could be asked for the
  * requested parts.
- * 
+ *
  */
 public class TypePartsReader {
 
     private List<TypePartCollector<?, ?>> collectors;
 
     public TypePartsReader(TypePartCollector<?, ?>... collectors) {
-        this.collectors = Arrays.asList(collectors);
+        this.collectors = List.of(collectors);
     }
 
     public void init(AnnotatedDeclaration annotatedDeclaration) {
