@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,6 +23,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
@@ -138,6 +141,23 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
     }
 
     @Test
+    public void testValidateTotalMin_TemplateStatusUndefined() {
+        associationPolicy.setMinCardinality(1);
+        associationPolicy.setMaxCardinality(1);
+        link1.setMinCardinality(1);
+        link1.setMaxCardinality(1);
+        link1.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        link2.setMinCardinality(0);
+        link2.setMaxCardinality(1);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(1));
+        Message message = list.getMessage(0);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+    }
+
+    @Test
     public void testValidateTotalMax() {
         associationPolicy.setMinCardinality(1);
         associationPolicy.setMaxCardinality(8);
@@ -178,6 +198,45 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
     }
 
     @Test
+    public void testValidateTotalMax_TemplateStatusUndefined_NoError() {
+        // FIPS-1107
+        associationPolicy.setMinCardinality(1);
+        associationPolicy.setMaxCardinality(1);
+        link1.setMinCardinality(1);
+        link1.setMaxCardinality(1);
+        link1.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        link2.setMinCardinality(1);
+        link2.setMaxCardinality(1);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(0));
+    }
+
+    @Test
+    public void testValidateTotalMax_TemplateStatusNotUndefined() {
+        associationPolicy.setMinCardinality(1);
+        associationPolicy.setMaxCardinality(1);
+        link1.setMinCardinality(1);
+        link1.setMaxCardinality(1);
+        link1.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        link2.setMinCardinality(1);
+        link2.setMaxCardinality(1);
+
+        MessageList list = callValidator(gen);
+        Message message = list.getMessage(0);
+
+        assertThat(list.size(), is(2));
+
+        message = list.getMessage(0);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+
+        message = list.getMessage(1);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+    }
+
+    @Test
     public void testValidateMinumumCardinality() {
         association.setMinCardinality(3);
         association.setMaxCardinality(5);
@@ -187,18 +246,6 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         Message message = list.getMessage(0);
         assertEquals(Message.ERROR, message.getSeverity());
         assertEquals(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS, message.getCode());
-    }
-
-    @Test
-    public void testValidateMaximumCardinality() {
-        association.setMinCardinality(0);
-        association.setMaxCardinality(1);
-
-        MessageList list = callValidator(gen);
-        assertEquals(1, list.size());
-        Message message = list.getMessage(0);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS, message.getCode());
     }
 
     @Test

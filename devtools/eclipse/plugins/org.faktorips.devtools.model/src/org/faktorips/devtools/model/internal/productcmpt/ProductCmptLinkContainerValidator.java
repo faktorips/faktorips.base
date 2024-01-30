@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
@@ -47,8 +49,10 @@ import org.faktorips.runtime.Severity;
  * once by this container.</li>
  * <li>a link has an effective date that is before or equal to the effective date of the referencing
  * product component link container.</li>
+ * <li>a links cardinality will not count during the validation process, if the corresponding
+ * {@link IProductCmptLink} has an "undefined" {@link TemplateValueStatus}.</li>
  * </ul>
- * 
+ *
  */
 public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IProductCmptType> {
 
@@ -81,12 +85,14 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     }
 
     protected void validateAssociation(IAssociation association) {
-        List<IProductCmptLink> relations = linkContainer.getLinksAsList(association.getTargetRoleSingular());
+        List<IProductCmptLink> relations = linkContainer.getLinksAsList(association.getTargetRoleSingular())
+                .stream()
+                .filter(relation -> relation.getTemplateValueStatus() != TemplateValueStatus.UNDEFINED)
+                .collect(Collectors.toList());
         addMessageIfAssociationHasValidationMessages(association, list);
+        addMessageIfDuplicateTargetPresent(association, relations, list);
         addMessageIfLessLinksThanMinCard(association, relations, list);
         addMessageIfMoreLinksThanMaxCard(association, relations, list);
-        addMessageIfDuplicateTargetPresent(association, relations, list);
-
         IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
         if (props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()) {
             addMessageIfTargetNotValidOnValidFromDate(association, relations, list);
