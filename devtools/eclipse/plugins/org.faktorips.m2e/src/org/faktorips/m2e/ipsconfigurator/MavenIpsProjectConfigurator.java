@@ -435,21 +435,21 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         Resource resourcesFolderResource;
         if (resources.containsKey(resourcesPath)) {
             resourcesFolderResource = resources.get(resourcesPath);
-            if (!resourcesFolderResource.getIncludes().contains(includeXML)) {
-                resourcesFolderResource.addInclude(includeXML);
-            }
-            if (!resourcesFolderResource.getIncludes().contains(includeProperties)) {
-                resourcesFolderResource.addInclude(includeProperties);
-            }
-            if (!resourcesFolderResource.getIncludes().contains(includeIpsFiles)) {
-                resourcesFolderResource.addInclude(includeIpsFiles);
+            // if includes exist in an resource, we should add FIPS includes
+            if (!resourcesFolderResource.getIncludes().isEmpty()) {
+                if (!resourcesFolderResource.getIncludes().contains(includeXML)) {
+                    resourcesFolderResource.addInclude(includeXML);
+                }
+                if (!resourcesFolderResource.getIncludes().contains(includeProperties)) {
+                    resourcesFolderResource.addInclude(includeProperties);
+                }
+                if (!resourcesFolderResource.getIncludes().contains(includeIpsFiles)) {
+                    resourcesFolderResource.addInclude(includeIpsFiles);
+                }
             }
         } else {
             resourcesFolderResource = new Resource();
             resourcesFolderResource.setDirectory(resourcesPath);
-            resourcesFolderResource.addInclude(includeXML);
-            resourcesFolderResource.addInclude(includeProperties);
-            resourcesFolderResource.addInclude(includeIpsFiles);
             mavenBuild.addResource(resourcesFolderResource);
         }
 

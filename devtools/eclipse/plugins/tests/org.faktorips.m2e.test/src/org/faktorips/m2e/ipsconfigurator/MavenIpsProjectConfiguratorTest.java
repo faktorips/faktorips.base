@@ -12,6 +12,8 @@ package org.faktorips.m2e.ipsconfigurator;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
@@ -19,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,6 +56,7 @@ import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.m2e.version.MavenVersionFormatter;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,6 +65,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private static final String POM_SCENARIO_1 = "pom_scenario1.xml";
     private static final String POM_SCENARIO_2 = "pom_scenario2.xml";
+    private static final String POM_SCENARIO_3 = "pom_scenario3.xml";
     private static final String POM_EMPTY = "pom_empty.xml";
     private static final String POM_NAME = "pom.xml";
     private static final String MANIFEST_NAME = "MANIFEST.MF";
@@ -71,6 +76,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     private static IpsProjectCreationProperties projectCreationProperties;
     private static String pomScenario1;
     private static String pomScenario2;
+    private static String pomScenario3;
     private static String pomEmpty;
     private static String faktorIpsVersion;
 
@@ -81,6 +87,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         mavenIpsProjectConfigurator = new MavenIpsProjectConfigurator();
         pomScenario1 = readResource(POM_SCENARIO_1);
         pomScenario2 = readResource(POM_SCENARIO_2);
+        pomScenario3 = readResource(POM_SCENARIO_3);
         pomEmpty = readResource(POM_EMPTY);
         faktorIpsVersion = MavenVersionFormatter.formatVersion(IpsModelActivator.getInstalledFaktorIpsVersion());
     }
@@ -284,6 +291,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         checkMavenProperties(mavenProject.getModel());
         checkMavenDependencies(mavenProject);
         checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), empty());
         checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
         checkMavenPlugins(mavenProject.getBuild());
     }
@@ -313,6 +321,8 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         checkMavenPropertiesContentPom(mavenProject.getModel());
         checkMavenDependenciesContentPom(mavenProject);
         checkMavenResourcesContentPom(mavenProject.getBuild());
+        checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(0));
         checkMavenPluginManagementContentPom(mavenProject.getBuild().getPluginManagement());
         checkMavenPluginsContentPom(mavenProject.getBuild());
     }
@@ -336,6 +346,31 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
                 .getMavenProject(new NullProgressMonitor());
 
         checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(3));
+        checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
+        checkMavenPlugins(mavenProject.getBuild());
+    }
+
+    /**
+     * Checks the remaining cases not covered by the empty POM and the scenario1 POM:
+     * <ul>
+     * <li>Resources already configured with some include</li>
+     * <li>Source-Plugin already configured in plugin management</li>
+     * <li>Source-Plugin already configured in plugins</li>
+     * </ul>
+     */
+    @Test
+    public void testConfigureIpsProject_scenario3() throws Exception {
+        ipsProject = newIpsProject();
+        initIpsProject(ipsProject);
+        initMaven(ipsProject, pomScenario3);
+
+        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
+                .getMavenProject(new NullProgressMonitor());
+
+        checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(4));
         checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
         checkMavenPlugins(mavenProject.getBuild());
     }
@@ -447,9 +482,6 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private void checkMavenResources(Build build) {
         String sourceFolderName = projectCreationProperties.getSourceFolderName();
-        String resourceDirectory = PathUtil
-                .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                        .getProjectRelativePath());
         List<Resource> resources = build.getResources();
         List<Resource> sourceFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(sourceFolderName))
@@ -457,17 +489,20 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(sourceFolderResources.size(), is(1));
         Resource sourceFolderResource = sourceFolderResources.get(0);
         assertThat(sourceFolderResource.getTargetPath(), is(sourceFolderName));
+    }
 
+    private void checkMavenResourceIncludes(Build build, Matcher<Collection<? extends Object>> matcher) {
+        String resourceDirectory = PathUtil
+                .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                        .getProjectRelativePath());
+        List<Resource> resources = build.getResources();
         List<Resource> resourcesFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(resourceDirectory))
                 .collect(Collectors.toList());
         assertThat(resourcesFolderResources.size(), is(1));
         Resource resourcesFolderResource = resourcesFolderResources.get(0);
         List<String> includes = resourcesFolderResource.getIncludes();
-        assertThat(includes.size(), is(3));
-        assertThat(includes.contains("**/*.xml"), is(true));
-        assertThat(includes.contains("**/*.properties"), is(true));
-        assertThat(includes.contains("**/*.ips*"), is(true));
+        assertThat(includes, is(matcher));
     }
 
     private void checkMavenPluginManagement(PluginManagement pluginManagement) {
