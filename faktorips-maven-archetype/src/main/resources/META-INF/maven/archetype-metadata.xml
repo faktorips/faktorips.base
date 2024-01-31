@@ -70,10 +70,6 @@
         </fileSet>
         <fileSet filtered="true" packaged="false" encoding="UTF-8">
             <directory>src/main/resources</directory>
-            <includes>
-                <include>**/*.properties</include>
-                <include>**/*.xml</include>
-            </includes>
         </fileSet>
         <fileSet filtered="true" packaged="false" encoding="UTF-8">
             <directory>META-INF</directory>

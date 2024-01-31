@@ -429,27 +429,10 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         Map<String, Resource> resources = mavenBuild.getResources().stream()
                 .collect(Collectors.toMap(Resource::getDirectory, Function.identity()));
 
-        String includeXML = "**/*.xml";
-        String includeProperties = "**/*.properties";
-        String includeIpsFiles = "**/*.ips*";
         Resource resourcesFolderResource;
-        if (resources.containsKey(resourcesPath)) {
-            resourcesFolderResource = resources.get(resourcesPath);
-            if (!resourcesFolderResource.getIncludes().contains(includeXML)) {
-                resourcesFolderResource.addInclude(includeXML);
-            }
-            if (!resourcesFolderResource.getIncludes().contains(includeProperties)) {
-                resourcesFolderResource.addInclude(includeProperties);
-            }
-            if (!resourcesFolderResource.getIncludes().contains(includeIpsFiles)) {
-                resourcesFolderResource.addInclude(includeIpsFiles);
-            }
-        } else {
+        if (!resources.containsKey(resourcesPath)) {
             resourcesFolderResource = new Resource();
             resourcesFolderResource.setDirectory(resourcesPath);
-            resourcesFolderResource.addInclude(includeXML);
-            resourcesFolderResource.addInclude(includeProperties);
-            resourcesFolderResource.addInclude(includeIpsFiles);
             mavenBuild.addResource(resourcesFolderResource);
         }
 

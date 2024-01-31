@@ -12,6 +12,8 @@ package org.faktorips.m2e.ipsconfigurator;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
@@ -19,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,6 +56,7 @@ import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.m2e.AbstractMavenIpsProjectTest;
 import org.faktorips.m2e.version.MavenVersionFormatter;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -284,6 +288,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         checkMavenProperties(mavenProject.getModel());
         checkMavenDependencies(mavenProject);
         checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), empty());
         checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
         checkMavenPlugins(mavenProject.getBuild());
     }
@@ -336,6 +341,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
                 .getMavenProject(new NullProgressMonitor());
 
         checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(2));
         checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
         checkMavenPlugins(mavenProject.getBuild());
     }
@@ -447,9 +453,6 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
 
     private void checkMavenResources(Build build) {
         String sourceFolderName = projectCreationProperties.getSourceFolderName();
-        String resourceDirectory = PathUtil
-                .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                        .getProjectRelativePath());
         List<Resource> resources = build.getResources();
         List<Resource> sourceFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(sourceFolderName))
@@ -457,17 +460,20 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         assertThat(sourceFolderResources.size(), is(1));
         Resource sourceFolderResource = sourceFolderResources.get(0);
         assertThat(sourceFolderResource.getTargetPath(), is(sourceFolderName));
+    }
 
+    private void checkMavenResourceIncludes(Build build, Matcher<Collection<? extends Object>> matcher) {
+        String resourceDirectory = PathUtil
+                .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                        .getProjectRelativePath());
+        List<Resource> resources = build.getResources();
         List<Resource> resourcesFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(resourceDirectory))
                 .collect(Collectors.toList());
         assertThat(resourcesFolderResources.size(), is(1));
         Resource resourcesFolderResource = resourcesFolderResources.get(0);
         List<String> includes = resourcesFolderResource.getIncludes();
-        assertThat(includes.size(), is(3));
-        assertThat(includes.contains("**/*.xml"), is(true));
-        assertThat(includes.contains("**/*.properties"), is(true));
-        assertThat(includes.contains("**/*.ips*"), is(true));
+        assertThat(includes, is(matcher));
     }
 
     private void checkMavenPluginManagement(PluginManagement pluginManagement) {
