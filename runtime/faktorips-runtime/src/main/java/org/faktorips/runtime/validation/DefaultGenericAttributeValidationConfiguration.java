@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.Range;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.ValueSet;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -66,6 +67,7 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
     private static final String MSG_KEY_VALUE_IN_RANGE_LOWER = "ValueInRangeLower";
     private static final String MSG_KEY_VALUE_IN_RANGE_UPPER = "ValueInRangeUpper";
     private static final String MSG_KEY_VALUE_IN_RANGE_STEPS = "ValueInRangeSteps";
+    private static final String MSG_KEY_VALUE_IN_STRING_LENGTH_VALUE_SET_INVALID = "ValueInStringLengthValueSetInvalid";
 
     private static final String RESOURCE_BUNDLE_NAME = DefaultGenericAttributeValidationConfiguration.class.getName();
 
@@ -237,6 +239,13 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
             } else {
                 sb.append(format(MSG_KEY_VALUE_IN_RANGE, lowerBound, upperBound, stepLabel));
             }
+        }
+        if (valueSet instanceof StringLengthValueSet) {
+            sb.append(' ');
+            String value = policyAttribute.getValue(modelObject).toString();
+            String shortenedValue = (value.length() > 20) ? value.substring(0, 15) + "(...)" : value;
+            sb.append(format(MSG_KEY_VALUE_IN_STRING_LENGTH_VALUE_SET_INVALID, shortenedValue,
+                    ((StringLengthValueSet)valueSet).getMaximumLength()));
         }
         return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.ValueNotInValueSet,
                 definingModelObjectClass, sb.toString());

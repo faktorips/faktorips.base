@@ -29,6 +29,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.junit.Test;
 
 public class DefaultGenericAttributeValidationConfigurationTest {
@@ -591,6 +592,60 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
                 is(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedStringLengthValueSet_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        StringLengthValueSet valueSet = new StringLengthValueSet(5);
+        modelObject.setAllowedValuesForStringAttribute(valueSet);
+        policyAttribute.setValue(modelObject, "foobar");
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertNotNull(message);
+        assertThat(message.getCode(),
+                startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
+        assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
+        assertThat(message.getText(), is(
+                "Das Feld \"StringAttribute\" enthält einen ungültigen Wert. Der Wert 'foobar' überschreitet die maximal erlaubte Länge von 5 Zeichen."));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedStringLengthValueSet_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.ENGLISH);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        StringLengthValueSet valueSet = new StringLengthValueSet(10);
+        modelObject.setAllowedValuesForStringAttribute(valueSet);
+        policyAttribute.setValue(modelObject, "foooooooooooobaaaaaaaar");
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertNotNull(message);
+        assertThat(message.getCode(),
+                startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
+        assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
+        assertThat(message.getText(), is(
+                "The field \"StringAttribute\" contains an invalid value. The value 'fooooooooooooba(...)' is longer than the defined maximum length of 10 characters."));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
     }
 
     @Test
