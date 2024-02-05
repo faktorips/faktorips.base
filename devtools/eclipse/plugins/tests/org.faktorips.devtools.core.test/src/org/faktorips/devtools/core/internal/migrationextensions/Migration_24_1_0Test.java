@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +72,40 @@ public class Migration_24_1_0Test extends AbstractIpsPluginTest {
         assertThat(project.getProject().findMember("derived/package/IpsEnum.xml"), is(nullValue()));
         assertThat(project.getProject().findMember("derived2/package/IpsEnum.xml"), is(nullValue()));
         assertThat(project.getProject().findMember("derived/package/IpsTable.xml"), is(nullValue()));
+        assertThat(project.getProject().findMember("derived2/package/IpsTable.xml"), is(nullValue()));
+
+        assertThat(project.getProject().findMember("derived/package/IpsFileThatsNot.xml"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/package/IpsFileThatsNot.xml"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived/package/OtherIpsFileThatsNot.XML"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/package/OtherIpsFileThatsNot.XML"), isA(AFile.class));
+
+        assertThat(project.getProject().findMember("derived/package/SomeFile.foo"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/package/SomeFile.foo"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived/package/SomeFile"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/package/SomeFile"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived/.gitignore"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/.gitignore"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived/Readme.txt"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/Readme.txt"), isA(AFile.class));
+
+        assertThat(project.getProject().findMember("derived/aFolder-xml"), isA(AFolder.class));
+        assertThat(project.getProject().findMember("derived2/aFolder-xml"), isA(AFolder.class));
+    }
+
+    @Test
+    public void testDeleteDerivedFolders_OnlyInSrcEntries() throws Exception {
+        IIpsObjectPath ipsObjectPath = project.getIpsObjectPath();
+        ipsObjectPath.setOutputFolderForDerivedSources(null);
+        project.setIpsObjectPath(ipsObjectPath);
+
+        Migration_24_1_0 migration = new Migration_24_1_0(project, "");
+        migration.migrate(new NullProgressMonitor());
+
+        assertThat(project.getProject().findMember("derived/package/IpsProduct.xml"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/package/IpsProduct.xml"), is(nullValue()));
+        assertThat(project.getProject().findMember("derived/package/IpsEnum.xml"), isA(AFile.class));
+        assertThat(project.getProject().findMember("derived2/package/IpsEnum.xml"), is(nullValue()));
+        assertThat(project.getProject().findMember("derived/package/IpsTable.xml"), isA(AFile.class));
         assertThat(project.getProject().findMember("derived2/package/IpsTable.xml"), is(nullValue()));
 
         assertThat(project.getProject().findMember("derived/package/IpsFileThatsNot.xml"), isA(AFile.class));
