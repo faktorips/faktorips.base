@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,13 +13,15 @@ package org.faktorips.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.faktorips.runtime.caching.HardMemoizer;
 import org.faktorips.runtime.caching.IComputable;
 import org.faktorips.runtime.caching.Memoizer;
 import org.faktorips.runtime.internal.AbstractCacheFactory;
+import org.faktorips.runtime.internal.IpsEnum;
 
 /**
  * Default cache factory. Uses SoftReferenceCaches for each object type.
- * 
+ *
  * @author Jan Ortmann
  */
 public class DefaultCacheFactory extends AbstractCacheFactory {
@@ -38,10 +40,10 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
 
     /**
      * Constructor to set the initial capacity of the caches
-     * 
+     *
      * @param initialCapacityForTablesByQname not used anymore!
      * @param initialCapacityForEnumContentByClassName not used anymore!
-     * 
+     *
      * @deprecated Use the default constructor and set the cache size by calling
      *                 {@link #setInitialSize(Class, int)} instead
      */
@@ -79,6 +81,11 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
     public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
         Integer initSize = initialSizeMap.getOrDefault(computable.getValueClass(), defaultInitialSize);
         return new Memoizer<>(computable, initSize, laodFactor, concurrencyLevel);
+    }
+
+    @Override
+    public IComputable<Class<?>, IpsEnum<?>> createIpsEnumCache(IComputable<Class<?>, IpsEnum<?>> computable) {
+        return HardMemoizer.of(computable);
     }
 
     public void setConcurrencyLevel(int concurrencyLevel) {
