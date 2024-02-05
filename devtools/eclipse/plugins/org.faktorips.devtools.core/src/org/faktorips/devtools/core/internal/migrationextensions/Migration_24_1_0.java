@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -87,13 +86,14 @@ public class Migration_24_1_0 extends MarkAsDirtyMigration {
     }
 
     private void deleteDerivedFolder(IProgressMonitor monitor, AFolder derivedFolder) {
-        SortedSet<? extends AResource> members = derivedFolder.getMembers();
-        for (AResource member : members) {
-            if (member.getType() == AResourceType.FOLDER) {
-                deleteDerivedFolder(monitor, (AFolder)member);
-            }
-            if (isFipsXml(member)) {
-                member.delete(monitor);
+        if (derivedFolder != null) {
+            for (AResource member : derivedFolder.getMembers()) {
+                if (member.getType() == AResourceType.FOLDER) {
+                    deleteDerivedFolder(monitor, (AFolder)member);
+                }
+                if (isFipsXml(member)) {
+                    member.delete(monitor);
+                }
             }
         }
     }
