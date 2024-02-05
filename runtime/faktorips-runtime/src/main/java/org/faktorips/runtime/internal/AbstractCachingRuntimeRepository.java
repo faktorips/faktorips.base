@@ -24,6 +24,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.caching.HardMemoizer;
 import org.faktorips.runtime.caching.IComputable;
 
 /**
@@ -85,9 +86,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             Class<ITable<?>> tableClass = (Class<ITable<?>>)cl.loadClass(ITable.class.getName());
             tableCacheByQName = cacheFactory.createTableCache(IComputable.of(tableClass, this::getNotCachedTable));
 
-            enumValuesCacheByClass = cacheFactory
-                    .createEnumCache(IComputable.of(List.class, this::getNotCachedEnumValues));
-
+            enumValuesCacheByClass = HardMemoizer.of(List.class, this::getNotCachedEnumValues);
             enumXmlAdapters = new ArrayList<>();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

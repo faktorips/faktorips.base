@@ -59,7 +59,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private static final String ROOTIPSTESTSUITENAME = "ipstest"; //$NON-NLS-1$
 
-    private static final ConcurrentHashMap<Class<?>, List<?>> ENUMVALUECACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Class<?>, List<?>> ENUM_VALUE_TYPE_CACHE = new ConcurrentHashMap<>();
 
     // The name of the repository
     private String name;
@@ -755,10 +755,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * constant is available an empty list is returned. If the constant is available but is either
      * not accessible or of wrong type an exception is thrown.
      * <p>
-     * For performance optimization the values are cached in the static map {@link #ENUMVALUECACHE}.
+     * For performance optimization the values are cached in the static map {@link #ENUM_VALUE_TYPE_CACHE}.
      * We only check once if there is already a cached value. We disclaim a double checking with
      * synchronization because in worst case two threads simply getting the same result. The
-     * {@link #ENUMVALUECACHE} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
+     * {@link #ENUM_VALUE_TYPE_CACHE} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
      * will be put into the cache using {@link ConcurrentHashMap#putIfAbsent(Object, Object)}.
      * 
      * @param enumClass The class of which you want to get the enumeration values
@@ -766,7 +766,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      *             specified type.
      */
     protected <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
-        if (ENUMVALUECACHE.containsKey(enumClass)) {
+        if (ENUM_VALUE_TYPE_CACHE.containsKey(enumClass)) {
             return getCachedEnumValuesDefinedInType(enumClass);
         } else {
             return getEnumValuesDefinedInTypeByReflection(enumClass);
@@ -775,7 +775,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @SuppressWarnings("unchecked")
     private <T> List<T> getCachedEnumValuesDefinedInType(Class<T> enumClass) {
-        return (List<T>)ENUMVALUECACHE.get(enumClass);
+        return (List<T>)ENUM_VALUE_TYPE_CACHE.get(enumClass);
     }
 
     private <T> List<T> getEnumValuesDefinedInTypeByReflection(Class<T> enumClass) {
@@ -786,7 +786,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             Field valuesField = enumClass.getDeclaredField("VALUES");
             @SuppressWarnings("unchecked")
             List<T> values = (List<T>)valuesField.get(null);
-            List<?> previousValues = ENUMVALUECACHE.putIfAbsent(enumClass, values);
+            List<?> previousValues = ENUM_VALUE_TYPE_CACHE.putIfAbsent(enumClass, values);
             if (previousValues != null) {
                 return castPreviousValues(previousValues);
             } else {
@@ -794,7 +794,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             }
         } catch (NoSuchFieldException e) {
             // No values are defined in the enum class
-            ENUMVALUECACHE.putIfAbsent(enumClass, Collections.emptyList());
+            ENUM_VALUE_TYPE_CACHE.putIfAbsent(enumClass, Collections.emptyList());
             return Collections.emptyList();
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
