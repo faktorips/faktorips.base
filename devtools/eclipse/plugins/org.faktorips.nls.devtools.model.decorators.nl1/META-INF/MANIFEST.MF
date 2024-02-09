@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS German language pack for model decorators
 Bundle-SymbolicName: org.faktorips.nls.devtools.model.decorators.nl1;singleton:=true
-Bundle-Version: 23.6.6.qualifier
+Bundle-Version: 23.6.6.release
 Bundle-Vendor: Faktor Zehn GmbH
 Fragment-Host: org.faktorips.devtools.model.decorators
 Bundle-ClassPath: .
