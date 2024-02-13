@@ -323,8 +323,18 @@ public interface IRuntimeRepository {
      * available.
      * <p>
      * Note that this is an expensive operation as all tables have to be loaded into memory.
+     * @see #getAllTableIds()
      */
     List<ITable<?>> getAllTables();
+
+    /**
+     * Returns the IDs of all tables available in this repository. Returns an empty list if no table is
+     * available.
+     * 
+     * @since 24.1
+     * @see #getAllTables()
+     */
+    List<String> getAllTableIds();
 
     /**
      * Returns the table contents for the given table class.

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class AbstractRuntimeRepositoryTest {
@@ -67,7 +67,7 @@ public class AbstractRuntimeRepositoryTest {
     private ProductComponent mainPc;
     private ProductComponentGeneration mainPcGen;
 
-    private final ITable<?> testTable = new TestTable();
+    private final ITable<?> testTable = new TestTable("qualifiedName");
     private TestProductComponent validToPc;
     private TestProductCmptGeneration validToPcGen;
 
@@ -282,6 +282,45 @@ public class AbstractRuntimeRepositoryTest {
     }
 
     @Test
+    public void testGetAllTableIds() {
+        TestTable testTable2 = new TestTable("t2");
+        inBetweenRepositoryA.putTable(testTable2, "t2");
+        TestTable testTable3 = new TestTable("t3");
+        mainRepository.putTable(testTable3, "t3");
+        TestTable testTable4 = new TestTable("t4");
+        mainRepository.putTable(testTable4, "t4");
+
+        List<String> result = mainRepository.getAllTableIds();
+        assertThat(result.size(), is(4));
+        assertThat(testTable + " not exists", result.contains(testTable.getName()), is(true));
+        assertThat(testTable2 + " not exists", result.contains(testTable2.getName()), is(true));
+        assertThat(testTable3 + " not exists", result.contains(testTable3.getName()), is(true));
+        assertThat(testTable4 + " not exists", result.contains(testTable4.getName()), is(true));
+
+        result = inBetweenRepositoryA.getAllTableIds();
+        assertThat(result.size(), is(2));
+        assertThat(testTable + " not exists", result.contains(testTable.getName()), is(true));
+        assertThat(testTable2 + " not exists", result.contains(testTable2.getName()), is(true));
+
+        result = baseRepository.getAllTableIds();
+        assertThat(result.size(), is(1));
+        assertThat(testTable + " not exists", result.contains(testTable.getName()), is(true));
+    }
+
+    @Test
+    public void testGetProductComponentGenerations() {
+        assertThat(mainRepository.getProductComponentGenerations(mainPc).size(), is(1));
+        assertThat(mainRepository.getProductComponentGenerations(mainPc).get(0), is(mainPcGen));
+        assertThat(mainRepository.getProductComponentGenerations(basePc).get(0), is(basePcGen));
+    }
+
+    @Test
+    public void testGetTable() {
+        assertThat(mainRepository.getTable(TestTable.class), is(testTable));
+        assertThat(baseRepository.getTable(TestTable.class), is(testTable));
+    }
+
+    @Test
     public void testGetAllProductComponentIds() {
         List<String> result = mainRepository.getAllProductComponentIds();
         assertThat(result.size(), is(5));
@@ -299,19 +338,6 @@ public class AbstractRuntimeRepositoryTest {
         result = baseRepository.getAllProductComponentIds();
         assertThat(result.size(), is(1));
         assertThat(result.get(0), is(basePc.getId()));
-    }
-
-    @Test
-    public void testGetProductComponentGenerations() {
-        assertThat(mainRepository.getProductComponentGenerations(mainPc).size(), is(1));
-        assertThat(mainRepository.getProductComponentGenerations(mainPc).get(0), is(mainPcGen));
-        assertThat(mainRepository.getProductComponentGenerations(basePc).get(0), is(basePcGen));
-    }
-
-    @Test
-    public void testGetTable() {
-        assertThat(mainRepository.getTable(TestTable.class), is(testTable));
-        assertThat(baseRepository.getTable(TestTable.class), is(testTable));
     }
 
     @Test
@@ -538,10 +564,16 @@ public class AbstractRuntimeRepositoryTest {
     }
 
     class TestTable implements ITable<Void> {
+        private final String qName;
+
+        public TestTable(String qName) {
+            this.qName = qName;
+        }
+
         // test class
         @Override
         public String getName() {
-            return "qualifiedName";
+            return qName;
         }
 
         @Override

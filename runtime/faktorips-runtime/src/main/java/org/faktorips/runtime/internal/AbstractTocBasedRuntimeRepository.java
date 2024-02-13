@@ -1,14 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
+
+import static java.util.function.Predicate.not;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ import org.faktorips.runtime.xml.IIpsXmlAdapter;
 /**
  * Abstract base implementation of runtime repository that uses a table of contents to lazily load
  * the product data. This implementation also manages the caches.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingRuntimeRepository {
@@ -99,10 +101,19 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     @Override
     public void getAllProductComponentIds(List<String> result) {
-        List<ProductCmptTocEntry> entries = toc.getProductCmptTocEntries();
-        for (TocEntryObject entry : entries) {
-            result.add(entry.getIpsObjectId());
-        }
+        addAllNewIds(toc.getProductCmptTocEntries(), result);
+    }
+
+    private void addAllNewIds(List<? extends TocEntryObject> tocEntries, List<String> result) {
+        tocEntries.stream()
+                .map(TocEntryObject::getIpsObjectId)
+                .filter(not(result::contains))
+                .forEach(result::add);
+    }
+
+    @Override
+    public void getAllTableIds(List<String> result) {
+        addAllNewIds(toc.getTableTocEntries(), result);
     }
 
     protected abstract IProductComponent createProductCmpt(ProductCmptTocEntry tocEntry);
@@ -256,10 +267,10 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     /**
      * Returns the class for the given qualified class name.
-     * 
+     *
      * @param className The qualified class name
      * @param cl The classLoader used to load the load.
-     * 
+     *
      * @throws RuntimeException if the class can't be found.
      */
     protected Class<?> getClass(String className, ClassLoader cl) {
@@ -280,7 +291,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     /**
      * Creates and returns an {@link IIpsXmlAdapter} instance for the provided class name.
-     * 
+     *
      * @throws Exception can occur while localizing the XML adapter class and creating the instance
      */
     @SuppressWarnings("unchecked")

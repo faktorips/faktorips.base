@@ -203,6 +203,11 @@ public class AbstractRuntimeRepositoryJaxbTest {
         protected void getAllEnumClasses(LinkedHashSet<Class<?>> result) {
             // don't care
         }
+
+        @Override
+        protected void getAllTableIds(List<String> result) {
+            // don't care
+        }
     }
 
     public static class FooSuppe2 extends FooSuppe {

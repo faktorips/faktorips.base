@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,6 +31,8 @@ import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class AbstractTocBasedRuntimeRepositoryTest {
 
@@ -58,6 +60,22 @@ public class AbstractTocBasedRuntimeRepositoryTest {
         assertThat(allEnumContentClasses, hasItems(EnumA.class, EnumB.class, EnumC.class, RealEnum.class));
     }
 
+    @Test
+    public void testGetAllTableIds() throws Exception {
+        ClassLoader cl = getClass().getClassLoader();
+        IReadonlyTableOfContents toc = mock(IReadonlyTableOfContents.class);
+        when(toc.getTableTocEntries()).thenReturn(
+                List.of(new TableContentTocEntry("t1", "my.Table1", "my.Table1.ipstablecontent",
+                        TestTable.class.getName()),
+                        new TableContentTocEntry("t2", "my.Table2", "my.Table2.ipstablecontent",
+                                TestTable.class.getName())));
+        AbstractTocBasedRuntimeRepository repository = new TestAbstractTocBasedRuntimeRepository("r", cl, toc);
+
+        List<String> allTableIds = repository.getAllTableIds();
+
+        assertThat(allTableIds, hasItems("t1", "t2"));
+    }
+
     private static final class EnumA {
         // an enum
     }
@@ -72,6 +90,23 @@ public class AbstractTocBasedRuntimeRepositoryTest {
 
     private enum RealEnum {
         E
+    }
+
+    private static final class TestTable implements ITable<Void> {
+        @Override
+        public String getName() {
+            return "qName";
+        }
+
+        @Override
+        public List<Void> getAllRows() {
+            return List.of();
+        }
+
+        @Override
+        public Element toXml(Document document) {
+            return null;
+        }
     }
 
     private static final class TestAbstractTocBasedRuntimeRepository extends AbstractTocBasedRuntimeRepository {

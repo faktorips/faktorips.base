@@ -1,14 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime;
+
+import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +27,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
@@ -132,6 +135,13 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
         result.addAll(tables);
     }
 
+    @Override
+    public void getAllTableIds(List<String> result) {
+        Stream.concat(tables.stream().map(ITable::getName), multipleContentTables.keySet().stream())
+                .filter(not(result::contains))
+                .forEach(result::add);
+    }
+
     /**
      * InMemoryRepository also searches for tables that are instances of subclasses of the given
      * tableClass. This allows to mock a table class for testing purposes.
@@ -151,7 +161,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     /**
      * Puts the table into the repository. Replaces any table instance of the same class or any of
      * its superclasses. The latter check is needed to replace tables with mock implementations.
-     * 
+     *
      * @throws NullPointerException if table is <code>null</code>.
      */
     @Override
@@ -170,7 +180,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     /**
      * Puts the table with the indicated name into the repository with . Replaces any table instance
      * with the same qualified name.
-     * 
+     *
      * @throws NullPointerException if table or qName is <code>null</code>.
      */
     public void putTable(ITable<?> table, String qName) {
@@ -217,10 +227,10 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     /**
      * Puts the product component into the repository. If the repository already contains a
      * component with the same id, the new component replaces the old one.
-     * 
+     *
      * @throws IllegalRepositoryModificationException if this repository does not allows to modify
      * @throws NullPointerException if productCmpt is <code>null</code> its contents.
-     * 
+     *
      * @see IRuntimeRepository#isModifiable()
      */
     @Override
@@ -254,11 +264,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      * Puts the product component generation and its product component into the repository. If the
      * repository already contains a generation with the same id, the new component replaces the old
      * one. The same applies for the product component.
-     * 
+     *
      * @throws IllegalRepositoryModificationException if this repository does not allows to modify
      *             its contents.
      * @throws NullPointerException if generation is <code>null</code>
-     * 
+     *
      * @see IRuntimeRepository#isModifiable()
      */
     @Override
