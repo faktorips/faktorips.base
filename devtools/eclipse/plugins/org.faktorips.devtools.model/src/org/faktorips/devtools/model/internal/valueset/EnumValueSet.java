@@ -440,6 +440,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj) && compareTo((IValueSet)obj) == 0;
+    }
+
+    @Override
     public int compareTo(IValueSet o) {
         if (o.isEnum()) {
             IEnumValueSet otherEnum = (IEnumValueSet)o;

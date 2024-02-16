@@ -394,6 +394,11 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
