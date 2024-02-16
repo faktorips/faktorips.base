@@ -153,7 +153,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
 
     /** map containing IpsSrcFileContents as values and IpsSrcFiles as keys. */
-    private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<>(1000);
+    private Map<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new ConcurrentHashMap<>(1000);
 
     /** validation result cache */
     private ValidationResultCache validationResultCache = new ValidationResultCache();
@@ -617,7 +617,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$
         }
         IIpsModelExtensions.get().getWorkspaceInteractions()
-                .runInDisplayThreadAsync(new RunnableModificationStatusChangeListenerImplementation(event));
+                .runInDisplayThreadSync(new RunnableModificationStatusChangeListenerImplementation(event));
     }
 
     @Override
@@ -1229,7 +1229,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
         return content;
     }
 
-    private IpsSrcFileContent checkSynchronizedContent(IpsSrcFileContent content, boolean loadCompleteContent) {
+    private IpsSrcFileContent checkSynchronizedContent(IpsSrcFileContent content,
+            boolean loadCompleteContent) {
         if (loadCompleteContent) {
             if (content.isInitialized()) {
                 logTraceMessage("Content returned from cache", content.getIpsSrcFile()); //$NON-NLS-1$
