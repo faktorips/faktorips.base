@@ -123,7 +123,7 @@ class VersionSupport {
 
     private final String IPS_PROJECT = '.ipsproject'
 
-    private final String MIN_VERSION_REGEX = '([0-9]+[.][0-9]+)[.][0-9]+'
+    private final String MIN_VERSION_REGEX = '([0-9]+[.][0-9]+[.][0-9]+)'
 
     private final String MIN_VERSION_TEMPLATE = '$IPS-MinVersion$'
 
