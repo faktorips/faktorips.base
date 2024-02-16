@@ -44,7 +44,7 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
     public ITableStructure findContentType(IIpsProject ipsProject, String qName) {
         if (qName == null && selectedContentType == null) {
             selectedContentType = tableContents.findTableStructure(ipsProject);
-        } else {
+        } else if (qName != null) {
             selectedContentType = (ITableStructure)ipsProject.findIpsObject(IpsObjectType.TABLE_STRUCTURE, qName);
         }
         return selectedContentType;
