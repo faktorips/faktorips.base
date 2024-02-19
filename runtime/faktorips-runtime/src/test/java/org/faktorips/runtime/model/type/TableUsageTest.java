@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -191,6 +192,7 @@ public class TableUsageTest {
         productCmptType.getDeclaredTableUsage("undefined");
     }
 
+    @Test
     public void testHasDeclaredTableUsage() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
 
@@ -201,11 +203,39 @@ public class TableUsageTest {
         assertThat(productCmptType.hasDeclaredTableUsage("undefined"), is(false));
     }
 
+    @Test
     public void testHasDeclaredTableUsage_Child() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(ChildProduct.class);
 
         assertThat(productCmptType.getTableUsage("table1"), is(not(nullValue())));
         assertThat(productCmptType.hasDeclaredTableUsage("table1"), is(false));
+    }
+
+    @Test
+    public void testGetTable1Name() {
+        Product product = new Product();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+        TableUsage tableUsage = productCmptType.getTableUsage("table1");
+        assertThat(tableUsage, is(notNullValue()));
+        assertThat(tableUsage.getTableName(product, effectiveDate), is("Foo"));
+    }
+
+    @Test
+    public void testGetTable2Name() {
+        Product product = new Product();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+        TableUsage tableUsage = productCmptType.getTableUsage("table2");
+        assertThat(tableUsage, is(notNullValue()));
+        assertThat(tableUsage.getTableName(product, effectiveDate), is("Bar"));
+    }
+
+    @Test
+    public void testGetTable3Name() {
+        ChildProduct product = new ChildProduct();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+        TableUsage tableUsage = productCmptType.getTableUsage("table3");
+        assertThat(tableUsage, is(notNullValue()));
+        assertThat(tableUsage.getTableName(product, effectiveDate), is("Foo"));
     }
 
     @IpsTableStructure(name = "FooTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = {})
@@ -273,13 +303,28 @@ public class TableUsageTest {
             return TABLE1;
         }
 
+        @SuppressWarnings("unused")
+        public String getTable1Name() {
+            return "Foo";
+        }
+
         @IpsTableUsage(name = "table2")
         public BarTable getTable2() {
             return TABLE2;
         }
 
+        @SuppressWarnings("unused")
+        public String getTable2Name() {
+            return "Bar";
+        }
+
         @IpsTableUsage(name = "multitable")
         public ITable<?> getMultitable() {
+            return null;
+        }
+
+        @SuppressWarnings("unused")
+        public String getMultitableName() {
             return null;
         }
 
@@ -307,6 +352,11 @@ public class TableUsageTest {
         public BarTable getTableGen() {
             return TABLE_GEN;
         }
+
+        @SuppressWarnings("unused")
+        public String getTableGenName() {
+            return "Bar";
+        }
     }
 
     @IpsProductCmptType(name = "MyChildProduct")
@@ -318,6 +368,11 @@ public class TableUsageTest {
         @IpsTableUsage(name = "table3")
         public FooTable getTable3() {
             return TABLE3;
+        }
+
+        @SuppressWarnings("unused")
+        public String getTable3Name() {
+            return "Foo";
         }
     }
 }

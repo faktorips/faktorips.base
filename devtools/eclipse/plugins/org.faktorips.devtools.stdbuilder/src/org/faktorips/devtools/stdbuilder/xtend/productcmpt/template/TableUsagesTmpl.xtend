@@ -35,8 +35,21 @@ class TableUsagesTmpl{
     '''
 
     def package static getterAndSetter (XTableUsage it) '''
+        «tableNameGetter»
         «getter»
         «setter»
+    '''
+    
+    def private static tableNameGetter (XTableUsage it) '''
+        /**
+         *«localizedJDoc("METHOD_GET_TABLE_NAME", name)»
+        «getAnnotations(ELEMENT_JAVA_DOC)»
+         *
+         * @generated
+         */
+        public String «method(methodNameTableNameGetter)» {
+            return «field(fieldName)»;
+        }
     '''
 
     def private static getter (XTableUsage it) '''

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,13 +40,13 @@ public class TableUsage extends TypePart {
      * usage is changing over time (resides in the generation) the date is used to retrieve the
      * correct generation. If the date is <code>null</code> the latest generation is used. If the
      * table usage is not changing over time the date will be ignored.
-     * 
-     * 
+     *
+     *
      * @param productComponent The product component that holds the table instance
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the table usage
      *            configuration is not changing over time.
-     * 
+     *
      * @return The table instance hold by the product component and is identified by this table
      *             usage
      */
@@ -57,6 +57,35 @@ public class TableUsage extends TypePart {
         } catch (IllegalAccessException | InvocationTargetException | SecurityException e) {
             throw getterError(productComponent, e);
         }
+    }
+
+    /**
+     * Returns the name of the table the given product component references for this table usage. If
+     * this table usage is changing over time (resides in the generation) the date is used to
+     * retrieve the correct generation. If the date is <code>null</code> the latest generation is
+     * used. If the table usage is not changing over time the date will be ignored.
+     *
+     *
+     * @param productComponent The product component that holds the table instance
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the table usage
+     *            configuration is not changing over time.
+     *
+     * @return The name of the table for this table usage in the product component
+     */
+    public String getTableName(IProductComponent productComponent, Calendar effectiveDate) {
+        String tableName = null;
+        try {
+            Method getterForName = getter.getDeclaringClass().getDeclaredMethod(getter.getName() + "Name");
+            tableName = (String)getterForName.invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            throw new IllegalArgumentException(
+                    String.format("Could not get table name for table usage %s on product component %s.",
+                            getName(), productComponent),
+                    e);
+        }
+        return tableName;
     }
 
     private boolean isChangingOverTime() {
