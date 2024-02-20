@@ -10,7 +10,6 @@
 package org.faktorips.runtime.internal.xml;
 
 import java.lang.annotation.Annotation;
-import java.security.PrivilegedAction;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +45,7 @@ public class XmlBindingSupportHelper<JAXBContext> implements IXmlBindingSupport<
         try {
             Class<?>[] classes = collectAnnotatedClasses(repository, xmlRootAnnotationClass);
 
-            tccl = getPrivilegedCurrentThreadContextClassLoader();
+            tccl = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(repository.getClassLoader());
 
             JAXBContext ctx = jaxbContextConstructor.apply(classes);
@@ -88,24 +87,6 @@ public class XmlBindingSupportHelper<JAXBContext> implements IXmlBindingSupport<
             }
         }
         return classes.toArray(Class[]::new);
-    }
-
-    /**
-     * JAXB uses the class loader from the thread context. By default, the thread context class
-     * loader is not aware of OSGi and thus doesn't see any of the classes imported in the bundle.
-     *
-     * If a {@link SecurityManager} is used the {@link ClassLoader} is loaded with
-     * {@link java.security.AccessController#doPrivileged(java.security.PrivilegedAction)}.
-     *
-     * @return the context {@code ClassLoader} for this thread, or {@code null}
-     */
-    private static ClassLoader getPrivilegedCurrentThreadContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return java.security.AccessController.doPrivileged(
-                    (PrivilegedAction<ClassLoader>)Thread.currentThread()::getContextClassLoader);
-        }
     }
 
     private static boolean isAnnotatedXmlRootElement(Class<?> clazz, Class<? extends Annotation> annotationClass) {
