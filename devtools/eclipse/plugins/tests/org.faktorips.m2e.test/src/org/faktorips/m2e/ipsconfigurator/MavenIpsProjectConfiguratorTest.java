@@ -65,6 +65,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
 
     private static final String POM_SCENARIO_1 = "pom_scenario1.xml";
     private static final String POM_SCENARIO_2 = "pom_scenario2.xml";
+    private static final String POM_SCENARIO_3 = "pom_scenario3.xml";
     private static final String POM_EMPTY = "pom_empty.xml";
     private static final String POM_NAME = "pom.xml";
     private static final String MANIFEST_NAME = "MANIFEST.MF";
@@ -75,6 +76,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
     private static IpsProjectCreationProperties projectCreationProperties;
     private static String pomScenario1;
     private static String pomScenario2;
+    private static String pomScenario3;
     private static String pomEmpty;
     private static String faktorIpsVersion;
 
@@ -85,6 +87,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         mavenIpsProjectConfigurator = new MavenIpsProjectConfigurator();
         pomScenario1 = readResource(POM_SCENARIO_1);
         pomScenario2 = readResource(POM_SCENARIO_2);
+        pomScenario3 = readResource(POM_SCENARIO_3);
         pomEmpty = readResource(POM_EMPTY);
         faktorIpsVersion = MavenVersionFormatter.formatVersion(IpsModelActivator.getInstalledFaktorIpsVersion());
     }
@@ -318,6 +321,8 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         checkMavenPropertiesContentPom(mavenProject.getModel());
         checkMavenDependenciesContentPom(mavenProject);
         checkMavenResourcesContentPom(mavenProject.getBuild());
+        checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(0));
         checkMavenPluginManagementContentPom(mavenProject.getBuild().getPluginManagement());
         checkMavenPluginsContentPom(mavenProject.getBuild());
     }
@@ -341,7 +346,29 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
                 .getMavenProject(new NullProgressMonitor());
 
         checkMavenResources(mavenProject.getBuild());
-        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(2));
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(3));
+        checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
+        checkMavenPlugins(mavenProject.getBuild());
+    }
+
+    /**
+     * Checks the remaining cases not covered by the empty POM and the scenario1 POM:
+     * <ul>
+     * <li>Resources already configured with some include</li>
+     * <li>Source-Plugin already configured in plugin management</li>
+     * <li>Source-Plugin already configured in plugins</li>
+     * </ul>
+     */
+    @Test
+    public void testConfigureIpsProject_scenario3() throws Exception {
+        ipsProject = newIpsProject();
+        initIpsProject(ipsProject);
+        initMaven(ipsProject, pomScenario3);
+        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
+                .getMavenProject(new NullProgressMonitor());
+        checkMavenResources(mavenProject.getBuild());
+        checkMavenResourceIncludes(mavenProject.getBuild(), hasSize(4));
         checkMavenPluginManagement(mavenProject.getBuild().getPluginManagement());
         checkMavenPlugins(mavenProject.getBuild());
     }
