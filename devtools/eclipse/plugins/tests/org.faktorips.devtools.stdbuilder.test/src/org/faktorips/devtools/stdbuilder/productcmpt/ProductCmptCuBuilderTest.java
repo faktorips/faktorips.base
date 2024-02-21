@@ -1,21 +1,24 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -135,6 +138,14 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
         String superClassQualifiedClassName = builder.getImplementationClass(productCmpt);
 
         assertThat(superClassQualifiedClassName, is("org.faktorips.sample.model.internal.Product"));
+    }
+
+    @Test
+    public void testGetImplementationClass_ProductCmptTypeNotFound() throws Exception {
+        productCmpt.setProductCmptType("FooBar");
+
+        IpsException exception = assertThrows(IpsException.class, () -> builder.getImplementationClass(productCmpt));
+        assertThat(exception.getMessage(), containsString("FooBar"));
     }
 
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,11 +18,13 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -32,10 +34,10 @@ import org.faktorips.runtime.internal.ProductComponent;
  * Generates special runtime classes for product components. These classes are themselves subclasses
  * of the normally generated {@link ProductComponent} classes. Their sole purpose is to provide the
  * compiled to java source code for all formula expressions contained in the product component.
- * 
+ *
  * Accordingly only for product components that contain formulas (and entered expressions) such Java
  * compilation units are generated.
- * 
+ *
  */
 public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt> {
 
@@ -52,7 +54,7 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
      * Generates the constructor.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * public MotorPolicyPk0(IRuntimeRepository repository, String id, String kindId, String versionId) {
      *     super(repository, id, kindId, versionId);
@@ -91,7 +93,13 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
 
     @Override
     protected String getSuperClassQualifiedClassName(IProductCmpt productCmpt) {
-        return getBuilderSet().getModelNode(productCmpt.findProductCmptType(getIpsProject()), XProductCmptClass.class)
+        IProductCmptType productCmptType = productCmpt.findProductCmptType(getIpsProject());
+        if (productCmptType == null) {
+            throw new IpsException("Can't find ProductCmptType '" + productCmpt.getProductCmptType()
+                    + "' referenced in ProductCmpt'" + productCmpt.getName() + "'");
+        }
+        return getBuilderSet()
+                .getModelNode(productCmptType, XProductCmptClass.class)
                 .getQualifiedName(BuilderAspect.IMPLEMENTATION);
     }
 
