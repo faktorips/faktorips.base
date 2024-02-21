@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -293,8 +293,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testToXmlDocument() {
-        IDescription description = table.newDescription();
-        description.setLocale(Locale.GERMAN);
+        IDescription description = table.getDescription(Locale.GERMAN);
         description.setText("blabla");
         IColumn first = structure.newColumn();
         first.setName("first");
@@ -311,6 +310,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.deleteColumn(0);
         gen1.delete();
         table.initFromXml(element);
+        description = table.getDescription(Locale.GERMAN);
         assertEquals("blabla", description.getText());
         assertEquals(structure.getQualifiedName(), table.getTableStructure());
     }
@@ -497,7 +497,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("19", rows[1].getValue(0));
         assertEquals("0.6", rows[1].getValue(1));
     }
-    
+
     @Test
     public void testValidate_InvalidNumberOfColumns() throws Exception {
         IColumn column1 = structure.newColumn();
@@ -514,7 +514,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         IColumn column3 = structure.newColumn();
         column3.setDatatype(Datatype.STRING.getQualifiedName());
         column3.setName("third");
-        
+
         MessageList msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_INVALID_NUM_OF_COLUMNS));
     }
@@ -539,11 +539,11 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         Row row = (Row)tableGen.newRow();
         row.setNumberOfValues(2);
-        
+
         MessageList msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_NUMBER_OF_VALUES_IS_INVALID));
     }
-    
+
     @Test
     public void testValidateChildren() {
         TableContents tableContents = spy(table);
