@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of {@link IDescription}.
- * 
+ *
  * @author Alexander Weickmann
  */
 public class Description extends AtomicIpsObjectPart implements IDescription {
@@ -130,6 +130,7 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
 
         element.setAttribute(PROPERTY_LOCALE, (locale == null) ? "" : locale.getLanguage()); //$NON-NLS-1$
         element.setTextContent(text);
+        element.removeAttribute(IpsObjectPart.PROPERTY_ID);
     }
 
     @Override
