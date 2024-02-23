@@ -111,7 +111,7 @@ public class IpsValidationMojo extends AbstractMojo {
     private void initWorkspace() {
         synchronized (session) {
             if (!(PlainJavaIpsModelExtensions.get() instanceof MavenIpsModelExtensions)) {
-                new MavenIpsModelExtensions(session);
+                new MavenIpsModelExtensions(session, this::getLog);
                 PlainJavaImplementation.get()
                         .setWorkspace(new MavenWorkspace(session.getTopLevelProject(), session.getAllProjects()));
                 Set<IpsDependency> ipsProjectsInBuild = asIpsDependencies(session.getAllProjects());
@@ -214,11 +214,13 @@ public class IpsValidationMojo extends AbstractMojo {
     }
 
     private boolean isFipsProjectFromManifest(File file) {
-        try (JarFile jarFile = new JarFile(file)) {
-            return jarFile.getManifest().getMainAttributes()
-                    .get(new Attributes.Name("Fips-BasePackage")) != null;
-        } catch (IOException e) {
-            getLog().error(e);
+        if (file.getName().matches(".*\\.(JAR|jar)")) {
+            try (JarFile jarFile = new JarFile(file)) {
+                return jarFile.getManifest().getMainAttributes()
+                        .get(new Attributes.Name("Fips-BasePackage")) != null;
+            } catch (IOException e) {
+                getLog().error("Can't read JAR file " + file, e);
+            }
         }
         return false;
     }
