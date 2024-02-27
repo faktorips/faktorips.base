@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -36,11 +37,11 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Implementation of <code>IEnumValueContainer</code>, see the corresponding interface for more
  * details.
- * 
+ *
  * @see org.faktorips.devtools.model.enums.IEnumValueContainer
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public abstract class EnumValueContainer extends BaseIpsObject implements IEnumValueContainer {
@@ -122,9 +123,14 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     private void checkIdentifierAttribute(IIpsProject ipsProject) {
         if (identifierAttribute == null || identifierAttribute.isDeleted()
                 || !identifierAttribute.findIsIdentifier(ipsProject)) {
-            identifierAttribute = findEnumType(ipsProject).findIdentiferAttribute(ipsProject);
-            if (identifierAttribute != null) {
-                reinitEnumValuesByIdentifierMap();
+            IEnumType enumType = findEnumType(ipsProject);
+            if (enumType != null) {
+                identifierAttribute = enumType.findIdentiferAttribute(ipsProject);
+                if (identifierAttribute != null) {
+                    reinitEnumValuesByIdentifierMap();
+                }
+            } else {
+                throw new IpsException("Can't find EnumType " + ((EnumContent)this).getEnumType());
             }
         }
     }
