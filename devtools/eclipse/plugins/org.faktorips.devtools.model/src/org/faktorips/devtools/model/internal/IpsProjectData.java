@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -32,7 +32,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A container/cache for IPS project related data. An instance of this cache is kept per IPS project
  * by the IPS model.
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsProjectData {
@@ -41,7 +41,7 @@ public class IpsProjectData {
 
     private final IpsObjectPathContainerFactory containerFactory;
 
-    private final Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new HashMap<>();
+    private final Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new ConcurrentHashMap<>();
 
     private IIpsArtefactBuilderSet ipsArtefactBuilderSet;
 
@@ -76,7 +76,7 @@ public class IpsProjectData {
     /**
      * Returns the container identified by the given container kind or <code>null</code> if no such
      * container is found.
-     * 
+     *
      * @throws NullPointerException if containerTypeId or optionalPath is <code>null</code>.
      */
     public IIpsObjectPathContainer getIpsObjectPathContainer(String containerTypeId, String optionalPath) {
