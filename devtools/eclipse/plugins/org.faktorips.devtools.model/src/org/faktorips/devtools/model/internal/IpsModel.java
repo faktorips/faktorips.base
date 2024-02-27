@@ -153,7 +153,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     private Map<String, IChangesOverTimeNamingConvention> changesOverTimeNamingConventionMap = null;
 
     /** map containing IpsSrcFileContents as values and IpsSrcFiles as keys. */
-    private HashMap<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new HashMap<>(1000);
+    private Map<IIpsSrcFile, IpsSrcFileContent> ipsObjectsMap = new ConcurrentHashMap<>(1000);
 
     /** validation result cache */
     private ValidationResultCache validationResultCache = new ValidationResultCache();

@@ -74,7 +74,7 @@ public class IpsSrcFileContent {
     private List<Long> modStampsAfterSave = null;
 
     /** Indicates if the IPS object is completely initialized with the IPS source file content. */
-    private boolean initialized = false;
+    private volatile boolean initialized = false;
 
     public IpsSrcFileContent(IpsObject ipsObject) {
         ArgumentCheck.notNull(ipsObject);
@@ -126,7 +126,7 @@ public class IpsSrcFileContent {
      * Returns <code>true</code> IPS object was initialized with the IPS source file content.
      * Returns <code>false</code> if the content wasn't read from the source file.
      */
-    public synchronized boolean isInitialized() {
+    public boolean isInitialized() {
         return initialized;
     }
 
@@ -259,14 +259,14 @@ public class IpsSrcFileContent {
         }
     }
 
-    private synchronized void clearRootPropertyCache() {
+    private void clearRootPropertyCache() {
         rootProperties = null;
     }
 
     /**
      * Indicates that the initialization was finished.
      */
-    private synchronized void initializedFinished() {
+    private void initializedFinished() {
         initialized = true;
         clearRootPropertyCache();
     }
@@ -274,7 +274,7 @@ public class IpsSrcFileContent {
     /**
      * Reads and stores all root properties of the corresponding source file.
      */
-    public synchronized void initRootPropertiesFromFile() {
+    public void initRootPropertiesFromFile() {
         IIpsSrcFile file = getIpsSrcFile();
         try {
             clearRootPropertyCache();
@@ -289,7 +289,7 @@ public class IpsSrcFileContent {
      * Returns <code>true</code> if the root properties are read from the source file. Returns
      * <code>false</code> if the root properties are not read.
      */
-    public synchronized boolean areRootPropertiesAvailable() {
+    public boolean areRootPropertiesAvailable() {
         return rootProperties != null || initialized;
     }
 
@@ -297,7 +297,7 @@ public class IpsSrcFileContent {
      * Returns the given root property value. Returns <code>null</code> if the given root property
      * wasn't found.
      */
-    public synchronized String getRootPropertyValue(String propertyName) {
+    public String getRootPropertyValue(String propertyName) {
         if (initialized) {
             return getPropertyFromIpsObject(propertyName);
         }
