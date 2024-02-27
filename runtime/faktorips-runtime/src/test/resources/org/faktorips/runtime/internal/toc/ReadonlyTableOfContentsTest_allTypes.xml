@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<TableOfContents>
+	<EnumContent implementationClass="org.faktorips.sample.Option1" ipsObjectId="sample:OptionContent1.ipsenumcontent" ipsObjectQualifiedName="OptionContent1" xmlResource="org/faktorips/sample/OptionContent1.xml"/>
+	<EnumContent implementationClass="org.faktorips.sample.Option2" ipsObjectId="sample:OptionContent2.ipsenumcontent" ipsObjectQualifiedName="OptionContent2.Type" xmlResource=""/>
+    <EnumContent implementationClass="org.faktorips.sample.Option2" ipsObjectId="sample:OptionContent2.ipsenumcontent" ipsObjectQualifiedName="OptionContent2" xmlResource="org/faktorips/sample/OptionContent2.xml"/>
+    <ProductComponent xmlResource="org/faktorips/sample/model/internal/motor/MotorProduct2005.xml" implementationClass="org.faktorips.sample.model.internal.motor.MotorPolicyPkImpl" ipsObjectId="motor.MotorProduct2005" policyCmptClass="org.faktorips.sample.model.motor.MotorPolicy">
+        <Generation xmlResource="org/faktorips/sample/model/internal/motor/MotorProduct2005.xml" implementationClass="" validFrom="2005-01-01"/>
+    </ProductComponent>
+    <PolicyCmptType xmlResource="MotorPolicy.xml" implementationClass="org.faktorips.sample.MotorPolicy" ipsObjectId="sample:MotorPolicy" ipsObjectQualifiedName="sample:MotorPolicy"/>    
+    <ProductCmptType xmlResource="MotorProduct.xml" implementationClass="org.faktorips.sample.MotorProduct" ipsObjectId="sample:MotorProduct" ipsObjectQualifiedName="sample.MotorProduct"/>
+    <EnumXmlAdapter implementationClass="org.faktorips.integrationtest.internal.enums.boundary.EnumWithLongBoundaryXmlAdapter" ipsObjectId="enums.boundary.EnumWithLongBoundary" ipsObjectQualifiedName="enums.boundary.EnumWithLongBoundary"/>
+    <TableContent implementationClass="org.faktorips.integrationtest.internal.tables.TableWithNoRange" ipsObjectId="tables.TableContentsWithNull" ipsObjectQualifiedName="tables.TableContentsWithNull" xmlResource="org/faktorips/integrationtest/internal/tables/TableContentsWithNull.ipstablecontents"/>
+    <TestCase implementationClass="org.faktorips.integrationtest.internal.testcasetests.TcPolicyAndCoverageTestCase" ipsObjectId="model/testcaseTests/TcProductAndCoverageTest1.ipstestcase" ipsObjectQualifiedName="testcaseTests.TcProductAndCoverageTest1" xmlResource="org/faktorips/integrationtest/internal/testcasetests/TcProductAndCoverageTest1.xml"/>
+</TableOfContents>
+

@@ -182,6 +182,67 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         throw new IllegalArgumentException("Unknown entry type " + entry);
     }
 
+    /**
+     * Returns whether this ToC is modifiable, which of course it isn't, because it is the read-only
+     * ToC, but this is different for other classes in the hierarchy.
+     *
+     * @see #internalRemoveEntry(TocEntryObject)
+     * @since 24.7
+     */
+    protected boolean isModifiable() {
+        return false;
+    }
+
+    /**
+     * Removes the given entry from this ToC, if this ToC {@link #isModifiable() is modifiable}.
+     *
+     * @return whether the entry actually was part of this ToC
+     * @since 24.7
+     */
+    // CSOFF: CyclomaticComplexity
+    protected boolean internalRemoveEntry(TocEntryObject entry) {
+        if (!isModifiable()) {
+            throw new UnsupportedOperationException("Table of contents is not modifiable");
+        }
+        if (entry instanceof ProductCmptTocEntry) {
+            ProductCmptTocEntry prodEntry = (ProductCmptTocEntry)entry;
+            boolean removed = pcIdTocEntryMap.remove(prodEntry.getIpsObjectId()) != null;
+            pcNameTocEntryMap.remove(prodEntry.getIpsObjectQualifiedName());
+            Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
+            versions.remove(prodEntry.getVersionId());
+            return removed;
+        }
+
+        if (entry instanceof TableContentTocEntry) {
+            boolean removed = tableImplClassTocEntryMap.remove(entry.getImplementationClassName()) != null;
+            removed |= tableContentNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
+            return removed;
+        }
+
+        if ((entry instanceof TestCaseTocEntry) || (entry instanceof FormulaTestTocEntry)) {
+            return testCaseNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
+        }
+
+        if (entry instanceof ModelTypeTocEntry) {
+            return modelTypeNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
+        }
+
+        if (entry instanceof EnumContentTocEntry) {
+            return enumContentImplClassTocEntryMap.remove(entry.getImplementationClassName()) != null;
+        }
+        if (entry instanceof EnumXmlAdapterTocEntry) {
+            return enumXmlAdapterTocEntryMap.remove(entry.getIpsObjectId()) != null;
+        }
+        if (entry instanceof CustomTocEntryObject<?>) {
+            CustomTocEntryObject<?> tocEntry = (CustomTocEntryObject<?>)entry;
+            Map<String, CustomTocEntryObject<?>> map = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
+            return map != null && map.remove(tocEntry.getIpsObjectQualifiedName()) != null;
+        }
+
+        throw new IllegalArgumentException("Unknown entry type " + entry);
+    }
+    // CSON: CyclomaticComplexity
+
     private void removePreviousSingleContent(TocEntryObject entry, TableContentTocEntry previousTocEntry) {
         if (previousTocEntry != null) {
             try {

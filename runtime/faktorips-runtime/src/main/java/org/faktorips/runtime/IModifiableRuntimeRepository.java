@@ -83,6 +83,19 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
     void putProductComponent(IProductComponent productCmpt);
 
     /**
+     * Removes the product component from the repository.
+     *
+     * @return whether the given product component was part of this repository
+     *
+     * @throws NullPointerException if productCmpt is {@code null}.
+     * @throws IllegalArgumentException if productCmpt has no ID.
+     *
+     * @see IRuntimeRepository#isModifiable()
+     * @since 24.7
+     */
+    boolean removeProductComponent(IProductComponent productCmpt);
+
+    /**
      * Puts the table into the repository. Replaces any table instance of the same class or any of
      * its superclasses. The latter check is needed to replace tables with mock implementations.
      *

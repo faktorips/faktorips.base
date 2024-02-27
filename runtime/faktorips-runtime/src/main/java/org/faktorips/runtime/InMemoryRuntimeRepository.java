@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
@@ -237,6 +238,16 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     public void putProductComponent(IProductComponent productCmpt) {
         Objects.requireNonNull(productCmpt);
         productCmpts.put(productCmpt.getId(), productCmpt);
+    }
+
+    @Override
+    public boolean removeProductComponent(IProductComponent productCmpt) {
+        Objects.requireNonNull(productCmpt);
+        String id = productCmpt.getId();
+        if (IpsStringUtils.isBlank(id)) {
+            throw new IllegalArgumentException("Product component has no ID");
+        }
+        return productCmpts.remove(id) != null;
     }
 
     @Override

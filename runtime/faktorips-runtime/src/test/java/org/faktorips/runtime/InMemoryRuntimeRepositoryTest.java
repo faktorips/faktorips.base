@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -189,6 +191,30 @@ public class InMemoryRuntimeRepositoryTest {
 
         repository.putProductCmptGeneration(gen1);
         repository.putProductCmptGeneration(gen2);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveProductComponent_Null() {
+        repository.removeProductComponent(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveProductComponent_NullId() {
+        repository.removeProductComponent(mock(IProductComponent.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveProductComponent_NoId() {
+        repository.removeProductComponent(new TestProductComponent(repository, "", "", ""));
+    }
+
+    @Test
+    public void testRemoveProductComponent() {
+        TestProductComponent productComponent = new TestProductComponent(repository, "P1", "P", "1");
+        repository.putProductComponent(productComponent);
+
+        assertTrue(repository.removeProductComponent(productComponent));
+        assertFalse(repository.removeProductComponent(productComponent));
     }
 
     @Test
