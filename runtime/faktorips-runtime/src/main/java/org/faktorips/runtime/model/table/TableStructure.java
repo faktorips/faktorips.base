@@ -41,18 +41,22 @@ public class TableStructure extends ModelElement {
     private List<String> columnNames;
     private final MessagesHelper messagesHelper;
 
+    private Class<? extends ITable<?>> tableObjectClass;
+    private Class<?> tableRowClass;
+
     public TableStructure(Class<? extends ITable<?>> tableObjectClass) {
         super(tableObjectClass.getAnnotation(IpsTableStructure.class).name(),
                 tableObjectClass.getAnnotation(IpsExtensionProperties.class),
                 Deprecation.of(AnnotatedDeclaration.from(tableObjectClass)));
+        this.tableObjectClass = tableObjectClass;
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
 
         kind = annotation.type();
         columnNames = Arrays.asList(annotation.columns());
 
-        Class<?> tableRowClass = (Class<?>)((ParameterizedType)tableObjectClass.getGenericSuperclass())
+        tableRowClass = (Class<?>)((ParameterizedType)tableObjectClass.getGenericSuperclass())
                 .getActualTypeArguments()[0];
-        columnModels = TableColumn.createModelsFrom(this, tableObjectClass, tableRowClass);
+        columnModels = TableColumn.createModelsFrom(this, tableObjectClass, getTableRowClass());
         messagesHelper = createMessageHelper(tableObjectClass.getAnnotation(IpsDocumented.class),
                 tableObjectClass.getClassLoader());
     }
@@ -138,5 +142,13 @@ public class TableStructure extends ModelElement {
         StringBuilderJoiner.join(sb, columnNames);
         sb.append(")");
         return sb.toString();
+    }
+
+    public Class<? extends ITable<?>> getTableObjectClass() {
+        return tableObjectClass;
+    }
+
+    public Class<?> getTableRowClass() {
+        return tableRowClass;
     }
 }
