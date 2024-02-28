@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -71,7 +71,7 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 /**
  * The content-page for the <code>TableContentsEditor</code>. Allows the editing of
  * <code>TableContents</code> using a <code>TableViewer</code>.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ContentPage extends IpsObjectEditorPage implements ContentsChangeListener {
@@ -230,10 +230,10 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
                 new TableContentsContentProvider());
         /*
          * SetUseHashlookup in combination with SWT.VIRTUAL does't work.
-         * 
-         * 
+         *
+         *
          * https://bugs.eclipse.org/bugs/show_bug.cgi?id=269721
-         * 
+         *
          * tableViewer.setUseHashlookup(true);
          */
         TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
@@ -256,7 +256,9 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         int numReadSizes = columnSizes.size();
         // use the number of references in the contents as only those can be edited.
         CellEditor[] editors = new CellEditor[columnReferencesCount];
-        ValueDatatype[] datatypes = new ValueDatatype[columnReferencesCount];
+        TableContentsLabelProvider tableContentsLabelProvider = (TableContentsLabelProvider)tableViewer
+                .getLabelProvider();
+        tableContentsLabelProvider.setValueDatatypesCount(columnReferencesCount);
         for (int i = 0; i < columnReferencesCount; i++) {
             String columnName;
             ValueDatatype dataType = null;
@@ -269,17 +271,16 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
                 dataType = findValueDatatype(column);
             }
             ValueDatatypeControlFactory factory = getValueDatatypeControlFactory(dataType);
+            tableContentsLabelProvider.setValueDatatype(i, dataType);
             createTableColumn(columnSizes, numReadSizes, i, columnName, factory);
             columnProperties[i] = columnName;
             editors[i] = createCellEditor(i, dataType, factory);
-            datatypes[i] = dataType;
         }
         tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
         tableViewer.setColumnProperties(columnProperties);
         if (tableStructure != null) {
             tableViewer.setCellEditors(editors);
         }
-        ((TableContentsLabelProvider)tableViewer.getLabelProvider()).setValueDatatypes(datatypes);
         tableViewer.setComparator(new TableSorter());
         tableViewer.refresh();
     }
@@ -303,7 +304,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
     /**
      * Initializes the toolbar.
-     * 
+     *
      * @param tableRows {@link TableRows} required for providing the unique key validation button
      */
     private void createToolbar(TableRows tableRows) {
@@ -330,7 +331,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
     /**
      * Adds a unique key validation button to the toolbar, if required.
-     * 
+     *
      * @param tableRows The {@link TableRows} used for checking if the button is required
      * @param formToolbarManager The currently used {@link IToolBarManager}
      */
@@ -348,7 +349,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
      * Updates the visibility of the toolbar items based on the current changeability state.
      * <p>
      * The export functionality should be always available.
-     * 
+     *
      * @param changeable Whether the page content is changeable
      */
     private void updateToolbarVisibilityState(boolean changeable) {
@@ -390,7 +391,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     /**
      * Reads the widths of the table columns stored for this table content. If no widths have been
      * stored, the default width for each column is returned.
-     * 
+     *
      * @return the stored widths for each table column.
      */
     private List<Integer> readColumnWidths() {
@@ -411,7 +412,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     /**
      * Stores the width of a column in the dialog settings of the user's workspace. Thus, whenever
      * the user reopens the editor, the width of the column can be set to the same width as before.
-     * 
+     *
      * @param index the index of the column.
      * @param column the column of the table.
      */
