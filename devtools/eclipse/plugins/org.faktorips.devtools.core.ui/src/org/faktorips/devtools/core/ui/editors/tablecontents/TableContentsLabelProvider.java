@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.faktorips.runtime.MessageList;
 /**
  * LabelProvider for the TableViewer in the TableContents editor. Supports errormarkers for errenous
  * values and the null-representation string for table cells.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class TableContentsLabelProvider implements ITableLabelProvider {
@@ -45,7 +45,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
         return null;
     }
 
-    public void setValueDatatypes(ValueDatatype[] datatypes) {
+    void setValueDatatypes(ValueDatatype[] datatypes) {
         this.datatypes = datatypes;
     }
 
@@ -100,6 +100,14 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
     @Override
     public void removeListener(ILabelProviderListener listener) {
         // Nothing to do
+    }
+
+    void setValueDatatypesCount(int n) {
+        datatypes = new ValueDatatype[n];
+    }
+
+    void setValueDatatype(int i, ValueDatatype dataType) {
+        datatypes[i] = dataType;
     }
 
 }
