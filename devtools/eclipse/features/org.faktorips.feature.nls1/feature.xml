@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature.nls1"
       label="Faktor-IPS German Language Pack"
-      version="24.1.6.qualifier"
+      version="24.1.6.release"
       provider-name="Faktor Zehn GmbH"
       license-feature="org.faktorips.license">
 
