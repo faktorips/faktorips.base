@@ -22,8 +22,11 @@ import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.BuilderHelper;
 import org.faktorips.devtools.model.builder.TypeSection;
+import org.faktorips.devtools.model.builder.fl.ExpressionBuilderHelper;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.java.util.ParamUtil;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -34,9 +37,7 @@ import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
-import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
 
@@ -236,11 +237,11 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier();
         boolean resolveTypesToPublishedInterface = method.getModifier().isPublished();
-        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(),
+        String returnClass = ParamUtil.transformDatatypeToJavaClassName(method.getDatatype(),
                 resolveTypesToPublishedInterface, getBuilderSet(), method.getIpsProject());
 
         String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
-        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
+        String[] parameterTypes = ParamUtil.transformParameterTypesToJavaClassNames(parameters,
                 resolveTypesToPublishedInterface, getBuilderSet(), method.getIpsProject());
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;

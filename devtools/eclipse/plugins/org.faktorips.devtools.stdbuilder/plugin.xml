@@ -275,7 +275,7 @@
    <extension
          point="org.faktorips.devtools.model.formulaCompiler">
       <formulaCompiler
-            class="org.faktorips.devtools.stdbuilder.StdBuilderFormulaCompiler">
+            class="org.faktorips.devtools.model.builder.fl.JavaBuilderFormulaCompiler">
       </formulaCompiler>
    </extension>
    <extension

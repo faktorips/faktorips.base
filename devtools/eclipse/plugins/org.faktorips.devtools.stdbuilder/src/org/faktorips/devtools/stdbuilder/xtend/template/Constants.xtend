@@ -1,6 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
+import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode
 import org.faktorips.runtime.IModelObject
 import org.faktorips.runtime.internal.ValueToXmlHelper
 

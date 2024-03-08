@@ -1,6 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.enumtype.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType
+import org.faktorips.devtools.model.builder.xmodel.enumtype.XEnumType
 
 class EnumTypeTmpl {
 

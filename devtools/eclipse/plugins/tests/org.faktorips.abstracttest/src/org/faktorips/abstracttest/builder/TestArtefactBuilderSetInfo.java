@@ -1,14 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.abstracttest.builder;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -25,13 +28,14 @@ import org.faktorips.util.ArgumentCheck;
  * according to the {@link IIpsProject} provided to the method. Therefor it is necessary to set the
  * ips-project to the builder set otherwise a NullPointerException is thrown when the
  * create(IIpsProject) method is called.
- * 
+ *
  * @author Peter Erzberger
  */
 public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
     private IIpsArtefactBuilderSet[] builderSets;
     private String builderSetId;
+    private IIpsBuilderSetPropertyDef[] propertyDefs = {};
 
     /**
      * Creates an info object for the provided builder set. The IIpsProject for this builderSet must
@@ -81,12 +85,16 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
     @Override
     public IIpsBuilderSetPropertyDef getPropertyDefinition(String name) {
-        return null;
+        return Arrays.stream(propertyDefs).filter(p -> Objects.equals(name, p.getName())).findFirst().orElse(null);
     }
 
     @Override
     public IIpsBuilderSetPropertyDef[] getPropertyDefinitions() {
-        return new IIpsBuilderSetPropertyDef[0];
+        return propertyDefs;
+    }
+
+    public void setPropertyDefinitions(IIpsBuilderSetPropertyDef[] propertyDefs) {
+        this.propertyDefs = propertyDefs;
     }
 
     @Override

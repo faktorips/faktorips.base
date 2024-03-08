@@ -18,7 +18,7 @@ import java.util.Map
 import java.util.NoSuchElementException
 import java.util.Objects
 import java.util.TimeZone
-import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
+import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode
 import org.faktorips.runtime.AssociationChangedEvent
 import org.faktorips.runtime.CardinalityRange
 import org.faktorips.runtime.DefaultUnresolvedReference

@@ -11,18 +11,18 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder;
 
 import org.faktorips.datatype.util.LocalizedStringsSet;
+import org.faktorips.devtools.model.builder.java.naming.BuilderJavaClassNameProvider;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
+import org.faktorips.devtools.model.builder.xmodel.ModelService;
+import org.faktorips.devtools.model.builder.xmodel.productcmptbuilder.XProductBuilder;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
-import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.BuilderJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template.ProductBuilderTmpl;
 
 public class ProductCmptClassBuilderBuilder extends XtendTypeBuilder<XProductBuilder> {

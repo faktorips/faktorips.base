@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Locale;
 
 import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.builder.propertybuilder.MessagesProperties;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.stdbuilder.MessagesProperties;
 
 /**
  * This property generator helps the {@link EnumPropertyBuilder} to generate a concrete property

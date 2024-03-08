@@ -11,13 +11,13 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
 import org.faktorips.datatype.util.LocalizedStringsSet;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
+import org.faktorips.devtools.model.builder.xmodel.ModelService;
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentTmpl;
 

@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
@@ -188,14 +190,25 @@ public final class IpsStringUtils {
     }
 
     public static String toLowerFirstChar(String string) {
+        return changeFirstChar(string, Character::isLowerCase, Character::toLowerCase);
+    }
+
+    /** @since 24.7 */
+    public static String toUpperFirstChar(String string) {
+        return changeFirstChar(string, Character::isUpperCase, Character::toUpperCase);
+    }
+
+    private static String changeFirstChar(String string,
+            Predicate<Character> isAlreadyChanged,
+            UnaryOperator<Character> change) {
         if (isEmpty(string)) {
             return string;
         }
         char firstChar = string.charAt(0);
-        if (Character.isLowerCase(firstChar)) {
+        if (isAlreadyChanged.test(firstChar)) {
             return string;
         }
-        return Character.toLowerCase(firstChar) + string.substring(1);
+        return change.apply(firstChar) + string.substring(1);
     }
 
     /**

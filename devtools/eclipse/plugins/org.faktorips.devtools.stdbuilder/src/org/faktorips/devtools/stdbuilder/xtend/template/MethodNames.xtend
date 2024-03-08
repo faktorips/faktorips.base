@@ -1,6 +1,5 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
-import org.w3c.dom.Element
 
 class MethodNames {
 

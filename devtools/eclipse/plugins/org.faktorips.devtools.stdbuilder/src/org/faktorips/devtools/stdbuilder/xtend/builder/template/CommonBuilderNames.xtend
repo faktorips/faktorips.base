@@ -1,4 +1,4 @@
-package org.faktorips.devtools.stdbuilder.xtend.builder.templateimport org.faktorips.devtools.stdbuilder.xmodel.builder.XPBuilderclass CommonBuilderNames {    def static getResult() {        "getResult()"    }    /**
+package org.faktorips.devtools.stdbuilder.xtend.builder.templateimport org.faktorips.devtools.model.builder.xmodel.builder.XPBuilderclass CommonBuilderNames {    def static getResult() {        "getResult()"    }    /**
      * This method returns the name of the policy field if this builder doesn't have super type,
      * else returns the name of the getter method from the super type and append the String to cast
      * it to the required policy class.

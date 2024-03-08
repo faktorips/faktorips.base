@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathAttribute;
@@ -38,6 +39,8 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
+import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.model.util.IpsProjectUtil;
 
 public class JavaProjectUtil {
@@ -57,7 +60,7 @@ public class JavaProjectUtil {
             IJavaProject javaProject = JavaCore.create(project);
             // add Java nature
             IpsProjectUtil.addNature(project, JavaCore.NATURE_ID);
-            javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+            javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_11);
             // create bin folder and set as output folder.
             IFolder binFolder = project.getFolder("bin");
             if (!binFolder.exists()) {
@@ -99,6 +102,49 @@ public class JavaProjectUtil {
         IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
         System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
         newEntries[oldEntries.length] = JavaCore.newContainerEntry(new Path(JRE_CONTAINER));
+        javaProject.setRawClasspath(newEntries, null);
+    }
+
+    public static void addIpsLibrary(IJavaProject javaProject) throws JavaModelException {
+        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+        IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
+        System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
+        newEntries[oldEntries.length] = JavaCore
+                .newContainerEntry(new Path(IpsClasspathContainerInitializer.CONTAINER_ID));
+        javaProject.setRawClasspath(newEntries, null);
+    }
+
+    public static void addJaxbLibrary(IJavaProject javaProject) throws JavaModelException {
+        IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+        IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
+        System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
+        String libraryPackage = JaxbSupportVariant.ClassicJAXB.getLibraryPackage();
+        File file = new File(
+                new File(
+                        new File(
+                                new File("").getAbsoluteFile().getParentFile(),
+                                "org.faktorips.abstracttest"),
+                        "lib"),
+                "jaxb-api-2.3.1.jar");
+        file = file.getAbsoluteFile();
+        IPath path = new Path(file.getAbsolutePath());
+        newEntries[oldEntries.length] = JavaCore.newLibraryEntry(path, null, null);
+        for (int i = 0; i < newEntries.length; i++) {
+            IClasspathEntry entry = newEntries[i];
+            if (IClasspathEntry.CPE_CONTAINER == entry.getEntryKind()) {
+                String pathString = entry.getPath().toString();
+                if (pathString.startsWith(IpsClasspathContainerInitializer.CONTAINER_ID)
+                        && !pathString.contains(libraryPackage)) {
+                    if (pathString.contains("/")) {
+                        pathString += ",";
+                    } else {
+                        pathString += "/";
+                    }
+                    pathString += libraryPackage;
+                    newEntries[i] = JavaCore.newContainerEntry(new Path(pathString));
+                }
+            }
+        }
         javaProject.setRawClasspath(newEntries, null);
     }
 

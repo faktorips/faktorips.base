@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -22,45 +21,32 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.emf.codegen.AdditionalAnnotationsLocation;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.GenericValueDatatype;
-import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.GenericBuilderKindId;
-import org.faktorips.devtools.model.builder.IJavaBuilderSet;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
-import org.faktorips.devtools.model.builder.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.fl.StandardIdentifierResolver;
+import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
-import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.internal.datatype.DatatypeDefinition;
+import org.faktorips.devtools.model.builder.xmodel.table.XTable;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.productcmpt.IExpression;
-import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
@@ -68,7 +54,6 @@ import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
-import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink3_0PersistenceProvider;
@@ -82,15 +67,6 @@ import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
 import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
-import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.XType;
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
-import org.faktorips.devtools.stdbuilder.xmodel.table.XTable;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilderFactory;
@@ -106,182 +82,23 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
-import org.faktorips.runtime.ICopySupport;
-import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.MethodNames;
-import org.faktorips.runtime.model.type.PolicyCmptType;
-import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * An {@link IIpsArtefactBuilderSet} implementation that assembles the standard Faktor-IPS
  * {@link IIpsArtefactBuilder IIpsArtefactBuilders}.
  */
-public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilderSet {
+public class StandardBuilderSet extends JavaBuilderSet {
 
     public static final String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 
-    /**
-     * Configuration property that enables/disables the generation of a copy method.
-     *
-     * @see ICopySupport
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_COPY_SUPPORT = "generateCopySupport"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that enables/disables the generation of delta computation.
-     *
-     * @see IDeltaSupport
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_DELTA_SUPPORT = "generateDeltaSupport"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that enables/disables the generation of the visitor support.
-     *
-     * @see IDeltaSupport
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_VISITOR_SUPPORT = "generateVisitorSupport"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that is supposed to be used to read a configuration value from the
-     * IIpsArtefactBuilderSetConfig object provided by the initialize method of an
-     * IIpsArtefactBuilderSet instance.
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_CHANGELISTENER = "generateChangeListener"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that enables/disables the generation of JAXB support.
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = JaxbSupportVariant.STD_BUILDER_PROPERTY_GENERATE_JAXB_SUPPORT;
-
-    /**
-     * Configuration property contains the persistence provider implementation.
-     * <p>
-     * All persistence support IDs are defined in {@link PersistenceSupportNames}.
-     */
-    public static final String CONFIG_PROPERTY_PERSISTENCE_PROVIDER = PersistenceSupportNames.STD_BUILDER_PROPERTY_PERSISTENCE_PROVIDER;
-
-    /**
-     * Configuration property contains the kind of formula compiling.
-     */
-    public static final String CONFIG_PROPERTY_FORMULA_COMPILING = "formulaCompiling"; //$NON-NLS-1$
-
-    /**
-     * Name of the configuration property that indicates whether toXml() methods should be
-     * generated.
-     */
-    public static final String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that enables/disables the generation of serializable support on policy
-     * components.
-     *
-     * @see Serializable
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT = "serializablePolicyCmpts"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that enables/disables the generation of getter methods of
-     * {@link ProductCmptType} attributes in the according {@link PolicyCmptType} class.
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS = "generateConvenienceGetters"; //$NON-NLS-1$
-
-    /**
-     * Name of the configuration property that indicates whether to generate camel case constant
-     * names with underscore separator or without. For example if this property is true, the
-     * constant for the name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the
-     * property is false the constant name would be CHECKANYTHINGRUL.
-     */
-    public static final String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
-
-    /**
-     * Name of the configuration property that indicates whether to generate public interfaces or
-     * not.
-     * <p>
-     * Although this property is defined in this abstraction it needs to be configured in the
-     * extension point of every specific builder. If it is not specified as a configuration
-     * definition of any builder, the default value is <code>true</code>.
-     */
-    public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines additional annotations that are generated above all
-     * generated methods of {@link IPolicyCmptType}, {@link IProductCmptType}, {@link IEnumType},
-     * {@link ITableStructure} and {@link ITableContents}
-     */
-    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines whether restrained modifiable methods should be included
-     * when generating additional annotations. The default value is
-     * {@link AdditionalAnnotationsLocation#GeneratedAndRestrainedModifiable} and therefore the
-     * annotations should be generated above {@code @generated} as well as
-     * {@code @restrainedmodifiable} methods.
-     */
-    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS_LOCATION = "additionalAnnotationsLocation"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines annotations that are not removed from generated methods
-     * of {@link IPolicyCmptType}, {@link IProductCmptType}, {@link IEnumType},
-     * {@link ITableStructure} and {@link ITableContents}
-     */
-    public static final String CONFIG_PROPERTY_RETAIN_ANNOTATIONS = "retainAnnotations"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines whether and which builder classes should be generated.
-     */
-    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR = "builderClasses";
-    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_NONE = "None";
-    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_ALL = "All";
-    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY = "Policies only";
-    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT = "Products only";
-
-    /**
-     * Configuration property that defines which variant of local date should be used (joda or
-     * java8)
-     */
-    public static final String CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT = "localDateDatatypeHelperVariant"; //$NON-NLS-1$
-
-    public static final String CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE = "baseClassPolicyComponent"; //$NON-NLS-1$
-
-    public static final String CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE = "baseClassProductComponent"; //$NON-NLS-1$
-
-    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = ChangesOverTimeNamingConventionPropertyDef.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION;
-
-    /**
-     * Configuration property that reduces the amount of generated comments.
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC = "minimalJavadoc"; //$NON-NLS-1$
-
-    /**
-     * Configuration property for the unify value set methods option.
-     */
-    public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "valueSetMethods";
-
-    /**
-     * Configuration property that defines whether the getEffectiveFromAsCalendar() method should
-     * always be generated.
-     */
-    public static final String CONFIG_PROPERTY_GENERATE_GET_EFFECTIVE_FROM_AS_CALENDAR = "generateGetEffectiveFromAsCalendar"; //$NON-NLS-1$
-
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
-
-    private ModelService modelService;
-
-    private GeneratorModelContext generatorModelContext;
 
     private Map<String, IPersistenceProvider> allSupportedPersistenceProvider;
 
     private final String version;
-
-    /**
-     * Registry for looking up helpers for data types.
-     * <p>
-     * Note that the registry is initialized when the IPS project is set (i.e. when
-     * {@link #setIpsProject(IIpsProject)} is invoked).
-     */
-    private DatatypeHelperRegistry datatypeHelperRegistry;
 
     /**
      * Registry for looking up helper factories for data types.
@@ -310,12 +127,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // buf.append(versionObj.getMicro());
         // version = buf.toString();
 
-    }
-
-    @Override
-    public void clean(IProgressMonitor monitor) {
-        super.clean(monitor);
-        modelService.clear();
     }
 
     @Override
@@ -370,32 +181,25 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) {
-        modelService = new ModelService();
-        generatorModelContext = new GeneratorModelContext(config, this, getIpsProject());
-        super.initialize(config);
-    }
-
-    @Override
     protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
         // create policy component type builders
         LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<>();
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE,
-                new PolicyCmptClassBuilder(true, this, generatorModelContext, modelService));
+                new PolicyCmptClassBuilder(true, this, getGeneratorModelContext(), getModelService()));
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION,
-                new PolicyCmptClassBuilder(false, this, generatorModelContext, modelService));
+                new PolicyCmptClassBuilder(false, this, getGeneratorModelContext(), getModelService()));
         builders.put(BuilderKindIds.POLICY_CMPT_VALIDATOR_CLASS,
-                new PolicyCmptValidatorBuilder(this, generatorModelContext, modelService));
+                new PolicyCmptValidatorBuilder(this, getGeneratorModelContext(), getModelService()));
 
         // create product component type builders
         builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_INTERFACE,
-                new ProductCmptClassBuilder(true, this, generatorModelContext, modelService));
+                new ProductCmptClassBuilder(true, this, getGeneratorModelContext(), getModelService()));
         builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION,
-                new ProductCmptClassBuilder(false, this, generatorModelContext, modelService));
+                new ProductCmptClassBuilder(false, this, getGeneratorModelContext(), getModelService()));
         builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_INTERFACE,
-                new ProductCmptGenerationClassBuilder(true, this, generatorModelContext, modelService));
+                new ProductCmptGenerationClassBuilder(true, this, getGeneratorModelContext(), getModelService()));
         builders.put(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
-                new ProductCmptGenerationClassBuilder(false, this, generatorModelContext, modelService));
+                new ProductCmptGenerationClassBuilder(false, this, getGeneratorModelContext(), getModelService()));
 
         builders.put(BuilderKindIds.TABLE, new TableBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.TABLE_ROW, new TableRowBuilderFactory().createBuilder(this));
@@ -503,50 +307,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
                 .fromString(getConfig().getPropertyValueAsString(CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT));
     }
 
-    /**
-     * Returns the qualified class name for the given datatype.
-     *
-     * @param datatype datatype to retrieve the class name for
-     */
-    public String getJavaClassName(Datatype datatype) {
-        return getJavaClassName(datatype, true);
-    }
-
-    /**
-     * Resolves the qualified class name for the given datatype.
-     *
-     * @param datatype datatype to retrieve the class name for.
-     * @param interfaces flag indicating whether the class name should be resolved to the published
-     *            interface type
-     */
-    public String getJavaClassName(Datatype datatype, boolean interfaces) {
-        if (datatype instanceof IPolicyCmptType) {
-            return getJavaClassNameForPolicyCmptType((IPolicyCmptType)datatype, interfaces);
-        } else if (datatype instanceof IProductCmptType) {
-            return getJavaClassNameForProductCmptType((IProductCmptType)datatype, interfaces);
-        } else {
-            return getDatatypeHelper(datatype).getJavaClassName();
-        }
-    }
-
-    private String getJavaClassNameForPolicyCmptType(IPolicyCmptType type, boolean interfaces) {
-        return getJavaClassName(type, interfaces, XPolicyCmptClass.class);
-    }
-
-    private String getJavaClassNameForProductCmptType(IProductCmptType type, boolean interfaces) {
-        if (type.isChangingOverTime()) {
-            return getJavaClassName(type, interfaces, XProductCmptGenerationClass.class);
-        } else {
-            return getJavaClassName(type, interfaces, XProductCmptClass.class);
-        }
-    }
-
-    private <T extends XType> String getJavaClassName(IType type, boolean interfaces, Class<T> modelNodeClass) {
-        return modelService.getModelNode(type, modelNodeClass, generatorModelContext)
-                .getQualifiedName(BuilderAspect.getValue(interfaces));
-
-    }
-
     @Override
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
@@ -601,26 +361,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, ProductCmptClassBuilder.class);
     }
 
-    @Override
-    public boolean isGeneratePublishedInterfaces() {
-        return generatorModelContext.getBaseGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
-    }
-
-    @Override
-    protected String getConfiguredAdditionalAnnotations() {
-        return generatorModelContext.getBaseGeneratorConfig().getConfiguredAdditionalAnnotations();
-    }
-
-    @Override
-    public String getAdditionalAnnotationsLocation() {
-        return generatorModelContext.getBaseGeneratorConfig().getAdditionalAnnotationsLocation();
-    }
-
-    @Override
-    protected String getConfiguredRetainedAnnotations() {
-        return generatorModelContext.getBaseGeneratorConfig().getConfiguredRetainedAnnotations();
-    }
-
     public TableBuilder getTableBuilder() {
         return getBuilderById(BuilderKindIds.TABLE, TableBuilder.class);
     }
@@ -633,57 +373,20 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         return getBuilderById(BuilderKindIds.ENUM_TYPE, EnumTypeBuilder.class);
     }
 
-    public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
-        return generatorModelContext.getValidationMessageBundleBaseName(entry);
-    }
-
-    public <T extends AbstractGeneratorModelNode> T getModelNode(IIpsObjectPartContainer object, Class<T> type) {
-        return modelService.getModelNode(object, type, generatorModelContext);
-    }
-
-    public ModelService getModelService() {
-        return modelService;
-    }
-
-    public GeneratorModelContext getGeneratorModelContext() {
-        return generatorModelContext;
-    }
-
-    public enum FormulaCompiling {
-
-        Subclass,
-        XML,
-        Both;
-
-        public boolean isCompileToSubclass() {
-            return this == Subclass || this == Both;
-        }
-
-        public boolean isCompileToXml() {
-            return this == XML || this == Both;
-        }
-    }
-
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
-        if (datatype instanceof EnumTypeDatatypeAdapter enumtypeadapter) {
-            XEnumType enumType = getModelNode(enumtypeadapter.getEnumType(), XEnumType.class);
-            return new EnumTypeDatatypeHelper(enumType, (EnumTypeDatatypeAdapter)datatype);
-        }
-
         if (datatypeHelperFactoryRegistry.hasFactory(datatype)) {
             DatatypeHelperFactory factory = datatypeHelperFactoryRegistry.getFactory(datatype);
             return factory.createDatatypeHelper(datatype, this);
         }
 
-        return datatypeHelperRegistry.getDatatypeHelper(datatype);
+        return super.getDatatypeHelper(datatype);
     }
 
     @Override
     public void setIpsProject(IIpsProject ipsProject) {
         super.setIpsProject(ipsProject);
         synchronized (ipsProject) {
-            datatypeHelperRegistry = new DatatypeHelperRegistry(getIpsProject());
             datatypeHelperFactoryRegistry = new DatatypeHelperFactoryRegistry();
         }
     }
@@ -692,63 +395,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     public boolean usesUnifiedValueSets() {
         return ValueSetMethods.Unified.name().equals(
                 getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS));
-    }
-
-    /** Registry for looking up the {@link DatatypeHelper} for a {@link Datatype}. */
-    private static class DatatypeHelperRegistry {
-
-        /** Name of the extension point used to register data types and helpers. */
-        private static final String DATATYPE_DEFINITION_EXTENSION_POINT = "datatypeDefinition";
-
-        private Map<Datatype, DatatypeHelper> helperMap = new HashMap<>();
-
-        public DatatypeHelperRegistry(IIpsProject ipsProject) {
-            super();
-            initialize(ipsProject);
-        }
-
-        /**
-         * Returns the helper registered for the given data type or {@code null} if no helper is
-         * registered for that type.
-         */
-        public DatatypeHelper getDatatypeHelper(Datatype datatype) {
-            return helperMap.get(datatype);
-        }
-
-        /**
-         * Initializes the registered helpers using (all) the helpers provided via the
-         * {@link #DATATYPE_DEFINITION_EXTENSION_POINT extension point} and the data type defined in
-         * the given projects.
-         */
-        private void initialize(IIpsProject ipsProject) {
-            IExtensionRegistry registry = Platform.getExtensionRegistry();
-            IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID,
-                    DATATYPE_DEFINITION_EXTENSION_POINT);
-            IExtension[] extensions = point.getExtensions();
-
-            for (IExtension extension : extensions) {
-                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
-                    registerHelper(new DatatypeDefinition(extension, configElement));
-                }
-            }
-
-            List<Datatype> definedDatatypes = ipsProject.getProperties().getDefinedDatatypes();
-            for (Datatype datatype : definedDatatypes) {
-                if (datatype instanceof GenericValueDatatype valueDatatype) {
-                    registerHelper(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
-                }
-            }
-        }
-
-        private void registerHelper(DatatypeDefinition definition) {
-            if (definition.hasDatatype() && definition.hasHelper()) {
-                helperMap.put(definition.getDatatype(), definition.getHelper());
-            }
-        }
-
-        private void registerHelper(Datatype datatype, DatatypeHelper helper) {
-            helperMap.put(datatype, helper);
-        }
     }
 
     /** Registry for looking up the {@link DatatypeHelperFactory} for a {@link Datatype}. */

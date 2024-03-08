@@ -1,13 +1,13 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
-import org.faktorips.devtools.stdbuilder.xmodel.XAssociation
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.xmodel.XAssociation
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation
 import org.faktorips.devtools.stdbuilder.xtend.template.AssociationTmpl
 
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAssociationExtensionTmpl.*
-import static extension org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static extension org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*

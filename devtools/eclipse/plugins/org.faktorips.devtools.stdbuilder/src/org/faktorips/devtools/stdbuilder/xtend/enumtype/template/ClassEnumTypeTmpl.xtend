@@ -1,10 +1,10 @@
 package org.faktorips.devtools.stdbuilder.xtend.enumtype.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumValue
+import org.faktorips.devtools.model.builder.xmodel.enumtype.XEnumType
+import org.faktorips.devtools.model.builder.xmodel.enumtype.XEnumValue
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
 
-import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.enumtype.template.CommonEnumTypeTmpl.*

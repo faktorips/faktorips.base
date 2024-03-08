@@ -1,8 +1,8 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.XMethod
+import org.faktorips.devtools.model.builder.xmodel.XMethod
 
-import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*

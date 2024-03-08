@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,19 +27,20 @@ import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
+import org.faktorips.devtools.model.builder.xmodel.ModelService;
+import org.faktorips.devtools.model.builder.xmodel.XClass;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.XClass;
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions;
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions;
 
 /**
  * An abstract implementation to use XTEND templates for code generation.
- * 
+ *
  */
 public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuilder {
 
@@ -50,10 +51,10 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     public XtendBuilder(DefaultBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        this.javaClassNameProvider = XClass.createJavaClassNamingProvider(
+        javaClassNameProvider = XClass.createJavaClassNamingProvider(
                 modelContext.getBaseGeneratorConfig().isGeneratePublishedInterfaces(builderSet.getIpsProject()));
         setMergeEnabled(true);
-        this.generatorModelContext = modelContext;
+        generatorModelContext = modelContext;
         this.modelService = modelService;
     }
 
@@ -77,7 +78,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     /**
      * Implementations of this class must override this method to provide the the body of the java
      * source file.
-     * 
+     *
      * @param ipsObject that is used to create the body.
      * @return the body for a java source as a String.
      */
@@ -89,7 +90,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     protected String generateImportBlock() {
-        return CommonDefinitions.importBlock(generatorModelContext);
+        return "" + CommonDefinitions.importBlock(generatorModelContext);
     }
 
     @Override
@@ -168,7 +169,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
      * a product component, then this builder needs to generate some artifacts for this policy
      * attribute. This method would return the corresponding product component type so this (product
      * component) builder could parse the templates and collect possible generated artifacts.
-     * 
+     *
      * @param ipsObjectPartContainer The {@link IIpsObjectPartContainer} for which we want to get
      *            the {@link IIpsObject} which is supported by this builder
      * @return The {@link IIpsObject} that is supported by this builder
@@ -185,7 +186,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
      * Get the generated artifacts by evaluating the template using the given {@link IIpsObject}.
      * The generated artifacts are collected by the specified {@link IIpsObjectPartContainer}. The
      * {@link IIpsObject} may differ from the IPS object of the part.
-     * 
+     *
      * @param ipsObject The object used to parse the template
      * @param ipsObjectPartContainer the {@link IIpsObjectPartContainer} for which we collect the
      *            generated artifacts

@@ -1,6 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder
+import org.faktorips.devtools.model.builder.xmodel.productcmptbuilder.XProductBuilder
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template.ProductBuilderNamesTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.builder.template.CommonBuilderNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*

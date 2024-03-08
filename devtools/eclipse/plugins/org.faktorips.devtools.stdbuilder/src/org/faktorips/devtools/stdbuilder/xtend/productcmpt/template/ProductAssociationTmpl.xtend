@@ -1,16 +1,15 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductClass
 
-import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.AssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
-import static org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 
 class ProductAssociationTmpl {
 

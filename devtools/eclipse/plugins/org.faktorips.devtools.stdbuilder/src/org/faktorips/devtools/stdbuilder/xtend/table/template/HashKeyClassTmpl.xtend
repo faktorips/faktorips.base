@@ -1,6 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.table.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.table.XIndex
+import org.faktorips.devtools.model.builder.xmodel.table.XIndex
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,12 +13,13 @@ package org.faktorips.devtools.model.builder;
 import java.util.List;
 
 import org.eclipse.jdt.core.IJavaElement;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 
 /**
  * A {@link IIpsArtefactBuilderSet} that generates Java code.
- * 
+ *
  * @author dschwering
  */
 public interface IJavaBuilderSet extends IJavaPackageStructure, IIpsArtefactBuilderSet {
@@ -32,12 +33,22 @@ public interface IJavaBuilderSet extends IJavaPackageStructure, IIpsArtefactBuil
      * <p>
      * The IPS model should be completely valid if calling this method or else the results may not
      * be exhaustive.
-     * 
+     *
      * @param ipsObjectPartContainer The <code>IIpsObjectPartContainer</code> to obtain the
      *            generated <code>IJavaElement</code>s for.
-     * 
+     *
      * @throws NullPointerException If the parameter is null
      */
     List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer);
+
+    /**
+     * Resolves the qualified class name for the given datatype.
+     *
+     * @param datatype datatype to retrieve the class name for.
+     * @param interfaces flag indicating whether the class name should be resolved to the published
+     *            interface type
+     * @since 24.7
+     */
+    String getJavaClassName(Datatype datatype, boolean interfaces);
 
 }

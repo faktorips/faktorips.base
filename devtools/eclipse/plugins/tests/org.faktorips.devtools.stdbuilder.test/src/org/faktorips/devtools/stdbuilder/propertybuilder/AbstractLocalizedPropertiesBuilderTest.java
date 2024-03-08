@@ -22,6 +22,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.model.builder.propertybuilder.AbstractLocalizedPropertiesBuilder;
+import org.faktorips.devtools.model.builder.propertybuilder.AbstractPropertiesGenerator;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;

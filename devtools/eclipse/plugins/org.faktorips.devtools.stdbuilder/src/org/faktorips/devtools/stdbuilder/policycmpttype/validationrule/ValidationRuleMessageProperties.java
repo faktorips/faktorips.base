@@ -13,11 +13,11 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import java.util.Collection;
 import java.util.Objects;
 
+import org.faktorips.devtools.model.builder.propertybuilder.AbstractLocalizedProperties;
+import org.faktorips.devtools.model.builder.propertybuilder.PropertyKey;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
-import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
-import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
 
 public class ValidationRuleMessageProperties extends AbstractLocalizedProperties {
 

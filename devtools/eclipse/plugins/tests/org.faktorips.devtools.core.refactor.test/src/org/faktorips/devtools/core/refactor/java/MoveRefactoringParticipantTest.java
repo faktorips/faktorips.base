@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.refactor.java;
 
 import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
+import static org.faktorips.devtools.core.refactor.java.RefactoringStatusOkMatcher.isOk;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -33,7 +34,7 @@ import org.junit.Test;
 
 /**
  * Tests the various Faktor-IPS "Move" refactorings with regard to the generated Java source code.
- * 
+ *
  * @author Alexander Weickmann
  */
 public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
@@ -62,7 +63,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         saveIpsSrcFile(policyCmptType);
         performFullBuild(ipsProject);
 
-        performMoveRefactoring(policyCmptType, targetIpsPackageFragment);
+        assertThat(performMoveRefactoring(policyCmptType, targetIpsPackageFragment), isOk());
 
         checkJavaSourceFilesPolicyCmptType(ORIGINAL_PACKAGE_NAME, "Policy", TARGET_PACKAGE_NAME, "Policy");
     }
@@ -75,7 +76,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         saveIpsSrcFile(productCmptType);
         performFullBuild(ipsProject);
 
-        performMoveRefactoring(productCmptType, targetIpsPackageFragment);
+        assertThat(performMoveRefactoring(productCmptType, targetIpsPackageFragment), isOk());
 
         checkJavaSourceFilesProductCmptType(ORIGINAL_PACKAGE_NAME, "Product", TARGET_PACKAGE_NAME, "Product");
     }
@@ -93,7 +94,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         saveIpsSrcFile(productCmpt);
         performFullBuild(ipsProject);
 
-        performMoveRefactoring(productCmpt, targetIpsPackageFragment);
+        assertThat(performMoveRefactoring(productCmpt, targetIpsPackageFragment), isOk());
 
         assertNull(ipsProject.findProductCmpt(ORIGINAL_PACKAGE_NAME + '.' + "Prod"));
         assertNotNull(ipsProject.findProductCmpt(TARGET_PACKAGE_NAME + '.' + "Prod"));
@@ -114,7 +115,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         saveIpsSrcFile(enumType);
         performFullBuild(ipsProject);
 
-        performMoveRefactoring(enumType, targetIpsPackageFragment);
+        assertThat(performMoveRefactoring(enumType, targetIpsPackageFragment), isOk());
 
         checkJavaSourceFilesEnumType(ORIGINAL_PACKAGE_NAME, "EnumType", TARGET_PACKAGE_NAME, "EnumType");
     }
@@ -126,7 +127,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         saveIpsSrcFile(tableStructure);
         performFullBuild(ipsProject);
 
-        performMoveRefactoring(tableStructure, targetIpsPackageFragment);
+        assertThat(performMoveRefactoring(tableStructure, targetIpsPackageFragment), isOk());
 
         checkJavaSourceFilesTableStructure(ORIGINAL_PACKAGE_NAME, "TableStructure", TARGET_PACKAGE_NAME,
                 "TableStructure");
@@ -139,7 +140,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
         saveIpsSrcFile(testCaseType);
         performFullBuild(ipsProject);
 
-        performMoveRefactoring(testCaseType, targetIpsPackageFragment);
+        assertThat(performMoveRefactoring(testCaseType, targetIpsPackageFragment), isOk());
 
         checkJavaSourceFilesTestCaseType(ORIGINAL_PACKAGE_NAME, "TestCaseType", TARGET_PACKAGE_NAME, "TestCaseType");
     }

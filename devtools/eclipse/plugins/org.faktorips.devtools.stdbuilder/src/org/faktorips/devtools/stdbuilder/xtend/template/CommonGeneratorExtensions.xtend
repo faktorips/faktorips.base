@@ -1,11 +1,11 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
-import org.faktorips.devtools.stdbuilder.xmodel.XAssociation
-import org.faktorips.devtools.stdbuilder.xmodel.XAttribute
-import org.faktorips.devtools.stdbuilder.xmodel.XClass
-import org.faktorips.devtools.stdbuilder.xmodel.XType
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode
+import org.faktorips.devtools.model.builder.xmodel.XAssociation
+import org.faktorips.devtools.model.builder.xmodel.XAttribute
+import org.faktorips.devtools.model.builder.xmodel.XClass
+import org.faktorips.devtools.model.builder.xmodel.XType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.util.StringUtil
 
 class CommonGeneratorExtensions {

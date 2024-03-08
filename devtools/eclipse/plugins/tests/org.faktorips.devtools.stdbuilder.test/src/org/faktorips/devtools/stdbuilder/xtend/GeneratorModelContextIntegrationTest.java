@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,6 +33,8 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
@@ -43,7 +45,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.junit.Test;
 
 public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest {

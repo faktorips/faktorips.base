@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.testcasetype;
 
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.stringParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.unresolvedParam;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -47,7 +48,6 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.runtime.DefaultObjectReferenceStore;
 import org.faktorips.runtime.DefaultReferenceResolver;
 import org.faktorips.runtime.IModelObject;

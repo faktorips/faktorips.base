@@ -19,12 +19,12 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ProductComponent;
 

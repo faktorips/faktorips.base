@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -112,7 +112,7 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
 
     @Test
     public void testGetSourceVersion() {
-        assertThat(aJavaProject.getSourceVersion().toString(), is("1.5"));
+        assertThat(aJavaProject.getSourceVersion().toString(), is("11"));
     }
 
     @Test

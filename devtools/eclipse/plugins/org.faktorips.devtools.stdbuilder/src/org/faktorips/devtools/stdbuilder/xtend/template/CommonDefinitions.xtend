@@ -1,10 +1,10 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect
-import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement
-import org.faktorips.devtools.stdbuilder.xmodel.StaticImportStatement
-import org.faktorips.devtools.stdbuilder.xmodel.XClass
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext
+import org.faktorips.devtools.model.builder.xmodel.ImportStatement
+import org.faktorips.devtools.model.builder.xmodel.StaticImportStatement
+import org.faktorips.devtools.model.builder.xmodel.XClass
 
 class CommonDefinitions {
     def static importBlock(ImportStatement it) '''

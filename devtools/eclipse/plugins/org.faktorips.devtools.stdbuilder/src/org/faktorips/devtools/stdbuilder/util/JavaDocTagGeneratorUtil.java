@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType;
+import org.faktorips.devtools.model.builder.java.annotations.IAnnotationGenerator;
+import org.faktorips.devtools.model.builder.xmodel.GenericGeneratorModelNode;
+import org.faktorips.devtools.model.builder.xmodel.ModelService;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.GenericGeneratorModelNode;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**

@@ -1,9 +1,9 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.policycmptbuilder.XPolicyBuilder
+import org.faktorips.devtools.model.builder.xmodel.policycmptbuilder.XPolicyBuilder
 
 
-import org.faktorips.devtools.stdbuilder.xmodel.policycmptbuilder.XPolicyBuilderAssociation
+import org.faktorips.devtools.model.builder.xmodel.policycmptbuilder.XPolicyBuilderAssociation
 import static org.faktorips.devtools.stdbuilder.xtend.builder.template.CommonBuilderNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*

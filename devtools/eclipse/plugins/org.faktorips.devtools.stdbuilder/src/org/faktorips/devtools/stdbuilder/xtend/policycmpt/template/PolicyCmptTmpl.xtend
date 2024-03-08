@@ -1,13 +1,13 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XTableUsage
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAttribute
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptGenerationClass
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XTableUsage
 import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions
@@ -21,7 +21,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.templ
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class PolicyCmptTmpl {
 

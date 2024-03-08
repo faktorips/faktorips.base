@@ -1,10 +1,10 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptGenerationClass
 
-import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 import static org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template.ProductCmptCreateBuilderTmpl.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.DefaultAndAllowedValuesTmpl.*
@@ -19,7 +19,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import org.faktorips.devtools.stdbuilder.xtend.template.MethodNames
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 
 class ProductComponentTmpl {
 

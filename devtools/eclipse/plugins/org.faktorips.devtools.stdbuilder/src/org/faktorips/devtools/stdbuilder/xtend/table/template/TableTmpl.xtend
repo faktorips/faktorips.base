@@ -1,10 +1,10 @@
 package org.faktorips.devtools.stdbuilder.xtend.table.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.table.XColumnRangeSearchStructure
-import org.faktorips.devtools.stdbuilder.xmodel.table.XIndex
-import org.faktorips.devtools.stdbuilder.xmodel.table.XTable
+import org.faktorips.devtools.model.builder.xmodel.table.XColumnRangeSearchStructure
+import org.faktorips.devtools.model.builder.xmodel.table.XIndex
+import org.faktorips.devtools.model.builder.xmodel.table.XTable
 
-import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.table.template.HashKeyClassTmpl.*

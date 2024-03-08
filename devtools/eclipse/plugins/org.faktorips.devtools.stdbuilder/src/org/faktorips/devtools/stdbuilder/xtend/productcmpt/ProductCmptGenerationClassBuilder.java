@@ -12,15 +12,15 @@ package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
 import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
+import org.faktorips.devtools.model.builder.xmodel.ModelService;
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentGenInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentGenTmpl;
 

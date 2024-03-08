@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.testcasetype;
 
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.stringParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.unresolvedParam;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 

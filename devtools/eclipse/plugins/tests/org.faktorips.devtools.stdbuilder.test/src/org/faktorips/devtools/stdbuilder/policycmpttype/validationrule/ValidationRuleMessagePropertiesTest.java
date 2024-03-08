@@ -19,12 +19,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 
+import org.faktorips.devtools.model.builder.propertybuilder.PropertyKey;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
-import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

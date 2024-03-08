@@ -1,7 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
-import org.faktorips.devtools.stdbuilder.xmodel.XMethod
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.xmodel.XMethod
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 

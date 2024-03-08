@@ -12,15 +12,15 @@ package org.faktorips.devtools.stdbuilder.xtend.enumtype;
 
 import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
+import org.faktorips.devtools.model.builder.xmodel.ModelService;
+import org.faktorips.devtools.model.builder.xmodel.enumtype.XEnumType;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
-import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.template.EnumTypeTmpl;
 

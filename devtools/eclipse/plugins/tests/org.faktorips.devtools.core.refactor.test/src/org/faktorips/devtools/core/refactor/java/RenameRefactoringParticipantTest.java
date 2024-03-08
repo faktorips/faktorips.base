@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,13 +11,14 @@
 package org.faktorips.devtools.core.refactor.java;
 
 import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
+import static org.faktorips.devtools.core.refactor.java.RefactoringStatusOkMatcher.isOk;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getGenerationConceptNameAbbreviation;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getJavaType;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getPublishedInterfaceName;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.booleanParam;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.booleanParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.intParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.stringParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.unresolvedParam;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
@@ -51,7 +52,7 @@ import org.junit.Test;
 
 /**
  * Tests the various Faktor-IPS "Rename" refactorings with regard to the generated Java source code.
- * 
+ *
  * @author Alexander Weickmann
  */
 public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
@@ -352,7 +353,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         saveIpsSrcFile(enumType);
         performFullBuild(ipsProject);
 
-        performRenameRefactoring(enumType, "RenamedEnumType");
+        assertThat(performRenameRefactoring(enumType, "RenamedEnumType"), isOk());
 
         checkJavaSourceFilesEnumType("", "EnumType", "", "RenamedEnumType");
     }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -304,21 +304,22 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.createFileIfNotThere(file);
         //@formatter:off
         builder.writeToFile(ipsSrcFile, file,
-                "import foo.bar.Baz;\n" +
-                "\n" +
-                "/**\n" +
-                " * @generated\n" +
-                " */\n" +
-                "@Baz\n" +
-                "public class TestPolicy {\n" +
-                "\n" +
-                "    /**\n" +
-                "     * @generated\n" +
-                "     */\n" +
-                "    @Baz\n" +
-                "    public void foo(){\n" +
-                "    }\n" +
-                "}");
+                """
+                	import foo.bar.Baz;
+
+                	/**
+                	 * @generated
+                	 */
+                	@Baz
+                	public class TestPolicy {
+
+                	    /**
+                	     * @generated
+                	     */
+                	    @Baz
+                	    public void foo(){
+                	    }
+                	}""");
         //@formatter:on
         builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
@@ -365,21 +366,22 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.createFileIfNotThere(file);
         //@formatter:off
         builder.writeToFile(ipsSrcFile, file,
-                "import foo.bar.Baz;\n" +
-                "\n" +
-                "/**\n" +
-                " * @generated\n" +
-                " */\n" +
-                "@Baz\n" +
-                "public class TestPolicy {\n" +
-                "\n" +
-                "    /**\n" +
-                "     * @generated\n" +
-                "     */\n" +
-                "    @Baz\n" +
-                "    public void foo(){\n" +
-                "    }\n" +
-                "}");
+                """
+                	import foo.bar.Baz;
+
+                	/**
+                	 * @generated
+                	 */
+                	@Baz
+                	public class TestPolicy {
+
+                	    /**
+                	     * @generated
+                	     */
+                	    @Baz
+                	    public void foo(){
+                	    }
+                	}""");
         //@formatter:on
         builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
@@ -426,21 +428,22 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.createFileIfNotThere(file);
         //@formatter:off
         builder.writeToFile(ipsSrcFile, file,
-                "import foo.bar.Baz;\n" +
-                "\n" +
-                "/**\n" +
-                " * @generated\n" +
-                " */\n" +
-                "@foo.bar.Baz\n" +
-                "public class TestPolicy {\n" +
-                "\n" +
-                "    /**\n" +
-                "     * @generated\n" +
-                "     */\n" +
-                "    @Baz\n" +
-                "    public void foo(){\n" +
-                "    }\n" +
-                "}");
+                """
+                	import foo.bar.Baz;
+
+                	/**
+                	 * @generated
+                	 */
+                	@foo.bar.Baz
+                	public class TestPolicy {
+
+                	    /**
+                	     * @generated
+                	     */
+                	    @Baz
+                	    public void foo(){
+                	    }
+                	}""");
         //@formatter:on
         builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
@@ -487,21 +490,22 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.createFileIfNotThere(file);
         //@formatter:off
         builder.writeToFile(ipsSrcFile, file,
-                "import foo.bar.Baz;\n" +
-                "\n" +
-                "/**\n" +
-                " * @generated\n" +
-                " */\n" +
-                "@Baz\n" +
-                "public class TestPolicy {\n" +
-                "\n" +
-                "    /**\n" +
-                "     * @generated\n" +
-                "     */\n" +
-                "    @Baz\n" +
-                "    public void foo(){\n" +
-                "    }\n" +
-                "}");
+                """
+                	import foo.bar.Baz;
+
+                	/**
+                	 * @generated
+                	 */
+                	@Baz
+                	public class TestPolicy {
+
+                	    /**
+                	     * @generated
+                	     */
+                	    @Baz
+                	    public void foo(){
+                	    }
+                	}""");
         //@formatter:on
         builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
@@ -624,7 +628,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         @Override
         protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
                 IIpsObjectPartContainer ipsObjectPartContainer) {
-
+            // none
         }
 
         @Override

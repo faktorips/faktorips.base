@@ -1,13 +1,13 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
-import org.faktorips.devtools.stdbuilder.xmodel.policycmptbuilder.XPolicyBuilder
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute
+import org.faktorips.devtools.model.builder.xmodel.policycmptbuilder.XPolicyBuilder
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.builder.template.CommonBuilderNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
 
 class PolicyBuilderTmpl {
 

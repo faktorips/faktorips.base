@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,8 +19,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
+import org.faktorips.abstracttest.JavaProjectUtil;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.builder.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -32,7 +34,6 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -40,7 +41,7 @@ import org.junit.Before;
 
 /**
  * Provides basic functionality for the refactoring participant tests of the standard builder.
- * 
+ *
  * @author Alexander Weickmann
  */
 public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest {
@@ -50,12 +51,13 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     public void setUp() throws Exception {
         super.setUp();
         configureBuilderSetToGenerateJaxbSupport();
+        JavaProjectUtil.addJaxbLibrary(ipsProject.getJavaProject().unwrap());
     }
 
     private void configureBuilderSetToGenerateJaxbSupport() {
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
-        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT,
+        configModel.setPropertyValue(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT,
                 JaxbSupportVariant.ClassicJAXB.name(), null);
         ipsProjectProperties.setBuilderSetConfig(configModel);
         ipsProject.setProperties(ipsProjectProperties);
@@ -103,13 +105,12 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String originalName,
             String targetPackageName,
             String newName) {
+        assertThat(getJavaType(targetPackageName, newName, true, false, ipsProject), exists());
+        assertThat(getJavaType(targetPackageName, newName + "XmlAdapter", false, false, ipsProject), exists());
 
         assertThat(getJavaType(originalPackageName, originalName, true, false, ipsProject), not(exists()));
         assertThat(getJavaType(originalPackageName, originalName + "XmlAdapter", false, true, ipsProject),
                 not(exists()));
-
-        assertThat(getJavaType(targetPackageName, newName, true, false, ipsProject), exists());
-        assertThat(getJavaType(targetPackageName, newName + "XmlAdapter", false, false, ipsProject), exists());
     }
 
     private static Matcher<IType> exists() {

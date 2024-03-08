@@ -16,10 +16,11 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.builder.java.util.DatatypeHelperUtil;
+import org.faktorips.devtools.model.builder.java.util.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.junit.Test;
 
 public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {

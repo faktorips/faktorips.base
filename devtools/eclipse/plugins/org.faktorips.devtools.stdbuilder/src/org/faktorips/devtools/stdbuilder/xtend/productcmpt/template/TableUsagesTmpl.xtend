@@ -1,9 +1,9 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XTableUsage
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XTableUsage
 
 
-import static extension org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static extension org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*

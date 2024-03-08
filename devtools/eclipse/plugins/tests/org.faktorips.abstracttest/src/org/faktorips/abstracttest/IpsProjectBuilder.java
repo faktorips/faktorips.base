@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
@@ -116,7 +117,8 @@ public class IpsProjectBuilder {
         if (Abstractions.isEclipseRunning()) {
             ICoreRunnable runnable = $ -> {
                 AProject project = new PlatformProjectBuilder().name(name).description(description).build();
-                ipsPluginTest.addJavaCapabilities(project);
+                AJavaProject javaProject = ipsPluginTest.addJavaCapabilities(project);
+                JavaProjectUtil.addIpsLibrary(javaProject.unwrap());
                 ipsPluginTest.addIpsCapabilities(project);
             };
             AWorkspace workspace = Abstractions.getWorkspace();

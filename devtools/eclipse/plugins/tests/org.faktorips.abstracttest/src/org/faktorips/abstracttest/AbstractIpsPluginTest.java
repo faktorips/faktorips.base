@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -132,7 +132,7 @@ import org.w3c.dom.Document;
 /**
  * Base class for all plugin test cases. Has a factory method to create an ips project including the
  * underlying platform project.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
@@ -481,7 +481,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new ips package fragment root with the given name. It will be created into the
      * indicated parent folder in the given ips project. If the parent folder is null the project
      * will be the parent of the new package fragment root.
-     * 
+     *
      * @param ipsProject The ips project in which to create a new package fragment root
      * @param parentFolder The folder in which to create the new package fragment root
      * @param name The name of the new package fragment root
@@ -563,12 +563,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new enum content in the indicated package fragment root. If the qualified name
      * includes a package name, the package is created if it does not already exists.
-     * 
+     *
      * @param root The package fragment root in which to create the new enum content.
      * @param qualifiedName The qualified name of the new enum content.
-     * 
+     *
      * @return The newly created enum content.
-     * 
+     *
      * @throws IpsException If the enum content could not be created.
      */
     protected EnumContent newEnumContent(final IIpsPackageFragmentRoot root, final String qualifiedName) {
@@ -579,12 +579,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new enum content in the project's first package fragment root. If the qualified
      * name includes a package name, the package is created if it does not already exist.
-     * 
+     *
      * @param ipsProject The ips project in which to create the new enum content.
      * @param qualifiedName The qualified name of the new enum content.
-     * 
+     *
      * @return The newly created enum content.
-     * 
+     *
      * @throws IpsException If the enum content could not be created.
      */
     protected EnumContent newEnumContent(final IIpsProject ipsProject, final String qualifiedName) {
@@ -607,12 +607,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new enum type in the indicated package fragment root. If the qualified name
      * includes a package name, the package is created if it does not already exists.
-     * 
+     *
      * @param root The package fragment root in which to create the new enum type.
      * @param qualifiedName The qualified name of the new enum type.
-     * 
+     *
      * @return The newly created enum type.
-     * 
+     *
      * @throws IpsException If the enum type could not be created.
      */
     protected EnumType newEnumType(final IIpsPackageFragmentRoot root, final String qualifiedName) {
@@ -622,12 +622,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new enum type in the project's first package fragment root. If the qualified name
      * includes a package name, the package is created if it does not already exist.
-     * 
+     *
      * @param ipsProject The ips project in which to create the new enum type.
      * @param qualifiedName The qualified name of the new enum type.
-     * 
+     *
      * @return The newly created enum type.
-     * 
+     *
      * @throws IpsException If the enum type could not be created.
      */
     protected EnumType newEnumType(final IIpsProject ipsProject, final String qualifiedName) {
@@ -638,15 +638,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new default enum type in the project's first package fragment root. The enum type
      * has two attributes named "id" and "name" but does not contain any values, so it is defined as
      * containing values.
-     * 
+     *
      * If the qualified name includes a package name, the package is created if it does not already
      * exist.
-     * 
+     *
      * @param ipsProject The ips project in which to create the new enum type.
      * @param qualifiedName The qualified name of the new enum type.
-     * 
+     *
      * @return The newly created enum type.
-     * 
+     *
      * @throws IpsException If the enum type could not be created.
      */
     protected EnumType newDefaultEnumType(final IIpsProject ipsProject, final String qualifiedName) {
@@ -746,7 +746,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new product component type in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
-     * 
+     *
      * @param createDefaultCategories <code>true</code> if default categories should be created.
      *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type
      *            is intended to have a super type.
@@ -847,7 +847,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new product component type in the indicated package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exist.
-     * 
+     *
      * @param createDefaultCategories <code>true</code> if default categories should be created.
      *            <code>false</code> if not. e.g. Use <code>false</code> if a product component type
      *            is intended to have a super type.
@@ -875,10 +875,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * detail-master association. The role name singular is set to the target's unqualified name.
      * The plural name is the singular name followed by an 's'. Min cardinality is 1, max
      * cardinality is '*'.
-     * 
+     *
      * @param save <code>true</code> if the file that contain to and from are saved after adding the
      *            associations
-     * 
+     *
      * @throws IpsException if an error occurs while saving the files.
      */
     public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to, boolean save) {
@@ -913,7 +913,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new association between 'from' and 'to' type. The role name singular is set to "a_"
      * + the target's unqualified name. The plural name is the singular name followed by an 's'. Min
      * cardinality is 1, max cardinality is '*'.
-     * 
+     *
      * @throws IpsException if an error occurs while saving the files.
      */
     public IPolicyCmptTypeAssociation newAssociation(IPolicyCmptType from, IPolicyCmptType to) {
@@ -938,7 +938,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * <p>
      * The files containing from and to are saved. If you don't want to save the file use
      * {@link #newComposition(IPolicyCmptType, IPolicyCmptType, boolean)}.
-     * 
+     *
      * @throws IpsException if an error occurs while saving the files.
      */
     public IPolicyCmptTypeAssociation newComposition(IPolicyCmptType from, IPolicyCmptType to) {
@@ -952,7 +952,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * <p>
      * The file containing from and to are saved. If you don't want to save the file use
      * {@link #newComposition(IPolicyCmptType, IPolicyCmptType, boolean)}.
-     * 
+     *
      * @throws IpsException if an error occurs while saving the files.
      */
     public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to) {
@@ -963,7 +963,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Creates a new aggregation between 'from' and 'to' type. The role name singular is set to the
      * target's unqualified name. The plural name is the singular name followed by an 's'. Min
      * cardinality is 1, max cardinality is '*'.
-     * 
+     *
      * @throws IpsException if an error occurs while saving the files.
      */
     public IProductCmptTypeAssociation newAggregation(IProductCmptType from, IProductCmptType to, boolean save) {
@@ -1230,7 +1230,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Copies the given project properties file and the given classes to the given project. The
      * classes are added to the classpath of the project.
-     * 
+     *
      */
     protected void configureProject(IIpsProject project, String ipsProjectFileName, Class<?>[] dependencies) {
         java.nio.file.Path outputPath = project.getJavaProject().getOutputLocation();
@@ -1265,7 +1265,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Subclasses can use this method to print out the MultiStatus of a CoreException. This is
      * expecially interesting for testcases that start a build because normally all you get is a
      * ResourceException with no detailed information.
-     * 
+     *
      * @param status the status of a CoreException
      */
     protected void printOriginalStatus(IStatus status) {
@@ -1331,7 +1331,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Create the sort order file for {@link IIpsPackageFragment}s from a List of Strings.
-     * 
+     *
      * @param folder Handle to the parent folder (IpsPackageFragment or IpsPackageFragmentRoot)
      * @param strings IpsPackageFragment names in sort order followed by IpsSrcFile names in order.
      */

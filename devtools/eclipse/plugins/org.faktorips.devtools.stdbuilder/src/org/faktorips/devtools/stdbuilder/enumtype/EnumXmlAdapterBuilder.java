@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,16 +25,16 @@ import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
-import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.java.naming.EnumXmlAdapterNameProvider;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
+import org.faktorips.devtools.model.builder.xmodel.enumtype.XEnumType;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
-import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
 
@@ -42,7 +42,7 @@ import org.faktorips.runtime.xml.IIpsXmlAdapter;
  * A builder for JAXB XmlAdapters. XmlAdapters are generated for Faktor-IPS enumerations that defer
  * their content to a Faktor-IPS enumeration content. These contents can only be accessed through
  * the {@link IRuntimeRepository}. This is the responsibility of the generated XmlAdapter.
- * 
+ *
  * @author Peter Kuntz
  */
 public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
@@ -51,19 +51,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     public EnumXmlAdapterBuilder(StandardBuilderSet builderSet) {
         super(builderSet, new LocalizedStringsSet(EnumXmlAdapterBuilder.class));
-        javaClassNamingProvider = new DefaultJavaClassNameProvider(builderSet.isGeneratePublishedInterfaces()) {
-            @Override
-            public String getImplClassName(IIpsSrcFile ipsSrcFile) {
-                return ipsSrcFile.getIpsProject().getJavaNamingConvention()
-                        .getImplementationClassName(ipsSrcFile.getIpsObjectName() + "XmlAdapter"); //$NON-NLS-1$
-            }
-
-            @Override
-            public boolean isImplClassInternalArtifact() {
-                return isBuildingInternalArtifacts();
-            }
-
-        };
+        javaClassNamingProvider = new EnumXmlAdapterNameProvider(builderSet.isGeneratePublishedInterfaces());
     }
 
     @Override
@@ -151,10 +139,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     private void setExtendingInterface(TypeSection mainSection, StringBuilder genericsForAdapter) {
-        StringBuilder interfaceName = new StringBuilder()
-                .append(IIpsXmlAdapter.class.getName())
-                .append(genericsForAdapter);
-        mainSection.setExtendedInterfaces(List.of(interfaceName.toString()).toArray(new String[0]));
+        mainSection.setExtendedInterfaces(new String[] { IIpsXmlAdapter.class.getName() + genericsForAdapter });
     }
 
     private void setExtendingClass(TypeSection mainSection, StringBuilder genericsForAdapter) {
@@ -182,7 +167,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * Code sample:
-     * 
+     *
      * <pre>
      * [Javadoc]
      *      public AnEnumXmlAdapter(IRuntimeRepository repository) {
@@ -200,7 +185,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * Code sample:
-     * 
+     *
      * <pre>
      * [Javadoc]
      *   public String marshal(AnEnum value) {
@@ -230,7 +215,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
     /**
      * Code sample:
-     * 
+     *
      * <pre>
      * [Javadoc]
      *  public AnEnum unmarshal(String id) {

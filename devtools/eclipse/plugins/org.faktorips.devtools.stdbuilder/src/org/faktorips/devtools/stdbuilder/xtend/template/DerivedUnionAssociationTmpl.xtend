@@ -1,9 +1,9 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation
-import org.faktorips.devtools.stdbuilder.xmodel.XType
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XDetailToMasterDerivedUnionAssociation
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.model.builder.xmodel.XDerivedUnionAssociation
+import org.faktorips.devtools.model.builder.xmodel.XType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XDetailToMasterDerivedUnionAssociation
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
 
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*

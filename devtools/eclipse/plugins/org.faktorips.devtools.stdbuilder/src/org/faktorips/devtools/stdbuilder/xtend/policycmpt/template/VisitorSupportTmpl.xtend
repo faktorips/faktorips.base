@@ -1,7 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
 
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*

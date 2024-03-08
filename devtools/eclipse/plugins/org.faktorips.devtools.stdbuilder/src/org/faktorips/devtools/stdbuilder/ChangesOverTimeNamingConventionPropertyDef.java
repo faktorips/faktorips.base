@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.stdbuilder;
 
+import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
 import org.faktorips.devtools.model.internal.ipsproject.ChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -24,7 +25,7 @@ import org.faktorips.runtime.Message;
 public class ChangesOverTimeNamingConventionPropertyDef extends IpsBuilderSetPropertyDef {
 
     public static final String MSG_CODE_DERIVED_PROPERTY_SET_MANUALLY = "derivedPropertySetManually"; //$NON-NLS-1$
-    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = "changesInTimeNamingConvention"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION = JavaBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION;
 
     /**
      * Always returns <code>false</code>, because the property can not be set manually as it is

@@ -31,6 +31,7 @@ import java.util.Locale;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.model.builder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -45,7 +46,6 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
-import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.junit.Test;
 
 public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidationMessagesBuilderTest {

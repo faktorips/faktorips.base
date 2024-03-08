@@ -1,9 +1,9 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XValidationRule
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XValidationRule
 
 import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*

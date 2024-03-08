@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.refactor.java;
 
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.intParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.stringParam;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsobject.Modifier;

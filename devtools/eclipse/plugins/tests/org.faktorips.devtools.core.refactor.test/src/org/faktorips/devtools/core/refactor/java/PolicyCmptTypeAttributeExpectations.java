@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.refactor.java;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getGenerationConceptNameAbbreviation;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getJavaType;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getPublishedInterfaceName;
-import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.unresolvedParam;
+import static org.faktorips.devtools.model.builder.java.util.ParamUtil.unresolvedParam;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

@@ -16,7 +16,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
+import org.faktorips.devtools.model.builder.java.annotations.SinceVersionJavaDocTagGenerator;
+import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

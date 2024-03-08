@@ -48,6 +48,7 @@
         <setEntry value="com.google.gson@default:default"/>
         <setEntry value="com.google.guava*32.1.3.jre@default:default"/>
         <setEntry value="com.google.guava.failureaccess@default:default"/>
+        <setEntry value="com.googlecode.javaewah.JavaEWAH@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
@@ -210,10 +211,10 @@
         <setEntry value="org.eclipse.jsch.core@default:default"/>
         <setEntry value="org.eclipse.ltk.core.refactoring@default:default"/>
         <setEntry value="org.eclipse.ltk.ui.refactoring@default:default"/>
-        <setEntry value="org.eclipse.m2e.archetype.catalog@default:default"/>
+        <setEntry value="org.eclipse.m2e.archetype.catalog@default:false"/>
         <setEntry value="org.eclipse.m2e.archetype.common@default:default"/>
-        <setEntry value="org.eclipse.m2e.archetype.descriptor@default:default"/>
-        <setEntry value="org.eclipse.m2e.archetype.maven-artifact-transfer@default:default"/>
+        <setEntry value="org.eclipse.m2e.archetype.descriptor@default:false"/>
+        <setEntry value="org.eclipse.m2e.archetype.maven-artifact-transfer@default:false"/>
         <setEntry value="org.eclipse.m2e.core.ui@default:default"/>
         <setEntry value="org.eclipse.m2e.core@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.runtime@default:default"/>
@@ -316,7 +317,7 @@
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
-    <stringAttribute key="timestamp" value="1684309902732"/>
+    <stringAttribute key="timestamp" value="1710165385449"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>

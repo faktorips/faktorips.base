@@ -1,8 +1,8 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template
 
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute
-import org.faktorips.devtools.stdbuilder.xmodel.productcmptbuilder.XProductBuilder
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAttribute
+import org.faktorips.devtools.model.builder.xmodel.productcmptbuilder.XProductBuilder
 
 import static org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template.ProductBuilderNamesTmpl.*
 import static org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template.ProductCmptCreateBuilderTmpl.*
@@ -11,7 +11,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.builder.template
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
-import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
 
 class ProductBuilderTmpl{
 
