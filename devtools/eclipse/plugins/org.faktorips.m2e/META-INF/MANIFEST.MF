@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Maven-Eclipse-Plugin for Faktor-IPS
 Bundle-SymbolicName: org.faktorips.m2e;singleton:=true
-Bundle-Version: 22.12.18.release
+Bundle-Version: 22.12.19.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.m2e.core;bundle-version="[1.11.0,2.0.0)",
