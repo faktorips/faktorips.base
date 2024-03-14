@@ -100,7 +100,10 @@ class ProductAssociationTmpl {
                             «IF constrain»
                                 return «castFromTo(superAssociationWithSameName.targetInterfaceName, targetInterfaceName)»super.«methodNameGetter»();
                             «ELSE»
-                                return «fieldName» != null ? «fieldName».«getTarget» : null;
+                                    if («fieldName» != null && !«fieldName».«getCardinality».«isEmpty») {
+                                        return «fieldName».«getTarget»;
+                                    } 
+                                    return null;
                             «ENDIF»
                         }
             «ENDIF»
