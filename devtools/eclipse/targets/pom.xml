@@ -19,6 +19,7 @@
         <module>2023-06</module>
         <module>2023-09</module>
         <module>2023-12</module>
+        <module>2024-03</module>
     </modules>
 
     <build>
