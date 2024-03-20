@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.actions;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaProject;
@@ -37,7 +38,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * An action that adds the ips nature to a project.
- * 
+ *
  * @author Jan Ortmann, Daniel Hohenberger
  */
 public class AddIpsNatureAction extends ActionDelegate {
@@ -67,11 +68,14 @@ public class AddIpsNatureAction extends ActionDelegate {
 
             // only work with Java projects that are not IPS Projects at the same time
             try {
-                IJavaProject jPrj = (IJavaProject)prj.getNature(JavaCore.NATURE_ID);
-                if (!EclipseProjectUtil.hasIpsNature(prj) && jPrj != null) {
-                    javaProject = jPrj;
+                IProjectNature javaNature = prj.getNature(JavaCore.NATURE_ID);
+                if (javaNature != null) {
+                    IJavaProject jPrj = JavaCore.create(prj);
+                    if (!EclipseProjectUtil.hasIpsNature(prj) && jPrj != null) {
+                        javaProject = jPrj;
+                    }
+                    action.setEnabled(javaProject != null);
                 }
-                action.setEnabled(javaProject != null);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
