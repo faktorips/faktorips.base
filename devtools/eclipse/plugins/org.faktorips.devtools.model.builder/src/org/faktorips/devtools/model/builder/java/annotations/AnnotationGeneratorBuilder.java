@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.builder.java.annotations.policycmpt.PolicyCm
 import org.faktorips.devtools.model.builder.java.annotations.policycmpt.PolicyCmptDeclClassAnnGenFactory;
 import org.faktorips.devtools.model.builder.java.annotations.policycmpt.PolicyCmptSeparateValidatorClassAnnGenFactory;
 import org.faktorips.devtools.model.builder.java.annotations.policycmpt.persistence.PolicyCmptImplClassJpaAnnGenFactory;
+import org.faktorips.devtools.model.builder.java.annotations.productcmpt.FormulaAnnGenFactory;
 import org.faktorips.devtools.model.builder.java.annotations.productcmpt.ProductCmptAssociationAnnGenFactory;
 import org.faktorips.devtools.model.builder.java.annotations.productcmpt.ProductCmptDeclClassAnnGenFactory;
 import org.faktorips.devtools.model.builder.java.annotations.productcmpt.TableUsageAnnGenFactory;
@@ -69,6 +70,8 @@ public class AnnotationGeneratorBuilder {
                 new LabelAndDescriptionAnnGen.Factory(),
                 // table usage
                 new TableUsageAnnGenFactory(),
+                // formulas
+                new FormulaAnnGenFactory(),
                 // enums
                 new EnumAnnGenFactory(),
                 // separate validator class

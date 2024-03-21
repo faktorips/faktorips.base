@@ -212,6 +212,7 @@ public interface IRuntimeRepository {
 
     /**
      * Returns the description for the given enumeration type.
+     * 
      * @param <T> The enum type
      * @param enumClazz the enum type's class
      * 
@@ -323,13 +324,14 @@ public interface IRuntimeRepository {
      * available.
      * <p>
      * Note that this is an expensive operation as all tables have to be loaded into memory.
+     * 
      * @see #getAllTableIds()
      */
     List<ITable<?>> getAllTables();
 
     /**
-     * Returns the IDs of all tables available in this repository. Returns an empty list if no table is
-     * available.
+     * Returns the IDs of all tables available in this repository. Returns an empty list if no table
+     * is available.
      * 
      * @since 24.1
      * @see #getAllTables()

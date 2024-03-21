@@ -24,7 +24,7 @@ class MethodsTmpl {
         *
         * @generated
         */
-
+        «getAnnotations(FORMULA_COMPUTATION_METHOD)»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrides)»
         «getModifier(genInterface())» «javaClassName» «method(methodName, methodParameters)» throws «FormulaExecutionException»
         «IF !isGenerateMethodBody(genInterface())»;

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.model.builder.xmodel.XMethod;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptGenerationClass;
@@ -68,6 +69,18 @@ public class ProductCmptDeclClassAnnGenTest {
     }
 
     @Test
+    public void testCreateFormulaMethodsAnnotation() {
+        XProductCmptClass productWithFormulas = mockProductWithFormulas();
+
+        JavaCodeFragment annotationCode = generator.createAnnFormulas(productWithFormulas);
+
+        assertEquals("@IpsFormulas({\"formula1\", \"formula2\"})" + System.lineSeparator(),
+                annotationCode.getSourcecode());
+        assertThat(annotationCode.getImportDeclaration().getImports(),
+                hasItem("org.faktorips.runtime.model.annotation.IpsFormulas"));
+    }
+
+    @Test
     public void testCreateTableUsagesAnnotation() {
         XProductCmptClass productWithTableUsages = mockProductWithTableUsages();
 
@@ -102,6 +115,18 @@ public class ProductCmptDeclClassAnnGenTest {
         when(table2.getName()).thenReturn("table2");
 
         when(product.getAllDeclaredTables()).thenReturn(new LinkedHashSet<>(Arrays.asList(table1, table2)));
+        return product;
+    }
+
+    private XProductCmptClass mockProductWithFormulas() {
+        XProductCmptClass product = mockProduct();
+
+        XMethod formula1 = mock(XMethod.class);
+        when(formula1.getFormularName()).thenReturn("formula1");
+        XMethod formula2 = mock(XMethod.class);
+        when(formula2.getFormularName()).thenReturn("formula2");
+
+        when(product.getAllDeclaredMethods()).thenReturn(new LinkedHashSet<>(Arrays.asList(formula1, formula2)));
         return product;
     }
 }

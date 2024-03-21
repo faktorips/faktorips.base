@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.builder.xmodel.ModelService;
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XAttribute;
 import org.faktorips.devtools.model.builder.xmodel.XDerivedUnionAssociation;
+import org.faktorips.devtools.model.builder.xmodel.XMethod;
 import org.faktorips.devtools.model.builder.xmodel.XType;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
@@ -272,6 +273,10 @@ public abstract class XProductClass extends XType {
 
     public Set<XTableUsage> getAllDeclaredTables() {
         return initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
+    }
+
+    public Set<XMethod> getAllDeclaredMethods() {
+        return initNodesForParts(getType().getFormulaSignatures(), XMethod.class);
     }
 
     /**

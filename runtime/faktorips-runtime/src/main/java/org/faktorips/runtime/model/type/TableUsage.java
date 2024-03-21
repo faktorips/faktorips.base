@@ -77,7 +77,8 @@ public class TableUsage extends TypePart {
         String tableName = null;
         try {
             Method getterForName = getter.getDeclaringClass().getDeclaredMethod(getter.getName() + "Name");
-            tableName = (String)getterForName.invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
+            tableName = (String)getterForName
+                    .invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new IllegalArgumentException(

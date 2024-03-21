@@ -138,4 +138,12 @@ class FormulaHandler {
             }
         }
     }
+
+    String getFormula(String formulaSignature) {
+        return availableFormulas.get(formulaSignature);
+    }
+
+    void setFormula(String formulaSignature, String formulaText) {
+        availableFormulas.put(formulaSignature, formulaText);
+    }
 }

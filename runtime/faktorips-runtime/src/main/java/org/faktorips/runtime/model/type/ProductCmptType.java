@@ -27,6 +27,7 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.type.read.FormulaCollector;
 import org.faktorips.runtime.model.type.read.ProductAssociationCollector;
 import org.faktorips.runtime.model.type.read.ProductAttributeCollector;
 import org.faktorips.runtime.model.type.read.TableUsageCollector;
@@ -50,6 +51,8 @@ public class ProductCmptType extends Type {
 
     private final LinkedHashMap<String, TableUsage> tableUsages;
 
+    private final LinkedHashMap<String, Formula> formulas;
+
     public ProductCmptType(String name, AnnotatedDeclaration annotatedDeclaration) {
         super(name, annotatedDeclaration);
         generationDeclaration = isChangingOverTime()
@@ -59,17 +62,20 @@ public class ProductCmptType extends Type {
         ProductAttributeCollector attributeCollector = new ProductAttributeCollector();
         ProductAssociationCollector associationCollector = new ProductAssociationCollector();
         TableUsageCollector tableUsageCollector = new TableUsageCollector();
-        initParts(attributeCollector, associationCollector, tableUsageCollector);
+        FormulaCollector formulaCollector = new FormulaCollector();
+        initParts(attributeCollector, associationCollector, tableUsageCollector, formulaCollector);
         attributes = attributeCollector.createParts(this);
         associations = associationCollector.createParts(this);
         tableUsages = tableUsageCollector.createParts(this);
+        formulas = formulaCollector.createParts(this);
     }
 
     private void initParts(ProductAttributeCollector attributeCollector,
             ProductAssociationCollector associationCollector,
-            TableUsageCollector tableUsageCollector) {
+            TableUsageCollector tableUsageCollector,
+            FormulaCollector formulaCollector) {
         TypePartsReader typePartsReader = new TypePartsReader(attributeCollector, associationCollector,
-                tableUsageCollector);
+                tableUsageCollector, formulaCollector);
         typePartsReader.init(getAnnotatedDeclaration());
         typePartsReader.read(getAnnotatedDeclaration());
         if (isChangingOverTime()) {
@@ -195,6 +201,42 @@ public class ProductCmptType extends Type {
     }
 
     /**
+     * Returns a list of {@link Formula Formulas} which are declared in this type. In contrast to
+     * {@link #getFormulas()} this does not return formulas of super types.
+     *
+     * @return A list of {@link Formula Formulas} declared in this type
+     */
+    public List<Formula> getDeclaredFormulas() {
+        return new ArrayList<>(formulas.values());
+    }
+
+    /**
+     * Returns the {@link Formula} with the given {@code name} which is declared in this type. Any
+     * formula defined in the super types will not be returned.
+     *
+     * @param name The name of the {@link Formula}
+     * @return {@link Formula} declared in this type with the given name
+     *
+     * @throws IllegalArgumentException if this type does not have a declared formula with the given
+     *             name
+     */
+    public Formula getDeclaredFormula(String name) {
+        Formula formula = formulas.get(IpsStringUtils.toLowerFirstChar(name));
+        if (formula == null) {
+            throw new IllegalArgumentException("The type " + this + " hasn't got a declared formula " + name);
+        }
+        return formula;
+    }
+
+    /**
+     * Returns whether the {@link Formula} for the specified <code>name</code> is declared in this
+     * type.
+     */
+    public boolean hasDeclaredFormula(String name) {
+        return formulas.containsKey(IpsStringUtils.toLowerFirstChar(name));
+    }
+
+    /**
      * Returns a list of {@link TableUsage TableUsages} which are declared in this type or in any
      * super type.
      *
@@ -268,6 +310,31 @@ public class ProductCmptType extends Type {
         AttributeCollector<ProductAttribute> attrCollector = new AttributeCollector<>();
         attrCollector.visitHierarchy(this);
         return attrCollector.getResult();
+    }
+
+    /**
+     * Returns the {@link Formula} for the specified name. May look in super types if there is no
+     * formula in this type.
+     *
+     * @param name The name of the formula
+     * @return The {@link Formula} with the specified name
+     *
+     * @throws IllegalArgumentException if there is no table usage with the specified name
+     */
+    public Formula getFormula(String name) {
+        FormulaFinder finder = new FormulaFinder(name);
+        finder.visitHierarchy(this);
+        if (finder.formula == null) {
+            throw new IllegalArgumentException(
+                    "The type " + this + " (or one of it's super types) hasn't got a formula \"" + name + "\"");
+        }
+        return finder.formula;
+    }
+
+    public List<Formula> getFormulas() {
+        FormulasCollector fCollector = new FormulasCollector();
+        fCollector.visitHierarchy(this);
+        return fCollector.result;
     }
 
     @Override
@@ -366,5 +433,38 @@ public class ProductCmptType extends Type {
             }
             return !hasDeclaredTableUsage;
         }
+    }
+
+    static class FormulasCollector extends TypeHierarchyVisitor {
+
+        private final List<Formula> result = new ArrayList<>();
+
+        @Override
+        public boolean visitType(Type type) {
+            result.addAll(((ProductCmptType)type).getDeclaredFormulas());
+            return true;
+        }
+
+    }
+
+    static class FormulaFinder extends TypeHierarchyVisitor {
+
+        private String formulaName;
+        private Formula formula = null;
+
+        public FormulaFinder(String formulaName) {
+            super();
+            this.formulaName = formulaName;
+        }
+
+        @Override
+        public boolean visitType(Type type) {
+            boolean hasDeclaredFormula = ((ProductCmptType)type).hasDeclaredFormula(formulaName);
+            if (hasDeclaredFormula) {
+                formula = ((ProductCmptType)type).getDeclaredFormula(formulaName);
+            }
+            return !hasDeclaredFormula;
+        }
+
     }
 }

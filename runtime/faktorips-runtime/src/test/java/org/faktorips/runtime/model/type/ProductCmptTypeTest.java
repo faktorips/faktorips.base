@@ -15,6 +15,9 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.List;
+
+import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractModelObject;
@@ -31,6 +34,8 @@ import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
+import org.faktorips.runtime.model.annotation.IpsFormula;
+import org.faktorips.runtime.model.annotation.IpsFormulas;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
@@ -78,6 +83,39 @@ public class ProductCmptTypeTest {
     public void testIsChangingOverTime() throws Exception {
         assertThat(productCmptType.isChangingOverTime(), is(true));
         assertThat(superProductModel.isChangingOverTime(), is(false));
+    }
+
+    @Test
+    public void testGetFormulas() {
+        List<Formula> formulas = productCmptType.getFormulas();
+        assertThat(formulas.size(), is(4));
+        assertThat(formulas.get(0).getName(), is("formula1"));
+        assertThat(formulas.get(1).getName(), is("formula2"));
+        assertThat(formulas.get(2).getName(), is("formulaGen"));
+        assertThat(formulas.get(3).getName(), is("supFormula"));
+    }
+
+    @Test
+    public void testGetFormula() {
+        assertThat(productCmptType.getFormula("formula1").getName(), is("formula1"));
+        assertThat(productCmptType.getFormula("formula2").getName(), is("formula2"));
+        assertThat(productCmptType.getFormula("formulaGen").getName(), is("formulaGen"));
+        assertThat(productCmptType.getFormula("supFormula").getName(), is("supFormula"));
+    }
+
+    @Test
+    public void testGetDeclaredFormulas() {
+        assertThat(productCmptType.getDeclaredFormulas().size(), is(3));
+        assertThat(productCmptType.getDeclaredFormulas().get(0).getName(), is("formula1"));
+        assertThat(productCmptType.getDeclaredFormulas().get(1).getName(), is("formula2"));
+        assertThat(productCmptType.getDeclaredFormulas().get(2).getName(), is("formulaGen"));
+    }
+
+    @Test
+    public void testGetDeclaredFormula() {
+        assertThat(productCmptType.getDeclaredFormula("formula1").getName(), is("formula1"));
+        assertThat(productCmptType.getDeclaredFormula("formula2").getName(), is("formula2"));
+        assertThat(productCmptType.getDeclaredFormula("formulaGen").getName(), is("formulaGen"));
     }
 
     @Test
@@ -231,6 +269,7 @@ public class ProductCmptTypeTest {
     @IpsConfigures(Policy.class)
     @IpsChangingOverTime(ProductGen.class)
     @IpsAttributes({ "attr", "overwrittenAttr", "BigAttr", "attr_changing", "abstractSuper" })
+    @IpsFormulas({ "formula1", "formula2", "formulaGen" })
     @IpsAssociations({ "asso", "asso_changing" })
     private abstract static class Product extends SuperProduct {
 
@@ -258,6 +297,15 @@ public class ProductCmptTypeTest {
         @IpsAssociation(name = "asso", min = 1, max = 2, targetClass = Product.class, kind = AssociationKind.Association)
         public abstract Product getAsso();
 
+        @IpsFormula(name = "formula1")
+        public Integer computeFormula1(String param) throws FormulaExecutionException {
+            return (Integer)getFormulaEvaluator().evaluate("computeFormula1", param);
+        }
+
+        @IpsFormula(name = "formula2")
+        public String computeFormula2() throws FormulaExecutionException {
+            return (String)getFormulaEvaluator().evaluate("computeFormula2");
+        }
     }
 
     private abstract static class ProductGen extends ProductComponentGeneration {
@@ -275,11 +323,16 @@ public class ProductCmptTypeTest {
         @IpsAssociation(name = "asso_changing", min = 1, max = 2, targetClass = Product.class, kind = AssociationKind.Association)
         public abstract ProductGen getAsso_changing();
 
+        @IpsFormula(name = "formulaGen")
+        public String computeFormulaGen() {
+            return (String)getFormulaEvaluator().evaluate("computeFormulaGen");
+        }
     }
 
     @IpsProductCmptType(name = "MySuperProduct")
     @IpsAttributes({ "supAttr", "overwrittenAttr", "abstractSuper" })
     @IpsAssociations({ "SupAsso" })
+    @IpsFormulas({ "supFormula" })
     private abstract static class SuperProduct extends ProductComponent {
 
         @IpsAttribute(name = "supAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
@@ -295,6 +348,11 @@ public class ProductCmptTypeTest {
 
         @IpsAssociation(name = "SupAsso", pluralName = "SupAssos", max = 5, min = 1, targetClass = SuperProduct.class, kind = AssociationKind.Association)
         public abstract SuperProduct getSupAsso();
+
+        @IpsFormula(name = "supFormula")
+        public Integer computeSupFormula(String param) throws FormulaExecutionException {
+            return (Integer)getFormulaEvaluator().evaluate("computeSupFormula", param);
+        }
 
         public SuperProduct(IRuntimeRepository repository, String id, String PolicyKindId, String versionId) {
             super(repository, id, PolicyKindId, versionId);

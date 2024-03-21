@@ -39,9 +39,8 @@ import org.w3c.dom.NodeList;
 public abstract class ProductComponentGeneration extends RuntimeObject
         implements IProductComponentGeneration, IXmlPersistenceSupport {
 
-
     private static final String XML_TAG_GENERATION = "Generation";
-    
+
     private static final String VALID_FROM = "validFrom";
 
     // the product component this generation belongs to.

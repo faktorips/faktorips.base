@@ -136,6 +136,8 @@ public enum AnnotatedJavaElementType {
 
     TABLE_USAGE_GETTER,
 
+    FORMULA_COMPUTATION_METHOD,
+
     ENUM_CLASS,
 
     ENUM_ATTRIBUTE_GETTER,

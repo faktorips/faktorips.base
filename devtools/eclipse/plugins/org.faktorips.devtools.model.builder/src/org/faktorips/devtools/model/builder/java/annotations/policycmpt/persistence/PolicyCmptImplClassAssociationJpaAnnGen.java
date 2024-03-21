@@ -332,7 +332,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
 
     @Override
     public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
-        if (!(ipsElement instanceof IPolicyCmptTypeAssociation pcTypeAssociation) || !pcTypeAssociation.getPolicyCmptType().isPersistentEnabled()
+        if (!(ipsElement instanceof IPolicyCmptTypeAssociation pcTypeAssociation)
+                || !pcTypeAssociation.getPolicyCmptType().isPersistentEnabled()
                 || pcTypeAssociation.getPersistenceAssociatonInfo().isTransient()) {
             return false;
         }

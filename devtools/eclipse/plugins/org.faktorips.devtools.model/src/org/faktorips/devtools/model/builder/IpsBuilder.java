@@ -158,7 +158,7 @@ public class IpsBuilder {
                 return builder.getProject().getReferencedProjects();
             }
 
-            printBuildExceptionMessages(buildStatus);
+            Abstractions.getLog().log(buildStatus);
 
             // Re-initialize the builders of the current builder set if an error occurs.
             getIpsProject().reinitializeIpsArtefactBuilderSet();
@@ -179,19 +179,6 @@ public class IpsBuilder {
         }
         // CSON: IllegalCatch
         return builder.getProject().getReferencedProjects();
-    }
-
-    private void printBuildExceptionMessages(MultiStatus buildStatus) {
-        IStatus[] builds = buildStatus.getChildren();
-        for (IStatus build : builds) {
-            IStatus[] buildResults = build.getChildren();
-            for (IStatus buildResult : buildResults) {
-                Throwable exception = buildResult.getException();
-                if (exception != null) {
-                    System.out.println("ERROR: " + exception.getMessage()); //$NON-NLS-1$
-                }
-            }
-        }
     }
 
     private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) {
