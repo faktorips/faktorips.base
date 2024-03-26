@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugins</artifactId>
-        <version>23.6.9-SNAPSHOT</version>
+        <version>23.6.9.release</version>
     </parent>
     <artifactId>org.faktorips.devtools.core.refactor</artifactId>
     <packaging>eclipse-plugin</packaging>
