@@ -12,9 +12,11 @@ package org.faktorips.runtime.internal;
 
 import static java.util.Comparator.comparing;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_STRUCTURE_USAGE;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,6 +68,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private static final Comparator<Element> BY_ATTRIBUTE_NAME = comparing(
             e -> e.getAttribute(XML_ATTRIBUTE_ATTRIBUTE));
+    private static final Comparator<Element> BY_TABLE_STRUCTURE_USAGE_NAME = comparing(
+            e -> e.getAttribute(XML_ATTRIBUTE_STRUCTURE_USAGE));
     private static final Comparator<Element> VALUE_SET_BEFORE_DEFAULT = comparing(Element::getNodeName).reversed();
 
     /**
@@ -449,18 +453,19 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             }
         }
         ((IToXmlSupport)this).writePropertiesToXml(prodCmptElement);
-        writeTableUsagesToXml(prodCmptElement);
         writeFormulaToXml(prodCmptElement);
+        writeTableUsagesToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
         writeValidationRuleConfigsToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
 
-        return sortAttributeNodesInAlphabeticalOrder(prodCmptElement);
+        return sortNodesInAlphabeticalOrder(prodCmptElement);
     }
 
-    private Element sortAttributeNodesInAlphabeticalOrder(Element prodCmptElement) {
+    private Element sortNodesInAlphabeticalOrder(Element prodCmptElement) {
         sortAttributeValues(prodCmptElement);
         sortConfiguredValues(prodCmptElement);
+        sortTableUsageValues(prodCmptElement);
 
         NodeList childNodes = prodCmptElement.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -473,6 +478,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return prodCmptElement;
     }
 
+    private static void sortTableUsageValues(Element root) {
+        sortElements(root, BY_TABLE_STRUCTURE_USAGE_NAME, XML_TAG_TABLE_CONTENT_USAGE);
+    }
+    
     private static void sortAttributeValues(Element root) {
         sortElements(root, BY_ATTRIBUTE_NAME, XML_TAG_ATTRIBUTE_VALUE);
     }
