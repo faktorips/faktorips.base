@@ -23,9 +23,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.xml.IToXmlSupport;
-import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
-import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -52,10 +50,6 @@ public abstract class Table<R> implements ITable<R> {
 
     private static final String XML_ELEMENT_TABLE_CONTENTS = "TableContents";
 
-    private static final String ATTRIBUTE_LOCALE = "locale";
-
-    private static final String XML_ELEMENT_DESCRIPTION = "Description";
-
     /**
      * Contains all rows of this table.
      */
@@ -76,7 +70,7 @@ public abstract class Table<R> implements ITable<R> {
 
     /**
      * Default constructor for tables initialized from XML.
-     * 
+     *
      * @since 23.6
      */
     public Table() {
@@ -84,11 +78,11 @@ public abstract class Table<R> implements ITable<R> {
 
     /**
      * Constructor for tables created from code.
-     * 
+     *
      * @since 23.6
      */
     public Table(String qualifiedTableName) {
-        this.name = qualifiedTableName;
+        name = qualifiedTableName;
     }
 
     /**
@@ -174,22 +168,11 @@ public abstract class Table<R> implements ITable<R> {
         return Collections.unmodifiableList(rows);
     }
 
-    private void writeDescriptionToXml(Element tableElement) {
-        if (description != null) {
-            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
-                Element descriptionElement = tableElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
-                descriptionElement.setAttribute(ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
-                descriptionElement.setTextContent(localizedString.getValue());
-                tableElement.appendChild(descriptionElement);
-            }
-        }
-    }
-
     @Override
     public Element toXml(Document document) {
         IToXmlSupport.check(this);
         Element tableElement = document.createElement(XML_ELEMENT_TABLE_CONTENTS);
-        writeDescriptionToXml(tableElement);
+        DescriptionXmlHelper.write(description, tableElement);
         ((IToXmlSupport)this).writePropertiesToXml(tableElement);
         return tableElement;
     }

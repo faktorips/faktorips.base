@@ -1,38 +1,42 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
 
+import static org.faktorips.runtime.formula.AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG;
+import static org.faktorips.runtime.internal.ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE;
+import static org.faktorips.runtime.internal.ProductComponentXmlUtil.XML_TAG_FORMULA;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
+import org.faktorips.values.InternationalString;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
- * 
+ *
  */
 class FormulaHandler {
 
     private Object callerObject;
-
     private final IRuntimeRepository repository;
-
     private IFormulaEvaluator formulaEvaluator;
-
     private Map<String, String> availableFormulas = new LinkedHashMap<>();
+    private Map<String, InternationalString> formulaDescriptions = new LinkedHashMap<>();
 
     public FormulaHandler(Object callerObject, IRuntimeRepository repository) {
         this.callerObject = callerObject;
@@ -53,7 +57,7 @@ class FormulaHandler {
      * <p>
      * IPSPV-199 : changed that <code>availableFormulas</code> is not overridden, because if the
      * method <code>initFromXML</code> is called twice, the product variant would have no formulas.
-     * 
+     *
      * <p>
      * SW 29.02.2012: TODO ProductVariants call initFromXML() twice. As of yet no formulas can be
      * varied and thus the formula-evaluator should not be overridden if it already exists. This is
@@ -63,6 +67,7 @@ class FormulaHandler {
      */
     public void doInitFormulaFromXml(Element element) {
         availableFormulas.putAll(ProductComponentXmlUtil.getAvailableFormulars(element));
+        initDescriptions(element);
 
         if (getFormulaEvaluator() != null) {
             return;
@@ -79,20 +84,29 @@ class FormulaHandler {
         }
     }
 
+    private void initDescriptions(Element element) {
+        NodeList formulaNodes = element.getElementsByTagName(XML_TAG_FORMULA);
+        for (int i = 0; i < formulaNodes.getLength(); i++) {
+            Element formulaElement = (Element)formulaNodes.item(i);
+            InternationalString description = DescriptionXmlHelper.read(formulaElement);
+            setDescription(formulaElement.getAttribute(XML_ATTRIBUTE_FORMULA_SIGNATURE), description);
+        }
+    }
+
     /**
      * Returns a set containing the formulaSignatures and the compiled expressions of all available
      * formulas found in the indicated xml element.
-     * 
+     *
      * @param element An xml element containing the data.
      * @throws NullPointerException if element is <code>null</code>.
      */
     protected Map<String, String> getCompiledExpressionsFromFormulas(Element element) {
         Map<String, String> expressions = new LinkedHashMap<>();
-        NodeList formulas = element.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA);
+        NodeList formulas = element.getElementsByTagName(XML_TAG_FORMULA);
         for (int i = 0; i < formulas.getLength(); i++) {
             Element aFormula = (Element)formulas.item(i);
-            String name = aFormula.getAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE);
-            NodeList nodeList = aFormula.getElementsByTagName(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+            String name = aFormula.getAttribute(XML_ATTRIBUTE_FORMULA_SIGNATURE);
+            NodeList nodeList = aFormula.getElementsByTagName(COMPILED_EXPRESSION_XML_TAG);
             if (nodeList.getLength() == 1) {
                 Element expression = (Element)nodeList.item(0);
                 String formulaExpression = expression.getTextContent();
@@ -112,7 +126,7 @@ class FormulaHandler {
     /**
      * Adds the formulas with formulaSignature, expression and compiled expression to the given
      * Element.
-     * 
+     *
      * @param element the element to add the formulas
      */
     public void writeFormulaToXml(Element element) {
@@ -124,15 +138,16 @@ class FormulaHandler {
             final Map<String, String> availableFormulars) {
         if (availableFormulars != null) {
             for (Entry<String, String> expressionEntry : availableFormulars.entrySet()) {
-                Element formula = element.getOwnerDocument().createElement(ProductComponentXmlUtil.XML_TAG_FORMULA);
-                formula.setAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE, expressionEntry.getKey());
+                Element formula = element.getOwnerDocument().createElement(XML_TAG_FORMULA);
+                formula.setAttribute(XML_ATTRIBUTE_FORMULA_SIGNATURE, expressionEntry.getKey());
                 ValueToXmlHelper.addValueToElement(expressionEntry.getValue(), formula,
                         ProductComponentXmlUtil.XML_TAG_EXPRESSION);
+                DescriptionXmlHelper.write(getDescription(expressionEntry.getKey()), formula);
                 if (formulaEvaluator != null) {
                     String compiledExpression = formulaEvaluator.getNameToExpressionMap().get(expressionEntry.getKey());
 
                     ValueToXmlHelper.addCDataValueToElement(compiledExpression, formula,
-                            AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+                            COMPILED_EXPRESSION_XML_TAG);
                 }
                 element.appendChild(formula);
             }
@@ -145,5 +160,14 @@ class FormulaHandler {
 
     void setFormula(String formulaSignature, String formulaText) {
         availableFormulas.put(formulaSignature, formulaText);
+    }
+
+    @CheckForNull
+    InternationalString getDescription(String formulaSignature) {
+        return formulaDescriptions.get(formulaSignature);
+    }
+
+    void setDescription(String formulaSignature, @CheckForNull InternationalString description) {
+        formulaDescriptions.put(formulaSignature, description);
     }
 }

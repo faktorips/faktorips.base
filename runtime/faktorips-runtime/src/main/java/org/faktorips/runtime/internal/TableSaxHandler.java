@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * SAX event handler class for ips table contents.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TableSaxHandler extends DefaultHandler {
@@ -35,9 +35,6 @@ public class TableSaxHandler extends DefaultHandler {
     private static final String ROW = "Row";
     private static final String ROWS = "Rows";
     private static final String PROPERTY_FORMAT = "format";
-    private static final String DESCRIPTION = "Description";
-    private static final String PROPERTY_LOCALE = "locale";
-
     private final List<LocalizedString> descriptions = new ArrayList<>();
 
     // the table which will be filled
@@ -87,7 +84,7 @@ public class TableSaxHandler extends DefaultHandler {
             insideValueNode = false;
             columns.add(getText());
             textBuilder = null;
-        } else if (DESCRIPTION.equals(qName)) {
+        } else if (DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
             handleDescription();
         }
@@ -118,9 +115,9 @@ public class TableSaxHandler extends DefaultHandler {
         } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
             nullValue = Boolean.parseBoolean(attributes.getValue("isNull"));
-        } else if (DESCRIPTION.equals(qName)) {
+        } else if (DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
-            currentDescriptionLocale = attributes.getValue(PROPERTY_LOCALE);
+            currentDescriptionLocale = attributes.getValue(DescriptionXmlHelper.XML_ATTRIBUTE_LOCALE);
         }
     }
 

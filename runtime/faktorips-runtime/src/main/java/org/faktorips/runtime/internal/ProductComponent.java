@@ -37,9 +37,7 @@ import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.xml.IToXmlSupport;
-import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
-import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,10 +56,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
 
-    private static final String XML_ELEMENT_DESCRIPTION = "Description";
     private static final String XML_ELEMENT_GENERATION = "Generation";
 
-    private static final String XML_ATTRIBUTE_LOCALE = "locale";
     private static final String XML_ATTRIBUTE_VALID_FROM = "validFrom";
     private static final String XML_ATTRIBUTE_IS_NULL = "isNull";
     private static final String XML_ATTRIBUTE_VALID_TO = "validTo";
@@ -311,7 +307,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         doInitValidationRuleConfigsFromXml(cmptElement);
         initExtensionPropertiesFromXml(cmptElement);
-        initDescriptions(cmptElement);
+        description = DescriptionXmlHelper.read(cmptElement);
 
         variedBase = cmptElement.getAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
         if (IpsStringUtils.EMPTY.equals(variedBase)) {
@@ -383,20 +379,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         validationRules.doInitValidationRuleConfigsFromXml(element);
     }
 
-    private void initDescriptions(Element cmptElement) {
-        List<Element> descriptionElements = XmlUtil.getElements(cmptElement, XML_ELEMENT_DESCRIPTION);
-        List<LocalizedString> descriptions = new ArrayList<>(descriptionElements.size());
-        for (Element descriptionElement : descriptionElements) {
-            String localeCode = descriptionElement.getAttribute(XML_ATTRIBUTE_LOCALE);
-            Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
-            String text = descriptionElement.getTextContent();
-            descriptions.add(new LocalizedString(locale, text));
-        }
-        // FIXME: FIPS-5152 use the correct default locale from the repository
-        description = new DefaultInternationalString(descriptions,
-                descriptions.isEmpty() ? null : descriptions.get(0).getLocale());
-    }
-
     @Override
     public String toString() {
         return id;
@@ -435,7 +417,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
-        writeDescriptionToXml(prodCmptElement);
+        DescriptionXmlHelper.write(description, prodCmptElement);
 
         if (getRepository().getNumberOfProductComponentGenerations(this) == 0) {
             Element emptyGenerationElement = prodCmptElement.getOwnerDocument().createElement(XML_ELEMENT_GENERATION);
@@ -481,7 +463,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     private static void sortTableUsageValues(Element root) {
         sortElements(root, BY_TABLE_STRUCTURE_USAGE_NAME, XML_TAG_TABLE_CONTENT_USAGE);
     }
-    
+
     private static void sortAttributeValues(Element root) {
         sortElements(root, BY_ATTRIBUTE_NAME, XML_TAG_ATTRIBUTE_VALUE);
     }
@@ -542,18 +524,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
         ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
-    }
-
-    private void writeDescriptionToXml(Element prodCmptElement) {
-        if (description != null) {
-            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
-                Element descriptionElement = prodCmptElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
-                descriptionElement.setAttribute(XML_ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
-                descriptionElement.setTextContent(localizedString.getValue());
-                prodCmptElement.appendChild(descriptionElement);
-            }
-        }
-
     }
 
     @Override

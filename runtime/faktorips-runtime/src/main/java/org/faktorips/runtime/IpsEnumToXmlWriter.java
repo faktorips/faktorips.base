@@ -15,12 +15,11 @@ import java.util.List;
 import java.util.Objects;
 
 import org.faktorips.runtime.internal.AbstractCachingRuntimeRepository;
+import org.faktorips.runtime.internal.DescriptionXmlHelper;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.runtime.xml.IToXmlSupport;
-import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
-import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,10 +34,8 @@ public class IpsEnumToXmlWriter {
     private static final String XML_ELEMENT_ENUMVALUE = "EnumValue";
     private static final String XML_ELEMENT_ENUMCONTENT = "EnumContent";
     private static final String XML_ELEMENT_ENUMATTRIBUTEREFERENCE = "EnumAttributeReference";
-    private static final String XML_ELEMENT_DESCRIPTION = "Description";
     private static final String XML_ATTRIBUTE_ENUM_TYPE = "enumType";
     private static final String XML_ATTRIBUTE_NAME = "name";
-    private static final String XML_ATTRIBUTE_LOCALE = "locale";
 
     private final IRuntimeRepository repository;
     private final Class<?> enumClass;
@@ -138,17 +135,7 @@ public class IpsEnumToXmlWriter {
         if (repository instanceof AbstractCachingRuntimeRepository) {
             AbstractCachingRuntimeRepository runtimeRepository = (AbstractCachingRuntimeRepository)repository;
             InternationalString enumDescription = runtimeRepository.getEnumDescription(enumClass);
-            if (enumDescription != null) {
-                for (LocalizedString localizedString : ((DefaultInternationalString)enumDescription)
-                        .getLocalizedStrings()) {
-                    Element descriptionElement = element.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
-                    descriptionElement.setAttribute(XML_ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
-                    if (!skipTextContent) {
-                        descriptionElement.setTextContent(localizedString.getValue());
-                    }
-                    element.appendChild(descriptionElement);
-                }
-            }
+            DescriptionXmlHelper.write(enumDescription, element, skipTextContent);
         }
     }
 }

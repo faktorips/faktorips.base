@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,14 +24,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * SAX event handler for ips enumeration contents.
- * 
+ *
  * @author Peter Kuntz
  */
 public class EnumSaxHandler extends DefaultHandler {
-
-    private static final String XML_TAG_DESCRIPTION = "Description";
-
-    private static final String XML_ATTRIBUTE_LOCALE = "locale";
 
     private static final String XML_ATTR_IS_NULL = "isNull";
 
@@ -74,8 +70,8 @@ public class EnumSaxHandler extends DefaultHandler {
             Locale locale = new Locale(attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_LOCALE));
             String text = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_TEXT);
             localizedStrings.add(new LocalizedString(locale, text));
-        } else if (XML_TAG_DESCRIPTION.equals(qName)) {
-            String language = attributes.getValue(XML_ATTRIBUTE_LOCALE);
+        } else if (DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION.equals(qName)) {
+            String language = attributes.getValue(DescriptionXmlHelper.XML_ATTRIBUTE_LOCALE);
             if (language != null) {
                 descriptionLocale = new Locale(language);
             }
@@ -106,7 +102,7 @@ public class EnumSaxHandler extends DefaultHandler {
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
             internationalString = new DefaultInternationalString(localizedStrings, ObjectUtil.defaultIfNull(
                     defaultLocale, Locale.getDefault()));
-        } else if (XML_TAG_DESCRIPTION.equals(qName)) {
+        } else if (DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION.equals(qName)) {
             if (enumValue == null) {
                 descriptions.add(new LocalizedString(descriptionLocale, stringBuilder.toString()));
             }

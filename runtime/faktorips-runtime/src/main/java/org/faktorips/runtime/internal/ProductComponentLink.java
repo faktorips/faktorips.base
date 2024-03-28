@@ -10,8 +10,6 @@
 
 package org.faktorips.runtime.internal;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.faktorips.runtime.CardinalityRange;
@@ -19,9 +17,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IProductComponentLinkSource;
-import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
-import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -35,9 +31,6 @@ import org.w3c.dom.Element;
  */
 public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject
         implements IProductComponentLink<T>, IXmlPersistenceSupport {
-
-    private static final String XML_ELEMENT_DESCRIPTION = "Description";
-    private static final String XML_ATTRIBUTE_LOCALE = "locale";
 
     private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
@@ -174,7 +167,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
             cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
         }
         initExtensionPropertiesFromXml(element);
-        initDescriptions(element);
+        description = DescriptionXmlHelper.read(element);
     }
 
     @Override
@@ -189,7 +182,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         linkElement.setAttribute("target", targetName);
         linkElement.setAttribute("targetRuntimeId", getTargetId());
         writeExtensionPropertiesToXml(linkElement);
-        writeDescriptionToXml(linkElement);
+        DescriptionXmlHelper.write(description, linkElement);
         return linkElement;
     }
 
@@ -239,30 +232,6 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
             return IpsStringUtils.EMPTY;
         } else {
             return string;
-        }
-    }
-
-    private void initDescriptions(Element cmptElement) {
-        List<Element> descriptionElements = XmlUtil.getElements(cmptElement, XML_ELEMENT_DESCRIPTION);
-        List<LocalizedString> descriptions = new ArrayList<>(descriptionElements.size());
-        for (Element descriptionElement : descriptionElements) {
-            String localeCode = descriptionElement.getAttribute(XML_ATTRIBUTE_LOCALE);
-            Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
-            String text = descriptionElement.getTextContent();
-            descriptions.add(new LocalizedString(locale, text));
-        }
-        description = new DefaultInternationalString(descriptions,
-                descriptions.isEmpty() ? null : descriptions.get(0).getLocale());
-    }
-
-    private void writeDescriptionToXml(Element linkElement) {
-        if (description != null) {
-            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
-                Element descriptionElement = linkElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
-                descriptionElement.setAttribute(XML_ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
-                descriptionElement.setTextContent(localizedString.getValue());
-                linkElement.appendChild(descriptionElement);
-            }
         }
     }
 }

@@ -1,5 +1,8 @@
 <DocElement>
 	<Formula formulaSignature="testFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b2">
+        <Description locale="en">English description.</Description>
+        <Description locale="fr">Je ne parle pas français.</Description>
+        <Description locale="de">Deutsche Beschreibung.</Description>
 		<Expression isNull="false">WENN(parameter_1 = 0; 0 ; 1)</Expression>
 		<compiledExpression>
 		<![CDATA[

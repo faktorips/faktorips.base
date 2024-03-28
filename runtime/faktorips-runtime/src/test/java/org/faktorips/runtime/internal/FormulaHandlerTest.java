@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,18 +20,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
+import org.faktorips.values.InternationalString;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class FormulaHandlerTest extends XmlAbstractTestCase {
@@ -135,5 +139,60 @@ public class FormulaHandlerTest extends XmlAbstractTestCase {
 
         formulaHandler.addFormulasToElement(element, formulaEvaluator, availableFormulars);
         assertEquals(6, element.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA).getLength());
+    }
+
+    @Test
+    public void testDescription_existingLanguage() {
+        Element element = getTestDocument().getDocumentElement();
+        formulaHandler.doInitFormulaFromXml(element);
+        InternationalString description = formulaHandler.getDescription("testFormula");
+
+        assertEquals("English description.", description.get(Locale.ENGLISH));
+        assertEquals("Deutsche Beschreibung.", description.get(Locale.GERMAN));
+        assertEquals("Je ne parle pas français.", description.get(Locale.FRENCH));
+    }
+
+    @Test
+    public void testDescription_existingLanguage_fallback() {
+        Element element = getTestDocument().getDocumentElement();
+        formulaHandler.doInitFormulaFromXml(element);
+        InternationalString description = formulaHandler.getDescription("testFormula");
+
+        assertEquals("English description.", description.get(Locale.US));
+        assertEquals("English description.", description.get(Locale.UK));
+        assertEquals("English description.", description.get(Locale.CANADA));
+        assertEquals("Deutsche Beschreibung.", description.get(Locale.GERMANY));
+        assertEquals("Je ne parle pas français.", description.get(Locale.FRANCE));
+        assertEquals("Je ne parle pas français.", description.get(Locale.CANADA_FRENCH));
+    }
+
+    @Test
+    public void testDescription_nonExistingLanguage() {
+        Element element = getTestDocument().getDocumentElement();
+        formulaHandler.doInitFormulaFromXml(element);
+        InternationalString description = formulaHandler.getDescription("testFormula");
+
+        // English is currently considered the default language as it is defined as the first
+        // language in the XML
+        assertEquals("English description.", description.get(Locale.CHINESE));
+    }
+
+    @Test
+    public void testWriteDescriptionToXml() {
+        Element element = getTestDocument().getDocumentElement();
+        formulaHandler.doInitFormulaFromXml(element);
+        Document newDocument = newDocument();
+        Element newElement = newDocument.createElement("f");
+        newDocument.appendChild(newElement);
+        formulaHandler.writeFormulaToXml(newElement);
+
+        NodeList desriptionNodes = newElement.getElementsByTagName("Description");
+        assertEquals(3, desriptionNodes.getLength());
+        assertEquals("en", ((Element)desriptionNodes.item(0)).getAttribute("locale"));
+        assertEquals("English description.", ((Element)desriptionNodes.item(0)).getTextContent());
+        assertEquals("fr", ((Element)desriptionNodes.item(1)).getAttribute("locale"));
+        assertEquals("Je ne parle pas français.", ((Element)desriptionNodes.item(1)).getTextContent());
+        assertEquals("de", ((Element)desriptionNodes.item(2)).getAttribute("locale"));
+        assertEquals("Deutsche Beschreibung.", ((Element)desriptionNodes.item(2)).getTextContent());
     }
 }
