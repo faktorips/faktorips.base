@@ -44,8 +44,8 @@ public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
         // need this complex way because the builderSet you could get from IpsProject is not
         // initialized when this method is called
         IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
-        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(
-                properties.getBuilderSetId());
+        String builderSetId = ipsProject.getIpsModel().getBuilderSetId(properties);
+        IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(builderSetId);
         IIpsArtefactBuilderSetConfig builderSetConfig = properties.getBuilderSetConfig().create(ipsProject,
                 builderSetInfo);
         return JaxbSupportVariant.of(builderSetConfig.getPropertyValueAsString(

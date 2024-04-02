@@ -92,6 +92,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
 import org.faktorips.devtools.model.plugin.extensions.CachingSupplier;
@@ -774,7 +775,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
 
         IIpsProjectProperties data = getIpsProjectProperties(project);
-        if (!builderSet.getId().equals(data.getBuilderSetId())) {
+        if (!builderSet.getId().equals(getBuilderSetId(data))) {
             return registerBuilderSet(project);
         }
 
@@ -784,9 +785,14 @@ public class IpsModel extends IpsElement implements IIpsModel {
         return builderSet;
     }
 
+    @Override
+    public String getBuilderSetId(IIpsProjectProperties data) {
+        return data.getBuilderSetId();
+    }
+
     private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IIpsProjectProperties data = getIpsProjectProperties(project);
-        IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), project);
+        IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(getBuilderSetId(data), project);
         if (builderSet == null || !initBuilderSet(builderSet, project, data)) {
             if (getFallbackBuilderSetProvider() != null) {
                 return getFallbackBuilderSetProvider().apply(project);
@@ -1278,7 +1284,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     private List<IIpsArtefactBuilderSetInfo> createIpsArtefactBuilderSetInfosIfNecessary() {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionRegistry registry = ((IpsModelExtensionsViaExtensionPoints)IIpsModelExtensions.get()).getExtensionRegistry();
         List<IIpsArtefactBuilderSetInfo> tmpList = new ArrayList<>();
         IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsLog.get(), tmpList,
                 this);

@@ -34,6 +34,9 @@ public class JavaBuilderFormulaCompiler implements IFormulaCompiler {
     public void compileFormulas(IPropertyValueContainer propertyValueContainer, Document document, Element node) {
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = propertyValueContainer.getIpsProject()
                 .getIpsArtefactBuilderSet();
+        if (!(ipsArtefactBuilderSet instanceof IJavaBuilderSet)) {
+            return;
+        }
         ExpressionXMLBuilderHelper expressionXMLBuilderHelper = new ExpressionXMLBuilderHelper(
                 (IJavaBuilderSet)ipsArtefactBuilderSet);
         MultiStatus buildStatus = new MultiStatus(IpsModelActivator.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults,

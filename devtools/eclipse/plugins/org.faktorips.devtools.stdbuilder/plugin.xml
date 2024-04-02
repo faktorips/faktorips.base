@@ -273,12 +273,6 @@
       </artefactBuilderFactory>
    </extension>
    <extension
-         point="org.faktorips.devtools.model.formulaCompiler">
-      <formulaCompiler
-            class="org.faktorips.devtools.model.builder.fl.JavaBuilderFormulaCompiler">
-      </formulaCompiler>
-   </extension>
-   <extension
          point="org.faktorips.devtools.model.implementationClassProvider">
       <implementationClassProvider
             class="org.faktorips.devtools.stdbuilder.StdBuilderImplementationClassProvider">

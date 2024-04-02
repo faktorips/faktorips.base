@@ -12,6 +12,7 @@
     <properties>
         <revapi.skip>true</revapi.skip>
         <surefire.skip>false</surefire.skip>
+        <maven.site.skip>true</maven.site.skip>
     </properties>
 
     <artifactId>faktorips-model-test</artifactId>
@@ -63,12 +64,28 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model.builder</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.faktorips</groupId>
+                    <artifactId>org.faktorips.devtools.abstraction.eclipse</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.abstracttest</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.faktorips</groupId>
                     <artifactId>org.faktorips.devtools.model</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.faktorips</groupId>
+                    <artifactId>org.faktorips.devtools.model.builder</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.faktorips</groupId>

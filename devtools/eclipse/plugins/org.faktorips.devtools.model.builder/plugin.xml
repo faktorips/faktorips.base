@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         id="modelbuilderset"
+         name="%modelbuilderset"
+         point="org.faktorips.devtools.model.artefactbuilderset">
+      <builderSet class="org.faktorips.devtools.model.builder.java.ModelBuilderSet">
+         <builderSetPropertyDef
+            defaultValue="de"
+            description="%generatorLocaleDescription"
+            label="%generatorLocaleLabel"
+            name="generatorLocale"
+            type="enum">
+            <discreteValues>
+               <value value="de" />
+               <value value="en" />
+            </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="Both"
+            description="%formulaCompilingDescription"
+            disableValue="Both"
+            label="%formulaCompilingLabel"
+            name="formulaCompiling"
+            type="enum">
+            <discreteValues>
+            	<!-- @see org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling -->
+               <value value="Subclass" />
+               <value value="XML" />
+               <value value="Both" />
+            </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="true"
+               description="%camelCaseSeparatedDescription"
+               disableValue="false"
+               label="%camelCaseSeparatedLabel"
+               name="camelCaseSeparated"
+               type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="false"
+            description="%generatePublishedInterfacesDescription"
+            disableValue="true"
+            label="%generatePublishedInterfacesLabel"
+            name="generatePublishedInterfaces"
+            type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="java8"
+            description="%localDateDatatypeHelperVariantDescription"
+            disableValue="joda"
+            label="%localDateDatatypeHelperVariantLabel"
+            name="localDateDatatypeHelperVariant"
+            type="enum">
+            <discreteValues>
+               <value value="joda" />
+               <value value="java8" />
+            </discreteValues>
+         </builderSetPropertyDef>
+      </builderSet>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.model.formulaCompiler">
+      <formulaCompiler
+            class="org.faktorips.devtools.model.builder.fl.JavaBuilderFormulaCompiler">
+      </formulaCompiler>
+   </extension>
+</plugin>

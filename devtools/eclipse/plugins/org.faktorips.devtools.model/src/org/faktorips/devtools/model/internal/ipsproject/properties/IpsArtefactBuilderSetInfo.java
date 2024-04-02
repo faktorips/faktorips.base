@@ -112,7 +112,11 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     private Class<?> getBuilderSetClass() {
         if (builderSetClass == null) {
             try {
-                builderSetClass = Platform.getBundle(namespace).loadClass(builderSetClassName);
+                if (Abstractions.isEclipseRunning()) {
+                    builderSetClass = Platform.getBundle(namespace).loadClass(builderSetClassName);
+                } else {
+                    builderSetClass = getClass().getClassLoader().loadClass(builderSetClassName);
+                }
             } catch (ClassNotFoundException e) {
                 IpsLog.log(new IpsStatus("Unable to load the IpsArtefactBuilderSet class " + builderSetClassName //$NON-NLS-1$
                         + " with the id " + builderSetId)); //$NON-NLS-1$
@@ -222,34 +226,33 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             ALog logger,
             List<IIpsArtefactBuilderSetInfo> builderSetInfoList,
             IIpsModel ipsModel) {
-        if (Abstractions.isEclipseRunning()) {
-            IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
-            IExtension[] extensions = point.getExtensions();
 
-            for (IExtension extension : extensions) {
-                IConfigurationElement[] configElements = extension.getConfigurationElements();
-                if (configElements.length > 0) {
-                    IConfigurationElement element = configElements[0];
-                    if (element.getName().equals("builderSet")) { //$NON-NLS-1$
-                        if (IpsStringUtils.isEmpty(extension.getUniqueIdentifier())) {
-                            logger.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
-                            continue;
-                        }
-                        String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
-                        if (IpsStringUtils.isEmpty(builderSetClassName)) {
-                            logger.log(new IpsStatus(
-                                    "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
-                                            + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
-                            continue;
-                        }
+        IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
+        IExtension[] extensions = point.getExtensions();
 
-                        Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
-                                registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
-                        builderSetInfoList
-                                .add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(),
-                                        builderSetClassName,
-                                        extension.getUniqueIdentifier(), extension.getLabel(), builderSetPropertyDefs));
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements = extension.getConfigurationElements();
+            if (configElements.length > 0) {
+                IConfigurationElement element = configElements[0];
+                if (element.getName().equals("builderSet")) { //$NON-NLS-1$
+                    if (IpsStringUtils.isEmpty(extension.getUniqueIdentifier())) {
+                        logger.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
+                        continue;
                     }
+                    String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
+                    if (IpsStringUtils.isEmpty(builderSetClassName)) {
+                        logger.log(new IpsStatus(
+                                "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
+                                        + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
+                        continue;
+                    }
+
+                    Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
+                            registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
+                    builderSetInfoList
+                            .add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(),
+                                    builderSetClassName,
+                                    extension.getUniqueIdentifier(), extension.getLabel(), builderSetPropertyDefs));
                 }
             }
         }

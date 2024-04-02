@@ -5,15 +5,16 @@ Bundle-SymbolicName: org.faktorips.devtools.model.builder;singleton:=true
 Bundle-Version: 24.7.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
-Require-Bundle: 
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.text,
  org.faktorips.eclipse.emf.codegen;bundle-version="22.12.0",
- org.apache.commons.commons-text;bundle-version="1.10.0"
+ org.apache.commons.commons-text;bundle-version="1.10.0",
+ org.apache.commons.lang3
 Bundle-ActivationPolicy: lazy
-Export-Package: org.faktorips.devtools.model.builder.fl,
+Export-Package: org.faktorips.devtools.model.builder,
+ org.faktorips.devtools.model.builder.fl,
  org.faktorips.devtools.model.builder.fl.identifier,
  org.faktorips.devtools.model.builder.java,
  org.faktorips.devtools.model.builder.java.annotations,

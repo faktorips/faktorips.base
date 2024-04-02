@@ -119,8 +119,12 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 23.6 */
     private final Supplier<IImplementationClassProvider> implementationClassProvider;
 
+    /** @since 24.7 */
+    private final IExtensionRegistry extensionRegistry;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
+        this.extensionRegistry = extensionRegistry;
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
         modelPreferences = new ModelPreferencesExtension(extensionPoints);
         ipsWorkspaceInteractions = new IpsWorkspaceInteractionsExtension(extensionPoints);
@@ -261,5 +265,10 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     @Override
     public IImplementationClassProvider getImplementationClassProvider() {
         return implementationClassProvider.get();
+    }
+
+    /** @since 24.7 */
+    public IExtensionRegistry getExtensionRegistry() {
+        return extensionRegistry;
     }
 }

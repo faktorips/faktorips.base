@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,6 +33,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -59,6 +60,13 @@ public interface IIpsModel extends IIpsElement {
     AWorkspace getWorkspace();
 
     /**
+     * Returns the ID of the builder set configured in the given project data
+     *
+     * @since 24.7
+     */
+    String getBuilderSetId(IIpsProjectProperties data);
+
+    /**
      * Returns the object that gives access to custom model extensions.
      */
     ICustomModelExtensions getCustomModelExtensions();
@@ -68,10 +76,10 @@ public interface IIpsModel extends IIpsElement {
      * method in IWorkspace. All IPS source file change events are queued until the action is
      * finished and then broadcasted. If an IPS source file is changed more than once, only one
      * change event is sent.
-     * 
+     *
      * Note: To get a busy indicator and progress dialog better call
      * IpsUIPlugin#runWorkspaceModification
-     * 
+     *
      * @see IWorkspace#run(org.eclipse.core.runtime.ICoreRunnable,
      *          org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -82,7 +90,7 @@ public interface IIpsModel extends IIpsElement {
      * given parentPart is the parent of the newly created part. For example, if you want to create
      * a {@link IValueSet} as part of a {@link IConfiguredDefault} you call this method with the
      * {@link IConfiguredDefault} as parameter to get the ID for the new {@link IValueSet}.
-     * 
+     *
      * @param parentPart The parent part of the new part for which we need the ID
      * @return the new unique ID that can be used for a new part
      */
@@ -91,7 +99,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Creates an IpsProject for the given project by adding the IPS nature and creating (an empty)
      * .ipsproject file.
-     * 
+     *
      * @throws NullPointerException if project is <code>null</code>.
      * @throws IpsException if an error occurs while creating the IPS project.
      */
@@ -117,7 +125,7 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Returns the IpsProject that belongs to the indicated platform project.
-     * 
+     *
      * @throws NullPointerException if project is null.
      */
     IIpsProject getIpsProject(AProject project);
@@ -125,7 +133,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns all {@link AProject projects} in the workspace, that do not have an IpsProject
      * nature. Ignores closed projects.
-     * 
+     *
      * @throws IpsException if an exception occurs while accessing project-natures.
      */
     Set<AProject> getNonIpsProjects() throws IpsException;
@@ -172,7 +180,7 @@ public interface IIpsModel extends IIpsElement {
      * <p>
      * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
      * longer needed to prevent memory leaks.
-     * 
+     *
      * @see #removeChangeListener(ContentsChangeListener)
      */
     void addChangeListener(ContentsChangeListener listener);
@@ -188,7 +196,7 @@ public interface IIpsModel extends IIpsElement {
      * <p>
      * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
      * longer needed to prevent memory leaks.
-     * 
+     *
      * @see #removeModificationStatusChangeListener(IModificationStatusChangeListener)
      */
     void addModifcationStatusChangeListener(IModificationStatusChangeListener listener);
@@ -218,14 +226,14 @@ public interface IIpsModel extends IIpsElement {
      * <p>
      * Clients are advised to use {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)}
      * instead, except if they explicitly want the behavior provided by this operation.
-     * 
-     * 
+     *
+     *
      * @param type The published interface of the extended {@link IIpsObjectPartContainer}, e.g.
      *            {@link IAttribute}
      * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
      *            defined for for the type itself should be returned, but also the ones registered
      *            for it's super type(s) and interface(s).
-     * 
+     *
      * @see #getExtensionPropertyDefinitions(IIpsObjectPartContainer)
      */
     Set<IExtensionPropertyDefinition> getExtensionPropertyDefinitionsForClass(Class<?> type,
@@ -234,7 +242,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns a map {@link IExtensionPropertyDefinition} identified by their IDs, that are defined
      * and activated for the given {@link IIpsObjectPartContainer}.
-     * 
+     *
      * @param object The {@link IIpsObjectPartContainer} for which you want to get the
      *            {@link IExtensionPropertyDefinition}
      * @return A map of {@link IExtensionPropertyDefinition} that are identified by their IDs
@@ -305,11 +313,11 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns the container identified by the given type ID and optional path for the given IPS
      * project. Returns <code>null</code> if no such container exists.
-     * 
+     *
      * @param ipsProject The IPS project
      * @param containerTypeId The unique ID of the container type.
      * @param optionalPath The optional path info.
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject,
@@ -319,8 +327,8 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Adding a {@link IIpsSrcFilesChangeListener} to the list of listeners. If the listener already
      * exists this method does nothing.
-     * 
-     * 
+     *
+     *
      * @param listener the new listener
      * @return true if this set did not already contain the specified element
      */
@@ -328,7 +336,7 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Removes the {@link IIpsSrcFilesChangeListener} from the list of listeners.
-     * 
+     *
      * @param listener the listener to remove
      * @return true if the listener was removed
      */
@@ -336,7 +344,7 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Returns the version provider according to {@link IIpsProject#getVersionProvider()}
-     * 
+     *
      * @param ipsProject The {@link IIpsProject} for which you want to get the version provider.
      * @return The version provider that is configured for this {@link IIpsProject}.
      */

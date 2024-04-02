@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -24,18 +23,12 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.GenericBuilderKindId;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
-import org.faktorips.devtools.model.builder.fl.StandardIdentifierResolver;
-import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
+import org.faktorips.devtools.model.builder.java.ModelBuilderSet;
 import org.faktorips.devtools.model.builder.labels.LabelAndDescriptionPropertiesBuilder;
-import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
-import org.faktorips.devtools.model.builder.xmodel.table.XTable;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -44,9 +37,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.devtools.model.productcmpt.IExpression;
-import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
-import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactory;
 import org.faktorips.devtools.stdbuilder.dthelper.DatatypeHelperFactoryDefinition;
@@ -78,20 +68,16 @@ import org.faktorips.devtools.stdbuilder.xtend.table.TableBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableBuilderFactory;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableRowBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.TableRowBuilderFactory;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
-import org.faktorips.fl.ExprCompiler;
-import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.internal.MethodNames;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * An {@link IIpsArtefactBuilderSet} implementation that assembles the standard Faktor-IPS
  * {@link IIpsArtefactBuilder IIpsArtefactBuilders}.
  */
-public class StandardBuilderSet extends JavaBuilderSet {
+public class StandardBuilderSet extends ModelBuilderSet {
 
+    @SuppressWarnings("hiding")
     public static final String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
@@ -109,6 +95,7 @@ public class StandardBuilderSet extends JavaBuilderSet {
     private DatatypeHelperFactoryRegistry datatypeHelperFactoryRegistry;
 
     public StandardBuilderSet() {
+        super();
         version = "3.0.0"; //$NON-NLS-1$
         // Following code sections sets the version to the stdbuilder-plugin/bundle version.
         // Most of the time we hardwire the version of the generated code here, but from time to
@@ -127,57 +114,6 @@ public class StandardBuilderSet extends JavaBuilderSet {
         // buf.append(versionObj.getMicro());
         // version = buf.toString();
 
-    }
-
-    @Override
-    public boolean isSupportTableAccess() {
-        return true;
-    }
-
-    @Override
-    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
-            ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) {
-
-        Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
-        JavaCodeFragment code = new JavaCodeFragment();
-        ITableStructure tableStructure = fct.getTableStructure();
-
-        CompilationResultImpl result = new CompilationResultImpl(code, returnType);
-        code.appendClassName(getModelNode(tableStructure, XTable.class).getQualifiedName(BuilderAspect.IMPLEMENTATION));
-        // create get instance method by using the qualified name of the table content
-        code.append(".getInstance(" + MethodNames.GET_THIS_REPOSITORY + "(), \"" + tableContentsQualifiedName //$NON-NLS-1$ //$NON-NLS-2$
-                + "\").findRowNullRowReturnedForEmptyResult("); //$NON-NLS-1$
-
-        for (int i = 0; i < argResults.length; i++) {
-            if (i > 0) {
-                code.append(", "); //$NON-NLS-1$
-            }
-            code.append(argResults[i].getCodeFragment());
-            result.addMessages(argResults[i].getMessages());
-        }
-        code.append(").get"); //$NON-NLS-1$
-        code.append(StringUtils.capitalize(fct.getAccessedColumn().getName()));
-        code.append("()"); //$NON-NLS-1$
-
-        return result;
-    }
-
-    @Override
-    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) {
-        if (exprCompiler instanceof ExtendedExprCompiler) {
-            return new StandardIdentifierResolver(formula, (ExtendedExprCompiler)exprCompiler, this);
-        } else {
-            throw new RuntimeException(
-                    "Illegal expression compiler, only ExtendedExpressionCompiler is allowed but found "
-                            + exprCompiler.getClass());
-        }
-    }
-
-    @Override
-    public boolean isSupportFlIdentifierResolver() {
-        return true;
     }
 
     @Override
@@ -389,12 +325,6 @@ public class StandardBuilderSet extends JavaBuilderSet {
         synchronized (ipsProject) {
             datatypeHelperFactoryRegistry = new DatatypeHelperFactoryRegistry();
         }
-    }
-
-    @Override
-    public boolean usesUnifiedValueSets() {
-        return ValueSetMethods.Unified.name().equals(
-                getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS));
     }
 
     /** Registry for looking up the {@link DatatypeHelperFactory} for a {@link Datatype}. */

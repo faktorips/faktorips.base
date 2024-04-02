@@ -112,6 +112,9 @@ public class GeneratorModelContext {
                     // we need to read the manifest again
                     genConfig = createConfigWithOverrides(referencedRoot, ipsStorage);
                 } else {
+                    if (ipsProject.equals(referencedIpsProject)) {
+                        continue;
+                    }
                     genConfig = new GeneratorConfig(
                             referencedIpsProject.getIpsArtefactBuilderSet().getConfig(), referencedIpsProject);
                 }
@@ -125,9 +128,10 @@ public class GeneratorModelContext {
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
         IIpsProjectProperties properties = ipsProject.getProperties();
         IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel = clone(properties.getBuilderSetConfig());
-        overwriteProperties(ipsArtefactBuilderSetConfigModel, properties, ipsStorage);
+        String builderSetId = ipsProject.getIpsModel().getBuilderSetId(properties);
+        overwriteProperties(ipsArtefactBuilderSetConfigModel, properties, ipsStorage, builderSetId);
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
-                .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
+                .getIpsArtefactBuilderSetInfo(builderSetId);
         IIpsArtefactBuilderSetConfig config = ipsArtefactBuilderSetConfigModel.create(ipsProject, builderSetInfo);
         return new GeneratorConfig(config, ipsProject);
     }
@@ -141,9 +145,10 @@ public class GeneratorModelContext {
 
     private void overwriteProperties(IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel,
             IIpsProjectProperties properties,
-            IIpsStorage ipsStorage) {
+            IIpsStorage ipsStorage, 
+            String builderSetId) {
         IpsBundleManifest bundleManifest = ((AbstractIpsBundle)ipsStorage).getBundleManifest();
-        Map<String, String> generatorConfig = bundleManifest.getGeneratorConfig(properties.getBuilderSetId());
+        Map<String, String> generatorConfig = bundleManifest.getGeneratorConfig(builderSetId);
         for (Entry<String, String> entry : generatorConfig.entrySet()) {
             ipsArtefactBuilderSetConfigModel.setPropertyValue(entry.getKey(), entry.getValue(), null);
         }

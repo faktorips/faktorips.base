@@ -110,6 +110,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModel;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
@@ -433,6 +434,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(
                 new IIpsArtefactBuilder[] { new TestArtefactBuilder() });
         builderSet.setIpsProject(project);
+        if (IIpsModel.get() instanceof PlainJavaIpsModel) {
+            ((IpsModel)IIpsModel.get()).setFallbackBuilderSetProvider(p -> builderSet);
+        }
 
         // Set the builder set id in the project's properties
         properties.setBuilderSetId(TestIpsArtefactBuilderSet.ID);

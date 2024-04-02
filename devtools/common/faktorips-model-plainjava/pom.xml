@@ -17,9 +17,8 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.devtools.model</artifactId>
+            <artifactId>org.faktorips.devtools.model.builder</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
             <exclusions>
                 <exclusion>
                     <groupId>org.faktorips</groupId>
