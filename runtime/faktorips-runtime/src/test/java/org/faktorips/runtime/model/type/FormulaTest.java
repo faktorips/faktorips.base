@@ -10,9 +10,10 @@
 
 package org.faktorips.runtime.model.type;
 
-import static org.junit.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
 
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -24,7 +25,6 @@ import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsFormula;
 import org.faktorips.runtime.model.annotation.IpsFormulas;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -41,22 +41,24 @@ public class FormulaTest {
         Product product = new Product();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         Formula formula = productCmptType.getFormula("formula");
-        String formulaText = formula.getFormulaText(product);
+        String formulaText = formula.getFormulaText(product, null);
         assertNull(formulaText);
-        formula.setFormulaText(product, "111");
-        formulaText = formula.getFormulaText(product);
+        formula.setFormulaText(product, null, "111");
+        formulaText = formula.getFormulaText(product, null);
         assertThat(formulaText, is("111"));
     }
 
     @Test
     public void testGetAndSetFormulaText_Gen() {
         Product product = new Product();
+        ProductGen productGen = new ProductGen(product);
+        when(repository.getLatestProductComponentGeneration(product)).thenReturn(productGen);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         Formula formulaGen = productCmptType.getFormula("formulaGen");
-        String formulaGenText = formulaGen.getFormulaText(product);
+        String formulaGenText = formulaGen.getFormulaText(product, null);
         assertNull(formulaGenText);
-        formulaGen.setFormulaText(product, "111");
-        formulaGenText = formulaGen.getFormulaText(product);
+        formulaGen.setFormulaText(product, null, "111");
+        formulaGenText = formulaGen.getFormulaText(product, null);
         assertThat(formulaGenText, is("111"));
     }
 
@@ -65,10 +67,10 @@ public class FormulaTest {
         ChildProduct product = new ChildProduct();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         Formula formula = productCmptType.getFormula("formula");
-        String formulaText = formula.getFormulaText(product);
+        String formulaText = formula.getFormulaText(product, null);
         assertNull(formulaText);
-        formula.setFormulaText(product, "111");
-        formulaText = formula.getFormulaText(product);
+        formula.setFormulaText(product, null, "111");
+        formulaText = formula.getFormulaText(product, null);
         assertThat(formulaText, is("111"));
     }
 

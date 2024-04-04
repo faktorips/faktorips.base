@@ -574,7 +574,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         validationRules.setValidationRuleActivated(ruleName, active);
     }
 
-    protected FormulaHandler getFormulaHandler() {
+    /** @since 24.7 */
+    FormulaHandler getFormulaHandler() {
         return formulaHandler;
     }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,6 +29,8 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
 import org.faktorips.runtime.util.MessagesHelper;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * An element from the design time model representation as returned from {@link IpsModel}. Defines
@@ -81,7 +83,7 @@ public abstract class ModelElement {
      * Returns the label for this model element in the specified locale. If there is no label in the
      * specified locale, it tries to find the label in the default locale. If there is also no label
      * in the default locale the element's name is returned.
-     * 
+     *
      * @return the label for the given locale or the element's name if no label exists for the given
      *             locale nor in the default locale
      */
@@ -93,7 +95,7 @@ public abstract class ModelElement {
      * Returns the description for this model element in the specified locale. If there is no
      * description in the specified locale, it tries to find the description in the default locale.
      * If there is also no description in the default locale it returns the empty string.
-     * 
+     *
      * @return the description for the given locale or an empty string if no description exists for
      *             the given locale
      */
@@ -129,7 +131,7 @@ public abstract class ModelElement {
      * <p>
      * Note: At the moment only {@link String} is supported as extension property value. This method
      * returns {@link Object} for future changes.
-     * 
+     *
      * @return the value of the extension property defined by the given <code>propertyId</code> or
      *             <code>null</code> if the extension property's <code>isNull</code> attribute is
      *             <code>true</code>
@@ -188,7 +190,7 @@ public abstract class ModelElement {
      * returned. If changing over time is <code>true</code>, the effective date is used to determine
      * the generation to use. If the effective date is <code>null</code>, the latest product
      * component generation is returned.
-     * 
+     *
      * @param productComponent the product component to potentially retrieve a generation from
      * @param effectiveDate the date to select the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the model element's
@@ -198,7 +200,7 @@ public abstract class ModelElement {
      *             changingOverTime and effectiveDate.
      */
     protected static Object getRelevantProductObject(IProductComponent productComponent,
-            Calendar effectiveDate,
+            @CheckForNull Calendar effectiveDate,
             boolean changingOverTime) {
         Object source = productComponent;
         if (changingOverTime) {

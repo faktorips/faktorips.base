@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * Deliberately implements {@link IXmlPersistenceSupport} directly. Letting
  * {@link IProductComponentGeneration} extend {@link IXmlPersistenceSupport} would have published
  * it, which is undesired.
- * 
+ *
  */
 public abstract class ProductComponentGeneration extends RuntimeObject
         implements IProductComponentGeneration, IXmlPersistenceSupport {
@@ -105,10 +105,10 @@ public abstract class ProductComponentGeneration extends RuntimeObject
      * equal to the valid from date of the product component itself. Therefore, if clients call this
      * method on the first generation of a product component, to achieve data consistency, clients
      * must set the valid from date of the product component, too.
-     * 
+     *
      * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository this
      *             generation belongs to does not allow to modify its contents
-     * 
+     *
      * @see ProductComponent#setValidFrom(DateTime)
      */
     public void setValidFrom(DateTime newValidFrom) {
@@ -127,10 +127,10 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     /**
      * Initializes the generation with the data from the xml element.
-     * 
+     *
      * @throws IllegalRepositoryModificationException if the component has already been initialized
      *             and the repository prohibit changing its contents.
-     * 
+     *
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     @Override
@@ -150,7 +150,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     /**
      * Initializes the properties with the data in the map.
-     * 
+     *
      * @param map the map of property elements
      */
     protected void doInitPropertiesFromXml(Map<String, Element> map) {
@@ -162,7 +162,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     /**
      * Initializes the links with the data in the map.
-     * 
+     *
      * @param map the map of property elements
      */
     protected void doInitReferencesFromXml(Map<String, List<Element>> map) {
@@ -175,7 +175,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     /**
      * Initializes the table content usages with the data in the map. The map contains the table
      * structure usage roles as key and the qualified table content name as value.
-     * 
+     *
      * @param map the map of property elements
      */
     protected void doInitTableUsagesFromXml(Map<String, Element> map) {
@@ -204,7 +204,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
      * Creates a map containing the validation rule configurations found in the indicated
      * generation's XML element. For each validation rule configuration the map contains an entry
      * with the rule name as a key and an {@link ValidationRuleConfiguration} instance as value.
-     * 
+     *
      * @param genElement An XML element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
@@ -290,7 +290,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
      * <p>
      * Throws an {@link UnsupportedOperationException} if the support for toXml ("Generate toXml
      * Support") is not activated in the FIPS standard builder.
-     * 
+     *
      * @param document a document, that can be used to create XML elements.
      */
     @Override
@@ -315,7 +315,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     /**
      * This is a utility method called by generated code. The given {@link Element} is the element
      * representing this {@link ProductComponentGeneration}.
-     * 
+     *
      * @param element the element all table usages should be added to
      */
     protected void writeTableUsagesToXml(Element element) {
@@ -327,7 +327,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     /**
      * This method is used for writing a table usage to the XML of the given {@link Element}.
-     * 
+     *
      * @param element the element where the table usage will be added to
      * @param structureUsage the value for the structureUsage XML attribute
      * @param tableContentName the name of the used table content
@@ -339,7 +339,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     /**
      * This is a utility method called by generated code. The given {@link Element} is the element
      * representing this {@link ProductComponentGeneration}.
-     * 
+     *
      * @param element the element all table usages should be added to
      */
     protected void writeReferencesToXml(Element element) {
@@ -366,11 +366,16 @@ public abstract class ProductComponentGeneration extends RuntimeObject
      * The standard implementation throws an {@link UnsupportedOperationException} if the support
      * for toXml ("Generate toXml Support") is not activated in the FIPS standard builder. Generated
      * classes override but do <em>NOT</em> call super.
-     * 
+     *
      * @param generationElement the XML element to write the properties to
      */
     protected void writePropertiesToXml(Element generationElement) {
         throw new UnsupportedOperationException(
                 "The method toXml() is currently not supported, as the required methods were not generated. To activate toXml() please check your FIPS Builder properties and make sure \"Generated toXml Support\" is set to true.");
+    }
+
+    /** @since 24.7 */
+    FormulaHandler getFormulaHandler() {
+        return formulaHandler;
     }
 }
