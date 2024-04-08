@@ -1034,8 +1034,10 @@ public class IpsBuildMojo extends AbstractMojo {
             toolchainsFile = session.getRequest().getGlobalToolchainsFile();
         }
         if (toolchainsFile != null && toolchainsFile.exists()) {
-            String copyUserSettingsDirPath = work.getAbsolutePath() + "\\data\\.metadata\\.plugins";
-            String copyUserToolchainsPath = copyUserSettingsDirPath + "\\toolchains.xml";
+            String copyUserSettingsDirPath = work.getAbsolutePath() + FilenameUtils
+                    .separatorsToSystem("\\data\\.metadata\\.plugins");
+            String copyUserToolchainsPath = copyUserSettingsDirPath + FilenameUtils
+                    .separatorsToSystem("\\toolchains.xml");
             try {
                 FileUtils.forceMkdir(new File(copyUserSettingsDirPath));
                 FileUtils.copyFile(toolchainsFile, new File(copyUserToolchainsPath));
