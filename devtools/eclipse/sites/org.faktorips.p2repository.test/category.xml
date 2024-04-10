@@ -9,6 +9,9 @@
    <bundle id="org.faktorips.testdatatype">
       <category name="faktor_ips"/>
    </bundle>
+   <bundle id="org.faktorips.devtools.model.plainjava">
+      <category name="faktor_ips"/>
+   </bundle>
    <category-def name="faktor_ips" label="Faktor-IPS Test">
       <description>
          In this category you get the Faktor-IPS test dependencies

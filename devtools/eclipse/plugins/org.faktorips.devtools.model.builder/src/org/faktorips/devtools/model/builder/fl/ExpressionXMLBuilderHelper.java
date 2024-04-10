@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -78,10 +79,11 @@ public class ExpressionXMLBuilderHelper {
      * @param buildStatus buildStatus a {@link MultiStatus} that receives {@link IpsStatus} messages
      *            when compilation produces an error
      */
-    public void addCompiledFormulaExpressions(Document document,
+    public Map<String, MessageList> addCompiledFormulaExpressions(Document document,
             List<? extends IExpression> formulas,
             List<Element> formulaElements,
             MultiStatus buildStatus) {
+        Map<String, MessageList> formulaCompilationErrors = new HashMap<>();
         Map<String, IExpression> formulaMap = getFormulas(formulas);
         for (Element formulaElement : formulaElements) {
             if (formulaElement != null) {
@@ -92,19 +94,31 @@ public class ExpressionXMLBuilderHelper {
                     if (method != null) {
                         Element javaExpression = document
                                 .createElement(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
-                        String sourceCode = generateJavaCode(formula, method, buildStatus);
+                        MessageList compilationMessages = new MessageList();
+                        String sourceCode = generateJavaCode(formula, method, buildStatus, compilationMessages);
                         CDATASection javaCode = document.createCDATASection(sourceCode);
                         javaExpression.appendChild(javaCode);
                         formulaElement.appendChild(javaExpression);
+                        formulaCompilationErrors.put(formula.getFormulaSignature(), compilationMessages);
                     }
                 }
             }
         }
+        return formulaCompilationErrors;
+    }
+    
+    protected String generateJavaCode(IFormula formula,
+            IProductCmptTypeMethod method,
+            MultiStatus buildStatus) {
+       return generateJavaCode(formula, method, buildStatus, new MessageList());
     }
 
-    protected String generateJavaCode(IFormula formula, IProductCmptTypeMethod method, MultiStatus buildStatus) {
+    protected String generateJavaCode(IFormula formula,
+            IProductCmptTypeMethod method,
+            MultiStatus buildStatus,
+            MessageList compilationMessages) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
-        JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus);
+        JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus, compilationMessages);
 
         generateFormulaMethodSignature(method, builder);
 

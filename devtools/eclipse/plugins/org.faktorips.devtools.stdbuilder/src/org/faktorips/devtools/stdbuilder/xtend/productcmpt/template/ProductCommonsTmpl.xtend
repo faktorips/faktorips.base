@@ -42,7 +42,7 @@ class ProductCommonsTmpl {
                     // no attributes to write
                 «ENDIF» 
                 «IF it instanceof XProductCmptClass»
-                element.setAttribute("productCmptType", "«name»");
+                element.setAttribute("productCmptType", "«qualifiedName»");
                 element.setAttribute("runtimeId", «id»);
                 «ENDIF»
                 «FOR it : inAlphabeticalOrder(attributes)» «writeAttributeToXmlMethodCall» «ENDFOR»

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,6 +39,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -46,7 +47,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 /**
  * Abstract class to generates the compilation unit that represents the product component or product
  * component generation.
- * 
+ *
  */
 public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer> extends DefaultJavaSourceFileBuilder {
 
@@ -61,7 +62,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
     public AbstractProductCuBuilder(StandardBuilderSet builderSet, Class<?> clazz) {
         super(builderSet, new LocalizedStringsSet(clazz));
-        this.cuBuilderClazz = clazz;
+        cuBuilderClazz = clazz;
     }
 
     @CheckForNull
@@ -199,7 +200,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         builder.openBracket();
         builder.append("try {"); //$NON-NLS-1$
         builder.append("return "); //$NON-NLS-1$
-        builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus));
+        builder.append(ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus, new MessageList()));
         builder.appendln(";"); //$NON-NLS-1$
         builder.append("} catch (Exception e) {"); //$NON-NLS-1$
         builder.appendClassName(StringBuilder.class);
@@ -277,7 +278,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
      * Returns <code>true</code> if there is at least one formula that has an entered expression.
      * Returns <code>false</code> if there is no formula or if every formula has no entered
      * expression.
-     * 
+     *
      * @param container The product component or product component generation that may contain the
      *            formulas
      * @return <code>true</code> for at least one available formula
@@ -297,7 +298,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
     /**
      * Returns the qualified name of the class where the formula or method is implemented.
-     * 
+     *
      * @param container The product component or product component generation that may contain the
      *            formula or method
      */

@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ProductCmpt productCmptType="attributeTests.formulaTestTests.ProduktFuerNotChangingOverTimeFormula" runtimeId="FormulaChangingOverTime 2013-08" xml:space="preserve">
     <validTo isNull="true"/>
-    <Generation id="14785bb8-1c8c-4a13-815f-624d353fa583" validFrom="2013-08-30">
-        <Formula formulaSignature="NormaleFormel1" id="914150e6-85e4-4b30-8e70-5a9be82d4177">
+    <Generation validFrom="2013-08-30">
+        <Formula formulaSignature="NormaleFormel1">
             <Expression isNull="false">stringValue + "NormaleFormel1"</Expression>
-            <Description id="5d87919e-6220-4aba-9283-af93c77a4f63" locale="en"/>
-            <Description id="35515729-e9ba-4382-866f-c554070d003e" locale="de"/>
-            <Description id="d91cf3b4-844b-4238-b6f9-aed023e2969d" locale="fr"/>
+            <Description locale="en"/>
         </Formula>
-        <Formula formulaSignature="NormaleFormel2" id="9c538b6b-5995-4b66-9cd2-309baa4866ca">
+        <Formula formulaSignature="NormaleFormel2">
             <Expression isNull="false">NormalesAttribut</Expression>
-            <Description id="d2510ffb-91f9-417b-af43-1a2cec0af683" locale="en"/>
-            <Description id="ac4eb666-e4f1-44c7-b66b-49ac4fd54d87" locale="de"/>
-            <Description id="6b8e2629-edaf-479c-bb73-cb6a03f3cb36" locale="fr"/>
+            <Description locale="en"/>
         </Formula>
     </Generation>
-    <Formula formulaSignature="StatischeFormel1" id="b69c1de2-3b61-4bde-abb1-5e0b4aeba3d3">
+    <Formula formulaSignature="StatischeFormel1">
         <Expression isNull="false">"StatischeFormelOverloaded"</Expression>
-        <Description id="f55ac94e-cb76-435e-bb6c-e990fe957639" locale="en"/>
-        <Description id="2a9ac2af-6162-44b0-85d8-aa8172b271fb" locale="de"/>
-        <Description id="ed7584fa-bdc0-4e67-8c9c-d91f7c03a598" locale="fr"/>
+        <Description locale="en"/>
     </Formula>
-    <Formula formulaSignature="StatischeFormel2" id="ac5b2cda-bfdb-493e-802e-985d4656bd73">
+    <Formula formulaSignature="StatischeFormel2">
         <Expression isNull="false">"StatischesAttribut"</Expression>
-        <Description id="6771c2e4-ea2d-4c20-b237-2f16a6f5d36e" locale="en"/>
-        <Description id="d0d5a361-e2eb-4adb-b248-f27f569a3cf5" locale="de"/>
-        <Description id="6d8a464e-5174-475b-89f6-0158b5a1c080" locale="fr"/>
+        <Description locale="en"/>
+    </Formula>
+    <Formula formulaSignature="FehlerhafteFormel">
+        <Expression isNull="false">fail</Expression>
+        <Description locale="en"/>
+    </Formula>
+    <Formula formulaSignature="KompilierbareFormel">
+        <Expression isNull="false">"läuft"</Expression>
+        <Description locale="en"/>
     </Formula>
 </ProductCmpt>

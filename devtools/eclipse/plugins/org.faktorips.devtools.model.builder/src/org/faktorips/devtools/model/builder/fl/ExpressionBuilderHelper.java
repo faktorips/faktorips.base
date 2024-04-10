@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,7 @@ import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
@@ -22,14 +23,17 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.JavaExprCompiler;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.Message.Builder;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A class that provides the
- * {@link ExpressionBuilderHelper#compileFormulaToJava(IExpression, IBaseMethod, MultiStatus)}
+ * {@link ExpressionBuilderHelper#compileFormulaToJava(IExpression, IBaseMethod, MultiStatus, MessageList)}
  * method for {@link IIpsArtefactBuilder}s handling {@link IExpression}s.
- * 
+ *
  * @author schwering
  */
 public class ExpressionBuilderHelper {
@@ -40,7 +44,7 @@ public class ExpressionBuilderHelper {
 
     /**
      * Compiles the given formula to java code, logging errors to the given status object.
-     * 
+     *
      * @param formula the {@link IExpression} to be compiled
      * @param formulaSignature the signature of the formula
      * @param buildStatus a {@link MultiStatus} that receives {@link IpsStatus} messages when
@@ -49,7 +53,8 @@ public class ExpressionBuilderHelper {
      */
     public static JavaCodeFragment compileFormulaToJava(IExpression formula,
             IBaseMethod formulaSignature,
-            MultiStatus buildStatus) {
+            MultiStatus buildStatus,
+            MessageList compilationMessages) {
         String expression = formula.getExpression();
         if (IpsStringUtils.isEmpty(expression)) {
             JavaCodeFragment fragment = new JavaCodeFragment();
@@ -79,10 +84,10 @@ public class ExpressionBuilderHelper {
             fragment.appendln("// The expression compiler reported the following errors while compiling the formula:"); //$NON-NLS-1$
             fragment.append("// "); //$NON-NLS-1$
             fragment.appendln(expression);
-            MessageList messages = result.getMessages();
-            for (int i = 0; i < messages.size(); i++) {
+            for (Message msg : result.getMessages()) {
                 fragment.append("// "); //$NON-NLS-1$
-                fragment.append(messages.getMessage(i).getText());
+                fragment.append(msg.getText());
+                compilationMessages.add(withInvalidObjectProperty(msg, formula));
             }
             return fragment;
         } catch (IpsException e) {
@@ -95,5 +100,11 @@ public class ExpressionBuilderHelper {
             fragment.append("// See the error log for details."); //$NON-NLS-1$
             return fragment;
         }
+    }
+
+    private static Message withInvalidObjectProperty(Message msg, IIpsElement element) {
+        return new Builder(msg.getText(), msg.getSeverity()).code(msg.getCode())
+                .invalidObjects(new ObjectProperty(element.getParent(), element.getName()))
+                .replacements(msg.getReplacementParameters()).markers(msg.getMarkers()).create();
     }
 }
