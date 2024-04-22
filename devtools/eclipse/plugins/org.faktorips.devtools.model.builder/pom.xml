@@ -11,6 +11,8 @@
     <artifactId>org.faktorips.devtools.model.builder</artifactId>
 
     <packaging>eclipse-plugin</packaging>
+    <name>Faktor-IPS Model Builder</name>
+    <description>Basic builder implementation for the Faktor-IPS model</description>
 
     <build>
         <plugins>

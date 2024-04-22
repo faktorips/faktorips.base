@@ -12,6 +12,8 @@
     <artifactId>org.faktorips.eclipse.emf.codegen</artifactId>
 
     <packaging>eclipse-plugin</packaging>
+    <name>Faktor-IPS Fork of Eclipse EMF Codegen JMerge</name>
+    <description>Merge tool for generated source code</description>
 
     <properties>
         <!-- Spotbugs and Checkstyle are skipped because we don't want to change the forked code -->
