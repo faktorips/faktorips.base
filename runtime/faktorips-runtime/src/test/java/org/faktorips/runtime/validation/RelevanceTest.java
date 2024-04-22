@@ -11,6 +11,7 @@
 package org.faktorips.runtime.validation;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.LongRange;
 import org.faktorips.valueset.MoneyRange;
 import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 import org.hamcrest.Description;
@@ -498,6 +500,14 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testAsValueSetFor_Mandatory_StringLength() {
+        TestPolicyWithStringLength modelObject = new TestPolicyWithStringLength();
+
+        assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, TestPolicyWithStringLength.PROPERTY_STRING_ATTRIBUTE),
+                is(new StringLengthValueSet(5, false)));
+    }
+
+    @Test
     public void testAsValueSetFor_Mandatory_WithValueSet() {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
         PolicyAttribute policyAttribute_Unrestricted = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
@@ -508,6 +518,8 @@ public class RelevanceTest {
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_ENUM_ATTRIBUTE);
         PolicyAttribute policyAttribute_Range = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_RANGE_ATTRIBUTE);
+        PolicyAttribute policyAttribute_StringLength = IpsModel.getPolicyCmptType(TestPolicyWithStringLength.class)
+                .getAttribute(TestPolicyWithStringLength.PROPERTY_STRING_ATTRIBUTE);
 
         assertThat(
                 Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Unrestricted,
@@ -528,6 +540,16 @@ public class RelevanceTest {
                 Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Range,
                         LongRange.valueOf(2L, 5L, 1L, true)),
                 is(LongRange.valueOf(2L, 5L, 1L, false)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_StringLength,
+                        new StringLengthValueSet(3)),
+                is(new StringLengthValueSet(3, false)));
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_StringLength,
+                        new UnrestrictedValueSet<>()),
+                is(new StringLengthValueSet(null, false)));
 
     }
 
@@ -645,6 +667,37 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testAsValueSetFor_Optional_StringLength() {
+        TestPolicyWithStringLength modelObject = new TestPolicyWithStringLength();
+
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, TestPolicyWithStringLength.PROPERTY_STRING_ATTRIBUTE),
+                is(new StringLengthValueSet(5)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_Derived_Already() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithDerivedOptionalValueSet();
+        OrderedValueSet<Integer> orderedValueSet = new OrderedValueSet<>(true, null, 1, 2, 3);
+
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
+                        orderedValueSet),
+                is(orderedValueSet));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_Derived_NotAlready() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithDerivedOptionalValueSet();
+        OrderedValueSet<Integer> mandatoryValueSet = new OrderedValueSet<>(false, null, 1, 2, 3);
+        OrderedValueSet<Integer> optionalValueSet = new OrderedValueSet<>(true, null, 1, 2, 3);
+
+        ValueSet<Integer> valueSet = Relevance.OPTIONAL.asValueSetFor(modelObject,
+                TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE, mandatoryValueSet);
+        assertThat(valueSet, is(not(mandatoryValueSet)));
+        assertThat(valueSet, is(optionalValueSet));
+    }
+
+    @Test
     public void testAsValueSetFor_Optional_PrimitiveBoolean() {
         TestPolicyWithPrimitiveBoolean modelObject = new TestPolicyWithPrimitiveBoolean();
         PolicyAttribute policyAttribute_Enum = IpsModel.getPolicyCmptType(TestPolicyWithPrimitiveBoolean.class)
@@ -754,6 +807,47 @@ public class RelevanceTest {
         @IpsAttributeSetter(PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM)
         public void setIntegerAttributeWithEnum(Integer newValue) {
             integerAttributeWithEnum = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
+        }
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithStringLength")
+    @IpsAttributes({ "StringAttribute" })
+    @IpsAssociations({})
+    public static class TestPolicyWithStringLength implements IModelObject {
+
+        public static final String PROPERTY_STRING_ATTRIBUTE = "StringAttribute";
+
+        private String stringAttribute;
+
+        @IpsAllowedValues(PROPERTY_STRING_ATTRIBUTE)
+        public static final ValueSet<String> MAX_ALLOWED_STRING_LENGTH_FOR_STRING_ATTRIBUTE = new StringLengthValueSet(
+                5);
+
+        private ValueSet<String> allowedValuesStringAttribute = MAX_ALLOWED_STRING_LENGTH_FOR_STRING_ATTRIBUTE;
+
+        @IpsAllowedValues(PROPERTY_STRING_ATTRIBUTE)
+        public ValueSet<String> getAllowedValuesForStringAttribute() {
+            return allowedValuesStringAttribute;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_STRING_ATTRIBUTE)
+        public void setAllowedValuesForStringAttribute(ValueSet<String> allowedValuesStringAttribute) {
+            this.allowedValuesStringAttribute = allowedValuesStringAttribute;
+        }
+
+        @IpsAttribute(name = PROPERTY_STRING_ATTRIBUTE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.StringLength)
+        public String getStringAttribute() {
+            return stringAttribute;
+        }
+
+        @IpsAttributeSetter(PROPERTY_STRING_ATTRIBUTE)
+        public void setStringAttribute(String newValue) {
+            stringAttribute = newValue;
         }
 
         @Override

@@ -30,6 +30,7 @@ import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.LongRange;
 import org.faktorips.valueset.MoneyRange;
 import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
@@ -110,11 +111,11 @@ public enum Relevance {
             ValueSetKind valueSetKind,
             boolean containsNull,
             ValueSet<T> values) {
-        if (isCompatible(values, valueSetKind) && values.containsNull() == containsNull) {
-            return values;
-        }
         if (isBoolean(datatype)) {
             return asBooleanValueSet(containsNull, values);
+        }
+        if (isCompatible(values, valueSetKind) && values.containsNull() == containsNull) {
+            return values;
         }
         if (isRange(valueSetKind, values)) {
             return asRange(datatype, containsNull, values);
@@ -122,7 +123,20 @@ public enum Relevance {
         if (isEnum(valueSetKind, values) || datatype.isEnum() || isEnumType(datatype)) {
             return asEnum(datatype, containsNull, values);
         }
+        if (ValueSetKind.StringLength == valueSetKind) {
+            return asStringLength(containsNull, values);
+        }
         return new UnrestrictedValueSet<>(containsNull);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> ValueSet<T> asStringLength(boolean containsNull, ValueSet<T> values) {
+        if (values instanceof StringLengthValueSet) {
+            return (ValueSet<T>)new StringLengthValueSet(((StringLengthValueSet)values).getMaximumLength(),
+                    containsNull);
+        } else {
+            return (ValueSet<T>)new StringLengthValueSet(null, containsNull);
+        }
     }
 
     private static <T> boolean isEnum(ValueSetKind valueSetKind, ValueSet<T> values) {
@@ -139,7 +153,7 @@ public enum Relevance {
     }
 
     private static <T> ValueSet<T> asEnum(Class<T> datatype, boolean containsNull, ValueSet<T> values) {
-        if (values != null) {
+        if (values != null && values.isDiscrete()) {
             return new OrderedValueSet<>(values.getValues(true), containsNull, nullValue(datatype));
         } else if (!IpsModel.isExtensibleEnumType(datatype)) {
             return new OrderedValueSet<>(containsNull, nullValue(datatype), datatype.getEnumConstants());
@@ -161,7 +175,7 @@ public enum Relevance {
 
     @SuppressWarnings("unchecked")
     private static <T> ValueSet<T> asRange(Class<T> datatype, boolean containsNull, ValueSet<T> values) {
-        if (values != null) {
+        if (values != null && values.isRange()) {
             return (ValueSet<T>)changeRangeRelevance(values, containsNull);
         } else {
             return (ValueSet<T>)createRangeRelevance(datatype, containsNull);
@@ -170,7 +184,7 @@ public enum Relevance {
 
     @SuppressWarnings("unchecked")
     private static <T> ValueSet<T> asBooleanValueSet(boolean containsNull, ValueSet<T> values) {
-        if (values != null) {
+        if (values != null && values.isDiscrete()) {
             return new OrderedValueSet<>(values.getValues(true), containsNull, null);
         } else {
             return (ValueSet<T>)new OrderedValueSet<>(containsNull, null, Boolean.TRUE, Boolean.FALSE);
@@ -183,11 +197,14 @@ public enum Relevance {
         }
         switch (valueSetKind) {
             case AllValues:
+            case Derived:
                 return true;
             case Enum:
                 return values instanceof OrderedValueSet;
             case Range:
                 return values.isRange();
+            case StringLength:
+                return values instanceof StringLengthValueSet;
             default:
                 return false;
         }
@@ -328,7 +345,9 @@ public enum Relevance {
      * {@link Relevance}.
      */
     public <T> ValueSet<T> asValueSetFor(IModelObject modelObject, PolicyAttribute policyAttribute) {
-        return asValueSetFor(modelObject, policyAttribute, (ValueSet<T>)null);
+        @SuppressWarnings("unchecked")
+        ValueSet<T> valueSetFromModel = (ValueSet<T>)policyAttribute.getValueSetFromModel();
+        return asValueSetFor(modelObject, policyAttribute, valueSetFromModel);
     }
 
     /**
