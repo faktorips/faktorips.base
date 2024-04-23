@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArt
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.AttributeSetter.disableValue;
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.AttributeSetter.label;
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.AttributeSetter.name;
+import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.AttributeSetter.replaces;
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.AttributeSetter.type;
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.AttributeSetter.value;
 import static org.faktorips.devtools.model.internal.ipsproject.properties.IpsArtefactBuilderSetInfoTest.ChildElement.child;
@@ -45,6 +46,7 @@ import org.faktorips.abstracttest.TestConfigurationElement;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.abstracttest.TestMockingUtils;
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
@@ -66,6 +68,7 @@ public class IpsArtefactBuilderSetInfoTest {
     private TestExtensionRegistry registry;
     private TestLogger logger;
     private IpsArtefactBuilderSetInfo builderSetInfo;
+    private IExtensionPoint extensionPoint;
 
     @Before
     public void setUp() {
@@ -86,8 +89,8 @@ public class IpsArtefactBuilderSetInfoTest {
                     configElement("builderSet", clazz(DefaultBuilderSet.class.getName()), child(propertyDef1),
                             child(propertyDef2), child(propertyDef3)));
 
-            IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID,
-                    "artefactbuilderset",
+            extensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID,
+                    IpsArtefactBuilderSetInfo.ARTEFACTBUILDERSET,
                     extension);
 
             registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
@@ -188,6 +191,24 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Test
+    public void testLoadExtensions_withoutReplacedBuilderSets() {
+        if (Abstractions.isEclipseRunning()) {
+            List<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<>();
+            IIpsModel ipsModel = mock(IIpsModel.class);
+            IExtension extension = TestMockingUtils.mockExtension("mybuilderset",
+                    configElement("builderSet", clazz(DefaultBuilderSet.class.getName()),
+                            replaces(TestIpsArtefactBuilderSet.class.getName())));
+            IExtension replacedExtension = TestMockingUtils.mockExtension("replacedbuilderset",
+                    configElement("builderSet", clazz(TestIpsArtefactBuilderSet.class.getName())));
+            when(extensionPoint.getExtensions()).thenReturn(new IExtension[] { extension, replacedExtension });
+            IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
+
+            assertThat(builderSetInfoList.size(), is(1));
+            assertThat(builderSetInfoList.get(0).getBuilderSetId(), is("mybuilderset"));
+        }
+    }
+
     private IIpsProject mockIpsAndJavaProject(String complianceLevel) {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IJavaProject javaProject = mock(IJavaProject.class);
@@ -216,7 +237,7 @@ public class IpsArtefactBuilderSetInfoTest {
     }
 
     public interface ConfigElementModifier {
-
+        // marker interface
     }
 
     public static class ChildElement implements ConfigElementModifier {
@@ -279,6 +300,10 @@ public class IpsArtefactBuilderSetInfoTest {
 
         public static AttributeSetter clazz(String clazz) {
             return new AttributeSetter("class", clazz);
+        }
+
+        public static AttributeSetter replaces(String replaces) {
+            return new AttributeSetter("replaces", replaces);
         }
     }
 

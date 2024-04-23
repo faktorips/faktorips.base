@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,8 +12,10 @@ package org.faktorips.devtools.model.internal.ipsproject.properties;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -42,13 +44,14 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A class that hold information about IIpsArtefactBuilderSets that are registered with the
  * corresponding extension point.
- * 
+ *
  * @see IpsModel#getIpsArtefactBuilderSetInfos()
  * @author Peter Erzberger
  */
 public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
 
-    private static final String BUILDER_SET_PROPERTY_DEF = "builderSetPropertyDef"; //$NON-NLS-1$
+    static final String ARTEFACTBUILDERSET = "artefactbuilderset";
+    static final String BUILDER_SET_PROPERTY_DEF = "builderSetPropertyDef"; //$NON-NLS-1$
     private Class<?> builderSetClass;
     private String builderSetId;
     private String builderSetLabel;
@@ -226,10 +229,10 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             ALog logger,
             List<IIpsArtefactBuilderSetInfo> builderSetInfoList,
             IIpsModel ipsModel) {
-
-        IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
+        IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, ARTEFACTBUILDERSET);
         IExtension[] extensions = point.getExtensions();
-
+        Set<String> replacedBuilderSets = new HashSet<>();
+        Map<String, String> classNameById = new HashMap<>();
         for (IExtension extension : extensions) {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             if (configElements.length > 0) {
@@ -246,6 +249,11 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                                         + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
                         continue;
                     }
+                    classNameById.put(extension.getUniqueIdentifier(), builderSetClassName);
+                    String replacedBuilderSetClassName = element.getAttribute("replaces"); //$NON-NLS-1$
+                    if (IpsStringUtils.isNotBlank(replacedBuilderSetClassName)) {
+                        replacedBuilderSets.add(replacedBuilderSetClassName);
+                    }
 
                     Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
                             registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
@@ -254,6 +262,11 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                                     builderSetClassName,
                                     extension.getUniqueIdentifier(), extension.getLabel(), builderSetPropertyDefs));
                 }
+            }
+        }
+        for (var iterator = builderSetInfoList.iterator(); iterator.hasNext();) {
+            if (replacedBuilderSets.contains(classNameById.get(iterator.next().getBuilderSetId()))) {
+                iterator.remove();
             }
         }
     }

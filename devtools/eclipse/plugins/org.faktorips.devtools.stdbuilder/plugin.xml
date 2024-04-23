@@ -10,7 +10,9 @@
          id="ipsstdbuilderset"
          name="%ipsstdbuilderset"
          point="org.faktorips.devtools.model.artefactbuilderset">
-      <builderSet class="org.faktorips.devtools.stdbuilder.StandardBuilderSet">
+      <builderSet
+            class="org.faktorips.devtools.stdbuilder.StandardBuilderSet"
+            replaces="org.faktorips.devtools.model.builder.java.ModelBuilderSet">
          <builderSetPropertyDef 
             defaultValue="false" 
             description="%generateChangeListenerDescription" 
