@@ -229,7 +229,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public ExtendedExprCompiler newExpressionCompiler() {
-        ExtendedExprCompiler compiler = new ExtendedExprCompiler();
+        ExtendedExprCompiler compiler = new ExtendedExprCompiler(getPropertiesInternal().getFormulaLanguageLocale());
         compiler.setDatatypeHelperProvider(new IpsProjectDatatypeHelperProvider(this));
 
         ExtensionFunctionResolversCache resolverCache = getIpsModel().getExtensionFunctionResolverCache(this);
