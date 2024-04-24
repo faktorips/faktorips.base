@@ -196,11 +196,16 @@ pipeline {
                             echo "create update site composite"
                             bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${releaseVersion}
                         """
+                        // set latest symlink
+                        sh "ssh ${p2Server} \'cd /var/www/update.faktorzehn.org/faktorips; rm latest; ls -1v | grep -E \"^v[0-9_]+\" | tail -1 | xargs -i ln -s {} latest\'"
                     }
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         def mavenDocDeployFolder = MessageFormat.format(mavenDocDeployFolderTmpl, major, minor)
                         replaceOnServer server:docServer, port:'2004', localFolder:mavenDocFolder, remoteFolder:mavenDocDeployFolder
+                        // set latest symlink
+                        sh "ssh doc@doc.faktorzehn.org -p 2004 \'cd /var/www/doc.faktorzehn.org/faktorips-maven-plugin/; rm latest; ls -I \"*[a-zA-Z]*\" -1v | tail -1 | xargs -i ln -s {} latest\'"
+
                         // deploy xsd schemas
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
                         replaceOnServer server:docServer, port:'2004', localFolder:xsdFolder, remoteFolder:xsdDeployFolder
