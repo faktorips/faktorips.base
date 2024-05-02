@@ -228,6 +228,16 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_MandatoryValueSetIsEmpty() {
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        attribute.setDatatype("Integer");
+        attribute.getValueSet().setContainsNull(false);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+    }
+
+    @Test
     public void testValidate_ValueSetTypeMismatch() {
         setUpRangeIntegerAttr();
 
@@ -332,6 +342,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
     private void setUpRangeIntegerAttr() {
         attribute.setValueSetType(ValueSetType.RANGE);
+        attribute.getValueSet().setContainsNull(true);
         attribute.setDatatype("Integer");
     }
 

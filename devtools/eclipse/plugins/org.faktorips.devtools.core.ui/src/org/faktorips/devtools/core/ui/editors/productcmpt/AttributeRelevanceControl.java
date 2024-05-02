@@ -46,10 +46,12 @@ public class AttributeRelevanceControl extends ControlComposite {
         if (!valueSet.isEmpty()) {
             options.put(AttributeRelevance.Mandatory, Messages.AttributeRelevanceControl_Mandatory);
         }
-        if (!valueDatatype.isPrimitive() && valueSet.isContainsNull()) {
-            options.put(AttributeRelevance.Optional, Messages.AttributeRelevanceControl_Optional);
+        if (valueSet.isContainsNull()) {
+            if (!valueDatatype.isPrimitive()) {
+                options.put(AttributeRelevance.Optional, Messages.AttributeRelevanceControl_Optional);
+            }
+            options.put(AttributeRelevance.Irrelevant, Messages.AttributeRelevanceControl_Irrelevant);
         }
-        options.put(AttributeRelevance.Irrelevant, Messages.AttributeRelevanceControl_Irrelevant);
         radioButtonGroup = toolkit.createRadioButtonGroup(this, options);
         initLayout(options.size());
     }

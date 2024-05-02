@@ -101,7 +101,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
         if (modelValueSet.validate(ipsProject).containsErrorMsg()) {
             String text = Messages.ConfiguredValueSet_msgInvalidAttributeValueset;
-            list.add(new Message(IConfiguredValueSet.MSGCODE_UNKNWON_VALUESET, text, Message.WARNING, this,
+            list.add(new Message(IConfiguredValueSet.MSGCODE_UNKNOWN_VALUESET, text, Message.WARNING, this,
                     PROPERTY_VALUE_SET));
             return;
         }
@@ -110,12 +110,20 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
-        if (valueSetToValidate.isEnum() && modelValueSet.isStringLength()) {
-            MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
-                    (IEnumValueSet)valueSetToValidate,
-                    (IStringLengthValueSet)modelValueSet);
-            if (!valueValidationResult.isEmpty()) {
-                list.add(valueValidationResult);
+        if (valueSetToValidate.isEnum()) {
+            if (modelValueSet.isStringLength()) {
+                MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
+                        (IEnumValueSet)valueSetToValidate,
+                        (IStringLengthValueSet)modelValueSet);
+                if (!valueValidationResult.isEmpty()) {
+                    list.add(valueValidationResult);
+                    return;
+                }
+
+            }
+            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()) {
+                String text = Messages.ConfiguredValueSet_error_msg_mandatoryAttribute;
+                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
                 return;
             }
         }

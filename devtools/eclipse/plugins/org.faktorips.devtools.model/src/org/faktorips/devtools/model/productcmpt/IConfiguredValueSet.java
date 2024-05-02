@@ -56,7 +56,13 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * Validation message code to indicate that the value-set of the attribute (in the model) is
      * invalid.
      */
-    String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the config elements value set is empty while the
+     * value set defined in the model is mandatory.
+     */
+    String MSGCODE_MANDATORY_VALUESET_IS_EMPTY = MSGCODE_PREFIX + "MandatoryValueSetIsEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a string is too long to fit into the value set.
