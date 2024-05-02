@@ -4,10 +4,10 @@
 // TODO This class is a huge ugly moloch and needs to be completely rewritten scratch.
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -124,7 +124,7 @@ import org.faktorips.util.memento.Memento;
 
 /**
  * Section to display and edit the test case type.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseTypeSection extends IpsSection {
@@ -695,16 +695,16 @@ public class TestCaseTypeSection extends IpsSection {
                         // test attribute name (used in test case)
                         msgList = msgList.getMessagesFor(element, IIpsElement.PROPERTY_NAME);
                         if (!msgList.isEmpty()) {
-                            return (Image)resourceManager.get(IpsProblemOverlayIcon.getOverlay(msgList.getSeverity()));
+                            return resourceManager.get(IpsProblemOverlayIcon.getOverlay(msgList.getSeverity()));
                         }
                         return null;
                     case 1:
                         // type input or expected
                         if (testAttribute.getTestAttributeType() == TestParameterType.EXPECTED_RESULT) {
-                            baseImage = (Image)resourceManager
+                            baseImage = resourceManager
                                     .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
                         } else {
-                            baseImage = (Image)resourceManager
+                            baseImage = resourceManager
                                     .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
                         }
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
@@ -719,14 +719,14 @@ public class TestCaseTypeSection extends IpsSection {
                         break;
                     case 3:
                         // datatype
-                        baseImage = (Image)resourceManager
+                        baseImage = resourceManager
                                 .get(IIpsDecorators.getImageHandling().createImageDescriptor("Datatype.gif")); //$NON-NLS-1$
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
                         break;
                     default:
                         return null;
                 }
-                return (Image)resourceManager
+                return resourceManager
                         .get(IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList.getSeverity()));
             } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
@@ -1300,13 +1300,13 @@ public class TestCaseTypeSection extends IpsSection {
                 Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
                 ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
                         msgList.getSeverity());
-                formText.setImage("imagepccmpttype", (Image)resourceManager.get(overlayedImage)); //$NON-NLS-1$
+                formText.setImage("imagepccmpttype", resourceManager.get(overlayedImage)); //$NON-NLS-1$
             }
-            Image baseImage = (Image)resourceManager
+            Image baseImage = resourceManager
                     .get(IpsUIPlugin.getImageHandling().createImageDescriptor("Association.gif")); //$NON-NLS-1$
             ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
                     msgList.getSeverity());
-            formText.setImage("imageassociation", (Image)resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$
+            formText.setImage("imageassociation", resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$
             formText.setColor("red", getDisplay().getSystemColor(SWT.COLOR_DARK_RED)); //$NON-NLS-1$
             formText.setText("<form>" + errorMessageText + "</form>", true, false); //$NON-NLS-1$ //$NON-NLS-2$
             section.setDescriptionControl(formText);
@@ -1548,7 +1548,6 @@ public class TestCaseTypeSection extends IpsSection {
         if (withFocusChange) {
             // select the corresponding object in the tree
             ITestParameter testParam = getRootSectionObject(currSelectedDetailObject);
-            treeViewer.setSelection(new StructuredSelection(testParam));
             updateTreeButtonStatus(testParam);
         }
     }
