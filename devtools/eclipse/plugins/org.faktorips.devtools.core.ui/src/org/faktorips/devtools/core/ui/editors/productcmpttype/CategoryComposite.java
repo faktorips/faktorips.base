@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -64,6 +64,7 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptCategory;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -314,20 +315,24 @@ class CategoryComposite extends ViewerButtonComposite {
 
     @Override
     protected void updateButtonEnabledStates() {
-        moveUpButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
-                && !isFirstPropertyOfContextTypeSelected() && isPropertyOfContextTypeSelected());
-        moveDownButton.setEnabled(categorySection.isContextTypeEditable() && isPropertySelected()
-                && !isLastPropertyOfContextTypeSelected() && isPropertyOfContextTypeSelected());
+        boolean isMovable = categorySection.isContextTypeEditable()
+                && isPropertySelected()
+                && isPropertyOfContextTypeSelected()
+                && !ProductCmptCategory.isOwerwriting(getSelectedProperty());
+        moveUpButton.setEnabled(isMovable && !isFirstLocalPropertyOfContextTypeSelected());
+        moveDownButton.setEnabled(isMovable && !isLastPropertyOfContextTypeSelected());
         changeCategoryButton.setEnabled(isSelectedPropertyAllowedToChangeCategory());
     }
 
-    private boolean isFirstPropertyOfContextTypeSelected() {
-        return getSelectedObject().equals(getFirstPropertyOfContextType());
+    private boolean isFirstLocalPropertyOfContextTypeSelected() {
+        return getSelectedObject().equals(getFirstLocalPropertyOfContextType());
     }
 
-    private IProductCmptProperty getFirstPropertyOfContextType() {
+    private IProductCmptProperty getFirstLocalPropertyOfContextType() {
         for (Object o : contentProvider.getElements(null)) {
-            if (isPropertyOfContextType((IProductCmptProperty)o)) {
+            if (o instanceof IProductCmptProperty p
+                    && isPropertyOfContextType(p)
+                    && !ProductCmptCategory.isOwerwriting(p)) {
                 return (IProductCmptProperty)o;
             }
         }
@@ -403,7 +408,7 @@ class CategoryComposite extends ViewerButtonComposite {
          * to the edited {@link IProductCmptType} itself.
          * <p>
          * This is the default {@link Image} of the corresponding {@link IPropertyValue}.
-         * 
+         *
          * @see ImageHandling#getDefaultImage(Class)
          */
         private Image getImageForPropertyOfContextType(IProductCmptProperty property) {

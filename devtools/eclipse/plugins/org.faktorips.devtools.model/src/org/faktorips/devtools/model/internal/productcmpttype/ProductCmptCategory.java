@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -556,6 +556,13 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return doc.createElement(XML_TAG_NAME);
     }
 
+    /** Returns whether the given property is overwriting a property from a super type. */
+    public static boolean isOwerwriting(IProductCmptProperty property) {
+        return property instanceof IAttribute attribute && attribute.isOverwrite()
+                || property instanceof IProductCmptTypeMethod method && method.isOverloadsFormula();
+        // TODO FIPS-10909/FIPS-11543 handle overwritten validation rules
+    }
+
     /**
      * {@link Comparator} that can be used to sort product component properties according to the
      * reference list stored in the {@link IProductCmptType}, with properties belonging to
@@ -574,11 +581,35 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         @Override
         public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
+            IProductCmptProperty prop1 = getOverwrittenProperty(property1);
+            IProductCmptProperty prop2 = getOverwrittenProperty(property2);
             // First, try to sort properties of the supertype hierarchy to the top
-            int subtypeCompare = compareSubtypeRelationship(property1, property2);
+            int subtypeCompare = compareSubtypeRelationship(prop1, prop2);
 
             // If the indices are equal, compare the indices of the properties in the reference list
-            return subtypeCompare != 0 ? subtypeCompare : comparePropertyIndices(property1, property2);
+            return subtypeCompare != 0 ? subtypeCompare : comparePropertyIndices(prop1, prop2);
+        }
+
+        private IProductCmptProperty getOverwrittenProperty(IProductCmptProperty property) {
+            if (property instanceof IAttribute attribute && attribute.isOverwrite()) {
+                var overwrittenAttribute = (IProductCmptProperty)attribute
+                        .findOverwrittenAttribute(property.getIpsProject());
+                return getOverwrittenProperty(overwrittenAttribute);
+            }
+            if (property instanceof IProductCmptTypeMethod method && method.isOverloadsFormula()) {
+                var overwrittenMethod = (IProductCmptProperty)method
+                        .findOverloadedFormulaMethod(property.getIpsProject());
+                return getOverwrittenProperty(overwrittenMethod);
+            }
+            // TODO FIPS-10909/FIPS-11543 order overwritten validation rules
+            /*
+             * if (property instanceof IValidationRule validationRule &&
+             * validationRule.isOverwrite()) { var overwrittenValidationRule =
+             * (IProductCmptProperty)validationRule
+             * .findOverwrittenValidationRule(property.getIpsProject()); return
+             * getOverwrittenProperty(overwrittenValidationRule); }
+             */
+            return property;
         }
 
         /**

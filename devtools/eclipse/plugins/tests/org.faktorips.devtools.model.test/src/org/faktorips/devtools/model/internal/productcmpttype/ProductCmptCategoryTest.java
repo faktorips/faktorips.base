@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,6 +31,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
@@ -159,7 +162,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * 
+     *
      * <strong>Scenario:</strong><br>
      * The category of policy cmpt attribute changes
      * <p>
@@ -254,7 +257,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * 
+     *
      * <strong>Scenario:</strong><br>
      * A subtype of a product component type references the same policy component type. FIPS-969
      * <p>
@@ -298,6 +301,59 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
 
         assertFalse(emptyNameCategory.findIsContainingProperty(noCategoryProperty, productType, ipsProject));
         assertTrue(defaultAttributeCategory.findIsContainingProperty(noCategoryProperty, productType, ipsProject));
+    }
+
+    @Test
+    public void testFindProductCmptProperties_OverwritingPropertyIsOrderedLikeOverwritten() {
+
+        IProductCmptType superProdcutType = createSuperProductType(productType, "Super");
+        IProductCmptCategory superCategory = superProdcutType.newCategory("superCategory");
+
+        IProductCmptTypeAttribute superAttribute1 = superProdcutType.newProductCmptTypeAttribute("attribute1");
+        superAttribute1.setCategory(superCategory.getName());
+        superAttribute1.setCategoryPosition(1);
+        IProductCmptTypeAttribute superAttribute2 = superProdcutType.newProductCmptTypeAttribute("attribute2");
+        superAttribute2.setCategory(superCategory.getName());
+        superAttribute2.setCategoryPosition(2);
+        IPolicyCmptType superPolicyCmptType = superProdcutType.findPolicyCmptType(ipsProject);
+        IPolicyCmptTypeAttribute superPolicyAttribute = superPolicyCmptType
+                .newPolicyCmptTypeAttribute("policyAttribute1");
+        superPolicyAttribute.setValueSetConfiguredByProduct(true);
+        superPolicyAttribute.setCategory(superCategory.getName());
+        superPolicyAttribute.setCategoryPosition(3);
+        IProductCmptTypeMethod superFormula = superProdcutType.newFormulaSignature("formula1");
+        superFormula.setCategory(superCategory.getName());
+        superFormula.setCategoryPosition(4);
+        IProductCmptTypeAttribute superAttribute3 = superProdcutType.newProductCmptTypeAttribute("attribute3");
+        superAttribute3.setCategory(superCategory.getName());
+        superAttribute3.setCategoryPosition(5);
+
+        IProductCmptTypeMethod overwritingFormula = productType.newFormulaSignature("formula1");
+        overwritingFormula.setOverloadsFormula(true);
+        overwritingFormula.setCategory(superCategory.getName());
+        IProductCmptTypeMethod anotherFormula = productType.newFormulaSignature("formula2");
+        anotherFormula.setCategory(superCategory.getName());
+        anotherFormula.setCategoryPosition(6);
+        IProductCmptTypeAttribute overwritingAttribute = productType.newProductCmptTypeAttribute("attribute2");
+        overwritingAttribute.setCategory(superCategory.getName());
+        overwritingAttribute.setOverwrite(true);
+        IProductCmptTypeAttribute anotherAttribute = productType.newProductCmptTypeAttribute("attribute4");
+        anotherAttribute.setCategory(superCategory.getName());
+        anotherAttribute.setCategoryPosition(7);
+        IPolicyCmptTypeAttribute overwritingPolicyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute1");
+        overwritingPolicyAttribute.setValueSetConfiguredByProduct(true);
+        overwritingPolicyAttribute.setOverwrite(true);
+        overwritingPolicyAttribute.setCategory(superCategory.getName());
+        IPolicyCmptTypeAttribute anotherPolicyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute2");
+        anotherPolicyAttribute.setValueSetConfiguredByProduct(true);
+        anotherPolicyAttribute.setCategory(superCategory.getName());
+        anotherPolicyAttribute.setCategoryPosition(8);
+
+        List<IProductCmptProperty> properties = superCategory.findProductCmptProperties(productType, true, ipsProject);
+
+        assertThat(properties,
+                contains(superAttribute1, overwritingAttribute, overwritingPolicyAttribute, overwritingFormula,
+                        superAttribute3, anotherFormula, anotherAttribute, anotherPolicyAttribute));
     }
 
     @Test
