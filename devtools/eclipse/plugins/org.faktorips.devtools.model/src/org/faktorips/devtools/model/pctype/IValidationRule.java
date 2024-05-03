@@ -264,6 +264,15 @@ public interface IValidationRule extends IProductCmptProperty {
      * Set the given value to changingOverTime property
      */
     void setChangingOverTime(boolean changingOverTime);
+
+    /**
+     * Returns <code>true</code> if this validation rule overrides the <code>otherValidationRule</code>. This rule
+     * could override a rule of any super type of this rule's type, so <code>this.getType</code>
+     * must be a sub type of <code>otherValidationRule.getType</code>.
+     * 
+     * @param otherValidationRule The validation rule that overrides this one.
+     */
+    boolean overrides(IValidationRule otherValidationRule);
     
     /**
      * Returns <code>true</code> if this validation rule is marked to overwrite a validation rule with the same

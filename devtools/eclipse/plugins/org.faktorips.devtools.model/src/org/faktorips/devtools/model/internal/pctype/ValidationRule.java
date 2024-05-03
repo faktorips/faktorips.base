@@ -550,6 +550,14 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
+    public boolean overrides(IValidationRule other) {
+        if (equals(other) || !getType().isSubtypeOf(other.getType(), other.getIpsProject())) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
     public boolean isOverwrite() {
         return overwrites;
     }

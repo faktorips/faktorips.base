@@ -321,4 +321,7 @@ public class Messages extends NLS {
 
     public static String RuleEditDialog_groupText;
 
+    public static String OverrideValidationRuleDialog_labelNoAttributes;
+    public static String OverrideValidationRuleDialog_labelSelectAttribute;
+    public static String OverrideValidationRuleDialog_title;
 }

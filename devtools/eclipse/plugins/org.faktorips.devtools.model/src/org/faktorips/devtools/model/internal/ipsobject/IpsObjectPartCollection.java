@@ -203,6 +203,13 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         parent.partWasAdded(newPart);
         return newPart;
     }
+    
+    public T newPart(IIpsObjectPartContainer partToCopy) {
+        T newPart = newPartInternal(parent.getNextPartId(), getConstructor(partsBaseClass));
+        newPart.copyFrom(partToCopy);
+        parent.partWasAdded(newPart);
+        return newPart;
+    }
 
     public T newPart(Element el, String id) {
         if (xmlTag.equals(el.getNodeName())) {
