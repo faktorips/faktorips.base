@@ -65,7 +65,7 @@ pipeline {
 
     post {
         always {
-            parentReference referenceJob: "${JOB_NAME}", defaultBranch: 'hotfix/23.6',  targetBranch: '$GERRIT_BRANCH', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: false, maxBuilds: 10, maxCommits: 500
+            parentReference referenceJob: "${JOB_NAME}", mergeBranch: 'hotfix/23.6',  targetBranch: '$GERRIT_BRANCH', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: false, maxBuilds: 10, maxCommits: 500
 
 
             junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
