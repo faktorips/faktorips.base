@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -98,7 +98,7 @@ import org.faktorips.util.memento.Memento;
 
 /**
  * Dialog to edit an attribute.
- * 
+ *
  * @author Jan Ortmann
  */
 public class AttributeEditDialog extends IpsPartEditDialog2 {
@@ -210,7 +210,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         final TabItem validationRulePage = new TabItem(tabFolder, SWT.NONE);
         validationRulePage.setText(Messages.AttributeEditDialog_validationRuleTitle);
-        validationRulePage.setControl(createValidationRulePage(tabFolder));
+        createValidationRulePage(tabFolder, validationRulePage);
         if (startWithRulePage) {
             tabFolder.setSelection(2);
             ruleDefinitionUI.setFocusToNameField();
@@ -732,7 +732,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
         } catch (IpsException e) {
             IpsPlugin.log(e);
-            valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
+            valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<>());
         }
         if (currentValueSetType != null) {
             // if the previous selection was a valid selection use this one as new selection in drop
@@ -741,8 +741,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
     }
 
-    private Control createValidationRulePage(TabFolder folder) {
-        Composite workArea = createTabItemComposite(folder, 1, false);
+    private Control createValidationRulePage(TabFolder folder, TabItem tab) {
+        Composite workArea = createScrollableTabItemComposite(folder, tab, 1, false);
 
         validationRuleAdded = getToolkit().createCheckbox(workArea,
                 Messages.AttributeEditDialog_labelActivateValidationRule);
@@ -785,7 +785,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * By activating/deactivating a validation rule for an attribute, not only can the rule be
      * <code>null</code>, but also new new rule instances can be created repeatedly. To keep all UI
      * elements bound to the correct rule instance, it has to be re-bound in that case.
-     * 
+     *
      * SW 10.12.2014: Note that this is a workaround. A cleaner solution would be to introduce a
      * rule-PMO that is bound to the UI and hides the fact that the rule may be replaced or deleted.
      * See private/sw/3572_2 for a work-in-progress of this idea.

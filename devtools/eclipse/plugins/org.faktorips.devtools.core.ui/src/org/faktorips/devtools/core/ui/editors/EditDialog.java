@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,12 +12,16 @@ package org.faktorips.devtools.core.ui.editors;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.runtime.Message;
@@ -64,7 +68,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
     /**
      * Template method that may be extended by sub classes. The default implementation sets the UI
      * toolkit's changeable state.
-     * 
+     *
      * @param changeable Flag indicating the changeable state.
      */
     protected void setDataChangeableThis(boolean changeable) {
@@ -114,7 +118,7 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
     /**
      * This method must create and return the UI composite containing the actual contents of the
      * dialog.
-     * 
+     *
      * @param parent The parent UI composite.
      */
     protected abstract Composite createWorkArea(Composite parent);
@@ -133,6 +137,38 @@ public abstract class EditDialog extends TitleAreaDialog implements IDataChangea
     protected final Composite createTabItemComposite(TabFolder folder, int numOfColumns, boolean equalSize) {
         Composite c = toolkit.createGridComposite(folder, numOfColumns, equalSize, true);
         ((GridLayout)c.getLayout()).marginHeight = 12;
+        return c;
+    }
+
+    protected final Composite createScrollableTabItemComposite(TabFolder folder,
+            TabItem tab,
+            int numOfColumns,
+            boolean equalSize) {
+
+        ScrolledComposite scroller = new ScrolledComposite(folder, SWT.V_SCROLL);
+        scroller.setLayout(new GridLayout());
+
+        Composite c = toolkit.createGridComposite(scroller, numOfColumns, equalSize, true);
+        ((GridLayout)c.getLayout()).marginHeight = 12;
+
+        scroller.setContent(c);
+        scroller.setExpandVertical(true);
+        scroller.setExpandHorizontal(true);
+
+        scroller.addControlListener(new ControlAdapter() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                scroller.setMinHeight(folder.computeSize(SWT.DEFAULT, SWT.DEFAULT).y - heightOfTabs(folder, scroller));
+                scroller.requestLayout();
+            }
+
+            private int heightOfTabs(TabFolder folder, ScrolledComposite scroller) {
+                return folder.getSize().y - scroller.getClientArea().height;
+            }
+        });
+
+        tab.setControl(scroller);
+
         return c;
     }
 
