@@ -12,6 +12,8 @@ package org.faktorips.devtools.model.pctype;
 
 import java.util.List;
 
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 
@@ -46,6 +48,7 @@ public interface IValidationRule extends IProductCmptProperty {
 
     String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
+    String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
     /**
      * The separator to concatenate the key. We use the minus character because this character is
      * not allowed in names.
@@ -76,7 +79,20 @@ public interface IValidationRule extends IProductCmptProperty {
      * Validation message code to indicate that an attribute referenced by the rule does not exist.
      */
     String MSGCODE_UNDEFINED_ATTRIBUTE = MSGCODE_PREFIX + "UndefinedAttribute"; //$NON-NLS-1$
+    
+    /**
+     * Validation message code to indicate that the validation rule is marked overwriting a validation rule in
+     * the super type hierarchy, but there is no such rule.
+     */
+    String MSGCODE_NOTHING_TO_OVERWRITE = MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that a rule overwrites another but change over time
+     * configuration differs
+     */
+    String MSGCODE_OVERWRITTEN_RULE_HAS_DIFFERENT_CHANGE_OVER_TIME = MSGCODE_PREFIX
+            + "OverwrittenRuleDifferentChangeOverTime"; //$NON-NLS-1$
+    
     /**
      * Validation message code to indicate that constant attributes can't be validated.
      */
@@ -248,5 +264,27 @@ public interface IValidationRule extends IProductCmptProperty {
      * Set the given value to changingOverTime property
      */
     void setChangingOverTime(boolean changingOverTime);
-
+    
+    /**
+     * Returns <code>true</code> if this validation rule is marked to overwrite a validation rule with the same
+     * name somewhere up the supertype hierarchy, <code>false</code> otherwise.
+     */
+    boolean isOverwrite();
+    
+    /**
+     * <code>true</code> to indicate that this validation rule overwrites a validation rule with the same name
+     * somewhere up the super type hierarchy or <code>false</code> to let this validation rule be a new
+     * one.
+     */
+    void setOverwrite(boolean overwrites);
+    
+    /**
+     * Returns the first validation rule found with the same name in the super types hierarchy or
+     * <code>null</code> if no such validation rule exists.
+     * 
+     * @param ipsProject The project which IPS object path is used to search.
+     * 
+     * @throws IpsException if an error occurs while searching.
+     */
+    IValidationRule findOverwrittenValidationRule(IIpsProject ipsProject) throws IpsException;
 }

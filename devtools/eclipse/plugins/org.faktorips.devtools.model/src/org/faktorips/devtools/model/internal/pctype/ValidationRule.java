@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.MarkerEnumUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
@@ -82,6 +84,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
      */
     private boolean checkValueAgainstValueSetRule = false;
 
+    private boolean overwrites;
+
     /**
      * Creates a new validation rule definition.
      * 
@@ -122,6 +126,29 @@ public class ValidationRule extends TypePart implements IValidationRule {
         validateMarker(list, ipsProject);
 
         validateChangingOverTimeFlag(list);
+
+        validateOverwritingValidationRule(list, ipsProject);
+    }
+
+    private void validateOverwritingValidationRule(MessageList result, IIpsProject ipsProject) {
+        if (overwrites) {
+            IValidationRule superRule = findOverwrittenValidationRule(ipsProject);
+            if (superRule == null) {
+                String text = MessageFormat.format(Messages.ValidationRule_msgNothingToOverwrite, getName());
+                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this,
+                        PROPERTY_OVERWRITES, PROPERTY_NAME));
+            } else {
+                validateAgainstOverwrittenValidationRule(result, superRule);
+            }
+        }
+    }
+
+    private void validateAgainstOverwrittenValidationRule(MessageList result, IValidationRule superRule) {
+        if (isChangingOverTime() != superRule.isChangingOverTime()) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_RULE_HAS_DIFFERENT_CHANGE_OVER_TIME,
+                    Messages.ValidationRule_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
+                    PROPERTY_CHANGING_OVER_TIME));
+        }
     }
 
     private void validateChangingOverTimeFlag(MessageList result) {
@@ -274,6 +301,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
         configurableByProductComponent = XmlUtil.getBooleanAttributeOrFalse(element,
                 PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
+        overwrites = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERWRITES);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
@@ -330,6 +358,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_NAME, name);
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
+        if (overwrites) {
+            newElement.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
+        }
         if (checkValueAgainstValueSetRule) {
             newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE,
                     String.valueOf(checkValueAgainstValueSetRule));
@@ -516,5 +547,31 @@ public class ValidationRule extends TypePart implements IValidationRule {
         List<String> oldMarkers = markers;
         markers = newMarkers;
         valueChanged(oldMarkers, newMarkers, PROPERTY_MARKERS);
+    }
+
+    @Override
+    public boolean isOverwrite() {
+        return overwrites;
+    }
+
+    @Override
+    public void setOverwrite(boolean overwrites) {
+        boolean old = this.overwrites;
+        this.overwrites = overwrites;
+        valueChanged(old, overwrites, PROPERTY_OVERWRITES);
+    }
+
+    @Override
+    public IValidationRule findOverwrittenValidationRule(IIpsProject ipsProject) throws IpsException {
+        IPolicyCmptType supertype = (IPolicyCmptType)((IType)getIpsObject()).findSupertype(ipsProject);
+        if (supertype == null) {
+            return null;
+        }
+        IValidationRule candidate = supertype.findValidationRule(name, ipsProject);
+        if (candidate == this) {
+            // can happen if we have a cycle in the type hierarchy!
+            return null;
+        }
+        return candidate;
     }
 }

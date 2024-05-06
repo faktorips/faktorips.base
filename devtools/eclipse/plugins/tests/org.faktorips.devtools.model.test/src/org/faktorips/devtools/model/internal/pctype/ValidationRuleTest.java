@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +41,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.testsupport.IpsMatchers;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,6 +64,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         ipsProject = newIpsProject("TestProject");
         policyCmptType = newPolicyCmptType(ipsProject, "Policy");
+        policyCmptType.setSupertype("SuperPolicy");
         ipsSrcFile = policyCmptType.getIpsSrcFile();
         validationRule = policyCmptType.newRule();
         ipsSrcFile.save(null);
@@ -473,4 +478,40 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertTrue(validationRule.isChangingOverTime());
     }
 
+    @Test
+    public void testValidate_OverwrittenRuleHasDifferentChangingOverTime() throws Exception {
+        IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        IValidationRule superRule = superPolicyCmptType.newRule();
+        superRule.setName("TestRule");
+        superRule.setChangingOverTime(false);
+
+        validationRule.setName("TestRule");
+        validationRule.setOverwrite(true);
+        validationRule.setChangingOverTime(true);
+
+        MessageList ml = validationRule.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IValidationRule.MSGCODE_OVERWRITTEN_RULE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+
+        validationRule.setChangingOverTime(false);
+        superRule.setChangingOverTime(true);
+
+        ml = validationRule.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IValidationRule.MSGCODE_OVERWRITTEN_RULE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+    }
+
+    @Test
+    public void testValidate_OverwrittenRuleHasNoSuperRule() throws Exception {
+        validationRule.setName("TestRule");
+        validationRule.setOverwrite(true);
+
+        MessageList ml = validationRule.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IValidationRule.MSGCODE_NOTHING_TO_OVERWRITE));
+
+        IPolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        IValidationRule superRule = superPolicyCmptType.newRule();
+        superRule.setName("TestRule");
+
+        ml = validationRule.validate(ipsProject);
+        assertThat(ml, IpsMatchers.lacksMessageCode(IValidationRule.MSGCODE_NOTHING_TO_OVERWRITE));
+    }
 }
