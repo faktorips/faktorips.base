@@ -41,6 +41,7 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
@@ -274,6 +275,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getValueDatatype() != null) {
             validateValueSetType(result);
         }
+        validateValueSet(result);
         validateChangingOverTimeFlag(result);
         validateAbstractDatatype(result);
     }
@@ -359,6 +361,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                                     .quote(getValueSet().getValueSetType().getName()));
             result.add(
                     new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this, PROPERTY_VALUE_SET));
+        }
+    }
+
+    private void validateValueSet(MessageList result) {
+        if (getValueSet() instanceof IEnumValueSet enumValueSet && !enumValueSet.isContainsNull() && isProductRelevant()
+                && enumValueSet.isEmpty()) {
+            String messageText = MessageFormat.format(Messages.PolicyCmptTypeAttribute_msg_EmptyMandatoryValueSet,
+                    this);
+            result.add(
+                    new Message(MSGCODE_EMPTY_MANDATORY_VALUESET, messageText, Message.WARNING, this,
+                            PROPERTY_VALUE_SET));
         }
     }
 

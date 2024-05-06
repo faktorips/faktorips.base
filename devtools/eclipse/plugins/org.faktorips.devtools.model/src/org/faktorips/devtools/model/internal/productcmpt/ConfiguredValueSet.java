@@ -123,7 +123,8 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             }
             if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()) {
                 String text = Messages.ConfiguredValueSet_error_msg_mandatoryAttribute;
-                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
+                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this,
+                        PROPERTY_VALUE_SET));
                 return;
             }
         }
