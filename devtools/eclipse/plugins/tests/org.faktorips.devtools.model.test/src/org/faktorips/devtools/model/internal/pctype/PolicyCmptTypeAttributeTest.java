@@ -448,6 +448,21 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateEmptyMandatory_AbstractIsOk() {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("mandatory");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.getValueSet().setContainsNull(false);
+        attribute.getValueSet().setAbstract(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
     public void testValidateNothingToOverwrite() throws Exception {
         attribute.setName("name");
 

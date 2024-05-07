@@ -275,7 +275,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getValueDatatype() != null) {
             validateValueSetType(result);
         }
-        validateValueSet(result);
+        if (!getValueSet().isAbstract()) {
+            validateValueSet(result);
+        }
         validateChangingOverTimeFlag(result);
         validateAbstractDatatype(result);
     }
