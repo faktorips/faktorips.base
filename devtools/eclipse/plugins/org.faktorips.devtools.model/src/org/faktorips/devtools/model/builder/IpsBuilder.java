@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -71,6 +73,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.MultiMap;
 
 /**
@@ -88,6 +91,11 @@ public class IpsBuilder {
     public static final String PROBLEM_MARKER = IpsModelActivator.PLUGIN_ID + ".eclipse.problemmarker"; //$NON-NLS-1$
 
     public static final boolean TRACE_BUILDER_TRACE;
+
+    private static final String BUILD_ERROR_MSG_CODE = "BUILD_ERROR";
+
+    private static final Pattern EXCEPTION_WHILE_BUILDING_REGEX = Pattern
+            .compile("^(\\w+): Error during: (?:Build file|Delete file) ([\\w\\W]+).$", Pattern.DOTALL);
 
     private final ABuilder builder;
 
@@ -158,12 +166,19 @@ public class IpsBuilder {
                 return builder.getProject().getReferencedProjects();
             }
 
-            Abstractions.getLog().log(buildStatus);
+            IStatus actualStatus = buildStatus;
+            while (actualStatus instanceof MultiStatus multiStatus && multiStatus.getChildren().length == 1) {
+                actualStatus = multiStatus.getChildren()[0];
+            }
+
+            Abstractions.getLog().log(actualStatus);
 
             // Re-initialize the builders of the current builder set if an error occurs.
             getIpsProject().reinitializeIpsArtefactBuilderSet();
 
-            throw new CoreException(buildStatus);
+            createMarkersFromBuildStatus(actualStatus, IpsBuilder.PROBLEM_MARKER);
+
+            throw new CoreException(actualStatus);
 
         } catch (OperationCanceledException e) {
             getIpsProject().reinitializeIpsArtefactBuilderSet();
@@ -179,6 +194,70 @@ public class IpsBuilder {
         }
         // CSON: IllegalCatch
         return builder.getProject().getReferencedProjects();
+    }
+
+    public void createMarkersFromBuildStatus(IStatus buildStatus, String markerType) {
+        Map<AResource, MessageList> errors = new HashMap<>();
+        for (IpsStatus ipsStatus : getIpsErrors(buildStatus)) {
+            if (ipsStatus.getMessage().contains("BuildProcessCmd[kind=")) {
+                preOrPostBuildErrors(errors, ipsStatus);
+                continue;
+            }
+            Matcher regexMatcher = EXCEPTION_WHILE_BUILDING_REGEX.matcher(ipsStatus.getMessage());
+            if (regexMatcher.find()) {
+                buildOrDeleteErrors(errors, ipsStatus, regexMatcher);
+            }
+        }
+        errors.forEach((resource, ml) -> {
+            ml.wrapUpMessages(BUILD_ERROR_MSG_CODE);
+            createMarkersFromMessageList(resource, ml, markerType);
+        });
+    }
+
+    private void buildOrDeleteErrors(Map<AResource, MessageList> errors, IpsStatus ipsStatus, Matcher regexMatcher) {
+        String builderName = regexMatcher.group(1);
+        String ipsSrcFile = regexMatcher.group(2);
+        AResource member = getIpsProject().getProject().getWorkspace().getRoot().findMember(ipsSrcFile);
+        if (member != null) {
+            MessageList ml = errors.computeIfAbsent(member, $ -> new MessageList());
+            if (ipsStatus.getException() != null) {
+                ml.add(Message.newError(BUILD_ERROR_MSG_CODE,
+                        MessageFormat.format(
+                                Messages.IpsBuilder_msgExceptionWhileBuildingWithFile,
+                                builderName,
+                                extractExceptionMessage(ipsStatus.getException()))));
+            } else {
+                ml.add(Message.newError(BUILD_ERROR_MSG_CODE, ipsStatus.getMessage()));
+            }
+        }
+    }
+
+    private void preOrPostBuildErrors(Map<AResource, MessageList> errors, IpsStatus ipsStatus) {
+        MessageList ml = errors.computeIfAbsent(getIpsProject().getProject(), $ -> new MessageList());
+        if (ipsStatus.getException() != null) {
+            ml.add(Message.newError(BUILD_ERROR_MSG_CODE,
+                    MessageFormat.format(
+                            Messages.IpsBuilder_msgExceptionWhileBuilding,
+                            extractExceptionMessage(ipsStatus.getException()))));
+        } else {
+            ml.add(Message.newError(BUILD_ERROR_MSG_CODE, ipsStatus.getMessage()));
+        }
+    }
+
+    private String extractExceptionMessage(Throwable exception) {
+        return IpsStringUtils.isNotBlank(exception.getMessage()) ? exception.getMessage()
+                : exception.getClass().getName();
+    }
+
+    private List<IpsStatus> getIpsErrors(IStatus buildStatus) {
+        List<IpsStatus> errors = new ArrayList<>();
+        for (IStatus status : buildStatus.getChildren()) {
+            errors.addAll(getIpsErrors(status));
+        }
+        if (buildStatus instanceof IpsStatus ipsError) {
+            errors.add(ipsError);
+        }
+        return errors;
     }
 
     private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) {
@@ -387,7 +466,9 @@ public class IpsBuilder {
     }
 
     private void addIpsStatus(IIpsArtefactBuilder builder, BuildCommand command, MultiStatus buildStatus, Exception e) {
-        String text = builder.getName() + ": Error during: " + command + "."; //$NON-NLS-1$ //$NON-NLS-2$
+        String localizedMessage = e.getLocalizedMessage();
+        String text = builder.getName() + ": Error during: " + command //$NON-NLS-1$
+                + (IpsStringUtils.isNotBlank(localizedMessage) ? (": " + localizedMessage) : "."); //$NON-NLS-1$ //$NON-NLS-2$
         buildStatus.add(new IpsStatus(text, e));
     }
 
