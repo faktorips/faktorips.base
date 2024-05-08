@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,6 +40,9 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
                     overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
                 }
             }
+            if (rule.isOverwrite()) {
+                overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE;
+            }
             if (rule.isDeprecated()) {
                 overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
             }
@@ -54,7 +57,7 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * If the given {@link IIpsElement} is an {@link IValidationRule}, this method returns the
      * validation rule's label.
      */

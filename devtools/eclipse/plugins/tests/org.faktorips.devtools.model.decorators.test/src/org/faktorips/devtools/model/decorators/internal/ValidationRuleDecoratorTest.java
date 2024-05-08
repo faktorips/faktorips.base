@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -65,6 +65,16 @@ public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
 
         assertThat(imageDesc, hasBaseImage(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE));
         assertThat(imageDesc, hasOverlay(OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT));
+    }
+
+    @Test
+    public void testGetImage_Overwrite() {
+        when(rule.isOverwrite()).thenReturn(true);
+
+        ImageDescriptor imageDesc = adapter.getImageDescriptor(rule);
+
+        assertThat(imageDesc, hasBaseImage(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE));
+        assertThat(imageDesc, hasOverlay(OverlayIcons.OVERRIDE, IDecoration.BOTTOM_RIGHT));
     }
 
     @Test
