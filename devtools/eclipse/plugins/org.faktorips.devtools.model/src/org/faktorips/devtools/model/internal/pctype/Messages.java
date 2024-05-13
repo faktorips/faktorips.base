@@ -122,6 +122,7 @@ public class Messages extends NLS {
     public static String ValidationRule_msgNoNewlineAllowed;
     public static String ValidationRule_msgCodeShouldBeProvided;
     public static String ValidationRuleMessageText_warning_invalidParameter;
+    public static String ValidationRule_msgMissingAttribute;
 
     public static String Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
     public static String Attribute_proposalForRuleName;

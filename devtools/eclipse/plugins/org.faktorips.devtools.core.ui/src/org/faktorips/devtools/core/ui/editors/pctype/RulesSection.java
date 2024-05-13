@@ -12,10 +12,8 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.EnumSet;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -90,12 +88,6 @@ public class RulesSection extends SimpleIpsPartsSection {
                 String[] attrNames = rule.getValidatedAttributes();
                 if (attrNames.length == 1) {
                     IPolicyCmptTypeAttribute attr = getPcType().getPolicyCmptTypeAttribute(attrNames[0]);
-                    if (attr == null) {
-                        String msg = NLS.bind(Messages.RulesSection_msgMissingAttribute, attrNames[0]);
-                        MessageDialog.openInformation(getShell(), Messages.RulesSection_titleMissingAttribute, msg);
-                        rule.delete();
-                        return null;
-                    }
                     AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
                     dialog.showValidationRulePage();
                     dialog.setDataChangeable(isDataChangeable());
