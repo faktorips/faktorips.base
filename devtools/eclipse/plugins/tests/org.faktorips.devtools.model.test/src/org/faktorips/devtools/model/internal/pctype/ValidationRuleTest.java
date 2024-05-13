@@ -41,7 +41,6 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.testsupport.IpsMatchers;
 import org.faktorips.values.LocalizedString;
