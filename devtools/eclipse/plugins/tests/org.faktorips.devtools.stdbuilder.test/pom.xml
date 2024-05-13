@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
-        <version>22.12.19.release</version>
+        <version>22.12.20-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.devtools.stdbuilder.test</artifactId>
