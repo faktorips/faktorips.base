@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -54,11 +54,11 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of <code>IEnumType</code>, see the corresponding interface for more details.
- * 
+ *
  * @see org.faktorips.devtools.model.enums.IEnumType
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumType extends EnumValueContainer implements IEnumType {
@@ -89,7 +89,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     /**
      * Creates a new <code>IEnumType</code>.
-     * 
+     *
      * @param file The IPS source file in which this <code>IEnumType</code> will be stored in.
      */
     public EnumType(IIpsSrcFile file) {
@@ -1049,6 +1049,11 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     public boolean isIdentifierNamespaceBelowBoundary() {
         return true;
+    }
+
+    @Override
+    public boolean isOverriding() {
+        return hasSuperEnumType();
     }
 
     private static final class AttributeFinder extends EnumTypeHierarchyVisitor {

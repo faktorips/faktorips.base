@@ -69,7 +69,7 @@ public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetImage_Overwrite() {
-        when(rule.isOverwrite()).thenReturn(true);
+        when(rule.isOverriding()).thenReturn(true);
 
         ImageDescriptor imageDesc = adapter.getImageDescriptor(rule);
 

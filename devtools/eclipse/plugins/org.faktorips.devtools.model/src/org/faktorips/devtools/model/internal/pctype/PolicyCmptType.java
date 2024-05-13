@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IPolicyCmptType.
- * 
+ *
  * @author Jan Ortmann
  */
 public class PolicyCmptType extends Type implements IPolicyCmptType {
@@ -460,7 +460,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * Adding a validation dependency to force a check if a product component type exists with the
      * same qualified name.
-     * 
+     *
      * @param dependencies is the result set which will contain all dependencies
      */
     private void dependsOnAddValidationDependency(Set<IDependency> dependencies) {
@@ -623,10 +623,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
          * union
          */
         for (IAssociation candidate : candidateSubsets) {
-            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation)) {
-                continue;
-            }
-            if (!policyCmptTypeAssociation.isCompositionDetailToMaster()) {
+            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) || !policyCmptTypeAssociation.isCompositionDetailToMaster()) {
                 continue;
             }
             IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation
@@ -678,7 +675,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         for (IValidationRule rule : validationRules) {
             IValidationRule override = rules.newPart(rule);
             override.setName(rule.getName());
-            override.setOverwrite(true);
+            override.setOverriding(true);
             newRules.add(override);
         }
         return newRules;
@@ -693,7 +690,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
         Map<String, IValidationRule> toExclude = new HashMap<>();
         for (IValidationRule rule : getValidationRules()) {
-            if (rule.isOverwrite()) {
+            if (rule.isOverriding()) {
                 toExclude.put(rule.getName(), rule);
             }
         }
@@ -760,7 +757,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                             IIpsElement.PROPERTY_NAME));
                 }
             }
-            
+
             for (IMethod method : currentType.getMethods()) {
                 if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
                     String text = MessageFormat.format(Messages.PolicyCmptType_msgRuleMethodNameConflict,

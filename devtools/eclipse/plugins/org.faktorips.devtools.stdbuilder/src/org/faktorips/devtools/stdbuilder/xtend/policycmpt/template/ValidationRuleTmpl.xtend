@@ -22,6 +22,7 @@ def package static validate (XValidationRule it) '''
 
 def package static constants (XValidationRule it) '''
     «IF !overwrite || differentMessageCodeInOverridingRule»
+        «IF differentMessageCodeInOverridingRule && !generatePublishedInterfaces(it)»@SuppressWarnings("hiding")«ENDIF»
         «constantMsgCode»
     «ENDIF»
     «IF !overwrite»
@@ -81,9 +82,9 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     	«IF overwrite»
     		// begin-user-code
     		super.«methodNameExecRule»(ml, context);
-    		Message message = ml.getMessageByCode(«constantNameMessageCode»);
+    		Message message = ml.getMessageByCode(«qualifierForConstantNameMessageCodeIfNecessary»«constantNameMessageCode»);
     		if (message != null) {
-    			«methodNameCreateMessage»(context, «getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»);
+    			«methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»);
     		}
     		return «CONTINUE_VALIDATION»;
     		// end-user-code
@@ -154,7 +155,7 @@ def private static createMessageFor (XValidationRule it, String modelObject) '''
         String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale() «FOR param : replacementParameters», «param»«ENDFOR»);
 
            «Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
-               .code(«constantNameMessageCode»)
+               .code(«qualifierForConstantNameMessageCodeIfNecessary»«constantNameMessageCode»)
           «IF validatedAttrSpecifiedInSrc»
                .invalidObjects(invalidObjectProperties)
              «ELSEIF validateAttributes»

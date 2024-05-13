@@ -36,6 +36,7 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IOverridableElement;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.MarkerEnumUtil;
@@ -84,7 +85,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
      */
     private boolean checkValueAgainstValueSetRule = false;
 
-    private boolean overwrites;
+    private boolean overrides;
 
     /**
      * Creates a new validation rule definition.
@@ -127,16 +128,16 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
         validateChangingOverTimeFlag(list);
 
-        validateOverwritingValidationRule(list, ipsProject);
+        validateOverridingValidationRule(list, ipsProject);
     }
 
-    private void validateOverwritingValidationRule(MessageList result, IIpsProject ipsProject) {
-        if (overwrites) {
+    private void validateOverridingValidationRule(MessageList result, IIpsProject ipsProject) {
+        if (overrides) {
             IValidationRule superRule = findOverwrittenValidationRule(ipsProject);
             if (superRule == null) {
                 String text = MessageFormat.format(Messages.ValidationRule_msgNothingToOverwrite, getName());
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this,
-                        PROPERTY_OVERWRITES, PROPERTY_NAME));
+                        PROPERTY_OVERRIDING, PROPERTY_NAME));
             } else {
                 validateAgainstOverwrittenValidationRule(result, superRule);
             }
@@ -302,7 +303,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
         configurableByProductComponent = XmlUtil.getBooleanAttributeOrFalse(element,
                 PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
-        overwrites = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERWRITES);
+        overrides = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERRIDING);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
@@ -359,8 +360,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_NAME, name);
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
-        if (overwrites) {
-            newElement.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
+        if (overrides) {
+            newElement.setAttribute(PROPERTY_OVERRIDING, "" + overrides); //$NON-NLS-1$
         }
         if (checkValueAgainstValueSetRule) {
             newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE,
@@ -559,15 +560,15 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    public boolean isOverwrite() {
-        return overwrites;
+    public boolean isOverriding() {
+        return overrides;
     }
 
     @Override
-    public void setOverwrite(boolean overwrites) {
-        boolean old = this.overwrites;
-        this.overwrites = overwrites;
-        valueChanged(old, overwrites, PROPERTY_OVERWRITES);
+    public void setOverriding(boolean overwrites) {
+        boolean old = overrides;
+        overrides = overwrites;
+        valueChanged(old, overwrites, PROPERTY_OVERRIDING);
     }
 
     @Override
@@ -582,5 +583,10 @@ public class ValidationRule extends TypePart implements IValidationRule {
             return null;
         }
         return candidate;
+    }
+
+    @Override
+    public IOverridableElement findOverriddenElement(IIpsProject ipsProject) {
+        return findOverwrittenValidationRule(ipsProject);
     }
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 /**
  * Method signatures for product component types extend the "normal" method. The provide an
  * implementation type that defines how the method is implemented.
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProductCmptProperty {
@@ -78,7 +78,7 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * If the formula is mandatory, the user needs to enter a formula expression.
      * <p>
      * This method always returns true if {@link #isFormulaOptionalSupported()} returns false.
-     * 
+     *
      * @return <code>true</code> if the formula is mandatory or if optional formula is not
      *             supported.
      */
@@ -86,10 +86,10 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
 
     /**
      * Sets if this method is an mandatory formula or not.
-     * 
+     *
      * @param formulaMandatory <code>true</code> to set the formula to be mandatory, false to set
      *            optional.
-     * 
+     *
      * @see #isFormulaMandatory()
      */
     void setFormulaMandatory(boolean formulaMandatory);
@@ -99,9 +99,9 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * hence supports optional formula, that means mandatory is allowed to be false. If this method
      * returns <code>false</code> the method {@link #isFormulaMandatory()} will always return
      * <code>true</code>.
-     * 
+     *
      * @return <code>true</code> if optional formula is supported.
-     * 
+     *
      * @see #isFormulaMandatory()
      */
     boolean isFormulaOptionalSupported();
@@ -111,6 +111,11 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * hierarchy.
      */
     boolean isOverloadsFormula();
+
+    @Override
+    default boolean isOverriding() {
+        return isOverloadsFormula();
+    }
 
     /**
      * Looks in the supertype hierarchy if a formula method can be found with the same formula name
@@ -130,7 +135,7 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * Configures this {@link IProductCmptTypeMethod} to change or be constant over time. If
      * <code>true</code> every {@link IProductCmptGeneration} may specify a different value for this
      * attribute. If <code>false</code> the value is the same for all generations.
-     * 
+     *
      * @param changingOverTime indicates whether or not this attribute should change over time
      */
     void setChangingOverTime(boolean changingOverTime);

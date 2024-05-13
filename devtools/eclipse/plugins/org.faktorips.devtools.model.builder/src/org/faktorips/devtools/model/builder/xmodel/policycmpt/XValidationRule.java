@@ -70,7 +70,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public boolean isOverwrite() {
-        return getValidationRule().isOverwrite();
+        return getValidationRule().isOverriding();
     }
 
     public boolean isDifferentMessageCodeInOverridingRule() {
@@ -107,7 +107,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         if (replacementParameters.isEmpty()) {
             return "";
         }
-        ArrayList<String> parameters = new ArrayList<String>();
+        ArrayList<String> parameters = new ArrayList<>();
         for (String replacementParameter : replacementParameters) {
             if (superReplacementParameters.contains(replacementParameter)) {
                 parameters.add("message.getReplacementValue(\"" + replacementParameter + "\")");
@@ -115,7 +115,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
                 parameters.add("null");
             }
         }
-        return parameters.stream().collect(Collectors.joining(" ,"));
+        return parameters.stream().collect(Collectors.joining(" ,", " ,", ""));
     }
 
     private XValidationRule getOverwrittenRuleNode() {
@@ -185,6 +185,16 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         }
         upperCaseName = upperCaseName.toUpperCase();
         return "MSG_CODE_" + upperCaseName;
+    }
+
+    public String getQualifierForConstantNameMessageCodeIfNecessary() {
+        if (isOverwrite() && getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())) {
+            XPolicyCmptClass xPolicyCmptClass = getModelService()
+                    .getModelNode(getIpsObjectPartContainer().getIpsObject(), XPolicyCmptClass.class, getContext());
+            return xPolicyCmptClass.getInterfaceName() + '.';
+        } else {
+            return "";
+        }
     }
 
     public String getMessageCode() {

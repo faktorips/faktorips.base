@@ -40,7 +40,7 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
                     overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
                 }
             }
-            if (rule.isOverwrite()) {
+            if (rule.isOverriding()) {
                 overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE;
             }
             if (rule.isDeprecated()) {

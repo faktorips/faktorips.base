@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -485,7 +485,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         superRule.setChangingOverTime(false);
 
         validationRule.setName("TestRule");
-        validationRule.setOverwrite(true);
+        validationRule.setOverriding(true);
         validationRule.setChangingOverTime(true);
 
         MessageList ml = validationRule.validate(ipsProject);
@@ -501,7 +501,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_OverwrittenRuleHasNoSuperRule() throws Exception {
         validationRule.setName("TestRule");
-        validationRule.setOverwrite(true);
+        validationRule.setOverriding(true);
 
         MessageList ml = validationRule.validate(ipsProject);
         assertThat(ml, hasMessageCode(IValidationRule.MSGCODE_NOTHING_TO_OVERWRITE));

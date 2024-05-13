@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IOverridableLabeledElement;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 
@@ -22,7 +23,7 @@ import org.faktorips.runtime.model.type.PolicyCmptType;
  * name, message e.g. exist. The actual rule condition is part of the concept of this interface. It
  * has to be implemented within the generated source code.
  */
-public interface IValidationRule extends IProductCmptProperty {
+public interface IValidationRule extends IProductCmptProperty, IOverridableLabeledElement {
 
     String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
@@ -48,7 +49,7 @@ public interface IValidationRule extends IProductCmptProperty {
 
     String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
+    String PROPERTY_OVERRIDING = "overriding"; //$NON-NLS-1$
     /**
      * The separator to concatenate the key. We use the minus character because this character is
      * not allowed in names.
@@ -79,10 +80,10 @@ public interface IValidationRule extends IProductCmptProperty {
      * Validation message code to indicate that an attribute referenced by the rule does not exist.
      */
     String MSGCODE_UNDEFINED_ATTRIBUTE = MSGCODE_PREFIX + "UndefinedAttribute"; //$NON-NLS-1$
-    
+
     /**
-     * Validation message code to indicate that the validation rule is marked overwriting a validation rule in
-     * the super type hierarchy, but there is no such rule.
+     * Validation message code to indicate that the validation rule is marked overwriting a
+     * validation rule in the super type hierarchy, but there is no such rule.
      */
     String MSGCODE_NOTHING_TO_OVERWRITE = MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
@@ -92,7 +93,7 @@ public interface IValidationRule extends IProductCmptProperty {
      */
     String MSGCODE_OVERWRITTEN_RULE_HAS_DIFFERENT_CHANGE_OVER_TIME = MSGCODE_PREFIX
             + "OverwrittenRuleDifferentChangeOverTime"; //$NON-NLS-1$
-    
+
     /**
      * Validation message code to indicate that constant attributes can't be validated.
      */
@@ -151,7 +152,7 @@ public interface IValidationRule extends IProductCmptProperty {
 
     /**
      * Adds the name of an attribute that is evaluated in the rules condition.
-     * 
+     *
      * @param attributeName the name of the validated attribute
      * @return returns the name of the validated attribute
      */
@@ -160,7 +161,7 @@ public interface IValidationRule extends IProductCmptProperty {
     /**
      * Sets the name of a validated attribute at the indexed position. Throws a runtime exception is
      * the position does not exist.
-     * 
+     *
      * @param index the position where the provided attribute name is stored
      * @param attributeName the validated attributes name
      */
@@ -168,7 +169,7 @@ public interface IValidationRule extends IProductCmptProperty {
 
     /**
      * Removes the validated attribute name at the given position.
-     * 
+     *
      * @param index the array position at which the attribute name is stored
      */
     void removeValidatedAttribute(int index);
@@ -180,7 +181,7 @@ public interface IValidationRule extends IProductCmptProperty {
 
     /**
      * Returns the validated attribute at the indexed position.
-     * 
+     *
      * @param index the position of the requested validated attribute
      * @return the validated attribute name
      */
@@ -208,14 +209,14 @@ public interface IValidationRule extends IProductCmptProperty {
     /**
      * Sets the isAttributeValueValidationRule flag that indicates whether this is a default rule or
      * not.
-     * 
+     *
      * @see #isCheckValueAgainstValueSetRule()
      */
     void setCheckValueAgainstValueSetRule(boolean isCheckValueAgainstValueSetRule);
 
     /**
      * returns whether this rule can be configured by a product component.
-     * 
+     *
      * @return <code>true</code> if this rule and its containing {@link PolicyCmptType} are both
      *             configurable, <code>false</code> else.
      */
@@ -223,20 +224,20 @@ public interface IValidationRule extends IProductCmptProperty {
 
     /**
      * Sets a flag indicating whether this rule can be configured by a product component.
-     * 
+     *
      */
     void setConfigurableByProductComponent(boolean configurable);
 
     /**
      * returns whether this rule is activated for newly created product components.
-     * 
+     *
      * @return <code>true</code> if this rule is activated by default, <code>false</code> else.
      */
     boolean isActivatedByDefault();
 
     /**
      * Sets a flag indicating whether this rule is activated for newly created product components.
-     * 
+     *
      */
     void setActivatedByDefault(boolean activated);
 
@@ -244,7 +245,7 @@ public interface IValidationRule extends IProductCmptProperty {
      * Returns the qualified name of the rule. The qualified name of the rule contains the qualified
      * name of the parent object ({@link IPolicyCmptType}) and the name of the rule. The qualified
      * name of a rule is unique within a project and all dependent projects.
-     * 
+     *
      * @return The qualified name of the rule.
      */
     String getQualifiedRuleName();
@@ -266,33 +267,35 @@ public interface IValidationRule extends IProductCmptProperty {
     void setChangingOverTime(boolean changingOverTime);
 
     /**
-     * Returns <code>true</code> if this validation rule overrides the <code>otherValidationRule</code>. This rule
-     * could override a rule of any super type of this rule's type, so <code>this.getType</code>
-     * must be a sub type of <code>otherValidationRule.getType</code>.
-     * 
+     * Returns <code>true</code> if this validation rule overrides the
+     * <code>otherValidationRule</code>. This rule could override a rule of any super type of this
+     * rule's type, so <code>this.getType</code> must be a sub type of
+     * <code>otherValidationRule.getType</code>.
+     *
      * @param otherValidationRule The validation rule that overrides this one.
      */
     boolean overrides(IValidationRule otherValidationRule);
-    
+
     /**
-     * Returns <code>true</code> if this validation rule is marked to overwrite a validation rule with the same
-     * name somewhere up the supertype hierarchy, <code>false</code> otherwise.
+     * Returns <code>true</code> if this validation rule is marked to override a validation rule
+     * with the same name somewhere up the supertype hierarchy, <code>false</code> otherwise.
      */
-    boolean isOverwrite();
-    
+    @Override
+    boolean isOverriding();
+
     /**
-     * <code>true</code> to indicate that this validation rule overwrites a validation rule with the same name
-     * somewhere up the super type hierarchy or <code>false</code> to let this validation rule be a new
-     * one.
+     * <code>true</code> to indicate that this validation rule overwrites a validation rule with the
+     * same name somewhere up the super type hierarchy or <code>false</code> to let this validation
+     * rule be a new one.
      */
-    void setOverwrite(boolean overwrites);
-    
+    void setOverriding(boolean overriding);
+
     /**
      * Returns the first validation rule found with the same name in the super types hierarchy or
      * <code>null</code> if no such validation rule exists.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching.
      */
     IValidationRule findOverwrittenValidationRule(IIpsProject ipsProject) throws IpsException;

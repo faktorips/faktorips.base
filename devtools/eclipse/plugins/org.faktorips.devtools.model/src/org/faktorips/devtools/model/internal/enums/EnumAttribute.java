@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,11 +34,11 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of <code>IEnumAttribute</code>, see the corresponding interface for more details.
- * 
+ *
  * @see org.faktorips.devtools.model.enums.IEnumAttribute
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute {
@@ -67,7 +67,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     /**
      * Creates a new <code>IEnumAttribute</code>.
-     * 
+     *
      * @param parent The <code>IEnumType</code> this <code>IEnumAttribute</code> belongs to.
      * @param id A unique ID for this <code>IEnumAttribute</code>.
      */

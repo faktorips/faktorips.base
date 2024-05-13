@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -132,10 +132,10 @@ public interface IAttribute extends IOverridableLabeledElement, IChangingOverTim
      * Returns the attribute's value data type. If this attribute is linked to a policy component
      * type attribute, the policy component type's value data type is returned. If the attribute is
      * not linked, the attribute's *own* value data type is returned.
-     * 
+     *
      * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @see #getDatatype()
      */
     ValueDatatype findDatatype(IIpsProject project);
@@ -161,6 +161,11 @@ public interface IAttribute extends IOverridableLabeledElement, IChangingOverTim
      */
     boolean isOverwrite();
 
+    @Override
+    default boolean isOverriding() {
+        return isOverwrite();
+    }
+
     /**
      * <code>true</code> to indicate that this attribute overwrites an attribute with the same name
      * somewhere up the super type hierarchy or <code>false</code> to let this attribute be a new
@@ -171,9 +176,9 @@ public interface IAttribute extends IOverridableLabeledElement, IChangingOverTim
     /**
      * Returns the first attribute found with the same name in the super types hierarchy or
      * <code>null</code> if no such attribute exists.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching.
      */
     IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws IpsException;
@@ -187,7 +192,7 @@ public interface IAttribute extends IOverridableLabeledElement, IChangingOverTim
      * Configures this attribute to change or be constant over time. If <code>true</code> every
      * {@link IProductCmptGeneration} may specify a different value for this attribute. If
      * <code>false</code> the value is the same for all generations.
-     * 
+     *
      * @param changesOverTime whether or not this attribute should change over time
      */
     void setChangingOverTime(boolean changesOverTime);

@@ -43,7 +43,7 @@ public class PolicyCmptTypeAttributesTablePageElement extends AttributesTablePag
 
         attributeData.add(polAttribute.isProductRelevant() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         attributeData.add(polAttribute.getAttributeType().getName());
-        attributeData.add(polAttribute.isOverwrite() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
+        attributeData.add(polAttribute.isOverriding() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
         return attributeData;
     }

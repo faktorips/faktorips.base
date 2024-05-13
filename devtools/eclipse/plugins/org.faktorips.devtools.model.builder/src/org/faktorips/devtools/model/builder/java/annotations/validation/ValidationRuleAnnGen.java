@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,8 @@ public class ValidationRuleAnnGen implements IAnnotationGenerator {
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
         XValidationRule xValidationRule = (XValidationRule)modelNode;
         String name = xValidationRule.getName();
-        String msgCode = xValidationRule.getConstantNameMessageCode();
+        String msgCode = xValidationRule.getQualifierForConstantNameMessageCodeIfNecessary()
+                + xValidationRule.getConstantNameMessageCode();
         String severityJavaCode = xValidationRule.getSeverityConstant();
 
         JavaCodeFragmentBuilder annotationLn = new JavaCodeFragmentBuilder().annotationLn(IpsValidationRule.class,

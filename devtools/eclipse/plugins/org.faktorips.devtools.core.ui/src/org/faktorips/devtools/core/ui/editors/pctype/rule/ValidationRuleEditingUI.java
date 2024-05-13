@@ -229,8 +229,8 @@ public class ValidationRuleEditingUI {
      */
     public void bindFields(IValidationRule rule, BindingContext bindingContext) {
         bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
-        bindingContext.bindEnabled(nameField.getTextControl(), rule, IValidationRule.PROPERTY_OVERWRITES, false);
-        bindingContext.bindContent(overwritesCheckbox, rule, IValidationRule.PROPERTY_OVERWRITES);
+        bindingContext.bindEnabled(nameField.getTextControl(), rule, IValidationRule.PROPERTY_OVERRIDING, false);
+        bindingContext.bindContent(overwritesCheckbox, rule, IValidationRule.PROPERTY_OVERRIDING);
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         final InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
                 rule.getMessageText());

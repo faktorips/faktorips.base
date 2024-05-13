@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * Common interface for types, policy component type and product component type. Common for all
  * types is, that a type could have a supertype, could be abstract and could have attributes,
  * associations and methods ({@link ITypePart ITypeParts}).
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabeledElement, IVersionControlledElement {
@@ -114,10 +114,10 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
 
     /**
      * Returns whether this <code>IType</code> has a supertype that really exists.
-     * 
+     *
      * @param ipsProject The <code>IIpsProject</code> providing the object path that is used to
      *            search for the supertype.
-     * 
+     *
      */
     boolean hasExistingSupertype(IIpsProject ipsProject);
 
@@ -125,16 +125,16 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * Returns the type's supertype if the type is derived from a supertype and the supertype can be
      * found on the project's IPS object path. Returns <code>null</code> if either this type is not
      * derived from a supertype or the supertype can't be found on the project's IPS object path.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      */
     IType findSupertype(IIpsProject ipsProject);
 
     /**
      * Sets the type's supertype.
-     * 
+     *
      * @throws IllegalArgumentException If <code>newSupertype</code> is <code>null</code>.
      */
     void setSupertype(String newSupertype);
@@ -143,11 +143,11 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * Returns <code>true</code> if this type is a subtype of the given supertype candidate, returns
      * <code>false</code> otherwise. Returns <code>false</code> if supertype candidate is
      * <code>null</code>.
-     * 
+     *
      * @param supertypeCandidate The type which is possibly a supertype of this type.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      */
     boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject);
 
@@ -155,12 +155,12 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * Returns <code>true</code> if this type is a subtype of the given candidate, or if the
      * candidate is this same. Returns <code>false</code> otherwise. Returns <code>false</code> if
      * candidate is <code>null</code>.
-     * 
+     *
      * @param candidate The type which is possibly a supertype of this type or possible the same
      *            type as this type.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      */
     boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject);
 
@@ -174,7 +174,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * considers overridden attributes. That means if an attribute has been overridden by a subtype
      * this attribute instance will be in the returned array all attributes in the supertype
      * hierarchy with the same name will be neglected.
-     * 
+     *
      * @throws IpsException If an exception occurs while collecting the attributes.
      */
     List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws IpsException;
@@ -184,7 +184,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * <p>
      * Constrained associations are not added to the result if a constraining association is already
      * added.
-     * 
+     *
      * @throws IpsException If an exception occurs while collecting the associations.
      */
     List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws IpsException;
@@ -200,11 +200,11 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Searches an attribute with the given name in the type and its supertype hierarchy and returns
      * it. Returns <code>null</code> if no such attribute exists.
-     * 
+     *
      * @param name The attribute's name.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws NullPointerException If <code>project</code> is <code>null</code>.
      */
     IAttribute findAttribute(String name, IIpsProject ipsProject);
@@ -225,10 +225,10 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * number of attributes - 1 (the last attribute), no attribute is moved down.
      * <p>
      * Returns the new indices of the moved attributes.
-     * 
+     *
      * @param indices The indices identifying the attributes.
      * @param up <code>true</code>, to move the attributes up, <code>false</code> to move them down.
-     * 
+     *
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
      *             attribute.
@@ -242,7 +242,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * If more than one association with the given role name singular exists, the first one is
      * returned. Returns <code>null</code> if no association with the given role name singular
      * exists or <code>roleNameSingular</code> is <code>null</code>.
-     * 
+     *
      * @param roleNameSingular The association's role name singular.
      */
     IAssociation getAssociation(String roleNameSingular);
@@ -254,7 +254,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * If more than one association with the role name plural exist, the first one is returned.
      * Returns <code>null</code> if no association with the given role name plural exists or
      * <code>roleNamePlural</code> is <code>null</code>.
-     * 
+     *
      * @param roleNamePlural The association's role name plural.
      */
     IAssociation getAssociationByRoleNamePlural(String roleNamePlural);
@@ -262,7 +262,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Searches an association with the given name in the type and it's supertype hierarchy and
      * returns it. Returns <code>null</code> if no such association exists.
-     * 
+     *
      * @param name The association's name.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
@@ -272,11 +272,11 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Searches an association with the given role name plural in the type and it's supertype
      * hierarchy and returns it. Returns <code>null</code> if no such association exists.
-     * 
+     *
      * @param roleNamePlural The association's role name in plural form.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws IpsException If an error occurs while searching.
      */
     IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
@@ -289,7 +289,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * <p>
      * Constrained associations are not added to the result if a constraining association is already
      * added.
-     * 
+     *
      * @param target The qualified name of the target type.
      * @param associationType The association type.
      * @param includeSupertypes <code>true</code> if the supertype hierarchy should be included in
@@ -308,7 +308,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Returns all {@link IAssociation associations} that have one of the indicated
      * {@link AssociationType AssociationTypes}.
-     * 
+     *
      * @param types an array of desired {@link AssociationType AssociationTypes}
      */
     List<IAssociation> getAssociations(AssociationType... types);
@@ -318,7 +318,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * association exists or target is <code>null</code>.
      * <p>
      * Note that this does NOT search the supertype hierarchy.
-     * 
+     *
      * @param target The qualified name of the target type.
      */
     List<IAssociation> getAssociationsForTarget(String target);
@@ -339,11 +339,11 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * is the number of associations - 1 (the last association) no association is moved down.
      * <p>
      * Returns an array containing the new indices of the moved associations.
-     * 
+     *
      * @param indices The indices identifying the associations.
      * @param up <code>true</code>, to move the associations up, <code>false</code> to move them
      *            down.
-     * 
+     *
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
      *             association.
@@ -353,7 +353,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Returns all methods of this type including the methods of the types within the supertype
      * hierarchy.
-     * 
+     *
      * @param ipsProject The IPS project that is used to determine the types within the supertype
      *            hierarchy.
      * @throws IpsException If an exception occurs during the execution of this method.
@@ -369,7 +369,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * Returns the first method with the given name and the given parameters in this type. This
      * method does not search the supertype hierarchy. Returns <code>null</code> if no such method
      * exists.
-     * 
+     *
      * @param methodName The method's name.
      * @param datatypes The data types of the method's parameters.
      */
@@ -378,7 +378,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Returns the first method with the given signature. This method does not search the supertype
      * hierarchy. Returns <code>null</code> if no such method exists.
-     * 
+     *
      * @param signature The method's signature, e.g. <code>calcPremium(base.Vertrag, Integer)</code>
      */
     IMethod getMethod(String signature);
@@ -386,12 +386,12 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Searches a method with the given signature in the type and its supertype hierarchy and
      * returns it. Returns <code>null</code> if no such method exists.
-     * 
+     *
      * @param signature The method's signature as string, e.g. <code>computePremium(base.Contract,
      *            base.Coverage)</code>
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws NullPointerException If project is <code>null</code>.
      * @throws IpsException If an error occurs while searching.
      */
@@ -400,12 +400,12 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Searches a method with the given name and the given parameters in the type and its supertype
      * hierarchy and returns it. Returns <code>null</code> if no such method exists.
-     * 
+     *
      * @param name The method's name.
      * @param datatypes The data types of the method's parameters.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws NullPointerException If project is <code>null</code>.
      * @throws IpsException If an error occurs while searching.
      */
@@ -427,10 +427,10 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * methods - 1 (the last method) no method is moved down.
      * <p>
      * Returns an array containing the new indices of the moved methods.
-     * 
+     *
      * @param indices The indices identifying the methods.
      * @param up <code>true</code>, to move the methods up, <code>false</code> to move them down.
-     * 
+     *
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the indices does not identify a method.
      */
@@ -439,7 +439,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Returns a list of methods defined in any of the type's supertypes that can be overridden (and
      * isn't overridden yet).
-     * 
+     *
      * @param onlyNotImplementedAbstractMethods If true only not implemented, abstract methods are
      *            returned.
      * @param ipsProject The project which IPS object path is used for the search. This is not
@@ -476,12 +476,12 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * <p>
      * If you want to find all sub types in the current workspace you have to use
      * {@link #searchSubtypes(boolean, boolean)} to include all projects depending on this project.
-     * 
+     *
      * @param transitive {@code true} to include indirect extending types, {@code false} for only
      *            return direct sub types
      * @param includingSelf {@code true} to include this type in result list
      * @param project the root for finding types
-     * 
+     *
      * @return a list of types extending the current type, directly or indirectly depends on
      *             parameter transitive
      * @see #searchSubtypes(boolean, boolean)
@@ -496,13 +496,13 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
      * To find all sub types the implementation would search in the current project and in every
      * project that depends on the current project. If you want to find only types in one project
      * including depending projects, use {@link #findSubtypes(boolean, boolean, IIpsProject)}.
-     * 
+     *
      * @param transitive {@code true} to include indirect extending types, {@code false} for only
      *            return direct sub types
      * @param includingSelf {@code true} to include this type in the result list
-     * 
+     *
      * @return a list containing every type in the workspace that extends this type
-     * 
+     *
      * @see #findSubtypes(boolean, boolean, IIpsProject)
      */
     List<IType> searchSubtypes(boolean transitive, boolean includingSelf);
@@ -510,7 +510,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     /**
      * Creates new attributes in this type overriding the given attributes. Note that it is not
      * checked, if the attributes really belong to one of the type's super types.
-     * 
+     *
      * @return The created attributes.
      */
     List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes);
@@ -528,7 +528,7 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
 
     /**
      * Creates new association in this type that override the given association with type.
-     * 
+     *
      * @param association that will be constrain
      * @return new created associations
      */
@@ -548,6 +548,11 @@ public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabel
     @Override
     default IOverridableElement findOverriddenElement(IIpsProject ipsProject) {
         return findSupertype(ipsProject);
+    }
+
+    @Override
+    default boolean isOverriding() {
+        return hasSupertype();
     }
 
 }
