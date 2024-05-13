@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Model for Eclipse
 Bundle-SymbolicName: org.faktorips.devtools.model.eclipse;singleton:=true
-Bundle-Version: 22.12.19.qualifier
+Bundle-Version: 22.12.19.release
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
