@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -88,7 +88,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     /**
      * Creates a new validation rule definition.
-     * 
+     *
      * @param pcType The type the rule belongs to.
      * @param id The rule's unique id within the type.
      */
@@ -186,9 +186,10 @@ public class ValidationRule extends TypePart implements IValidationRule {
             String attributeName = getValidatedAttributeAt(0);
             IPolicyCmptTypeAttribute attribute = getPolicyCmptType().getPolicyCmptTypeAttribute(attributeName);
             if (attribute == null) {
-                return;
-            }
-            if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())
+                String text = MessageFormat.format(Messages.ValidationRule_msgMissingAttribute, attributeName);
+                msgList.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
+                        IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
+            } else if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())
                     && attribute.getValueSet().isContainsNull() && !attribute.isProductRelevant()) {
                 String text = Messages.ValidationRule_msgValueSetRule;
                 msgList.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
@@ -556,7 +557,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         }
         return true;
     }
-    
+
     @Override
     public boolean isOverwrite() {
         return overwrites;

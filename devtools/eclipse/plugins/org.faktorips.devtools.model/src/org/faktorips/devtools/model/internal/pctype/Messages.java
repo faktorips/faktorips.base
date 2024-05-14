@@ -103,6 +103,7 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;
     public static String PolicyCmptTypeAttribute_msg_ConstantCantBeAbstract;
     public static String PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType;
+    public static String PolicyCmptTypeAttribute_msg_EmptyMandatoryValueSet;
     public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
     public static String PolicyCmptTypeAttribute_OverwrittenAttributeDisabledGenericValidation;
 
@@ -121,6 +122,7 @@ public class Messages extends NLS {
     public static String ValidationRule_msgNoNewlineAllowed;
     public static String ValidationRule_msgCodeShouldBeProvided;
     public static String ValidationRuleMessageText_warning_invalidParameter;
+    public static String ValidationRule_msgMissingAttribute;
     public static String ValidationRule_msgNothingToOverwrite;
     public static String ValidationRule_msgOverwritten_ChangingOverTimeAttribute_different;
 

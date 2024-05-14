@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,11 +12,9 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.util.EnumSet;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -92,12 +90,6 @@ public class RulesSection extends SimpleIpsPartsSection {
                 String[] attrNames = rule.getValidatedAttributes();
                 if (attrNames.length == 1) {
                     IPolicyCmptTypeAttribute attr = getPcType().getPolicyCmptTypeAttribute(attrNames[0]);
-                    if (attr == null) {
-                        String msg = NLS.bind(Messages.RulesSection_msgMissingAttribute, attrNames[0]);
-                        MessageDialog.openInformation(getShell(), Messages.RulesSection_titleMissingAttribute, msg);
-                        rule.delete();
-                        return null;
-                    }
                     AttributeEditDialog dialog = new AttributeEditDialog(attr, getShell());
                     dialog.showValidationRulePage();
                     dialog.setDataChangeable(isDataChangeable());
@@ -111,7 +103,7 @@ public class RulesSection extends SimpleIpsPartsSection {
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveRules(indexes, up);
         }
-        
+
         @Override
         public void overrideClicked() {
             OverrideRuleDialog dialog = new OverrideRuleDialog(getPcType(), getShell());

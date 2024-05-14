@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.pctype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.not;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -430,6 +432,37 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateEmptyMandatory() {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("mandatory");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.getValueSet().setContainsNull(false);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_EMPTY_MANDATORY_VALUESET));
+        assertThat(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_EMPTY_MANDATORY_VALUESET),
+                hasSeverity(Severity.WARNING));
+    }
+
+    @Test
+    public void testValidateEmptyMandatory_AbstractIsOk() {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("mandatory");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.getValueSet().setContainsNull(false);
+        attribute.getValueSet().setAbstract(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
     public void testValidateNothingToOverwrite() throws Exception {
         attribute.setName("name");
 
@@ -538,18 +571,19 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetType(ValueSetType.ENUM);
         attribute.setDatatype(enumType.getQualifiedName());
         attribute.setName("enumAttr");
+        attribute.getValueSet().setContainsNull(true);
         pcType.setConfigurableByProductCmptType(true);
 
         attribute.setValueSetConfiguredByProduct(true);
         MessageList messageList = attribute.validate(ipsProject);
 
-        assertThat(messageList.size(), is(0));
+        assertThat(messageList, isEmpty());
 
         attribute.setValueSetConfiguredByProduct(false);
         messageList = attribute.validate(ipsProject);
 
         assertThat(messageList.size(), is(1));
-        assertThat(messageList.getMessage(0).getCode(), is(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE));
+        assertThat(messageList, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE));
     }
 
     @Test

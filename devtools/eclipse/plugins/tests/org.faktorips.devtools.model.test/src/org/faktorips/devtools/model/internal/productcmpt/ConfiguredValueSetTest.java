@@ -14,6 +14,7 @@ import static org.faktorips.abstracttest.matcher.ValueSetMatchers.contains;
 import static org.faktorips.abstracttest.matcher.ValueSetMatchers.empty;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -228,6 +229,39 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_MandatoryValueSetIsEmpty() {
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        attribute.setDatatype("Integer");
+        attribute.getValueSet().setContainsNull(false);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+    }
+
+    @Test
+    public void testValidate_MandatoryValueSetIsEmptyInModel() {
+        attribute.setDatatype("Integer");
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        attribute.getValueSet().setContainsNull(false);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+    }
+
+    @Test
+    public void testValidate_MandatoryValueSetIsAbstractInModel() {
+        attribute.setDatatype("Integer");
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        attribute.getValueSet().setContainsNull(false);
+        attribute.getValueSet().setAbstract(true);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
     public void testValidate_ValueSetTypeMismatch() {
         setUpRangeIntegerAttr();
 
@@ -332,6 +366,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
     private void setUpRangeIntegerAttr() {
         attribute.setValueSetType(ValueSetType.RANGE);
+        attribute.getValueSet().setContainsNull(true);
         attribute.setDatatype("Integer");
     }
 

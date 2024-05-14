@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -59,10 +59,10 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
  * <p>
  * To be used wherever a validation rule (definition) is created via GUI. A {@link BindingContext}
  * is used to link model and UI.
- * 
+ *
  * @see RuleEditDialog
  * @see AttributeEditDialog
- * 
+ *
  */
 public class ValidationRuleEditingUI {
 
@@ -96,7 +96,7 @@ public class ValidationRuleEditingUI {
      * <p>
      * Call {@link #bindFields(IValidationRule, BindingContext)} to connect/bind the controls to a
      * specific {@link IValidationRule}.
-     * 
+     *
      * @param workArea composite to create the controls in
      */
     public void initUI(Composite workArea) {
@@ -125,7 +125,7 @@ public class ValidationRuleEditingUI {
 
         Text msgText = uiToolkit.createMultilineText(textGroup);
         GridData msgTextLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        msgTextLayoutData.heightHint = 50;
+        msgTextLayoutData.heightHint = 100;
         msgTextLayoutData.widthHint = UIToolkit.DEFAULT_WIDTH;
         msgText.setLayoutData(msgTextLayoutData);
         msgText.addModifyListener($ -> updateCharCount());
@@ -222,7 +222,7 @@ public class ValidationRuleEditingUI {
     /**
      * Binds all of this UI's controls to the given {@link IValidationRule} and
      * {@link BindingContext}.
-     * 
+     *
      * @param rule the {@link IValidationRule} to connect/bind the UI to. The bound rule can then be
      *            edited by the controls created by this class.
      * @param bindingContext the {@link BindingContext} to remove bindings from
@@ -286,7 +286,7 @@ public class ValidationRuleEditingUI {
      * <p>
      * If this method returns <code>true</code> all fields and controls available through getters
      * have been initialized.
-     * 
+     *
      * @return <code>true</code> if the ui for a validation rule has been initialized,
      *             <code>false</code> otherwise.
      */
@@ -296,7 +296,7 @@ public class ValidationRuleEditingUI {
 
     /**
      * Removes all bindings for this UI's controls from the given context.
-     * 
+     *
      * @param bindingContext the {@link BindingContext} to remove bindings from
      */
     public void removeBindingsFromContext(BindingContext bindingContext) {

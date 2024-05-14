@@ -395,7 +395,7 @@
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
-        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse@1:true"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
