@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -93,12 +93,13 @@ public class XmlBindingSupportHelper<JAXBContext> implements IXmlBindingSupport<
     /**
      * JAXB uses the class loader from the thread context. By default, the thread context class
      * loader is not aware of OSGi and thus doesn't see any of the classes imported in the bundle.
-     * 
+     *
      * If a {@link SecurityManager} is used the {@link ClassLoader} is loaded with
      * {@link java.security.AccessController#doPrivileged(java.security.PrivilegedAction)}.
-     * 
+     *
      * @return the context {@code ClassLoader} for this thread, or {@code null}
      */
+    @SuppressWarnings({ "removal", "deprecation", "javadoc" })
     private static ClassLoader getPrivilegedCurrentThreadContextClassLoader() {
         if (System.getSecurityManager() == null) {
             return Thread.currentThread().getContextClassLoader();
