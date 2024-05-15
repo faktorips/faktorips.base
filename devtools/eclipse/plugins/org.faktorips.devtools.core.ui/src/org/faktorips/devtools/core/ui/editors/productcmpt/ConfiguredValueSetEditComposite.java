@@ -50,20 +50,23 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        if (getProperty().isRelevanceConfiguredByProduct()) {
-            editFields.add(createAttributeRelevanceEditField());
-        }
-        if (getProperty().isValueSetConfiguredByProduct()) {
-            EditField<?> valueSetEditField;
-            if (isBooleanDatatype()) {
-                valueSetEditField = createValueSetEditFieldForBoolean();
-            } else {
-                valueSetEditField = createValueSetField();
+        IPolicyCmptTypeAttribute property = getProperty();
+        if (property != null) {
+            if (property.isRelevanceConfiguredByProduct()) {
+                editFields.add(createAttributeRelevanceEditField());
             }
-            editFields.add(valueSetEditField);
-            createTemplateStatusButton(valueSetEditField);
+            if (property.isValueSetConfiguredByProduct()) {
+                EditField<?> valueSetEditField;
+                if (isBooleanDatatype()) {
+                    valueSetEditField = createValueSetEditFieldForBoolean();
+                } else {
+                    valueSetEditField = createValueSetField();
+                }
+                editFields.add(valueSetEditField);
+                createTemplateStatusButton(valueSetEditField);
+            }
+            addOverlaysToEditFields(editFields);
         }
-        addOverlaysToEditFields(editFields);
     }
 
     private boolean isBooleanDatatype() {
