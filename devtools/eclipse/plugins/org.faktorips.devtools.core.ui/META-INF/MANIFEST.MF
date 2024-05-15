@@ -165,5 +165,6 @@ Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.faktorips.runtime.test,
  org.faktorips.runtime.util,
  org.faktorips.util,
+ org.faktorips.util.collections,
  org.faktorips.util.memento,
  org.faktorips.values

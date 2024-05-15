@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
@@ -41,10 +40,11 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.collections.IdentityHashSet;
 
 /**
  * Implementation of the product component structure
- * 
+ *
  * @author Thorsten Guenther
  */
 public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
@@ -61,12 +61,12 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     /**
      * Creates a new ProductCmptStructure for the given product component and the given date.
-     * 
+     *
      * @param root The product component to create a structure for.
      * @param date The date the structure has to be valid for. That means that the relations between
      *            the product components represented by this structure are valid for the given date.
      * @param project The ips project which ips object path is used as search path.
-     * 
+     *
      * @throws CycleInProductStructureException if a cycle is detected.
      * @throws NullPointerException if the given product component is <code>null</code> or the given
      *             date is <code>null</code>.
@@ -162,7 +162,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             return setWithAll;
         }
 
-        Set<IProductCmptStructureReference> result = new HashSet<>();
+        Set<IProductCmptStructureReference> result = new IdentityHashSet<>();
         result.add(root);
         addChildrenToList(root, result, productCmptOnly);
 
@@ -177,7 +177,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     /**
      * Requests all children from the given parent and add them to the given list.
-     * 
+     *
      * @param parent The parent to get the children from.
      * @param set The set to add the children to.
      * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>
@@ -197,7 +197,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * Adds all given references to the given list and requests the children for the added ones
      * recursively.
-     * 
+     *
      * @param children The array of child-references to add to the list.
      * @param set The list to add the children to.
      * @param productCmptOnly <code>true</code> to only get references to <code>IProductCmpt</code>
@@ -227,7 +227,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
     /**
      * Creates child nodes for the given parent. The children are created out of the given
      * relations.
-     * 
+     *
      * @param links The relations to create nodes for.
      * @param parent The parent for the new nodes
      */
@@ -256,7 +256,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     /**
      * Creates new child nodes for the given element and parent.
-     * 
+     *
      * @param element The element the new children can be found in as relation-targets.
      * @param parent The parent node for the new children.
      */

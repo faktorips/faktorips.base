@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeSt
 
 /**
  * Abstract reference for <code>ProductCmptStructure</code>.
- * 
+ *
  * @author Thorsten Guenther
  */
 public abstract class ProductCmptStructureReference extends PlatformObject implements IProductCmptStructureReference {
@@ -41,7 +41,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         this.structure = structure;
         this.parent = parent;
         children = new ProductCmptStructureReference[0];
-        detectCycle(new ArrayList<IIpsElement>());
+        detectCycle(new ArrayList<>());
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     }
 
     /**
-     * /** {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public boolean equals(Object obj) {
@@ -117,10 +117,11 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
             return false;
         }
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
-        return Objects.equals(parent, other.parent)
+        return parent == other.parent
                 && Objects.equals(structure, other.structure)
-                && Objects.equals(getWrapped(), other.getWrapped())
-                && Objects.equals(getWrappedIpsObject(), other.getWrappedIpsObject());
+                && Objects.equals(getWrapped().getId(), other.getWrapped().getId())
+                && Objects.equals(getWrappedIpsObject().getQualifiedName(),
+                        other.getWrappedIpsObject().getQualifiedName());
     }
 
     @Override
@@ -135,10 +136,9 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (getStructure() != null) {
             hash = 31 * hash + getStructure().hashCode();
         }
-        /*
-         * Hash of parent is ignored because its calculation is too inefficient. It would calculate
-         * the hash code of all parents recursively. Same parent is not very often case.
-         */
+        if (parent != null) {
+            hash = 31 * hash + System.identityHashCode(parent);
+        }
         return hash;
     }
 

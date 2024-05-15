@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -22,9 +23,12 @@ import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -42,11 +46,12 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Tests for product component structure.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
@@ -179,6 +184,82 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
         Set<IProductCmptStructureReference> array = structure.toSet(true);
         assertThat(array.size(), is(6));
         // -> 3 table references: two different tables, with one in two different links
+    }
+
+    @Ignore
+    @Test
+    /*
+     * This test creates a large, strongly interconnected product to test the performance of the
+     * toSet method. We don't need to run it regularly, but the setup remains here for future tests
+     */
+    public void testToSet_Large() throws Exception {
+        long start = System.currentTimeMillis();
+        PolicyCmptType a = newPolicyAndProductCmptType(ipsProject, "A", "PA");
+        ProductCmptType pa = (ProductCmptType)a.findProductCmptType(ipsProject);
+        addLayers(a, pa, 5);
+        ProductCmpt prod = newProductCmpt(pa, "Prod");
+        addChildren(prod);
+        long createdProducts = System.currentTimeMillis();
+        System.out.println("Creating " + ipsProject.findAllIpsSrcFiles().size() + " products took "
+                + ((createdProducts - start) / 1000) + "s");
+
+        structure = prod.getStructure(new GregorianCalendar(), ipsProject);
+        long createdStructure = System.currentTimeMillis();
+        System.out.println("Creating structure took " + ((createdStructure - createdProducts) / 1000) + "s");
+
+        Set<IProductCmptStructureReference> set = structure.toSet(false);
+        long createdSet = System.currentTimeMillis();
+        System.out.println("Creating set took " + ((createdSet - createdStructure) / 1000) + "s");
+
+        assertEquals(661937, set.size());
+    }
+
+    private void addLayers(PolicyCmptType pol, ProductCmptType prod, int layers) {
+        if (layers > 0) {
+            for (int i = 0; i < 2; i++) {
+                char c = 'A';
+                c += i;
+                String name = pol.getName() + c;
+                PolicyCmptType a = newPolicyAndProductCmptType(ipsProject, name, "P" + name);
+                ProductCmptType pa = (ProductCmptType)a.findProductCmptType(ipsProject);
+                IPolicyCmptTypeAssociation ass = pol.newPolicyCmptTypeAssociation();
+                ass.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+                ass.setTargetRoleSingular(a.getName());
+                ass.setTarget(a.getQualifiedName());
+                IProductCmptTypeAssociation pass = prod.newProductCmptTypeAssociation();
+                pass.setAssociationType(AssociationType.AGGREGATION);
+                pass.setTargetRoleSingular(pa.getName());
+                pass.setTarget(pa.getQualifiedName());
+                addLayers(a, pa, layers - 1);
+            }
+        }
+        pol.getIpsSrcFile().save(null);
+        prod.getIpsSrcFile().save(null);
+    }
+
+    private void addChildren(IProductCmpt prod) {
+        IProductCmptType prodCmptType = prod.findProductCmptType(ipsProject);
+        for (IProductCmptTypeAssociation pass : prodCmptType.getProductCmptTypeAssociations()) {
+            IProductCmptType targetProductCmptType = pass.findTargetProductCmptType(ipsProject);
+            for (int i = 0; i < 5; i++) {
+                String name = "prod." + prodCmptType.getName() + targetProductCmptType.getName() + i;
+                IProductCmpt targetProd = ipsProject.findProductCmpt(name);
+                if (targetProd == null) {
+                    targetProd = newProductCmpt(targetProductCmptType, name);
+                    addChildren(targetProd);
+                }
+                IProductCmptLink link = prod.newLink(pass);
+                link.setTarget(name);
+            }
+            for (int i = 5; i < 7; i++) {
+                String name = "prod." + prod.getName() + targetProductCmptType.getName() + i;
+                IProductCmpt targetProd = newProductCmpt(targetProductCmptType, name);
+                addChildren(targetProd);
+                IProductCmptLink link = prod.newLink(pass);
+                link.setTarget(name);
+            }
+        }
+        prodCmptType.getIpsSrcFile().save(null);
     }
 
     @Test

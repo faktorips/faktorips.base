@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +31,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStruct
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.util.collections.IdentityHashSet;
 
 /**
  * This tree status holds a map of {@link IProductCmpt} to a Map of {@link IProductCmptLink} and
@@ -39,7 +39,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAs
  * the product component. This structure is useful, because for every {@link IProductCmpt} the
  * status of all children links have to be the same. Using this map, you could only store those
  * equal structures.
- * 
+ *
  * @author dirmeier
  */
 public class DeepCopyTreeStatus extends PresentationModelObject {
@@ -71,7 +71,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
 
     /**
      * Initializes the tree status for all references in the structure with default values
-     * 
+     *
      * @param structure the structure containing all references a status should be initialized for
      */
     public void initialize(IProductCmptTreeStructure structure) {
@@ -111,7 +111,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     /**
      * Getting the status for a {@link IProductCmptStructureReference}. If there is no such status,
      * a new status with default values is created. Never returns null.
-     * 
+     *
      * @param reference the link you want to get the status for
      * @return The status for the link maybe a new one with default values
      */
@@ -174,7 +174,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * in this case, <code>null</code> is passed for "checked" and "copyOrLink", the new
      * {@link LinkStatus} will be initialized with the default values <code>true</code> and COPY
      * respectively.
-     * 
+     *
      * @param reference The {@link IIpsObjectPart} the status should be updated for
      * @param checked the checked status or null to preserve the previous value (if any)
      * @param copyOrLink the copy or link status or null to preserve the previous value (if any)
@@ -235,7 +235,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
 
     /**
      * Getting the {@link IProductCmpt} for a part of a {@link IProductCmptGeneration}
-     * 
+     *
      * @throws IllegalArgumentException if the parameter is no part of
      *             {@link IProductCmptGeneration}
      */
@@ -255,7 +255,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * Getting the checked state of a reference. For {@link IProductCmptTypeAssociationReference}
      * the checked status is derived from its children. The checked status of the root node is
      * always true.
-     * 
+     *
      * @param reference the reference you want to get the status for
      * @return true if the reference is checked.
      */
@@ -283,7 +283,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * Setting the checked status for the give {@link IProductCmptStructureReference}. If the
      * reference is a {@link IProductCmptTypeAssociationReference} the status is set for all
      * children.
-     * 
+     *
      * @param reference the reference you want to change the status for
      * @param value the new status of the reference
      */
@@ -316,7 +316,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     /**
      * Setting the copy or link status for the give {@link IProductCmptStructureReference}. If the
      * reference is a {@link IProductCmptTypeAssociationReference} this method do nothing
-     * 
+     *
      * @param reference the reference you want to change the status for
      * @param value the new status of the reference
      */
@@ -335,7 +335,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * Returns true if this reference is enabled. A Reference is enabled when itself and all the
      * parent elements are checked and all parent elements are marked to copy. Returns false if this
      * reference or one of its parents is not checked or any parent is linked.
-     * 
+     *
      * @param reference A reference you want to know the enable state for
      * @return true if this reference is enabled, false otherwise
      */
@@ -356,7 +356,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * Getting the copy or link status of the specified reference. If the reference is of type
      * {@link IProductCmptTypeAssociationReference} the linked status is always
      * {@link CopyOrLink#UNDEFINED}.
-     * 
+     *
      * @param reference the reference you want to get the linked status for
      * @return true if the reference should be linked, false to copy the reference
      */
@@ -375,18 +375,18 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      * Getting all {@link IProductCmptStructureReference} of the given structure that should be
      * copied or linked. By the boolean includeAssociations you could specify whether to check the
      * status of associations (in contrary to compositions/aggregations) or not.
-     * 
+     *
      * @param copyOrLink Whether to get only references that are marked as copied or linked
      * @param structure the structure to get the references from
      * @param includeAssociations whether to include associations or only include
      *            compositions/aggregations
-     * 
+     *
      * @return a set of {@link IProductCmptReference}s that are marked to be copied or linked
      */
     public Set<IProductCmptStructureReference> getAllEnabledElements(CopyOrLink copyOrLink,
             IProductCmptTreeStructure structure,
             boolean includeAssociations) {
-        HashSet<IProductCmptStructureReference> result = new HashSet<>();
+        Set<IProductCmptStructureReference> result = new IdentityHashSet<>();
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
             if ((reference instanceof IProductCmptTypeAssociationReference)
@@ -405,7 +405,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public Set<IProductCmptStructureReference> getAllElements(CopyOrLink copyOrLink,
             IProductCmptTreeStructure structure,
             boolean includeAssociations) {
-        HashSet<IProductCmptStructureReference> result = new HashSet<>();
+        Set<IProductCmptStructureReference> result = new IdentityHashSet<>();
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
             if ((reference instanceof IProductCmptTypeAssociationReference)
