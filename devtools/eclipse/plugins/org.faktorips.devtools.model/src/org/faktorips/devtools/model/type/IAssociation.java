@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.productcmpttype.AggregationKind;
 /**
  * An association is a directed relationship from one type (the source) to another (the target). The
  * association is stored as part of the source type.
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IAssociation extends IOverridableLabeledElement, ITypePart {
@@ -130,7 +130,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
             + "ConstraintedSubsetDerivedUnion"; //$NON-NLS-1$
 
     /**
-     * 
+     *
      */
     String MSGCODE_CONSTRAIN_INVALID_MATCHING_ASSOCIATION = MSGCODE_PREFIX
             + "ConstrainInvalidMatchingAssociation"; //$NON-NLS-1$
@@ -220,7 +220,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
 
     /**
      * Sets the association's type.
-     * 
+     *
      * @throws NullPointerException If <code>newType</code> is <code>null</code>.
      */
     void setAssociationType(AssociationType newType);
@@ -249,10 +249,10 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
     /**
      * Returns the target type or <code>null</code> if either this association hasn't got a target
      * or the target does not exist.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws IpsException If an error occurs while searching for the target.
      */
     IType findTarget(IIpsProject ipsProject) throws IpsException;
@@ -298,7 +298,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * Returns if the target role plural is required (or not) based on the associations's maximum
      * cardinality and the artifact builderset's information if it needs the plural form for to-1
      * relations.
-     * 
+     *
      * @see IIpsArtefactBuilderSet#isRoleNamePluralRequiredForTo1Relations()
      */
     boolean isTargetRolePluralRequired();
@@ -383,7 +383,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * <p>
      * A constraining association is able to constrain the target type of an association to a
      * subtype.
-     * 
+     *
      * @return <code>true</code> if this association constrains another association of the super
      *             type
      */
@@ -391,7 +391,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
 
     /**
      * Sets the information if this association constrains an super association.
-     * 
+     *
      * @param constrains <code>true</code> to set this association should constrain another
      *            association of the super type
      * @see #isConstrain()
@@ -431,10 +431,10 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * union, otherwise <code>false</code>. Returns <code>false</code> if derived union is
      * <code>null</code>. This method does not check if the given association is *really* a derived
      * union.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws IpsException If an error occurs while searching for the derived union.
      */
     boolean isSubsetOfDerivedUnion(IAssociation derivedUnion, IIpsProject ipsProject) throws IpsException;
@@ -445,10 +445,10 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * if the association referred by this one as a derived union is <strong>really</strong> a
      * derived union. It just returns the association that is defined as being subsetted by this
      * one.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws IpsException If an error occurs while searching.
      */
     IAssociation findSubsettedDerivedUnion(IIpsProject ipsProject) throws IpsException;
@@ -460,7 +460,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * same or a supertype of this association's target.
      * <p>
      * Returns an empty array if no such associations exist.
-     * 
+     *
      * @throws IpsException If an error occurs while searching.
      */
     IAssociation[] findDerivedUnionCandidates(IIpsProject ipsProject) throws IpsException;
@@ -468,7 +468,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
     /**
      * This method looks for an association with the same name in the super type hierarchy. It
      * starts with the supertype and returns the first association found with the same name.
-     * 
+     *
      * @param ipsProject The project used to search from
      * @return an association with the same name and target found in the super type hierarchy
      * @throws IpsException in case of a core exception in the finder methods
@@ -480,7 +480,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * that is not marked as "constrains" (@see {@link #isConstrain()}. This method does not respect
      * whether this association marked as "constrains" or not, hence if it not constrains another
      * association this method returns the association that would be constrained by this method.
-     * 
+     *
      * @param ipsProject The {@link IIpsProject} used to search in the type hierarchy
      * @return The association that is constrained by this one
      */
@@ -488,7 +488,7 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
 
     /**
      * Searches for a matching association on the other side of the model.
-     * 
+     *
      * @return The association that is matching by this one
      */
     IAssociation findMatchingAssociation();

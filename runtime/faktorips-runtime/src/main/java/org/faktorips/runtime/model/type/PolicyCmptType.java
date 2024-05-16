@@ -255,7 +255,12 @@ public class PolicyCmptType extends Type {
      *             <code>name</code> exists
      */
     public ValidationRule getValidationRule(String name) {
-        return validationRuleFinder(name);
+        ValidationRule rule = validationRuleFinder(name);
+        if (rule == null) {
+            throw new IllegalArgumentException(
+                    "The type " + this + " (or one of its supertypes) hasn't got the validation rule \"" + name + "\"");
+        }
+        return rule;
     }
 
     /**
@@ -284,13 +289,21 @@ public class PolicyCmptType extends Type {
         return validationRules.containsKey(IpsStringUtils.toLowerFirstChar(name));
     }
 
+    /**
+     * Returns whether the {@link ValidationRule} with the given <code>name</code> is declared in
+     * this type or in any supertype.
+     *
+     * @param name the name of the {@link ValidationRule}
+     * @return <code>true</code> if the {@link ValidationRule} is declared in this type or in any
+     *             supertype, <code>false</code> if not
+     */
+    public boolean isValidationRulePresent(String name) {
+        return validationRuleFinder(name) != null;
+    }
+
     private ValidationRule validationRuleFinder(String name) {
         ValidationRuleFinder finder = new ValidationRuleFinder(name);
         finder.visitHierarchy(this);
-        if (finder.validationRule == null) {
-            throw new IllegalArgumentException(
-                    "The type " + this + " (or one of its supertypes) hasn't got the validation rule \"" + name + "\"");
-        }
         return finder.validationRule;
     }
 

@@ -15,7 +15,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -67,6 +69,21 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return getValidationRule().isCheckValueAgainstValueSetRule();
     }
 
+    public boolean isOverwrite() {
+        return getValidationRule().isOverriding();
+    }
+
+    public boolean isDifferentMessageCodeInOverridingRule() {
+        return isOverwrite() && !Objects.equals(getOverwrittenRuleNode().getMessageCode(), getMessageCode());
+    }
+
+    public boolean isSignatureChanged() {
+        if (!isOverwrite()) {
+            return false;
+        }
+        return getOverwrittenRuleNode().getCreateMessageParameters().size() != getCreateMessageParameters().size();
+    }
+
     public XPolicyAttribute getCheckedAttribute() {
         IAttribute attr = getValidationRule().getType().getAttribute(getValidationRule().getValidatedAttributeAt(0));
         return getModelNode(attr, XPolicyAttribute.class);
@@ -82,6 +99,28 @@ public class XValidationRule extends AbstractGeneratorModelNode {
 
     public LinkedHashSet<String> getReplacementParameters() {
         return convertToJavaParameters(getValidationRule().getMessageText().getReplacementParameters());
+    }
+
+    public String getReplacementParametersForOverwrittingRule() {
+        LinkedHashSet<String> superReplacementParameters = getOverwrittenRuleNode().getReplacementParameters();
+        LinkedHashSet<String> replacementParameters = getReplacementParameters();
+        if (replacementParameters.isEmpty()) {
+            return "";
+        }
+        ArrayList<String> parameters = new ArrayList<>();
+        for (String replacementParameter : replacementParameters) {
+            if (superReplacementParameters.contains(replacementParameter)) {
+                parameters.add("message.getReplacementValue(\"" + replacementParameter + "\")");
+            } else {
+                parameters.add("null");
+            }
+        }
+        return parameters.stream().collect(Collectors.joining(" ,", " ,", ""));
+    }
+
+    private XValidationRule getOverwrittenRuleNode() {
+        IValidationRule overwrittenRule = getValidationRule().findOverwrittenValidationRule(getIpsProject());
+        return getModelNode(overwrittenRule, getClass());
     }
 
     public String getDefaultLocale() {
@@ -146,6 +185,16 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         }
         upperCaseName = upperCaseName.toUpperCase();
         return "MSG_CODE_" + upperCaseName;
+    }
+
+    public String getQualifierForConstantNameMessageCodeIfNecessary() {
+        if (isOverwrite() && getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())) {
+            XPolicyCmptClass xPolicyCmptClass = getModelService()
+                    .getModelNode(getIpsObjectPartContainer().getIpsObject(), XPolicyCmptClass.class, getContext());
+            return xPolicyCmptClass.getInterfaceName() + '.';
+        } else {
+            return "";
+        }
     }
 
     public String getMessageCode() {

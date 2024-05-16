@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
@@ -35,6 +36,8 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IOverridableElement;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.MarkerEnumUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
@@ -82,9 +85,11 @@ public class ValidationRule extends TypePart implements IValidationRule {
      */
     private boolean checkValueAgainstValueSetRule = false;
 
+    private boolean overrides;
+
     /**
      * Creates a new validation rule definition.
-     * 
+     *
      * @param pcType The type the rule belongs to.
      * @param id The rule's unique id within the type.
      */
@@ -122,6 +127,29 @@ public class ValidationRule extends TypePart implements IValidationRule {
         validateMarker(list, ipsProject);
 
         validateChangingOverTimeFlag(list);
+
+        validateOverridingValidationRule(list, ipsProject);
+    }
+
+    private void validateOverridingValidationRule(MessageList result, IIpsProject ipsProject) {
+        if (overrides) {
+            IValidationRule superRule = findOverwrittenValidationRule(ipsProject);
+            if (superRule == null) {
+                String text = MessageFormat.format(Messages.ValidationRule_msgNothingToOverwrite, getName());
+                result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this,
+                        PROPERTY_OVERRIDING, PROPERTY_NAME));
+            } else {
+                validateAgainstOverwrittenValidationRule(result, superRule);
+            }
+        }
+    }
+
+    private void validateAgainstOverwrittenValidationRule(MessageList result, IValidationRule superRule) {
+        if (isChangingOverTime() != superRule.isChangingOverTime()) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_RULE_HAS_DIFFERENT_CHANGE_OVER_TIME,
+                    Messages.ValidationRule_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
+                    PROPERTY_CHANGING_OVER_TIME));
+        }
     }
 
     private void validateChangingOverTimeFlag(MessageList result) {
@@ -162,9 +190,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 String text = MessageFormat.format(Messages.ValidationRule_msgMissingAttribute, attributeName);
                 msgList.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
                         IValidationRule.PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
-            }
-
-            if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())
+            } else if (ValueSetType.UNRESTRICTED.equals(attribute.getValueSet().getValueSetType())
                     && attribute.getValueSet().isContainsNull() && !attribute.isProductRelevant()) {
                 String text = Messages.ValidationRule_msgValueSetRule;
                 msgList.add(new Message("", text, Message.ERROR, this, //$NON-NLS-1$
@@ -277,6 +303,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
         configurableByProductComponent = XmlUtil.getBooleanAttributeOrFalse(element,
                 PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
+        overrides = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERRIDING);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
@@ -333,6 +360,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_NAME, name);
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
+        if (overrides) {
+            newElement.setAttribute(PROPERTY_OVERRIDING, "" + overrides); //$NON-NLS-1$
+        }
         if (checkValueAgainstValueSetRule) {
             newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE,
                     String.valueOf(checkValueAgainstValueSetRule));
@@ -519,5 +549,44 @@ public class ValidationRule extends TypePart implements IValidationRule {
         List<String> oldMarkers = markers;
         markers = newMarkers;
         valueChanged(oldMarkers, newMarkers, PROPERTY_MARKERS);
+    }
+
+    @Override
+    public boolean overrides(IValidationRule other) {
+        if (equals(other) || !getType().isSubtypeOf(other.getType(), other.getIpsProject())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isOverriding() {
+        return overrides;
+    }
+
+    @Override
+    public void setOverriding(boolean overwrites) {
+        boolean old = overrides;
+        overrides = overwrites;
+        valueChanged(old, overwrites, PROPERTY_OVERRIDING);
+    }
+
+    @Override
+    public IValidationRule findOverwrittenValidationRule(IIpsProject ipsProject) throws IpsException {
+        IPolicyCmptType supertype = (IPolicyCmptType)((IType)getIpsObject()).findSupertype(ipsProject);
+        if (supertype == null) {
+            return null;
+        }
+        IValidationRule candidate = supertype.findValidationRule(name, ipsProject);
+        if (candidate == this) {
+            // can happen if we have a cycle in the type hierarchy!
+            return null;
+        }
+        return candidate;
+    }
+
+    @Override
+    public IOverridableElement findOverriddenElement(IIpsProject ipsProject) {
+        return findOverwrittenValidationRule(ipsProject);
     }
 }

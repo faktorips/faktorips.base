@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.util.EnumSet;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.OverrideRuleDialog;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.RuleEditDialog;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -66,7 +68,7 @@ public class RulesSection extends SimpleIpsPartsSection {
 
         RulesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
             super(pdObject, parent, getSite(), EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_DELETE,
-                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
+                    Option.CAN_MOVE, Option.CAN_OVERRIDE, Option.SHOW_EDIT_BUTTON, Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
                     Option.RENAME_REFACTORING_SUPPORTED), toolkit);
 
         }
@@ -100,6 +102,15 @@ public class RulesSection extends SimpleIpsPartsSection {
         @Override
         protected int[] moveParts(int[] indexes, boolean up) {
             return getPcType().moveRules(indexes, up);
+        }
+
+        @Override
+        public void overrideClicked() {
+            OverrideRuleDialog dialog = new OverrideRuleDialog(getPcType(), getShell());
+            if (dialog.open() == Window.OK) {
+                getPcType().overrideValidationRules(dialog.getSelectedParts());
+                refresh();
+            }
         }
 
         private class ContentProvider implements IStructuredContentProvider {

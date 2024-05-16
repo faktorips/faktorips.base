@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -86,7 +86,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Implementation of IProductCmptType.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ProductCmptType extends Type implements IProductCmptType {
@@ -243,11 +243,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Returns the {@link IProductCmptProperty} corresponding to the provided
      * {@link org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference} or
      * {@code null} if no such property is found.
-     * 
+     *
      * @param reference the
      *            {@link org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference}
      *            to search the corresponding {@link IProductCmptProperty} for
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      * @deprecated for removal since 22.6
      */
@@ -341,7 +341,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * searches the supertype hierarchy.
      * <p>
      * Note this is a model internal method, it is not part of the published interface.
-     * 
+     *
      */
     public Map<String, IProductCmptProperty> findProductCmptPropertyMap(IIpsProject ipsProject) {
         ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(null, true, ipsProject);
@@ -354,7 +354,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * searches the super type hierarchy.
      * <p>
      * Note this is a model internal method, it is not part of the published interface.
-     * 
+     *
      * @param propertyType The type of properties that should be included in the map.
      *            <code>null</code> indicates that all properties should be included in the map.
      */
@@ -848,7 +848,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * Adding a validation dependency to force a check if a policy component type exists with the
      * same qualified name.
-     * 
+     *
      * @param dependencies is the result set which will contain all dependencies
      */
     private void dependsOnAddValidationDependency(Set<IDependency> dependencies) {
@@ -859,7 +859,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * Adding dependency for explicitly specified matching associations for differing policy and
      * product structure. @see FIPS-563
-     * 
+     *
      * @param dependencies the result set will contain all dependencies that have been found
      */
     private void dependsOnAddExplicitlyMatchingAssociations(Set<IDependency> dependencies) {
@@ -879,7 +879,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     /**
      * Adding TableStructure dependencies for ProductCompTypes. @see FIPS-1171
-     * 
+     *
      * @param dependencies representing List of all Reference Dependencies
      * @param details contains all details on the dependencies.
      */
@@ -1103,7 +1103,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * <p>
      * In contrast to only asking the property for its category, this method considers pending
      * policy changes. The result may be an empty String or {@code null} if no category is set.
-     * 
+     *
      * @param property the property you want to get the name of the category for
      * @return The name of the category in respect to pending changes. May be {@code null} or empty
      *             String if no category is set.
@@ -1121,7 +1121,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * <p>
      * In contrast to only asking the property for its position, this method considers pending
      * policy changes. The result may be {@code -1} if no explicit position is set.
-     * 
+     *
      * @param property the property you want to get the position for
      * @return The position inside the category in respect to pending changes. May be {@code -1} if
      *             no position is set.
@@ -1198,7 +1198,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * Returns the new indices within the context list.
      * <p>
      * Note that only a single <em>whole content changed</em> event will be fired by this operation.
-     * 
+     *
      * @param movedIndices the indices identifying the properties of the context list to be moved
      * @param contextProperties only references corresponding to these properties are swapped with
      *            each other. This is necessary to be able to change the ordering of properties that
@@ -1206,9 +1206,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
      *            properties belonging to other categories. To achieve this, clients must provide
      *            all move-enabled properties assigned to the category in question
      * @param up flag indicating whether to move up or down
-     * 
+     *
      * @return the new indices within the context list
-     * 
+     *
      * @throws IpsException if an error occurs during the move
      */
     int[] movePropertyReferences(final int[] movedIndices,
@@ -1268,7 +1268,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     /**
      * Returns whether at least two categories with the indicated name exist in the supertype
      * hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType} itself.
-     * 
+     *
      * @throws IpsException if an error occurs while searching the supertype hierarchy
      */
     boolean findIsCategoryNameUsedTwiceInSupertypeHierarchy(final String categoryName, IIpsProject ipsProject) {

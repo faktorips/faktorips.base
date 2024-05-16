@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IOverridableElement;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
@@ -556,11 +557,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return doc.createElement(XML_TAG_NAME);
     }
 
-    /** Returns whether the given property is overwriting a property from a super type. */
-    public static boolean isOwerwriting(IProductCmptProperty property) {
-        return property instanceof IAttribute attribute && attribute.isOverwrite()
-                || property instanceof IProductCmptTypeMethod method && method.isOverloadsFormula();
-        // TODO FIPS-10909/FIPS-11543 handle overwritten validation rules
+    /** Returns whether the given property is overriding a property from a super type. */
+    public static boolean isOverriding(IProductCmptProperty property) {
+        return property instanceof IOverridableElement overridable && overridable.isOverriding();
     }
 
     /**
@@ -581,8 +580,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         @Override
         public int compare(IProductCmptProperty property1, IProductCmptProperty property2) {
-            IProductCmptProperty prop1 = getOverwrittenProperty(property1);
-            IProductCmptProperty prop2 = getOverwrittenProperty(property2);
+            IProductCmptProperty prop1 = getOverriddenProperty(property1);
+            IProductCmptProperty prop2 = getOverriddenProperty(property2);
             // First, try to sort properties of the supertype hierarchy to the top
             int subtypeCompare = compareSubtypeRelationship(prop1, prop2);
 
@@ -590,25 +589,12 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             return subtypeCompare != 0 ? subtypeCompare : comparePropertyIndices(prop1, prop2);
         }
 
-        private IProductCmptProperty getOverwrittenProperty(IProductCmptProperty property) {
-            if (property instanceof IAttribute attribute && attribute.isOverwrite()) {
-                var overwrittenAttribute = (IProductCmptProperty)attribute
-                        .findOverwrittenAttribute(property.getIpsProject());
-                return getOverwrittenProperty(overwrittenAttribute);
+        private IProductCmptProperty getOverriddenProperty(IProductCmptProperty property) {
+            if (property instanceof IOverridableElement overridable && overridable.isOverriding()) {
+                var overriddenProperty = (IProductCmptProperty)overridable
+                        .findOverriddenElement(property.getIpsProject());
+                return getOverriddenProperty(overriddenProperty);
             }
-            if (property instanceof IProductCmptTypeMethod method && method.isOverloadsFormula()) {
-                var overwrittenMethod = (IProductCmptProperty)method
-                        .findOverloadedFormulaMethod(property.getIpsProject());
-                return getOverwrittenProperty(overwrittenMethod);
-            }
-            // TODO FIPS-10909/FIPS-11543 order overwritten validation rules
-            /*
-             * if (property instanceof IValidationRule validationRule &&
-             * validationRule.isOverwrite()) { var overwrittenValidationRule =
-             * (IProductCmptProperty)validationRule
-             * .findOverwrittenValidationRule(property.getIpsProject()); return
-             * getOverwrittenProperty(overwrittenValidationRule); }
-             */
             return property;
         }
 

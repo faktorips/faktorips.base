@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,10 +30,20 @@ public interface IOverridableElement extends IDescribedElement {
 
     /**
      * Returns the first element that is overridden by this element.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used to search.
      */
     IOverridableElement findOverriddenElement(IIpsProject ipsProject);
+
+    /**
+     * {@return whether this elements overrides another element of the same name from the supertype
+     * hierarchy}
+     *
+     * @since 24.7
+     */
+    default boolean isOverriding() {
+        return findOverriddenElement(getIpsProject()) != null;
+    }
 
     /**
      * Returns the element's {@link IDescription description} text for the given {@link Locale

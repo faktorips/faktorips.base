@@ -4,13 +4,13 @@ import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElemen
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XValidationRule
+import org.faktorips.devtools.model.valueset.ValueSetType
 
 import static org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.model.valueset.ValueSetType
 
 class ValidationRuleTmpl {
 
@@ -21,8 +21,13 @@ def package static validate (XValidationRule it) '''
 '''
 
 def package static constants (XValidationRule it) '''
-    «constantMsgCode»
-    «constantRuleName»
+    «IF !overwrite || differentMessageCodeInOverridingRule»
+        «IF differentMessageCodeInOverridingRule && !generatePublishedInterfaces(it)»@SuppressWarnings("hiding")«ENDIF»
+        «constantMsgCode»
+    «ENDIF»
+    «IF !overwrite»
+        «constantRuleName»
+    «ENDIF»
 '''
 def package static validationRuleMethods (XValidationRule it, XPolicyCmptClass modelObject) '''
     «IF modelObject !== null»
@@ -72,39 +77,52 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
      * @restrainedmodifiable
      */
     «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_VALIDATION_RULE)»
+    «overrideAnnotationIf(it, overwrite)»
     protected boolean «method(methodNameExecRule, MessageList, "ml", IValidationContext, "context")» {
-        «IF configured»
-            if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
-        «ENDIF»
-        «IF !checkValueAgainstValueSetRule»
-             // begin-user-code
-            «localizedComment("EXEC_RULE_IMPLEMENT_TODO", name)»
-            if (true) {
-                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));«IF needTodoCompleteCallCreateMsg»
-                «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
-                «ENDIF»
-            }
-            return «CONTINUE_VALIDATION»;
-            // end-user-code
-        «ELSE»
-            «val attribute = checkedAttribute»
-            «val valueSetMethods = generatorConfig.valueSetMethods»
-            «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
-            «IF !attribute.datatype.primitive && (attribute.valueSetType == ValueSetType.RANGE || attribute.valueSetType == ValueSetType.ENUM)»
-                if («modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).isEmpty() && «modelObject»«attribute.methodNameGetter»() == «attribute.datatypeHelper.nullExpression.sourcecode») {
-                    return «CONTINUE_VALIDATION»;
-                }
-            «ENDIF»
-            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
-                // begin-user-code
-                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
-                // end-user-code
-            }
-              return «CONTINUE_VALIDATION»;
-        «ENDIF»
-        «IF configured»
-        }
-        return «CONTINUE_VALIDATION»;
+    	«IF overwrite»
+    		// begin-user-code
+    		super.«methodNameExecRule»(ml, context);
+    		Message message = ml.getMessageByCode(«qualifierForConstantNameMessageCodeIfNecessary»«constantNameMessageCode»);
+    		if (message != null) {
+    			«methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»);
+    		}
+    		return «CONTINUE_VALIDATION»;
+    		// end-user-code
+    	«ENDIF»
+    	«IF !overwrite»
+	        «IF configured»
+	        if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
+	        «ENDIF»
+	        «IF !checkValueAgainstValueSetRule»
+	             // begin-user-code
+	            «localizedComment("EXEC_RULE_IMPLEMENT_TODO", name)»
+	            if (true) {
+	                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));«IF needTodoCompleteCallCreateMsg»
+	                «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
+	                «ENDIF»
+	            }
+	            return «CONTINUE_VALIDATION»;
+	            // end-user-code
+	        «ELSE»
+	            «val attribute = checkedAttribute»
+	            «val valueSetMethods = generatorConfig.valueSetMethods»
+	            «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
+	            «IF !attribute.datatype.primitive && (attribute.valueSetType == ValueSetType.RANGE || attribute.valueSetType == ValueSetType.ENUM)»
+	                if («modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).isEmpty() && «modelObject»«attribute.methodNameGetter»() == «attribute.datatypeHelper.nullExpression.sourcecode») {
+	                    return «CONTINUE_VALIDATION»;
+	                }
+	            «ENDIF»
+	            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
+	                // begin-user-code
+	                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
+	                // end-user-code
+	            }
+	              return «CONTINUE_VALIDATION»;
+	        «ENDIF»
+	        «IF configured»
+	        }
+	        return «CONTINUE_VALIDATION»;
+	        «ENDIF»
         «ENDIF»
     }
 '''
@@ -116,6 +134,7 @@ def private static createMessageFor (XValidationRule it, String modelObject) '''
      *
      * @generated
      */
+    «overrideAnnotationIf(it, overwrite && !signatureChanged)»
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {
         «IF validateAttributes && !validatedAttrSpecifiedInSrc»
                 «List_(ObjectProperty())» invalidObjectProperties = «Arrays()».asList(
@@ -136,7 +155,7 @@ def private static createMessageFor (XValidationRule it, String modelObject) '''
         String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale() «FOR param : replacementParameters», «param»«ENDFOR»);
 
            «Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
-               .code(«constantNameMessageCode»)
+               .code(«qualifierForConstantNameMessageCodeIfNecessary»«constantNameMessageCode»)
           «IF validatedAttrSpecifiedInSrc»
                .invalidObjects(invalidObjectProperties)
              «ELSEIF validateAttributes»

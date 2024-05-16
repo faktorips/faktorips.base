@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -427,7 +427,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     /**
      * Performs the check for the rule with message code
-     * 
+     *
      * @see IPolicyCmptTypeAssociation#MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION
      */
     private void checkForDerivedUnionInverseAssociationMismatch(IPolicyCmptTypeAssociation derivedUnion,
@@ -588,7 +588,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     /**
      * Return true if the given inverse association is valid for the given association according to
      * the project settings
-     * 
+     *
      */
     private boolean checkInverseAssociation(IIpsProject ipsProject,
             IPolicyCmptTypeAssociation association,
@@ -629,7 +629,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 } else {
                     IPolicyCmptType matchingPolicyCmptType = matchingProdCmptType.findPolicyCmptType(ipsProject);
                     boolean found = findCorrectMatchingPolicyCmptTypeRecoursive(matchingPolicyCmptType, ipsProject,
-                            new HashSet<IPolicyCmptType>());
+                            new HashSet<>());
                     if (!found) {
                         list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE,
                                 Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalidSourceForNotConfiguredType,

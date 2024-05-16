@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.pctype;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -66,7 +67,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IPolicyCmptType.
- * 
+ *
  * @author Jan Ortmann
  */
 public class PolicyCmptType extends Type implements IPolicyCmptType {
@@ -459,7 +460,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     /**
      * Adding a validation dependency to force a check if a product component type exists with the
      * same qualified name.
-     * 
+     *
      * @param dependencies is the result set which will contain all dependencies
      */
     private void dependsOnAddValidationDependency(Set<IDependency> dependencies) {
@@ -622,10 +623,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
          * union
          */
         for (IAssociation candidate : candidateSubsets) {
-            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation)) {
-                continue;
-            }
-            if (!policyCmptTypeAssociation.isCompositionDetailToMaster()) {
+            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) || !policyCmptTypeAssociation.isCompositionDetailToMaster()) {
                 continue;
             }
             IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation
@@ -669,6 +667,44 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     public DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new PolicyCmptTypeDuplicatePropertyNameValidator(ipsProject);
+    }
+
+    @Override
+    public List<IValidationRule> overrideValidationRules(List<? extends IValidationRule> validationRules) {
+        List<IValidationRule> newRules = new ArrayList<>(validationRules.size());
+        for (IValidationRule rule : validationRules) {
+            IValidationRule override = rules.newPart(rule);
+            override.setName(rule.getName());
+            override.setOverriding(true);
+            newRules.add(override);
+        }
+        return newRules;
+    }
+
+    @Override
+    public List<IValidationRule> findOverrideValidationRuleCandidates(IIpsProject ipsProject) {
+        IType foundSupertype = findSupertype(ipsProject);
+        if (foundSupertype == null) {
+            return new ArrayList<>();
+        }
+
+        Map<String, IValidationRule> toExclude = new HashMap<>();
+        for (IValidationRule rule : getValidationRules()) {
+            if (rule.isOverriding()) {
+                toExclude.put(rule.getName(), rule);
+            }
+        }
+
+        List<IValidationRule> allRules = getSupertypeHierarchy().getAllRules(foundSupertype);
+        List<IValidationRule> rulesToOverride = new ArrayList<>();
+        for (IValidationRule candidate : allRules) {
+            if (!toExclude.containsKey(candidate.getName())
+                    && !(candidate.isCheckValueAgainstValueSetRule() && candidate.getValidatedAttributes().length == 1
+                            && getPolicyCmptTypeAttribute(candidate.getValidatedAttributeAt(0)) == null)) {
+                rulesToOverride.add(candidate);
+            }
+        }
+        return rulesToOverride;
     }
 
     private static class IsAggregrateRootVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
@@ -715,12 +751,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 if (validationRule == rule) {
                     continue;
                 }
-                if (validationRule.getName().equals(rule.getName())) {
+                if (validationRule.getName().equals(rule.getName()) && !rule.overrides(validationRule)) {
                     String text = Messages.PolicyCmptType_msgDuplicateRuleName;
                     msgList.add(new Message(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME, text, Message.ERROR, rule,
                             IIpsElement.PROPERTY_NAME));
                 }
             }
+
             for (IMethod method : currentType.getMethods()) {
                 if (method.getNumOfParameters() == 0 && method.getName().equals(rule.getName())) {
                     String text = MessageFormat.format(Messages.PolicyCmptType_msgRuleMethodNameConflict,
@@ -824,5 +861,4 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
     }
-
 }

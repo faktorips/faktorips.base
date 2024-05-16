@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -887,12 +887,21 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         rule1.setName("aRule");
         MessageList msgList = policyCmptType.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
+
         IValidationRule rule2 = policyCmptType.newRule();
         rule2.setName("aRule");
         msgList = policyCmptType.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
 
         rule2.delete();
+        msgList = policyCmptType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
+
+        IValidationRule superRule = superPolicyCmptType.newRule();
+        superRule.setName("overwrittenRule");
+        IValidationRule rule3 = policyCmptType.newRule();
+        rule3.setName("overwrittenRule");
+        rule3.setOverriding(true);
         msgList = policyCmptType.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IValidationRule.MSGCODE_DUPLICATE_RULE_NAME));
 
@@ -1112,6 +1121,53 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
+    public void testFindOverrideValidationRuleCandidates() {
+        IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
+        IAttribute attr = superPcType.newAttribute();
+        attr.setName("attr");
+
+        // 1. Rule
+        IValidationRule rule = superPcType.newRule();
+        rule.setName("ToOverride");
+        rule.setModifier(Modifier.PUBLISHED);
+        rule.setMarkers(List.of("marker1"));
+        for (IDescription description : rule.getDescriptions()) {
+            description.setText("Overridden Description");
+        }
+
+        // 2. Rule
+        IValidationRule rule2 = superPcType.newRule();
+        rule2.setName("NotOverride");
+        rule2.setModifier(Modifier.PUBLISHED);
+        rule2.setMarkers(List.of("marker2"));
+
+        // 3. Rule
+        IValidationRule rule3 = superPcType.newRule();
+        rule3.setName("ValidatesAttributeNotExistingInOverridingType");
+        rule3.setModifier(Modifier.PUBLISHED);
+        rule3.setCheckValueAgainstValueSetRule(true);
+        rule3.addValidatedAttribute("attr");
+
+        IPolicyCmptType overridingType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "OverridingType");
+        overridingType.setSupertype(superPcType.getQualifiedName());
+
+        List<IValidationRule> overrideValidationRuleCandidates = overridingType
+                .findOverrideValidationRuleCandidates(ipsProject);
+        // 2 to override
+        assertEquals(2, overrideValidationRuleCandidates.size());
+        assertEquals("ToOverride", overrideValidationRuleCandidates.get(0).getName());
+        assertEquals("NotOverride", overrideValidationRuleCandidates.get(1).getName());
+
+        // now override the first
+        overridingType.overrideValidationRules(Arrays.asList(rule));
+
+        overrideValidationRuleCandidates = overridingType.findOverrideValidationRuleCandidates(ipsProject);
+        // only the second to find
+        assertEquals(1, overrideValidationRuleCandidates.size());
+        assertEquals("NotOverride", overrideValidationRuleCandidates.get(0).getName());
+    }
+
+    @Test
     public void testValidateAbstractAttributes_abstractSubtype() throws Exception {
         IAttribute superAttr1 = superPolicyCmptType.newAttribute();
         superAttr1.setName(ATTR1);
@@ -1248,6 +1304,23 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertEquals("english description", policyCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
         policyCmptType.setDescriptionText(Locale.ENGLISH, "overwritten description");
         assertEquals("overwritten description", policyCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+    }
+
+    @Test
+    public void testOverrideValidationRules() {
+        IValidationRule v1 = superPolicyCmptType.newRule();
+        v1.setModifier(Modifier.PUBLISHED);
+        v1.setMarkers(List.of("marker1"));
+        v1.setName("v1");
+
+        policyCmptType.overrideValidationRules(Arrays.asList(v1));
+        assertEquals(1, policyCmptType.getNumOfRules());
+
+        List<IValidationRule> rules = policyCmptType.getValidationRules();
+        assertTrue(rules.get(0).overrides(v1));
+        assertEquals(Modifier.PUBLISHED, rules.get(0).getModifier());
+        assertEquals("v1", rules.get(0).getName());
+        assertEquals("marker1", rules.get(0).getMarkers().get(0));
     }
 
     private static class AggregateRootBuilderSet extends EmptyBuilderSet {

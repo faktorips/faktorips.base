@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import static org.faktorips.devtools.model.internal.productcmpttype.ProductCmptCategory.isOverriding;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.util.ArrayList;
@@ -64,7 +66,6 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptCategory;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -318,7 +319,7 @@ class CategoryComposite extends ViewerButtonComposite {
         boolean isMovable = categorySection.isContextTypeEditable()
                 && isPropertySelected()
                 && isPropertyOfContextTypeSelected()
-                && !ProductCmptCategory.isOwerwriting(getSelectedProperty());
+                && !isOverriding(getSelectedProperty());
         moveUpButton.setEnabled(isMovable && !isFirstLocalPropertyOfContextTypeSelected());
         moveDownButton.setEnabled(isMovable && !isLastPropertyOfContextTypeSelected());
         changeCategoryButton.setEnabled(isSelectedPropertyAllowedToChangeCategory());
@@ -332,7 +333,7 @@ class CategoryComposite extends ViewerButtonComposite {
         for (Object o : contentProvider.getElements(null)) {
             if (o instanceof IProductCmptProperty p
                     && isPropertyOfContextType(p)
-                    && !ProductCmptCategory.isOwerwriting(p)) {
+                    && !isOverriding(p)) {
                 return (IProductCmptProperty)o;
             }
         }

@@ -247,6 +247,19 @@ public interface IPolicyCmptType extends IType {
     IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute(String name);
 
     /**
+     * Creates new validation rules overriding the given validation rules.
+     * 
+     * @return The created validation rules.
+     */
+    List<IValidationRule> overrideValidationRules(List<? extends IValidationRule> rules);
+    
+    /**
+     * Returns a list of all validation rules of all super types not yet overwritten by this component
+     * type.
+     */
+    List<IValidationRule> findOverrideValidationRuleCandidates(IIpsProject ipsProject);
+    
+    /**
      * Returns the number of attributes.
      */
     @Override

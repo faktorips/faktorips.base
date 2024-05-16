@@ -72,6 +72,7 @@ public class ValidationRuleEditingUI {
 
     private CharCountPainter charCountPainter;
     private TextField nameField;
+    private Checkbox overwritesCheckbox;
     private TextField msgCodeField;
     private EnumField<MessageSeverity> msgSeverityField;
     private TextField msgTextField;
@@ -208,6 +209,8 @@ public class ValidationRuleEditingUI {
         nameText.setFocus();
         nameField = new TextField(nameText);
 
+        overwritesCheckbox = new Checkbox(generalGroup, uiToolkit);
+        overwritesCheckbox.setText(Messages.RuleEditDialog_overwritesNote);
     }
 
     private void updateCharCount() {
@@ -226,6 +229,8 @@ public class ValidationRuleEditingUI {
      */
     public void bindFields(IValidationRule rule, BindingContext bindingContext) {
         bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
+        bindingContext.bindEnabled(nameField.getTextControl(), rule, IValidationRule.PROPERTY_OVERRIDING, false);
+        bindingContext.bindContent(overwritesCheckbox, rule, IValidationRule.PROPERTY_OVERRIDING);
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         final InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
                 rule.getMessageText());
