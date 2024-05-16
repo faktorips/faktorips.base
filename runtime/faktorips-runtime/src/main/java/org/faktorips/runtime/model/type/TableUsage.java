@@ -72,6 +72,7 @@ public class TableUsage extends TypePart {
      *            configuration is not changing over time.
      *
      * @return The name of the table for this table usage in the product component
+     * @since 24.7
      */
     public String getTableName(IProductComponent productComponent, Calendar effectiveDate) {
         String tableName = null;

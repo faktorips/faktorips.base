@@ -205,6 +205,7 @@ public class ProductCmptType extends Type {
      * {@link #getFormulas()} this does not return formulas of super types.
      *
      * @return A list of {@link Formula Formulas} declared in this type
+     * @since 24.7
      */
     public List<Formula> getDeclaredFormulas() {
         return new ArrayList<>(formulas.values());
@@ -219,6 +220,7 @@ public class ProductCmptType extends Type {
      *
      * @throws IllegalArgumentException if this type does not have a declared formula with the given
      *             name
+     * @since 24.7
      */
     public Formula getDeclaredFormula(String name) {
         Formula formula = formulas.get(IpsStringUtils.toLowerFirstChar(name));
@@ -320,6 +322,7 @@ public class ProductCmptType extends Type {
      * @return The {@link Formula} with the specified name
      *
      * @throws IllegalArgumentException if there is no table usage with the specified name
+     * @since 24.7
      */
     public Formula getFormula(String name) {
         FormulaFinder finder = new FormulaFinder(name);
@@ -331,6 +334,10 @@ public class ProductCmptType extends Type {
         return finder.formula;
     }
 
+    /**
+     * @return all formulas defined on this type.
+     * @since 24.7
+     */
     public List<Formula> getFormulas() {
         FormulasCollector fCollector = new FormulasCollector();
         fCollector.visitHierarchy(this);
