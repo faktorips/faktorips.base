@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,6 +32,12 @@ public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductCo
 
     public ProductConfigurationXmlAdapter(IRuntimeRepository repository) {
         ipsProductConfigurationXmlAdapter = new IpsProductConfigurationXmlAdapter(repository);
+    }
+
+    @SuppressWarnings("unused")
+    private ProductConfigurationXmlAdapter() {
+        // JAXB/MOXy needs to instantiate this adapter but never uses this instance.
+        ipsProductConfigurationXmlAdapter = null;
     }
 
     /**

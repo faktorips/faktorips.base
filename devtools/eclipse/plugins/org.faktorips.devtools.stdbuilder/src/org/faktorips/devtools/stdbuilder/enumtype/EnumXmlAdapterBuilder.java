@@ -133,6 +133,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         setExtendingInterface(mainSection, genericsForAdapter);
 
         generateConstructor(mainSection.getConstructorBuilder());
+        generateNoArgsConstructor(mainSection.getConstructorBuilder());
         generateMethodMarshal(mainSection.getMethodBuilder(), datatypeHelper);
         generateMethodUnMarshal(mainSection.getMethodBuilder(), datatypeHelper);
         generateFieldRepository(mainSection.getMemberVarBuilder());
@@ -180,6 +181,28 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         builder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
                 new String[] { "repository" }, new Class[] { IRuntimeRepository.class }); //$NON-NLS-1$
         builder.append(new JavaCodeFragment("this.repository = repository;")); //$NON-NLS-1$
+        builder.methodEnd();
+    }
+
+    /**
+     * Code sample:
+     *
+     * <pre>
+     * [Javadoc]
+     *      &#64;SuppressWarnings("unused")
+     *      private AmountTypeXmlAdapter() {
+     *          // JAXB/MOXy needs to instantiate this adapter but never uses this instance
+     *          repository = null;
+     *      }
+     * </pre>
+     */
+    private void generateNoArgsConstructor(JavaCodeFragmentBuilder builder) {
+        builder.javaDoc(getLocalizedText("CONSTRUCTOR_JAVADOC"), JavaSourceFileBuilder.ANNOTATION_GENERATED);
+        builder.annotation(SuppressWarnings.class, new JavaCodeFragment("\"unused\""));
+        builder.methodBegin(Modifier.PRIVATE, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
+                new String[0], new Class[0]);
+        builder.appendln("// " + getLocalizedText("PRIVATE_CONSTRUCTOR_COMMENT"));
+        builder.append(new JavaCodeFragment("repository = null;")); //$NON-NLS-1$
         builder.methodEnd();
     }
 
