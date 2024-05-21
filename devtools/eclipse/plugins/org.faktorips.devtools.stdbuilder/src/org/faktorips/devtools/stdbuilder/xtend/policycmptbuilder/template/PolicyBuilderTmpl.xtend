@@ -122,9 +122,9 @@ class PolicyBuilderTmpl {
             * @generated
             */
             «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
-            «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
+            «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant && isSameDatatypeAsOverwritten»@Override«ENDIF»
             «val parameterName = "new" + fieldName.toFirstUpper»
-            public «builder.implClassName» «IF overwrite && overwrittenAttribute.abstract»«method(fieldName, overwrittenAttribute.javaClassName, parameterName)»«ELSE»«method(fieldName, javaClassName, parameterName)»«ENDIF»{
+            public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
                 return this;
             }

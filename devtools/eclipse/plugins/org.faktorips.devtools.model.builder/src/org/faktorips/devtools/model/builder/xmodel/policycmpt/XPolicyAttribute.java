@@ -11,10 +11,12 @@
 package org.faktorips.devtools.model.builder.xmodel.policycmpt;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.GenericValueDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
@@ -100,6 +102,7 @@ public class XPolicyAttribute extends XAttribute {
      * <li>if the attribute does overwrite a derived-on-the-fly attribute and is itself marked as
      * changeable</li>
      * <li>if the attribute is derived-on-the-fly (because it has to be manually implemented)</li>
+     * <li>if the overriding attribute changes the datatype</li>
      * </ul>
      */
     public boolean isGenerateGetter(boolean generatingInterface) {
@@ -109,8 +112,19 @@ public class XPolicyAttribute extends XAttribute {
             boolean getterIsDefinedHere = !isOverwrite() || generatingInterface
                     || !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject());
             boolean attributeIsOrOverridesDerivedOnTheFly = isDerivedOnTheFly() || isOverwritingDerivedOnTheFly();
-            return getterIsDefinedHere || attributeIsOrOverridesDerivedOnTheFly || isOverwriteAbstract();
+            boolean changesDatatype = isOverwrite() && !isSameDatatypeAsOverwritten();
+            return getterIsDefinedHere || attributeIsOrOverridesDerivedOnTheFly || isOverwriteAbstract()
+                    || changesDatatype;
         }
+    }
+
+    public boolean isSameDatatypeAsOverwritten() {
+        ValueDatatype datatype = getDatatype();
+        ValueDatatype overwrittenDatatype = getOverwrittenAttribute().getDatatype();
+        return datatype instanceof EnumTypeDatatypeAdapter enumtype
+                && overwrittenDatatype instanceof EnumTypeDatatypeAdapter overwrittenEnumtype
+                        ? Objects.equals(enumtype.getEnumType(), overwrittenEnumtype.getEnumType())
+                        : Objects.equals(datatype, overwrittenDatatype);
     }
 
     private boolean isOverwritingDerivedOnTheFly() {

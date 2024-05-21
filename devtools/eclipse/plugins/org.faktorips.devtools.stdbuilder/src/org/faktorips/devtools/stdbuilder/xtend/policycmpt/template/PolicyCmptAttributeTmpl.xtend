@@ -36,6 +36,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
+      «IF overwrite»@SuppressWarnings("hiding")«ENDIF»
       «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES)»
       public static final «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(constantNameValueSet)» = «valuesetCode»;
     «ENDIF»
@@ -230,7 +231,7 @@ class PolicyCmptAttributeTmpl {
       «ENDIF»
       «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule))»
       «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
-      public «IF isAbstract()»abstract «getValueSetJavaClassNameWithWildcard(rule.fromMethod)»«ELSE»«getValueSetJavaClassName(rule.fromMethod)»«ENDIF» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
+      public «IF isAbstract()»abstract «getValueSetJavaClassNameWithWildcard(rule.fromMethod)»«ELSEIF datatype.isAbstract()»«getValueSetJavaClassNameWithWildcard(rule.fromMethod)»«ELSE»«getValueSetJavaClassName(rule.fromMethod)»«ENDIF» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
       «IF genInterface() || isAbstract()»;«ELSE» {
           «IF productRelevant && !rule.isDelegate»
             «IF valueSetConfiguredDynamic»
