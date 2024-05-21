@@ -29,6 +29,8 @@ import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.PolicyAttribute;
@@ -36,6 +38,7 @@ import org.faktorips.runtime.model.type.ValueSetKind;
 import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.faktorips.sample.model.TestConcreteJavaEnum;
 import org.faktorips.values.Money;
+import org.faktorips.valueset.DerivedValueSet;
 import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.LongRange;
 import org.faktorips.valueset.MoneyRange;
@@ -500,6 +503,16 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testAsValueSetFor_Mandatory_AbstractEnum() {
+        TestPolicyWithAbstractEnum modelObject = new TestPolicyWithAbstractEnum();
+
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(modelObject,
+                        TestPolicyWithAbstractEnum.PROPERTY_ABSTRACT_ENUM_ATTRIBUTE),
+                is(new UnrestrictedValueSet<>(false)));
+    }
+
+    @Test
     public void testAsValueSetFor_Mandatory_StringLength() {
         TestPolicyWithStringLength modelObject = new TestPolicyWithStringLength();
 
@@ -695,6 +708,16 @@ public class RelevanceTest {
                 TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE, mandatoryValueSet);
         assertThat(valueSet, is(not(mandatoryValueSet)));
         assertThat(valueSet, is(optionalValueSet));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_AbstractEnum() {
+        TestPolicyWithAbstractEnum modelObject = new TestPolicyWithAbstractEnum();
+
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(modelObject,
+                        TestPolicyWithAbstractEnum.PROPERTY_ABSTRACT_ENUM_ATTRIBUTE),
+                is(new UnrestrictedValueSet<>(true)));
     }
 
     @Test
@@ -1097,6 +1120,49 @@ public class RelevanceTest {
         public void setSetOfAllowedValuesipsExtensibleEnumAttribute(
                 ValueSet<TestConcreteExtensibleEnum> setOfAllowedValuesipsExtensibleEnumAttribute) {
             this.setOfAllowedValuesipsExtensibleEnumAttribute = setOfAllowedValuesipsExtensibleEnumAttribute;
+        }
+    }
+
+    @IpsEnumType(name = "enums.AbstractTestEnum", attributeNames = { "id", "name" })
+    public interface AbstractTestEnum {
+
+        @IpsEnumAttribute(name = "id", identifier = true, unique = true)
+        String getId();
+
+        @IpsEnumAttribute(name = "name", unique = true, displayName = true)
+        String getName();
+
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicyWithUnrestrictedEnum")
+    @IpsAttributes({ "AbstractEnumAttribute" })
+    @IpsAssociations({})
+    public static class TestPolicyWithAbstractEnum implements IModelObject {
+
+        public static final String PROPERTY_ABSTRACT_ENUM_ATTRIBUTE = "AbstractEnumAttribute";
+        public static final AbstractTestEnum DEFAULT_VALUE_FOR_ABSTRACT_ENUM_ATTRIBUTE = null;
+        @IpsAllowedValues(PROPERTY_ABSTRACT_ENUM_ATTRIBUTE)
+        public static final ValueSet<AbstractTestEnum> MAX_ALLOWED_VALUES_FOR_ABSTRACT_ENUM_ATTRIBUTE = new DerivedValueSet<>();
+        private AbstractTestEnum abstractEnumAttribute = DEFAULT_VALUE_FOR_ABSTRACT_ENUM_ATTRIBUTE;
+
+        @IpsAllowedValues(PROPERTY_ABSTRACT_ENUM_ATTRIBUTE)
+        public ValueSet<? extends AbstractTestEnum> getAllowedValuesForAbstractEnumAttribute() {
+            return null;
+        }
+
+        @IpsAttribute(name = PROPERTY_ABSTRACT_ENUM_ATTRIBUTE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Derived)
+        public AbstractTestEnum getAbstractEnumAttribute() {
+            return abstractEnumAttribute;
+        }
+
+        @IpsAttributeSetter(PROPERTY_ABSTRACT_ENUM_ATTRIBUTE)
+        public void setAbstractEnumAttribute(AbstractTestEnum newValue) {
+            abstractEnumAttribute = newValue;
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return new MessageList();
         }
     }
 }
