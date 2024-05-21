@@ -1222,6 +1222,19 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
 
         policyCmptType.validateAbstractAttributes(list, ipsProject);
 
+        assertThat(list, isEmpty());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_notOverwrittenProductRelevant() throws Exception {
+        IPolicyCmptTypeAttribute superAttr1 = superPolicyCmptType.newPolicyCmptTypeAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(ABSTRACT_PARENT_ENUM);
+        superAttr1.setValueSetConfiguredByProduct(true);
+        MessageList list = new MessageList();
+
+        policyCmptType.validateAbstractAttributes(list, ipsProject);
+
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
         assertThat(message, hasInvalidObject(policyCmptType, IType.PROPERTY_ABSTRACT));
     }

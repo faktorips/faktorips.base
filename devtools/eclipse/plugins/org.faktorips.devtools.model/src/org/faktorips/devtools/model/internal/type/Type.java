@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,6 +34,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.method.IParameter;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -50,7 +51,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of the published interface.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class Type extends BaseIpsObject implements IType {
@@ -535,6 +536,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     public void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) {
         if (!isAbstract()) {
             findAllAttributes(ipsProject).stream().filter(attribute -> !attribute.isOfType(getQualifiedNameType()))
+                    .filter(a -> !(a instanceof IPolicyCmptTypeAttribute pa) || pa.isProductRelevant())
                     .forEach(attribute -> {
                         new AttributeAbstractDatatypeValidator(attribute, this, ipsProject)
                                 .validateNotAbstractDatatype(list);
@@ -833,7 +835,7 @@ public abstract class Type extends BaseIpsObject implements IType {
          * should be added to the list of found associations.
          * <p>
          * Subclasses may implement this method to include or exclude some associations.
-         * 
+         *
          * @param association The association that should currently be added
          * @return <code>true</code> to add the association, <code>false</code> to ignore.
          */
@@ -845,7 +847,7 @@ public abstract class Type extends BaseIpsObject implements IType {
          * Returns the list of associations that from the current type. For example if you want to
          * have all associations of the current type, your implementation calls
          * {@link IType#getAssociations()}.
-         * 
+         *
          * @param currentType The type of which you have to return the associations from.
          * @return The list of associations of the current type
          */
@@ -876,7 +878,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     /**
      * Finds all associations with the given target and association type in the type hierarchy.
-     * 
+     *
      * @author Joerg Ortmann
      */
     private static class AssociationTargetAndTypeFinder extends AbstractAssociationFinder<IAssociation> {
@@ -1087,7 +1089,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     /**
      * Finds all associations that could be constrained by this type.
-     * 
+     *
      */
     private static class ConstrainableAssociationFinder extends AbstractAssociationFinder<IAssociation> {
 
