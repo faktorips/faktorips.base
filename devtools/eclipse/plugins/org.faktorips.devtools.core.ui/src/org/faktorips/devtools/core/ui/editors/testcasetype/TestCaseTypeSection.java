@@ -1840,7 +1840,6 @@ public class TestCaseTypeSection extends IpsSection {
     private void addParameterClicked() {
         Object selObject = getSelectedObjectInTree();
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
-        ITestParameter newParam = null;
         if (selObject instanceof TestCaseTypeTreeRootElement) {
             // open wizard to add a new root test parameter
             Memento memento = testCaseType.newMemento();
@@ -1855,7 +1854,6 @@ public class TestCaseTypeSection extends IpsSection {
                 refresh();
                 return;
             }
-            newParam = wizard.getNewCreatedTestParameter();
         } else if (selObject instanceof ITestPolicyCmptTypeParameter) {
             // open wizard to add a new child test parameter
 
@@ -1880,9 +1878,9 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 return;
             }
-            newParam = wizard.getNewCreatedTestParameter();
         }
-        refreshTreeAndDetails(newParam);
+        treeViewer.expandAll();
+        refreshTree();
     }
 
     /**
