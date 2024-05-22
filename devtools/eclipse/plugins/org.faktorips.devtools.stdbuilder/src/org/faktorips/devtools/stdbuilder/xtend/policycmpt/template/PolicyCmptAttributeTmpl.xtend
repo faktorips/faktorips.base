@@ -11,7 +11,6 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNa
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.GenerateValueSetTypeRule
-import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter
 
 class PolicyCmptAttributeTmpl {
 
@@ -108,13 +107,6 @@ class PolicyCmptAttributeTmpl {
     «ENDIF»
   '''
 
-  def private static changesDatatype(XPolicyAttribute it) {
-    if(datatype instanceof EnumTypeDatatypeAdapter && overwrittenAttribute.datatype instanceof EnumTypeDatatypeAdapter) {
-      return (datatype as EnumTypeDatatypeAdapter).enumType != (overwrittenAttribute.datatype as EnumTypeDatatypeAdapter).enumType
-    }
-    return datatype != overwrittenAttribute.datatype;
-  }
-
   def package static getter(XPolicyAttribute it) '''
     «IF isGenerateGetter(genInterface())»
       /**
@@ -135,7 +127,7 @@ class PolicyCmptAttributeTmpl {
               return «defaultValueCode»;
               // end-user-code
             «ELSEIF overwrite»
-              return «IF changesDatatype»(«javaClassName») «ENDIF»super.«methodNameGetter»();
+              return «IF !sameDatatypeAsOverwritten»(«javaClassName») «ENDIF»super.«methodNameGetter»();
             «ELSE»
               «IF changingOverTime»
                 «getPolicyCmptNode.productCmptGenerationNode.implClassName» productCmpt = «getPropertyValueContainer(false)»;
@@ -183,9 +175,9 @@ class PolicyCmptAttributeTmpl {
       «IF genInterface()»;«ELSE» {
           «PropertyChangeSupportTmpl.storeOldValue(it)»
           «IF generateSetterInternal»
-            «methodNameSetterInternal»(«IF overwriteAbstract»(«javaClassName»)«ENDIF»newValue);
+            «methodNameSetterInternal»(«IF overwriteAbstract && !sameDatatypeAsOverwritten»(«javaClassName»)«ENDIF»newValue);
           «ELSE»
-            this.«fieldName» = «IF overwriteAbstract»(«javaClassName»)«ENDIF»«getReferenceOrSafeCopyIfNecessary("newValue")»;
+            this.«fieldName» = «IF overwriteAbstract && !sameDatatypeAsOverwritten»(«javaClassName»)«ENDIF»«getReferenceOrSafeCopyIfNecessary("newValue")»;
           «ENDIF»
           «PropertyChangeSupportTmpl.notify(it)»
       }

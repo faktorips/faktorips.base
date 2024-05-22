@@ -176,7 +176,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
-        mock(IValueSet.class);
 
         assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
@@ -186,7 +185,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
-        mock(IValueSet.class);
 
         assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
@@ -430,8 +428,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
 
-        mock(XPolicyAttribute.class);
-
         assertTrue(xPolicyAttribute.isProductRelevantInHierarchy());
     }
 
@@ -492,7 +488,6 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
-        mock(IValueSet.class);
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -503,7 +498,6 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
-        mock(IValueSet.class);
 
         assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -578,8 +572,6 @@ public class XPolicyAttributeTest {
         IValueSet valueSet = mock(IValueSet.class);
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        mock(IValueSet.class);
-
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
@@ -589,8 +581,6 @@ public class XPolicyAttributeTest {
 
         IValueSet valueSet = mock(IValueSet.class);
         when(attribute.getValueSet()).thenReturn(valueSet);
-
-        mock(IValueSet.class);
 
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
@@ -603,8 +593,6 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        mock(IValueSet.class);
-
         assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
 
     }
@@ -616,8 +604,6 @@ public class XPolicyAttributeTest {
         IValueSet valueSet = mock(IValueSet.class);
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         when(attribute.getValueSet()).thenReturn(valueSet);
-
-        mock(IValueSet.class);
 
         assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
@@ -686,5 +672,76 @@ public class XPolicyAttributeTest {
         when(xPolicyAttribute.getDatatype()).thenReturn(genericEnumDatatype);
 
         assertThat(xPolicyAttribute.hasAllValuesMethod(), is(false));
+    }
+
+    @Test
+    public void testIsSameDatatypeAsOverwritten() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(attribute, modelContext, modelService));
+        doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+
+        assertThat(xPolicyAttribute.isSameDatatypeAsOverwritten(), is(true));
+    }
+
+    @Test
+    public void testIsSameDatatypeAsOverwritten_DifferentValueDatatype() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(superAttribute, modelContext, modelService));
+        doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        DatatypeHelper superDatatypHelper = mock(DatatypeHelper.class);
+        when(superDatatypHelper.getDatatype()).thenReturn(ValueDatatype.STRING);
+        doReturn(superDatatypHelper).when(superXPolicyAttribute).getDatatypeHelper();
+
+        assertThat(xPolicyAttribute.isSameDatatypeAsOverwritten(), is(false));
+    }
+
+    @Test
+    public void testIsSameDatatypeAsOverwritten_Enum() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(superAttribute, modelContext, modelService));
+        doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        DatatypeHelper superDatatypHelper = mock(DatatypeHelper.class);
+        EnumTypeDatatypeAdapter superEnumAdapter = mock(EnumTypeDatatypeAdapter.class);
+        EnumTypeDatatypeAdapter xEnumAdapter = mock(EnumTypeDatatypeAdapter.class);
+        IEnumType xEnum = mock(IEnumType.class);
+        when(superDatatypHelper.getDatatype()).thenReturn(superEnumAdapter);
+        when(superEnumAdapter.getEnumType()).thenReturn(xEnum);
+        when(xEnumAdapter.getEnumType()).thenReturn(xEnum);
+        when(datatypeHelper.getDatatype()).thenReturn(xEnumAdapter);
+        doReturn(superDatatypHelper).when(superXPolicyAttribute).getDatatypeHelper();
+
+        assertThat(xPolicyAttribute.isSameDatatypeAsOverwritten(), is(true));
+    }
+
+    @Test
+    public void testIsSameDatatypeAsOverwritten_DifferentEnum() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(superAttribute, modelContext, modelService));
+        doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        DatatypeHelper superDatatypHelper = mock(DatatypeHelper.class);
+        EnumTypeDatatypeAdapter superEnumAdapter = mock(EnumTypeDatatypeAdapter.class);
+        EnumTypeDatatypeAdapter xEnumAdapter = mock(EnumTypeDatatypeAdapter.class);
+        IEnumType superEnum = mock(IEnumType.class);
+        IEnumType xEnum = mock(IEnumType.class);
+        when(superEnumAdapter.getEnumType()).thenReturn(superEnum);
+        when(superDatatypHelper.getDatatype()).thenReturn(superEnumAdapter);
+        when(xEnumAdapter.getEnumType()).thenReturn(xEnum);
+        when(datatypeHelper.getDatatype()).thenReturn(xEnumAdapter);
+        doReturn(superDatatypHelper).when(superXPolicyAttribute).getDatatypeHelper();
+
+        assertThat(xPolicyAttribute.isSameDatatypeAsOverwritten(), is(false));
+    }
+
+    @Test
+    public void testIsSameDatatypeAsOverwritten_EnumAndValueDatatype() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        XPolicyAttribute superXPolicyAttribute = spy(new XPolicyAttribute(superAttribute, modelContext, modelService));
+        doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        DatatypeHelper superDatatypHelper = mock(DatatypeHelper.class);
+        EnumTypeDatatypeAdapter superEnumAdapter = mock(EnumTypeDatatypeAdapter.class);
+        when(superDatatypHelper.getDatatype()).thenReturn(superEnumAdapter);
+        doReturn(superDatatypHelper).when(superXPolicyAttribute).getDatatypeHelper();
+
+        assertThat(xPolicyAttribute.isSameDatatypeAsOverwritten(), is(false));
     }
 }
