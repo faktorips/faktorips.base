@@ -60,8 +60,8 @@ public class TableUsage extends TypePart {
     }
 
     /**
-     * Returns the name of the table the given product component references for this table usage. If
-     * this table usage is changing over time (resides in the generation) the date is used to
+     * Returns the name of the table for the given product component that references a table usage.
+     * If this table usage is changing over time (resides in the generation) the date is used to
      * retrieve the correct generation. If the date is <code>null</code> the latest generation is
      * used. If the table usage is not changing over time the date will be ignored.
      *
@@ -88,6 +88,36 @@ public class TableUsage extends TypePart {
                     e);
         }
         return tableName;
+    }
+
+    /**
+     * Sets the name of the table for the given product component that references a table usage. If
+     * this table usage is changing over time (resides in the generation) the date is used to
+     * retrieve the correct generation. If the date is <code>null</code> the latest generation is
+     * used. If the table usage is not changing over time the date will be ignored.
+     *
+     *
+     * @param tableName The name of the table for this table usage in the product component
+     * @param productComponent The product component that holds the table instance
+     * @param effectiveDate the date to determine the product component generation. If
+     *            <code>null</code> the latest generation is used. Is ignored if the table usage
+     *            configuration is not changing over time.
+     *
+     * @since 24.7
+     */
+    public void setTableName(String tableName, IProductComponent productComponent, Calendar effectiveDate) {
+        try {
+            String setterNameForTableName = "set" + getter.getName().substring(3) + "Name";
+            Method setterForName = getter.getDeclaringClass().getDeclaredMethod(setterNameForTableName, String.class);
+            setterForName.invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()),
+                    tableName);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            throw new IllegalArgumentException(
+                    String.format("Could not set table name for table usage %s on product component %s.",
+                            getName(), productComponent),
+                    e);
+        }
     }
 
     private boolean isChangingOverTime() {

@@ -238,6 +238,36 @@ public class TableUsageTest {
         assertThat(tableUsage.getTableName(product, effectiveDate), is("Foo"));
     }
 
+    @Test
+    public void testSetTable1Name() {
+        Product product = new Product();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+        TableUsage tableUsage = productCmptType.getTableUsage("table1");
+        assertThat(tableUsage, is(notNullValue()));
+        tableUsage.setTableName("NotFoo", product, effectiveDate);
+        assertThat(product.getTable1Name(), is("NotFoo"));
+    }
+
+    @Test
+    public void testSetTable2Name() {
+        Product product = new Product();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+        TableUsage tableUsage = productCmptType.getTableUsage("table2");
+        assertThat(tableUsage, is(notNullValue()));
+        tableUsage.setTableName("NotBar", product, effectiveDate);
+        assertThat(product.getTable2Name(), is("NotBar"));
+    }
+
+    @Test
+    public void testSetTable3Name() {
+        ChildProduct product = new ChildProduct();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+        TableUsage tableUsage = productCmptType.getTableUsage("table3");
+        assertThat(tableUsage, is(notNullValue()));
+        tableUsage.setTableName("NotFoo", product, effectiveDate);
+        assertThat(product.getTable3Name(), is("NotFoo"));
+    }
+
     @IpsTableStructure(name = "FooTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = {})
     private class FooTable extends Table<FooTableRow> {
 
@@ -294,6 +324,9 @@ public class TableUsageTest {
         public final FooTable TABLE1 = new FooTable();
         public final BarTable TABLE2 = new BarTable();
 
+        private String table1Name = "Foo";
+        private String table2Name = "Bar";
+
         public Product() {
             super(repository, "id", "kindId", "versionId");
         }
@@ -305,7 +338,12 @@ public class TableUsageTest {
 
         @SuppressWarnings("unused")
         public String getTable1Name() {
-            return "Foo";
+            return table1Name;
+        }
+
+        @SuppressWarnings("unused")
+        public void setTable1Name(String name) {
+            table1Name = name;
         }
 
         @IpsTableUsage(name = "table2")
@@ -315,7 +353,12 @@ public class TableUsageTest {
 
         @SuppressWarnings("unused")
         public String getTable2Name() {
-            return "Bar";
+            return table2Name;
+        }
+
+        @SuppressWarnings("unused")
+        public void setTable2Name(String name) {
+            table2Name = name;
         }
 
         @IpsTableUsage(name = "multitable")
@@ -344,6 +387,8 @@ public class TableUsageTest {
 
         public final BarTable TABLE_GEN = new BarTable();
 
+        private String tableGenName = "Bar";
+
         public ProductGen(Product product) {
             super(product);
         }
@@ -355,7 +400,7 @@ public class TableUsageTest {
 
         @SuppressWarnings("unused")
         public String getTableGenName() {
-            return "Bar";
+            return tableGenName;
         }
     }
 
@@ -365,6 +410,8 @@ public class TableUsageTest {
 
         public final FooTable TABLE3 = new FooTable();
 
+        private String table3Name = "Foo";
+
         @IpsTableUsage(name = "table3")
         public FooTable getTable3() {
             return TABLE3;
@@ -372,7 +419,12 @@ public class TableUsageTest {
 
         @SuppressWarnings("unused")
         public String getTable3Name() {
-            return "Foo";
+            return table3Name;
+        }
+
+        @SuppressWarnings("unused")
+        public void setTable3Name(String name) {
+            table3Name = name;
         }
     }
 }
