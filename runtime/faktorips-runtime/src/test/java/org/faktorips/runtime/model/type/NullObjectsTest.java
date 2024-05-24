@@ -27,6 +27,11 @@ public class NullObjectsTest {
         assertThat(NullObjects.of(Decimal.class), is(Decimal.NULL));
         assertThat(NullObjects.of(Money.class), is(Money.NULL));
         assertThat(NullObjects.of(Integer.class), is(nullValue()));
+        assertThat(NullObjects.of(short.class), is((short)0));
+        assertThat(NullObjects.of(int.class), is(0));
+        assertThat(NullObjects.of(long.class), is(0L));
+        assertThat(NullObjects.of(double.class), is(0.0d));
+        assertThat(NullObjects.of(float.class), is(0.0f));
     }
 
 }

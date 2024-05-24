@@ -234,10 +234,12 @@ public class ModelObjectAttributesTest {
                 ModelObjectAttribute::isValuePresent),
                 Arrays.asList(modelObject),
                 Arrays.asList(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE,
+                        TestPolicyWithVisitor.PROPERTY_INT_ATTRIBUTE,
                         TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                         TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
         assertThat(modelObject.getDecimalAttribute(), is(Decimal.NULL));
         assertThat(modelObject.getIntegerAttribute(), is(nullValue()));
+        assertThat(modelObject.getIntAttribute(), is(0));
         assertThat(modelObject.getStringAttribute(), is(""));
     }
 
