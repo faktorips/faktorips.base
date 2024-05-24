@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -78,12 +78,12 @@ public class ModelObjectAttributes {
      * If an attribute implements {@link NullObjectSupport} the {@link NullObject} is used,
      * String-attributes are set to an empty string. Otherwise {@code null} is used to clear the
      * attribute.
-     * 
+     *
      * <p>
      * For each cleared attribute a {@link ModelObjectAttribute} is returned. It's
      * {@link ModelObjectAttribute#toObjectProperty()} method may be used to generate {@link Message
      * Messages} about the change.
-     * 
+     *
      * @param modelObject the object to clear
      * @return a list of {@link ModelObjectAttribute ModelObjectAttributes} that were cleared
      */
@@ -98,24 +98,35 @@ public class ModelObjectAttributes {
      * If an attribute uses one of the {@link NullObjectSupport}-datatypes {@link Decimal} and
      * {@link Money}, the {@link NullObject} is used, {@link String}-attributes are set to an empty
      * string. Otherwise {@code null} is used to clear the attribute.
-     * 
+     *
      * <p>
      * For each cleared attribute a {@link ModelObjectAttribute} is returned. It's
      * {@link ModelObjectAttribute#toObjectProperty()} method may be used to generate {@link Message
      * Messages} about the change.
-     * 
+     *
      * @param modelObject the object to clear
      * @param shouldReset a Predicate deciding which attributes to reset.
      * @return a list of {@link ModelObjectAttribute ModelObjectAttributes} that were cleared
-     * 
+     *
      * @see #IS_IRRELEVANT_BUT_NOT_EMPTY
      */
     public static List<ModelObjectAttribute> resetAttributes(IModelObject modelObject,
             Predicate<ModelObjectAttribute> shouldReset) {
         return ModelObjectAttributes.ofIncludingChildren(modelObject).stream()
                 .filter(shouldReset::test)
-                .filter(ModelObjectAttribute::isNotDerivedOnTheFly)
+                .filter(ModelObjectAttributes::hasSetter)
                 .map(ModelObjectAttribute::removeValue)
                 .collect(Collectors.toList());
+    }
+
+    private static boolean hasSetter(ModelObjectAttribute modelObjectAttribute) {
+        switch (modelObjectAttribute.getPolicyAttribute().getAttributeKind()) {
+            case CONSTANT:
+            case DERIVED_BY_EXPLICIT_METHOD_CALL:
+            case DERIVED_ON_THE_FLY:
+                return false;
+            default:
+                return true;
+        }
     }
 }

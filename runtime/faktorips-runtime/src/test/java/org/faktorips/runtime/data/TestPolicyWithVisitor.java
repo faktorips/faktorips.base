@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -43,12 +43,14 @@ import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 @IpsPolicyCmptType(name = "TestPolicy")
-@IpsAttributes({ "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute", "BooleanAttribute",
-        "EnumAttribute", "RangeAttribute", "onTheFly" })
+@IpsAttributes({ "intAttribute", "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute",
+        "BooleanAttribute",
+        "EnumAttribute", "RangeAttribute", "onTheFly", "constant", "computed" })
 @IpsAssociations({ "TestDeckung" })
 @IpsDocumented(bundleName = "org.faktorips.runtime.validation.TestPolicy", defaultLocale = "en")
 public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
 
+    public static final String PROPERTY_INT_ATTRIBUTE = "intAttribute";
     public static final String PROPERTY_INTEGER_ATTRIBUTE = "IntegerAttribute";
     public static final String PROPERTY_DECIMAL_ATTRIBUTE = "DecimalAttribute";
     public static final String PROPERTY_MONEY_ATTRIBUTE = "MoneyAttribute";
@@ -59,7 +61,13 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     public static final String PROPERTY_ONTHEFLY_ATTRIBUTE = "onTheFly";
     public static final IntegerRange MAX_MULTIPLICITY_OF_TESTDECKUNG = IntegerRange.valueOf(0, 2147483647);
     public static final String ASSOCIATION_TESTDECKUNGUNGEN = "testDeckungungen";
+    public static final String PROPERTY_CONSTANT = "constant";
+    public static final String PROPERTY_COMPUTED = "computed";
 
+    @IpsAttribute(name = "constant", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+    public static final int CONSTANT = 42;
+
+    private int intAttribute;
     private Integer integerAttribute;
     private Decimal decimalAttribute;
     private Money moneyAttribute;
@@ -67,8 +75,10 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     private Boolean booleanAttribute;
     private TestEnum enumAttribute;
     private Long rangeAttribute;
+    private int computed;
     private final List<TestDeckungWithVisitor> testDeckungungen = new ArrayList<>();
 
+    private ValueSet<Integer> setOfAllowedValuesIntAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Integer> setOfAllowedValuesIntegerAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Decimal> setOfAllowedValuesDecimalAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Money> setOfAllowedValuesMoneyAttribute = new UnrestrictedValueSet<>();
@@ -79,6 +89,27 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     private OrderedValueSet<String> setOfAllowedValuesOnTheFly = new OrderedValueSet<>(false,
             "SOMEVAL");
     private LongRange rangeForRangeAttribute = LongRange.valueOf(2L, 5L, 1L, true);
+
+    @IpsAllowedValues("intAttribute")
+    public ValueSet<Integer> getSetOfAllowedValuesForIntAttribute() {
+        return setOfAllowedValuesIntAttribute;
+    }
+
+    @IpsAllowedValuesSetter("intAttribute")
+    public void setAllowedValuesForIntAttribute(ValueSet<Integer> setOfAllowedValuesIntAttribute) {
+        this.setOfAllowedValuesIntAttribute = setOfAllowedValuesIntAttribute;
+    }
+
+    @IpsAttribute(name = "intAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public int getIntAttribute() {
+        return intAttribute;
+    }
+
+    @IpsAttributeSetter("intAttribute")
+    public void setIntAttribute(int newValue) {
+        intAttribute = newValue;
+    }
 
     @IpsAllowedValues("IntegerAttribute")
     public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttribute() {
@@ -225,6 +256,11 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     @IpsAllowedValuesSetter("RangeAttribute")
     public void setAllowedValuesForRangeAttribute(ValueSet<Long> rangeForRangeAttribute) {
         this.rangeForRangeAttribute = (LongRange)rangeForRangeAttribute;
+    }
+
+    @IpsAttribute(name = "computed", kind = AttributeKind.DERIVED_BY_EXPLICIT_METHOD_CALL, valueSetKind = ValueSetKind.AllValues)
+    public int getComputed() {
+        return computed;
     }
 
     @Override
