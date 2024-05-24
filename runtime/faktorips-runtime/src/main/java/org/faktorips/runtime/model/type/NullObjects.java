@@ -21,7 +21,8 @@ import org.faktorips.values.NullObject;
 import org.faktorips.values.NullObjectSupport;
 
 /**
- * Helper to get the {@link NullObject} for {@link NullObjectSupport} datatypes.
+ * Helper to get the {@link NullObject} for datatypes, handling primitives, Strings and
+ * {@link NullObjectSupport}.
  *
  * @since 24.1
  */
@@ -33,6 +34,11 @@ class NullObjects {
         NULL_OBJECTS.put(Decimal.class, Decimal.NULL);
         NULL_OBJECTS.put(Money.class, Money.NULL);
         NULL_OBJECTS.put(String.class, IpsStringUtils.EMPTY);
+        NULL_OBJECTS.put(short.class, (short)0);
+        NULL_OBJECTS.put(int.class, 0);
+        NULL_OBJECTS.put(long.class, 0L);
+        NULL_OBJECTS.put(double.class, 0.0d);
+        NULL_OBJECTS.put(float.class, 0.0f);
     }
 
     private NullObjects() {
