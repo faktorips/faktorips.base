@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -89,6 +91,11 @@ public class InMemoryRuntimeRepositoryTest {
         repository.putTable(t3);
         assertEquals(t3, repository.getTable(TestTable2.class));
 
+        TestTable t4 = new TestTable("my.TestTable");
+        repository.putTable(t4);
+        assertEquals(t4, repository.getTable(TestTable.class));
+        assertEquals(t4, repository.getTable("my.TestTable"));
+
         try {
             repository.putTable(null);
             fail();
@@ -97,6 +104,7 @@ public class InMemoryRuntimeRepositoryTest {
         }
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testPutTable_qName() {
         TestTable t1 = new TestTable();
@@ -105,6 +113,7 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(t1, repository.getTable("motor.RateTable"));
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testGetTable_qName() {
         assertNull(repository.getTable("motor.RateTable"));
@@ -302,11 +311,13 @@ public class InMemoryRuntimeRepositoryTest {
         bGen1.setValidFrom(new DateTime(2006, 0, 1));
         repository.putProductCmptGeneration(bGen1);
 
-        int numberOfGens = repository.getNumberOfProductComponentGenerations(a);
-        assertEquals(3, numberOfGens);
+        c = new TestProductComponent(repository, "c", "cKind", "cVersion");
+        c.setValidFrom(new DateTime(2006, 0, 1));
+        repository.putProductComponent(c);
 
-        numberOfGens = repository.getNumberOfProductComponentGenerations(b);
-        assertEquals(1, numberOfGens);
+        assertThat(repository.getNumberOfProductComponentGenerations(a), is(3));
+        assertThat(repository.getNumberOfProductComponentGenerations(b), is(1));
+        assertThat(repository.getNumberOfProductComponentGenerations(c), is(0));
     }
 
     @Test

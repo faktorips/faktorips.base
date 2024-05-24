@@ -112,7 +112,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     private SortedSet<IProductComponentGeneration> getLoadedProductCmptGenerations(String productCmptId) {
-        return productCmptGenLists.get(productCmptId);
+        return productCmptGenLists.computeIfAbsent(productCmptId,
+                $ -> new TreeSet<>(
+                        new ProductCmptGenerationComparator(TimeZone.getDefault())));
     }
 
     @Override
@@ -167,11 +169,20 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      */
     @Override
     public void putTable(ITable<?> table) {
+        if (IpsStringUtils.isNotBlank(table.getName())) {
+            putTable(table, table.getName());
+        } else {
+            putSingleTable(table);
+        }
+
+    }
+
+    private void putSingleTable(ITable<?> table) {
         @SuppressWarnings("rawtypes")
         Class<? extends ITable> tableClass = table.getClass();
         for (Iterator<ITable<?>> it = tables.iterator(); it.hasNext();) {
             ITable<?> each = it.next();
-            if (each.getClass().isAssignableFrom(tableClass)) {
+            if (each.getClass().isAssignableFrom(tableClass) || tableClass.isAssignableFrom(each.getClass())) {
                 it.remove();
             }
         }
@@ -179,14 +190,18 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     /**
-     * Puts the table with the indicated name into the repository with . Replaces any table instance
-     * with the same qualified name.
+     * Puts the table with the indicated name into the repository. Replaces any table instance with
+     * the same qualified name.
      *
      * @throws NullPointerException if table or qName is <code>null</code>.
+     * @deprecated since 24.7 for removal. Use {@link IModifiableRuntimeRepository#putTable(ITable)}
+     *                 for all kinds of tables and make sure the {@code qName} is set as the table's
+     *                 name.
      */
+    @Deprecated(since = "24.7", forRemoval = true)
     public void putTable(ITable<?> table, String qName) {
         multipleContentTables.put(qName, table);
-        putTable(table);
+        putSingleTable(table);
     }
 
     @Override
@@ -256,12 +271,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
         if ((productCmptId == null) || (effectiveDate == null)) {
             return null;
         }
-        SortedSet<IProductComponentGeneration> genSortedSet = getGenerationSortedSet(productCmptId);
+        SortedSet<IProductComponentGeneration> generations = getLoadedProductCmptGenerations(productCmptId);
         IProductComponentGeneration foundGen = null;
         long effectiveTime = effectiveDate.getTimeInMillis();
         long foundGenValidFrom = Long.MIN_VALUE;
         long genValidFrom;
-        for (IProductComponentGeneration gen : genSortedSet) {
+        for (IProductComponentGeneration gen : generations) {
             genValidFrom = gen.getValidFrom(effectiveDate.getTimeZone()).getTime();
             if (effectiveTime >= genValidFrom && genValidFrom > foundGenValidFrom) {
                 foundGen = gen;
@@ -285,14 +300,8 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     @Override
     public void putProductCmptGeneration(IProductComponentGeneration generation) {
         Objects.requireNonNull(generation);
-        getGenerationSortedSet(generation.getProductComponent().getId()).add(generation);
+        getLoadedProductCmptGenerations(generation.getProductComponent().getId()).add(generation);
         putProductComponent(generation.getProductComponent());
-    }
-
-    private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
-        return productCmptGenLists.computeIfAbsent(productCmptId,
-                $ -> new TreeSet<>(
-                        new ProductCmptGenerationComparator(TimeZone.getDefault())));
     }
 
     @Override

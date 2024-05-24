@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.faktorips.values.Decimal;
 /**
  * Diese Klasse implementiert eine Read-Only In-Memory-Tabelle. Auf die Daten der Tabelle kann ueber
  * Finder-Methoden zugegriffen werden.
- * 
+ *
  * @generated
  */
 @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = { "company",
@@ -29,11 +29,24 @@ public class TestTable extends Table<TestTableRow> {
 
     /**
      * Erzeugt einen leeren Tabelleninhalt.
-     * 
+     *
      * @generated
      */
     public TestTable() {
         super();
+        rows = new ArrayList<>();
+        init();
+    }
+
+    /**
+     * Erzeugt einen leeren Tabelleninhalt.
+     *
+     * @generated
+     */
+    public TestTable(String qName) {
+        super(qName);
+        rows = new ArrayList<>();
+        init();
     }
 
     /**
@@ -41,7 +54,7 @@ public class TestTable extends Table<TestTableRow> {
      * kopiert. Spaetere Aenderungen an dem Inhalt der Liste, aendern also nicht die erzeugte
      * Tabelle. Dieser Konstruktor ist vor allem fuer die Verwendung in JUnit Tests vorgesehen, um
      * beliebige Tabelleninhalte erzeugen zu koennen.
-     * 
+     *
      * @generated
      */
     public TestTable(List<TestTableRow> content) {
@@ -53,7 +66,7 @@ public class TestTable extends Table<TestTableRow> {
     /**
      * Diese Methode wird waehrend der Initialisierung verwendet. Sie fuegt eine neue Tabellenzeile
      * hinzu.
-     * 
+     *
      * @generated
      */
     @Override
@@ -71,7 +84,7 @@ public class TestTable extends Table<TestTableRow> {
     /**
      * Initialisiert die Maps dieser Tabelle. Diese werden von den Finder-Methoden dieser Klasse
      * verwendet.
-     * 
+     *
      * @generated
      */
     @Override
@@ -81,7 +94,7 @@ public class TestTable extends Table<TestTableRow> {
 
     /**
      * Gibt die Instanz dieser Tabellenklasse zurueck.
-     * 
+     *
      * @generated
      */
     public static final TestTable getInstance(IRuntimeRepository repository, String qualifiedTableName) {

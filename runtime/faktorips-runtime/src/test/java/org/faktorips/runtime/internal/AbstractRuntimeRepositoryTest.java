@@ -281,6 +281,7 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(result.get(0), is(basePc));
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testGetAllTableIds() {
         TestTable testTable2 = new TestTable("t2");
