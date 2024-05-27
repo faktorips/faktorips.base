@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugins</artifactId>
-        <version>22.12.20-SNAPSHOT</version>
+        <version>22.12.20.release</version>
     </parent>
 
     <artifactId>org.faktorips.nls.devtools.model.decorators.nl1</artifactId>
