@@ -28,6 +28,7 @@
                 enabled="true"
                 scope="ON_ANY">
                 <selectedType markerId="org.faktorips.devtools.model.eclipse.problemmarker"/>
+                <selectedType markerId="org.faktorips.devtools.model.eclipse.problemmarker.build"/>
       </problemFilter>
    </extension>  
 

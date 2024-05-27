@@ -90,6 +90,8 @@ public class IpsBuilder {
 
     public static final String PROBLEM_MARKER = IpsModelActivator.PLUGIN_ID + ".eclipse.problemmarker"; //$NON-NLS-1$
 
+    public static final String BUILD_PROBLEM_MARKER = IpsModelActivator.PLUGIN_ID + ".eclipse.problemmarker.build"; //$NON-NLS-1$
+
     public static final boolean TRACE_BUILDER_TRACE;
 
     private static final String BUILD_ERROR_MSG_CODE = "BUILD_ERROR";
@@ -142,6 +144,7 @@ public class IpsBuilder {
             if (isFullBuildRequired) {
                 currentKind = ABuildKind.FULL;
             }
+            resetBuildProblemMarkers(kind);
             beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus,
                     new BeforeBuildProcessCommand(currentKind, getIpsProject()), subMonitor);
@@ -176,16 +179,16 @@ public class IpsBuilder {
             // Re-initialize the builders of the current builder set if an error occurs.
             getIpsProject().reinitializeIpsArtefactBuilderSet();
 
-            createMarkersFromBuildStatus(actualStatus, IpsBuilder.PROBLEM_MARKER);
-
             throw new CoreException(actualStatus);
 
         } catch (OperationCanceledException e) {
             getIpsProject().reinitializeIpsArtefactBuilderSet();
         } catch (CoreException e) {
+            createMarkersFromBuildStatus(buildStatus, IpsBuilder.BUILD_PROBLEM_MARKER);
             throw new IpsException(e);
             // CSOFF: IllegalCatch
         } catch (Throwable t) {
+            createMarkersFromBuildStatus(buildStatus, IpsBuilder.BUILD_PROBLEM_MARKER);
             /*
              * Need to catch Throwable. If the incremental project builder throws an error, Eclipse
              * just writes a Warning to the error log. So we wrap the error into a CoreException.
@@ -196,17 +199,22 @@ public class IpsBuilder {
         return builder.getProject().getReferencedProjects();
     }
 
+    private void resetBuildProblemMarkers(ABuildKind kind) {
+        if (kind != ABuildKind.AUTO) {
+            getIpsProject().getProject().deleteMarkers(IpsBuilder.BUILD_PROBLEM_MARKER, true,
+                    AResourceTreeTraversalDepth.RESOURCE_ONLY);
+        }
+    }
+
     public void createMarkersFromBuildStatus(IStatus buildStatus, String markerType) {
         Map<AResource, MessageList> errors = new HashMap<>();
         for (IpsStatus ipsStatus : getIpsErrors(buildStatus)) {
-            if (ipsStatus.getMessage().contains("BuildProcessCmd[kind=")) {
-                preOrPostBuildErrors(errors, ipsStatus);
-                continue;
-            }
             Matcher regexMatcher = EXCEPTION_WHILE_BUILDING_REGEX.matcher(ipsStatus.getMessage());
             if (regexMatcher.find()) {
                 buildOrDeleteErrors(errors, ipsStatus, regexMatcher);
+                continue;
             }
+            commonBuildErrors(errors, ipsStatus);
         }
         errors.forEach((resource, ml) -> {
             ml.wrapUpMessages(BUILD_ERROR_MSG_CODE);
@@ -232,7 +240,7 @@ public class IpsBuilder {
         }
     }
 
-    private void preOrPostBuildErrors(Map<AResource, MessageList> errors, IpsStatus ipsStatus) {
+    private void commonBuildErrors(Map<AResource, MessageList> errors, IpsStatus ipsStatus) {
         MessageList ml = errors.computeIfAbsent(getIpsProject().getProject(), $ -> new MessageList());
         if (ipsStatus.getException() != null) {
             ml.add(Message.newError(BUILD_ERROR_MSG_CODE,
