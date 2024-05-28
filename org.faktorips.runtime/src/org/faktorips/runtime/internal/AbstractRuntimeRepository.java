@@ -70,7 +70,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     // a list of all repositories this one depends on directly or indirectly
     // see getAllRepositories() for further information
-    private List<IRuntimeRepository> allRepositories = null;
+    private volatile List<IRuntimeRepository> allRepositories = null;
 
     private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new ConcurrentHashMap<>();
 
@@ -122,24 +122,27 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public List<IRuntimeRepository> getAllReferencedRepositories() {
-        if (allRepositories != null) {
-            return allRepositories;
-        }
-        List<IRuntimeRepository> result = new ArrayList<>(repositories.size());
-        // list is so small, linear search is ok.
-        LinkedList<IRuntimeRepository> candidates = new LinkedList<>();
-        candidates.add(this);
-        while (!candidates.isEmpty()) {
-            IRuntimeRepository candidate = candidates.get(0);
-            candidates.remove(0);
-            if (candidate != this && !result.contains(candidate)) {
-                result.add(candidate);
+        if (allRepositories == null) {
+            synchronized (this) {
+                if (allRepositories == null) {
+                    List<IRuntimeRepository> result = new ArrayList<>(repositories.size());
+                    // list is so small, linear search is ok.
+                    LinkedList<IRuntimeRepository> candidates = new LinkedList<>();
+                    candidates.add(this);
+                    while (!candidates.isEmpty()) {
+                        IRuntimeRepository candidate = candidates.get(0);
+                        candidates.remove(0);
+                        if (candidate != this && !result.contains(candidate)) {
+                            result.add(candidate);
+                        }
+                        for (IRuntimeRepository newCandidate : candidate.getDirectlyReferencedRepositories()) {
+                            candidates.add(newCandidate);
+                        }
+                    }
+                    allRepositories = Collections.unmodifiableList(result);
+                }
             }
-            for (IRuntimeRepository newCandidate : candidate.getDirectlyReferencedRepositories()) {
-                candidates.add(newCandidate);
-            }
         }
-        allRepositories = Collections.unmodifiableList(result);
         return allRepositories;
     }
 

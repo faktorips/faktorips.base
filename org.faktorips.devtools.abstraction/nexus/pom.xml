@@ -79,7 +79,16 @@
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.equinox.preferences</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.core.jobs</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.core.jobs</artifactId>
+      <version>3.10.300</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
@@ -88,14 +97,23 @@
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.core.commands</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.equinox.preferences</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.core.commands</artifactId>
+      <version>3.9.300</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.equinox.common</artifactId>
-      <version>3.10.200</version>
+      <version>3.10.300</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
@@ -115,7 +133,7 @@
     <dependency>
       <groupId>org.eclipse.platform</groupId>
       <artifactId>org.eclipse.equinox.preferences</artifactId>
-      <version>3.7.300</version>
+      <version>3.10.300</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>
