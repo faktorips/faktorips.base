@@ -55,7 +55,8 @@ public abstract class AbstractConfigElementEditComposite<V extends IConfigElemen
             gc = new GC(this);
             int widthDefault = gc.stringExtent(Messages.ConfigElementEditComposite_defaultValue).x;
             String valueSetLabel = Messages.ConfigElementEditComposite_valueSet;
-            if (getProperty().getValueSet() != null && getProperty().getValueSet().isDerived()) {
+            IPolicyCmptTypeAttribute property = getProperty();
+            if (property != null && property.getValueSet() != null && property.getValueSet().isDerived()) {
                 valueSetLabel = ConfiguredValueSetEditComposite.PREFIX_DERIVED_VALUE_SET + valueSetLabel;
             }
             int widthValueSet = gc.stringExtent(valueSetLabel).x;
