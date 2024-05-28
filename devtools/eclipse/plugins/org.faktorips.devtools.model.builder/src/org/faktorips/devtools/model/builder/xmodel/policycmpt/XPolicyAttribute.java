@@ -421,6 +421,28 @@ public class XPolicyAttribute extends XAttribute {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 
+    /**
+     * Fields or constants are hiding, if they have the same name in {@code this} and the
+     * {@code super} type.
+     * <p>
+     * The {@code @SuppressWarnings("hiding")} is not needed for interfaces, because it is possible
+     * for an interface to inherit more than one field with the same name. Such a situation does not
+     * in itself cause a compile-time error. However, any attempt within the body of the interface
+     * to refer to either field by its simple name will result in a compile-time error, because such
+     * a reference is ambiguous.
+     */
+    public boolean isHidingField(boolean genInterface) {
+        if (isOverwrite() && !genInterface) {
+            XPolicyAttribute oa = getOverwrittenAttribute();
+            if (oa.isGenerateConstantForValueSet() && isGenerateConstantForValueSet()) {
+                String thisFieldName = field(getConstantNameValueSet());
+                String overwritenFieldName = oa.field(oa.getConstantNameValueSet());
+                return thisFieldName.equals(overwritenFieldName);
+            }
+        }
+        return false;
+    }
+
     public boolean isAttributeTypeChangedByOverwrite() {
         return isOverwrite() && isChangeable() && isOverwritingDerivedOnTheFly();
     }

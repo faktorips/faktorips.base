@@ -35,7 +35,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
-      «IF overwrite»@SuppressWarnings("hiding")«ENDIF»
+      «IF isHidingField(genInterface)»@SuppressWarnings("hiding")«ENDIF»
       «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES)»
       public static final «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(constantNameValueSet)» = «valuesetCode»;
     «ENDIF»
