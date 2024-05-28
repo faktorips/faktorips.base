@@ -12,7 +12,7 @@ def pomString = """<?xml version="1.0" encoding="UTF-8"?>
 
     <properties>
         <source.encoding>UTF-8</source.encoding>
-        <tycho-version>4.0.4</tycho-version>
+        <tycho-version>4.0.8</tycho-version>
         <eclipse-version>${eclipseVersion}</eclipse-version>
     </properties>
 
