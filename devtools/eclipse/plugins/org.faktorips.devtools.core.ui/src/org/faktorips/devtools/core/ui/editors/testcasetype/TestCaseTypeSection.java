@@ -17,8 +17,10 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -1381,15 +1383,17 @@ public class TestCaseTypeSection extends IpsSection {
 
         // add listener to the table
         viewer.addSelectionChangedListener(event -> {
-            if (event.getSelection() instanceof IStructuredSelection) {
-                Object firstElement = ((IStructuredSelection)event.getSelection()).getFirstElement();
-                if (firstElement instanceof ITestAttribute) {
-                    currSelectedDetailObject = (ITestAttribute)firstElement;
-                    updateDetailButtonStatus((ITestAttribute)firstElement);
-                    selectSection(objectCache.getSection((ITestAttribute)firstElement));
+            if (event.getSelection() instanceof IStructuredSelection selection) {
+                Object firstElement = selection.getFirstElement();
+                if (firstElement instanceof ITestAttribute testAttribute) {
+                    currSelectedDetailObject = updateTestAttribute(testAttribute);
+                    updateDetailButtonStatus(testAttribute);
+                    selectSection(objectCache.getSection(testAttribute));
                     AttributeDetails attributeDetails = objectCache
-                            .getAttributeDetails(((ITestAttribute)firstElement).getTestPolicyCmptTypeParameter());
-                    attributeDetails.updateDetailAttributeArea((ITestAttribute)firstElement);
+                            .getAttributeDetails((testAttribute).getTestPolicyCmptTypeParameter());
+                    if (attributeDetails != null) {
+                        attributeDetails.updateDetailAttributeArea(testAttribute);
+                    }
                 }
             }
         });
@@ -1441,6 +1445,15 @@ public class TestCaseTypeSection extends IpsSection {
         for (ITestAttribute iTestAttribute : getSelectedAttributes(testAttribute)) {
             iTestAttribute.delete();
         }
+        // after saving the editor, a new object is in the UI therefore, get the new object and
+        // remove the attribute again.
+        ITestAttribute currentTestAttribute = updateTestAttribute((ITestAttribute)object);
+        // when removing several attributes without saving, there will be no new object in the UI
+        // and therefore no currentTestAttribute
+        if (currentTestAttribute != null) {
+            currentTestAttribute.delete();
+        }
+
         redrawDetailArea((ITestPolicyCmptTypeParameter)param, (ITestPolicyCmptTypeParameter)param);
     }
 
@@ -1547,7 +1560,8 @@ public class TestCaseTypeSection extends IpsSection {
 
         if (withFocusChange) {
             // select the corresponding object in the tree
-            ITestParameter testParam = getRootSectionObject(currSelectedDetailObject);
+            ITestParameter testParam = updateTestParam(getRootSectionObject(currSelectedDetailObject));
+            treeViewer.setSelection(new StructuredSelection(testParam));
             updateTreeButtonStatus(testParam);
         }
     }
@@ -1995,7 +2009,19 @@ public class TestCaseTypeSection extends IpsSection {
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)testAttribute
                 .getParent();
         int[] movedAttributesIndexes = testPolicyCmptTypeParameter.moveTestAttributes(selectedAttributesIndexes, up);
-        redrawDetailArea(testPolicyCmptTypeParameter, testAttribute);
+        ITestAttribute updateAttribute = testAttribute;
+
+        IIpsElement newTestParam = updateTestAttribute(testAttribute);
+        IIpsElement newParent = newTestParam.getParent();
+        // Yes reference not equals
+        if (testPolicyCmptTypeParameter != newParent) {
+            movedAttributesIndexes = ((ITestPolicyCmptTypeParameter)newParent)
+                    .moveTestAttributes(selectedAttributesIndexes, up);
+            testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)newParent;
+            updateAttribute = (ITestAttribute)newTestParam;
+        }
+
+        redrawDetailArea(testPolicyCmptTypeParameter, updateAttribute);
 
         TableViewer attrTable = objectCache.getAttributeTable(testPolicyCmptTypeParameter);
         List<ITestAttribute> newAttributeIdx = new ArrayList<>(selectedAttributes.size());
@@ -2293,9 +2319,12 @@ public class TestCaseTypeSection extends IpsSection {
     private void newTestAttributesByWizard(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
         boolean dirty = testCaseType.getIpsSrcFile().isDirty();
 
+        ITestPolicyCmptTypeParameter currentTestPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)updateTestParam(
+                testPolicyCmptTypeParam);
+
         // open wizard to add new test attributes
         Memento memento = testCaseType.newMemento();
-        NewTestAttributeWizard wizard = new NewTestAttributeWizard(testCaseType, testPolicyCmptTypeParam,
+        NewTestAttributeWizard wizard = new NewTestAttributeWizard(testCaseType, currentTestPolicyCmptTypeParam,
                 showSubtypeAttributes);
         WizardDialog dialog = new WizardDialog(getShell(), wizard);
         dialog.open();
@@ -2305,13 +2334,55 @@ public class TestCaseTypeSection extends IpsSection {
                 testCaseType.getIpsSrcFile().markAsClean();
             }
         } else {
-            redrawDetailArea(testPolicyCmptTypeParam, wizard.getNewlyCreatedTestAttribute());
+            redrawDetailArea(currentTestPolicyCmptTypeParam, wizard.getNewlyCreatedTestAttribute());
             showSubtypeAttributes = wizard.getShowSubtypeAttributes();
         }
     }
 
+    private ITestAttribute updateTestAttribute(ITestAttribute testAttribute) {
+        ITestAttribute updatedTestAttribute = getUpdatedIpsElement(testAttribute);
+        var indx = objectCache.getIdxFromAttribute(testAttribute);
+        objectCache.putAttributeIdx(updatedTestAttribute, indx);
+
+        return updatedTestAttribute;
+    }
+
+    private ITestParameter updateTestParam(ITestParameter testParam) {
+        ITestPolicyCmptTypeParameter updatedTestParameter = (ITestPolicyCmptTypeParameter)getUpdatedIpsElement(
+                testParam);
+        objectCache.getAllSectionButtons().forEach(sb -> {
+            if (sb.testParameter == testParam) {
+                sb.testParameter = updatedTestParameter;
+            }
+        });
+        var value = objectCache.getAttributeDetails(testParam);
+        objectCache.putAttributeDetails(updatedTestParameter, value);
+        return updatedTestParameter;
+    }
+
+    private <R extends IIpsElement> R getUpdatedIpsElement(R ipsElement) {
+        Deque<String> path = new LinkedList<>();
+        IIpsElement e = ipsElement;
+        while (e != testCaseType) {
+            path.addFirst(e.getName());
+            e = e.getParent();
+        }
+        while (!path.isEmpty() && e != null) {
+            String name = path.poll();
+            e = Arrays.stream(e.getChildren())
+                    .filter(c -> name.equals(c.getName()))
+                    .findFirst().orElse(null);
+        }
+        return castTo(e);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R extends IIpsElement> R castTo(IIpsElement e) {
+        return (R)e;
+    }
+
     public void refreshTreeAndDetailArea() {
-        refreshTreeAndDetails(getRootSectionObject(currSelectedDetailObject));
+        refreshTreeAndDetails(getRootSectionObject(getUpdatedIpsElement(currSelectedDetailObject)));
     }
 }
 // CSON: InnerTypeLastCheck
