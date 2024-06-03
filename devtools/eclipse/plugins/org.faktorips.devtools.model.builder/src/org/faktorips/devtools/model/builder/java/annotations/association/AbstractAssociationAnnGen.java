@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,7 +48,7 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
         paramsBuilder.append("pluralName = \"" + association.getName(true) + "\"" + ", ");
         paramsBuilder.append("kind = ").appendClassName(AssociationKind.class)
                 .append("." + association.getAssociationKind() + ", ");
-        paramsBuilder.append("targetClass = ").appendClassName(association.getTargetQualifiedClassName())
+        paramsBuilder.append("targetClass = ").append(association.addImport(association.getTargetQualifiedClassName()))
                 .append(".class, ");
 
         paramsBuilder.append("min = " + association.getMinCardinality() + ", ");

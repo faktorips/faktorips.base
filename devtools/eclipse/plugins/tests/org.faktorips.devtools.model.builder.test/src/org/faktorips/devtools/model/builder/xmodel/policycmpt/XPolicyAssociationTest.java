@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.builder.xmodel.policycmpt;
 
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,8 +29,10 @@ import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
 import org.faktorips.devtools.model.builder.xmodel.ModelService;
 import org.faktorips.devtools.model.builder.xmodel.XDerivedUnionAssociation;
+import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.junit.Before;
 import org.junit.Test;
@@ -254,6 +257,50 @@ public class XPolicyAssociationTest {
         doReturn(false).when(assoc).isDerived();
 
         assertTrue(assoc.isGenerateGetter());
+    }
 
+    @Test
+    public void testGetCopySupportCopyVarName() {
+        doReturn("Foo").when(assoc).getTargetClassName();
+
+        assertThat(assoc.getCopySupportCopyVarName(), is("copyFoo"));
+    }
+
+    @Test
+    public void testGetCopySupportCopyVarName_Qualified() {
+        doReturn("some.package.Foo").when(assoc).getTargetClassName();
+
+        assertThat(assoc.getCopySupportCopyVarName(), is("copyFoo"));
+    }
+
+    @Test
+    public void testGetCopySupportLoopVarName() {
+        doReturn("Foo").when(assoc).getTargetClassName();
+        doReturn(ipsProject).when(assoc).getIpsProject();
+        IJavaNamingConvention namingConvention = new JavaNamingConvention();
+        doReturn(namingConvention).when(ipsProject).getJavaNamingConvention();
+
+        assertThat(assoc.getCopySupportLoopVarName(), is("foo"));
+    }
+
+    @Test
+    public void testGetCopySupportLoopVarName_Qualified() {
+        doReturn("some.package.Foo").when(assoc).getTargetClassName();
+        doReturn(ipsProject).when(assoc).getIpsProject();
+        IJavaNamingConvention namingConvention = new JavaNamingConvention();
+        doReturn(namingConvention).when(ipsProject).getJavaNamingConvention();
+
+        assertThat(assoc.getCopySupportLoopVarName(), is("foo"));
+    }
+
+    @Test
+    public void testGetCopySupportLoopVarName_SameAsPlural() {
+        doReturn("Foo").when(assoc).getTargetClassName();
+        doReturn("Foo").when(assoc).getName(true);
+        doReturn(ipsProject).when(assoc).getIpsProject();
+        IJavaNamingConvention namingConvention = new JavaNamingConvention();
+        doReturn(namingConvention).when(ipsProject).getJavaNamingConvention();
+
+        assertThat(assoc.getCopySupportLoopVarName(), is("aFoo"));
     }
 }

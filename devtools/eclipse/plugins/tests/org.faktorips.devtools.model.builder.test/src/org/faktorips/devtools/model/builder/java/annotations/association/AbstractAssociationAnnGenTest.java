@@ -33,7 +33,8 @@ public class AbstractAssociationAnnGenTest {
 
     private static final String ASSOCIATION = "association";
     private static final String ASSOCIATION_PLURAL = "associations";
-    private static final String ASSOCIATION_TARGET = "AssociationTarget";
+    private static final String ASSOCIATION_TARGET_UNQUALIFIED = "AssociationTarget";
+    private static final String ASSOCIATION_TARGET = "some.package." + ASSOCIATION_TARGET_UNQUALIFIED;
     private static final String DERIVED_UNION = "derivedUnion";
     private static final String MATCHING_SOURCE_TYPE = "MatchingSourceType";
     private static final String MATCHING_ASSOCIATION = "matchingAssociation";
@@ -45,10 +46,16 @@ public class AbstractAssociationAnnGenTest {
 
     // expected outcomes
     private String annAssociation = "@IpsAssociation(name = \"" + ASSOCIATION + "\", pluralName = \""
-            + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = " + ASSOCIATION_TARGET
+            + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = "
+            + ASSOCIATION_TARGET_UNQUALIFIED
+            + ".class, min = " + MIN_CARD + ", max = " + MAX_CARD + ")" + System.lineSeparator();
+    private String annAssociationQualified = "@IpsAssociation(name = \"" + ASSOCIATION + "\", pluralName = \""
+            + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = "
+            + ASSOCIATION_TARGET
             + ".class, min = " + MIN_CARD + ", max = " + MAX_CARD + ")" + System.lineSeparator();
     private String annQualifiedAssociation = "@IpsAssociation(name = \"" + ASSOCIATION + "\", pluralName = \""
-            + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = " + ASSOCIATION_TARGET
+            + ASSOCIATION_PLURAL + "\", kind = AssociationKind.Composition, targetClass = "
+            + ASSOCIATION_TARGET_UNQUALIFIED
             + ".class, min = " + MIN_CARD + ", max = " + MAX_CARD + ", qualified = true)" + System.lineSeparator();
     private String annDerivedUnion = "@IpsDerivedUnion" + System.lineSeparator();
     private String annSubsetOfDerivedUnion = "@IpsSubsetOfDerivedUnion(\"" + DERIVED_UNION + "\")"
@@ -58,20 +65,27 @@ public class AbstractAssociationAnnGenTest {
 
     @Test
     public void testCreateAnnAssociation() {
-        XAssociation association = mockBasicAssociation();
+        XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         assertEquals(annAssociation, annGen.createAnnAssociation(association).getSourcecode());
     }
 
     @Test
+    public void testCreateAnnAssociation_ConflictingImport() {
+        XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET);
+
+        assertEquals(annAssociationQualified, annGen.createAnnAssociation(association).getSourcecode());
+    }
+
+    @Test
     public void testCreateAnnQualifiedAssociation() {
-        XAssociation association = mockBasicAssociation();
+        XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         when(association.isQualified()).thenReturn(true);
         assertEquals(annQualifiedAssociation, annGen.createAnnAssociation(association).getSourcecode());
     }
 
     @Test
     public void testCreateAnnDerivedUnion() {
-        XAssociation association = mockBasicAssociation();
+        XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         assertEquals("", annGen.createAnnDerivedUnion(association).getSourcecode());
 
         mockDerivedUnion(association);
@@ -80,7 +94,7 @@ public class AbstractAssociationAnnGenTest {
 
     @Test
     public void testCreateAnnSubsetOfDerivedUnion() {
-        XAssociation association = mockBasicAssociation();
+        XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         assertEquals("", annGen.createAnnSubsetOfDerivedUnion(association).getSourcecode());
 
         mockSubsetOfDerivedUnion(association);
@@ -89,7 +103,7 @@ public class AbstractAssociationAnnGenTest {
 
     @Test
     public void testMatchingAssociation() {
-        XAssociation association = mockBasicAssociation();
+        XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         mockMatchingAssociation(association);
         assertEquals(annMatchingAssociation, annGen.createAnnMatchingAssociation(association).getSourcecode());
     }
@@ -120,7 +134,7 @@ public class AbstractAssociationAnnGenTest {
      * name {@value #ASSOCIATION_TARGET}. The minimal cardinality is {@value #MIN_CARD}, max
      * cardinality is {@value #MAX_CARD}.
      */
-    private XAssociation mockBasicAssociation() {
+    private XAssociation mockBasicAssociation(String nameToUseForTargetClass) {
         XAssociation association = mock(XAssociation.class);
         when(association.getName(false)).thenReturn(ASSOCIATION);
         when(association.getName(true)).thenReturn(ASSOCIATION_PLURAL);
@@ -128,6 +142,7 @@ public class AbstractAssociationAnnGenTest {
         when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
         when(association.getMinCardinality()).thenReturn(MIN_CARD);
         when(association.getMaxCardinality()).thenReturn(MAX_CARD);
+        when(association.addImport(ASSOCIATION_TARGET)).thenReturn(nameToUseForTargetClass);
         return association;
     }
 }

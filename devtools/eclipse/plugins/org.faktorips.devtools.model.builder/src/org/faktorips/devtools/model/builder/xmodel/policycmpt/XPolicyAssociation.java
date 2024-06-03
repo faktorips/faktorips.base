@@ -551,14 +551,22 @@ public class XPolicyAssociation extends XAssociation {
      * collision with the field name.
      */
     public String getCopySupportLoopVarName() {
-        return getVarNameAvoidCollisionWithPluralName(getTargetClassName());
+        return getVarNameAvoidCollisionWithPluralName(unqualified(getTargetClassName()));
     }
 
     /**
      * Returns "copy"+the target className, e.g. "copyCoverage".
      */
     public String getCopySupportCopyVarName() {
-        return "copy" + getTargetClassName();
+        return "copy" + unqualified(getTargetClassName());
+    }
+
+    private String unqualified(String maybeQualified) {
+        int lastPeriod = maybeQualified.lastIndexOf('.');
+        if (lastPeriod > 0) {
+            return maybeQualified.substring(lastPeriod + 1);
+        }
+        return maybeQualified;
     }
 
     @Override

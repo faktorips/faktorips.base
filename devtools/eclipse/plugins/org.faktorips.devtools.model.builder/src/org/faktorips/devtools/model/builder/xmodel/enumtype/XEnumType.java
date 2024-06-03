@@ -385,7 +385,7 @@ public class XEnumType extends XClass {
                 DatatypeHelper idAttrDatatypeHelper = getIpsProject()
                         .findDatatypeHelper(enumAttribute.getDatatype().getQualifiedName());
                 JavaCodeFragment fragment = new JavaCodeFragment();
-                fragment.appendClassName(getQualifiedClassName());
+                fragment.append(addImport(getQualifiedClassName()));
                 fragment.append('.');
                 fragment.append(getMethodNameGetValueByIdentifier());
                 fragment.append("("); //$NON-NLS-1$
