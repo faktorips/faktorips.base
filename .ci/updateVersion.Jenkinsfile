@@ -9,7 +9,7 @@ pipeline {
 
     parameters {
         string description: 'Die nächste Version, z.B. 22.12.1 (-SNAPSHOT wird automatisch hinzugefügt)', name: 'NEW_VERSION'
-        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH', quickFilterEnabled: true, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
     }
 
     tools {
@@ -48,7 +48,7 @@ pipeline {
         stage('Update versions') {
             steps {
                 osSpecificMaven commands: [
-                    "mvn -V -T 8 org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas"
+                    "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas"
                 ]
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${newVersion}/' {} \\;"
