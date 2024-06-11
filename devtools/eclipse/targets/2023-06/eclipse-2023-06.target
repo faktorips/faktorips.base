@@ -567,7 +567,7 @@
             <unit id="org.eclipse.babel.nls_tools.gef_de.feature.group" version="0.0.0"/>
             <repository location="https://update.faktorzehn.org/p2repositories/babel/2022-12"/>
         </location>
-        <location type="Target" uri="mvn:org.faktorips:thirdparty:23.6.12.release:target"/>
+        <location type="Target" uri="mvn:org.faktorips:thirdparty:23.6.13-SNAPSHOT:target"/>
         <location includeDependencyDepth="none" includeDependencyScopes="compile" includeSource="true" label="Maven Library Bundles" missingManifest="error" type="Maven">
             <dependencies>
                 <dependency>
