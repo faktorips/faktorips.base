@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-features</artifactId>
-        <version>22.12.21.release</version>
+        <version>22.12.22-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.groovy.feature.nls1</artifactId>
