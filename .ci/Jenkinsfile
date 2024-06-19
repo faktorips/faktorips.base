@@ -44,6 +44,24 @@ pipeline {
                 ]
             }
         }
+        stage('Dependency-Check') {
+            steps {
+                dir('runtime'){
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        dependencyCheck()
+                    }
+                }
+                dir('devtools/common'){
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        dependencyCheck()
+                    }
+                }
+                rtp parserName: 'HTML', nullAction: '1', stableText: """
+                    <h2>Dependency-Check</h2>
+                    <a href='${env.BUILD_URL}artifact/dependency-check-report.html' target='_blank'>Dependency-Check Report</a>
+                  """
+            }
+        }
 
         stage('Deploy Additional Artifacts') {
             steps {

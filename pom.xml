@@ -101,6 +101,8 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <moditect-maven-plugin.version>1.0.0.Final</moditect-maven-plugin.version>
         <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
         <auto-service.version>1.1.1</auto-service.version>
+        <dependency-check-plugin.version>9.1.0</dependency-check-plugin.version>
+        <dependency-check-postgres.version>42.7.3</dependency-check-postgres.version>
     </properties>
 
     <distributionManagement>
@@ -399,11 +401,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-p2-plugin</artifactId>
-                    <version>${tycho.version}</version>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -483,4 +480,43 @@ license terms are available from Faktor Zehn GmbH.</comments>
             </plugin>
         </plugins>
     </reporting>
+    <profiles>
+        <profile>
+            <id>DependencyCheck</id>
+            <build>
+                <plugins>
+                    <plugin>
+                      <groupId>org.owasp</groupId>
+                      <artifactId>dependency-check-maven</artifactId>
+                      <version>${dependency-check-plugin.version}</version>
+                      <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${dependency-check-postgres.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>commons-collections</groupId>
+                                <artifactId>commons-collections</artifactId>
+                                <version>3.2.2</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.commons</groupId>
+                                <artifactId>commons-pool2</artifactId>
+                                <version>2.12.0</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <databaseDriverName>org.postgresql.Driver</databaseDriverName>
+                            <!-- DB config must be set via parameters  -->
+                            <autoUpdate>false</autoUpdate>
+                            <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
+                            <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
+                            <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
+                      </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
