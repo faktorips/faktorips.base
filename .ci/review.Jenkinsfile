@@ -31,9 +31,27 @@ pipeline {
                 osSpecificMaven commands: [
                     "mvn -U -V -fae -e clean install -f codequality-config",
                     "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -fae -e clean verify site -Dtycho.localArtifacts=ignore"
+                    "mvn -U -V -T 8 -fae -e clean install site -Dtycho.localArtifacts=ignore"
                     // site:site is not called for the review, as it depends on base and runtime which are not installed when built with only verify
                 ]
+            }
+        }
+        stage('Dependency-Check') {
+            steps {
+                dir('runtime'){
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        dependencyCheck()
+                    }
+                }
+                dir('devtools/common'){
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        dependencyCheck()
+                    }
+                }
+                rtp parserName: 'HTML', nullAction: '1', stableText: """
+                    <h2>Dependency-Check</h2>
+                    <a href='${env.BUILD_URL}artifact/dependency-check-report.html' target='_blank'>Dependency-Check Report</a>
+                  """
             }
         }
         stage('Prepare Artifacts for Archiving') {
