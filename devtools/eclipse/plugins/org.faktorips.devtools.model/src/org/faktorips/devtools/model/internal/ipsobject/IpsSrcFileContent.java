@@ -63,7 +63,7 @@ public class IpsSrcFileContent {
     private XsdValidationHandler xsdValidationHandler;
 
     /** Map containing the root properties of the source file. */
-    private Map<String, String> rootProperties = null;
+    private volatile Map<String, String> rootProperties = null;
 
     /** This flag is <code>true</code> if the content has been modified. */
     private volatile boolean modified = false;
@@ -260,7 +260,7 @@ public class IpsSrcFileContent {
         }
     }
 
-    private void clearRootPropertyCache() {
+    private synchronized void clearRootPropertyCache() {
         rootProperties = null;
     }
 
@@ -275,7 +275,7 @@ public class IpsSrcFileContent {
     /**
      * Reads and stores all root properties of the corresponding source file.
      */
-    public void initRootPropertiesFromFile() {
+    public synchronized void initRootPropertiesFromFile() {
         IIpsSrcFile file = getIpsSrcFile();
         try {
             clearRootPropertyCache();
@@ -303,8 +303,12 @@ public class IpsSrcFileContent {
             return getPropertyFromIpsObject(propertyName);
         }
         if (rootProperties == null) {
-            // Lazy load root properties.
-            initRootPropertiesFromFile();
+            synchronized (this) {
+                if (rootProperties == null) {
+                    // Lazy load root properties.
+                    initRootPropertiesFromFile();
+                }
+            }
         }
         /*
          * rootProperties could be null if the workspace is out of sync and the file doesn't exist
