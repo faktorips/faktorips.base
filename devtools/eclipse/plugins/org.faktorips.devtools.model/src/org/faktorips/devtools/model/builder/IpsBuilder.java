@@ -193,7 +193,9 @@ public class IpsBuilder {
              * Need to catch Throwable. If the incremental project builder throws an error, Eclipse
              * just writes a Warning to the error log. So we wrap the error into a CoreException.
              */
-            throw new IpsException(new IpsStatus(t));
+            IpsStatus status = new IpsStatus(Messages.IpsBuilder_error, t);
+            IpsLog.logAndShowErrorDialog(status);
+            throw new IpsException(status);
         }
         // CSON: IllegalCatch
         return builder.getProject().getReferencedProjects();

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,7 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.ABuilder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.IpsBuilder;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class EclipseIpsBuilder extends IncrementalProjectBuilder {
 
@@ -33,8 +35,21 @@ public class EclipseIpsBuilder extends IncrementalProjectBuilder {
     }
 
     @Override
-    protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
-        return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
+    protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+        try {
+            return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
+        } catch (IpsException e) {
+            if (e.getCause() instanceof CoreException ce) {
+                if (ce.getCause() instanceof Error error) {
+                    throw error;
+                }
+                throw ce;
+            } else if (e.getCause() instanceof Error error) {
+                throw error;
+            } else {
+                throw new CoreException(new IpsStatus(e));
+            }
+        }
     }
 
     @Override

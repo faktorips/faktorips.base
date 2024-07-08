@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.faktorips.runtime.MessageList;
  * range key item), this column range cache contains a sorted map (sorted using the 'from'-value) of
  * all key value range objects inside the table contents row. Each key value range object can be
  * related to one or more rows (analog to the UniqueKeyValidator).
- * 
+ *
  * @author Joerg Ortmann
  */
 public class UniqueKeyValidatorRange {
@@ -410,10 +410,10 @@ public class UniqueKeyValidatorRange {
     }
 
     public void printCachedContent(String offset) {
-        System.out.println(offset + " UniqueKeyRange:" + uniqueKey.getName()); //$NON-NLS-1$
+        System.out.println(offset + " UniqueKeyRange: " + uniqueKey.getName()); //$NON-NLS-1$
         for (Entry<KeyValue, Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>>> entry : keyValueRanges
                 .entrySet()) {
-            System.out.println(offset + " KeyValue:" + entry.getKey()); //$NON-NLS-1$
+            System.out.println(offset + " KeyValue: " + entry.getKey()); //$NON-NLS-1$
             printCachedColumnRange(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }
@@ -421,14 +421,14 @@ public class UniqueKeyValidatorRange {
     private void printCachedColumnRange(String offset,
             Map<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> sortedMap) {
         for (Entry<ColumnRange, SortedMap<AbstractKeyValue, Set<Row>>> entry : sortedMap.entrySet()) {
-            System.out.println(offset + " ColumnRange:" + entry.getKey().getName()); //$NON-NLS-1$
+            System.out.println(offset + " ColumnRange: " + entry.getKey().getName()); //$NON-NLS-1$
             printCachedSordetMap(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }
 
     private void printCachedSordetMap(String offset, SortedMap<AbstractKeyValue, Set<Row>> map) {
         for (Entry<AbstractKeyValue, Set<Row>> entry : map.entrySet()) {
-            System.out.println(offset + " KeyValue:"); //$NON-NLS-1$
+            System.out.println(offset + " KeyValue: " + entry.getKey().getKeyValue()); //$NON-NLS-1$
             printCachedEntryOrList(offset + " ", entry.getValue()); //$NON-NLS-1$
         }
     }

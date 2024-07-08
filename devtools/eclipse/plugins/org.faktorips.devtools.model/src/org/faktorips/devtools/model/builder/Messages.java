@@ -38,6 +38,7 @@ public class Messages extends NLS {
     public static String IpsBuilder_finishBuild;
     public static String IpsBuilder_deleting;
     public static String IpsBuilder_building;
+    public static String IpsBuilder_error;
     public static String IpsLoggingFrameworkConnectorPropertyDef_Deprecated;
 
 }
