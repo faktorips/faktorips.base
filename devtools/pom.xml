@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>24.1.12.release</version>
+        <version>24.1.13-SNAPSHOT</version>
     </parent>
 
     <artifactId>faktorips-devtools</artifactId>
