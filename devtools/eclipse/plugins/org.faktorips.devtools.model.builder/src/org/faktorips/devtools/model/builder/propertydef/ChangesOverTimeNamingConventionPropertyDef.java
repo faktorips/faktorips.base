@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.propertydef;
 
 import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
 import org.faktorips.devtools.model.internal.ipsproject.ChangesOverTimeNamingConvention;

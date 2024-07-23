@@ -6,6 +6,34 @@
          name="%modelbuilderset"
          point="org.faktorips.devtools.model.artefactbuilderset">
       <builderSet class="org.faktorips.devtools.model.builder.java.ModelBuilderSet">
+         <builderSetPropertyDef 
+            defaultValue="false" 
+            description="%generateChangeListenerDescription" 
+            disableValue="false" 
+            label="%generateChangeListenerLabel" 
+            name="generateChangeListener" 
+            type="boolean"/>
+         <builderSetPropertyDef
+            defaultValue="true"
+            description="%generateDeltaSupportDescription"
+            disableValue="false"
+            label="%generateDeltaSupportLabel"
+            name="generateDeltaSupport"
+            type="boolean"/>
+         <builderSetPropertyDef
+            defaultValue="true"
+            description="%generateCopySupportDescription"
+            disableValue="false"
+            label="%generateCopySupportLabel"
+            name="generateCopySupport"
+            type="boolean"/>
+         <builderSetPropertyDef
+            defaultValue="true"
+            description="%generateVisitorSupportDescription"
+            disableValue="false"
+            label="%generateVisitorSupportLabel"
+            name="generateVisitorSupport"
+            type="boolean"/>
          <builderSetPropertyDef
             defaultValue="de"
             description="%generatorLocaleDescription"
@@ -32,6 +60,28 @@
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
+            defaultValue="Unified"
+            description="%valueSetMethodsDescription"
+            disableValue="ByValueSetType"
+            label="%valueSetMethodsLabel"
+            name="valueSetMethods"
+            type="enum">
+            <discreteValues>
+                <!-- @see org.faktorips.devtools.model.builder.settings.ValueSetMethods -->
+               <value value="Unified" />
+               <value value="ByValueSetType" />
+               <value value="Both" />
+            </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="false"
+            description="%toXMLSupportDescription"
+            disableValue="false"
+            label="%toXMLSupportLabel"
+            name="toXMLSupport"
+            type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
                defaultValue="true"
                description="%camelCaseSeparatedDescription"
                disableValue="false"
@@ -48,6 +98,22 @@
             type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
+            defaultValue="false"
+            description="%serializablePolicyCmptsDescription"
+            disableValue="false"
+            label="%serializablePolicyCmptsLabel"
+            name="serializablePolicyCmpts"
+            type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="false"
+            description="%generateConvenienceGettersDescription"
+            disableValue="true"
+            label="%generateConvenienceGettersLabel"
+            name="generateConvenienceGetters"
+            type="boolean">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
             defaultValue="java8"
             description="%localDateDatatypeHelperVariantDescription"
             disableValue="joda"
@@ -58,6 +124,38 @@
                <value value="joda" />
                <value value="java8" />
             </discreteValues>
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               class="org.faktorips.devtools.model.builder.propertydef.PolicyBaseClassBuilderSetPropertyDef"
+               description="%baseClassPolicyComponentDescription"
+               label="%baseClassPolicyComponentLabel"
+               name="baseClassPolicyComponent"
+               defaultValue=""
+               type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               class="org.faktorips.devtools.model.builder.propertydef.ProductBaseClassBuilderSetPropertyDef"
+               description="%baseClassProductComponentDescription"
+               label="%baseClassProductComponentLabel"
+               name="baseClassProductComponent"
+               defaultValue=""
+               type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               class="org.faktorips.devtools.model.builder.propertydef.ChangesOverTimeNamingConventionPropertyDef"
+               description="%changesOverTimeNamingConventionDescription"
+               label="%changesOverTimeNamingConventionLabel"
+               name="changesInTimeNamingConvention"
+               defaultValue=""
+               type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="true"
+            description="%generateGetEffectiveFromAsCalendarDescription"
+            disableValue="true"
+            label="%generateGetEffectiveFromAsCalendarLabel"
+            name="generateGetEffectiveFromAsCalendar"
+            type="boolean">
          </builderSetPropertyDef>
       </builderSet>
    </extension>

@@ -8,15 +8,15 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.propertydef;
 
-import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.AbstractModelObject;
 
-public class ProductBaseClassBuilderSetPropertyDef extends AbstractBaseClassBuilderSetPropertyDef {
+public class PolicyBaseClassBuilderSetPropertyDef extends AbstractBaseClassBuilderSetPropertyDef {
 
     @Override
-    protected Class<ProductComponent> getRequiredSuperClass() {
-        return ProductComponent.class;
+    protected Class<AbstractModelObject> getRequiredSuperClass() {
+        return AbstractModelObject.class;
     }
 
 }
