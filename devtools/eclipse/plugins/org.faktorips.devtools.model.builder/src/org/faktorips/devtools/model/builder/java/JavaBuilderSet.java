@@ -283,6 +283,10 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
         return getJavaClassName(type, interfaces, XPolicyCmptClass.class);
     }
 
+    public String getJavaClassNameForProductCmptTypeIgnoreChangingOverTime(IProductCmptType type, boolean interfaces) {
+        return getJavaClassName(type, interfaces, XProductCmptClass.class);
+    }
+
     private String getJavaClassNameForProductCmptType(IProductCmptType type, boolean interfaces) {
         if (type.isChangingOverTime()) {
             return getJavaClassName(type, interfaces, XProductCmptGenerationClass.class);

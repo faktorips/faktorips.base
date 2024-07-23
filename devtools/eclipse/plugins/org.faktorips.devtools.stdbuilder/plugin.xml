@@ -229,7 +229,7 @@
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               class="org.faktorips.devtools.stdbuilder.PolicyBaseClassBuilderSetPropertyDef"
+               class="org.faktorips.devtools.model.builder.propertydef.PolicyBaseClassBuilderSetPropertyDef"
                description="%baseClassPolicyComponentDescription"
                label="%baseClassPolicyComponentLabel"
                name="baseClassPolicyComponent"
@@ -237,7 +237,7 @@
                type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               class="org.faktorips.devtools.stdbuilder.ProductBaseClassBuilderSetPropertyDef"
+               class="org.faktorips.devtools.model.builder.propertydef.ProductBaseClassBuilderSetPropertyDef"
                description="%baseClassProductComponentDescription"
                label="%baseClassProductComponentLabel"
                name="baseClassProductComponent"
@@ -245,7 +245,7 @@
                type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               class="org.faktorips.devtools.stdbuilder.ChangesOverTimeNamingConventionPropertyDef"
+               class="org.faktorips.devtools.model.builder.propertydef.ChangesOverTimeNamingConventionPropertyDef"
                description="%changesOverTimeNamingConventionDescription"
                label="%changesOverTimeNamingConventionLabel"
                name="changesInTimeNamingConvention"
