@@ -19,6 +19,10 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -554,6 +558,226 @@ public class ProductAttributeTest {
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
     }
 
+    @Test
+    public void testValidate_FormattedLocalDate_English() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setLocalDate(LocalDate.of(2024, 1, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_LOCALDATE);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATE));
+        assertThat(message.getText(), containsString("Jan 1, 2024"));
+        assertThat(message.getText(), containsString("Jan 1, 2020, Jan 1, 2021"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedLocalDate_German() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setLocalDate(LocalDate.of(2024, 1, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.GERMAN);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_LOCALDATE);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATE));
+        assertThat(message.getText(), containsString("01.01.2024"));
+        assertThat(message.getText(), containsString("01.01.2020, 01.01.2021"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedGregorianCalendar_English() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setGregorianCalendar(new GregorianCalendar(2024, 0, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_GREGORIANCALENDAR);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_GREGORIANCALENDAR));
+        assertThat(message.getText(), containsString("Jan 1, 2024"));
+        assertThat(message.getText(), containsString("Jan 1, 2020, Jan 1, 2021"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedGregorianCalendar_German() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setGregorianCalendar(new GregorianCalendar(2024, 0, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.GERMAN);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_GREGORIANCALENDAR);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_GREGORIANCALENDAR));
+        assertThat(message.getText(), containsString("01.01.2024"));
+        assertThat(message.getText(), containsString("01.01.2020, 01.01.2021"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedLocalDateTime_English() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setLocalDateTime(LocalDateTime.of(2024, 1, 1, 12, 12));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_LOCALDATETIME);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATETIME));
+        assertThat(message.getText(), containsString("Jan 1, 2024, 12:12:00 PM"));
+        assertThat(message.getText(), containsString("Jan 1, 2020, 12:00:01 AM, Jan 1, 2021, 12:01:01 AM"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedLocalDateTime_German() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setLocalDateTime(LocalDateTime.of(2024, 1, 1, 12, 12));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.GERMAN);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_LOCALDATETIME);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATETIME));
+        assertThat(message.getText(), containsString("01.01.2024, 12:12:00"));
+        assertThat(message.getText(), containsString("01.01.2020, 00:00:01, 01.01.2021, 00:01:01"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedLocalTime_English() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setLocalTime(LocalTime.NOON);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_LOCALTIME);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALTIME));
+        assertThat(message.getText(), containsString("12:00:00 PM"));
+        assertThat(message.getText(), containsString("12:00:01 AM, 12:01:01 AM"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedLocalTime_German() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setLocalTime(LocalTime.NOON);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.GERMAN);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_LOCALTIME);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALTIME));
+        assertThat(message.getText(), containsString("12:00:00"));
+        assertThat(message.getText(), containsString("00:00:01, 00:01:01"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedMonthDay_English() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setMonthDay(MonthDay.of(6, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_MONTHDAY);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_MONTHDAY));
+        assertThat(message.getText(), containsString("06-01"));
+        assertThat(message.getText(), containsString("01-01, 02-01"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
+    @Test
+    public void testValidate_FormattedMonthDay_German() {
+        ProductWithDates product = new ProductWithDates(repository);
+        product.setMonthDay(MonthDay.of(6, 1));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ProductWithDates.class);
+        IValidationContext context = new ValidationContext(Locale.GERMAN);
+        MessageList ml = new MessageList();
+        ProductAttribute attribute1 = productCmptType.getAttribute(ProductWithDates.PROPERTY_MONTHDAY);
+
+        attribute1.validate(ml, context, product, effectiveDate);
+        assertThat(ml.containsErrorMsg(), is(true));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_MONTHDAY));
+        assertThat(message.getText(), containsString("06-01"));
+        assertThat(message.getText(), containsString("01-01, 02-01"));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+    }
+
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
     @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute",
@@ -966,4 +1190,126 @@ public class ProductAttributeTest {
             return new ArrayList<>();
         }
     }
+
+    @IpsProductCmptType(name = "ProductWithDates")
+    @IpsAttributes({ "gregorianCalendar", "localDate", "localTime", "localDateTime", "monthDay" })
+    private static class ProductWithDates extends ProductComponent {
+
+        public static final String PROPERTY_GREGORIANCALENDAR = "gregorianCalendar";
+        public static final String PROPERTY_LOCALDATE = "localDate";
+        public static final String PROPERTY_LOCALTIME = "localTime";
+        public static final String PROPERTY_LOCALDATETIME = "localDateTime";
+        public static final String PROPERTY_MONTHDAY = "monthDay";
+
+        @IpsAllowedValues("gregorianCalendar")
+        public static final OrderedValueSet<GregorianCalendar> MAX_ALLOWED_VALUES_FOR_GREGORIAN_CALENDAR = new OrderedValueSet<>(
+                false, null, new GregorianCalendar(2020, 0, 1), new GregorianCalendar(2021, 0, 1));
+
+        @IpsAllowedValues("localDate")
+        public static final OrderedValueSet<LocalDate> MAX_ALLOWED_VALUES_FOR_LOCAL_DATE = new OrderedValueSet<>(false,
+                null, LocalDate.parse("2020-01-01"), LocalDate.parse("2021-01-01"));
+
+        @IpsAllowedValues("localTime")
+        public static final OrderedValueSet<LocalTime> MAX_ALLOWED_VALUES_FOR_LOCAL_TIME = new OrderedValueSet<>(false,
+                null, LocalTime.parse("00:00:01"), LocalTime.parse("00:01:01"));
+
+        @IpsAllowedValues("localDateTime")
+        public static final OrderedValueSet<LocalDateTime> MAX_ALLOWED_VALUES_FOR_LOCAL_DATE_TIME = new OrderedValueSet<>(
+                false, null, LocalDateTime.parse("2020-01-01T00:00:01"), LocalDateTime.parse("2021-01-01T00:01:01"));
+
+        @IpsAllowedValues("monthDay")
+        public static final OrderedValueSet<MonthDay> MAX_ALLOWED_VALUES_FOR_MONTH_DAY = new OrderedValueSet<>(
+                false, null, MonthDay.parse("--01-01"), MonthDay.parse("--02-01"));
+
+        @IpsDefaultValue("localDate")
+        public static final LocalDate DEFAULT_VALUE_FOR_LOCAL_DATE = null;
+
+        @IpsDefaultValue("localTime")
+        public static final LocalTime DEFAULT_VALUE_FOR_LOCAL_TIME = null;
+
+        @IpsDefaultValue("gregorianCalendar")
+        public static final GregorianCalendar DEFAULT_VALUE_FOR_GREGORIAN_CALENDAR = null;
+
+        @IpsDefaultValue("localDateTime")
+        public static final LocalDateTime DEFAULT_VALUE_FOR_LOCAL_DATE_TIME = null;
+
+        @IpsDefaultValue("monthDay")
+        public static final MonthDay DEFAULT_VALUE_FOR_MONTH_DAY = null;
+
+        private GregorianCalendar gregorianCalendar = DEFAULT_VALUE_FOR_GREGORIAN_CALENDAR;
+
+        private LocalDate localDate = DEFAULT_VALUE_FOR_LOCAL_DATE;
+
+        private LocalTime localTime = DEFAULT_VALUE_FOR_LOCAL_TIME;
+
+        private LocalDateTime localDateTime = DEFAULT_VALUE_FOR_LOCAL_DATE_TIME;
+
+        private MonthDay monthDay = DEFAULT_VALUE_FOR_MONTH_DAY;
+
+        public ProductWithDates(IRuntimeRepository repository) {
+            super(repository, "id", "kindId", "versionId");
+        }
+
+        @IpsAttribute(name = "gregorianCalendar", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public GregorianCalendar getGregorianCalendar() {
+            return gregorianCalendar;
+        }
+
+        @IpsAttributeSetter("gregorianCalendar")
+        public void setGregorianCalendar(GregorianCalendar newValue) {
+            gregorianCalendar = newValue;
+        }
+
+        @IpsAttribute(name = "localDate", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        public LocalDate getLocalDate() {
+            return localDate;
+        }
+
+        @IpsAttributeSetter("localDate")
+        public void setLocalDate(LocalDate newValue) {
+            localDate = newValue;
+        }
+
+        @IpsAttribute(name = "localTime", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public LocalTime getLocalTime() {
+            return localTime;
+        }
+
+        @IpsAttributeSetter("localTime")
+        public void setLocalTime(LocalTime newValue) {
+            localTime = newValue;
+        }
+
+        @IpsAttribute(name = "localDateTime", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        public LocalDateTime getLocalDateTime() {
+            return localDateTime;
+        }
+
+        @IpsAttributeSetter("localDateTime")
+        public void setLocalDateTime(LocalDateTime newValue) {
+            localDateTime = newValue;
+        }
+
+        @IpsAttribute(name = "monthDay", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        public MonthDay getMonthDay() {
+            return monthDay;
+        }
+
+        @IpsAttributeSetter("monthDay")
+        public void setMonthDay(MonthDay newValue) {
+            monthDay = newValue;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+    }
+
 }

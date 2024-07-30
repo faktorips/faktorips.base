@@ -12,12 +12,19 @@ package org.faktorips.runtime.model.type;
 
 import static java.util.Objects.requireNonNull;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -224,13 +231,100 @@ public abstract class Attribute extends TypePart {
             if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
                 Locale locale = context.getLocale();
                 ResourceBundle messages = ResourceBundle.getBundle(getResourceBundleName(), locale);
-                list.newError(msgCode,
-                        String.format(messages.getString(msgKey), value, getLabel(locale), referenceValue),
-                        this, property);
+                String formatString = String.format(messages.getString(msgKey), value, getLabel(locale),
+                        referenceValue);
+
+                if (value instanceof GregorianCalendar) {
+                    formatString = createFormattedGregorianCalendarString(msgKey,
+                            (GregorianCalendar)value,
+                            referenceValue,
+                            locale,
+                            messages);
+                }
+                if (value instanceof TemporalAccessor) {
+                    formatString = createFormattedJava8TimeString(msgKey,
+                            (TemporalAccessor)value,
+                            referenceValue,
+                            locale,
+                            messages);
+                }
+                list.newError(msgCode, formatString, this, property);
             }
         }
     }
     // CSON: ParameterNumber
+
+    private <R> String createFormattedJava8TimeString(String msgKey,
+            TemporalAccessor value,
+            R referenceValue,
+            Locale locale,
+            ResourceBundle messages) {
+
+        final DateTimeFormatter dateTimeFormatter;
+        if (value.isSupported(ChronoField.MINUTE_OF_HOUR) && value.isSupported(ChronoField.YEAR)) {
+            dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(locale);
+        } else if (value.isSupported(ChronoField.YEAR) && value.isSupported(ChronoField.DAY_OF_MONTH)) {
+            dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale);
+        } else if (value.isSupported(ChronoField.DAY_OF_MONTH) && value.isSupported(ChronoField.MONTH_OF_YEAR)) {
+            dateTimeFormatter = DateTimeFormatter.ofPattern("MM-dd", locale);
+        } else {
+            dateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM).withLocale(locale);
+        }
+
+        String formattedValue = dateTimeFormatter.format(value);
+        String formattedRefValue = referenceValue.toString();
+
+        if (referenceValue instanceof ValueSet) {
+            ValueSet<TemporalAccessor> valueSet = castJava8TimeValueSet(referenceValue);
+            if (valueSet.isDiscrete()) {
+                formattedRefValue = valueSet.getValues(false).stream().map(t -> {
+                    if (t == null) {
+                        return String.valueOf(t);
+                    } else {
+                        return dateTimeFormatter.format(t);
+                    }
+                }).collect(Collectors.joining(", ", "", ""));
+            }
+        }
+        return String.format(messages.getString(msgKey), formattedValue, getLabel(locale),
+                formattedRefValue);
+    }
+
+    private <R> String createFormattedGregorianCalendarString(String msgKey,
+            GregorianCalendar calendarValue,
+            R referenceValue,
+            Locale locale,
+            ResourceBundle messages) {
+        SimpleDateFormat sdf = (SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.DEFAULT,
+                locale);
+        String formattedValue = sdf.format(calendarValue.getTime());
+        String formattedRefValue = referenceValue.toString();
+
+        if (referenceValue instanceof ValueSet) {
+            ValueSet<GregorianCalendar> valueSet = castGregorianCalendarValueSet(referenceValue);
+            if (valueSet.isDiscrete()) {
+                formattedRefValue = valueSet.getValues(false).stream().map(c -> {
+                    if (c == null) {
+                        return String.valueOf(c);
+                    } else {
+                        return sdf.format(c.getTime());
+                    }
+                }).collect(Collectors.joining(", ", "", ""));
+            }
+        }
+        return String.format(messages.getString(msgKey), formattedValue, getLabel(locale),
+                formattedRefValue);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R> ValueSet<GregorianCalendar> castGregorianCalendarValueSet(R referenceValue) {
+        return (ValueSet<GregorianCalendar>)referenceValue;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R> ValueSet<TemporalAccessor> castJava8TimeValueSet(R referenceValue) {
+        return (ValueSet<TemporalAccessor>)referenceValue;
+    }
 
     protected abstract String getResourceBundleName();
 
