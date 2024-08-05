@@ -154,9 +154,9 @@ public enum Relevance {
 
     private static <T> ValueSet<T> asEnum(Class<T> datatype, boolean containsNull, ValueSet<T> values) {
         if (values != null && values.isDiscrete()) {
-            return new OrderedValueSet<>(values.getValues(true), containsNull, nullValue(datatype));
+            return new OrderedValueSet<>(values.getValues(true), containsNull, nullValue(datatype), true);
         } else if (!IpsModel.isExtensibleEnumType(datatype) && !datatype.isInterface()) {
-            return new OrderedValueSet<>(containsNull, nullValue(datatype), datatype.getEnumConstants());
+            return new OrderedValueSet<>(containsNull, true, nullValue(datatype), datatype.getEnumConstants());
         } else {
             return new UnrestrictedValueSet<>(containsNull);
         }

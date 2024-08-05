@@ -183,10 +183,10 @@ class DefaultAndAllowedValuesTmpl {
                 «ELSEIF valueSetUnrestricted || valueSetConfiguredDynamic »
                     «IF ipsEnum»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
-                        «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "unrestrictedValueSet.containsNull()")»;
+                        «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "unrestrictedValueSet.containsNull()", true)»;
                     «ELSEIF hasAllValuesMethod»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
-                        «fieldNameValueSet» = «newEnumValueSetInstance(getAllJavaEnumValuesCode(), "unrestrictedValueSet.containsNull()")»;
+                        «fieldNameValueSet» = «newEnumValueSetInstance(getAllJavaEnumValuesCode(), "unrestrictedValueSet.containsNull()", true)»;
                     «ELSE»
                         «fieldNameValueSet» = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET)»;
                     «ENDIF»

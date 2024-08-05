@@ -632,6 +632,25 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testDataTypeEnum_isVirtual() {
+
+        // Mandatory
+        ValueSet<Object> asValueSetFor = Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                TestPolicyWithUnrestrictedEnum.PROPERTY_NON_IPS_ENUM_ATTRIBUTE);
+
+        assertThat(((OrderedValueSet<Object>)asValueSetFor).isVirtual(), is(true));
+
+        // Optional
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        PolicyAttribute policyAttribute_Enum = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_ENUM_ATTRIBUTE);
+        ValueSet<Object> asValueSetFor2 = Relevance.OPTIONAL.asValueSetFor(modelObject, policyAttribute_Enum);
+
+        assertThat(((OrderedValueSet<Object>)asValueSetFor2).isVirtual(), is(true));
+
+    }
+
+    @Test
     public void testAsValueSetFor_Mandatory_ValueSetTypeRange() {
         assertThat(
                 Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerRange(),

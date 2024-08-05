@@ -211,10 +211,37 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            the type <code>boolean</code>
      * @param useTypesafeCollections indicates if Java 5 typesafe collections and valuetypes shall
      *            be used
+     *
+     * @see #newEnumValueSetInstance(JavaCodeFragment, JavaCodeFragment, boolean, boolean)
+     */
+    default JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression,
+            JavaCodeFragment containsNullExpression,
+            boolean useTypesafeCollections) {
+        return newEnumValueSetInstance(collectionExpression, containsNullExpression, useTypesafeCollections, false);
+    }
+
+    /**
+     * Returns a <code>JavaCodeFragment</code> containing the source code to create a new enum value
+     * set instance.
+     *
+     * @param collectionExpression a JavaCodeFragment is expected that contains an expression of the
+     *            type <code>java.util.Collection</code> The collection has to contain instances of
+     *            the datatype of this helper.
+     *
+     * @param containsNullExpression a JavaCodeFragment is expected that contains an expression of
+     *            the type <code>boolean</code>
+     * @param useTypesafeCollections indicates if Java 5 typesafe collections and valuetypes shall
+     *            be used
+     * @param virtual a boolean flag indicating whether the generated value set should be marked as
+     *            virtual. Virtual value sets represent OrderedValueSets created for
+     *            UnrestrictedValueSets of enumeration and are not meant for persistence.
+     * @since 25.1
+     *
      */
     JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression,
             JavaCodeFragment containsNullExpression,
-            boolean useTypesafeCollections);
+            boolean useTypesafeCollections,
+            boolean virtual);
 
     /**
      * Returns a {@link JavaCodeFragment} containing the code for converting the value (of the given

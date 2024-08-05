@@ -281,9 +281,38 @@ public class XPolicyAttribute extends XAttribute {
         return newRangeInstance.getSourcecode();
     }
 
+    /**
+     * Generates a Java code fragment that creates a new instance of an enum-based {@link ValueSet}.
+     *
+     * @param valueCollection a string representing the collection of values to include in the enum
+     *            value set.
+     * @param containsNullExpression a string representing the boolean expression to indicate if the
+     *            value set contains <code>null</code> or a null-representation value.
+     * @return a string containing the generated Java source code to create the enum-based value
+     *             set.
+     * @see #newEnumValueSetInstance(String, String, boolean)
+     */
     public String newEnumValueSetInstance(String valueCollection, String containsNullExpression) {
+        return newEnumValueSetInstance(valueCollection, containsNullExpression, false);
+    }
+
+    /**
+     * Generates a Java code fragment that creates a new instance of an enum-based {@link ValueSet}.
+     *
+     * @param valueCollection a string representing the collection of values to include in the enum
+     *            value set.
+     * @param containsNullExpression a string representing the boolean expression to indicate if the
+     *            value set contains <code>null</code> or a null-representation value.
+     * @param virtual virtual a boolean flag indicating whether the generated value set should be
+     *            marked as virtual. Virtual value sets represent OrderedValueSets created for
+     *            UnrestrictedValueSets of enumeration and are not meant for persistence
+     * @return a string containing the generated Java source code to create the enum-based value
+     *             set.
+     * @since 25.1
+     */
+    public String newEnumValueSetInstance(String valueCollection, String containsNullExpression, boolean virtual) {
         JavaCodeFragment newEnumExpression = getValuesetDatatypeHelper().newEnumValueSetInstance(
-                new JavaCodeFragment(valueCollection), new JavaCodeFragment(containsNullExpression), true);
+                new JavaCodeFragment(valueCollection), new JavaCodeFragment(containsNullExpression), true, virtual);
         addImport(newEnumExpression.getImportDeclaration());
         return newEnumExpression.getSourcecode();
     }

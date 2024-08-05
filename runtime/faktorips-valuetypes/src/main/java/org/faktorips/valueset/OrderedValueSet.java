@@ -40,6 +40,7 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     private boolean containsNull;
     private E nullValue;
     private final Set<E> set = createSetInternal();
+    private final boolean virtual;
 
     private int hashCode;
 
@@ -55,9 +56,36 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * @param nullValue the java {@code null} value or {@code null} representation value for the
      *            datatype of this enumeration value set
      * @throws IllegalArgumentException if the values array contains duplicate entries
+     * 
+     * @see #OrderedValueSet(boolean, boolean, Object, Object...)
      */
     @SafeVarargs
     public OrderedValueSet(boolean containsNull, E nullValue, E... values) {
+        this(containsNull, false, nullValue, values);
+    }
+
+    /**
+     * Creates a new instance of {@link OrderedValueSet}.
+     * 
+     *
+     * 
+     * @param containsNull indicates whether the provided values contain {@code null} or the
+     *            {@code null} representation value.
+     * @param virtual virtual a boolean flag indicating whether the generated value set should be
+     *            marked as virtual.
+     * @param nullValue the java {@code null} value or {@code null} representation value for the
+     *            datatype of this enumeration value set.
+     * @param values the values of this set. If these values contain {@code null} or the
+     *            {@code null} representation value the parameter {@code containsNull} must be set
+     *            to {@code true}.
+     * 
+     * @throws IllegalArgumentException if the values array contains duplicate entries
+     * 
+     * @since 25.1
+     */
+    @SafeVarargs
+    public OrderedValueSet(boolean containsNull, boolean virtual, E nullValue, E... values) {
+        this.virtual = virtual;
         if (values != null) {
             for (E e : values) {
                 if (set.contains(e)) {
@@ -93,6 +121,28 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * @throws IllegalArgumentException if the value collection contains duplicate entries
      */
     public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue) {
+        this(values, containsNull, nullValue, false);
+    }
+
+    /**
+     * Creates a new instance of {@link OrderedValueSet}.
+     * 
+     * @param values the values of this set. If these values contain {@code null} or the
+     *            {@code null} representation value the parameter {@code containsNull} must be set
+     *            to {@code true}. If {@code values} is {@code null} the created set does not
+     *            contain any values.
+     * 
+     * @param containsNull indicates whether the provided values contain {@code null} or the
+     *            {@code null} representation value
+     * @param nullValue the java {@code null} value or {@code null} representation value for the
+     *            datatype of this value set
+     * @param virtual a boolean flag indicating whether the generated value set should be marked as
+     *            virtual. Virtual value sets represent OrderedValueSets created for
+     *            UnrestrictedValueSets of enumeration and are not meant for persistence
+     * @throws IllegalArgumentException if the value collection contains duplicate entries
+     */
+    public OrderedValueSet(Collection<E> values, boolean containsNull, E nullValue, boolean virtual) {
+        this.virtual = virtual;
         if (values != null) {
             for (E e : values) {
                 if (set.contains(e)) {
@@ -124,6 +174,23 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
      * @throws IllegalArgumentException if the value collection contains duplicate entries
      */
     public OrderedValueSet(Collection<E> values) {
+        this(values, false);
+    }
+
+    /**
+     * Creates a new instance of {@link OrderedValueSet}.
+     * 
+     * @param values the values of this set. If these values contain {@code null} or a
+     *            {@link NullObject} {@link #containsNull()} will return {@code true}. If
+     *            {@code values} is {@code null} the created set does not contain any values.
+     * @param virtual a boolean flag indicating whether the generated value set should be marked as
+     *            virtual. Virtual value sets represent OrderedValueSets created for
+     *            UnrestrictedValueSets of enumeration and are not meant for persistence
+     * 
+     * @throws IllegalArgumentException if the value collection contains duplicate entries
+     */
+    public OrderedValueSet(Collection<E> values, boolean virtual) {
+        this.virtual = virtual;
         if (values != null) {
             for (E e : values) {
                 if (set.contains(e)) {
@@ -372,6 +439,16 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
         } else {
             return set.stream().filter(e -> e != null).map(e -> (Class<E>)e.getClass()).findFirst();
         }
+    }
+
+    /**
+     * { @return whether this value set is virtual (created to express an
+     * {@link UnrestrictedValueSet} that contains all values from an enumeration).}
+     * 
+     * @since 25.1
+     */
+    public boolean isVirtual() {
+        return virtual;
     }
 
 }

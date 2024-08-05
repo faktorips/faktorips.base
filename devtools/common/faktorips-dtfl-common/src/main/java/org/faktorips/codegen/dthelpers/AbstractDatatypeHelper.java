@@ -152,7 +152,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     @Override
     public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection,
             JavaCodeFragment containsNullExpression,
-            boolean useTypesafeCollections) {
+            boolean useTypesafeCollections,
+            boolean virtual) {
 
         JavaCodeFragment frag = new JavaCodeFragment();
         frag.append("new "); //$NON-NLS-1$
@@ -164,6 +165,10 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         frag.append(containsNullExpression);
         frag.append(", "); //$NON-NLS-1$
         frag.append(nullExpression());
+        if (virtual) {
+            frag.append(", "); //$NON-NLS-1$
+            frag.append(Boolean.toString(virtual));
+        }
         frag.appendln(")"); //$NON-NLS-1$
         return frag;
     }
