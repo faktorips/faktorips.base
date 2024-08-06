@@ -10,6 +10,7 @@
 
 package org.faktorips.valueset;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -254,10 +255,20 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
-        if (obj instanceof OrderedValueSet
-                && (obj instanceof NaturalOrderedValueSet) == (this instanceof NaturalOrderedValueSet)) {
+        if (obj instanceof OrderedValueSet && (obj instanceof NaturalOrderedValueSet) == (this instanceof NaturalOrderedValueSet)) {
             OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
-            return set.equals(other.set) && containsNull == other.containsNull
+
+            if (set.size() != other.set.size()) {
+                return false;
+            }
+            Iterator<? extends E> otherIter = other.set.iterator();
+            for (E e : set) {
+                if (!Objects.equals(e, otherIter.next())) {
+                    return false;
+                }
+            }
+
+            return containsNull == other.containsNull
                     && (containsNull
                             ? Objects.equals(nullValue, other.nullValue)
                             : true);
