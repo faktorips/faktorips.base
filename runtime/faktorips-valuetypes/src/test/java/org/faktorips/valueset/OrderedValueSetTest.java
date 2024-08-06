@@ -182,22 +182,22 @@ public class OrderedValueSetTest {
 
     @Test
     public void testEquals() {
-
         Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
 
         values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet2 = new OrderedValueSet<>(false, null, values);
-
         assertEquals(valueSet, valueSet2);
 
         values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(4) };
         OrderedValueSet<Integer> valueSet3 = new OrderedValueSet<>(false, null, values);
-
         assertFalse(valueSet.equals(valueSet3));
 
-        NaturalOrderedValueSet<Integer> naturalOrderedValueSet = new NaturalOrderedValueSet<>(values);
+        values = new Integer[] { Integer.valueOf(2), Integer.valueOf(1), Integer.valueOf(3) };
+        OrderedValueSet<Integer> valueSet4 = new OrderedValueSet<>(false, null, values);
+        assertFalse(valueSet.equals(valueSet4));
 
+        NaturalOrderedValueSet<Integer> naturalOrderedValueSet = new NaturalOrderedValueSet<>(values);
         assertFalse(valueSet3.equals(naturalOrderedValueSet));
     }
 
