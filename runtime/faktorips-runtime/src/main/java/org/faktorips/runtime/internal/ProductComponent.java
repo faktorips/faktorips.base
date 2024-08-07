@@ -523,7 +523,11 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * @param tableContentName the name of the used table content
      */
     protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
-        ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
+        String tableContentNameInXml = tableContentName;
+        if (tableContentName == null) {
+            tableContentNameInXml = "";
+        }
+        ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentNameInXml);
     }
 
     @Override

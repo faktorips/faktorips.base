@@ -209,6 +209,23 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testWriteTableUsageToXml_NoUsage() {
+        Element prodCmptElement = getTestDocument().getDocumentElement();
+        NodeList childNodes = prodCmptElement.getChildNodes();
+        assertEquals(21, childNodes.getLength());
+
+        pc.writeTableUsageToXml(prodCmptElement, "structureUsageValue", null);
+
+        assertEquals(22, childNodes.getLength());
+        Node node = childNodes.item(21);
+        Node namedItem = node.getAttributes().getNamedItem("structureUsage");
+        Node tableContentNameNode = node.getFirstChild();
+        assertEquals("structureUsageValue", namedItem.getNodeValue());
+        assertEquals("", tableContentNameNode.getTextContent());
+        assertFalse(tableContentNameNode.hasAttributes());
+    }
+
+    @Test
     public void testWriteImplementationClassToXml() {
         Element prodCmptElement = pc.toXml(XmlUtil.getDocumentBuilder().newDocument());
 
