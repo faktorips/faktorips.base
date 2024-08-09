@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,7 @@ import static org.faktorips.devtools.abstraction.eclipse.mapping.BuildKindMappin
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform.OS;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
@@ -49,5 +50,20 @@ public class EclipseWorkspace extends AWrapper<IWorkspace> implements AWorkspace
     @Override
     public void build(ABuildKind buildKind, IProgressMonitor monitor) {
         Wrappers.run(() -> workspace().build(buildKind(buildKind), monitor));
+    }
+
+    @Override
+    public boolean isWindows() {
+        return OS.isWindows();
+    }
+
+    @Override
+    public boolean isLinux() {
+        return OS.isLinux();
+    }
+
+    @Override
+    public boolean isMac() {
+        return OS.isMac();
     }
 }

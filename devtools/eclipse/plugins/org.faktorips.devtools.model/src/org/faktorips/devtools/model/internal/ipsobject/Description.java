@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.text.MessageFormat;
 import java.util.Locale;
 
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -121,7 +122,15 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         locale = IpsStringUtils.isBlank(localeCode) ? null : new Locale(localeCode);
         text = element.getTextContent();
 
+        if (isWindows() && text != null) {
+            text = text.replace("\n", "\r\n");
+        }
+
         super.initPropertiesFromXml(element, id);
+    }
+
+    private boolean isWindows() {
+        return Abstractions.getWorkspace().isWindows();
     }
 
     @Override
@@ -129,6 +138,9 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_LOCALE, (locale == null) ? "" : locale.getLanguage()); //$NON-NLS-1$
+        if (isWindows() && text != null) {
+            text = text.replace("\r\n", "\n");
+        }
         element.setTextContent(text);
         element.removeAttribute(IpsObjectPart.PROPERTY_ID);
     }
