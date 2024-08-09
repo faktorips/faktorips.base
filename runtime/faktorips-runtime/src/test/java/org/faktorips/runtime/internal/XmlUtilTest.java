@@ -26,6 +26,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -44,7 +46,9 @@ import org.xml.sax.SAXException;
 
 public class XmlUtilTest extends XmlAbstractTestCase {
 
-    private static final String LF = System.lineSeparator();
+    private static final String SYS_LINE_SEPARATOR = System.lineSeparator();
+    private static final String LF = "\n";
+    private static final String CR_LF = "\r\n";
     private static final String UTF8 = "UTF-8";
     private static final String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties";
 
@@ -229,12 +233,12 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // java9 transformer has empty lines
         assertThat(internalNodeToString(rootElement),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
-                        + "<root>" + LF
-                        + "   " + LF
-                        + " <element>SOME_DATA</element>" + LF
-                        + " " + LF
-                        + "</root>" + LF));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYS_LINE_SEPARATOR
+                        + "<root>" + SYS_LINE_SEPARATOR
+                        + "   " + SYS_LINE_SEPARATOR
+                        + " <element>SOME_DATA</element>" + SYS_LINE_SEPARATOR
+                        + " " + SYS_LINE_SEPARATOR
+                        + "</root>" + SYS_LINE_SEPARATOR));
         // java9 fix with regex, removes empty lines
         assertThat(XmlUtil.nodeToString(rootElement, UTF8),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
@@ -256,32 +260,32 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // TestDocument has Tabs on single empty lines
         assertThat(internalNodeToString(root),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
-                        + "<DocElement>" + LF
-                        + " \t" + LF
-                        + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + LF
-                        + " \t" + LF
-                        + " <DifferentElement/>" + LF
-                        + " \t" + LF
-                        + " <TestElement value=\"2\"/>" + LF
-                        + "     " + LF
-                        + " <!-- -->" + LF
-                        + " \t" + LF
-                        + " <ChildA id=\"0\" type=\"testtype1\"/>" + LF
-                        + " \t" + LF
-                        + " <ChildA id=\"1\" type=\"testtype1\"/>" + LF
-                        + " \t" + LF
-                        + " <ChildA id=\"2\" type=\"testtype2\"/>" + LF
-                        + " \t" + LF
-                        + " <ChildB>testValue</ChildB>" + LF
-                        + " \t" + LF
-                        + " <ChildC>" + LF
-                        + "  \t\t" + LF
-                        + "  <ChildA id=\"3\" type=\"deep\"/>" + LF
-                        + "  \t" + LF
-                        + " </ChildC>" + LF
-                        + " " + LF
-                        + "</DocElement>" + LF));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYS_LINE_SEPARATOR
+                        + "<DocElement>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <DifferentElement/>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <TestElement value=\"2\"/>" + SYS_LINE_SEPARATOR
+                        + "     " + SYS_LINE_SEPARATOR
+                        + " <!-- -->" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <ChildA id=\"0\" type=\"testtype1\"/>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <ChildA id=\"1\" type=\"testtype1\"/>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <ChildA id=\"2\" type=\"testtype2\"/>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <ChildB>testValue</ChildB>" + SYS_LINE_SEPARATOR
+                        + " \t" + SYS_LINE_SEPARATOR
+                        + " <ChildC>" + SYS_LINE_SEPARATOR
+                        + "  \t\t" + SYS_LINE_SEPARATOR
+                        + "  <ChildA id=\"3\" type=\"deep\"/>" + SYS_LINE_SEPARATOR
+                        + "  \t" + SYS_LINE_SEPARATOR
+                        + " </ChildC>" + SYS_LINE_SEPARATOR
+                        + " " + SYS_LINE_SEPARATOR
+                        + "</DocElement>" + SYS_LINE_SEPARATOR));
         // TestDocument has no Tabs and no empty lines
         assertThat(XmlUtil.nodeToString(root, UTF8),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
@@ -315,18 +319,19 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
         // java9 transformer has empty lines
         assertThat(internalNodeToString(rootElement),
-                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<root>" + LF + "   " + LF
-                        + " <element>" + LF
-                        + "       SOME_DATA_WITH_LEADING_SPACE" + LF
-                        + "    " + LF
-                        + "  <ExtensionProperties>" + LF
-                        + "         " + LF
-                        + "   <Value/>" + LF
-                        + "       " + LF
-                        + "  </ExtensionProperties>" + LF
-                        + "    " + LF
-                        + " </element>" + LF + " " + LF
-                        + "</root>" + LF));
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + SYS_LINE_SEPARATOR + "<root>" + SYS_LINE_SEPARATOR
+                        + "   " + SYS_LINE_SEPARATOR
+                        + " <element>" + SYS_LINE_SEPARATOR
+                        + "       SOME_DATA_WITH_LEADING_SPACE" + SYS_LINE_SEPARATOR
+                        + "    " + SYS_LINE_SEPARATOR
+                        + "  <ExtensionProperties>" + SYS_LINE_SEPARATOR
+                        + "         " + SYS_LINE_SEPARATOR
+                        + "   <Value/>" + SYS_LINE_SEPARATOR
+                        + "       " + SYS_LINE_SEPARATOR
+                        + "  </ExtensionProperties>" + SYS_LINE_SEPARATOR
+                        + "    " + SYS_LINE_SEPARATOR
+                        + " </element>" + SYS_LINE_SEPARATOR + " " + SYS_LINE_SEPARATOR
+                        + "</root>" + SYS_LINE_SEPARATOR));
         // java9 fix with regex, removes empty lines
         assertThat(XmlUtil.nodeToString(rootElement, UTF8),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
@@ -395,6 +400,42 @@ public class XmlUtilTest extends XmlAbstractTestCase {
 
             docElement.removeChild(el);
         }
+    }
+
+    @Test
+    public void testConvertWindowsLinefeedsToLinuxLinefeeds() throws Exception {
+        File xmlFile = createXmlFileAndSaveWithIdent();
+        // simulate windows on build server
+        String content = new String(Files.readAllBytes(xmlFile.toPath()), Charset.forName(UTF8));
+        if (!content.contains(CR_LF)) {
+            content = content.replace(LF, CR_LF);
+        }
+        Document doc = XmlUtil.parseDocument(new ByteArrayInputStream(content.getBytes()));
+        Element rootElement = XmlUtil.getFirstElement(doc, "root");
+
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<root>" + LF
+                        + "  <element>SOME_DATA</element>" + LF
+                        + "</root>" + LF));
+    }
+
+    @Test
+    public void testDoNotConvertLinuxLinefeeds() throws Exception {
+        File xmlFile = createXmlFileAndSaveWithIdent();
+        // simulate linux on windows machine
+        String content = new String(Files.readAllBytes(xmlFile.toPath()), Charset.forName(UTF8));
+        if (content.contains(CR_LF)) {
+            content = content.replace(CR_LF, LF);
+        }
+        Document doc = XmlUtil.parseDocument(new ByteArrayInputStream(content.getBytes()));
+        Element rootElement = XmlUtil.getFirstElement(doc, "root");
+
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+                is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
+                        + "<root>" + LF
+                        + "  <element>SOME_DATA</element>" + LF
+                        + "</root>" + LF));
     }
 
     private String internalNodeToString(Element rootElement) throws TransformerException {
