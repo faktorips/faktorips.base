@@ -12,6 +12,7 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
@@ -61,6 +62,21 @@ public class PlainJavaWorkspace extends AWrapper<File> implements AWorkspace {
 
     public String getName(PlainJavaProject project) {
         return project.file().getAbsolutePath();
+    }
+
+    @Override
+    public boolean isWindows() {
+        return SystemUtils.IS_OS_WINDOWS;
+    }
+
+    @Override
+    public boolean isLinux() {
+        return SystemUtils.IS_OS_LINUX;
+    }
+
+    @Override
+    public boolean isMac() {
+        return SystemUtils.IS_OS_MAC;
     }
 
 }
