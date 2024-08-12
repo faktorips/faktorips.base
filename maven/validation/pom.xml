@@ -41,6 +41,11 @@
             <artifactId>plexus-utils</artifactId>
             <version>3.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+            <version>3.36.0</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>
