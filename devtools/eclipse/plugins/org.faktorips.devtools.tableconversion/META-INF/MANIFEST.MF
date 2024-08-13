@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools Table Im/Export
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion;singleton:=true
-Bundle-Version: 24.7.2.release
+Bundle-Version: 24.7.3.qualifier
 Bundle-Activator: org.faktorips.devtools.tableconversion.TableConversionPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.15.200",
