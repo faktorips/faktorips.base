@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
-        <version>24.1.13.release</version>
+        <version>24.1.14-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.testextensions</artifactId>
