@@ -981,6 +981,40 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
+    public void testValidateValueSetNotEmptyIfMandatory_OK() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
+                .getAttribute("orderedValueSet");
+        Produkt product = new Produkt(repository);
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSetNotEmptyIfMandatory(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateValueSetNotEmptyIfMandatory_ValueSetIsMandatoryAndEmpty() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
+                .getAttribute("orderedValueSet");
+        Produkt product = new Produkt(repository);
+        product.setAllowedValuesForOrderedValueSet(OrderedValueSet.of());
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSetNotEmptyIfMandatory(messageList, new ValidationContext(),
+                product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+    }
+
+    @Test
     public void testValidateDefaultValue_OK() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
@@ -1156,7 +1190,7 @@ public class DefaultPolicyAttributeTest {
     @IpsConfiguredBy(Produkt.class)
     @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
             "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured",
-            "deprecatedAttribute", "decAttr", "money" })
+            "deprecatedAttribute", "decAttr", "money", "orderedValueSet" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
     private static class ConfVertrag implements IConfigurableModelObject {
 
@@ -1164,6 +1198,12 @@ public class DefaultPolicyAttributeTest {
         public static final String DEFAULT_VALUE_FOR_ATTR2 = "foo";
         @IpsDefaultValue("attrExtensibleEnum")
         public static final TestExtensibleEnum DEFAULT_VALUE_FOR_ATTR_EXTENSIBLE_ENUM = TestExtensibleEnum.ENUM2;
+        @IpsAllowedValues("orderedValueSet")
+        public static final OrderedValueSet<String> MAX_ALLOWED_VALUES_FOR_ORDERED_VALUE_SET = new OrderedValueSet<>(
+                false,
+                null, "a", "b", "c");
+        @IpsDefaultValue("orderedValueSet")
+        public static final String DEFAULT_VALUE_FOR_ORDERED_VALUE_SET = null;
 
         private Produkt produkt;
 
@@ -1177,6 +1217,7 @@ public class DefaultPolicyAttributeTest {
         private Calendar effectiveFrom;
         private Decimal decAttr;
         private Money money;
+        private String orderedValueSet = DEFAULT_VALUE_FOR_ORDERED_VALUE_SET;
 
         public ConfVertrag(IRuntimeRepository repository) {
             this(new Produkt(repository));
@@ -1323,6 +1364,22 @@ public class DefaultPolicyAttributeTest {
             return produkt.getSetOfAllowedValuesForDecAttr(context);
         }
 
+        @IpsAllowedValues("orderedValueSet")
+        public ValueSet<String> getAllowedValuesForOrderedValueSet() {
+            return produkt.getAllowedValuesForOrderedValueSet();
+        }
+
+        @IpsAttribute(name = "orderedValueSet", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public String getOrderedValueSet() {
+            return orderedValueSet;
+        }
+
+        @IpsAttributeSetter("orderedValueSet")
+        public void setOrderedValueSet(String newValue) {
+            orderedValueSet = newValue;
+        }
+
         @Override
         public MessageList validate(IValidationContext context) {
             return null;
@@ -1381,6 +1438,8 @@ public class DefaultPolicyAttributeTest {
         private ValueSet<Money> allowedValuesForMoney = new UnrestrictedValueSet<>();
         private Decimal defaultValueDecAttr;
         private Money defaultValueMoney;
+        private String defaultValueOrderedValueSet = null;
+        private OrderedValueSet<String> allowedValuesForOrderedValueSet = ConfVertrag.MAX_ALLOWED_VALUES_FOR_ORDERED_VALUE_SET;
 
         public Produkt(IRuntimeRepository repository) {
             super(repository, "id", "kindId", "versionId");
@@ -1466,6 +1525,32 @@ public class DefaultPolicyAttributeTest {
         @IpsAllowedValuesSetter("money")
         public void setSetOfAllowedValuesForMoney(ValueSet<Money> valueSet) {
             allowedValuesForMoney = valueSet;
+        }
+
+        @IpsDefaultValue("orderedValueSet")
+        public String getDefaultValueOrderedValueSet() {
+            return defaultValueOrderedValueSet;
+        }
+
+        @IpsDefaultValueSetter("orderedValueSet")
+        public void setDefaultValueOrderedValueSet(String defaultValueOrderedValueSet) {
+            if (getRepository() != null && !getRepository().isModifiable()) {
+                throw new IllegalRepositoryModificationException();
+            }
+            this.defaultValueOrderedValueSet = defaultValueOrderedValueSet;
+        }
+
+        @IpsAllowedValues("orderedValueSet")
+        public ValueSet<String> getAllowedValuesForOrderedValueSet() {
+            return allowedValuesForOrderedValueSet;
+        }
+
+        @IpsAllowedValuesSetter("orderedValueSet")
+        public void setAllowedValuesForOrderedValueSet(ValueSet<String> allowedValuesForOrderedValueSet) {
+            if (getRepository() != null && !getRepository().isModifiable()) {
+                throw new IllegalRepositoryModificationException();
+            }
+            this.allowedValuesForOrderedValueSet = (OrderedValueSet<String>)allowedValuesForOrderedValueSet;
         }
 
         @Override

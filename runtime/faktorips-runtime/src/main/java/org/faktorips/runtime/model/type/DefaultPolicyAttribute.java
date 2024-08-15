@@ -38,10 +38,12 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     public static final String MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET = "POLICY_ATTRIBUTE-DEFAULT_VALUE_NOT_IN_VALUE_SET";
     public static final String MSGCODE_VALUE_SET_NOT_IN_VALUE_SET = "POLICY_ATTRIBUTE-VALUE_SET_NOT_IN_VALUE_SET";
+    public static final String MSGCODE_MANDATORY_VALUESET_IS_EMPTY = "POLICY_ATTRIBUTE-MANDATORY_VALUE_SET_IS_EMPTY";
 
     public static final String PROPERTY_DEFAULT_VALUE = "defaultValue";
     public static final String PROPERTY_VALUE_SET = "valueSet";
 
+    protected static final String MSGKEY_MANDATORY_VALUESET_IS_EMPTY = "Validation.MandatoryValueSetIsEmpty";
     private static final String MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET = "Validation.DefaultValueNotInValueSet";
     private static final String MSGKEY_VALUE_SET_NOT_IN_VALUE_SET = "Validation.ValueSetNotInValueSet";
 
@@ -269,6 +271,21 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         super.validate(list, context, product, effectiveDate);
         validateDefaultValue(list, context, product, effectiveDate);
         validateValueSet(list, context, product, effectiveDate);
+        validateValueSetNotEmptyIfMandatory(list, context, product, effectiveDate);
+    }
+
+    @SuppressWarnings("unchecked")
+    <T> void validateValueSetNotEmptyIfMandatory(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        validate(list, context,
+                () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
+                () -> (ValueSet<T>)getValueSetFromModel(),
+                (valueSet, modelValueSet) -> !valueSet.isEmpty() || modelValueSet.containsNull(),
+                MSGCODE_MANDATORY_VALUESET_IS_EMPTY,
+                MSGKEY_MANDATORY_VALUESET_IS_EMPTY,
+                PROPERTY_VALUE_SET);
     }
 
     @SuppressWarnings("unchecked")

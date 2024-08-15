@@ -231,9 +231,8 @@ public abstract class Attribute extends TypePart {
             if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
                 Locale locale = context.getLocale();
                 ResourceBundle messages = ResourceBundle.getBundle(getResourceBundleName(), locale);
-                String formatString = String.format(messages.getString(msgKey), value, getLabel(locale),
+                String formatString = String.format(messages.getString(msgKey), getLabel(locale), value,
                         referenceValue);
-
                 if (value instanceof GregorianCalendar) {
                     formatString = createFormattedGregorianCalendarString(msgKey,
                             (GregorianCalendar)value,
