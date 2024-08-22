@@ -189,14 +189,14 @@ def static String body(XPolicyCmptClass it) '''
 def private static initializeAttributes(String methodNameGetProductConfiguration, boolean changingOverTime, XPolicyCmptClass it) '''
     «IF isGenerateAttributeInitCode(changingOverTime)»
         if («methodNameGetProductConfiguration»() != null) {
+             «IF hasSupertype()»
+                «FOR it : getAttributesToInit(false, changingOverTime)»
+                  «methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+                «ENDFOR»
+            «ENDIF»
             «FOR it : getAttributesToInit(true, changingOverTime)»
                 «initConfigurableAttribute»
             «ENDFOR»
-            «IF hasSupertype()»
-                «FOR it : getAttributesToInit(false, changingOverTime)»
-                    «methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
-                «ENDFOR»
-            «ENDIF»
         }
     «ENDIF»
 '''

@@ -530,9 +530,12 @@ public class XPolicyCmptClass extends XType {
     private boolean matchesInitWithProductData(boolean initWithProductData, XPolicyAttribute attribute) {
         if (initWithProductData) {
             return attribute.isGenerateInitWithProductData();
-        } else {
-            return attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite();
         }
+        if (attribute.isOverwrite() && attribute.getOverwrittenAttribute() != null) {
+            return attribute.isGenerateInitWithoutProductData() && !attribute
+                    .getDefaultValueCode().equals(attribute.getOverwrittenAttribute().getDefaultValueCode());
+        }
+        return attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite();
     }
 
     private <T> Set<T> filtered(Set<T> set, Predicate<T> filter) {

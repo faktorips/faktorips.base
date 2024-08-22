@@ -167,11 +167,15 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateInitWithProductData() {
-        return isProductRelevant() && isChangeable() && isGenerateInitWithProductDataBecauseOfOverwrite();
+        if (isOverwrite()) {
+            return isProductRelevant() && isChangeable() && isGenerateInitWithProductDataBecauseOfOverwrite();
+        } else {
+            return isProductRelevant() && isChangeable();
+        }
     }
 
     private boolean isGenerateInitWithProductDataBecauseOfOverwrite() {
-        return !isOverwrite() || isAttributeTypeChangedByOverwrite() || !getOverwrittenAttribute().isProductRelevant();
+        return isAttributeTypeChangedByOverwrite() || !getOverwrittenAttribute().isProductRelevant();
     }
 
     public boolean isGenerateInitWithoutProductData() {
@@ -182,8 +186,20 @@ public class XPolicyAttribute extends XAttribute {
         return isRequireMemberVariable();
     }
 
+    private boolean hasDifferentDefaultValue() {
+        return !getOverwrittenAttribute().getDefaultValueCode().equals(getDefaultValueCode());
+    }
+
+    private boolean isOverwritingAndChangeable() {
+        return isOverwrite() && isChangeable();
+    }
+
     public boolean isGenerateDefaultInitialize() {
-        return isOverwrite() && isChangeable() && !isAttributeTypeChangedByOverwrite();
+        return isOverwritingAndChangeable()
+                && !isOverwritingDerivedOnTheFly()
+                && !super.isAbstract()
+                && hasDifferentDefaultValue();
+
     }
 
     @Override
