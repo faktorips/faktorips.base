@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,7 +41,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Refactoring processor for the "Rename Attribute" - refactoring.
- * 
+ *
  * @author Alexander Weickmann
  */
 public final class RenameAttributeProcessor extends IpsRenameProcessor {
@@ -176,7 +176,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     /**
      * Updates all references to the {@link IAttribute} in {@link IAttributeValue} of referencing
      * {@link IProductCmpt}s.
-     * 
+     *
      * Only applicable to {@link IProductCmptTypeAttribute IProductCmptTypeAttributes}.
      */
     private void updateProductCmptAttributeValueReferences() {
@@ -210,10 +210,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     /**
      * Updates the reference to the {@link IAttribute} in the corresponding {@link IValidationRule}
      * if any exists.
-     * 
+     *
      * Also adapts/updates the rule name to the renamed {@link IAttribute} if
      * {@link IValidationRule} is a generated valueSetRule.
-     * 
+     *
      * Only applicable to {@link IPolicyCmptTypeAttribute IPolicyCmptTypeAttributes}.
      */
     private void updateValidationRule() {
@@ -224,10 +224,11 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 String attributeName = validationRule.getValidatedAttributes()[i];
                 if (attributeName.equals(getOriginalName())) {
                     validationRule.setValidatedAttributeAt(i, getNewName());
-                    String generatedRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(attributeName);
+                    String generatedRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(attributeName,
+                            false);
                     if (validationRule.isCheckValueAgainstValueSetRule()
                             && validationRule.getName().equals(generatedRuleName)) {
-                        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(getNewName());
+                        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(getNewName(), false);
                         String newMessageCode = PolicyCmptTypeAttribute.getProposalMsgCodeForValueSetRule(getNewName());
                         validationRule.setName(newRuleName);
                         validationRule.setMessageCode(newMessageCode);
@@ -286,7 +287,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
 
     /**
      * Updates all references to the {@link IAttribute} in referencing {@link ITestCaseType}s.
-     * 
+     *
      * Only applicable to {@link IPolicyCmptTypeAttribute IPolicyCmptTypeAttributes}.
      */
     private void updateTestCaseTypeReferences() {
