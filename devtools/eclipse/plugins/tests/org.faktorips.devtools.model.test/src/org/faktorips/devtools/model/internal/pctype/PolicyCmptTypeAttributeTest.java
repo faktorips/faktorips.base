@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -562,6 +563,46 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(false);
 
         assertThat(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM), is(false));
+    }
+
+    @Test
+    public void testGetProposalValueSetRuleName_noDuplicate() {
+        attribute.setName("premium");
+
+        assertThat(attribute.getProposalValueSetRuleName(), is("checkPremium"));
+    }
+
+    @Test
+    public void testGetProposalValueSetRuleName_Duplicate() {
+        attribute.setName("premium");
+        IValidationRule newRule = pcType.newRule();
+        newRule.setName("checkPremium");
+
+        assertThat(attribute.getProposalValueSetRuleName(), is("checkPremiumValueSet"));
+    }
+
+    @Test
+    public void testGetProposalValueSetRuleName_Duplicate2() {
+        attribute.setName("premium");
+        IValidationRule newRule = pcType.newRule();
+        newRule.setName("checkPremium");
+        IValidationRule newRule2 = pcType.newRule();
+        newRule2.setName("checkPremiumValueSet");
+
+        assertThat(attribute.getProposalValueSetRuleName(), is("checkPremiumValueSet2"));
+
+        attribute.createValueSetRule();
+
+        assertThat(attribute.getProposalValueSetRuleName(), is("checkPremiumValueSet3"));
+    }
+
+    @Test
+    public void testGetProposalValueSetRuleName_DuplicateDeleted() {
+        attribute.setName("premium");
+        attribute.createValueSetRule();
+        attribute.deleteValueSetRule();
+
+        assertThat(attribute.getProposalValueSetRuleName(), is("checkPremium"));
     }
 
     @Test

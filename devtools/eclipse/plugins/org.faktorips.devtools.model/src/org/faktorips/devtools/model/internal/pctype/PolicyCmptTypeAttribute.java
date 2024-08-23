@@ -565,10 +565,40 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public String getProposalValueSetRuleName() {
-        return getProposalValueSetRuleName(getName());
+        List<IValidationRule> rules = getPolicyCmptType().getValidationRules();
+        return getValidationRuleName(rules);
     }
 
-    public static String getProposalValueSetRuleName(String attributeName) {
+    private String getValidationRuleName(List<IValidationRule> rules) {
+        String proposalValueSetRuleName = getProposalValueSetRuleName(getName(), false);
+        if (!validationRuleNameExists(rules, proposalValueSetRuleName)) {
+            return proposalValueSetRuleName;
+        }
+
+        proposalValueSetRuleName = getProposalValueSetRuleName(getName(), true);
+        if (!validationRuleNameExists(rules, proposalValueSetRuleName)) {
+            return proposalValueSetRuleName;
+        }
+
+        int validationRuleID = 2;
+
+        while (validationRuleNameExists(rules, proposalValueSetRuleName + validationRuleID)) {
+            validationRuleID++;
+        }
+        return proposalValueSetRuleName + validationRuleID;
+    }
+
+    private boolean validationRuleNameExists(List<IValidationRule> rules, String validationRuleName) {
+        return rules.stream()
+                .anyMatch(rule -> rule.getName()
+                        .equals(validationRuleName));
+    }
+
+    public static String getProposalValueSetRuleName(String attributeName, boolean duplicated) {
+        if (duplicated) {
+            return MessageFormat.format(Messages.Attribute_proposalForRuleNameDuplicated,
+                    StringUtils.capitalize(attributeName));
+        }
         return MessageFormat.format(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(attributeName));
     }
 
