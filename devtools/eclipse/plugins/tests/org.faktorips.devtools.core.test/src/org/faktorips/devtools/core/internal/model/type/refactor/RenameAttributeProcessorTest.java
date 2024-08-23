@@ -109,7 +109,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
 
         // Check for validation rule update.
-        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(newAttributeName);
+        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(newAttributeName, false);
         String newMessageCodeName = PolicyCmptTypeAttribute.getProposalMsgCodeForValueSetRule(newAttributeName);
         IValidationRule rule = policyCmptTypeAttribute.findValueSetRule(ipsProject);
         assertNotNull(rule);
@@ -157,7 +157,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
 
         // Check for generated Rule
-        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(newAttributeName);
+        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(newAttributeName, false);
         String newMessageCodeName = PolicyCmptTypeAttribute.getProposalMsgCodeForValueSetRule(newAttributeName);
         IValidationRule generatedRule = policyCmptTypeAttribute.findValueSetRule(ipsProject);
         assertNotNull(generatedRule);
