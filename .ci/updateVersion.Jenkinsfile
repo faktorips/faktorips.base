@@ -1,4 +1,4 @@
-library 'f10-jenkins-library@1.0_patches'
+library 'f10-jenkins-library@1.1_patches'
 library 'fips-jenkins-library@main'
 import java.text.MessageFormat
 

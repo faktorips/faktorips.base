@@ -1,4 +1,4 @@
-library 'f10-jenkins-library@1.0_patches'
+library 'f10-jenkins-library@1.1_patches'
 library 'fips-jenkins-library@main'
 
 pipeline {
@@ -40,17 +40,18 @@ pipeline {
             steps {
                 dir('runtime'){
                     withMaven(publisherStrategy: 'EXPLICIT') {
-                        dependencyCheck()
+                        dependencyCheck outputFile: 'dependency-check-runtime-report.html'
                     }
                 }
                 dir('devtools/common'){
                     withMaven(publisherStrategy: 'EXPLICIT') {
-                        dependencyCheck()
+                        dependencyCheck outputFile: 'dependency-check-devtools-report.html'
                     }
                 }
                 rtp parserName: 'HTML', nullAction: '1', stableText: """
                     <h2>Dependency-Check</h2>
-                    <a href='${env.BUILD_URL}artifact/dependency-check-report.html' target='_blank'>Dependency-Check Report</a>
+                    <ul><li><a href='${env.BUILD_URL}artifact/dependency-check-runtime-report.html' target='_blank'>Dependency-Check Runtime Report</a></li>
+                    <li><a href='${env.BUILD_URL}artifact/dependency-check-devtools-report.html' target='_blank'>Dependency-Check Devtools Common Report</a></li></ul>
                   """
             }
         }
