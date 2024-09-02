@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,13 +11,14 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.internal.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 
 /**
  * Abstract implementation of the {@link ISearchOperator}
- * 
+ *
  * @author dicker
  */
 public abstract class AbstractSearchOperator<S extends ISearchOperatorType> implements ISearchOperator {
@@ -39,6 +40,9 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
     public final boolean check(IProductPartsContainer productPartsContainer) {
         Object searchOperand = operandProvider.getSearchOperand(productPartsContainer);
         if (searchOperand != null) {
+            if (searchOperand instanceof DelegatingValueHolder delegate) {
+                return check(delegate.getDelegate(), productPartsContainer);
+            }
             return check(searchOperand, productPartsContainer);
         } else {
             return false;
