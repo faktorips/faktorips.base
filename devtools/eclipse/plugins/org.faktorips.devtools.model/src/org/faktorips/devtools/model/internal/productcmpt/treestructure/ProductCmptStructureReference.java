@@ -119,9 +119,8 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
         return parent == other.parent
                 && Objects.equals(structure, other.structure)
-                && Objects.equals(getWrapped().getId(), other.getWrapped().getId())
-                && Objects.equals(getWrappedIpsObject().getQualifiedName(),
-                        other.getWrappedIpsObject().getQualifiedName());
+                && Objects.equals(getWrapped(), other.getWrapped())
+                && Objects.equals(getWrappedIpsObject(), other.getWrappedIpsObject());
     }
 
     @Override
