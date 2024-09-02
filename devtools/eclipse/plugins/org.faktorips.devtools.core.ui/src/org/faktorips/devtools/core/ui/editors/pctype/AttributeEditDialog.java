@@ -687,9 +687,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void updateDefaultAndValueSet() {
         ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
         boolean enabled = newDatatype != null;
-        if (currentDatatype != null && currentDatatype.equals(newDatatype)) {
-            return;
-        }
         currentDatatype = newDatatype;
         if (defaultValueField != null) {
             getBindingContext().removeBindings(defaultValueField.getControl());
