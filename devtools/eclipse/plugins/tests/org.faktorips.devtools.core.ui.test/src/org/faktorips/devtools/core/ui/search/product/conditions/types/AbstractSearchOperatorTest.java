@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -19,7 +20,9 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.internal.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.junit.Test;
 
 public class AbstractSearchOperatorTest extends AbstractIpsPluginTest {
@@ -45,6 +48,20 @@ public class AbstractSearchOperatorTest extends AbstractIpsPluginTest {
         searchOperator.check(productPartsContainer);
 
         verify(searchOperator).check("Foo", productPartsContainer);
+    }
+
+    @Test
+    public void testCheck_WhenOperandIsDelegate() {
+        IOperandProvider operandProvider = mock(IOperandProvider.class);
+        TestSearchOperator searchOperator = spy(new TestSearchOperator(operandProvider));
+        IProductPartsContainer productPartsContainer = mock(IProductPartsContainer.class);
+        DelegatingValueHolder<?> delegate = mock(DelegatingValueHolder.class);
+        IValueHolder<?> valueHolder = mock(IValueHolder.class);
+        when(operandProvider.getSearchOperand(productPartsContainer)).thenReturn(delegate);
+        doReturn(valueHolder).when(delegate).getDelegate();
+        searchOperator.check(productPartsContainer);
+
+        verify(searchOperator).check(valueHolder, productPartsContainer);
     }
 
     public static class TestSearchOperatorType implements ISearchOperatorType {
