@@ -243,15 +243,6 @@ public class XPolicyAttribute extends XAttribute {
         return fragment.getSourcecode();
     }
 
-    @Override
-    public String getDefaultValueCode() {
-        if (isDatatypeExtensibleEnum()) {
-            return "null";
-        } else {
-            return super.getDefaultValueCode();
-        }
-    }
-
     /**
      * Returns true if the data type is an enumeration defined as Faktor-IPS Enum.
      */

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,12 @@ import java.util.Map;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.ValidationUtils;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.Message;
@@ -38,6 +43,12 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
     @Override
     public MessageList validate() {
         list = new MessageList();
+        if (DatatypeUtil.isExtensibleEnumType(getDatatype())) {
+            IpsObjectType ipsObjectType = getValueSet().getValueSetOwner().getIpsObject().getIpsObjectType();
+            if (ipsObjectType.isEntityType()) {
+                checkIfValuesInEnumContent();
+            }
+        }
         if (isValidDatatype()) {
             validateNullValue();
             int numOfValues = getValueSet().size();
@@ -47,6 +58,21 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
             checkForDuplicates();
         }
         return list;
+    }
+
+    private void checkIfValuesInEnumContent() {
+        IEnumType enumType = ((EnumTypeDatatypeAdapter)getDatatype()).getEnumType();
+        for (String value : getValueSet().getValues()) {
+            if (value != null) {
+                IEnumValue enumValue = enumType.findEnumValue(value, getOwner().getIpsProject());
+                if (enumValue == null) {
+                    String msg = MessageFormat.format(Messages.EnumValueSet_msgValueExtensibleEnumType, value);
+                    list.newError(IEnumValueSet.MSGCODE_VALUE_IN_ENUM_CONTENT, msg, getValueSet(),
+                            IEnumValueSet.PROPERTY_VALUES);
+                    return;
+                }
+            }
+        }
     }
 
     private void validateNullValue() {
@@ -71,9 +97,9 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
     /**
      * Validates the datatype and returns <code>true</code> if the datatype is valid or
      * <code>false</code> if it is invalid.
-     * 
+     *
      * If the datatype is invalid a proper massage is added to the list of messages.
-     * 
+     *
      */
     private boolean isValidDatatype() {
         if (getDatatype() == null) {

@@ -232,15 +232,4 @@ public class XProductAttribute extends XAttribute {
     public boolean isGenerateContentCode() {
         return !isAbstract() && (!isOverwrite() || getOverwrittenAttribute().isAbstract());
     }
-
-    public boolean isGenerateConstantForValueSet() {
-        // NonExtensibleEnumValueSet können nicht generiert werden da die Werte aus einem Repository
-        // geladen werden, das im statischen Kontext nicht bekannt ist. Siehe
-        // https://jira.faktorzehn.de/browse/FIPS-3981 dazu.
-        return !isAbstract() && (!isValueSetEnum() || isNonExtensibleEnumValueSet());
-    }
-
-    public boolean isGenerateField() {
-        return !isAbstract();
-    }
 }

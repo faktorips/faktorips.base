@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,6 +31,7 @@ public class Messages extends NLS {
     public static String EnumValueSet_msgValueNotParsable;
     public static String EnumValueSet_msgDuplicateValue;
     public static String EnumValueSet_msgDatatypeUnknown;
+    public static String EnumValueSet_msgValueExtensibleEnumType;
 
     public static String Range_msgUnknownDatatype;
     public static String Range_msgLowerboundGreaterUpperbound;

@@ -253,9 +253,10 @@ public class XEnumType extends XClass {
         JavaCodeFragment repositoryExp = expressionCompiler.getRuntimeRepositoryExpression();
 
         JavaCodeFragment fragment = new JavaCodeFragment();
-        if (getEnumType().isInextensibleEnum() || enumTypeAdapter.getEnumContent() == null) {
-            IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
-                    enumTypeAdapter.getEnumValueContainer().getIpsProject());
+        IEnumValue enumValue = enumTypeAdapter.getEnumValueContainer().findEnumValue(value,
+                enumTypeAdapter.getEnumValueContainer().getIpsProject());
+        if (getEnumType().isInextensibleEnum() || enumTypeAdapter.getEnumContent() == null
+                || isDefinedInEnumType(enumValue)) {
             if (enumValue == null) {
                 return fragment;
             }
@@ -270,6 +271,10 @@ public class XEnumType extends XClass {
             return fragment;
         }
         return getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(value, false, repositoryExp);
+    }
+
+    private boolean isDefinedInEnumType(IEnumValue enumValue) {
+        return enumValue != null && enumValue.getParent() instanceof IEnumType;
     }
 
     private ExtendedExprCompiler getExpressionCompiler(ExtendedExprCompiler exprCompiler) {

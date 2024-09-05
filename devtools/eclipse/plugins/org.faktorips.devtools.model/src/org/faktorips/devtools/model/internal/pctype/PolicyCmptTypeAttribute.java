@@ -377,25 +377,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    @Override
-    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
-        super.validateDefaultValue(valueDatatype, result, ipsProject);
-        if (isDefaultValueForbidden(valueDatatype)) {
-            expectNoDefaultValue(result);
-        }
-    }
-
-    private boolean isDefaultValueForbidden(ValueDatatype valueDatatype) {
-        return DatatypeUtil.isExtensibleEnumType(valueDatatype) && !isProductRelevant();
-    }
-
-    private void expectNoDefaultValue(MessageList result) {
-        if (getDefaultValue() != null) {
-            result.newError(MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE,
-                    Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType, this, PROPERTY_DEFAULT_VALUE);
-        }
-    }
-
     private void validateAbstractDatatype(MessageList result) {
         ValueDatatype datatype = findDatatype(getIpsProject());
         if (datatype != null && datatype.isAbstract()) {

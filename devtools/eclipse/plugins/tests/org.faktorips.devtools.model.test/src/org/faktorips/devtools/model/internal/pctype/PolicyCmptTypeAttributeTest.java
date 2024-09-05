@@ -534,23 +534,6 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValue() {
-        EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
-        enumType.setExtensible(true);
-        attribute.setName("name");
-        attribute.setDatatype(enumType.getQualifiedName());
-        attribute.setOverwrite(false);
-        attribute.setAttributeType(AttributeType.CONSTANT);
-        attribute.setDefaultValue("notNull");
-
-        MessageList ml = attribute.validate(ipsProject);
-
-        assertThat(ml.isEmpty(), is(false));
-        assertThat(ml.getText().contains(Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType),
-                is(true));
-    }
-
-    @Test
     public void testGetAllowedValueSetTypes_allowEnumValueSetForExtensibleEnumDatatypes_dependingOnProductRelevance() {
         EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
         enumType.setExtensible(true);
@@ -618,7 +601,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(true);
         MessageList messageList = attribute.validate(ipsProject);
 
-        assertThat(messageList, isEmpty());
+        assertThat(messageList.size(), is(0));
 
         attribute.setValueSetConfiguredByProduct(false);
         messageList = attribute.validate(ipsProject);

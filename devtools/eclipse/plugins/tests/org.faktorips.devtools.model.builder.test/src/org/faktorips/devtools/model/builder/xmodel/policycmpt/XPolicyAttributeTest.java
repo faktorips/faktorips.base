@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.builder.xmodel.policycmpt;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -468,18 +467,6 @@ public class XPolicyAttributeTest {
         doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
 
         assertFalse(xPolicyAttribute.isOverrideGetDefaultValue());
-    }
-
-    @Test
-    public void testGetDefaultValueCode() {
-        EnumTypeDatatypeAdapter adapter = mock(EnumTypeDatatypeAdapter.class);
-        IEnumType enumType = mock(IEnumType.class);
-        when(datatypeHelper.getDatatype()).thenReturn(adapter);
-        when(adapter.getEnumType()).thenReturn(enumType);
-        when(enumType.isExtensible()).thenReturn(true);
-
-        String defaultValueCode = xPolicyAttribute.getDefaultValueCode();
-        assertEquals("null", defaultValueCode);
     }
 
     @Test

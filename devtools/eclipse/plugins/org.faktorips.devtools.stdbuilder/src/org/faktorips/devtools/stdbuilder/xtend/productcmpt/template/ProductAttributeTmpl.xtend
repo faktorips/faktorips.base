@@ -27,7 +27,7 @@ class ProductAttributeTmpl {
     '''
 
   def package static constantForValueSet(XProductAttribute it) '''
-    «IF generateConstantForValueSet»
+    «IF !abstract»
       /**
        *«localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
@@ -40,7 +40,7 @@ class ProductAttributeTmpl {
   '''
   
     def package static constantForDefaultValue(XProductAttribute it) '''
-    «IF generateField»
+    «IF !abstract»
       /**
        *«localizedJDoc("FIELD_DEFAULTVALUE_CONSTANT", name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»

@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.type;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +28,10 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
+import org.faktorips.devtools.model.internal.enums.EnumContent;
+import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.ipsobject.Modifier;
@@ -39,6 +43,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
@@ -68,6 +73,36 @@ public class AttributeTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "Product");
         productCmptTypeAttribute = productCmptType.newAttribute();
+    }
+
+    @Test
+    public void testValidate_defaultValueInEnumContent() {
+        EnumType enumType = newDefaultEnumType(ipsProject, "ExtensibleEnum");
+        enumType.setExtensible(true);
+        IEnumValue one = enumType.newEnumValue();
+        one.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("ONE"));
+        one.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("1"));
+        one.getEnumAttributeValues().get(2).setValue(ValueFactory.createStringValue("one"));
+
+        EnumContent enumContent = newEnumContent(enumType, "ExtensibleEnum");
+        IEnumValue two = enumContent.newEnumValue();
+        two.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("2"));
+        two.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue("two"));
+
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
+        attribute.setDatatype(enumType.getQualifiedName());
+        attribute.setDefaultValue("1");
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_VALUE_IN_ENUM_CONTENT));
+
+        attribute.setDefaultValue("2");
+        ml = attribute.validate(attribute.getIpsProject());
+        Message msg = ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_VALUE_IN_ENUM_CONTENT);
+        assertNotNull(msg);
+        assertEquals(Message.ERROR, msg.getSeverity());
+        assertThat(ml.getText().contains(Messages.Attribute_msg_defaultValueExtensibleEnumType),
+                is(true));
     }
 
     @Test

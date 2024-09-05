@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * invalid (if they were valid before) but the string values remain. The user can switch back the
  * data type to {@code Decimal} and the range is valid again. This also works when the attribute's
  * data type is unknown.
- * 
+ *
  * @author Thorsten Guenther
  * @author Jan Ortmann
  */
@@ -58,6 +58,12 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
     String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the value is defined in an enum content of an
+     * extensible enum type.
+     */
+    String MSGCODE_VALUE_IN_ENUM_CONTENT = MSGCODE_PREFIX + "ValueInEnumContent"; //$NON-NLS-1$
+
+    /**
      * Return the value set owner which is also the parent of this object.
      */
     IValueSetOwner getValueSetOwner();
@@ -69,10 +75,10 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Returns {@code true} if the value set contains the indicated value, otherwise {@code false}.
-     * 
+     *
      * @param value The value to check.
      * @param ipsProject The project to look up the data type.
-     * 
+     *
      * @throws IpsException If an error occurs while checking.
      */
     boolean containsValue(String value, IIpsProject ipsProject) throws IpsException;
@@ -81,9 +87,9 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * Returns {@code true} if this value set contains the other value set and both value sets are
      * valid and only contain values that can be parsed to the datatype of their value set,
      * otherwise {@code false}.
-     * 
+     *
      * @param subset The value set to check.
-     * 
+     *
      * @throws NullPointerException If {@code subset} is {@code null}.
      */
     boolean containsValueSet(IValueSet subset);
@@ -113,7 +119,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * Returns a string representation that always represents this value set in the same way
      * independent from the datatype or project. It could be used to compare the content of two
      * value sets for equality.
-     * 
+     *
      * @return a canonical string representation of this value set
      */
     String getCanonicalString();
@@ -125,7 +131,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Adds or removes the null-value from the indicated {@link IValueSet}.
-     * 
+     *
      * @param containsNull {@code true} to add the null-value to this {@link IValueSet} or
      *            {@code false} to remove it.
      */
@@ -160,7 +166,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
     /**
      * Returns {@code true} if the value set is unrestricted. It contains all values defined by an
      * underlying data type.
-     * 
+     *
      * Prefer this method over instance-of check. If this method returns {@code true} the object
      * could safely be cast to {@link IUnrestrictedValueSet}. But if the object is an instance of
      * {@link IUnrestrictedValueSet} it does not mean that it is really an unrestricted value set
@@ -170,7 +176,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Returns {@code true} if the value set is a range, otherwise {@code false}.
-     * 
+     *
      * Prefer this method over instance-of check. If this method returns {@code true} the object
      * could safely be cast to {@link IRangeValueSet}. But if the object is an instance of
      * {@link IRangeValueSet} it does not mean that it is really a range e.g. in case of
@@ -180,7 +186,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Returns {@code true} if the value set is an enumeration, otherwise {@code false}.
-     * 
+     *
      * Prefer this method over instance-of check. If this method returns {@code true} the object
      * could safely be cast to {@link IEnumValueSet}. But if the object is an instance of
      * {@link IEnumValueSet} it does not mean that it is really an enum e.g. in case of
@@ -190,12 +196,12 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Returns {@code true} if the value set is derived, otherwise {@code false}.
-     * 
+     *
      * Prefer this method over instance-of check. If this method returns {@code true} the object
      * could safely be cast to {@link IDerivedValueSet}. But if the object is an instance of
      * {@link IDerivedValueSet} it does not mean that it directly implements code to compute a value
      * set, e.g. in case of {@link IDelegatingValueSet}
-     * 
+     *
      * @since 20.6
      */
     default boolean isDerived() {
@@ -204,7 +210,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Return {@code true} if the value set is restricting String length, otherwise {@code false}.
-     * 
+     *
      * @since 20.6
      */
     default boolean isStringLength() {
@@ -244,7 +250,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Returns the datatype used by this value set-
-     * 
+     *
      * @param ipsProject the Faktor-IPS project to search for the datatype
      * @return the datatype that is used by this value set
      */
@@ -252,9 +258,9 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     /**
      * Returns {@code true} if this value set contains no values, {@code false} otherwise.
-     * 
+     *
      * @return whether this value set contains no allowed values
-     * 
+     *
      * @since 20.6
      */
     boolean isEmpty();

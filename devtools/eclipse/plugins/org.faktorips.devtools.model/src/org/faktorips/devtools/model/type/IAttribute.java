@@ -112,6 +112,12 @@ public interface IAttribute extends IOverridableLabeledElement, IChangingOverTim
             + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the default value is defined in an enum content of
+     * an extensible enum type.
+     */
+    String MSGCODE_DEFAULT_VALUE_IN_ENUM_CONTENT = MSGCODE_PREFIX + "DefaultValueInEnumContent"; //$NON-NLS-1$
+
+    /**
      * Sets the attribute's name.
      */
     void setName(String newName);

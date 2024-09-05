@@ -96,7 +96,10 @@ public class XEnumTypeTest extends AbstractJavaBuilderPluginTest {
         enumType.newEnumLiteralNameAttribute();
         IEnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, enumContent);
-        createEnumValue();
+        IEnumValue enumValue = enumContent.newEnumValue();
+        enumValue.getEnumAttributeValues().get(0).setValue(ValueFactory.createStringValue("1"));
+        enumValue.getEnumAttributeValues().get(1).setValue(ValueFactory.createStringValue(DISPLAYNAME_NAME));
+        enumValue.getEnumAttributeValues().get(2).setValue(ValueFactory.createStringValue("ABC"));
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 
         JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1", null);
@@ -112,6 +115,20 @@ public class XEnumTypeTest extends AbstractJavaBuilderPluginTest {
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
         EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, null);
+        createEnumValue();
+        xenumType = builderSet.getModelNode(enumType, XEnumType.class);
+
+        JavaCodeFragment codeFragement = xenumType.getNewInstanceCodeFragement(enumTypeAdapter, "1", null);
+
+        assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
+    }
+
+    @Test
+    public void testGetNewInstanceCodeFragement_extensibleDefinedInModel() {
+        enumType.setExtensible(true);
+        enumType.newEnumLiteralNameAttribute();
+        IEnumContent enumContent = newEnumContent(enumType, ENUM_TYPE_NAME + "Content");
+        EnumTypeDatatypeAdapter enumTypeAdapter = new EnumTypeDatatypeAdapter(enumType, enumContent);
         createEnumValue();
         xenumType = builderSet.getModelNode(enumType, XEnumType.class);
 

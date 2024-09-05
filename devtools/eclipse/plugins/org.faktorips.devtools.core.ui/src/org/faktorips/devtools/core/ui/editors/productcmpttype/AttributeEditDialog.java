@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -59,7 +59,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * Dialog to edit a product cmpt type attribute.
- * 
+ *
  * @author Jan Ortmann
  */
 public class AttributeEditDialog extends IpsPartEditDialog2 {
@@ -280,7 +280,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                     currentDatatype);
             defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
-                    currentDatatype, null, ipsProject);
+                    currentDatatype, attribute.getValueSet(), ipsProject);
         }
     }
 
@@ -387,7 +387,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * that are not directly accessible in the model but may be derived from the model. It is used
      * for example for binding the enable state of a control to multiple properties of the
      * attribute.
-     * 
+     *
      * @author frank
      * @since 3.9
      */

@@ -102,7 +102,6 @@ public class Messages extends NLS {
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureHasADifferentDatatype;
     public static String PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing;
     public static String PolicyCmptTypeAttribute_msg_ConstantCantBeAbstract;
-    public static String PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType;
     public static String PolicyCmptTypeAttribute_msg_EmptyMandatoryValueSet;
     public static String PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
     public static String PolicyCmptTypeAttribute_OverwrittenAttributeDisabledGenericValidation;

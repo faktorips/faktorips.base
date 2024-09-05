@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,8 @@ import java.util.EnumSet;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -34,7 +36,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IAttribute.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class Attribute extends TypePart implements IAttribute {
@@ -266,6 +268,27 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         validateDefaultValue(defaultValue, valueDatatype, result, ipsProject);
+        if (isDefaultValueForbidden(valueDatatype)) {
+            expectNoDefaultValue(result);
+        }
+    }
+
+    private boolean isDefaultValueForbidden(ValueDatatype valueDatatype) {
+        if (DatatypeUtil.isExtensibleEnumType(valueDatatype)) {
+            IEnumValue enumValue = ((EnumTypeDatatypeAdapter)valueDatatype).getEnumType()
+                    .findEnumValue(getDefaultValue(), getIpsProject());
+            if (enumValue == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void expectNoDefaultValue(MessageList result) {
+        if (getDefaultValue() != null) {
+            result.newError(MSGCODE_DEFAULT_VALUE_IN_ENUM_CONTENT,
+                    Messages.Attribute_msg_defaultValueExtensibleEnumType, this, PROPERTY_DEFAULT_VALUE);
+        }
     }
 
     protected void validateDefaultValue(String defaultValueToValidate,
