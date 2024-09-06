@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
 import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IdentityProvider;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -270,4 +271,6 @@ public interface IIpsModelExtensions {
      */
     IImplementationClassProvider getImplementationClassProvider();
 
+    /** @since 24.7 */
+    Supplier<List<IdentityProvider>> getIdentifierForIpsObjectParts();
 }

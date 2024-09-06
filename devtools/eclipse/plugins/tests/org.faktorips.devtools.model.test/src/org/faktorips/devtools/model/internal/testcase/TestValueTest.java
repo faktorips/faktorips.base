@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,12 +12,19 @@ package org.faktorips.devtools.model.internal.testcase;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcase.ITestCase;
@@ -27,12 +34,13 @@ import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestValueTest extends AbstractIpsPluginTest {
@@ -42,6 +50,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
     private ITestValue valueObjectExpectedValue;
     private ITestValue valueObjectUnknown;
     private IIpsProject project;
+    private ITestCase testCase;
 
     @Override
     @Before
@@ -55,7 +64,7 @@ public class TestValueTest extends AbstractIpsPluginTest {
         testCaseType.newInputTestValueParameter().setName("testValueParameter3");
         testCaseType.newExpectedResultValueParameter().setName("testValueParameter2");
 
-        ITestCase testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
+        testCase = (ITestCase)newIpsObject(project, IpsObjectType.TEST_CASE, "PremiumCalculation");
 
         testCase.setTestCaseType(testCaseType.getName());
         (valueObjectInput = testCase.newTestValue()).setTestValueParameter("testValueParameter1");
@@ -140,4 +149,30 @@ public class TestValueTest extends AbstractIpsPluginTest {
         // a wrong type of the parameter is not possible without getting an argument exception
         // see TestValueParameter#setTestParameterType
     }
+
+    @Test
+    public void testDirectChangesToTheCorrespondingFile_TestValue() throws Exception {
+        IIpsSrcFile ipsFile = testCase.getIpsSrcFile();
+        valueObjectInput.setValue("Blabla");
+        ipsFile.save(null);
+        String encoding = testCase.getIpsProject().getXmlFileCharset();
+        AFile file = ipsFile.getCorrespondingFile();
+        String content = StringUtil.readFromInputStream(file.getContents(), encoding);
+        content = content.replace("Blabla", "NewBlabla");
+        file.setContents(StringUtil.getInputStreamForString(content, encoding), false, null);
+
+        testCase = (ITestCase)ipsFile.getIpsObject(); // forces a reload
+
+        assertThat(valueObjectInput.isDeleted(), is(false));
+        assertEquals("NewBlabla", valueObjectInput.getValue());
+
+        ITestValue reloadedTestValue = Arrays.stream(testCase.getTestValues())
+                .filter(testValue -> testValue.getTestValueParameter().equals(valueObjectInput.getTestValueParameter()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(reloadedTestValue);
+        assertSame(valueObjectInput, reloadedTestValue);
+    }
+
 }

@@ -688,5 +688,4 @@ public class TableContentsTest extends AbstractDependencyTest {
         // check that a new UUID is created for each row
         assertThat(row1.getId(), is(not(row2.getId())));
     }
-
 }

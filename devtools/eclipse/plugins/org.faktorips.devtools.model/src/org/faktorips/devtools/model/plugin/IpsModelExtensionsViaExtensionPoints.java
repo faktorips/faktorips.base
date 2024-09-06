@@ -33,6 +33,7 @@ import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup
 import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
 import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
+import org.faktorips.devtools.model.ipsobject.IdentityProvider;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExten
 import org.faktorips.devtools.model.plugin.extensions.FormulaCompilerExtension;
 import org.faktorips.devtools.model.plugin.extensions.FunctionResolverFactoryExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IdentifierFilterExtensions;
+import org.faktorips.devtools.model.plugin.extensions.IdentityProviderForIpsObjectParts;
 import org.faktorips.devtools.model.plugin.extensions.ImplementationClassProviderExtension;
 import org.faktorips.devtools.model.plugin.extensions.IpsObjectPathContainerTypesExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsObjectTypeExtensions;
@@ -122,6 +124,9 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 24.7 */
     private final IExtensionRegistry extensionRegistry;
 
+    /** @since 24.7 */
+    private final Supplier<List<IdentityProvider>> identityProviderForIpsObjectParts;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
         this.extensionRegistry = extensionRegistry;
@@ -152,6 +157,7 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         datatypeHelperRegistry = new DatatypeHelperRegistry(extensionPoints);
         formulaCompiler = new FormulaCompilerExtension(extensionPoints);
         implementationClassProvider = new ImplementationClassProviderExtension(extensionPoints);
+        identityProviderForIpsObjectParts = new IdentityProviderForIpsObjectParts(extensionPoints);
     }
 
     @Override
@@ -270,5 +276,11 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 24.7 */
     public IExtensionRegistry getExtensionRegistry() {
         return extensionRegistry;
+    }
+
+    /** @since 24.7 */
+    @Override
+    public Supplier<List<IdentityProvider>> getIdentifierForIpsObjectParts() {
+        return identityProviderForIpsObjectParts;
     }
 }

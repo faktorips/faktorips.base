@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,12 +35,12 @@ import org.w3c.dom.Element;
 /**
  * Test attribute class. Defines an attribute for a specific policy component parameter class within
  * a test case type definition.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute {
 
-    static final String TAG_NAME = "TestAttribute"; //$NON-NLS-1$
+    public static final String TAG_NAME = "TestAttribute"; //$NON-NLS-1$
 
     private String attribute = ""; //$NON-NLS-1$
 

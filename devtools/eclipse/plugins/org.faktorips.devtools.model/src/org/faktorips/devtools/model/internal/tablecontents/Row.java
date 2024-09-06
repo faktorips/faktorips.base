@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 
 public class Row extends AtomicIpsObjectPart implements IRow {
 
-    static final String TAG_NAME = "Row"; //$NON-NLS-1$
+    public static final String TAG_NAME = "Row"; //$NON-NLS-1$
     static final String VALUE_TAG_NAME = "Value"; //$NON-NLS-1$
 
     private ArrayList<String> values;
