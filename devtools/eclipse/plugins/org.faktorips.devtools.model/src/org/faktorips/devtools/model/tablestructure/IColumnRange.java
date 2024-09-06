@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ public interface IColumnRange extends IKeyItem {
     String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
     String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
     String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
+    String PROPERTY_NAME = "Column"; //$NON-NLS-1$
 
     /**
      * Prefix for all messages of this class.
@@ -51,7 +52,7 @@ public interface IColumnRange extends IKeyItem {
 
     /**
      * Sets the name of the column that defines the beginning of the range.
-     * 
+     *
      * @throws IllegalArgumentException if columnName is <code>null</code>
      */
     void setFromColumn(String columnName);
@@ -64,7 +65,7 @@ public interface IColumnRange extends IKeyItem {
 
     /**
      * Sets the name of the column that defines the end of the range.
-     * 
+     *
      * @throws IllegalArgumentException if columnName is <code>null</code>
      */
     void setToColumn(String columnName);
@@ -74,7 +75,7 @@ public interface IColumnRange extends IKeyItem {
      * specify as a the range defining column. If the range type is ONE_COLUMN_RANGE_FROM only the
      * "from" column field needs to be specified and if the range type is ONE_COLUMN_RANGE_TO only
      * the "to" field needs to be specified.
-     * 
+     *
      */
     void setColumnRangeType(ColumnRangeType rangeType);
 

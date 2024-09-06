@@ -11,11 +11,13 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -420,6 +422,37 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         versionedContainer.initFromXml(docEl);
 
         assertEquals(expectedVersion, versionedContainer.getSinceVersionString());
+    }
+
+    @Test
+    public void testInitPartContainersFromXml() throws Exception {
+        var ipsObjectPartContainer = new TestIpsObjectPartContainerWithParts(
+                new IpsSrcFile(ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragments()[0], "TestFile"));
+
+        IDescription description = ipsObjectPartContainer.getDescription(Locale.US);
+        description.setText("FoobarDescription");
+
+        ILabel label = container.getLabel(Locale.US);
+        label.setValue("test");
+
+        ITestPart part1 = ipsObjectPartContainer.newTestPart();
+        ITestPart part2 = ipsObjectPartContainer.newTestPart();
+
+        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Element xml = ipsObjectPartContainer.toXml(doc);
+        Element xml2 = container.toXml(doc);
+
+        ipsObjectPartContainer.initPartContainersFromXml(xml);
+        container.initFromXml(xml2);
+
+        assertThat(ipsObjectPartContainer.getTestParts().get(0), is(part1));
+        assertThat(ipsObjectPartContainer.getTestParts().get(0).getC(), is(part1.getC()));
+        assertThat(ipsObjectPartContainer.getTestParts().get(1), is(part2));
+        assertThat(ipsObjectPartContainer.getTestParts().get(1).getC(), is(part2.getC()));
+
+        assertThat(description.isDeleted(), is(false));
+        assertSame(description, part1.getIpsObject().getDescription(Locale.US));
+        assertThat(label.isDeleted(), is(false));
     }
 
     @Test
@@ -1335,6 +1368,83 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value) {
             beforeSetCounter++;
             return allowValueToBeSet;
+        }
+
+    }
+
+    private static class TestPart extends BaseIpsObjectPart implements ITestPart {
+
+        private static final String TAG = "TestPart";
+        private static int counter = 0;
+        private final int c = ++counter;
+        private String name = Integer.toString(c);
+
+        public TestPart(IIpsObjectPartContainer parent, String id) {
+            super(parent, id);
+        }
+
+        @Override
+        protected Element createElement(Document doc) {
+            return doc.createElement(TAG);
+        }
+
+        @Override
+        public int getC() {
+            return c;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        protected void propertiesToXml(Element element) {
+            super.propertiesToXml(element);
+            element.setAttribute(PROPERTY_NAME, name);
+        }
+
+        @Override
+        protected void initPropertiesFromXml(Element element, String id) {
+            super.initPropertiesFromXml(element, id);
+            name = element.getAttribute(PROPERTY_NAME);
+        }
+
+    }
+
+    private interface ITestPart extends IIpsObjectPart {
+        int getC();
+    }
+
+    private static class TestIpsObjectPartContainerWithParts extends BaseIpsObject {
+
+        private static final class TestIpsObjectType extends IpsObjectType {
+            private TestIpsObjectType() {
+                super("TESTTYPE", "TESTTYPE", "TESTTYPE", "TESTTYPE", "TESTTYPE", false, false,
+                        TestIpsObjectPartContainerWithParts.class);
+            }
+        }
+
+        private static final IpsObjectType TYPE = new TestIpsObjectType();
+
+        private IpsObjectPartCollection<ITestPart> parts;
+
+        public TestIpsObjectPartContainerWithParts(IIpsSrcFile ipsSrcFile) {
+            super(ipsSrcFile);
+            parts = new IpsObjectPartCollection<>(this, TestPart.class, ITestPart.class, TestPart.TAG);
+        }
+
+        @Override
+        public IpsObjectType getIpsObjectType() {
+            return TYPE;
+        }
+
+        ITestPart newTestPart() {
+            return parts.newPart();
+        }
+
+        List<ITestPart> getTestParts() {
+            return parts.asList();
         }
 
     }

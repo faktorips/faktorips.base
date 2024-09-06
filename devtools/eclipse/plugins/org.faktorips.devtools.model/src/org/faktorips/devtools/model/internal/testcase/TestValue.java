@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,12 +33,12 @@ import org.w3c.dom.Element;
 
 /**
  * Test value class. Defines a test value for a specific test case definition.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestValue extends TestObject implements ITestValue {
 
-    static final String TAG_NAME = "ValueObject"; //$NON-NLS-1$
+    public static final String TAG_NAME = "ValueObject"; //$NON-NLS-1$
 
     private String testValueParameter = ""; //$NON-NLS-1$
 

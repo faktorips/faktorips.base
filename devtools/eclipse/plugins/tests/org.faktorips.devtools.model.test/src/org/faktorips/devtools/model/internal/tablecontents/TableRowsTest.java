@@ -25,7 +25,11 @@ import java.util.Optional;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -38,6 +42,7 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -371,6 +376,35 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         table.newColumn("", "b");
         table.newColumn("", "c");
         table.validate(project);
+    }
+
+    @Test
+    public void testDirectChangesToTheCorrespondingFile_ColumnRange() throws Exception {
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("===== Start testDirectChangesToColumnRange() =====");
+        }
+        IIpsSrcFile ipsFile = structure.getIpsSrcFile();
+        IColumnRange columnRange = structure.newRange();
+        columnRange.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        columnRange.setFromColumn("foo");
+        columnRange.setToColumn("bar");
+        ipsFile.save(null);
+
+        String encoding = structure.getIpsProject().getXmlFileCharset();
+        AFile file = structure.getIpsSrcFile().getCorrespondingFile();
+        String content = StringUtil.readFromInputStream(file.getContents(), encoding);
+        content = content.replace("foo", "newFoo").replace("bar", "newBar");
+        file.setContents(StringUtil.getInputStreamForString(content, encoding), false, null);
+
+        structure = (ITableStructure)ipsFile.getIpsObject(); // forces a reload
+        ColumnRange range = (ColumnRange)structure.getRanges()[0];
+
+        assertThat(range.isDeleted(), is(false));
+        assertThat(range.getFromColumn(), is("newFoo"));
+        assertThat(range.getToColumn(), is("newBar"));
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("===== Finished testDirectChangesToColumnRange() =====");
+        }
     }
 
 }

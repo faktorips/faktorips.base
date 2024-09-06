@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -51,6 +52,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.ipsobject.Identifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
@@ -484,23 +486,24 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      *
      */
     protected void initPartContainersFromXml(Element element) {
-        Map<String, IIpsObjectPart> idPartMap = createIdPartMap();
+        Map<Identifier, IIpsObjectPart> idPartMap = createIdPartMap();
         reinitPartCollections();
-        Map<String, IIpsObjectPart> newIdPartMap = initPartContainersFromXml(element, idPartMap);
+        Map<Identifier, IIpsObjectPart> newIdPartMap = initPartContainersFromXml(element, idPartMap);
         deleteOldParts(idPartMap, newIdPartMap);
     }
 
-    private void deleteOldParts(Map<String, IIpsObjectPart> oldIdPartMap, Map<String, IIpsObjectPart> newIdPartMap) {
-        for (Entry<String, IIpsObjectPart> entry : oldIdPartMap.entrySet()) {
-            if (!newIdPartMap.containsKey(entry.getKey())) {
+    private void deleteOldParts(Map<Identifier, IIpsObjectPart> oldIdPartMap,
+            Map<Identifier, IIpsObjectPart> newIdPartMap) {
+        for (Entry<Identifier, IIpsObjectPart> entry : oldIdPartMap.entrySet()) {
+            if (find(entry.getKey(), newIdPartMap).isEmpty()) {
                 ((IpsObjectPart)entry.getValue()).markAsDeleted();
             }
         }
     }
 
-    protected Map<String, IIpsObjectPart> initPartContainersFromXml(Element element,
-            Map<String, IIpsObjectPart> idPartMap) {
-        Map<String, IIpsObjectPart> newIdPartMap = new HashMap<>();
+    protected Map<Identifier, IIpsObjectPart> initPartContainersFromXml(Element element,
+            Map<Identifier, IIpsObjectPart> idPartMap) {
+        Map<Identifier, IIpsObjectPart> newIdPartMap = new HashMap<>();
 
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -512,11 +515,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (partEl.getNodeName().equals(XML_EXT_PROPERTIES_ELEMENT)) {
                 continue;
             }
-            String id = partEl.getAttribute(IIpsObjectPart.PROPERTY_ID).trim();
-            IIpsObjectPart part = null;
-            if (IpsStringUtils.isNotEmpty(id)) {
-                part = idPartMap.get(id);
-            }
+            IIpsObjectPart part = findPart(partEl, idPartMap);
             if (part == null) {
                 part = newPart(partEl, getNextPartId());
             } else {
@@ -528,7 +527,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             // part might be null if the partEl does not represent a IpsObjectPart!
             if (part != null) {
                 part.initFromXml(partEl);
-                if (newIdPartMap.put(part.getId(), part) != null) {
+                if (newIdPartMap.put(Identifier.of(part), part) != null) {
                     throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
                             + part.getId());
                 }
@@ -537,14 +536,29 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         return newIdPartMap;
     }
 
-    private HashMap<String, IIpsObjectPart> createIdPartMap() {
-        HashMap<String, IIpsObjectPart> map = new HashMap<>();
+    private HashMap<Identifier, IIpsObjectPart> createIdPartMap() {
+        HashMap<Identifier, IIpsObjectPart> map = new HashMap<>();
         IIpsElement[] parts = getChildren();
-        for (IIpsElement part2 : parts) {
-            IIpsObjectPart part = (IIpsObjectPart)part2;
-            map.put(part.getId(), part);
+        for (IIpsElement child : parts) {
+            if (child instanceof IIpsObjectPart part) {
+                Identifier identifier = Identifier.of(part);
+                map.put(identifier, part);
+            }
         }
         return map;
+    }
+
+    private IIpsObjectPart findPart(Element partEl, Map<Identifier, IIpsObjectPart> idPartMap) {
+        Identifier identifier = Identifier.of(partEl);
+        return find(identifier, idPartMap)
+                .orElse(null);
+    }
+
+    private Optional<IIpsObjectPart> find(Identifier key, Map<Identifier, IIpsObjectPart> map) {
+        return map.entrySet().stream()
+                .filter(e -> e.getKey().isSame(key))
+                .map(Entry::getValue)
+                .findFirst();
     }
 
     /**
@@ -1292,5 +1306,4 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         deprecated = false;
         deprecation = null;
     }
-
 }
