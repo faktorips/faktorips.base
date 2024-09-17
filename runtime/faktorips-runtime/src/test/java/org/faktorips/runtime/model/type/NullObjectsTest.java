@@ -32,6 +32,7 @@ public class NullObjectsTest {
         assertThat(NullObjects.of(long.class), is(0L));
         assertThat(NullObjects.of(double.class), is(0.0d));
         assertThat(NullObjects.of(float.class), is(0.0f));
+        assertThat(NullObjects.of(boolean.class), is(false));
     }
 
 }

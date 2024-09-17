@@ -1053,6 +1053,51 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
+    public void testValidateDefaultValue_IntNullValueAsDefaultValue() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attrInt");
+        Produkt product = new Produkt(repository);
+        product.defaultValueInt = 0;
+        product.allowedValuesForInt = new OrderedValueSet<>(false, null, 1);
+
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateDefaultValue_LongNullValueAsDefaultValue() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attrLong");
+        Produkt product = new Produkt(repository);
+        product.defaultValueLong = 0L;
+        product.allowedValuesForLong = new OrderedValueSet<>(false, null, 1L);
+
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateDefaultValue_BooleanNullValueAsDefaultValue() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attrBoolean");
+        Produkt product = new Produkt(repository);
+        product.defaultValueBoolean = false;
+        product.allowedValuesForBoolean = new OrderedValueSet<>(false, null, true);
+
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
     public void testValidateDefaultValue_DefaultValueNotAllowedInValueSet_LocaleDE() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
@@ -1188,7 +1233,8 @@ public class DefaultPolicyAttributeTest {
 
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
-    @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
+    @IpsAttributes({ "attrInt", "attrLong", "attrBoolean", "attr1", "attr2", "attrChangingOverTime",
+            "attrWithValueSetWithoutValidationContext",
             "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured",
             "deprecatedAttribute", "decAttr", "money", "orderedValueSet" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
@@ -1207,6 +1253,9 @@ public class DefaultPolicyAttributeTest {
 
         private Produkt produkt;
 
+        private int attrInt;
+        private long attrLong;
+        private boolean attrBoolean;
         private String attr1;
         private String attr2 = DEFAULT_VALUE_FOR_ATTR2;
         private String attrChangingOverTime;
@@ -1225,6 +1274,54 @@ public class DefaultPolicyAttributeTest {
 
         public ConfVertrag(Produkt produkt) {
             this.produkt = produkt;
+        }
+
+        @IpsAttribute(name = "attrInt", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public int getAttrInt() {
+            return attrInt;
+        }
+
+        @IpsAttributeSetter("attrInt")
+        public void setAttrInt(int value) {
+            attrInt = value;
+        }
+
+        @IpsAllowedValues("attrInt")
+        public ValueSet<Integer> getSetOfAllowedValuesForAttrInt(IValidationContext context) {
+            return produkt.getSetOfAllowedValuesForInt(context);
+        }
+
+        @IpsAttribute(name = "attrLong", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public long getAttrLong() {
+            return attrLong;
+        }
+
+        @IpsAttributeSetter("attrLong")
+        public void setAttrLong(long value) {
+            attrLong = value;
+        }
+
+        @IpsAllowedValues("attrLong")
+        public ValueSet<Long> getSetOfAllowedValuesForAttrLong(IValidationContext context) {
+            return produkt.getSetOfAllowedValuesForLong(context);
+        }
+
+        @IpsAttribute(name = "attrBoolean", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public boolean getAttrBoolean() {
+            return attrBoolean;
+        }
+
+        @IpsAttributeSetter("attrBoolean")
+        public void setAttrBoolean(boolean value) {
+            attrBoolean = value;
+        }
+
+        @IpsAllowedValues("attrBoolean")
+        public ValueSet<Boolean> getSetOfAllowedValuesForAttrBoolean(IValidationContext context) {
+            return produkt.getSetOfAllowedValuesForBoolean(context);
         }
 
         @IpsAttribute(name = "attr1", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
@@ -1432,7 +1529,13 @@ public class DefaultPolicyAttributeTest {
     @IpsChangingOverTime(ProduktGen.class)
     private static class Produkt extends ProductComponent {
 
+        private int defaultValueInt = 1;
+        private long defaultValueLong = 1L;
+        private boolean defaultValueBoolean = false;
         private String defaultValueAttr1 = "foobar";
+        private ValueSet<Integer> allowedValuesForInt = new UnrestrictedValueSet<>();
+        private ValueSet<Long> allowedValuesForLong = new UnrestrictedValueSet<>();
+        private ValueSet<Boolean> allowedValuesForBoolean = new UnrestrictedValueSet<>();
         private ValueSet<String> allowedValuesForAttr1 = new UnrestrictedValueSet<>();
         private ValueSet<Decimal> allowedValuesForDecAttr = new UnrestrictedValueSet<>();
         private ValueSet<Money> allowedValuesForMoney = new UnrestrictedValueSet<>();
@@ -1443,6 +1546,75 @@ public class DefaultPolicyAttributeTest {
 
         public Produkt(IRuntimeRepository repository) {
             super(repository, "id", "kindId", "versionId");
+        }
+
+        @IpsDefaultValue("attrInt")
+        public int getDefaultValueInt() {
+            return defaultValueInt;
+        }
+
+        @IpsDefaultValueSetter("attrInt")
+        public void setDefaultValueInt(int defaultValueInt) {
+            this.defaultValueInt = defaultValueInt;
+        }
+
+        /**
+         * @param context
+         */
+        @IpsAllowedValues("attrInt")
+        public ValueSet<Integer> getSetOfAllowedValuesForInt(IValidationContext context) {
+            return allowedValuesForInt;
+        }
+
+        @IpsAllowedValuesSetter("attrInt")
+        public void setSetOfAllowedValuesForInt(ValueSet<Integer> valueSet) {
+            allowedValuesForInt = valueSet;
+        }
+
+        @IpsDefaultValue("attrLong")
+        public long getDefaultValueLong() {
+            return defaultValueLong;
+        }
+
+        @IpsDefaultValueSetter("attrLong")
+        public void setDefaultValueLong(long defaultValueLong) {
+            this.defaultValueLong = defaultValueLong;
+        }
+
+        /**
+         * @param context
+         */
+        @IpsAllowedValues("attrLong")
+        public ValueSet<Long> getSetOfAllowedValuesForLong(IValidationContext context) {
+            return allowedValuesForLong;
+        }
+
+        @IpsAllowedValuesSetter("attrLong")
+        public void setSetOfAllowedValuesForLong(ValueSet<Long> valueSet) {
+            allowedValuesForLong = valueSet;
+        }
+
+        @IpsDefaultValue("attrBoolean")
+        public boolean getDefaultValueBoolean() {
+            return defaultValueBoolean;
+        }
+
+        @IpsDefaultValueSetter("attrBoolean")
+        public void setDefaultValueBoolean(boolean defaultValueBoolean) {
+            this.defaultValueBoolean = defaultValueBoolean;
+        }
+
+        /**
+         * @param context
+         */
+        @IpsAllowedValues("attrBoolean")
+        public ValueSet<Boolean> getSetOfAllowedValuesForBoolean(IValidationContext context) {
+            return allowedValuesForBoolean;
+        }
+
+        @IpsAllowedValuesSetter("attrBoolean")
+        public void setSetOfAllowedValuesForBoolean(ValueSet<Boolean> valueSet) {
+            allowedValuesForBoolean = valueSet;
         }
 
         @IpsDefaultValue("attr1")

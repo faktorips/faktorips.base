@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -30,6 +31,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -296,10 +298,26 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         validate(list, context,
                 () -> (T)getDefaultValue(source, effectiveDate),
                 () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
-                (defaultValue, valueSet) -> valueSet.contains(defaultValue),
+                this::allowsAsDefault,
                 MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 PROPERTY_DEFAULT_VALUE);
+    }
+
+    /**
+     * @return whether the given value set allows the given default value.
+     *
+     *             A default value must be either {@link ValueSet#contains(Object) contained} in the
+     *             value set or be the datatype's null-like value.
+     *
+     * @see NullObjects
+     */
+    private <T> boolean allowsAsDefault(T defaultValue, ValueSet<T> valueSet) {
+        return (ObjectUtil.isNull(valueSet) || isNullValue(defaultValue) || valueSet.contains(defaultValue));
+    }
+
+    private <T> boolean isNullValue(T value) {
+        return Objects.equals(value, NullObjects.of(getDatatype()));
     }
 
     @SuppressWarnings("unchecked")
