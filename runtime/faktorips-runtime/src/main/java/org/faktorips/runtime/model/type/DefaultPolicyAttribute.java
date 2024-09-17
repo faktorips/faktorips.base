@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -30,6 +31,7 @@ import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -279,10 +281,38 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         validate(list, context,
                 () -> (T)getDefaultValue(source, effectiveDate),
                 () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
-                (defaultValue, valueSet) -> valueSet.contains(defaultValue),
+                this::containsValue,
                 MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 PROPERTY_DEFAULT_VALUE);
+    }
+
+    private <T> boolean containsValue(T defaultValue, ValueSet<T> valueSet) {
+        return (ObjectUtil.isNull(valueSet) || isNullValue(defaultValue) || valueSet.contains(defaultValue));
+    }
+
+    private <T> boolean isNullValue(T value) {
+        if (ObjectUtil.isNull(value)) {
+            return true;
+        }
+
+        if (value instanceof Integer) {
+            return ((Integer)value).equals(0);
+        }
+
+        if (value instanceof Long) {
+            return ((Long)value).equals(0L);
+        }
+
+        if (value instanceof Boolean) {
+            return !((Boolean)value);
+        }
+
+        if (value instanceof String) {
+            return StringUtils.isEmpty((String)value);
+        }
+
+        return false;
     }
 
     @SuppressWarnings("unchecked")
