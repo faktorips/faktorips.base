@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IUnrestrictedValueSet
- * 
+ *
  * @author Thorsten Guenther
  */
 public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValueSet {
@@ -41,7 +41,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
      * value set contains <code>null</code> as default.
-     * 
+     *
      * @param parent the parent this valueset belongs to
      * @param partId the id this part is known by by the parent
      */
@@ -51,7 +51,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent.
-     * 
+     *
      * @param parent the parent this valueset belongs to
      * @param partId the id this part is known by by the parent
      * @param containsNull indicates whether this value set contains {@code null}

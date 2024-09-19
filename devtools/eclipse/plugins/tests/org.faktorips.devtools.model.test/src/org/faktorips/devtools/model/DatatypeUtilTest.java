@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,9 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.datatype.PrimitiveBooleanDatatype;
+import org.faktorips.datatype.PrimitiveIntegerDatatype;
+import org.faktorips.datatype.PrimitiveLongDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -96,6 +99,21 @@ public class DatatypeUtilTest {
         assertThat(DatatypeUtil.isNullValue(valueDatatype, "abc"), is(false));
         assertThat(DatatypeUtil.isNullValue(valueDatatype, ""), is(false));
         assertThat(DatatypeUtil.isNullValue(valueDatatype, "<null>"), is(false));
+    }
+
+    @Test
+    public void testIsPrimitiveNullValue() throws Exception {
+        PrimitiveIntegerDatatype primIntDatatype = new PrimitiveIntegerDatatype();
+        assertThat(DatatypeUtil.isPrimitiveNullValue(primIntDatatype, ""), is(false));
+        assertThat(DatatypeUtil.isPrimitiveNullValue(primIntDatatype, "0"), is(true));
+
+        PrimitiveLongDatatype primLongDatatype = new PrimitiveLongDatatype();
+        assertThat(DatatypeUtil.isPrimitiveNullValue(primLongDatatype, ""), is(false));
+        assertThat(DatatypeUtil.isPrimitiveNullValue(primLongDatatype, "0"), is(true));
+
+        PrimitiveBooleanDatatype primBooleanDatatype = new PrimitiveBooleanDatatype();
+        assertThat(DatatypeUtil.isPrimitiveNullValue(primBooleanDatatype, ""), is(false));
+        assertThat(DatatypeUtil.isPrimitiveNullValue(primBooleanDatatype, "false"), is(true));
     }
 
     @Test

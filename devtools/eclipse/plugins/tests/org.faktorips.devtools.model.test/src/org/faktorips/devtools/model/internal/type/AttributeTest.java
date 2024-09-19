@@ -44,6 +44,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.value.ValueFactory;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
@@ -125,6 +126,29 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals(Message.WARNING, msg.getSeverity());
 
         attributeWithValueSet.setDefaultValue(null);
+        ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+    }
+
+    @Test
+    public void testValidate_defaultNotInValueset_primitiveDatatype() throws Exception {
+        IProductCmptTypeAttribute attributeWithValueSet = productCmptType.newProductCmptTypeAttribute();
+        attributeWithValueSet.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        attributeWithValueSet.setValueSetType(ValueSetType.ENUM);
+        IEnumValueSet valueSet = (IEnumValueSet)attributeWithValueSet.getValueSet();
+        valueSet.addValue("1");
+
+        attributeWithValueSet.setDefaultValue("1");
+        MessageList ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+
+        attributeWithValueSet.setDefaultValue("100");
+        ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
+        Message msg = ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET);
+        assertNotNull(msg);
+        assertEquals(Message.WARNING, msg.getSeverity());
+
+        attributeWithValueSet.setDefaultValue("0");
         ml = attributeWithValueSet.validate(attributeWithValueSet.getIpsProject());
         assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }

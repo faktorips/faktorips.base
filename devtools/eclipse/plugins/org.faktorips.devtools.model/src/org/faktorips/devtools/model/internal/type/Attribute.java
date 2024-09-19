@@ -297,7 +297,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
             IIpsProject ipsProject) {
         if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
             addMessageDatatypeMissmatch(defaultValueToValidate, result);
-        } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)) {
+        } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)
+                && !valueDatatype.isNull(defaultValueToValidate)) {
             addMessageDefaultValueNotInValueSet(defaultValueToValidate, result);
         }
     }

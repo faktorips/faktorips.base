@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -46,7 +46,7 @@ public interface ValueDatatype extends Datatype {
         if (!hasNullObject()) {
             return false;
         }
-        return value.equals(getValue(getNullObjectId()));
+        return value.equals(getNullObjectId());
     }
 
     /**
@@ -62,14 +62,14 @@ public interface ValueDatatype extends Datatype {
     /**
      * Returns {@code true} if this is a mutable datatype, {@code false} if it is an immutable
      * datatype.
-     * 
+     *
      * @return whether this is a mutable datatype
      */
     boolean isMutable();
 
     /**
      * Returns {@code true} if this is an immutable datatype, {@code false} otherwise.
-     * 
+     *
      * @return whether this is an immutable datatype
      */
     boolean isImmutable();
@@ -78,9 +78,9 @@ public interface ValueDatatype extends Datatype {
      * Returns the datatype's default value. For datatypes representing objects the method returns
      * {@code null}. For datatypes representing Java primitives the Java default value is returned,
      * e.g. 0 for int.
-     * 
+     *
      * @throws UnsupportedOperationException if this datatype is the Datatype {@link Void}.
-     * 
+     *
      * @see Void
      */
     String getDefaultValue();
@@ -97,10 +97,10 @@ public interface ValueDatatype extends Datatype {
      * May throw different exceptions if the given string does not represent any value, for example
      * a {@link NumberFormatException} when {@code "twelve"} is passed to
      * {@link PrimitiveIntegerDatatype#getValue(String)}.
-     * 
+     *
      * @param value the string representation of a value
      * @return the value as instance of the class this datatype represents
-     * 
+     *
      * @see ValueDatatype#valueToString(Object)
      */
     Object getValue(String value);
@@ -110,7 +110,7 @@ public interface ValueDatatype extends Datatype {
      *
      * @param value a value of this datatype
      * @return the value's string representation
-     * 
+     *
      * @see #getValue(String)
      */
     default String valueToString(Object value) {
@@ -124,7 +124,7 @@ public interface ValueDatatype extends Datatype {
 
     /**
      * Compares the values created from the two given strings.
-     * 
+     *
      * @param valueA The value to compare to valueB
      * @param valueB The value to compare to valueA
      * @return A value less than 0 if valueA is less than valueB, 0 if valueA is equal to valueB and
@@ -140,13 +140,13 @@ public interface ValueDatatype extends Datatype {
      * The String " 1" (a blank followed by the char '1') and "1" (just the char '1') are equal if
      * the datatype is an {@link Integer}, but will not be equal if the datatype is a
      * {@link String}.
-     * 
+     *
      * @param valueA The first parameter to compare
      * @param valueB The second parameter to compare
-     * 
+     *
      * @return {@code true} if the two values are equal according to the datatype, returns
      *             {@code false} if they are different.
-     * 
+     *
      * @throws IllegalArgumentException if one of the parameter values doesn't exist in the value
      *             set of this datatype.
      */
