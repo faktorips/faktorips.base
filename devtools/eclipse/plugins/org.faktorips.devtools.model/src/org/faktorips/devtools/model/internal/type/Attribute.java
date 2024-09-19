@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IAttribute.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class Attribute extends TypePart implements IAttribute {
@@ -274,7 +274,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
             IIpsProject ipsProject) {
         if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
             addMessageDatatypeMissmatch(defaultValueToValidate, result);
-        } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)) {
+        } else if (!isValueInValueSet(defaultValueToValidate, valueDatatype, ipsProject)) {
             addMessageDefaultValueNotInValueSet(defaultValueToValidate, result);
         }
     }
@@ -283,10 +283,13 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return valueDatatype.isParsable(defaultValueToValidate);
     }
 
-    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) {
+    private boolean isValueInValueSet(String defaultValueToValidate,
+            ValueDatatype valueDatatype,
+            IIpsProject ipsProject) {
         IValueSet valueSet = getValueSet();
         return valueSet == null || IpsStringUtils.isBlank(defaultValueToValidate)
-                || valueSet.containsValue(defaultValueToValidate, ipsProject);
+                || valueSet.containsValue(defaultValueToValidate, ipsProject)
+                || valueDatatype.isNull(defaultValueToValidate);
     }
 
     private void addMessageDatatypeMissmatch(String defaultValueToValidate, MessageList result) {

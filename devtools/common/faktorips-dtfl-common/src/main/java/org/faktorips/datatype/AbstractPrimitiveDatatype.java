@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Abstract base class for datatypes representing a Java primtive like boolean.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractPrimitiveDatatype extends AbstractDatatype implements ValueDatatype {
@@ -47,7 +47,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
 
     /**
      * If the value is <code>null</code> or an empty string, <code>false</code> is returned.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -66,7 +66,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
 
     @Override
     public boolean hasNullObject() {
-        return false;
+        return true;
     }
 
     @Override
@@ -88,8 +88,8 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
     }
 
     @Override
-    public boolean isNull(String value) {
-        return false;
+    public String getNullObjectId() {
+        return getDefaultValue();
     }
 
     @Override

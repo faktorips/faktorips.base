@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,6 +31,7 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
+import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.util.ListElementMover;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -47,7 +48,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * EnumSet represents a value set of discrete values, each value has to be explicitly defined.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class EnumValueSet extends ValueSet implements IEnumValueSet {
@@ -138,7 +139,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if ((isNullValue(datatype, value) && isContainsNull()) || isAbstract()) {
+        if ((isNullValue(datatype, value) && isContainsNull()) || isAbstract()
+                || DatatypeUtil.isPrimitiveNullValue(datatype, value)) {
             return true;
         }
         return isValueInEnum(value, datatype);

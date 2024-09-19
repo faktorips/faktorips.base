@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,6 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -39,7 +40,7 @@ import org.w3c.dom.Element;
  * unbounded. The range has an optional step attribute to define that only the values where
  * <code>((value-lower) mod step)== 0</code> holds true are included. E.g. 100-200 with step 10
  * defines the values 100, 110, 120, ... 200.
- * 
+ *
  * @author Jan Ortmann
  */
 public class RangeValueSet extends ValueSet implements IRangeValueSet {
@@ -57,7 +58,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     /**
      * Flag that indicates whether this range is empty. An empty range contains no values.
-     * 
+     *
      * @since 20.6
      */
     private boolean empty = false;
@@ -165,6 +166,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!(datatype instanceof NumericDatatype) || !isValid(ipsProject)) {
             return false;
         }
+
         return checkValueInRange(value, datatype);
     }
 
@@ -183,7 +185,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             if (isEmpty()) {
                 return false;
             }
-            if (isNullValue(datatype, value)) {
+            if (isNullValue(datatype, value) && !DatatypeUtil.isPrimitiveNullValue(datatype, value)) {
                 return isContainsNull();
             }
             if (isAbstract()) {
@@ -379,7 +381,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Compare two ranges that are known to be different. It is important that these two ranges will
      * never be treated as equal and that the comparison is symmetric.
-     * 
+     *
      * For better performance we ignore the datatype comparison - the equality is already proved
      * using datatype compare.
      */
