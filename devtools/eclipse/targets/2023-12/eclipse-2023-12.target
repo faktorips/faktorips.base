@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2023-12)" sequenceNumber="18">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2023-12)" sequenceNumber="19">
     <locations>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
             <unit id="org.eclipse.buildship.feature.group" version="0.0.0"/>
@@ -44,7 +44,6 @@
             <unit id="ch.qos.logback.core" version="0.0.0"/>
             <unit id="com.google.gson" version="0.0.0"/>
             <unit id="com.google.gson" version="0.0.0"/>
-            <unit id="com.google.guava" version="30.1.0.v20221112-0806"/>
             <unit id="com.google.guava" version="0.0.0"/>
             <unit id="com.google.guava.failureaccess" version="0.0.0"/>
             <unit id="com.googlecode.javaewah.JavaEWAH" version="0.0.0"/>
