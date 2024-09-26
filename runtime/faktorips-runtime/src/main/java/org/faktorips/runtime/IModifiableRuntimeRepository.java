@@ -102,4 +102,14 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      * @throws NullPointerException if table is {@code null} or has no {@link Table#getName() name}.
      */
     void putTable(ITable<?> table);
+    
+    /**
+     * Removes the table from the repository.
+     *
+     * @return whether the given table component was part of this repository
+     *
+     * @throws NullPointerException if table is {@code null}.
+     * @throws IllegalArgumentException if table has no name.
+     */
+    boolean removeTable(ITable<?> table);
 }

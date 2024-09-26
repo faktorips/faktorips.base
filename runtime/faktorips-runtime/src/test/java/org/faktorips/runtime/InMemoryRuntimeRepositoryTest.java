@@ -122,6 +122,41 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(t1, repository.getTable("motor.RateTable"));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testRemoveTable_NullTable() {
+        repository.removeTable(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveTable_NameIsBlank_BlankString() {
+        TestTable t = new TestTable("");
+        repository.removeTable(t);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveTable_NameIsBlank_WhiteSpaceOnly() {
+        TestTable t = new TestTable(" ");
+        repository.removeTable(t);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveTable_NameIsBlank_NullString() {
+        String s = null;
+        TestTable t = new TestTable(s);
+        repository.removeTable(t);
+    }
+
+    @Test
+    public void testRemoveTable() {
+        TestTable t = new TestTable("testTable");
+        repository.putTable(t);
+        assertTrue(repository.removeTable(t));
+        assertNull(repository.getTable("testTable"));
+        assertNull(repository.getTable(TestTable.class));
+        assertFalse(repository.removeTable(t));
+
+    }
+
     @Test
     public void testGetProductComponent_id() {
         assertEquals(b, repository.getProductComponent("b"));

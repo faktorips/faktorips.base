@@ -51,7 +51,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      */
     private HashMap<String, SortedSet<IProductComponentGeneration>> productCmptGenLists = new HashMap<>();
 
-    private List<ITable<?>> tables = new ArrayList<>();
+    private List<ITable<?>> singleContentTables = new ArrayList<>();
 
     /**
      * Contains the table contents for structures that allow multiple contents key is the qName,
@@ -135,12 +135,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
 
     @Override
     protected void getAllTables(List<ITable<?>> result) {
-        result.addAll(tables);
+        result.addAll(singleContentTables);
     }
 
     @Override
     public void getAllTableIds(List<String> result) {
-        Stream.concat(tables.stream().map(ITable::getName), multipleContentTables.keySet().stream())
+        Stream.concat(singleContentTables.stream().map(ITable::getName), multipleContentTables.keySet().stream())
                 .filter(not(result::contains))
                 .forEach(result::add);
     }
@@ -153,7 +153,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      */
     @Override
     protected <T extends ITable<?>> T getTableInternal(Class<T> tableClass) {
-        for (ITable<?> table : tables) {
+        for (ITable<?> table : singleContentTables) {
             if (tableClass.isAssignableFrom(table.getClass())) {
                 return tableClass.cast(table);
             }
@@ -180,13 +180,13 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     private void putSingleTable(ITable<?> table) {
         @SuppressWarnings("rawtypes")
         Class<? extends ITable> tableClass = table.getClass();
-        for (Iterator<ITable<?>> it = tables.iterator(); it.hasNext();) {
+        for (Iterator<ITable<?>> it = singleContentTables.iterator(); it.hasNext();) {
             ITable<?> each = it.next();
             if (each.getClass().isAssignableFrom(tableClass) || tableClass.isAssignableFrom(each.getClass())) {
                 it.remove();
             }
         }
-        tables.add(table);
+        singleContentTables.add(table);
     }
 
     /**
@@ -263,6 +263,23 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
             throw new IllegalArgumentException("Product component has no ID");
         }
         return productCmpts.remove(id) != null;
+    }
+
+    @Override
+    public boolean removeTable(ITable<?> table) {
+        Objects.requireNonNull(table);
+        String name = table.getName();
+        if (IpsStringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("Table has no name");
+        }
+
+        boolean removedSingleContentTable = singleContentTables.remove(table);
+        boolean removedMultiContentTable = multipleContentTables.remove(name) != null;
+
+        // because tables are stored in both singleContentTables and multipleContentTables, we have
+        // to check if they were deleted everywhere
+        return removedSingleContentTable && removedMultiContentTable;
+
     }
 
     @Override
