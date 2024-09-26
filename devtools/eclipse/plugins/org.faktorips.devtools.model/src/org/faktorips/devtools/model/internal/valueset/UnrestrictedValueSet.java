@@ -89,7 +89,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         }
 
         if (isNullValue(datatype, value)) {
-            return isContainsNull() || DatatypeUtil.isPrimitiveNullValue(datatype, value);
+            return isContainsNull();
         }
 
         return true;

@@ -39,6 +39,7 @@ class NullObjects {
         NULL_OBJECTS.put(long.class, 0L);
         NULL_OBJECTS.put(double.class, 0.0d);
         NULL_OBJECTS.put(float.class, 0.0f);
+        NULL_OBJECTS.put(boolean.class, false);
     }
 
     private NullObjects() {

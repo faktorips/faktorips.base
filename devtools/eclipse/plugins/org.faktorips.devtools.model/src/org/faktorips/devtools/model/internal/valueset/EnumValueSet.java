@@ -31,7 +31,6 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
-import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.util.ListElementMover;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -139,8 +138,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if ((isNullValue(datatype, value) && isContainsNull()) || isAbstract()
-                || DatatypeUtil.isPrimitiveNullValue(datatype, value)) {
+        if ((isNullValue(datatype, value) && isContainsNull()) || isAbstract()) {
             return true;
         }
         return isValueInEnum(value, datatype);

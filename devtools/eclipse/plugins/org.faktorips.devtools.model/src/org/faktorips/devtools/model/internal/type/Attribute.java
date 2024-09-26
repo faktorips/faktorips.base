@@ -274,7 +274,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
             IIpsProject ipsProject) {
         if (!isValueParsable(defaultValueToValidate, valueDatatype)) {
             addMessageDatatypeMissmatch(defaultValueToValidate, result);
-        } else if (!isValueInValueSet(defaultValueToValidate, valueDatatype, ipsProject)) {
+        } else if (!isValueInValueSet(defaultValueToValidate, ipsProject)
+                && !valueDatatype.isNull(defaultValueToValidate)) {
             addMessageDefaultValueNotInValueSet(defaultValueToValidate, result);
         }
     }
@@ -283,13 +284,10 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return valueDatatype.isParsable(defaultValueToValidate);
     }
 
-    private boolean isValueInValueSet(String defaultValueToValidate,
-            ValueDatatype valueDatatype,
-            IIpsProject ipsProject) {
+    private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) {
         IValueSet valueSet = getValueSet();
         return valueSet == null || IpsStringUtils.isBlank(defaultValueToValidate)
-                || valueSet.containsValue(defaultValueToValidate, ipsProject)
-                || valueDatatype.isNull(defaultValueToValidate);
+                || valueSet.containsValue(defaultValueToValidate, ipsProject);
     }
 
     private void addMessageDatatypeMissmatch(String defaultValueToValidate, MessageList result) {

@@ -14,8 +14,8 @@ import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -281,38 +281,26 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         validate(list, context,
                 () -> (T)getDefaultValue(source, effectiveDate),
                 () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
-                this::containsValue,
+                this::allowsAsDefault,
                 MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 PROPERTY_DEFAULT_VALUE);
     }
 
-    private <T> boolean containsValue(T defaultValue, ValueSet<T> valueSet) {
+    /**
+     * @return whether the given value set allows the given default value.
+     *
+     *             A default value must be either {@link ValueSet#contains(Object) contained} in the
+     *             value set or be the datatype's null-like value.
+     *
+     * @see NullObjects
+     */
+    private <T> boolean allowsAsDefault(T defaultValue, ValueSet<T> valueSet) {
         return (ObjectUtil.isNull(valueSet) || isNullValue(defaultValue) || valueSet.contains(defaultValue));
     }
 
     private <T> boolean isNullValue(T value) {
-        if (ObjectUtil.isNull(value)) {
-            return true;
-        }
-
-        if (value instanceof Integer) {
-            return ((Integer)value).equals(0);
-        }
-
-        if (value instanceof Long) {
-            return ((Long)value).equals(0L);
-        }
-
-        if (value instanceof Boolean) {
-            return !((Boolean)value);
-        }
-
-        if (value instanceof String) {
-            return StringUtils.isEmpty((String)value);
-        }
-
-        return false;
+        return Objects.equals(value, NullObjects.of(getDatatype()));
     }
 
     @SuppressWarnings("unchecked")
