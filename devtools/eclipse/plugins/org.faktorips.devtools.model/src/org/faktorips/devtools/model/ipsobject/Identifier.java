@@ -20,15 +20,12 @@ import org.faktorips.devtools.model.internal.productcmpt.Formula;
 import org.faktorips.devtools.model.internal.tablecontents.Row;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmptLink;
 import org.faktorips.devtools.model.internal.testcase.TestValue;
-import org.faktorips.devtools.model.internal.testcasetype.TestAttribute;
 import org.faktorips.devtools.model.internal.valueset.ValueSet;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.testcase.ITestValue;
-import org.faktorips.devtools.model.testcasetype.ITestAttribute;
-import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
@@ -63,11 +60,6 @@ public interface Identifier {
             String parameterName = columnRange.getParameterName();
             ColumnRangeType rangeType = columnRange.getColumnRangeType();
             return new ColumnRangeIdentifier(id, parameterName, rangeType);
-        }
-        if (part instanceof ITestAttribute testAttribute) {
-            String name = testAttribute.getName();
-            TestParameterType type = testAttribute.getTestAttributeType();
-            return new TestAttributeIdentifier(id, name, type);
         }
         if (part instanceof ITestValue testValue) {
             String testParameterName = testValue.getTestParameterName();
@@ -113,12 +105,6 @@ public interface Identifier {
                 String rangeTypeId = partEl.getAttribute(IColumnRange.PROPERTY_RANGE_TYPE);
                 ColumnRangeType rangeType = ColumnRangeType.getValueById(rangeTypeId);
                 return new ColumnRangeIdentifier(id, parameterName, rangeType);
-
-            case TestAttribute.TAG_NAME:
-                String name = partEl.getAttribute(ITestAttribute.PROPERTY_NAME).trim();
-                String typeId = partEl.getAttribute(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
-                TestParameterType type = TestParameterType.getTestParameterType(typeId);
-                return new TestAttributeIdentifier(id, name, type);
 
             case TestValue.TAG_NAME:
                 String testParameterName = partEl.getAttribute(ITestValue.PROPERTY_VALUE_PARAMETER).trim();
@@ -191,16 +177,6 @@ public interface Identifier {
                     && (isEqualsNotNull(id, otherColumnRange.id)
                             || (isEqualsNotNull(parameterName, otherColumnRange.parameterName)
                                     && rangeType == otherColumnRange.rangeType));
-        }
-    }
-
-    record TestAttributeIdentifier(String id, String name, TestParameterType type) implements Identifier {
-
-        @Override
-        public boolean isSame(Identifier other) {
-            return other instanceof TestAttributeIdentifier otherTestAttribute
-                    && (isEqualsNotNull(id, otherTestAttribute.id) || isEqualsNotNull(name, otherTestAttribute.name)
-                            || isEqualsNotNull(type, otherTestAttribute.type));
         }
     }
 
