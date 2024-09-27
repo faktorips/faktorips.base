@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -181,6 +181,22 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
         IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(cValueSet, "1", false);
 
         assertTrue(unrestrictedValueSet.containsValue("10EUR", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_PrimitiveInt0() throws Exception {
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(cValueSet, "1", false);
+
+        assertTrue(unrestrictedValueSet.containsValue("0", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_PrimitiveIntBooleanFalse() throws Exception {
+        attr.setDatatype(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName());
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(cValueSet, "1", false);
+
+        assertTrue(unrestrictedValueSet.containsValue("false", ipsProject));
     }
 
     @Test

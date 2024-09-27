@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
+import org.faktorips.datatype.AbstractPrimitiveDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -88,7 +89,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             return false;
         }
 
-        if (isNullValue(datatype, value)) {
+        if (isNullValue(datatype, value) && !(datatype instanceof AbstractPrimitiveDatatype)) {
             return isContainsNull();
         }
 
