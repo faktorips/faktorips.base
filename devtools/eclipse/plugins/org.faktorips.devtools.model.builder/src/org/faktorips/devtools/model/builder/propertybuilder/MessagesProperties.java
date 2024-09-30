@@ -27,7 +27,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.faktorips.devtools.model.builder.IpsBuilderPlugin;
+import org.faktorips.devtools.model.builder.plugin.IpsBuilderPlugin;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.util.IoUtil;
 

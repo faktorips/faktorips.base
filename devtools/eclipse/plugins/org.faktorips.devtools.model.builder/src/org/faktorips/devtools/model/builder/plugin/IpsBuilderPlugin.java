@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.model.builder;
+package org.faktorips.devtools.model.builder.plugin;
 
 /** @since 24.7 */
 public class IpsBuilderPlugin {
