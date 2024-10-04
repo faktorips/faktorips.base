@@ -94,7 +94,6 @@
             <unit id="org.apache.commons.commons-io" version="0.0.0"/>
             <unit id="org.apache.commons.compress" version="0.0.0"/>
             <unit id="org.apache.commons.httpclient" version="0.0.0"/>
-            <unit id="org.apache.commons.io" version="0.0.0"/>
             <unit id="org.apache.commons.jxpath" version="0.0.0"/>
             <unit id="org.apache.commons.lang" version="0.0.0"/>
             <unit id="org.apache.commons.lang3" version="0.0.0"/>
