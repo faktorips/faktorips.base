@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TimeZone;
@@ -51,6 +52,9 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      */
     private HashMap<String, SortedSet<IProductComponentGeneration>> productCmptGenLists = new HashMap<>();
 
+    /**
+     * Contains the table contents for structures that allow only single contents.
+     */
     private List<ITable<?>> singleContentTables = new ArrayList<>();
 
     /**
@@ -165,28 +169,44 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      * Puts the table into the repository. Replaces any table instance of the same class or any of
      * its superclasses. The latter check is needed to replace tables with mock implementations.
      *
+     * @return an {@link Optional} containing the old single content table if a single content table
+     *             of the same class has been replaced, or an empty {@link Optional} if a
+     *             multi-content table has been added.
+     *
      * @throws NullPointerException if table is <code>null</code>.
      */
     @Override
-    public void putTable(ITable<?> table) {
-        if (IpsStringUtils.isNotBlank(table.getName())) {
-            putTable(table, table.getName());
+    public Optional<ITable<?>> putTable(ITable<?> table) {
+
+        if (IpsStringUtils.isNotBlank(table.getName())
+                && this.isMultiContent(table.getClass())) {
+            return putMultipleContentTable(table);
         } else {
-            putSingleTable(table);
+            return putSingleContentTable(table);
         }
 
     }
 
-    private void putSingleTable(ITable<?> table) {
+    private Optional<ITable<?>> putMultipleContentTable(ITable<?> table) {
+        multipleContentTables.put(table.getName(), table);
+        return Optional.empty();
+    }
+
+    private Optional<ITable<?>> putSingleContentTable(ITable<?> table) {
         @SuppressWarnings("rawtypes")
         Class<? extends ITable> tableClass = table.getClass();
+        Optional<ITable<?>> oldTable = Optional.empty();
         for (Iterator<ITable<?>> it = singleContentTables.iterator(); it.hasNext();) {
+
             ITable<?> each = it.next();
             if (each.getClass().isAssignableFrom(tableClass) || tableClass.isAssignableFrom(each.getClass())) {
                 it.remove();
+                oldTable = Optional.of(each);
             }
         }
         singleContentTables.add(table);
+        return oldTable;
+
     }
 
     /**
@@ -200,8 +220,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      */
     @Deprecated(since = "24.7", forRemoval = true)
     public void putTable(ITable<?> table, String qName) {
-        multipleContentTables.put(qName, table);
-        putSingleTable(table);
+        if (isMultiContent(table.getClass())) {
+            multipleContentTables.put(qName, table);
+        } else {
+            putSingleContentTable(table);
+        }
     }
 
     @Override
@@ -217,6 +240,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
 
     @Override
     protected ITable<?> getTableInternal(String qualifiedTableName) {
+        for (ITable<?> table : singleContentTables) {
+            if (table.getName().equals(qualifiedTableName)) {
+                return table;
+            }
+        }
         return multipleContentTables.get(qualifiedTableName);
     }
 
@@ -269,16 +297,15 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     public boolean removeTable(ITable<?> table) {
         Objects.requireNonNull(table);
         String name = table.getName();
-        if (IpsStringUtils.isBlank(name)) {
-            throw new IllegalArgumentException("Table has no name");
+
+        if (isMultiContent(table.getClass())) {
+            if (IpsStringUtils.isBlank(name)) {
+                throw new IllegalArgumentException("Table has no name");
+            }
+            return multipleContentTables.remove(name) != null;
+        } else {
+            return singleContentTables.remove(table);
         }
-
-        boolean removedSingleContentTable = singleContentTables.remove(table);
-        boolean removedMultiContentTable = multipleContentTables.remove(name) != null;
-
-        // because tables are stored in both singleContentTables and multipleContentTables, we have
-        // to check if they were deleted everywhere
-        return removedSingleContentTable && removedMultiContentTable;
 
     }
 

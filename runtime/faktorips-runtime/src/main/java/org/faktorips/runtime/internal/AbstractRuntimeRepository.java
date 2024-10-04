@@ -38,6 +38,7 @@ import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.runtime.model.type.Type;
@@ -375,6 +376,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public final <T extends ITable<?>> T getTable(Class<T> tableClass) {
+
+        if (isMultiContent(tableClass)) {
+            throw new IllegalArgumentException(
+                    "The getTable(Class) method only supports single-content tables. The provided table class '"
+                            + tableClass.getSimpleName()
+                            + "' is a multi-content table.");
+        }
+
         T table = getTableInternal(tableClass);
         if (table != null) {
             return table;
@@ -388,6 +397,13 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
 
         return null;
+    }
+
+    /**
+     * Determines if the given table class supports multiple content instances.
+     */
+    protected <T extends ITable<?>> boolean isMultiContent(Class<T> tableClass) {
+        return IpsModel.getTableStructure(tableClass).getKind().equals(TableStructureKind.MULTIPLE_CONTENTS);
     }
 
     /**

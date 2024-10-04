@@ -11,6 +11,7 @@
 package org.faktorips.runtime;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.test.IpsTestCaseBase;
@@ -99,10 +100,14 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      * Puts the table into the repository. Replaces any table instance of the same class or any of
      * its superclasses. The latter check is needed to replace tables with mock implementations.
      *
+     * @return an {@link Optional} containing the old single content table if a single content table
+     *             of the same class has been replaced, or an empty {@link Optional} if a
+     *             multi-content table has been added.
+     *
      * @throws NullPointerException if table is {@code null} or has no {@link Table#getName() name}.
      */
-    void putTable(ITable<?> table);
-    
+    Optional<ITable<?>> putTable(ITable<?> table);
+
     /**
      * Removes the table from the repository.
      *
@@ -112,4 +117,5 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      * @throws IllegalArgumentException if table has no name.
      */
     boolean removeTable(ITable<?> table);
+
 }

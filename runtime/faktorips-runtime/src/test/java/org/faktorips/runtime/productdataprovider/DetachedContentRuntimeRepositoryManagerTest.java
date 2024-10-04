@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -45,6 +45,7 @@ import org.faktorips.runtime.testrepository.home.HomeProduct;
 import org.faktorips.runtime.testrepository.home.HomeProductGen;
 import org.faktorips.runtime.testrepository.motor.MotorProduct;
 import org.faktorips.runtime.testrepository.motor.MotorProductGen;
+import org.faktorips.runtime.testrepository.motor.RateTableSingle;
 import org.faktorips.runtime.testrepository.motor.RateTable;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 import org.junit.Before;
@@ -226,7 +227,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
     @Test
     public void testGetTableByClass() {
-        RateTable table = repository.getTable(RateTable.class);
+        RateTableSingle table = repository.getTable(RateTableSingle.class);
         assertNotNull(table);
     }
 

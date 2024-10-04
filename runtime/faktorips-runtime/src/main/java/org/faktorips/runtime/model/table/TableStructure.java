@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.runtime.model.table;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -54,8 +55,16 @@ public class TableStructure extends ModelElement {
         kind = annotation.type();
         columnNames = Arrays.asList(annotation.columns());
 
-        tableRowClass = (Class<?>)((ParameterizedType)tableObjectClass.getGenericSuperclass())
-                .getActualTypeArguments()[0];
+        // Walk up the class hierarchy to find the first parameterized superclass
+        Type genericSuperclass = tableObjectClass.getGenericSuperclass();
+        while (!(genericSuperclass instanceof ParameterizedType) && genericSuperclass instanceof Class<?>) {
+            genericSuperclass = ((Class<?>)genericSuperclass).getGenericSuperclass();
+        }
+        
+        if (genericSuperclass instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType)genericSuperclass;
+            tableRowClass = (Class<?>)parameterizedType.getActualTypeArguments()[0];
+        }
         columnModels = TableColumn.createModelsFrom(this, tableObjectClass, getTableRowClass());
         messagesHelper = createMessageHelper(tableObjectClass.getAnnotation(IpsDocumented.class),
                 tableObjectClass.getClassLoader());
@@ -92,7 +101,7 @@ public class TableStructure extends ModelElement {
 
     /**
      * This method retrieves the value of a table cell in a given row and column.
-     * 
+     *
      * @param tableRow an instance of the table row class matching the kind of the tableObjectClass
      * @param column model of the table column
      * @return the value of the table cell at in given tableRow and column

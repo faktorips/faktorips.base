@@ -18,11 +18,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.DummyTocEntryFactory.DummyRuntimeObject;
@@ -31,7 +33,10 @@ import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.RuntimeObject;
 import org.faktorips.runtime.internal.TestProductCmptGeneration;
 import org.faktorips.runtime.internal.TestProductComponent;
+import org.faktorips.runtime.internal.TestSingleContentTable;
 import org.faktorips.runtime.internal.TestTable;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
@@ -76,25 +81,20 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     @Test
-    public void testPutTable() {
-        TestTable t1 = new TestTable();
+    public void testPutTable_multiContent() {
+        TestTable t1 = new TestTable("my.MultiTable");
         repository.putTable(t1);
-        assertEquals(t1, repository.getTable(TestTable.class));
 
-        TestTable t2 = new TestTable();
-        repository.putTable(t2);
-        assertEquals(t2, repository.getTable(TestTable.class));
+        TestTable t2 = new TestTable("my.AnotherMultiTable");
+        Optional<ITable<?>> output = repository.putTable(t2);
+        assertEquals(Optional.empty(), output);
 
-        // test if adding a subclass also removes the superclass instance
-        // this is needed to give developers the possibility to mock tables.
-        TestTable2 t3 = new TestTable2();
+        TestMultiContentTable2 t3 = new TestMultiContentTable2("my.MultiTable2");
         repository.putTable(t3);
-        assertEquals(t3, repository.getTable(TestTable2.class));
 
-        TestTable t4 = new TestTable("my.TestTable");
-        repository.putTable(t4);
-        assertEquals(t4, repository.getTable(TestTable.class));
-        assertEquals(t4, repository.getTable("my.TestTable"));
+        assertEquals(t1, repository.getTable("my.MultiTable"));
+        assertEquals(t2, repository.getTable("my.AnotherMultiTable"));
+        assertEquals(t3, repository.getTable("my.MultiTable2"));
 
         try {
             repository.putTable(null);
@@ -104,22 +104,94 @@ public class InMemoryRuntimeRepositoryTest {
         }
     }
 
-    @SuppressWarnings("removal")
     @Test
-    public void testPutTable_qName() {
-        TestTable t1 = new TestTable();
-        repository.putTable(t1, "motor.RateTable");
-        assertEquals(t1, repository.getTable(TestTable.class));
+    public void testPutTable_singleContent() {
+        TestSingleContentTable t1 = new TestSingleContentTable();
+        repository.putTable(t1);
+        assertEquals(t1, repository.getTable(TestSingleContentTable.class));
+
+        // test if the returned table is the same as the old one
+        TestSingleContentTable t2 = new TestSingleContentTable();
+        Optional<ITable<?>> t_old = repository.putTable(t2);
+        assertEquals(t1, t_old.get());
+        assertEquals(t2, repository.getTable(TestSingleContentTable.class));
+
+        // test if adding a subclass also removes the superclass instance
+        // this is needed to give developers the possibility to mock tables.
+        TestSingleContentTable2 t3 = new TestSingleContentTable2();
+        repository.putTable(t3);
+        assertEquals(t3, repository.getTable(TestSingleContentTable2.class));
+        assertNotEquals(t2, repository.getTable(TestSingleContentTable.class));
+
+        try {
+            repository.putTable(null);
+            fail();
+        } catch (NullPointerException e) {
+            // OK
+        }
+    }
+
+    @Test
+    public void testPutTable_qName_SingleContentTable() {
+        TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
+        repository.putTable(t1);
         assertEquals(t1, repository.getTable("motor.RateTable"));
+        assertEquals(t1, repository.getTable(TestSingleContentTable.class));
     }
 
     @SuppressWarnings("removal")
     @Test
-    public void testGetTable_qName() {
-        assertNull(repository.getTable("motor.RateTable"));
-        TestTable t1 = new TestTable();
+    public void testPutAndRemoveTable_Deprecated_SingleContentTable() {
+        TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
         repository.putTable(t1, "motor.RateTable");
         assertEquals(t1, repository.getTable("motor.RateTable"));
+        assertEquals(t1, repository.getTable(TestSingleContentTable.class));
+        repository.removeTable(t1);
+        assertNull(repository.getTable("motor.RateTable"));
+        assertNull(repository.getTable(TestSingleContentTable.class));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testPutAndRemoveTable_Deprecated_MultiContentTable() {
+        TestTable t1 = new TestTable("motor.RateTable");
+        repository.putTable(t1, "motor.RateTable");
+        assertEquals(t1, repository.getTable("motor.RateTable"));
+        repository.removeTable(t1);
+        assertNull(repository.getTable("motor.RateTable"));
+    }
+
+    @Test
+    public void testGetTable_qName_MultiContentTable() {
+        assertNull(repository.getTable("motor.RateTable"));
+        TestTable t1 = new TestTable("motor.RateTable");
+        repository.putTable(t1);
+        assertEquals(t1, repository.getTable("motor.RateTable"));
+    }
+
+    @Test
+    public void testGetTable_qName_SingleContentTable() {
+        assertNull(repository.getTable("motor.RateTable"));
+        TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
+        repository.putTable(t1);
+        assertEquals(t1, repository.getTable("motor.RateTable"));
+    }
+
+    @Test
+    public void testGetTable_class_SingleContentTable() {
+        assertNull(repository.getTable("motor.RateTable"));
+        TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
+        repository.putTable(t1);
+        assertEquals(t1, repository.getTable(TestSingleContentTable.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetTable_class_MultiContentTable() {
+        assertNull(repository.getTable("motor.RateTable"));
+        TestTable t1 = new TestTable("motor.RateTable");
+        repository.putTable(t1);
+        repository.getTable(TestTable.class);
+
     }
 
     @Test(expected = NullPointerException.class)
@@ -147,12 +219,22 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     @Test
-    public void testRemoveTable() {
+    public void testRemoveTable_MultiContentTable() {
         TestTable t = new TestTable("testTable");
         repository.putTable(t);
         assertTrue(repository.removeTable(t));
         assertNull(repository.getTable("testTable"));
-        assertNull(repository.getTable(TestTable.class));
+        assertFalse(repository.removeTable(t));
+
+    }
+
+    @Test
+    public void testRemoveTable_SingleContentTable() {
+        TestSingleContentTable t = new TestSingleContentTable();
+        repository.putTable(t);
+        assertTrue(repository.removeTable(t));
+        assertNull(repository.getTable("testTable"));
+        assertNull(repository.getTable(TestSingleContentTable.class));
         assertFalse(repository.removeTable(t));
 
     }
@@ -611,8 +693,19 @@ public class InMemoryRuntimeRepositoryTest {
         return testCase;
     }
 
-    class TestTable2 extends TestTable {
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.SINGLE_CONTENT, columns = { "company",
+            "Gender", "rate" })
+    class TestSingleContentTable2 extends TestSingleContentTable {
         // another table class
+    }
+
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = { "company",
+            "Gender", "rate" })
+    class TestMultiContentTable2 extends TestTable {
+        // another table class
+        public TestMultiContentTable2(String qName) {
+            super(qName);
+        }
     }
 
     private static class TestXmlAdapter implements IIpsXmlAdapter<String, TestEnumValue> {

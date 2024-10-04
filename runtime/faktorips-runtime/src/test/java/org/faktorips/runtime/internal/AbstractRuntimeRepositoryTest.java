@@ -30,6 +30,8 @@ import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
@@ -39,8 +41,6 @@ import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.faktorips.sample.model.TestConcreteJavaEnum;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -67,7 +67,7 @@ public class AbstractRuntimeRepositoryTest {
     private ProductComponent mainPc;
     private ProductComponentGeneration mainPcGen;
 
-    private final ITable<?> testTable = new TestTable("qualifiedName");
+    private ITable<?> testTable = new TestMultiContentTable("qualifiedName");
     private TestProductComponent validToPc;
     private TestProductCmptGeneration validToPcGen;
 
@@ -285,11 +285,11 @@ public class AbstractRuntimeRepositoryTest {
     @Test
     public void testGetAllTableIds() {
         TestTable testTable2 = new TestTable("t2");
-        inBetweenRepositoryA.putTable(testTable2, "t2");
+        inBetweenRepositoryA.putTable(testTable2);
         TestTable testTable3 = new TestTable("t3");
-        mainRepository.putTable(testTable3, "t3");
+        mainRepository.putTable(testTable3);
         TestTable testTable4 = new TestTable("t4");
-        mainRepository.putTable(testTable4, "t4");
+        mainRepository.putTable(testTable4);
 
         List<String> result = mainRepository.getAllTableIds();
         assertThat(result.size(), is(4));
@@ -316,9 +316,15 @@ public class AbstractRuntimeRepositoryTest {
     }
 
     @Test
-    public void testGetTable() {
-        assertThat(mainRepository.getTable(TestTable.class), is(testTable));
-        assertThat(baseRepository.getTable(TestTable.class), is(testTable));
+    public void testGetTable_qName() {
+        assertThat(mainRepository.getTable("qualifiedName"), is(testTable));
+        assertThat(baseRepository.getTable("qualifiedName"), is(testTable));
+    }
+
+    @Test
+    public void testGetTable_class() {
+        assertThat(mainRepository.getTable("qualifiedName"), is(testTable));
+        assertThat(baseRepository.getTable("qualifiedName"), is(testTable));
     }
 
     @Test
@@ -564,27 +570,12 @@ public class AbstractRuntimeRepositoryTest {
 
     }
 
-    class TestTable implements ITable<Void> {
-        private final String qName;
-
-        public TestTable(String qName) {
-            this.qName = qName;
-        }
-
-        // test class
-        @Override
-        public String getName() {
-            return qName;
-        }
-
-        @Override
-        public List<Void> getAllRows() {
-            return List.of();
-        }
-
-        @Override
-        public Element toXml(Document document) {
-            return null;
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = { "company",
+            "Gender", "rate" })
+    class TestMultiContentTable extends TestTable {
+        // another table class
+        public TestMultiContentTable(String qName) {
+            super(qName);
         }
     }
 
