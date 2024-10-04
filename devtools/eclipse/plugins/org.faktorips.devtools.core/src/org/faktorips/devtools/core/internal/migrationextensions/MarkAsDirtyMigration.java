@@ -74,6 +74,7 @@ public class MarkAsDirtyMigration extends DefaultMigration {
     public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         MessageList messageList = super.migrate(monitor);
         MigrationUtil.updateBuilderSetDefaults(getIpsProject());
+        updateManifest();
         return messageList;
     }
 

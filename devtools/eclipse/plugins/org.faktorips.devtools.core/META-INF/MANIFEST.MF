@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.faktorips.devtools.core
 Bundle-Name: Faktor-IPS Development Tools
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
 Bundle-Version: 25.1.0.qualifier
@@ -18,9 +19,10 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.exception,
+ org.faktorips.devtools.core.extensions,
  org.faktorips.devtools.core.fl,
  org.faktorips.devtools.core.internal.migration;x-friends:="org.faktorips.devtools.stdbuilder.test,org.faktorips.devtools.stdbuilder,org.faktorips.productvariant.core",
- org.faktorips.devtools.core.internal.migrationextensions;x-friends:="org.faktorips.devtools.stdbuilder.test,org.faktorips.devtools.stdbuilder",
+ org.faktorips.devtools.core.internal.migrationextensions;x-friends:="org.faktorips.devtools.stdbuilder,org.faktorips.devtools.stdbuilder.test",
  org.faktorips.devtools.core.internal.model.adapter;x-friends:="org.faktorips.productvariant.core",
  org.faktorips.devtools.core.internal.model.pctype.validationrule;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.internal.model.testcase;x-friends:="org.faktorips.devtools.core.ui",
@@ -30,6 +32,7 @@ Export-Package: org.faktorips.devtools.core,
    org.faktorips.productrelease.cvs,
    org.faktorips.productrelease.svn",
  org.faktorips.devtools.core.internal.refactor;x-friends:="org.faktorips.devtools.core.ui",
+ org.faktorips.devtools.core.migration,
  org.faktorips.devtools.core.model,
  org.faktorips.devtools.core.model.ipsobject.refactor,
  org.faktorips.devtools.core.model.testcase,

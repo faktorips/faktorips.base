@@ -20,7 +20,6 @@
             propertyId="org.faktorips.testextensions.TestExtensionForIConfiguredDefault">
       </factory>
    </extension>
-   
    <extension
          id="TestExtensionForIAttribute"
          name="TestExtension@IAttribute"
@@ -40,7 +39,6 @@
             propertyId="org.faktorips.testextensions.TestExtensionForIAttribute">
       </factory>
    </extension>
-   
    <extension
          id="TestExtensionForIAssociation"
          name="TestExtension@IAssociation"
@@ -60,7 +58,6 @@
             propertyId="org.faktorips.testextensions.TestExtensionForIAssociation">
       </factory>
    </extension>
-   
    <extension
          id="TestExtensionForIPolicyCmptType"
          name="TestExtension@IPolicyCmptType"
@@ -72,7 +69,6 @@
             retention="RUNTIME">
       </property>
    </extension>
-   
    <extension
          id="TestExtensionForIProductCmptType"
          name="TestExtension@IProductCmptType"
@@ -84,7 +80,6 @@
             retention="RUNTIME">
       </property>
    </extension>
-   
    <extension
          id="TestExtensionForIProductCmpt"
          name="TestExtension@IProductCmpt"
@@ -96,7 +91,6 @@
             retention="RUNTIME">
       </property>
    </extension>
-   
    <extension
          id="TestExtensionForIProductCmptLink"
          name="TestExtension@IProductCmptLink"
@@ -114,7 +108,6 @@
             class="org.faktorips.testextensions.TestPreSaveProcessor">
       </PreSaveProcessor>
    </extension>
-
    <extension
          id="TestExtensionForICustomValidation"
          name="TestExtension@ICustomValidation"
@@ -122,5 +115,23 @@
       <customValidation
             validationClass="org.faktorips.testextensions.TestExtensionCustomValidation">
       </customValidation>
+   </extension>
+   <extension point="org.faktorips.devtools.model.faktorIpsFeatureVersionManager">
+      <faktorIpsFeatureVersionManager
+         basedOnFeatureManager="none"
+         class="org.faktorips.devtools.core.model.versionmanager.ExtendableVersionManager"
+         featureId="org.faktorips.testextensions"
+         id="org.faktorips.testextensions"
+         requiredForAllProjects="false">
+         <!-- The IDs should match the Bundle-SymbolicName in the MANIFEST.MF-->
+      </faktorIpsFeatureVersionManager>
+   </extension>
+   <extension point="org.faktorips.devtools.model.ipsMigrationOperation">
+      <migrationOperation
+         class="org.faktorips.testextensions.migration.TestExtensionMigrationFactory"
+         targetVersion="1.0.1">
+         <!-- Use your model version here, this has nothing to do with the Faktor-IPS version -->
+      </migrationOperation>
+
    </extension>
 </plugin>

@@ -7,6 +7,8 @@ Automatic-Module-Name: org.faktorips.testextensions
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.core.migration,
+ org.faktorips.devtools.core.model.versionmanager,
  org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.controller,
  org.faktorips.devtools.core.ui.controller.fields,
@@ -18,5 +20,7 @@ Import-Package: org.faktorips.devtools.abstraction.exception,
  org.faktorips.devtools.model.pctype,
  org.faktorips.devtools.model.productcmpt,
  org.faktorips.devtools.model.type,
+ org.faktorips.devtools.model.versionmanager,
  org.faktorips.runtime
-Require-Bundle: org.eclipse.swt
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.core.runtime

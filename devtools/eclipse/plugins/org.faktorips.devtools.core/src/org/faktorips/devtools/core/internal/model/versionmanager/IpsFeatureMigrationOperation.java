@@ -183,8 +183,12 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     public String getDescription() {
         StringBuilder description = new StringBuilder();
         for (AbstractIpsProjectMigrationOperation operation : operations) {
-            description.append("-> ").append(operation.getTargetVersion()).append(System.lineSeparator()); //$NON-NLS-1$
-            description.append(operation.getDescription()).append(System.lineSeparator());
+            description.append(operation.getFeatureId())
+                    .append(" -> ") //$NON-NLS-1$
+                    .append(operation.getTargetVersion())
+                    .append(System.lineSeparator())
+                    .append(operation.getDescription())
+                    .append(System.lineSeparator());
         }
         return description.toString();
     }

@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.migrationextensions;
+package org.faktorips.devtools.core.migration;
 
 import java.util.Arrays;
 import java.util.List;

@@ -9,19 +9,12 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.faktorips.runtime.MessageList;
 
 public class Migration_24_7_0 extends MarkAsDirtyMigration {
 
@@ -38,26 +31,6 @@ public class Migration_24_7_0 extends MarkAsDirtyMigration {
                         IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE),
                 migrationVersion,
                 Messages.Migration_24_7_0_description);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
-        return super.migrate(monitor);
-    }
-
-    @Override
-    protected void migrate(IIpsSrcFile srcFile) {
-        IIpsObject ipsObject = srcFile.getIpsObject();
-        if (ipsObject instanceof IProductCmpt productCmpt) {
-            productCmpt.fixAllDifferencesToModel(srcFile.getIpsProject());
-        }
-        srcFile.save(null);
-        super.migrate(srcFile);
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.internal.migrationextensions;
+package org.faktorips.devtools.core.migration;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.internal.migrationextensions.MigrationForChangedAttribute.ChangedAttribute;
+import org.faktorips.devtools.core.migration.MigrationForChangedAttribute.ChangedAttribute;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
