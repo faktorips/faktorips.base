@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -82,7 +83,7 @@ public class MultiValueAttributeHandlerTest {
         doNothing().when(handler).openMultiValueSubsetDialog(anyList());
 
         handler.editValues();
-        verify(handler).openMultiValueSubsetDialog(valueSet);
+        verify(handler).openMultiValueSubsetDialog(valueSet, false);
     }
 
     @Test
@@ -106,8 +107,8 @@ public class MultiValueAttributeHandlerTest {
         MultiValueAttributeHandler handler = setUpEnumDatatypeAttributeWithEnumValueSet(true);
 
         List<String> allValuesList = verifyOpenAndCaptureValues(handler);
-        assertEquals(3, allValuesList.size());
-        assertTrue(allValuesList.contains(null));
+        assertEquals(2, allValuesList.size());
+        assertFalse(allValuesList.contains(null));
         allValuesList.contains(PaymentMode.ANNUAL_ID);
         allValuesList.contains(PaymentMode.MONTHLY_ID);
     }
@@ -181,12 +182,12 @@ public class MultiValueAttributeHandlerTest {
         verify(handler).openMultiValueDialog();
         reset(handler);
 
-        doNothing().when(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class));
+        doNothing().when(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class), any(Boolean.class));
         IValueSet enumValueset = mock(IEnumValueSet.class);
         when(enumValueset.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(prodAttr.getValueSet()).thenReturn(enumValueset);
         handler.editValues();
-        verify(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class));
+        verify(handler).openMultiValueSubsetDialog(any(IEnumValueSet.class), any(Boolean.class));
     }
 
 }

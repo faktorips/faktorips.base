@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,7 +36,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
      * <p>
      * This constructor was left deprecated to ensure compatibility with the product variant
      * plugins.
-     * 
+     *
      * @deprecated As of 3.7.
      */
     @Deprecated
@@ -52,11 +52,11 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
      * values as source values. If the source value set is abstract (i.e. does not define values)
      * then the enum datatype's values are used. If the source value set contains values those
      * values are used. The resultingEnumValueSet's values are the target/resulting values.
-     * 
+     *
      * @param sourceValueSet the value set on model side (abstract or not)
      * @param datatype the data type of the attribute
      * @param resultingEnumValueSet the enum value set that is modified by this model
-     * 
+     *
      * @throws IllegalArgumentException if the value set is no enum value set and at the same time
      *             the value datatype is no enum datatype. In that case the subset chooser model
      *             should not have been used in the first place.
@@ -79,7 +79,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     private List<ListChooserValue> initSourceValuesForEnumDatatypeAndValueSet(IValueSet sourceValueSet,
             ValueDatatype datatype) {
         if (sourceValueSet != null && sourceValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            return convertToListChooserValues(ValueListExtractor.extractValues((IEnumValueSet)sourceValueSet));
+            return convertToListChooserValues(ValueListExtractor.extractValues((IEnumValueSet)sourceValueSet, true));
         } else if (datatype.isEnum()) {
             return convertToListChooserValues(ValueListExtractor.extractValues((EnumDatatype)datatype,
                     sourceValueSet == null ? true : sourceValueSet.isContainsNull()));

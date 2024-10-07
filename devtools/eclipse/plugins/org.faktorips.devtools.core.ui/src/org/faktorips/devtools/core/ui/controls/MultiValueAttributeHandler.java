@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,10 +42,10 @@ public class MultiValueAttributeHandler {
     public void editValues() {
         IValueSet modelValueSet = productCmptTypeAttribute.getValueSet();
         if (modelValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            openMultiValueSubsetDialog((IEnumValueSet)modelValueSet);
+            openMultiValueSubsetDialog((IEnumValueSet)modelValueSet, false);
         } else {
             if (datatype.isEnum()) {
-                openMultiValueSubsetDialog((EnumDatatype)datatype, modelValueSet.isContainsNull());
+                openMultiValueSubsetDialog((EnumDatatype)datatype, false);
             } else {
                 openMultiValueDialog();
             }
@@ -56,8 +56,8 @@ public class MultiValueAttributeHandler {
         openMultiValueSubsetDialog(ValueListExtractor.extractValues(enumDatatype, includeNull));
     }
 
-    protected void openMultiValueSubsetDialog(IEnumValueSet sourceValueSet) {
-        openMultiValueSubsetDialog(sourceValueSet.getValuesAsList());
+    protected void openMultiValueSubsetDialog(IEnumValueSet sourceValueSet, boolean includeNull) {
+        openMultiValueSubsetDialog(ValueListExtractor.extractValues(sourceValueSet, includeNull));
     }
 
     protected void openMultiValueSubsetDialog(List<String> sourceValues) {
