@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -56,6 +56,28 @@ public class MultiValueHolderValidatorTest {
 
         assertThat(messageList.size(), is(1));
         assertThat(messageList, hasMessageCode(IAttributeValue.MSGCODE_MANDATORY_VALUE_NOT_DEFINED));
+    }
+
+    @Test
+    public void testValidate_NonEmptyListWithEmptyStringValue() {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IIpsProject project = mock(IIpsProject.class);
+        IValueSet valueSet = mock(IValueSet.class);
+
+        when(attributeValue.getIpsProject()).thenReturn(project);
+        when(attributeValue.findAttribute(project)).thenReturn(attribute);
+        when(attribute.getValueSet()).thenReturn(valueSet);
+        when(valueSet.isContainsNull()).thenReturn(false);
+        when(attributeValue.getName()).thenReturn("a");
+
+        ISingleValueHolder emptyStringHolder = new SingleValueHolder(attributeValue, "");
+
+        List<ISingleValueHolder> values = List.of(emptyStringHolder);
+        MultiValueHolder valueHolder = new MultiValueHolder(attributeValue, values);
+        MultiValueHolderValidator validator = new MultiValueHolderValidator(valueHolder, attributeValue, project);
+        MessageList messageList = validator.validate();
+        assertThat(messageList, hasMessageCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE));
     }
 
     @Test
@@ -154,6 +176,71 @@ public class MultiValueHolderValidatorTest {
         assertThat(messageList, hasMessageCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE));
         Message invalidValueMsg = messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE);
         verifyInvalidValueMessage(invalidValueMsg, multiValueHolder, attributeValue);
+    }
+
+    @Test
+    public void testValidate_MultiValueContainsNull() {
+        IIpsProject project = mock(IIpsProject.class);
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IValueSet valueSet = mock(IValueSet.class);
+        SingleValueHolderValidator singleValue1Validator = mock(SingleValueHolderValidator.class);
+        SingleValueHolderValidator singleValue2Validator = mock(SingleValueHolderValidator.class);
+        MessageList value1Messages = new MessageList();
+        MessageList value2Messages = new MessageList();
+
+        when(attributeValue.getIpsProject()).thenReturn(project);
+        when(attributeValue.findAttribute(project)).thenReturn(attribute);
+        when(attribute.getValueSet()).thenReturn(valueSet);
+        when(valueSet.isContainsNull()).thenReturn(false);
+
+        SingleValueHolder singleValue1 = mock(SingleValueHolder.class);
+        SingleValueHolder singleValue2 = mock(SingleValueHolder.class);
+
+        when(singleValue1.isNullValue()).thenReturn(false);
+        when(singleValue2.isNullValue()).thenReturn(true);
+        when(singleValue2.getStringValue()).thenReturn(null);
+
+        when(singleValue1.newValidator(attributeValue, project)).thenReturn(singleValue1Validator);
+        when(singleValue2.newValidator(attributeValue, project)).thenReturn(singleValue2Validator);
+
+        when(singleValue1Validator.validate()).thenReturn(value1Messages);
+        when(singleValue2Validator.validate()).thenReturn(value2Messages);
+        when(attributeValue.getName()).thenReturn("a");
+
+        List<ISingleValueHolder> values = Arrays.asList(singleValue1, singleValue2);
+        MultiValueHolder multiValueHolder = new MultiValueHolder(attributeValue, values);
+
+        MultiValueHolderValidator validator = new MultiValueHolderValidator(multiValueHolder, attributeValue, project);
+
+        MessageList messageList = validator.validate();
+
+        assertThat(messageList.size(), is(1));
+        assertThat(messageList, hasMessageCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE));
+        Message invalidValueMsg = messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE);
+        verifyInvalidValueMessage(invalidValueMsg, multiValueHolder, attributeValue);
+    }
+
+    @Test
+    public void testValidate_MultiValueContainsEmptyValue() {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IIpsProject project = mock(IIpsProject.class);
+        IValueSet valueSet = mock(IValueSet.class);
+
+        when(attributeValue.getIpsProject()).thenReturn(project);
+        when(attributeValue.findAttribute(project)).thenReturn(attribute);
+        when(attribute.getValueSet()).thenReturn(valueSet);
+        when(valueSet.isContainsNull()).thenReturn(false);
+        when(attributeValue.getName()).thenReturn("a");
+
+        ISingleValueHolder emptyStringHolder = new SingleValueHolder(attributeValue, "");
+
+        List<ISingleValueHolder> values = List.of(emptyStringHolder);
+        MultiValueHolder valueHolder = new MultiValueHolder(attributeValue, values);
+        MultiValueHolderValidator validator = new MultiValueHolderValidator(valueHolder, attributeValue, project);
+        MessageList messageList = validator.validate();
+        assertThat(messageList, hasMessageCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE));
     }
 
     @Test
