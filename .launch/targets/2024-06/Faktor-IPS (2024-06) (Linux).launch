@@ -56,8 +56,7 @@
         <setEntry value="jakarta.annotation-api*2.1.1@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api*1.0.5@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api*2.0.1@default:default"/>
-        <setEntry value="jakarta.servlet-api*4.0.0@default:default"/>
-        <setEntry value="jakarta.servlet-api*6.0.0@default:default"/>
+        <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.bind@default:default"/>
         <setEntry value="javax.xml.stream@default:default"/>
@@ -96,7 +95,6 @@
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
-        <setEntry value="org.apache.commons.lang3*3.14.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
@@ -441,7 +439,6 @@
         <setEntry value="org.eclipse.search.core@default:default"/>
         <setEntry value="org.eclipse.search.nl_de@default:false"/>
         <setEntry value="org.eclipse.search@default:default"/>
-        <setEntry value="org.eclipse.swt.gtk.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.swt.nl_de@default:false"/>
         <setEntry value="org.eclipse.swt@default:default"/>
         <setEntry value="org.eclipse.team.core.nl_de@default:false"/>
@@ -559,7 +556,6 @@
         <setEntry value="org.snakeyaml.engine@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
         <setEntry value="slf4j.api*1.7.36@default:default"/>
-        <setEntry value="slf4j.api*2.0.13@default:default"/>
         <setEntry value="slf4j.nop@default:default"/>
         <setEntry value="slf4j.simple@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
