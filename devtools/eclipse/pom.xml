@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools</artifactId>
-        <version>24.7.4-SNAPSHOT</version>
+        <version>24.7.4.release</version>
     </parent>
     <artifactId>faktorips-devtools-eclipse</artifactId>
     <packaging>pom</packaging>
