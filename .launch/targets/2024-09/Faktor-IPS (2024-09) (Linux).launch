@@ -10,12 +10,19 @@
     <booleanAttribute key="clearConfig" value="false"/>
     <booleanAttribute key="clearws" value="false"/>
     <booleanAttribute key="clearwslog" value="false"/>
-    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2024-06) (Windows)"/>
+    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2024-09) (Linux)"/>
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
     <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2024-06"/>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
+    <mapAttribute key="org.eclipse.debug.core.environmentVariables">
+        <mapEntry key="SWT_GTK3" value="0"/>
+    </mapAttribute>
+    <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+        <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+        <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+    </listAttribute>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
@@ -52,6 +59,7 @@
         <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.bind@default:default"/>
+        <setEntry value="javax.servlet.jsp-api@default:default"/>
         <setEntry value="javax.xml.stream@default:default"/>
         <setEntry value="javax.xml@default:default"/>
         <setEntry value="jaxb-api@default:default"/>
@@ -87,7 +95,9 @@
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.io@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
+        <setEntry value="org.apache.commons.lang3*3.16.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
@@ -139,16 +149,12 @@
         <setEntry value="org.eclipse.core.filebuffers.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.filebuffers@default:default"/>
         <setEntry value="org.eclipse.core.filesystem.nl_de@default:false"/>
-        <setEntry value="org.eclipse.core.filesystem.win32.x86_64.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.filesystem@default:default"/>
         <setEntry value="org.eclipse.core.jobs.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.jobs@default:default"/>
         <setEntry value="org.eclipse.core.net.nl_de@default:false"/>
-        <setEntry value="org.eclipse.core.net.win32.nl_de@default:false"/>
-        <setEntry value="org.eclipse.core.net.win32.x86_64.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.net@default:default"/>
         <setEntry value="org.eclipse.core.resources.nl_de@default:false"/>
-        <setEntry value="org.eclipse.core.resources.win32.x86_64.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.resources@default:default"/>
         <setEntry value="org.eclipse.core.runtime.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.runtime@default:true"/>
@@ -197,7 +203,6 @@
         <setEntry value="org.eclipse.e4.ui.progress@default:default"/>
         <setEntry value="org.eclipse.e4.ui.services.nl_de@default:false"/>
         <setEntry value="org.eclipse.e4.ui.services@default:default"/>
-        <setEntry value="org.eclipse.e4.ui.swt.win32@default:false"/>
         <setEntry value="org.eclipse.e4.ui.widgets.nl_de@default:false"/>
         <setEntry value="org.eclipse.e4.ui.widgets@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench.addons.swt.nl_de@default:false"/>
@@ -254,7 +259,6 @@
         <setEntry value="org.eclipse.equinox.frameworkadmin@default:default"/>
         <setEntry value="org.eclipse.equinox.http.service.api@default:default"/>
         <setEntry value="org.eclipse.equinox.http.servlet@default:default"/>
-        <setEntry value="org.eclipse.equinox.launcher.win32.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.equinox.launcher@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.artifact.repository.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.artifact.repository@default:default"/>
@@ -439,7 +443,6 @@
         <setEntry value="org.eclipse.search.nl_de@default:false"/>
         <setEntry value="org.eclipse.search@default:default"/>
         <setEntry value="org.eclipse.swt.nl_de@default:false"/>
-        <setEntry value="org.eclipse.swt.win32.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.swt@default:default"/>
         <setEntry value="org.eclipse.team.core.nl_de@default:false"/>
         <setEntry value="org.eclipse.team.core@default:default"/>
@@ -497,8 +500,6 @@
         <setEntry value="org.eclipse.ui.views.properties.tabbed.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.views.properties.tabbed@default:default"/>
         <setEntry value="org.eclipse.ui.views@default:default"/>
-        <setEntry value="org.eclipse.ui.win32.nl_de@default:false"/>
-        <setEntry value="org.eclipse.ui.win32@default:false"/>
         <setEntry value="org.eclipse.ui.workbench.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.workbench.texteditor.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.workbench.texteditor@default:default"/>
@@ -525,6 +526,7 @@
         <setEntry value="org.hamcrest@default:default"/>
         <setEntry value="org.jcodings@default:default"/>
         <setEntry value="org.jdom2@default:default"/>
+        <setEntry value="org.jdom@default:default"/>
         <setEntry value="org.joni@default:default"/>
         <setEntry value="org.jsoup@default:default"/>
         <setEntry value="org.junit@default:default"/>
@@ -557,14 +559,18 @@
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.snakeyaml.engine@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
-        <setEntry value="slf4j.api*1.7.36@default:default"/>
+        <setEntry value="slf4j.api*2.0.16@default:default"/>
         <setEntry value="slf4j.nop@default:default"/>
         <setEntry value="slf4j.simple@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.abstracttest.core@default:default"/>
+        <setEntry value="org.faktorips.abstracttest@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse.test@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.testsetup@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
@@ -575,7 +581,6 @@
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
         <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.model@1:true"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
@@ -589,6 +594,7 @@
         <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
         <setEntry value="org.faktorips.testdatatype@default:default"/>
+        <setEntry value="org.faktorips.testsupport@default:default"/>
         <setEntry value="org.faktorips.util@default:default"/>
         <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
         <setEntry value="org.faktorips.valuetypes@default:default"/>

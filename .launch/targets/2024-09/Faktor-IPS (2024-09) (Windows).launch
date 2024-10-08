@@ -10,11 +10,11 @@
     <booleanAttribute key="clearConfig" value="false"/>
     <booleanAttribute key="clearws" value="false"/>
     <booleanAttribute key="clearwslog" value="false"/>
-    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2024-06) (Windows)"/>
+    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2024-09) (Windows)"/>
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
-    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2024-06"/>
+    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2024-09"/>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
@@ -52,6 +52,7 @@
         <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.bind@default:default"/>
+        <setEntry value="javax.servlet.jsp-api@default:default"/>
         <setEntry value="javax.xml.stream@default:default"/>
         <setEntry value="javax.xml@default:default"/>
         <setEntry value="jaxb-api@default:default"/>
@@ -87,7 +88,9 @@
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.io@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
+        <setEntry value="org.apache.commons.lang3*3.16.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
@@ -525,6 +528,7 @@
         <setEntry value="org.hamcrest@default:default"/>
         <setEntry value="org.jcodings@default:default"/>
         <setEntry value="org.jdom2@default:default"/>
+        <setEntry value="org.jdom@default:default"/>
         <setEntry value="org.joni@default:default"/>
         <setEntry value="org.jsoup@default:default"/>
         <setEntry value="org.junit@default:default"/>
@@ -557,14 +561,18 @@
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.snakeyaml.engine@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
-        <setEntry value="slf4j.api*1.7.36@default:default"/>
+        <setEntry value="slf4j.api*2.0.16@default:default"/>
         <setEntry value="slf4j.nop@default:default"/>
         <setEntry value="slf4j.simple@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.abstracttest.core@default:default"/>
+        <setEntry value="org.faktorips.abstracttest@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse.test@default:false"/>
         <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.testsetup@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
@@ -575,7 +583,6 @@
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
         <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.model@1:true"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
@@ -589,6 +596,7 @@
         <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
         <setEntry value="org.faktorips.testdatatype@default:default"/>
+        <setEntry value="org.faktorips.testsupport@default:default"/>
         <setEntry value="org.faktorips.util@default:default"/>
         <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
         <setEntry value="org.faktorips.valuetypes@default:default"/>
