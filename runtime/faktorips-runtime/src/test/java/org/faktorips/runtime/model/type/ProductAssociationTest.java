@@ -10,8 +10,10 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +43,10 @@ import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ValidationContext;
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.ProductComponentLink;
@@ -74,6 +79,8 @@ public class ProductAssociationTest {
     private final ProductAssociation association = productCmptType.getAssociation("asso");
     private final ProductAssociation association2 = productCmptType.getAssociation("asso2");
     private final ProductAssociation association3 = productCmptType.getAssociation("asso3");
+    private final ProductAssociation associationTest = productCmptType.getAssociation("assoTest");
+    private final ProductAssociation associationPolicy = productCmptType.getAssociation("policyAsso");
     private final ProductAssociation overriddenAsso = productCmptType.getAssociation("overriddenAsso");
 
     @Before
@@ -109,6 +116,254 @@ public class ProductAssociationTest {
     public void testGetMaxCardinality() {
         assertEquals(1, association.getMaxCardinality());
         assertEquals(10, association2.getMaxCardinality());
+    }
+
+    @Test
+    public void testValidate_FromDateInvalid() {
+        Source source = new Source();
+        source.setValidFrom(new DateTime(2024, 1, 1));
+        source.target = new Target();
+        source.target.setValidFrom(new DateTime(2025, 1, 1));
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_DATE_FROM_NOT_VALID);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString("The earliest validity date"));
+        assertThat(message.getText(), containsString(source.target.getValidFrom().toString()));
+        assertThat(message.getText(), containsString("referenced product component"));
+        assertThat(message.getText(), containsString(source.target.getId().toString()));
+        assertThat(message.getText(), containsString("after"));
+        assertThat(message.getText(), containsString(source.getValidFrom().toString()));
+        assertThat(message.getText(), containsString(source.getId().toString()));
+    }
+
+    @Test
+    public void testValidate_FromDateInvalid_InGeneration() {
+        Source source = new Source();
+        source.setValidFrom(new DateTime(2024, 1, 1));
+        source.productGen.setValidFrom(new DateTime(2024, 1, 1));
+        Target target = new Target();
+        target.setValidFrom(new DateTime(2025, 1, 1));
+        association2.addTargetObject(source, effectiveDate, target, CardinalityRange.OPTIONAL);
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association2.validate(ml, context, source, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_DATE_FROM_NOT_VALID);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString("The earliest validity date"));
+        assertThat(message.getText(), containsString(target.getValidFrom().toString()));
+        assertThat(message.getText(), containsString("referenced product component"));
+        assertThat(message.getText(), containsString(target.getId().toString()));
+        assertThat(message.getText(), containsString("after"));
+        assertThat(message.getText(), containsString(source.getValidFrom().toString()));
+        assertThat(message.getText(), containsString(source.getId().toString()));
+    }
+
+    @Test
+    public void testValidate_FromDateValid_Same() {
+        Source source = new Source();
+        source.setValidFrom(new DateTime(2024, 1, 1));
+        source.target = new Target();
+        source.target.setValidFrom(new DateTime(2024, 1, 1));
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_FromDateValid_TargetEarlier() {
+        Source source = new Source();
+        source.setValidFrom(new DateTime(2024, 1, 1));
+        source.target = new Target();
+        source.target.setValidFrom(new DateTime(2020, 1, 1));
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_FromDateValid_InGeneration() {
+        Source source = new Source();
+        source.setValidFrom(new DateTime(2024, 1, 1));
+        source.productGen.setValidFrom(new DateTime(2025, 1, 1));
+        Target target = new Target();
+        target.setValidFrom(new DateTime(2025, 1, 1));
+        association2.addTargetObject(source, effectiveDate, target, new CardinalityRange(1, 10, 1));
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association2.validate(ml, context, source, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_ToDateInvalid() {
+        Source source = new Source();
+        source.setValidTo(new DateTime(2024, 1, 1));
+        source.target = new Target();
+        source.target.setValidTo(new DateTime(2023, 1, 1));
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_DATE_TO_NOT_VALID);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString("The latest validity date"));
+        assertThat(message.getText(), containsString(source.target.getValidTo().toString()));
+        assertThat(message.getText(), containsString("referenced product component"));
+        assertThat(message.getText(), containsString(source.target.getId().toString()));
+        assertThat(message.getText(), containsString("before"));
+        assertThat(message.getText(), containsString(source.getValidTo().toString()));
+        assertThat(message.getText(), containsString(source.getId().toString()));
+    }
+
+    @Test
+    public void testValidate_ToDateValid() {
+        Source source = new Source();
+        source.setValidTo(new DateTime(2024, 1, 1));
+        source.target = new Target();
+        source.target.setValidTo(new DateTime(2025, 1, 1));
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_MaxCardinalityExceedsModelsMax() {
+        Source source = new Source();
+        source.targets = List.of(new Target(), new Target(), new Target(), new Target());
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        associationPolicy.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(false));
+
+        assertThat(ml.size(), is(1));
+
+        assertThat(ml.getMessage(0).getText(), containsString("The maximum cardinality"));
+        assertThat(ml.getMessage(0).getText(), containsString("6"));
+        assertThat(ml.getMessage(0).getText(), containsString(source.targets.get(0).getId()));
+        assertThat(ml.getMessage(0).getText(), containsString("other relationship targets"));
+        assertThat(ml.getMessage(0).getText(), containsString("exceeds"));
+        assertThat(ml.getMessage(0).getText(), containsString("model defined maximum cardinality"));
+        assertThat(ml.getMessage(0).getText(), containsString("5"));
+        assertThat(ml.getMessage(0).getText(), containsString(associationPolicy.getName()));
+
+    }
+
+    @Test
+    public void testValidate_MinCardinalityFallsBelowModelsMin() {
+        Source source = new Source();
+        source.targets = List.of(new Target(), new Target(), new Target());
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        associationPolicy.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(false));
+        assertThat(ml.size(), is(2));
+        assertThat(ml.getMessage(0).getText(), containsString("The minimum cardinality"));
+        assertThat(ml.getMessage(0).getText(), containsString("2"));
+        assertThat(ml.getMessage(0).getText(), containsString(source.targets.get(0).getId()));
+        assertThat(ml.getMessage(0).getText(), containsString("other relationship targets"));
+        assertThat(ml.getMessage(0).getText(), containsString("falls below"));
+        assertThat(ml.getMessage(0).getText(), containsString("model defined minimum cardinality"));
+        assertThat(ml.getMessage(0).getText(), containsString("3"));
+        assertThat(ml.getMessage(0).getText(), containsString(associationPolicy.getName()));
+
+    }
+
+    @Test
+    public void testValidate_MinCardinalityInvalid() {
+        Source source = new Source();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        associationTest.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(false));
+        assertThat(ml.getMessage(0).getText(), containsString("Only"));
+        assertThat(ml.getMessage(0).getText(),
+                containsString(associationTest.getTargetObjects(source, null).size() + ""));
+        assertThat(ml.getMessage(0).getText(), containsString("of type"));
+        assertThat(ml.getMessage(0).getText(), containsString(associationTest.getLabel(Locale.ENGLISH)));
+        assertThat(ml.getMessage(0).getText(), containsString(associationTest.getMinCardinality() + ""));
+    }
+
+    @Test
+    public void testValidate_MinCardinalityValid() {
+        Source source = new Source();
+        source.target = new Target();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(true));
+
+    }
+
+    @Test
+    public void testValidate_MaxCardinalityInvalid() {
+        Source source = new Source();
+        source.targetInvalid = List.of(new TargetInvalid(), new TargetInvalid(), new TargetInvalid());
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        associationTest.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(false));
+        assertThat(ml.getMessage(0).getText(),
+                containsString(associationTest.getTargetObjects(source, null).size() + ""));
+        assertThat(ml.getMessage(0).getText(), containsString("relationships of type"));
+        assertThat(ml.getMessage(0).getText(), containsString(associationTest.getLabel(Locale.ENGLISH)));
+        assertThat(ml.getMessage(0).getText(), containsString("but only"));
+        assertThat(ml.getMessage(0).getText(), containsString(associationTest.getMaxCardinality() + ""));
+
+    }
+
+    @Test
+    public void testValidate_MaxCardinalityvalid() {
+        Source source = new Source();
+        source.target = new Target();
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        association.validate(ml, context, source, null);
+
+        assertThat(ml.isEmpty(), is(true));
+
     }
 
     @Test
@@ -728,12 +983,14 @@ public class ProductAssociationTest {
     }
 
     @IpsProductCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "asso3", "overriddenAsso", "asso4" })
+    @IpsAssociations({ "asso", "asso2", "asso3", "overriddenAsso", "asso4", "assoTest", "policyAsso" })
     @IpsChangingOverTime(ProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class Source extends ProductComponent {
 
         Target target;
+        List<Target> targets;
+        List<TargetInvalid> targetInvalid;
         private final ProductGen productGen = new ProductGen(this);
         private final ProductGen productGen2 = new ProductGen(this);
 
@@ -758,6 +1015,49 @@ public class ProductAssociationTest {
             if (target.equals(this.target)) {
                 this.target = null;
             }
+        }
+
+        @IpsAssociation(name = "assoTest", pluralName = "assoTests", min = 1, max = 2, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsDerivedUnion
+        @IpsSubsetOfDerivedUnion("derivedUnion")
+        public List<TargetInvalid> getTargetInvalid() {
+            return targetInvalid;
+        }
+
+        @IpsAssociationAdder(association = "assoTest")
+        public void setTarget2(TargetInvalid target) {
+            targetInvalid.add(target);
+        }
+
+        @IpsAssociation(name = "policyAsso", pluralName = "policyAssos", min = 1, max = 4, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsMatchingAssociation(source = Policy.class, name = "MatchingPolicyAsso")
+        public List<Target> getPolicyAsso() {
+            return targets;
+        }
+
+        @IpsAssociationAdder(association = "policyAsso")
+        public void setPolicyAsso(Target target) {
+            targets.add(target);
+        }
+
+        @IpsAssociationLinks(association = "policyAsso")
+        public List<IProductComponentLink<Target>> getLinksForPolicyAsso() {
+            List<IProductComponentLink<Target>> list = new ArrayList<>();
+            if (targets.size() >= 1) {
+                list.add(new ProductComponentLink<>(this, targets.get(0), new CardinalityRange(0, 1, 1)));
+            }
+            if (targets.size() >= 2) {
+                list.add(new ProductComponentLink<>(this, targets.get(1), new CardinalityRange(0, 1, 1)));
+            }
+
+            if (targets.size() >= 3) {
+                list.add(new ProductComponentLink<>(this, targets.get(2), CardinalityRange.MANDATORY));
+            }
+
+            if (targets.size() >= 4) {
+                list.add(new ProductComponentLink<>(this, targets.get(3), new CardinalityRange(1, 5, 1)));
+            }
+            return list;
         }
 
         @IpsAssociationLinks(association = "asso")
@@ -932,10 +1232,12 @@ public class ProductAssociationTest {
         public List<IProductComponentLink<Target>> getLinksForTargets() {
             List<IProductComponentLink<Target>> list = new ArrayList<>();
             if (target != null) {
-                list.add(new ProductComponentLink<>(this, target));
+                list.add(new ProductComponentLink<>(this, target,
+                        cardinality != null ? cardinality : CardinalityRange.OPTIONAL));
             }
             if (target2 != null) {
-                list.add(new ProductComponentLink<>(this, target2));
+                list.add(new ProductComponentLink<>(this, target2,
+                        cardinality2 != null ? cardinality2 : CardinalityRange.OPTIONAL));
             }
             return list;
         }
@@ -964,17 +1266,41 @@ public class ProductAssociationTest {
         }
     }
 
+    @IpsProductCmptType(name = "MyTarget")
+    private class TargetInvalid extends ProductComponent {
+
+        public TargetInvalid(String id) {
+            super(repository, id, "productKindId2", "versionId2");
+        }
+
+        public TargetInvalid() {
+            this("id2");
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            // not used
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+    }
+
     @IpsProductCmptType(name = "MySubTarget")
     private class SubTarget extends Target {
         // another target
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
-    @IpsAssociations({ "Matching" })
+    @IpsAssociations({ "Matching", "MatchingPolicyAsso" })
     @IpsConfiguredBy(Source.class)
     private class Policy implements IModelObject {
 
         private Target target;
+        private List<Target> targets;
 
         @Override
         public MessageList validate(IValidationContext context) {
@@ -984,6 +1310,11 @@ public class ProductAssociationTest {
         @IpsAssociation(name = "Matching", pluralName = "Matching", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
         public List<Target> getMatchings() {
             return List.of(target);
+        }
+
+        @IpsAssociation(name = "MatchingPolicyAsso", pluralName = "MatchingPolicyAssos", min = 3, max = 5, kind = AssociationKind.Association, targetClass = Target.class)
+        public List<Target> getMatchingPolicyAssos() {
+            return targets;
         }
     }
 }

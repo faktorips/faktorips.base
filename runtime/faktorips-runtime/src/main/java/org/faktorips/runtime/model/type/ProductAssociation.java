@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.faktorips.runtime.util.ValidationMessageUtil.generateValidationMessage;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +19,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,11 +27,40 @@ import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
+import org.faktorips.valueset.Range;
 
 public class ProductAssociation extends Association {
+
+    public static final String MSGCODE_MAX_CARDINALITY_NOT_VALID = "ASSOCIATION-MAX_CARDINALITY_NOT_VALID";
+
+    public static final String MSGKEY_MAX_CARDINALITY_NOT_VALID = "Validation.MaxCardinalityNotValid";
+
+    public static final String MSGCODE_MIN_CARDINALITY_NOT_VALID = "ASSOCIATION-MIN_CARDINALITY_NOT_VALID";
+
+    public static final String MSGKEY_MIN_CARDINALITY_NOT_VALID = "Validation.MinCardinalityNotValid";
+
+    public static final String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = "ASSOCIATION-MAX_CARDINALITY_EXCEEDS_MODEL_MAX";
+
+    public static final String MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEl_MAX = "Validation.MaxCardinalityExceedsModelMax";
+
+    public static final String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = "ASSOCIATION-MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN";
+
+    public static final String MSGKEY_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = "Validation.MinCardinalityFallsBelowModelMin";
+
+    public static final String MSGCODE_DATE_FROM_NOT_VALID = "ASSOCIATION-VALID_FROM_NOT_VALID";
+
+    public static final String MSGKEY_DATE_FROM_NOT_VALID = "Validation.DateFromNotValid";
+
+    public static final String MSGCODE_DATE_TO_NOT_VALID = "ASSOCIATION-VALID_TO_NOT_VALID";
+
+    public static final String MSGKEY_DATE_TO_NOT_VALID = "Validation.DateToNotValid";
 
     private final boolean changingOverTime;
     private final Method getLinksMethod;
@@ -511,6 +543,167 @@ public class ProductAssociation extends Association {
     }
 
     /**
+     * Validates this association's configuration in the given product against the model.
+     *
+     * @param list a {@link MessageList}, to which validation messages may be added
+     * @param context the {@link IValidationContext}, needed to determine the {@link Locale} in
+     *            which to create {@link Message Messages}
+     * @param source the {@link IProductComponent} to validate
+     * @param effectiveDate the date that determines which {@link IProductComponentGeneration} is to
+     *            be validated, if the {@link IProductComponent} has any
+     */
+    public void validate(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        List<IProductComponent> targetObjects = getTargetObjects(source, effectiveDate);
+        validateMinCardinality(list, context, source, targetObjects, effectiveDate);
+        validateMaxCardinality(list, context, source, targetObjects, effectiveDate);
+        validateValidFrom(list, context, source, targetObjects, effectiveDate);
+        validateValidTo(list, context, source, targetObjects);
+    }
+
+    private void validateMinCardinality(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            List<IProductComponent> targetObjects,
+            Calendar effectiveDate) {
+
+        validate(list, context,
+                () -> targetObjects.size(),
+                this::getMinCardinality,
+                (links, minCardinality) -> links.compareTo(minCardinality) < 0,
+                MSGCODE_MIN_CARDINALITY_NOT_VALID,
+                MSGKEY_MIN_CARDINALITY_NOT_VALID,
+                PROPERTY_MIN_CARDINALITY);
+
+        findMatchingAssociation().ifPresent(
+                policyAssociation -> validateTotalMin(list, policyAssociation, getLinks(source, effectiveDate),
+                        context));
+
+    }
+
+    private void validateMaxCardinality(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            List<IProductComponent> targetObjects,
+            Calendar effectiveDate) {
+        validate(list, context,
+                () -> targetObjects.size(),
+                this::getMaxCardinality,
+                (links, maxCardinality) -> links.compareTo(maxCardinality) > 0,
+                MSGCODE_MAX_CARDINALITY_NOT_VALID,
+                MSGKEY_MAX_CARDINALITY_NOT_VALID,
+                PROPERTY_MAX_CARDINALITY);
+
+        findMatchingAssociation().ifPresent(
+                policyAssociation -> validateTotalMax(list, policyAssociation, getLinks(source, effectiveDate),
+                        context));
+
+    }
+
+    private void validateTotalMax(MessageList list,
+            PolicyAssociation policyAssociation,
+            Collection<IProductComponentLink<IProductComponent>> links,
+            IValidationContext context) {
+        int maxType = policyAssociation.getMaxCardinality();
+        if (maxType != Integer.MAX_VALUE) {
+            int sumMinCardinality = links.stream()
+                    .mapToInt(relation -> relation.getCardinality().getLowerBound())
+                    .sum();
+
+            for (IProductComponentLink<IProductComponent> link : links) {
+                int sumCardinality;
+                if (link.getCardinality().getUpperBound() < Integer.MAX_VALUE) {
+                    sumCardinality = sumMinCardinality;
+                    sumCardinality += link.getCardinality().getUpperBound();
+                    sumCardinality -= link.getCardinality().getLowerBound();
+                } else {
+                    sumCardinality = Integer.MAX_VALUE;
+                }
+                if (sumCardinality > maxType) {
+                    list.newError(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
+                            generateValidationMessage(context.getLocale(),
+                                    getResourceBundleName(), MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEl_MAX,
+                                    sumCardinality, link.getTargetId(), maxType, getUsedName()),
+                            link.getCardinality(), Range.PROPERTY_UPPER_BOUND);
+
+                }
+            }
+        }
+
+    }
+
+    private void validateTotalMin(MessageList list,
+            PolicyAssociation policyAssociation,
+            Collection<IProductComponentLink<IProductComponent>> links,
+            IValidationContext context) {
+        int minType = policyAssociation.getMinCardinality();
+        for (IProductComponentLink<IProductComponent> link : links) {
+            int sumMaxCardinality = link.getCardinality().getLowerBound();
+            for (IProductComponentLink<IProductComponent> otherLink : links) {
+                if (!link.equals(otherLink)) {
+                    if (otherLink.getCardinality().getUpperBound() == Integer.MAX_VALUE) {
+                        sumMaxCardinality = Integer.MAX_VALUE;
+
+                        break;
+                    }
+                    sumMaxCardinality += otherLink.getCardinality().getUpperBound();
+                }
+            }
+            if (sumMaxCardinality < minType) {
+                list.newError(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN,
+                        generateValidationMessage(context.getLocale(),
+                                getResourceBundleName(), MSGKEY_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN,
+                                sumMaxCardinality, link.getTargetId(), minType, getUsedName()),
+                        link.getCardinality(), Range.PROPERTY_LOWER_BOUND);
+
+            }
+
+        }
+
+    }
+
+    private void validateValidTo(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            List<IProductComponent> targetObjects) {
+        for (IProductComponent target : targetObjects) {
+            validate(list,
+                    () -> target.getValidTo(),
+                    () -> source.getValidTo(),
+                    (targetDate, sourceDate) -> targetDate.compareTo(sourceDate) < 0,
+                    (targetDate, sourceDate) -> generateValidationMessage(context.getLocale(),
+                            getResourceBundleName(), MSGKEY_DATE_TO_NOT_VALID,
+                            targetDate, target, sourceDate, source),
+                    MSGCODE_DATE_TO_NOT_VALID,
+                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_TO));
+        }
+
+    }
+
+    private void validateValidFrom(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            List<IProductComponent> targetObjects,
+            Calendar effectiveDate) {
+        for (IProductComponent target : targetObjects) {
+
+            validate(list,
+                    () -> target.getValidFrom(),
+                    () -> isChangingOverTime() ? source.getGenerationBase(effectiveDate).getValidFrom()
+                            : source.getValidFrom(),
+                    (targetDate, sourceDate) -> targetDate.compareTo(sourceDate) > 0,
+                    (targetDate, sourceDate) -> generateValidationMessage(context.getLocale(),
+                            getResourceBundleName(), MSGKEY_DATE_FROM_NOT_VALID,
+                            targetDate, target, sourceDate, source),
+                    MSGCODE_DATE_FROM_NOT_VALID,
+                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_FROM));
+        }
+
+    }
+
+    /**
      * ..1 associations have no remove method. Call set(null) instead. Does nothing if the currently
      * associated object is not equal to targetToReset.
      *
@@ -550,4 +743,5 @@ public class ProductAssociation extends Association {
             return (Collection<IProductComponentLink<T>>)invokeMethod(getLinksMethod, prodCmptOrGeneration);
         }
     }
+
 }

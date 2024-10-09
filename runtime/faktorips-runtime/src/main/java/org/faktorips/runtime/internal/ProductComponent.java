@@ -32,6 +32,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
+import org.faktorips.runtime.IProductObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
@@ -58,9 +59,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private static final String XML_ELEMENT_GENERATION = "Generation";
 
-    private static final String XML_ATTRIBUTE_VALID_FROM = "validFrom";
+    private static final String XML_ATTRIBUTE_VALID_FROM = IProductObject.PROPERTY_VALID_FROM;
     private static final String XML_ATTRIBUTE_IS_NULL = "isNull";
-    private static final String XML_ATTRIBUTE_VALID_TO = "validTo";
+    private static final String XML_ATTRIBUTE_VALID_TO = IProductComponent.PROPERTY_VALID_TO;
 
     private static final Comparator<Element> BY_ATTRIBUTE_NAME = comparing(
             e -> e.getAttribute(XML_ATTRIBUTE_ATTRIBUTE));

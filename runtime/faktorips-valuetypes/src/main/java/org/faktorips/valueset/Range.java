@@ -21,6 +21,10 @@ package org.faktorips.valueset;
  */
 public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
 
+    String PROPERTY_UPPER_BOUND = "upperBound";
+    String PROPERTY_LOWER_BOUND = "lowerBound";
+    String PROPERTY_STEP = "step";
+
     /**
      * Returns the range's lower bound, <code>null</code> means that the range is unbounded.
      */

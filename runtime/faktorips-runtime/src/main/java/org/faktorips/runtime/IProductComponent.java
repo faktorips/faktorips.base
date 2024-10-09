@@ -22,6 +22,8 @@ import org.faktorips.runtime.internal.DateTime;
  */
 public interface IProductComponent extends IRuntimeObject, IProductObject {
 
+    String PROPERTY_VALID_TO = "validTo";
+
     /**
      * Returns the repository this product component belongs to. This method never returns
      * <code>null</code>.
