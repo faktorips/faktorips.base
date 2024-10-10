@@ -45,8 +45,6 @@ import org.w3c.dom.Element;
  */
 public class AttributeValue extends AbstractSimplePropertyValue implements IAttributeValue {
 
-    public static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
-
     private String attribute;
 
     private IValueHolder<?> valueHolder;
@@ -66,7 +64,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
 
     @Override
     protected Element createElement(Document doc) {
-        return doc.createElement(TAG_NAME);
+        return doc.createElement(IAttributeValue.TAG_NAME);
     }
 
     @Override

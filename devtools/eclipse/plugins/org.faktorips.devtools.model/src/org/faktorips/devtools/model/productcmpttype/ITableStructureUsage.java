@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,10 +17,14 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
  * Specification of table structure usage object.
  * <p>
  * Specifies a usage of several table structure for a product component type.
- * 
+ *
  * @author Jan Ortmann
  */
 public interface ITableStructureUsage extends IProductCmptProperty {
+
+    String TAG_NAME = "TableStructureUsage"; //$NON-NLS-1$
+
+    String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
 
     String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
 
@@ -107,13 +111,13 @@ public interface ITableStructureUsage extends IProductCmptProperty {
      * Moves the table structures identified by the indexes up or down by one position. If one of
      * the indexes is 0 (the first object), no object is moved up. If one of the indexes is the
      * number of objects - 1 (the last object) no object is moved down.
-     * 
+     *
      * @param indexes The indexes identifying the table structures.
      * @param up <code>true</code>, to move the table structures up, <code>false</code> to move them
      *            down.
-     * 
+     *
      * @return The new indexes of the moved table structures.
-     * 
+     *
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a table structure.
      */
@@ -139,7 +143,7 @@ public interface ITableStructureUsage extends IProductCmptProperty {
      * Configures this {@link ITableStructureUsage} to change or be constant over time. If
      * <code>true</code> every {@link IProductCmptGeneration} may specify a different value for this
      * attribute. If <code>false</code> the value is the same for all generations.
-     * 
+     *
      * @param changingOverTime indicates whether or not this attribute should change over time
      */
     void setChangingOverTime(boolean changingOverTime);

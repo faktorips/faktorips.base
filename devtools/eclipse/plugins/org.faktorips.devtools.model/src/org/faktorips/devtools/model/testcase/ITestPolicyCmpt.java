@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,10 +21,12 @@ import org.faktorips.devtools.model.type.IAttribute;
 
 /**
  * Specification of a test policy component.
- * 
+ *
  * @author Joerg Ortmann
  */
 public interface ITestPolicyCmpt extends ITestObject {
+
+    String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
 
     String PROPERTY_TESTPOLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
     String PROPERTY_PRODUCTCMPT = "productCmpt"; //$NON-NLS-1$
@@ -94,7 +96,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Validation message code to indicate that the policy component type and a product component
      * are given. If a policy component type is given then no product component is allowed and vice
      * versa.
-     * 
+     *
      * @see #getPolicyCmptType()
      */
     String MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN = MSGCODE_PREFIX
@@ -119,7 +121,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the test policy component type parameter or <code>null</code> if the test policy
      * component type parameter does not exist.
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the policy component type.
      */
     ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws IpsException;
@@ -136,7 +138,7 @@ public interface ITestPolicyCmpt extends ITestObject {
 
     /**
      * Returns the product component or <code>null</code> if the product component does not exist.
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the product component.
      */
     IProductCmpt findProductCmpt(IIpsProject ipsProject) throws IpsException;
@@ -189,7 +191,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Creates a new link on the test policy component and returns it. The given test policy
      * component type parameter specifies the type of the link.
-     * 
+     *
      * @param typeParam test policy component type parameter for which the new link will be created.
      *            This is the type definition of the test link
      * @param productCmpt name of the product component if the child of the link requires a product
@@ -197,7 +199,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @param policyCmptType name of the policy component type if the child of the link don't
      *            requires a product component otherwise empty
      * @param targetName name of the target if the new link should be an association otherwise empty
-     * 
+     *
      * @throws IpsException if an error occurs while adding the new link. If the productCmpt and the
      *             policyCmptType are both given
      */
@@ -212,7 +214,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * <p>
      * This operation is able to recursively continue to create links where required and possible.
      * The algorithm works as described in {@link #addRequiredLinks(IIpsProject)}.
-     * 
+     *
      * @param typeParam test policy component type parameter for which the new link will be created.
      *            This is the type definition of the test link
      * @param productCmpt name of the product component if the child of the link requires a product
@@ -222,7 +224,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @param targetName name of the target if the new link should be an association otherwise empty
      * @param recursivelyAddRequired flag indicating whether further links shall be recursively
      *            added where required and possible
-     * 
+     *
      * @throws IpsException if an error occurs while adding the new link. If the productCmpt and the
      *             policyCmptType are both given.
      */
@@ -252,10 +254,10 @@ public interface ITestPolicyCmpt extends ITestObject {
      * test policy component links} equal to the minimum cardinality of the product component link
      * will be added
      * </ol>
-     * 
+     *
      * @param ipsProject project to use as a base for searching the
      *            {@link ITestPolicyCmptTypeParameter} this test policy component is associated with
-     * 
+     *
      * @throws IllegalStateException if no product component is assigned to this test policy
      *             component
      * @throws IpsException if an error occurs while searching for the
@@ -271,7 +273,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the test policy component links with the given name which are related to the given
      * test policy component parameter.
-     * 
+     *
      */
     ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName);
 
@@ -281,7 +283,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * <p>
      * Note that a link's name is equal to it's target type, so you can also use the target type as
      * parameter.
-     * 
+     *
      * @throws IllegalArgumentException if testPolicyCmptType is <code>null</code>.
      */
     ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType);
@@ -307,7 +309,7 @@ public interface ITestPolicyCmpt extends ITestObject {
 
     /**
      * Removes the given link.
-     * 
+     *
      * @throws IpsException in case of an error.
      */
     void removeLink(ITestPolicyCmptLink link) throws IpsException;
@@ -317,7 +319,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * product component or if no product component is available or the attribute isn't configured
      * by product then from the policy component. Don't update the value if not default is
      * specified.
-     * 
+     *
      * @throws IpsException in case of an error.
      */
     void updateDefaultTestAttributeValues() throws IpsException;
@@ -326,12 +328,12 @@ public interface ITestPolicyCmpt extends ITestObject {
      * Moves the test policy component link identified by the indexes up or down by one position. If
      * one of the indexes is 0 (the first link), nothing is moved up. If one of the indexes is the
      * number of parameters - 1 (the last link) nothing moved down
-     * 
+     *
      * @param indexes The indexes identifying the test policy component link.
      * @param up <code>true</code>, to move up, <code>false</code> to move them down.
-     * 
+     *
      * @return The new indexes of the test policy component link.
-     * 
+     *
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a test policy
      *             component link.
@@ -341,7 +343,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     /**
      * Returns the index of the given child test policy component. The index starts with 0 (the
      * first element).
-     * 
+     *
      * @throws IpsException if the given test policy component is no child of the current test
      *             policy component.
      */
@@ -352,9 +354,9 @@ public interface ITestPolicyCmpt extends ITestObject {
      * in this test object. Returns <code>null</code> if the attribute doesn't exists on the product
      * cmpt types supertype hierarchy the product component is based on or no product component is
      * set.
-     * 
+     *
      * @param ipsProject The IPS project which object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching.
      */
     IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws IpsException;
@@ -372,7 +374,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * returns <code>false</code>. For all qualified-name values aside from <code>null</code> and ""
      * (empty string) this method returns <code>true</code>, regardless of the existence of a
      * product component with the specified name.
-     * 
+     *
      * @return <code>true</code> if the qualified name of a product component is specified in this
      *             {@link ITestPolicyCmpt}, <code>false</code> otherwise.
      * @since FIPS 3.0.0
@@ -402,7 +404,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * TestPolicyCmptTypeParameter (reset to default)</li>
      * <li>If this {@link ITestPolicyCmpt} has a manual name, it will not be changed at all.</li>
      * </ul>
-     * 
+     *
      * @since FIPS 3.0.0
      * @param prodCmptQName the qualified name of this test component's new product component.
      */

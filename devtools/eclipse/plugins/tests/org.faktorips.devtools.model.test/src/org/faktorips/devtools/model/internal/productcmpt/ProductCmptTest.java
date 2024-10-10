@@ -1284,7 +1284,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IIpsObjectPart part = productCmpt.newPartThis(element, "genID");
         assertNotNull(part);
 
-        when(element.getNodeName()).thenReturn(AttributeValue.TAG_NAME);
+        when(element.getNodeName()).thenReturn((String)IAttributeValue.TAG_NAME);
         part = productCmpt.newPartThis(element, "attrID");
         assertNotNull(part);
 
