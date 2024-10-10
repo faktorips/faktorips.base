@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
@@ -504,7 +505,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected Map<Identifier, IIpsObjectPart> initPartContainersFromXml(Element element,
             Map<Identifier, IIpsObjectPart> idPartMap) {
         Map<Identifier, IIpsObjectPart> newIdPartMap = new HashMap<>();
-
+        AtomicInteger index = new AtomicInteger();
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
@@ -515,7 +516,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             if (partEl.getNodeName().equals(XML_EXT_PROPERTIES_ELEMENT)) {
                 continue;
             }
-            IIpsObjectPart part = findPart(partEl, idPartMap);
+            IIpsObjectPart part = findPart(partEl, idPartMap, index);
             if (part == null) {
                 part = newPart(partEl, getNextPartId());
             } else {
@@ -527,7 +528,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             // part might be null if the partEl does not represent a IpsObjectPart!
             if (part != null) {
                 part.initFromXml(partEl);
-                if (newIdPartMap.put(Identifier.of(part), part) != null) {
+                AtomicInteger preIndex = new AtomicInteger(Math.max(index.get() - 1, 0));
+                if (newIdPartMap.put(Identifier.of(part, preIndex), part) != null) {
                     throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
                             + part.getId());
                 }
@@ -539,17 +541,18 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private HashMap<Identifier, IIpsObjectPart> createIdPartMap() {
         HashMap<Identifier, IIpsObjectPart> map = new HashMap<>();
         IIpsElement[] parts = getChildren();
+        AtomicInteger index = new AtomicInteger();
         for (IIpsElement child : parts) {
             if (child instanceof IIpsObjectPart part) {
-                Identifier identifier = Identifier.of(part);
+                Identifier identifier = Identifier.of(part, index);
                 map.put(identifier, part);
             }
         }
         return map;
     }
 
-    private IIpsObjectPart findPart(Element partEl, Map<Identifier, IIpsObjectPart> idPartMap) {
-        Identifier identifier = Identifier.of(partEl);
+    private IIpsObjectPart findPart(Element partEl, Map<Identifier, IIpsObjectPart> idPartMap, AtomicInteger index) {
+        Identifier identifier = Identifier.of(partEl, this, index);
         return find(identifier, idPartMap)
                 .orElse(null);
     }

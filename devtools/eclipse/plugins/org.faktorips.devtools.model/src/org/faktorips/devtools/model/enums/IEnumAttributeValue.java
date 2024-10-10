@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.enums;
 
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.IPartIdentifiedByIndex;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
@@ -25,12 +26,12 @@ import org.faktorips.runtime.model.enumtype.EnumAttribute;
  * When searching for the referenced <code>IEnumAttribute</code> the assumption is made, that the
  * attributes in the <code>IEnumType</code> are ordered so that normal attributes come first and
  * after them the <code>IEnumLiteralNameAttribute</code>s.
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
-public interface IEnumAttributeValue extends IIpsObjectPart {
+public interface IEnumAttributeValue extends IIpsObjectPart, IPartIdentifiedByIndex {
 
     /** The XML tag for this IPS object part. */
     String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
@@ -79,11 +80,11 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * referenced <code>IEnumType</code> does not correspond to the number of
      * <code>IEnumAttributeValue</code>s in the <code>IEnumValue</code> containing this
      * <code>IEnumAttributeValue</code>.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used for the search of the
      *            referenced <code>IEnumAttribute</code>. This is not necessarily the project this
      *            <code>IEnumAttribute</code> is part of.
-     * 
+     *
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     IEnumAttribute findEnumAttribute(IIpsProject ipsProject);
@@ -99,7 +100,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
 
     /**
      * Sets the actual value.
-     * 
+     *
      * @param value The new value. May also be <code>null</code>.
      */
     void setValue(IValue<?> value);
@@ -113,7 +114,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
 
     /**
      * Returning a string representation of the value.
-     * 
+     *
      * @return a string representation of this part.
      */
     String getStringValue();
@@ -121,7 +122,7 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
     /**
      * Returns <code>true</code>, if the value is <code>null</code> otherwise <code>false</code>. It
      * depends on the specific ValueHolder.
-     * 
+     *
      * @return boolean <code>true</code> if the value is <code>null</code>
      */
     boolean isNullValue();
@@ -142,14 +143,14 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * normally not called for only one value but for multiple values in one enum container.
      * Consider to call {@link IEnumValueContainer#fixEnumAttributeValues(IEnumAttribute)} instead
      * of this method.
-     * 
+     *
      * @param multilingual the setting of the {@link IEnumAttribute}
      */
     void fixValueType(boolean multilingual);
 
     /**
      * Checks the {@link ValueType} in {@link IEnumAttributeValue} of the {@link IEnumAttribute}.
-     * 
+     *
      * @param enumAttribute the {@link EnumAttribute} to check
      * @return {@link ValueTypeMismatch}
      */

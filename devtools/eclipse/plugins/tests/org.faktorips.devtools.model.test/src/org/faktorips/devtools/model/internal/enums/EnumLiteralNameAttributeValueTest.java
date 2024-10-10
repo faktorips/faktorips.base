@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -17,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -32,8 +36,7 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        literalNameAttributeValue = (IEnumLiteralNameAttributeValue)paymentMode.getEnumValues().get(0)
-                .getEnumAttributeValues().get(0);
+        literalNameAttributeValue = paymentMode.getEnumValues().get(0).getEnumLiteralNameAttributeValue();
     }
 
     @Test
@@ -107,6 +110,19 @@ public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest
         assertNull(messages
                 .getMessageByCode(
                         IEnumLiteralNameAttributeValue.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER));
+    }
+
+    @Test
+    public void testDirectChangesToTheCorrespondingFile_LiteralNameAttributeValue() throws Exception {
+        IIpsSrcFile ipsFile = paymentMode.getIpsSrcFile();
+        literalNameAttributeValue.setValue(ValueFactory.createStringValue("foo"));
+        ipsFile.save(null);
+
+        paymentMode = (EnumType)ipsFile.getIpsObject(); // forces a reload
+
+        assertThat(paymentMode.getEnumValues().get(0).getEnumLiteralNameAttributeValue(),
+                is(sameInstance(literalNameAttributeValue)));
+        assertThat(literalNameAttributeValue.getStringValue(), is("foo"));
     }
 
 }

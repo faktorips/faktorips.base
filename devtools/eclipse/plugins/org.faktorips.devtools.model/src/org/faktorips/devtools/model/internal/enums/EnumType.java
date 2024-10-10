@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
@@ -100,6 +102,15 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         enumContentPackageFragment = IpsStringUtils.EMPTY;
         enumAttributes = new IpsObjectPartCollection<>(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
+    }
+
+    @Override
+    protected IIpsElement[] getChildrenThis() {
+        IIpsElement[] elements = super.getChildrenThis();
+        // move EnumValues to the end so that EnumAttributes are already initialized when they are
+        // loaded
+        return Stream.concat(Arrays.stream(elements).filter(e -> !(e instanceof IEnumValue)),
+                Arrays.stream(elements).filter(e -> (e instanceof IEnumValue))).toArray(IIpsElement[]::new);
     }
 
     @Override
