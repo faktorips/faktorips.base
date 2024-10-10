@@ -114,8 +114,8 @@ public abstract class XProductClass extends XType {
         return filter(xAttributes, (Predicate<? super XProductAttribute>)XProductAttribute::isGenerateContentCode);
     }
 
-    private LinkedHashSet<XProductAttribute> filter(Set<XProductAttribute> xAttributes,
-            Predicate<? super XProductAttribute> filter) {
+    private <A extends XAttribute> LinkedHashSet<A> filter(Set<A> xAttributes,
+            Predicate<? super A> filter) {
         return xAttributes.stream()
                 .filter(filter)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -164,6 +164,10 @@ public abstract class XProductClass extends XType {
         }
         return attributes.stream().filter(filter)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<XPolicyAttribute> getConfiguredAttributesWithoutDerived() {
+        return filter(getConfiguredAttributes(), Predicate.not(XPolicyAttribute::isDerived));
     }
 
     public Set<XPolicyAttribute> attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(

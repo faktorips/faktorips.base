@@ -46,12 +46,12 @@ class ProductCommonsTmpl {
                 element.setAttribute("runtimeId", «id»);
                 «ENDIF»
                 «FOR it : inAlphabeticalOrder(attributes)» «writeAttributeToXmlMethodCall» «ENDFOR»
-                «FOR it : inAlphabeticalOrder(configuredAttributes)» «writeAttributeToXmlMethodCall» «ENDFOR»
+                «FOR it : inAlphabeticalOrder(configuredAttributesWithoutDerived)» «writeAttributeToXmlMethodCall» «ENDFOR»
             }
 
             «FOR it : attributes» «writeAttributeToXmlMethod» «ENDFOR»
 
-            «FOR it : configuredAttributes» «writeAttributeToXmlMethod» «ENDFOR»
+            «FOR it : configuredAttributesWithoutDerived» «writeAttributeToXmlMethod» «ENDFOR»
 
             «IF  containsNotDerivedOrConstrainingAssociations»
                 /**
