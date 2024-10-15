@@ -177,14 +177,12 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
      */
     @Override
     public Optional<ITable<?>> putTable(ITable<?> table) {
-
         if (IpsStringUtils.isNotBlank(table.getName())
                 && this.isMultiContent(table.getClass())) {
             return putMultipleContentTable(table);
         } else {
             return putSingleContentTable(table);
         }
-
     }
 
     private Optional<ITable<?>> putMultipleContentTable(ITable<?> table) {
@@ -241,7 +239,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     @Override
     protected ITable<?> getTableInternal(String qualifiedTableName) {
         for (ITable<?> table : singleContentTables) {
-            if (table.getName().equals(qualifiedTableName)) {
+            if (qualifiedTableName.equals(table.getName())) {
                 return table;
             }
         }

@@ -178,6 +178,16 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     @Test
+    public void testGetTable_qName_WithNamelessSingleContentTable() {
+        assertNull(repository.getTable("motor.RateTable"));
+        TestSingleContentTable t1 = new TestSingleContentTable();
+        TestTable t2 = new TestTable("motor.RateTable");
+        repository.putTable(t1);
+        repository.putTable(t2);
+        assertEquals(t2, repository.getTable("motor.RateTable"));
+    }
+
+    @Test
     public void testGetTable_class_SingleContentTable() {
         assertNull(repository.getTable("motor.RateTable"));
         TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
