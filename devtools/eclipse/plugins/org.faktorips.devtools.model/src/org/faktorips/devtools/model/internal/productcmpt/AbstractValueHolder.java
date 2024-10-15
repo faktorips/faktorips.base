@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  * The abstract implementation of value holders used in attribute values holding the value. We use
  * the holder abstraction to exclude the XML support and validation code to an extra class as well
  * as supporting different type of objects stored in an attribute value.
- * 
+ *
  * @author dirmeier
  */
 public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
@@ -98,7 +98,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
      * element is {@link ValueToXmlHelper#XML_TAG_VALUE}. Also the attribute
      * {@link #XML_ATTRIBUTE_VALUE_TYPE} is already set with the type returned by {@link #getType()}
      * .
-     * 
+     *
      * @param valueEl The XML element with the name {@link ValueToXmlHelper#XML_TAG_VALUE} holding
      *            the value.
      * @param doc The owner document to create additional XML elements
@@ -116,18 +116,24 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
      * XML element and initializes the newly created value holder by calling
      * {@link #initFromXml(Element)}. The given {@link IAttributeValue} is only used as parent of
      * the new value holder but the new holder is not set in the attribute value!
-     * 
+     *
      * @param attributeValue The attribute value used as parent. The new holder is not set
      *            automatically.
      * @param valueEl The XML element used to initializes the new holder
-     * 
+     *
      * @return Returns the newly created value holder.
      */
     public static IValueHolder<?> initValueHolder(IAttributeValue attributeValue, Element valueEl) {
         AttributeValueType attributeValueType = AttributeValueType.getType(valueEl);
-        IValueHolder<?> newValueInstance = attributeValueType.newHolderInstance(attributeValue);
-        newValueInstance.initFromXml(valueEl);
-        return newValueInstance;
+        if (attributeValue.getValueHolder() instanceof AbstractValueHolder existingValueHolder
+                && existingValueHolder.getType() == attributeValueType) {
+            existingValueHolder.initFromXml(valueEl);
+            return existingValueHolder;
+        } else {
+            IValueHolder<?> newValueInstance = attributeValueType.newHolderInstance(attributeValue);
+            newValueInstance.initFromXml(valueEl);
+            return newValueInstance;
+        }
     }
 
     @Override
@@ -159,7 +165,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
 
     /**
      * Creates a new validator to validate this value holder.
-     * 
+     *
      * @param parentForValidation the parent that the validator assumes that this value holder is a
      *            part of when validating the value holder
      * @param ipsProject the IPS project to use

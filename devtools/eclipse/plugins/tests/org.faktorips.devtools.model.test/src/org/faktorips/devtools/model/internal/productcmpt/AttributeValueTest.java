@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -155,6 +157,19 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml() {
+        attributeValue.setAttribute("rate");
+        attributeValue.setValueHolder(new SingleValueHolder(attributeValue, "23"));
+        IValueHolder<?> valueHolder = attributeValue.getValueHolder();
+        Element el = getTestDocument().getDocumentElement();
+        attributeValue.initFromXml(el);
+        assertEquals("rate", attributeValue.getAttribute());
+        assertEquals("42", attributeValue.getPropertyValue());
+        assertSame(valueHolder, attributeValue.getValueHolder());
+        assertEquals(TemplateValueStatus.DEFINED, attributeValue.getTemplateValueStatus());
+    }
+
+    @Test
+    public void testInitFromXml_ReusesExistingValueHolder() {
         Element el = getTestDocument().getDocumentElement();
         attributeValue.initFromXml(el);
         assertEquals("rate", attributeValue.getAttribute());
