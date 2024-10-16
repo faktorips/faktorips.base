@@ -19,7 +19,7 @@
     <packaging>maven-archetype</packaging>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <!-- Maven plugin versions -->
         <maven-archetype-plugin.version>3.2.1</maven-archetype-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>

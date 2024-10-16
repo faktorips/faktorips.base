@@ -34,7 +34,7 @@
                             <goal>add-module-info</goal>
                         </goals>
                         <configuration>
-                            <jvmVersion>11</jvmVersion>
+                            <jvmVersion>17</jvmVersion>
                             <overwriteExistingFiles>true</overwriteExistingFiles>
                             <module>
                                 <moduleInfoSource>
