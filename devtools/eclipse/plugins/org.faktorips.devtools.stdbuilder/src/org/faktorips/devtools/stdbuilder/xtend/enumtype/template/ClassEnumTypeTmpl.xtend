@@ -247,7 +247,13 @@ class ClassEnumTypeTmpl {
          * @generated
          */
           private Object readResolve() {
-            return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.memberVarName»);
+            «IF !enumValues.isEmpty»
+                return VALUES.stream().filter(aEnum -> «IF identifierAttribute.datatype.primitive»aEnum.«identifierAttribute.memberVarName» == this.«identifierAttribute.memberVarName»«ELSE»aEnum.«identifierAttribute.memberVarName».equals(this.«identifierAttribute.memberVarName»)«ENDIF»)
+                        .findFirst().orElseGet(() -> runtimeRepositoryLookup.getRuntimeRepository()
+                            .getEnumValue(«name».class, «identifierAttribute.memberVarName»));
+            «ELSE»
+                return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.memberVarName»);
+            «ENDIF»
           }
         }
     '''
