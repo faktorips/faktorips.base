@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,7 +33,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A collection of helper methods for validating model objects.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ValidationUtils {
@@ -47,7 +47,7 @@ public class ValidationUtils {
      * error message to the given message list.
      * <p>
      * Returns <code>true</code> if the reference is valid, otherwise <code>false</code>.
-     * 
+     *
      * @param objectName the qualified type name to check
      * @param type the type the object to check is of
      * @param propertyDisplayName the name used to display the value to the user
@@ -91,7 +91,7 @@ public class ValidationUtils {
      * Use this method instead of
      * {@link #checkIpsObjectReference(String, IpsObjectType, String, IIpsObjectPartContainer, String, String, MessageList)}
      * to get the found object for better performance.
-     * 
+     *
      * @param objectName the qualified type name to check
      * @param type the type the object to check is of
      * @param propertyDisplayName the name used to display the value to the user
@@ -128,7 +128,7 @@ public class ValidationUtils {
      * the data type validation are added to the given message list.
      * <p>
      * Returns the data type if no error was detected, otherwise <code>null</code>.
-     * 
+     *
      * @param datatypeName the data type name to check
      * @param voidAllowed <code>true</code> to allow void as data type, <code>false</code> to
      *            prohibit void
@@ -174,7 +174,7 @@ public class ValidationUtils {
      * the data type validation are added to the given message list.
      * <p>
      * Returns the data type if no error was detected, otherwise <code>null</code>.
-     * 
+     *
      * @param datatypeName the data type name to check
      * @param voidAllowed <code>true</code> to allow void as data type, <code>false</code> to
      *            prohibit void
@@ -214,7 +214,7 @@ public class ValidationUtils {
      * if the value data type is OK, but the value is not an instance of it.
      * <p>
      * Returns <code>true</code> if the value is valid otherwise <code>false</code>.
-     * 
+     *
      * @param valueDatatype the qualified value data type name which will be used to validate the
      *            given value
      * @param value the value which will be validated with the given data type
@@ -238,7 +238,7 @@ public class ValidationUtils {
      * if the value data type is OK, but the value is not an instance of it.
      * <p>
      * Returns <code>true</code> if the value is valid otherwise <code>false</code>.
-     * 
+     *
      * @param datatype the data type which will be used to validate the given value
      * @param datatypeName the name of the datatype, used in exception messages if the datatype is
      *            {@code null}
@@ -280,7 +280,7 @@ public class ValidationUtils {
     /**
      * Tests if the given value can be parsed to the given datatype. It adds an error message to the
      * given message list if the value can't be parsed.
-     * 
+     *
      * @param datatype the type the value has to be parsed to
      * @param value the value that has to be parsed
      * @param part the associated object of the value
@@ -318,7 +318,7 @@ public class ValidationUtils {
      * <p>
      * Returns <code>true</code> if the string is not empty, <code>false</code> if the string is
      * empty.
-     * 
+     *
      * @param propertyValue the value to check
      * @param propertyDisplayName the name used to display the value to the user
      * @param object the part the checked reference belongs to (used if a message has to be created)
@@ -345,10 +345,10 @@ public class ValidationUtils {
     /**
      * Validate the given field name using the source level used by the given
      * IpsProject/JavaProject.
-     * 
+     *
      * @param name the name of a field
      * @param ipsProject the project which source level should be used
-     * 
+     *
      * @see JavaConventions#validateName(String, Runtime.Version)
      */
     public static boolean validateFieldName(String name, IIpsProject ipsProject) {
@@ -371,9 +371,9 @@ public class ValidationUtils {
      * containing a {@link Message} with {@link Severity#WARNING} if the given name is discouraged,
      * otherwise a {@link Message} with {@link Severity#ERROR} indicating what is wrong with the
      * name.
-     * 
+     *
      * @param name the name of a type
-     * 
+     *
      * @see JavaConventions#validateTypeName(String)
      */
     public static MessageList validateJavaTypeName(String name) {
@@ -390,7 +390,7 @@ public class ValidationUtils {
      * <p>
      * Returns a status object with code <code>IStatus.OK</code> if the given identifier is a valid
      * Java identifier, otherwise a status object indicating what is wrong with the identifier.
-     * 
+     *
      * @param ipsProject the project which source and compliance level should be used
      *
      * @see JavaConventions#validateName(String, Runtime.Version)

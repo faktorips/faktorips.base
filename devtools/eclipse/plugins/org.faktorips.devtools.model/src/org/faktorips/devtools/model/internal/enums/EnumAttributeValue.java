@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,11 +49,11 @@ import org.w3c.dom.Node;
 /**
  * Implementation of <code>IEnumAttributeValue</code>, see the corresponding interface for more
  * details.
- * 
+ *
  * @see org.faktorips.devtools.model.enums.IEnumAttributeValue
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttributeValue {
@@ -67,10 +67,10 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
     /**
      * Creates a new <code>IEnumAttributeValue</code>.
-     * 
+     *
      * @param parent The <code>IEnumValue</code> this <code>IEnumAttributeValue</code> belongs to.
      * @param id A unique ID for this <code>IEnumAttributeValue</code>.
-     * 
+     *
      * @throws IpsException If an error occurs while initializing the object.
      */
     public EnumAttributeValue(EnumValue parent, String id) {
@@ -115,7 +115,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             /*
              * Default locale is needed only for runtime. As the XML is used for the designtime and
              * the runtime, defaultLocale is always generated (and ignored during design time).
-             * 
+             *
              * TODO FIPS-4776 Generate default locale only for runtime XML
              */
             if (getValueType() == ValueType.INTERNATIONAL_STRING) {
@@ -148,7 +148,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     /**
      * Returns the <code>IEnumAttribute</code> this <code>IEnumAttributeValue</code> is a value for.
      * t
-     * 
+     *
      * @param enumType The <code>IEnumType</code> this <code>IEnumAttributeValue</code> is referring
      *            to.
      */
@@ -233,7 +233,8 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             } else {
                 datatype = enumAttribute.findDatatype(ipsProject);
             }
-            getValue().validate(datatype, enumAttribute.getDatatype(), getParent().getIpsProject(), list,
+            getValue().validate(datatype, enumAttribute.getDatatype(), enumAttribute.getName(),
+                    getParent().getIpsProject(), list,
                     new ObjectProperty(this, PROPERTY_VALUE));
 
             // Unique identifier and literal name validations.
@@ -352,7 +353,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
      * Does nothing if no boundary is defined (empty or null).
      * <p>
      * Concept Discussion: https://wiki.faktorzehn.de/display/FaktorIPSdevelWiki/Validierung
-     * 
+     *
      * @see IEnumType#getIdentifierBoundary()
      */
     public static class IdentifierBoundaryValidator {
@@ -373,7 +374,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         /**
          * Validates if {@link #canValidate()} returns <code>true</code>. Does nothing otherwise.
-         * 
+         *
          * @return the message list containing the validation messages. Contains no messages if no
          *             problems were detected.
          */

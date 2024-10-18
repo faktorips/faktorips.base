@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,7 +63,8 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
 
         ValueDatatype datatype = attribute.findDatatype(ipsProject);
 
-        value.validate(datatype, attribute.getDatatype(), ipsProject, messages, invalidObjectProperties);
+        value.validate(datatype, attribute.getDatatype(), attribute.getName(), ipsProject, messages,
+                invalidObjectProperties);
 
         if (isMessageListNotEmptyBesidesMultilingualWarning(messages)) {
             return messages;

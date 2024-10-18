@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.w3c.dom.Text;
 
 /**
  * Value-Representation of a String
- * 
+ *
  * @author frank
  * @since 3.9
  */
@@ -37,7 +37,7 @@ public class StringValue extends AbstractValue<String> {
 
     /**
      * New StringValue with String
-     * 
+     *
      * @param content String
      */
     public StringValue(String content) {
@@ -46,7 +46,7 @@ public class StringValue extends AbstractValue<String> {
 
     /**
      * Create a new StringValue from the XML-Text-Node
-     * 
+     *
      * @param text XML-Text
      * @return new StringValue
      */
@@ -106,12 +106,13 @@ public class StringValue extends AbstractValue<String> {
     @Override
     public void validate(ValueDatatype datatype,
             String datatypeName,
+            String attributeName,
             IIpsProject ipsproject,
             MessageList list,
             ObjectProperty... objectProperties) {
         MessageList newMsgList = new MessageList();
         ValidationUtils.checkValue(datatype, datatypeName, getContent(),
-                objectProperties[0].getObject(), objectProperties[0].getProperty(), newMsgList);
+                objectProperties[0].getObject(), attributeName, newMsgList);
         for (Message message : newMsgList) {
             list.add(new Message(message.getCode(), message.getText(), message.getSeverity(), objectProperties));
         }

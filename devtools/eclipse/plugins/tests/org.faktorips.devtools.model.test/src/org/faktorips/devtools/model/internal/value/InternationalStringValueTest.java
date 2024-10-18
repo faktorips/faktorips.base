@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -134,7 +134,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         MessageList list = new MessageList();
 
         // no Value set
-        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, "Attribute1", ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
 
         list = new MessageList();
@@ -142,7 +142,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(expectedDe);
         internationalStringValue.getContent().add(expectedEn);
-        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, "Attribute2", ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
 
         list = new MessageList();
@@ -150,33 +150,36 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, ENGLISCH_BAR));
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
-        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, "Attribute3", ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         Message messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
         assertNotNull(messageByCode);
+        assertTrue(messageByCode.getText().contains("Attribute3"));
 
         list = new MessageList();
         // german null
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, null));
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR));
-        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, "Attribute4", ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
         assertNotNull(messageByCode);
+        assertTrue(messageByCode.getText().contains("Attribute4"));
 
         list = new MessageList();
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ENGLISCH_BAR));
-        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, "Attribute5", ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(1, list.size());
         messageByCode = list.getMessageByCode(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET);
         assertNotNull(messageByCode);
+        assertTrue(messageByCode.getText().contains("Attribute5"));
 
         list = new MessageList();
         internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
-        internationalStringValue.validate(null, null, ipsProject, list, new ObjectProperty(this, "Test"));
+        internationalStringValue.validate(null, null, "Attribute6", ipsProject, list, new ObjectProperty(this, "Test"));
         assertEquals(0, list.size());
     }
 

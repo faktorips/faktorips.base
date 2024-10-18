@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 
 /**
  * Value-Representation of the {@link InternationalString}.
- * 
+ *
  * @author frank
  * @since 3.9
  */
@@ -53,7 +53,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
 
     /**
      * Create a new InternationalStringValue for the XML-Element-Node
-     * 
+     *
      * @param element XML-Element-Node
      * @return InternationalStringValue
      */
@@ -108,13 +108,8 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof InternationalStringValue other)) {
-            return false;
-        }
-        if (!getContent().equals(other.getContent())) {
-            return false;
-        }
-        return true;
+        return (obj != null) && (obj instanceof InternationalStringValue other)
+                && getContent().equals(other.getContent());
     }
 
     /**
@@ -126,6 +121,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     @Override
     public void validate(ValueDatatype datatype,
             String datatypeName,
+            String attributeName,
             IIpsProject ipsproject,
             MessageList list,
             ObjectProperty... objectProperty) {
@@ -138,7 +134,8 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
                 if (IpsStringUtils.isEmpty(iLocalizedString.getValue())) {
                     newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, MessageFormat.format(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
-                                    .getDisplayLanguage()),
+                                    .getDisplayLanguage(),
+                            attributeName),
                             Message.WARNING, objectProperty));
                 }
             }
