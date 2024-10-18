@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -112,6 +115,38 @@ public class MethodTest extends AbstractIpsPluginTest {
 
         method.initFromXml(XmlUtil.getElement(docElement, "Method", 1));
         assertEquals(0, method.getNumOfParameters());
+    }
+
+    @Test
+    public void testInitFromXml_Again() {
+        method.setName("getFoo");
+        method.setModifier(Modifier.PUBLIC);
+        method.setDatatype("Decimal");
+        method.setAbstract(true);
+        IParameter param0 = method.newParameter();
+        param0.setName("p0");
+        param0.setDatatype("Decimal");
+
+        IMethod method2 = type.newMethod();
+        method2.setName("getFoo");
+        method2.setModifier(Modifier.PUBLIC);
+        method2.setDatatype("Decimal");
+        method2.setAbstract(true);
+        IParameter param0b = method2.newParameter();
+        param0b.setName("p0");
+        param0b.setDatatype("Decimal");
+        IParameter param1b = method2.newParameter();
+        param1b.setName("p1");
+        param1b.setDatatype("Decimal");
+
+        Element element = type.toXml(newDocument());
+        type.initFromXml(element);
+
+        assertThat(type.getMethods().get(0), is(sameInstance(method)));
+        assertThat(type.getMethods().get(0).getParameters()[0], is(sameInstance(param0)));
+        assertThat(type.getMethods().get(1), is(sameInstance(method2)));
+        assertThat(type.getMethods().get(1).getParameters()[0], is(sameInstance(param0b)));
+        assertThat(type.getMethods().get(1).getParameters()[1], is(sameInstance(param1b)));
     }
 
     @Test

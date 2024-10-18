@@ -13,12 +13,13 @@ package org.faktorips.devtools.model.ipsobject;
 import static org.faktorips.devtools.model.ipsobject.Identifier.getAttribute;
 import static org.faktorips.devtools.model.ipsobject.Identifier.getId;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import org.apache.commons.collections4.CollectionUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -28,12 +29,15 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
+import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.internal.productcmpttype.TableStructureUsage.TableStructureReference;
 import org.faktorips.devtools.model.internal.tablecontents.Row;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmpt;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmptLink;
 import org.faktorips.devtools.model.internal.testcase.TestValue;
 import org.faktorips.devtools.model.internal.type.Association;
+import org.faktorips.devtools.model.method.IBaseMethod;
+import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
@@ -48,6 +52,7 @@ import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestValue;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
@@ -117,6 +122,9 @@ public interface Identifier {
         if (part instanceof IFormula formula) {
             return FormulaIdentifier.of(formula);
         }
+        if (part instanceof IMethod method) {
+            return MethodIdentifier.of(method);
+        }
         if (part instanceof IProductCmptLink link) {
             return LinkIdentifier.of(link);
         }
@@ -180,6 +188,7 @@ public interface Identifier {
                 }
                 yield LinkIdentifier.of(partEl);
             }
+            case BaseMethod.XML_ELEMENT_NAME -> MethodIdentifier.of(partEl);
             case TestPolicyCmpt.TAG_NAME -> TestPolicyCmptIdentifier.of(partEl);
             case IEnumValue.XML_TAG -> EmumValueIdentifier.of(partEl, (IEnumValueContainer)container);
             case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(getId(partEl),
@@ -632,6 +641,34 @@ public interface Identifier {
             return other instanceof TestValueIdentifier otherTestValue
                     && (isEqualsNotNull(id, otherTestValue.id)
                             || isEqualsNotNull(testParameterName, otherTestValue.testParameterName));
+        }
+    }
+
+    record MethodIdentifier(String id, String name, String returnValue, List<String> parameters) implements Identifier {
+        static MethodIdentifier of(IMethod method) {
+            return new MethodIdentifier(method.getId(), method.getName(), method.getDatatype(),
+                    Arrays.stream(method.getParameters()).map(IParameter::getDatatype).toList());
+        }
+
+        static MethodIdentifier of(Element partEl) {
+            partEl.getChildNodes();
+            return new MethodIdentifier(getId(partEl), getAttribute(partEl, IBaseMethod.PROPERTY_NAME),
+                    getAttribute(partEl, IBaseMethod.PROPERTY_DATATYPE),
+                    org.faktorips.runtime.internal.XmlUtil.getChildElements(partEl,
+                            IParameter.TAG_NAME).stream().map(p -> p.getAttribute(IParameter.PROPERTY_DATATYPE))
+                            .toList());
+        }
+
+        @Override
+        public boolean isSame(Identifier other) {
+            return other instanceof MethodIdentifier otherMethod
+                    && (isEqualsNotNull(id, otherMethod.id)
+                            || isSameMethodSignature(otherMethod));
+        }
+
+        private boolean isSameMethodSignature(MethodIdentifier otherMethod) {
+            return isEqualsNotNull(name, otherMethod.name) && isEqualsNotNull(returnValue, otherMethod.returnValue)
+                    && CollectionUtils.isEqualCollection(parameters, otherMethod.parameters);
         }
     }
 }

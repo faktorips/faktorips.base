@@ -47,8 +47,8 @@
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bcutil@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
-        <setEntry value="com.google.guava*32.1.3.jre@default:default"/>
         <setEntry value="com.google.guava.failureaccess@default:default"/>
+        <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.googlecode.javaewah.JavaEWAH@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
@@ -303,7 +303,6 @@
         <setEntry value="org.faktorips.devtools.abstraction@default:true"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model.eclipse@default:true"/>
-        <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.model.test@default:false"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>

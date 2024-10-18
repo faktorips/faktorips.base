@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,12 +25,10 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of the published interface.
- * 
+ *
  * @author Jan Ortmann
  */
 public class Parameter extends AtomicIpsObjectPart implements IParameter {
-
-    static final String TAG_NAME = "Parameter"; //$NON-NLS-1$
 
     private String datatype = ""; //$NON-NLS-1$
 
