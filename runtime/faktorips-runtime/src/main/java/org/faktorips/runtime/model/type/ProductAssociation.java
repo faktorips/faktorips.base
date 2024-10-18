@@ -48,7 +48,7 @@ public class ProductAssociation extends Association {
 
     public static final String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = "ASSOCIATION-MAX_CARDINALITY_EXCEEDS_MODEL_MAX";
 
-    public static final String MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEl_MAX = "Validation.MaxCardinalityExceedsModelMax";
+    public static final String MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = "Validation.MaxCardinalityExceedsModelMax";
 
     public static final String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = "ASSOCIATION-MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN";
 
@@ -624,7 +624,7 @@ public class ProductAssociation extends Association {
                 if (sumCardinality > maxType) {
                     list.newError(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
                             generateValidationMessage(context.getLocale(),
-                                    getResourceBundleName(), MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEl_MAX,
+                                    getResourceBundleName(), MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
                                     sumCardinality, link.getTargetId(), maxType, getUsedName()),
                             link.getCardinality(), Range.PROPERTY_UPPER_BOUND);
 

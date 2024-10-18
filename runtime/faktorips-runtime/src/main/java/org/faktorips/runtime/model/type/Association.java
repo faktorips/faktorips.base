@@ -315,13 +315,13 @@ public abstract class Association extends TypePart {
             BiPredicate<V, R> valueChecker,
             BiFunction<V, R, String> messageTextGetter,
             String msgCode,
-            ObjectProperty invalidObjectProperty) {
+            ObjectProperty... invalidObjectProperties) {
         V value = valueGetter.get();
         if (!ObjectUtil.isNull(value)) {
             R referenceValue = referenceValueGetter.get();
             if (!ObjectUtil.isNull(referenceValue) && valueChecker.test(value, referenceValue)) {
                 String formattedString = messageTextGetter.apply(value, referenceValue);
-                list.newError(msgCode, formattedString, invalidObjectProperty);
+                list.newError(msgCode, formattedString, invalidObjectProperties);
             }
         }
 
