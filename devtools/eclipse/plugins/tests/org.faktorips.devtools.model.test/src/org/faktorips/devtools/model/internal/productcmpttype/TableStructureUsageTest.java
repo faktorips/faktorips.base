@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TableStructureUsageTest extends AbstractIpsPluginTest {
@@ -129,11 +129,11 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetIsMandatoryTableContent() {
-        tableStructureUsage.setMandatoryTableContent(false);
-        assertFalse(tableStructureUsage.isMandatoryTableContent());
-        assertFalse(productCmptType.getIpsSrcFile().isDirty());
         tableStructureUsage.setMandatoryTableContent(true);
         assertTrue(tableStructureUsage.isMandatoryTableContent());
+        assertFalse(productCmptType.getIpsSrcFile().isDirty());
+        tableStructureUsage.setMandatoryTableContent(false);
+        assertFalse(tableStructureUsage.isMandatoryTableContent());
         assertTrue(productCmptType.getIpsSrcFile().isDirty());
     }
 

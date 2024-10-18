@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  */
 public class TableStructureUsage extends TypePart implements ITableStructureUsage {
 
-    private boolean mandatoryTableContent = false;
+    private boolean mandatoryTableContent = true;
 
     /** Contains the related table structures identified by the full qualified name */
     private List<TableStructureReference> tableStructures = new ArrayList<>();
