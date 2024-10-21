@@ -34,7 +34,7 @@ public class ValueSetMatchers {
      * empty}.
      */
     public static Matcher<ValueSet<?>> empty() {
-        return new TypeSafeMatcher<ValueSet<?>>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -53,7 +53,7 @@ public class ValueSetMatchers {
      * {@link ValueSet#containsNull() contains null}.
      */
     public static Matcher<ValueSet<?>> containsNull() {
-        return new TypeSafeMatcher<ValueSet<?>>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -76,7 +76,7 @@ public class ValueSetMatchers {
      * @param upper the expected upper bound
      */
     public static <T extends Comparable<T>> Matcher<ValueSet<T>> isRange(T lower, T upper) {
-        return new TypeSafeMatcher<ValueSet<T>>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -101,7 +101,7 @@ public class ValueSetMatchers {
      */
     @SuppressWarnings("unchecked")
     public static <T> Matcher<ValueSet<T>> contains(T... values) {
-        return new TypeSafeMatcher<ValueSet<T>>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {

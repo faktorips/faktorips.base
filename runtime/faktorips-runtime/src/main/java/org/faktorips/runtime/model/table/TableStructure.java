@@ -60,9 +60,8 @@ public class TableStructure extends ModelElement {
         while (!(genericSuperclass instanceof ParameterizedType) && genericSuperclass instanceof Class<?>) {
             genericSuperclass = ((Class<?>)genericSuperclass).getGenericSuperclass();
         }
-        
-        if (genericSuperclass instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType)genericSuperclass;
+
+        if (genericSuperclass instanceof ParameterizedType parameterizedType) {
             tableRowClass = (Class<?>)parameterizedType.getActualTypeArguments()[0];
         }
         columnModels = TableColumn.createModelsFrom(this, tableObjectClass, getTableRowClass());

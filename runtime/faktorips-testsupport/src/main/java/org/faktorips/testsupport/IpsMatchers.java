@@ -269,7 +269,7 @@ public class IpsMatchers {
             Matcher<U> featureMatcher,
             String featureDescription,
             String featureName) {
-        return new FeatureMatcher<T, U>(featureMatcher, featureDescription, featureName) {
+        return new FeatureMatcher<>(featureMatcher, featureDescription, featureName) {
 
             @Override
             protected U featureValueOf(T actual) {

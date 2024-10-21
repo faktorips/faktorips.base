@@ -29,8 +29,8 @@ public abstract class AbstractUnaryOperation<T extends CodeFragment> implements 
      * Creates a new unary operation for the indicated {@link Operation}.
      */
     public AbstractUnaryOperation(Operation operation) {
-        this.datatype = operation.getOperand();
-        this.operator = operation.getOperator();
+        datatype = operation.getOperand();
+        operator = operation.getOperator();
     }
 
     /**

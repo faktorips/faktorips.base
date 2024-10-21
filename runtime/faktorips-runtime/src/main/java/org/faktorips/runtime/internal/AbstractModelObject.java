@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ public abstract class AbstractModelObject implements IModelObject {
     /**
      * Removes the given child object from this object. If the given object is not a child of this
      * model object or the given object is <code>null</code>, the method does nothing.
-     * 
+     *
      * @param child The child you want to remove
      */
     public void removeChildModelObjectInternal(IModelObject child) {
@@ -50,13 +50,13 @@ public abstract class AbstractModelObject implements IModelObject {
     /**
      * Validates the policy component and adds any messages generated to the given list. Calls
      * validateSelf() and validateDependences().
-     * 
+     *
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
-     * 
+     *
      * @throws NullPointerException if the list is <code>null</code> and a message is generated.
-     * 
+     *
      *             This method is model internal, it is not part of the published interface and
      *             should not be used by clients
      */
@@ -72,9 +72,9 @@ public abstract class AbstractModelObject implements IModelObject {
      * given list.
      * <p>
      * The default implementation does nothing. Should be overridden in subclasses.
-     * 
+     *
      * @param list The message list
-     * 
+     *
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
      *            message texts, user information
@@ -89,7 +89,7 @@ public abstract class AbstractModelObject implements IModelObject {
      * message generated to the given list.
      * <p>
      * The default implementation does nothing. Should be overridden in subclasses.
-     * 
+     *
      * @param list the message list
      * @param context provides additional external information that might be necessary to execute
      *            the validation. E.g. the business context, the locale to provide locale specific
@@ -104,7 +104,7 @@ public abstract class AbstractModelObject implements IModelObject {
 
     /**
      * Initializes the policy component's state with the data stored in the given xml element.
-     * 
+     *
      * @param objectEl Xml element containing the state data.
      * @param initWithProductDefaultsBeforeReadingXmlData <code>true</code> if the policy component
      *            should be initialized with the product defaults.
@@ -121,7 +121,7 @@ public abstract class AbstractModelObject implements IModelObject {
 
     /**
      * Initializes the policy component's state with the data stored in the given xml element.
-     * 
+     *
      * @param objectEl Xml element containing the state data.
      * @param initWithProductDefaultsBeforeReadingXmlData <code>true</code> if the policy component
      *            should be initialized with the product defaults.
@@ -141,7 +141,7 @@ public abstract class AbstractModelObject implements IModelObject {
 
     /**
      * Initializes the policy component's state with the data stored in the given xml element.
-     * 
+     *
      * @param objectEl Xml element containing the state data.
      * @param initWithProductDefaultsBeforeReadingXmlData <code>true</code> if the policy component
      *            should be initialized with the product defaults.
@@ -184,10 +184,9 @@ public abstract class AbstractModelObject implements IModelObject {
             NodeList nl,
             String pathFromAggregateRoot) {
         for (int i = 0, max = nl.getLength(); i < max; i++) {
-            if (!(nl.item(i) instanceof Element)) {
+            if (!(nl.item(i) instanceof Element el)) {
                 continue;
             }
-            Element el = (Element)nl.item(i);
             String type = el.getAttribute("type");
             if ("association".equals(type)) {
                 initAssociationFromXml(el, objectId, store);
@@ -208,10 +207,9 @@ public abstract class AbstractModelObject implements IModelObject {
     private HashMap<String, String> createPropertiesMap(NodeList nl) {
         HashMap<String, String> propMap = new HashMap<>();
         for (int i = 0, max = nl.getLength(); i < max; i++) {
-            if (!(nl.item(i) instanceof Element)) {
+            if (!(nl.item(i) instanceof Element el)) {
                 continue;
             }
-            Element el = (Element)nl.item(i);
             String type = el.getAttribute("type");
             if ("property".equals(type)) {
                 putPropertyFromXml(el, propMap);
@@ -260,7 +258,7 @@ public abstract class AbstractModelObject implements IModelObject {
     }
 
     /**
-     * 
+     *
      * @param objectId object id
      * @param targetRole target role
      * @param targetId target id

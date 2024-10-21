@@ -84,10 +84,9 @@ public abstract class TocEntryObject extends TocEntry {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj) || !(obj instanceof TocEntryObject)) {
+        if (!(obj instanceof TocEntryObject other) || !super.equals(obj)) {
             return false;
         }
-        TocEntryObject other = (TocEntryObject)obj;
         return Objects.equals(ipsObjectId, other.ipsObjectId)
                 && Objects.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)
                 && super.equals(obj);

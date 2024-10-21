@@ -28,7 +28,7 @@ public abstract class TypePartCollector<T extends ModelElement, D extends PartDe
     private List<AnnotationProcessor<?, D>> annotationProcessors;
 
     public TypePartCollector(List<AnnotationProcessor<?, D>> annotationAccessors) {
-        this.annotationProcessors = annotationAccessors;
+        annotationProcessors = annotationAccessors;
     }
 
     public void initDescriptors(AnnotatedDeclaration annotatedDeclaration) {

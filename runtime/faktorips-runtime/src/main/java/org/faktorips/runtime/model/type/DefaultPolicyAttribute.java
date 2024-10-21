@@ -184,13 +184,13 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 return new OrderedValueSet<>(true, null, getDatatype().getEnumConstants());
             }
             if (IpsModel.isEnumType(getDatatype()) && IpsModel.getEnumType(getDatatype()).isExtensible()) {
-                if (object instanceof IProductComponentLinkSource) {
-                    IRuntimeRepository repository = ((IProductComponentLinkSource)object).getRepository();
+                if (object instanceof IProductComponentLinkSource linkSource) {
+                    IRuntimeRepository repository = linkSource.getRepository();
                     return new OrderedValueSet<>(repository.getEnumValues(getDatatype()), true, null);
 
                 }
-                if (object instanceof IConfigurableModelObject) {
-                    IProductComponent productComponent = ((IConfigurableModelObject)object).getProductComponent();
+                if (object instanceof IConfigurableModelObject configurableObject) {
+                    IProductComponent productComponent = configurableObject.getProductComponent();
                     if (productComponent != null) {
                         IRuntimeRepository repository = productComponent.getRepository();
                         return new OrderedValueSet<>(repository.getEnumValues(getDatatype()), true, null);

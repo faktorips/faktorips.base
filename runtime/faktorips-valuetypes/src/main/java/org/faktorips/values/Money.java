@@ -692,10 +692,9 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Money)) {
+        if (!(o instanceof Money other)) {
             return false;
         }
-        Money other = (Money)o;
         if (isNull() && other.isNull()) {
             return true;
         } else if (isNull() || other.isNull()) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -84,7 +83,7 @@ public class PolicyCmptType extends Type {
      * Returns whether this policy component type is configured by a product component type. If this
      * method returns <code>true</code> you could use {@link #getProductCmptType()} to get the type
      * of the configuring product.
-     * 
+     *
      * @return <code>true</code> if this policy component type is configured else <code>false</code>
      */
     public boolean isConfiguredByProductCmptType() {
@@ -95,10 +94,10 @@ public class PolicyCmptType extends Type {
      * Returns the {@link ProductCmptType} that configures this policy component type. Throws an
      * {@link IllegalArgumentException} if this policy component type is not configured. Use
      * {@link #isConfiguredByProductCmptType()} to check whether it is configured or not.
-     * 
+     *
      * @return the {@link ProductCmptType} that configures this policy component type
      * @throws NullPointerException if this policy component type is not configured
-     * 
+     *
      */
     public ProductCmptType getProductCmptType() {
         return IpsModel.getProductCmptType(
@@ -152,13 +151,13 @@ public class PolicyCmptType extends Type {
     /**
      * Returns a list with {@link ModelObjectAttribute ModelObjectAttributes} with all
      * {@link #getAttributes()} of this {@link PolicyCmptType}
-     * 
+     *
      * @param modelObject the {@link IModelObject} linked to the attributes
      * @return a list with {@link ModelObjectAttribute ModelObjectAttributes}
      * @since 21.6
      */
     public List<ModelObjectAttribute> getModelObjectAttributes(IModelObject modelObject) {
-        return getAttributes().stream().map(a -> ModelObjectAttribute.of(modelObject, a)).collect(Collectors.toList());
+        return getAttributes().stream().map(a -> ModelObjectAttribute.of(modelObject, a)).toList();
     }
 
     @Override
@@ -205,10 +204,10 @@ public class PolicyCmptType extends Type {
     /**
      * Returns the {@link ValidationRule} with the given <code>name</code> declared in this type.
      * {@link ValidationRule ValidationRules} defined in the type's super types is not returned.
-     * 
+     *
      * @param name the name of the {@link ValidationRule}
      * @return {@link ValidationRule} with the given <code>name</code> if it was found in this type
-     * 
+     *
      * @throws IllegalArgumentException if no {@link ValidationRule} with the given
      *             <code>name</code> exists
      */
@@ -222,7 +221,7 @@ public class PolicyCmptType extends Type {
 
     /**
      * Returns the declared {@link ValidationRule} at the given <code>index</code>.
-     * 
+     *
      * @param index the position at which the {@link ValidationRule} is expected in the list of
      *            declared {@link ValidationRule ValidationRules}
      * @return the declared {@link ValidationRule} at the given <code>index</code>
@@ -237,7 +236,7 @@ public class PolicyCmptType extends Type {
      * Returns a list containing all {@link ValidationRule ValidationRules} declared in this model
      * type. {@link ValidationRule ValidationRules} defined in the type's super types are not
      * returned.
-     * 
+     *
      * @return the list of {@link ValidationRule ValidationRules} declared in this type
      */
     public List<ValidationRule> getDeclaredValidationRules() {
@@ -247,7 +246,7 @@ public class PolicyCmptType extends Type {
     /**
      * Returns the {@link ValidationRule} with the given <code>name</code> declared in this type or
      * one of its super types.
-     * 
+     *
      * @param name the name of the {@link ValidationRule}
      * @return {@link ValidationRule} with the given <code>name</code> declared in this type or one
      *             of its super types
@@ -266,7 +265,7 @@ public class PolicyCmptType extends Type {
     /**
      * Returns a list containing all the {@link ValidationRule ValidationRules} including those
      * defined in the super types.
-     * 
+     *
      * @return the list of all {@link ValidationRule ValidationRules} declared in this type and in
      *             its super types
      */
@@ -280,7 +279,7 @@ public class PolicyCmptType extends Type {
      * Returns whether the {@link ValidationRule} with the given <code>name</code> is declared in
      * this type. {@link ValidationRule ValidationRules} defined in the type's super types are not
      * considered.
-     * 
+     *
      * @param name the name of the {@link ValidationRule}
      * @return <code>true</code> if the {@link ValidationRule} is declared in this type,
      *             <code>false</code> if not

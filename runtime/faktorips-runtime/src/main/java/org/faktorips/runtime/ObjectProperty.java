@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -97,7 +97,7 @@ public class ObjectProperty implements Serializable {
 
     /**
      * The object that is identified by this {@link ObjectProperty}.
-     * 
+     *
      */
     public Object getObject() {
         return object;
@@ -106,7 +106,7 @@ public class ObjectProperty implements Serializable {
     /**
      * The name of the property that is identified by this {@link ObjectProperty}. The property name
      * should be available as bean property in the given object.
-     * 
+     *
      */
     public String getProperty() {
         return property;
@@ -115,10 +115,10 @@ public class ObjectProperty implements Serializable {
     /**
      * In case of {@link #getObject()} is an array or list this index defines which object of the
      * index is referenced.
-     * 
+     *
      * @return The index of the referenced object in the array/list that is referenced by
      *             {@link #getObject()}. Returns -1 if there is no index available.
-     * 
+     *
      * @see #hasIndex()
      */
     public int getIndex() {
@@ -128,7 +128,7 @@ public class ObjectProperty implements Serializable {
     /**
      * Returns the {@link IPropertyQualifier} defined at the instantiation of this
      * {@link ObjectProperty}.
-     * 
+     *
      * @return an {@link IPropertyQualifier} containing additional information or <code>null</code>
      *             if no qualifier exists.
      */
@@ -139,7 +139,7 @@ public class ObjectProperty implements Serializable {
     /**
      * Returns whether this {@link ObjectProperty} has an index that identifies an object in an
      * array or list.
-     * 
+     *
      * @return <code>true</code> if this {@link ObjectProperty} references an index, false if there
      *             is no index available.
      */
@@ -149,8 +149,7 @@ public class ObjectProperty implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ObjectProperty) {
-            ObjectProperty other = (ObjectProperty)obj;
+        if (obj instanceof ObjectProperty other) {
             return Objects.equals(object, other.object) && index == other.index
                     && Objects.equals(property, other.property) && Objects.equals(qualifier, other.qualifier);
         }

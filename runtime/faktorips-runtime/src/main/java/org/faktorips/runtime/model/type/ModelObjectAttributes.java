@@ -13,7 +13,6 @@ package org.faktorips.runtime.model.type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.faktorips.annotation.UtilityClass;
 import org.faktorips.runtime.IModelObject;
@@ -116,17 +115,13 @@ public class ModelObjectAttributes {
                 .filter(shouldReset::test)
                 .filter(ModelObjectAttributes::hasSetter)
                 .map(ModelObjectAttribute::removeValue)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static boolean hasSetter(ModelObjectAttribute modelObjectAttribute) {
-        switch (modelObjectAttribute.getPolicyAttribute().getAttributeKind()) {
-            case CONSTANT:
-            case DERIVED_BY_EXPLICIT_METHOD_CALL:
-            case DERIVED_ON_THE_FLY:
-                return false;
-            default:
-                return true;
-        }
+        return switch (modelObjectAttribute.getPolicyAttribute().getAttributeKind()) {
+            case CONSTANT, DERIVED_BY_EXPLICIT_METHOD_CALL, DERIVED_ON_THE_FLY -> false;
+            default -> true;
+        };
     }
 }

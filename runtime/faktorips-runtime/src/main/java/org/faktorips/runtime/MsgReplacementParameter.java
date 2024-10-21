@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import java.io.Serializable;
  * <li>You present the text to a different user group, e.g. internet users instead of your
  * backoffice employees.</li>
  * </ul>
- * 
+ *
  * @author Jan Ortmann
  */
 public class MsgReplacementParameter implements Serializable {
@@ -38,7 +38,7 @@ public class MsgReplacementParameter implements Serializable {
 
     /**
      * Creates a new parameter value with name and value.
-     * 
+     *
      * @throws NullPointerException if paramName is null.
      */
     public MsgReplacementParameter(String paramName, Object paramValue) {
@@ -65,10 +65,9 @@ public class MsgReplacementParameter implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof MsgReplacementParameter)) {
+        if (!(o instanceof MsgReplacementParameter other)) {
             return false;
         }
-        MsgReplacementParameter other = (MsgReplacementParameter)o;
         return name.equals(other.name)
                 && ((value == null && other.value == null) || (value != null && value.equals(other.value)));
     }

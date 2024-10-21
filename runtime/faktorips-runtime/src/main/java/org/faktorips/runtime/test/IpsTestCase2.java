@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
  * 2) implement the method getRepository to create the runtime repository<br>
  * 3) implement the method executeBusinessLogic to execute the necessary business actions<br>
  * 4) implement the method executeAsserts to ensure the correct result of the test.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class IpsTestCase2 extends IpsTestCaseBase {
@@ -75,7 +75,7 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
      * Returns the value of the given extension attribute identified by the attribute name and the
      * model object the attribute is related to. Returns <code>null</code> if no such extension
      * attributes exists.
-     * 
+     *
      * @param modelObject The model object for which the value of the extension attribute should be
      *            returned
      * @param attributeName The name which identifies the extension attribute
@@ -117,10 +117,9 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
             if ((this == other)) {
                 return true;
             }
-            if ((other == null) || !(other instanceof ModelObjectAttribute)) {
+            if ((other == null) || !(other instanceof ModelObjectAttribute castOther)) {
                 return false;
             }
-            ModelObjectAttribute castOther = (ModelObjectAttribute)other;
             return (getAttributeName() != null && getAttributeName().equals(castOther.getAttributeName()))
                     && (getModelObject() != null && getModelObject().equals(castOther.getModelObject()));
         }

@@ -34,7 +34,7 @@ class SimpleGetterMethodCollector<E extends ModelElement, P extends Annotation, 
         super(Arrays.<AnnotationProcessor<?, SimpleGetterMethodModelDescriptor<E>>> asList(
                 new SimpleGetterMethodAnnotationProcessor<>(
                         getterAnnotationClass, nameAccessor)));
-        this.annotationClass = classAnnotationClass;
+        annotationClass = classAnnotationClass;
         this.namesAccessor = namesAccessor;
         this.modelElementCreator = modelElementCreator;
     }

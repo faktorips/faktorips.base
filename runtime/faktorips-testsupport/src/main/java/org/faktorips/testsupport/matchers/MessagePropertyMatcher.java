@@ -66,8 +66,8 @@ public class MessagePropertyMatcher<P> extends MessageMatcher {
 
     @Override
     protected void describeMismatchedProperty(Message message, Description mismatchDescription) {
-        if (this.lastMismatchDescription != null) {
-            mismatchDescription.appendText(this.lastMismatchDescription.toString());
+        if (lastMismatchDescription != null) {
+            mismatchDescription.appendText(lastMismatchDescription.toString());
         }
     }
 

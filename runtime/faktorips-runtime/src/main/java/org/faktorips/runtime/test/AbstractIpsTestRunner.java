@@ -56,8 +56,8 @@ public abstract class AbstractIpsTestRunner implements IpsTestListener {
             return 0;
         }
 
-        if (test instanceof IpsTestSuite) {
-            return ((IpsTestSuite)test).countTestCases();
+        if (test instanceof IpsTestSuite testSuite) {
+            return testSuite.countTestCases();
         } else {
             return 1;
         }

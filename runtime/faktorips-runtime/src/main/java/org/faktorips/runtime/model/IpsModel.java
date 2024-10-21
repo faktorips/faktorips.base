@@ -240,8 +240,8 @@ public enum IpsModel {
      *             model type
      */
     public static EnumType getEnumType(Object enumInstance) {
-        if (enumInstance instanceof Enum) {
-            return getEnumType(((Enum<?>)enumInstance).getDeclaringClass());
+        if (enumInstance instanceof Enum enumValue) {
+            return getEnumType(enumValue.getDeclaringClass());
         } else {
             return getEnumType(enumInstance.getClass());
         }

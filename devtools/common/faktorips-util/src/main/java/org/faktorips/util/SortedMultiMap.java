@@ -32,7 +32,7 @@ public class SortedMultiMap<K, V> extends MultiMap<K, V> {
      * Creates a multi map with natural ordering for the keys and the values.
      */
     public SortedMultiMap() {
-        super(new TreeMap<K, Collection<V>>(), new SortedSetFactory<V>());
+        super(new TreeMap<>(), new SortedSetFactory<>());
     }
 
     /**

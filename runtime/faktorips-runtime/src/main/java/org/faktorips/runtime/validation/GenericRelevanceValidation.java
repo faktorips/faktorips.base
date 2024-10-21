@@ -152,7 +152,7 @@ public class GenericRelevanceValidation {
     private boolean isValuePresent() {
         Object value = policyAttribute.getValue(modelObject);
         return !(ObjectUtil.isNull(value)
-                || (value instanceof CharSequence && IpsStringUtils.isBlank(((CharSequence)value).toString())));
+                || (value instanceof CharSequence charSequence && IpsStringUtils.isBlank(charSequence.toString())));
     }
 
     @SuppressWarnings("unchecked")

@@ -98,7 +98,7 @@ public class ValidationRule extends TypePart {
     public Severity getSeverity() {
         return validationRuleAnnotation.severity();
     }
-    
+
     @Override
     protected String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
         return Documentation.of(this, type, locale, fallback, this::findSuperValidationRule);
@@ -116,8 +116,8 @@ public class ValidationRule extends TypePart {
     }
 
     /**
-     * Returns the rule that is overridden by this rule if this rule overrides
-     * another one. Otherwise returns <code>null</code>.
+     * Returns the rule that is overridden by this rule if this rule overrides another one.
+     * Otherwise returns <code>null</code>.
      *
      * @return The rule that is overridden by this rule.
      * @see #isOverriding()
@@ -125,16 +125,17 @@ public class ValidationRule extends TypePart {
     public ValidationRule getSuperValidationRule() {
         return findSuperValidationRule().orElse(null);
     }
-    
+
     /**
-     * Returns the rule that is overridden by this rule if this rule overrides
-     * another one. Otherwise returns <code>null</code>.
+     * Returns the rule that is overridden by this rule if this rule overrides another one.
+     * Otherwise returns <code>null</code>.
      *
      * @return The rule that is overridden by this rule.
      * @see #isOverriding()
      */
     public Optional<ValidationRule> findSuperValidationRule() {
-        return isOverriding() ? getType().findSuperType().map(s -> ((PolicyCmptType)s).getValidationRule(getName())) : Optional.empty();
+        return isOverriding() ? getType().findSuperType().map(s -> ((PolicyCmptType)s).getValidationRule(getName()))
+                : Optional.empty();
     }
 
     @Override

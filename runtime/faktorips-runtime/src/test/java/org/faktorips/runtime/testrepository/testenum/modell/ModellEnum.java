@@ -51,7 +51,7 @@ public enum ModellEnum {
      * @generated
      */
     @IpsGenerated
-    private ModellEnum(String id, String name) {
+    ModellEnum(String id, String name) {
         this.id = id;
         this.name = name;
     }

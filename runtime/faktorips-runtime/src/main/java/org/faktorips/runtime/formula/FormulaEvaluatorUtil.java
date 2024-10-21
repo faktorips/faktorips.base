@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.runtime.IProductComponent;
  * <p>
  * Some code in formulas does not need to be generated again and again but is implemented in static
  * methods in this class that are used by the formulas.
- * 
+ *
  * @since 3.6
  * @see IFormulaEvaluator
  */
@@ -35,7 +35,7 @@ public enum FormulaEvaluatorUtil {
      * Returns the (first) {@link IConfigurableModelObject} in the list that is configured by a
      * {@link IProductComponent} with the given ID, {@code null} if no such object is found in the
      * list.
-     * 
+     *
      * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
      * @param modelObjects a list of model objects of type T
      * @param id the runtime ID this method searches
@@ -47,8 +47,8 @@ public enum FormulaEvaluatorUtil {
     public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects,
             String id) {
         for (T modelObject : modelObjects) {
-            if (modelObject instanceof IConfigurableModelObject) {
-                if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+            if (modelObject instanceof IConfigurableModelObject configurableModelObject) {
+                if (configurableModelObject.getProductComponent().getId().equals(id)) {
                     return castModelObject(modelObject);
                 }
             }
@@ -65,7 +65,7 @@ public enum FormulaEvaluatorUtil {
      * Returns all {@link IConfigurableModelObject} in the list that is configured by a
      * {@link IProductComponent} with the given ID, the list is empty if no such object is found in
      * the list.
-     * 
+     *
      * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
      * @param modelObjects a list of model objects of type T
      * @param id the runtime ID this method searches
@@ -79,8 +79,8 @@ public enum FormulaEvaluatorUtil {
             String id) {
         List<R> returnList = new ArrayList<>();
         for (T modelObject : modelObjects) {
-            if (modelObject instanceof IConfigurableModelObject) {
-                if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+            if (modelObject instanceof IConfigurableModelObject configurableModelObject) {
+                if (configurableModelObject.getProductComponent().getId().equals(id)) {
                     @SuppressWarnings("unchecked")
                     R castedModelObject = (R)modelObject;
                     returnList.add(castedModelObject);
@@ -93,7 +93,7 @@ public enum FormulaEvaluatorUtil {
     /**
      * Returns the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
      * {@link IProductComponent} with the given ID, {@code null} otherwise.
-     * 
+     *
      * @param <T> the type of {@link IModelObject} returned and expected by this method
      * @param modelObject a model object of type T
      * @param id the runtime ID this method searches
@@ -102,8 +102,8 @@ public enum FormulaEvaluatorUtil {
      *             {@link IProductComponent} with the given ID, {@code null} otherwise
      */
     public static <T extends IModelObject, R extends T> R getModelObjectById(T modelObject, String id) {
-        if (modelObject instanceof IConfigurableModelObject
-                && ((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
+        if (modelObject instanceof IConfigurableModelObject configurableModelObject
+                && configurableModelObject.getProductComponent().getId().equals(id)) {
             return castModelObject(modelObject);
         }
         return null;
@@ -148,7 +148,7 @@ public enum FormulaEvaluatorUtil {
     /**
      * Helper class for navigating 1-to-many associations from a list of source objects of type
      * {@code <S>} to target objects of type {@code <T>}.
-     * 
+     *
      * @param <S> the type of the source objects
      * @param <T> the type of the association targets
      */
@@ -158,7 +158,7 @@ public enum FormulaEvaluatorUtil {
          * Returns a {@link List} of target {@link IModelObject model objects} found by calling
          * {@link #getTargetsInternal(IModelObject)} for every object in the {@code sourceObjects}
          * {@link List}.
-         * 
+         *
          * @param sourceObjects the {@link IModelObject model objects} on which
          *            {@link #getTargetsInternal(IModelObject)} will be called
          * @return a {@link List} of target {@link IModelObject model objects}
@@ -179,7 +179,7 @@ public enum FormulaEvaluatorUtil {
         /**
          * Returns a {@link List} of target {@link IModelObject model objects} by following a
          * 1-to-many association from the given {@link IModelObject source object}.
-         * 
+         *
          * @param sourceObject the {@link IModelObject} source for the association
          * @return a {@link List} of target {@link IModelObject model objects}
          */
@@ -189,7 +189,7 @@ public enum FormulaEvaluatorUtil {
     /**
      * Helper class for navigating 1-to-1 associations from a list of source objects of type
      * {@code <S>} to target objects of type {@code <T>}.
-     * 
+     *
      * @param <S> the type of the source objects
      * @param <T> the type of the association targets
      */
@@ -198,7 +198,7 @@ public enum FormulaEvaluatorUtil {
          * Returns a {@link List} of target {@link IModelObject model objects} found by calling
          * {@link #getTargetInternal(IModelObject)} for every object in the {@code sourceObjects}
          * {@link List}.
-         * 
+         *
          * @param sourceObjects the {@link IModelObject model objects} on which
          *            {@link #getTargetInternal(IModelObject)} will be called
          * @return a {@link List} of target {@link IModelObject model objects}
@@ -217,7 +217,7 @@ public enum FormulaEvaluatorUtil {
         /**
          * Returns the target {@link IModelObject} by following a 1-to-1 association from the given
          * {@link IModelObject source object}.
-         * 
+         *
          * @param sourceObject the {@link IModelObject} source for the association
          * @return the target {@link IModelObject}
          */
@@ -227,7 +227,7 @@ public enum FormulaEvaluatorUtil {
     /**
      * Helper class to get the values from a list of source objects of type {@code <S>} to target
      * type {@code <E>}.
-     * 
+     *
      * @param <S> the type of the source objects
      * @param <E> the type of the values
      */
@@ -236,10 +236,10 @@ public enum FormulaEvaluatorUtil {
          * Returns a {@link List} of values from {@link IModelObject model objects} found by calling
          * {@link #getValueInternal(IModelObject)} for every object in the {@code sourceObjects}
          * {@link List}.
-         * 
+         *
          * @param objectList the {@link List} of {@link IModelObject model objects} on which
          *            {@link #getValueInternal(IModelObject)} will be called.
-         * 
+         *
          * @return a {@link List} of Values
          */
         public List<E> getAttributeValues(List<? extends S> objectList) {
@@ -253,7 +253,7 @@ public enum FormulaEvaluatorUtil {
         /**
          * Returns the value of the property from the {@link IModelObject} by calling the getter
          * method of the property.
-         * 
+         *
          * @param sourceObject the {@link IModelObject} source
          * @return the value of property of the {@link IModelObject}
          */
@@ -264,14 +264,14 @@ public enum FormulaEvaluatorUtil {
      * Base class for functions working on list arguments. Subclasses define the function by
      * overwriting {@link FunctionWithListAsArgumentHelper#getPreliminaryResult(Object, Object)} and
      * {@link FunctionWithListAsArgumentHelper#getFallBackValue()}.
-     * 
+     *
      * @author HBaagil
      */
     public abstract static class FunctionWithListAsArgumentHelper<E> {
 
         /**
          * Returns the result of this function given a list of values.
-         * 
+         *
          * @param listOfValues A List of values.
          */
         public E getResult(List<E> listOfValues) {
@@ -294,7 +294,7 @@ public enum FormulaEvaluatorUtil {
         /**
          * Calculates a preliminary result based on the current result and the next value in the
          * list.
-         * 
+         *
          * @param currentResult The current result calculated up to this point.
          * @param nextValue The value to be considered next.
          * @return The result of the operation defined by subclasses.

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,11 +20,11 @@ import java.util.TimeZone;
  * Represents date and time information like 2006-01-01 10:00pm independent of the time zone. To
  * convert a date and time object to a point in time (represented in the Java class libraries by
  * Date and Calendar) a time zone has to be provided in the conversion method toDate().
- * 
+ *
  * @see java.util.Date
  * @see java.util.GregorianCalendar
  * @see java.util.TimeZone
- * 
+ *
  * @author Jan Ortmann
  */
 public class DateTime implements Comparable<DateTime>, Serializable {
@@ -62,7 +62,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
      * Parses the given String s to a DateTime object. The string should have the ISO date format
      * (YYYY-MM-DD). Time information is initialized with 0. Returns <code>null</code> if s is
      * <code>null</code> or an empty String.
-     * 
+     *
      * @throws IllegalArgumentException if s has a wrong format and can't be parsed.
      */
     public static final DateTime parseIso(String s) {
@@ -145,10 +145,9 @@ public class DateTime implements Comparable<DateTime>, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof DateTime)) {
+        if (!(o instanceof DateTime other)) {
             return false;
         }
-        DateTime other = (DateTime)o;
         return year == other.year && month == other.month && day == other.day && hour == other.hour
                 && minute == other.minute && second == other.second;
     }

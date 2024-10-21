@@ -10,7 +10,6 @@
 
 package org.faktorips.valueset;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -255,8 +254,8 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
-        if (obj instanceof OrderedValueSet && (obj instanceof NaturalOrderedValueSet) == (this instanceof NaturalOrderedValueSet)) {
-            OrderedValueSet<? extends E> other = (OrderedValueSet<? extends E>)obj;
+        if (obj instanceof OrderedValueSet other
+                && (obj instanceof NaturalOrderedValueSet) == (this instanceof NaturalOrderedValueSet)) {
 
             if (set.size() != other.set.size()) {
                 return false;
@@ -355,10 +354,10 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
                 return (otherValueSet.containsNull() || !containsNull())
                         && (getValues().stream().allMatch(value -> otherValueSet.contains(value)));
             }
-            if (otherValueSet instanceof StringLengthValueSet) {
+            if (otherValueSet instanceof StringLengthValueSet stringLengthValueSet) {
                 return (otherValueSet.containsNull() || !containsNull())
                         && (getValues().stream().allMatch(value -> (value == null || (value instanceof String))
-                                && ((StringLengthValueSet)otherValueSet).contains((String)value)));
+                                && stringLengthValueSet.contains((String)value)));
             }
             return false;
         }).orElse(false);

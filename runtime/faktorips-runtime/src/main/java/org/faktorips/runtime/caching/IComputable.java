@@ -44,7 +44,7 @@ public interface IComputable<K, V> {
      * @return a new {@link IComputable}
      */
     static <K, V> IComputable<K, V> of(Class<? super V> valueClass, Function<K, V> function) {
-        return new AbstractComputable<K, V>(valueClass) {
+        return new AbstractComputable<>(valueClass) {
 
             @Override
             public V compute(K key) throws InterruptedException {

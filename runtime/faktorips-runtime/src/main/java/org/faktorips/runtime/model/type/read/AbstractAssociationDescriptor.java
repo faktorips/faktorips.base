@@ -36,7 +36,7 @@ public abstract class AbstractAssociationDescriptor<P extends Association> exten
     }
 
     public void setAddMethod(Method adderMethod) {
-        this.addMethod = adderMethod;
+        addMethod = adderMethod;
     }
 
     public Method getAddMethod() {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ public class PolicyAssociation extends Association {
     private final Method removeMethod;
 
     /**
-     * 
+     *
      * @param type the type the association belongs to
      * @param getterMethod the getter method for retrieving all associated instances
      * @param addMethod the method for associating new instances (add-method for ..N associations,
@@ -54,7 +54,7 @@ public class PolicyAssociation extends Association {
 
     /**
      * Returns the model type this association belongs to.
-     * 
+     *
      * @deprecated Use {@link #getType()}
      */
     @Deprecated
@@ -70,9 +70,9 @@ public class PolicyAssociation extends Association {
 
     /**
      * Returns the {@link ProductCmptType} identified by {@link #getMatchingAssociationSource()}
-     * 
+     *
      * @see #getMatchingAssociationSource()
-     * 
+     *
      * @return The model type object of the matching association source
      */
     @Override
@@ -83,7 +83,7 @@ public class PolicyAssociation extends Association {
     /**
      * Returns the matching product component type association or <code>null</code> if no matching
      * association is defined for this association.
-     * 
+     *
      * @return The matching association
      */
     @Override
@@ -94,7 +94,7 @@ public class PolicyAssociation extends Association {
     /**
      * Returns the matching product component type association or an {@link Optional#empty() empty
      * Optional} if no matching association is defined for this association.
-     * 
+     *
      * @return The matching association
      */
     @Override
@@ -110,7 +110,7 @@ public class PolicyAssociation extends Association {
     /**
      * Returns a list of the target(s) of the given model object's association identified by this
      * model type association.
-     * 
+     *
      * @param source a model object corresponding to the {@link PolicyCmptType} this association
      *            belongs to
      * @return a list of the target(s) of the given model object's association identified by this
@@ -121,12 +121,12 @@ public class PolicyAssociation extends Association {
     public List<IModelObject> getTargetObjects(IModelObject source) {
         List<IModelObject> targets = new ArrayList<>();
         Object object = invokeMethod(getGetterMethod(), source);
-        if (object instanceof Iterable<?>) {
-            for (Object target : (Iterable<?>)object) {
+        if (object instanceof Iterable<?> it) {
+            for (Object target : it) {
                 targets.add((IModelObject)target);
             }
-        } else if (object instanceof IModelObject) {
-            targets.add((IModelObject)object);
+        } else if (object instanceof IModelObject modelObject) {
+            targets.add(modelObject);
         }
         return targets;
     }
@@ -138,7 +138,7 @@ public class PolicyAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly create a tree of
      * objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * Policy <>---- Contract <>---- Coverage
@@ -146,7 +146,7 @@ public class PolicyAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      contracts.addTargetObjects(policy,
@@ -154,7 +154,7 @@ public class PolicyAssociation extends Association {
      *              coverage1, coverage2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to add a target object to
      * @param targets the objects to add to source
      * @return the changed source object
@@ -163,7 +163,7 @@ public class PolicyAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
-     * 
+     *
      * @since 3.22
      */
     public <S extends IModelObject> S addTargetObjects(S source, Collection<IModelObject> targets) {
@@ -199,7 +199,7 @@ public class PolicyAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly create a tree of
      * objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * Policy <>---- Contract <>---- Coverage
@@ -207,7 +207,7 @@ public class PolicyAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      contracts.addTargetObjects(policy,
@@ -215,7 +215,7 @@ public class PolicyAssociation extends Association {
      *              coverage1, coverage2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to add a target object to
      * @param targets the objects to add to source
      * @return the changed source object
@@ -224,7 +224,7 @@ public class PolicyAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
-     * 
+     *
      * @since 3.22
      */
     public <S extends IModelObject> S addTargetObjects(S source, IModelObject... targets) {
@@ -238,7 +238,7 @@ public class PolicyAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly remove objects in
      * a tree of objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * Policy <>---- Contract <>---- Coverage
@@ -246,7 +246,7 @@ public class PolicyAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      contracts.removeTargetObjects(policy,
@@ -254,7 +254,7 @@ public class PolicyAssociation extends Association {
      *              coverage1, coverage2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to remove a target object from
      * @param targetsToRemove the objects to remove from this association in source
      * @return the changed source object
@@ -264,7 +264,7 @@ public class PolicyAssociation extends Association {
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple or no target objects provided for a
      *             ..1 ("to one") association
-     * 
+     *
      * @since 3.22
      */
     public <S extends IModelObject> S removeTargetObjects(S source, List<IModelObject> targetsToRemove) {
@@ -309,7 +309,7 @@ public class PolicyAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly remove objects in
      * a tree of objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * Policy <>---- Contract <>---- Coverage
@@ -317,7 +317,7 @@ public class PolicyAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      contracts.removeTargetObjects(policy,
@@ -325,7 +325,7 @@ public class PolicyAssociation extends Association {
      *              coverage1, coverage2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to remove a target object from
      * @param targetsToRemove the objects to remove from this association in source
      * @return the changed source object
@@ -335,7 +335,7 @@ public class PolicyAssociation extends Association {
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
-     * 
+     *
      * @since 3.22
      */
     public <S extends IModelObject> S removeTargetObjects(S source, IModelObject... targetsToRemove) {
@@ -345,7 +345,7 @@ public class PolicyAssociation extends Association {
     /**
      * ..1 associations have no remove method. Call set(null) instead. Does nothing if the currently
      * associated object is not equal to targetToReset.
-     * 
+     *
      * Uses getTargetObjects().contains() to check whether the single instance is the one that
      * should be removed.
      */

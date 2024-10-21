@@ -98,9 +98,9 @@ public class StringLengthValueSet implements ValueSet<String> {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof StringLengthValueSet
-                && (containsNull() == ((StringLengthValueSet)o).containsNull())
-                && Objects.equals(getMaximumLength(), ((StringLengthValueSet)o).getMaximumLength()));
+        return (o instanceof StringLengthValueSet stringLengthValueSet
+                && (containsNull() == stringLengthValueSet.containsNull())
+                && Objects.equals(getMaximumLength(), stringLengthValueSet.getMaximumLength()));
     }
 
     /**

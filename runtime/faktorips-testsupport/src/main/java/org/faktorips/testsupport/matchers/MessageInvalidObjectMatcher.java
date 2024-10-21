@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,18 +48,17 @@ public class MessageInvalidObjectMatcher extends MessageMatcher {
     protected void describeMismatchedProperty(Message message, Description mismatchDescription) {
         mismatchDescription.appendText("had ");
         switch (message.getNumOfInvalidObjectProperties()) {
-            case 0:
-                mismatchDescription.appendText("no invalid object properties");
-                break;
-            case 1:
+            case 0 -> mismatchDescription.appendText("no invalid object properties");
+            case 1 -> {
                 mismatchDescription.appendText("only the invalid object property ");
                 mismatchDescription.appendValue(message.getInvalidObjectProperties().get(0));
-                break;
-            default:
+            }
+            default -> {
                 mismatchDescription.appendText("the invalid object properties ");
                 mismatchDescription.appendValue(message.getInvalidObjectProperties().stream()
                         .map(ObjectProperty::toString)
                         .collect(Collectors.joining(", ")));
+            }
         }
     }
 

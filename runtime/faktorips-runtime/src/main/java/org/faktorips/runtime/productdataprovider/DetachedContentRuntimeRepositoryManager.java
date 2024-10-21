@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,9 +24,9 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepositoryManager;
  * product data you have to call {@link #getActualRuntimeRepository()}.
  * <p>
  * To create a new {@link DetachedContentRuntimeRepositoryManager} use the internal {@link Builder}.
- * 
+ *
  * @see DetachedContentRuntimeRepository
- * 
+ *
  * @author dirmeier
  */
 public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepositoryManager {
@@ -43,7 +43,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated since 3.9.0: The method name was a false translation from German. The correct
      *                 method is called {@link #getCurrentRuntimeRepository()}
      */
@@ -56,8 +56,8 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
     @Override
     public synchronized IDetachedContentRuntimeRepository getCurrentRuntimeRepository() {
         IRuntimeRepository currentRuntimeRepository = super.getCurrentRuntimeRepository();
-        if (currentRuntimeRepository instanceof DetachedContentRuntimeRepository) {
-            return (IDetachedContentRuntimeRepository)currentRuntimeRepository;
+        if (currentRuntimeRepository instanceof DetachedContentRuntimeRepository detachedContentRR) {
+            return detachedContentRR;
         } else {
             throw new RuntimeException("Illegal repository class in detached content runtime repository.");
         }
@@ -65,8 +65,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
 
     @Override
     protected boolean isRepositoryUpToDate(IRuntimeRepository actualRuntimeRepository) {
-        if (actualRuntimeRepository instanceof DetachedContentRuntimeRepository) {
-            DetachedContentRuntimeRepository detachedContentRR = (DetachedContentRuntimeRepository)actualRuntimeRepository;
+        if (actualRuntimeRepository instanceof DetachedContentRuntimeRepository detachedContentRR) {
             return detachedContentRR.isUpToDate();
         } else {
             return false;
@@ -91,7 +90,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
         /**
          * The only mandatory parameter is the {@link IProductDataProviderFactory}. It is used to
          * create the {@link IProductDataProvider}s.
-         * 
+         *
          * @param productDataProviderFactory The builder to create {@link IProductDataProvider}s
          */
         public Builder(IProductDataProviderFactory productDataProviderFactory) {
@@ -108,7 +107,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
         /**
          * The optional repository name. If you do not specify a name the blank {@link String} "" is
          * used
-         * 
+         *
          * @param name the name of the repositories
          */
         public Builder setRepositoryName(String name) {
@@ -124,7 +123,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
          * The {@link ClassLoader} to instantiate the classes. If you do not specify a
          * {@link ClassLoader} the {@link Thread#getContextClassLoader()} of
          * {@link Thread#currentThread()} is used.
-         * 
+         *
          * @param classLoader The {@link ClassLoader} to instantiate the classes
          */
         public Builder setClassLoader(ClassLoader classLoader) {
@@ -141,7 +140,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
          * do not set the {@link IFormulaEvaluatorFactory} the repository tries to load the
          * generated subclasses of product components containing the compiled formula. This would
          * not work if you want to change product data while application is running.
-         * 
+         *
          * @param formulaEvaluatorFactory {@link IFormulaEvaluatorFactory} to create
          *            {@link IFormulaEvaluator}s
          */
@@ -158,7 +157,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
          * Optionally you could specify a {@link ICacheFactory} to use your own cache
          * implementation. If you do not set a {@link ICacheFactory} the {@link DefaultCacheFactory}
          * is used.
-         * 
+         *
          * @param cacheFactory The cacheFactory to set.
          */
         public Builder setCacheFactory(ICacheFactory cacheFactory) {
@@ -177,7 +176,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
          * This method builds a {@link DetachedContentRuntimeRepositoryManager}. All the values set
          * in the builder are used to create the manager and the
          * {@link DetachedContentRuntimeRepository}s
-         * 
+         *
          * @return The created {@link DetachedContentRuntimeRepositoryManager}
          */
         public IRuntimeRepositoryManager build() {

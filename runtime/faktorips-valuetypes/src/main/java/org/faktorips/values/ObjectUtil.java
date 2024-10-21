@@ -35,7 +35,8 @@ public class ObjectUtil {
      * {@link NullObjectSupport#isNull() is null}.
      */
     public static boolean isNullObject(Object o) {
-        return o instanceof NullObject || (o instanceof NullObjectSupport && ((NullObjectSupport)o).isNull());
+        return o instanceof NullObject
+                || (o instanceof NullObjectSupport nullObjectSupport && nullObjectSupport.isNull());
     }
 
     /**

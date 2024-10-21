@@ -93,7 +93,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
 
     @Override
     public ResultStructure<R> copy() {
-        return new ResultStructure<>(this.resultSet);
+        return new ResultStructure<>(resultSet);
     }
 
 }

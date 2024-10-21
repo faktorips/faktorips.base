@@ -189,10 +189,10 @@ public class FormulaHandlerTest extends XmlAbstractTestCase {
         NodeList desriptionNodes = newElement.getElementsByTagName("Description");
         assertEquals(3, desriptionNodes.getLength());
         assertEquals("en", ((Element)desriptionNodes.item(0)).getAttribute("locale"));
-        assertEquals("English description.", ((Element)desriptionNodes.item(0)).getTextContent());
+        assertEquals("English description.", desriptionNodes.item(0).getTextContent());
         assertEquals("fr", ((Element)desriptionNodes.item(1)).getAttribute("locale"));
-        assertEquals("Je ne parle pas français.", ((Element)desriptionNodes.item(1)).getTextContent());
+        assertEquals("Je ne parle pas français.", desriptionNodes.item(1).getTextContent());
         assertEquals("de", ((Element)desriptionNodes.item(2)).getAttribute("locale"));
-        assertEquals("Deutsche Beschreibung.", ((Element)desriptionNodes.item(2)).getTextContent());
+        assertEquals("Deutsche Beschreibung.", desriptionNodes.item(2).getTextContent());
     }
 }

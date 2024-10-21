@@ -38,12 +38,22 @@ public class GroovyFormulaEvaluatorTest {
     @Before
     public void setUp() {
         expressions = new LinkedHashMap<>();
-        String formulaMethod = "public int add() {" + "return this.var1 + this.var2" + "}";
+        String formulaMethod = """
+                public int add() {
+                    return this.var1 + this.var2
+                }""";
         expressions.put("add", formulaMethod);
-        formulaMethod = "public String getString(String param) {" + "return param" + "}";
+        formulaMethod = """
+                public String getString(String param) {
+                    return param
+                }""";
         expressions.put("getStringWithParam", formulaMethod);
-        formulaMethod = "import org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluatorTest.OtherClass;"
-                + "public String getString() {" + "return new OtherClass().anyMethod()" + "}";
+        formulaMethod = """
+                import org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluatorTest.OtherClass;
+
+                public String getString() {
+                    return new OtherClass().anyMethod()
+                }""";
         expressions.put("getString", formulaMethod);
         testCmpt = new MyCmpt(new InMemoryRuntimeRepository(), "Test 2010-01", "Test", "2010-01");
         testGen = new MyCmptGeneration(testCmpt);

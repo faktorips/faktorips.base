@@ -175,11 +175,8 @@ public class XmlUtil {
     public static final Optional<Element> findFirstElement(Node parent, String tagName) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element element = (Element)nl.item(i);
-                if (element.getNodeName().equals(tagName)) {
-                    return Optional.of((Element)nl.item(i));
-                }
+            if (nl.item(i) instanceof Element element && element.getNodeName().equals(tagName)) {
+                return Optional.of(element);
             }
         }
         return Optional.empty();
@@ -200,8 +197,8 @@ public class XmlUtil {
     public static final Optional<Element> findFirstElement(Node parent) {
         NodeList nl = parent.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                return Optional.of((Element)nl.item(i));
+            if (nl.item(i) instanceof Element element) {
+                return Optional.of(element);
             }
         }
         return Optional.empty();
@@ -221,14 +218,11 @@ public class XmlUtil {
         NodeList nl = parent.getChildNodes();
         int count = 0;
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element element = (Element)nl.item(i);
-                if (element.getNodeName().equals(tagName)) {
-                    if (count == index) {
-                        return (Element)nl.item(i);
-                    }
-                    count++;
+            if (nl.item(i) instanceof Element element && element.getNodeName().equals(tagName)) {
+                if (count == index) {
+                    return element;
                 }
+                count++;
             }
         }
         throw new IndexOutOfBoundsException();
@@ -260,8 +254,8 @@ public class XmlUtil {
         NodeList childNodes = parent.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node item = childNodes.item(i);
-            if (item instanceof Element && allowedNames.contains(item.getNodeName())) {
-                elements.add((Element)item);
+            if (item instanceof Element el && allowedNames.contains(item.getNodeName())) {
+                elements.add(el);
             }
         }
         return elements;
@@ -337,10 +331,9 @@ public class XmlUtil {
         List<Element> result = new ArrayList<>();
         NodeList nl = elem.getChildNodes();
         for (int i = 0, max = nl.getLength(); i < max; i++) {
-            if (!(nl.item(i) instanceof Element)) {
+            if (!(nl.item(i) instanceof Element el)) {
                 continue;
             }
-            Element el = (Element)nl.item(i);
             String typeAttr = el.getAttribute(attributeName);
             if (attributeValue.equals(typeAttr) && el.getNodeName().equals(nodeName)) {
                 result.add(el);

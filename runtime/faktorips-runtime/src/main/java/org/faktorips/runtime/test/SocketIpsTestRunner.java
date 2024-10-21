@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * Socket test runner. Opens a socket connection to a given socket server port and runs the given
  * ips tests. The result will be written to the server socket.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class SocketIpsTestRunner extends AbstractIpsTestRunner {
@@ -146,8 +146,8 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
     private void addTestCasesAsFlatList(IpsTest2 currTest, List<IpsTest2> testCases) {
         if (currTest instanceof IpsTestCaseBase) {
             testCases.add(currTest);
-        } else if (currTest instanceof IpsTestSuite) {
-            List<IpsTest2> testsInSuite = ((IpsTestSuite)currTest).getTests();
+        } else if (currTest instanceof IpsTestSuite testSuite) {
+            List<IpsTest2> testsInSuite = testSuite.getTests();
             for (IpsTest2 testInSuite : testsInSuite) {
                 addTestCasesAsFlatList(testInSuite, testCases);
             }

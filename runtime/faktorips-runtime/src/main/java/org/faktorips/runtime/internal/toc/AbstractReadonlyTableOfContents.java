@@ -112,15 +112,17 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         if (productDataVersion == null) {
             productDataVersion = "0";
         }
+
         if (productDataVersion.startsWith("mvn:")) {
             productDataVersion = fromMaven(productDataVersion);
         }
         NodeList nl = tocElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element entryElement = (Element)nl.item(i);
+            if (nl.item(i) instanceof Element entryElement) {
                 internalAddEntry(
-                        getTocEntryFactoriesByXmlTag().get(entryElement.getNodeName()).createFromXml(entryElement));
+                        getTocEntryFactoriesByXmlTag()
+                                .get(entryElement.getNodeName())
+                                .createFromXml(entryElement));
             }
         }
     }

@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -206,12 +205,12 @@ public class ProductSwitchTest {
 
         ProductSwitchResults switchResult = ProductSwitch.from(root)
                 .with((oldP, newP) -> {
-                    if (oldP instanceof TestRootProduct) {
-                        return ((TestRootProduct)newP).getSwitchType().equals(((TestRootProduct)oldP).getSwitchType());
+                    if (oldP instanceof TestRootProduct rootProduct) {
+                        return ((TestRootProduct)newP).getSwitchType().equals(rootProduct.getSwitchType());
                     }
-                    if (oldP instanceof TestChildProduct) {
+                    if (oldP instanceof TestChildProduct childProduct) {
                         return ((TestChildProduct)newP).getSwitchType()
-                                .equals(((TestChildProduct)oldP).getSwitchType());
+                                .equals(childProduct.getSwitchType());
                     }
                     return false;
                 }).to(rootProduct2);
@@ -259,7 +258,7 @@ public class ProductSwitchTest {
                             .filter(newChildProduct -> ProductSwitch.BY_KIND_ID.test(
                                     modelObject.getProductComponent(),
                                     newChildProduct))
-                            .collect(Collectors.toList());
+                            .toList();
 
                     if (matchingKindId.size() == 1) {
                         return ProductFinderResult.of(matchingKindId.get(0));

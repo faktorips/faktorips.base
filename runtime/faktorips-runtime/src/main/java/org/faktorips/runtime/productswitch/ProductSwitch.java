@@ -390,7 +390,7 @@ public class ProductSwitch {
 
                 List<IProductComponent> matching = newChildProducts.stream()
                         .filter(newChildProduct -> howToMatch.test(childModel.getProductComponent(), newChildProduct))
-                        .collect(Collectors.toList());
+                        .toList();
 
                 if (matching.isEmpty()) {
                     return ProductSwitch.createEmptyResult(childModel);

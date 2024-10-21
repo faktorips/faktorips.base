@@ -40,10 +40,9 @@ public class GenerationId implements Comparable<GenerationId> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof GenerationId) || (obj.hashCode() != hashCode)) {
+        if (!(obj instanceof GenerationId other) || (obj.hashCode() != hashCode)) {
             return false;
         }
-        GenerationId other = (GenerationId)obj;
         return qName.equals(other.qName) && validFrom.equals(other.validFrom);
     }
 

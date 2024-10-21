@@ -131,8 +131,8 @@ public enum Relevance {
 
     @SuppressWarnings("unchecked")
     private static <T> ValueSet<T> asStringLength(boolean containsNull, ValueSet<T> values) {
-        if (values instanceof StringLengthValueSet) {
-            return (ValueSet<T>)new StringLengthValueSet(((StringLengthValueSet)values).getMaximumLength(),
+        if (values instanceof StringLengthValueSet stringLengthValueSet) {
+            return (ValueSet<T>)new StringLengthValueSet(stringLengthValueSet.getMaximumLength(),
                     containsNull);
         } else {
             return (ValueSet<T>)new StringLengthValueSet(null, containsNull);
@@ -195,19 +195,13 @@ public enum Relevance {
         if (values == null) {
             return false;
         }
-        switch (valueSetKind) {
-            case AllValues:
-            case Derived:
-                return true;
-            case Enum:
-                return values instanceof OrderedValueSet;
-            case Range:
-                return values.isRange();
-            case StringLength:
-                return values instanceof StringLengthValueSet;
-            default:
-                return false;
-        }
+        return switch (valueSetKind) {
+            case AllValues, Derived -> true;
+            case Enum -> values instanceof OrderedValueSet;
+            case Range -> values.isRange();
+            case StringLength -> values instanceof StringLengthValueSet;
+            default -> false;
+        };
     }
 
     /**
@@ -428,33 +422,27 @@ public enum Relevance {
     }
 
     private static ValueSet<?> changeRangeRelevance(ValueSet<?> valueSet, boolean containsNull) {
-        if (valueSet instanceof BigDecimalRange) {
-            BigDecimalRange bigDecimalRange = (BigDecimalRange)valueSet;
+        if (valueSet instanceof BigDecimalRange bigDecimalRange) {
             return BigDecimalRange.valueOf(bigDecimalRange.getLowerBound(), bigDecimalRange.getUpperBound(),
                     bigDecimalRange.getStep(), containsNull);
         }
-        if (valueSet instanceof DecimalRange) {
-            DecimalRange decimalRange = (DecimalRange)valueSet;
+        if (valueSet instanceof DecimalRange decimalRange) {
             return DecimalRange.valueOf(decimalRange.getLowerBound(), decimalRange.getUpperBound(),
                     decimalRange.getStep(), containsNull);
         }
-        if (valueSet instanceof DoubleRange) {
-            DoubleRange doubleRange = (DoubleRange)valueSet;
+        if (valueSet instanceof DoubleRange doubleRange) {
             return DoubleRange.valueOf(doubleRange.getLowerBound(), doubleRange.getUpperBound(), doubleRange.getStep(),
                     containsNull);
         }
-        if (valueSet instanceof IntegerRange) {
-            IntegerRange integerRange = (IntegerRange)valueSet;
+        if (valueSet instanceof IntegerRange integerRange) {
             return IntegerRange.valueOf(integerRange.getLowerBound(), integerRange.getUpperBound(),
                     integerRange.getStep(), containsNull);
         }
-        if (valueSet instanceof LongRange) {
-            LongRange longRange = (LongRange)valueSet;
+        if (valueSet instanceof LongRange longRange) {
             return LongRange.valueOf(longRange.getLowerBound(), longRange.getUpperBound(),
                     longRange.getStep(), containsNull);
         }
-        if (valueSet instanceof MoneyRange) {
-            MoneyRange moneyRange = (MoneyRange)valueSet;
+        if (valueSet instanceof MoneyRange moneyRange) {
             return MoneyRange.valueOf(moneyRange.getLowerBound(), moneyRange.getUpperBound(),
                     moneyRange.getStep(), containsNull);
         }

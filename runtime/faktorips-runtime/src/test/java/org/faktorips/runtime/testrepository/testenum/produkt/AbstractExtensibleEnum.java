@@ -21,7 +21,7 @@ public interface AbstractExtensibleEnum {
      */
     @IpsEnumAttribute(name = "id", identifier = true, unique = true)
     @IpsGenerated
-    public String getId();
+    String getId();
 
     /**
      * Gibt den Wert des Attributs name zurück.
@@ -30,5 +30,5 @@ public interface AbstractExtensibleEnum {
      */
     @IpsEnumAttribute(name = "name", unique = true, displayName = true)
     @IpsGenerated
-    public String getName();
+    String getName();
 }

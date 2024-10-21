@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -45,8 +45,8 @@ public class MessageListMessageMatcher extends TypeSafeMatcher<MessageList> {
             } else {
                 first = false;
             }
-            if (matcher instanceof MessageMatcher) {
-                ((MessageMatcher)matcher).describeMessageProperty(description);
+            if (matcher instanceof MessageMatcher messageMatcher) {
+                messageMatcher.describeMessageProperty(description);
             } else {
                 matcher.describeTo(description);
             }

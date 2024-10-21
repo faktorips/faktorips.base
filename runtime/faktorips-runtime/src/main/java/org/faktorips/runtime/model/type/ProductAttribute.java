@@ -193,10 +193,10 @@ public class ProductAttribute extends Attribute {
             }
             return clazz;
         }
-        if (type instanceof ParameterizedType) {
-            return getInnermostGenericClass(((ParameterizedType)type).getActualTypeArguments()[0], primitive);
-        } else if (type instanceof WildcardType) {
-            return getInnermostGenericClass(((WildcardType)type).getUpperBounds()[0], primitive);
+        if (type instanceof ParameterizedType parameterizedType) {
+            return getInnermostGenericClass(parameterizedType.getActualTypeArguments()[0], primitive);
+        } else if (type instanceof WildcardType wildCard) {
+            return getInnermostGenericClass(wildCard.getUpperBounds()[0], primitive);
         } else {
             throw new IllegalArgumentException("can't find class for " + type.toString());
         }

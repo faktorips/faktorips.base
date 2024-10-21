@@ -132,8 +132,7 @@ public class IpsEnumToXmlWriter {
      *            {@code false}
      */
     private void writeDescriptionToXml(Element element, boolean skipTextContent) {
-        if (repository instanceof AbstractCachingRuntimeRepository) {
-            AbstractCachingRuntimeRepository runtimeRepository = (AbstractCachingRuntimeRepository)repository;
+        if (repository instanceof AbstractCachingRuntimeRepository runtimeRepository) {
             InternationalString enumDescription = runtimeRepository.getEnumDescription(enumClass);
             DescriptionXmlHelper.write(enumDescription, element, skipTextContent);
         }

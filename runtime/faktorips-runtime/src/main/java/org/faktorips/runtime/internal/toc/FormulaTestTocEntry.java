@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
 
 /**
  * A special kind of {@link TestCaseTocEntry} for formula test entries
- * 
+ *
  * @author dirmeier
  */
 public class FormulaTestTocEntry extends TestCaseTocEntry {
@@ -66,13 +66,11 @@ public class FormulaTestTocEntry extends TestCaseTocEntry {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj) || !(obj instanceof FormulaTestTocEntry)) {
+        if (!(obj instanceof FormulaTestTocEntry other) || !super.equals(obj)) {
             return false;
         }
-        FormulaTestTocEntry other = (FormulaTestTocEntry)obj;
         return Objects.equals(kindId, other.kindId)
-                && Objects.equals(versionId, other.versionId)
-                && super.equals(obj);
+                && Objects.equals(versionId, other.versionId);
     }
 
 }

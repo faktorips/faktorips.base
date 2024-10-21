@@ -172,9 +172,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         }
         if (!checkIfValueCompliesToStepIncrement(getLowerBound(), getUpperBound())) {
             throw new IllegalArgumentException(
-                    "The step doesn't fit into the specified bounds. The step has to comply to "
-                            + "the condition: the value of the expression 'abs(upperBound - lowerBound) / "
-                            + "step' needs to be an integer.");
+                    "The step doesn't fit into the specified bounds. The step has to comply to the condition: the value of the expression 'abs(upperBound - lowerBound) / step' needs to be an integer.");
         }
     }
 

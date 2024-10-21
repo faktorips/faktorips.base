@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -125,8 +125,7 @@ public class KeyStructureTest {
         initKeyStructureMap(structure);
         KeyStructure<String, ResultStructure<Integer>, Integer> copyStructure = structure.copy();
         Map<String, ResultStructure<Integer>> structureMap = structure.getMap();
-        Map<String, ResultStructure<Integer>> copiedMap = ((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure)
-                .getMap();
+        Map<String, ResultStructure<Integer>> copiedMap = copyStructure.getMap();
 
         assertEquals(structureMap.get("ID_1"), copiedMap.get("ID_1"));
         assertNotSame(structureMap.get("ID_1"), copiedMap.get("ID_1"));
@@ -140,8 +139,7 @@ public class KeyStructureTest {
         initKeyStructureMap(structure);
         KeyStructure<String, ResultStructure<Integer>, Integer> copyStructure = structure.copy();
 
-        assertEquals(((AbstractMapStructure<String, ResultStructure<Integer>, Integer>)copyStructure).getMap(),
-                structure.getMap());
+        assertEquals(copyStructure.getMap(), structure.getMap());
         assertNotSame(copyStructure, structure);
     }
 

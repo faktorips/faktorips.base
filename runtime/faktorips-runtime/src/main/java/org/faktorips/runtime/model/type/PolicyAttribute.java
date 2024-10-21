@@ -122,7 +122,7 @@ public abstract class PolicyAttribute extends Attribute {
      */
     public boolean isEmpty(IModelObject modelObject) {
         Object value = getValue(modelObject);
-        return ObjectUtil.isNull(value) || (value instanceof String && IpsStringUtils.isBlank(((String)value)));
+        return ObjectUtil.isNull(value) || (value instanceof String str && IpsStringUtils.isBlank(str));
     }
 
     /**

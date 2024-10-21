@@ -11,7 +11,6 @@
 package org.faktorips.runtime.productswitch;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -39,7 +38,7 @@ public interface AdvancedProductFinder {
                 .getMatchingAssociation()
                 .getTargetObjects(parent.getProductComponent(), parent.getEffectiveFromAsCalendar()).stream()
                 .filter(c -> child.getProductComponent().getKindId().equals(c.getKindId()))
-                .collect(Collectors.toList());
+                .toList();
         if (matches.isEmpty()) {
             return ProductSwitch.createEmptyResult(child);
         } else if (matches.size() == 1) {

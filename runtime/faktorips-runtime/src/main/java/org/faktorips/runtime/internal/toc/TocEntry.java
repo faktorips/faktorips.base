@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -74,10 +74,9 @@ public abstract class TocEntry {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof TocEntry)) {
+        if ((obj == null) || !(obj instanceof TocEntry other)) {
             return false;
         }
-        TocEntry other = (TocEntry)obj;
         return Objects.equals(implementationClassName, other.implementationClassName)
                 && Objects.equals(xmlResourceName, other.xmlResourceName);
     }

@@ -96,15 +96,13 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
         ModelObjectDelta delta = newEmptyDelta(object, refObject);
 
-        if (object instanceof IConfigurableModelObject && refObject != null) {
-            IConfigurableModelObject confObject = (IConfigurableModelObject)object;
+        if (object instanceof IConfigurableModelObject confObject && refObject != null) {
             IConfigurableModelObject confRefObject = (IConfigurableModelObject)refObject;
             delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT,
                     confObject.getProductComponent(), confRefObject.getProductComponent(), options);
         }
 
-        if (object instanceof ITimedConfigurableModelObject && refObject != null) {
-            ITimedConfigurableModelObject confObject = (ITimedConfigurableModelObject)object;
+        if (object instanceof ITimedConfigurableModelObject confObject && refObject != null) {
             ITimedConfigurableModelObject confRefObject = (ITimedConfigurableModelObject)refObject;
             delta.checkPropertyChange(ITimedConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION,
                     confObject.getProductCmptGeneration(), confRefObject.getProductCmptGeneration(), options);

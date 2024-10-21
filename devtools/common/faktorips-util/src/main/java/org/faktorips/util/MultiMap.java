@@ -52,7 +52,7 @@ public class MultiMap<K, V> implements Serializable {
      * Creates a new {@link MultiMap} with {@link ArrayList} instances as values.
      */
     public MultiMap() {
-        this(new ArrayListFactory<V>());
+        this(new ArrayListFactory<>());
     }
 
     /**

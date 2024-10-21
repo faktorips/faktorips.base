@@ -51,7 +51,7 @@ public enum SuperModellEnum implements AbstractModellEnum {
      * @generated
      */
     @IpsGenerated
-    private SuperModellEnum(String id, String name) {
+    SuperModellEnum(String id, String name) {
         this.id = id;
         this.name = name;
     }

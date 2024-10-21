@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 
 /**
  * A {@link TocEntryObject} for {@link org.faktorips.runtime.IProductComponent}s
- * 
+ *
  * @author dirmeier
  */
 public class ProductCmptTocEntry extends TocEntryObject {
@@ -127,7 +127,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * Returns the {@link GenerationTocEntry} successor of the one that is found for the provided
      * validity date. Returns <code>null</code> if either no entry is found for the provided date or
      * if the found one doesn't have a successor.
-     * 
+     *
      * @see #findNextGenerationEntry(Calendar) findNextGenerationEntry(Calendar) for null-safe
      *          processing
      */
@@ -152,7 +152,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * Returns the {@link GenerationTocEntry} that is prior to the one that is found for the
      * provided validity date. Returns <code>null</code> if either no entry is found for the
      * provided date or if the found one doesn't have a predecessor.
-     * 
+     *
      * @see #findPreviousGenerationEntry(Calendar) findPreviousGenerationEntry(Calendar) for
      *          null-safe processing
      */
@@ -178,7 +178,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
 
     /**
      * Returns the latest {@link GenerationTocEntry} with repect to the generations validity date.
-     * 
+     *
      * @see #findLatestGenerationEntry() findLatestGenerationEntry() for null-safe processing
      */
     public GenerationTocEntry getLatestGenerationEntry() {
@@ -200,7 +200,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * Returns the toc entry for the generation valid on the given effective date, or
      * <code>null</code> if no generation is effective on the given date or the effective is
      * <code>null</code>.
-     * 
+     *
      * @see #findGenerationEntry(Calendar) findGenerationEntry(Calendar) for null-safe processing
      */
     public GenerationTocEntry getGenerationEntry(Calendar effectiveDate) {
@@ -227,7 +227,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
     /**
      * Return the Generation Toc Entry for the exact valid at {@link DateTime}. This is the most
      * effective way to get a generation toc entry
-     * 
+     *
      * @see #findGenerationEntry(DateTime) findGenerationEntry(DateTime) for null-safe processing
      */
     public GenerationTocEntry getGenerationEntry(DateTime validAt) {
@@ -286,16 +286,13 @@ public class ProductCmptTocEntry extends TocEntryObject {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj) || !(obj instanceof ProductCmptTocEntry)) {
+        if (!(obj instanceof ProductCmptTocEntry other) || !super.equals(obj)) {
             return false;
         }
-        ProductCmptTocEntry other = (ProductCmptTocEntry)obj;
         return Objects.equals(generationEntries, other.generationEntries)
                 && Objects.equals(generationImplClassName, other.generationImplClassName)
                 && Objects.equals(kindId, other.kindId)
                 && Objects.equals(validTo, other.validTo)
-                && Objects.equals(versionId, other.versionId)
-                && super.equals(obj);
+                && Objects.equals(versionId, other.versionId);
     }
-
 }

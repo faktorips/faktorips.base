@@ -302,7 +302,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
          *            to be added.
          */
         private void putRespectingOverlapping(RangeEntry<K, V> entry) {
-            this.newEntry = entry;
+            newEntry = entry;
             if (findOverlappedRange()) {
                 splitUpOverlappingRanges();
             } else {

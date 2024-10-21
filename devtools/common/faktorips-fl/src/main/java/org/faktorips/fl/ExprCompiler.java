@@ -301,7 +301,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * @see #setEnsureResultIsObject(boolean)
      */
     public boolean getEnsureResultIsObject() {
-        return this.ensureResultIsObject;
+        return ensureResultIsObject;
     }
 
     /**
@@ -312,7 +312,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * true the compiler would wrap the resulting source code with a <code>Integer(..)</code>.
      */
     public void setEnsureResultIsObject(boolean newValue) {
-        this.ensureResultIsObject = newValue;
+        ensureResultIsObject = newValue;
     }
 
     /**
@@ -329,7 +329,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      */
     public void setIdentifierResolver(IdentifierResolver<T> resolver) {
         ArgumentCheck.notNull(resolver);
-        this.identifierResolver = resolver;
+        identifierResolver = resolver;
     }
 
     /**
@@ -563,7 +563,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
      * @param provider The {@link DatatypeHelperProvider} to set.
      */
     public void setDatatypeHelperProvider(DatatypeHelperProvider<T> provider) {
-        this.datatypeHelperProvider = provider;
+        datatypeHelperProvider = provider;
     }
 
     /**

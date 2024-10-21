@@ -15,7 +15,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.data.TestDeckungWithVisitor;
@@ -294,11 +293,11 @@ public class ModelObjectAttributesTest {
         assertThat(moa.size(), is(attributes.size()));
         assertThat(modelObject.containsAll(moa.stream()
                 .map(ModelObjectAttribute::getModelObject)
-                .collect(Collectors.toList())),
+                .toList()),
                 is(true));
         assertThat(attributes.containsAll(moa.stream()
                 .map(m -> m.getPolicyAttribute().getName())
-                .collect(Collectors.toList())),
+                .toList()),
                 is(true));
     }
 }

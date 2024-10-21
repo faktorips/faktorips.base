@@ -136,12 +136,12 @@ public class ProductAssociation extends Association {
         List<IProductComponent> targets = new ArrayList<>();
         Object source = getRelevantProductObject(productComponentSource, effectiveDate, isChangingOverTime());
         Object returnValue = invokeMethod(getGetterMethod(), source);
-        if (returnValue instanceof Iterable<?>) {
-            for (Object target : (Iterable<?>)returnValue) {
+        if (returnValue instanceof Iterable<?> it) {
+            for (Object target : it) {
                 targets.add((IProductComponent)target);
             }
-        } else if (returnValue instanceof IProductComponent) {
-            targets.add((IProductComponent)returnValue);
+        } else if (returnValue instanceof IProductComponent productCmpt) {
+            targets.add(productCmpt);
         }
         return targets;
     }

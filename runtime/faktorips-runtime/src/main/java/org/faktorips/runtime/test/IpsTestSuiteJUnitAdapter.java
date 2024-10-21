@@ -63,10 +63,10 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
      * Creates an adapter test for the given ips test.
      */
     public static Test createJUnitTest(IpsTest2 ipsTest) {
-        if (ipsTest instanceof IpsTestCaseBase) {
-            return new IpsTestCaseJUnitAdapter((IpsTestCaseBase)ipsTest);
-        } else if (ipsTest instanceof IpsTestSuite) {
-            return new IpsTestSuiteJUnitAdapter((IpsTestSuite)ipsTest);
+        if (ipsTest instanceof IpsTestCaseBase testCaseBase) {
+            return new IpsTestCaseJUnitAdapter(testCaseBase);
+        } else if (ipsTest instanceof IpsTestSuite testSuite) {
+            return new IpsTestSuiteJUnitAdapter(testSuite);
         } else {
             throw new RuntimeException("Unknown type " + ipsTest.getClass());
         }

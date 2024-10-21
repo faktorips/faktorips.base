@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.faktorips.values.Money;
@@ -125,7 +124,7 @@ public class OrderedValueSetTest {
         Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), null, Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = OrderedValueSet.<Integer> of(values);
         Stream<Integer> valueStream = valueSet.stream();
-        assertThat(valueStream.collect(Collectors.toList()), hasItems(values));
+        assertThat(valueStream.toList(), hasItems(values));
     }
 
     @Test

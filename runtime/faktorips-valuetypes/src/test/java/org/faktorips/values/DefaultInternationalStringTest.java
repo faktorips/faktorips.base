@@ -134,7 +134,7 @@ public class DefaultInternationalStringTest {
     public void testUnmodifiableMap() throws Exception {
         Object readObject = serializeAndDeserialize();
 
-        Field internalField = ((InternationalString)readObject).getClass().getDeclaredField("localizedStringMap");
+        Field internalField = readObject.getClass().getDeclaredField("localizedStringMap");
         assertNotNull(internalField);
         internalField.setAccessible(true);
         @SuppressWarnings("unchecked")

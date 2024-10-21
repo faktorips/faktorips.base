@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 /**
  * Able to load {@link Document}s and {@link InputStream}s from XML resources using a
  * {@link ClassLoader}.
- * 
+ *
  * @author Alexander Weickmann
  */
 public class ClassLoaderDataSource {
@@ -70,8 +70,7 @@ public class ClassLoaderDataSource {
             throw new RuntimeException("Cannot open a connection to resource '" + resourcePath + "'", e);
         }
 
-        if (connection instanceof JarURLConnection) {
-            JarURLConnection jarUrlConnection = (JarURLConnection)connection;
+        if (connection instanceof JarURLConnection jarUrlConnection) {
             URL jarUrl = jarUrlConnection.getJarFileURL();
             URI jarUri;
             try {

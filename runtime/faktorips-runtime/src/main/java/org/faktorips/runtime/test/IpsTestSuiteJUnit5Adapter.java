@@ -42,8 +42,7 @@ public class IpsTestSuiteJUnit5Adapter {
     public Stream<DynamicTest> createTests(IpsTest2 test) {
         if (test instanceof IpsTestCaseBase) {
             return Stream.of(createTest((IpsTestCase2)test));
-        } else if (test instanceof IpsTestSuite) {
-            IpsTestSuite testSuite = (IpsTestSuite)test;
+        } else if (test instanceof IpsTestSuite testSuite) {
             return testSuite.getTests().stream().flatMap(this::createTests);
         } else {
             throw new RuntimeException("Unknown type " + test.getClass());

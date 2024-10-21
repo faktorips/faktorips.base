@@ -37,9 +37,9 @@ public class PolicyAttributeCollector
 
         @Override
         protected PolicyAttribute createValid(Type type) {
-            if (getAnnotatedElement() instanceof Field) {
+            if (getAnnotatedElement() instanceof Field field) {
                 boolean changingOverTime = isChangingOverTime();
-                return new ConstantPolicyAttribute(type, (Field)getAnnotatedElement(), changingOverTime);
+                return new ConstantPolicyAttribute(type, field, changingOverTime);
             } else {
                 return new DefaultPolicyAttribute((PolicyCmptType)type, (Method)getAnnotatedElement(),
                         getSetterMethod(), isChangingOverTime());

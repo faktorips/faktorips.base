@@ -233,16 +233,16 @@ public abstract class Attribute extends TypePart {
                 ResourceBundle messages = ResourceBundle.getBundle(getResourceBundleName(), locale);
                 String formatString = String.format(messages.getString(msgKey), getLabel(locale), value,
                         referenceValue);
-                if (value instanceof GregorianCalendar) {
+                if (value instanceof GregorianCalendar calendar) {
                     formatString = createFormattedGregorianCalendarString(msgKey,
-                            (GregorianCalendar)value,
+                            calendar,
                             referenceValue,
                             locale,
                             messages);
                 }
-                if (value instanceof TemporalAccessor) {
+                if (value instanceof TemporalAccessor temporalAccessor) {
                     formatString = createFormattedJava8TimeString(msgKey,
-                            (TemporalAccessor)value,
+                            temporalAccessor,
                             referenceValue,
                             locale,
                             messages);

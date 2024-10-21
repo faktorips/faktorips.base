@@ -186,10 +186,10 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
          * runtime repository should contain all needed repositories
          */
         test.setRepository(runtimeRepository);
-        if (test instanceof IpsTestCase2) {
+        if (test instanceof IpsTestCase2 ipsTestCase2) {
             // only classes of type ips test case 2 supports xml input
             Element docElement = getDocumentElement(tocEntry);
-            ((IpsTestCase2)test).initFromXml(docElement);
+            ipsTestCase2.initFromXml(docElement);
         }
         test.setFullPath(tocEntry.getIpsObjectId());
         return test;
@@ -198,8 +198,8 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
     @Override
     protected <T> T createCustomObject(CustomTocEntryObject<T> tocEntry) {
         T runtimeObject = tocEntry.createRuntimeObject(this);
-        if (runtimeObject instanceof IClRepositoryObject) {
-            initRepositoryObject(tocEntry, (IClRepositoryObject)runtimeObject);
+        if (runtimeObject instanceof IClRepositoryObject repositoryObject) {
+            initRepositoryObject(tocEntry, repositoryObject);
         }
         return runtimeObject;
     }

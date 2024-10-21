@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,7 +41,7 @@ public class InternationalStringXmlReaderWriter {
 
     /**
      * Creates a new {@link Element} representing the given {@link DefaultInternationalString}.
-     * 
+     *
      * @param doc the XML {@link Document} that will contain the new element
      * @param internationalString the {@link DefaultInternationalString} to create an element for
      * @return the new element representing the given international string
@@ -61,7 +61,7 @@ public class InternationalStringXmlReaderWriter {
      * required by {@link DefaultInternationalString}. That attribute is added by
      * {@code org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder} when writing a
      * product component's XML.
-     * 
+     *
      * @param doc the XML {@link Document} that contains the new element
      * @param localizedStrings the {@link LocalizedString localized strings} to be saved
      * @return the new element representing the localized strings
@@ -84,7 +84,7 @@ public class InternationalStringXmlReaderWriter {
      * Reads the {@link LocalizedString localized strings} stored in the given XML {@link Element}.
      * If the given element is not representing an international string, an empty collection is
      * returned.
-     * 
+     *
      * @param element the XML {@link Element} representing an international string
      * @return a collection of all {@link LocalizedString localized strings} defined in the
      *             international string represented by the given {@link Element}.
@@ -116,7 +116,7 @@ public class InternationalStringXmlReaderWriter {
      * Reads the {@link LocalizedString localized strings} stored in the child {@link Element} with
      * the specified name. If the given element does not contain a child of the given name or if
      * that child does not represent an international string, an empty collection is returned.
-     * 
+     *
      * @param element the XML {@link Element} representing the parent of an international string.
      * @param tagName the name of the child node representing an international string.
      * @return a collection of all {@link LocalizedString localized strings} defined in the
@@ -141,7 +141,7 @@ public class InternationalStringXmlReaderWriter {
      * {@link #toXml(Document, Collection)} method does not write the attribute for the default
      * locale. {@code org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder} adds the
      * default locale when writing a product component's XML.
-     * 
+     *
      * @param element the XML {@link Element} representing the parent of an international string
      * @param tagName the name of the child node representing an international string
      * @return the default locale defined in the international string if present or {@code null}
@@ -165,7 +165,7 @@ public class InternationalStringXmlReaderWriter {
      * {@link #toXml(Document, Collection)} method does not write the attribute for the default
      * locale. {@code org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder} adds the
      * default locale when writing a product component's XML.
-     * 
+     *
      * @param e the XML element representing an international string
      * @return the default locale from the given element or {@code null} if the element does not
      *             represent an international string or does not have a default locale attribute
@@ -191,8 +191,8 @@ public class InternationalStringXmlReaderWriter {
     }
 
     public static void setDefaultLocaleInXml(Node node, Locale defaultLocale) {
-        if (node instanceof Element) {
-            ((Element)node).setAttribute(XML_ATTR_DEFAULT_LOCALE, defaultLocale.getLanguage());
+        if (node instanceof Element el) {
+            el.setAttribute(XML_ATTR_DEFAULT_LOCALE, defaultLocale.getLanguage());
         }
 
     }

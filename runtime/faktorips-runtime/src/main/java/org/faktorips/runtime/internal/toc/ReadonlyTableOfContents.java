@@ -134,8 +134,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 
     @Override
     protected void internalAddEntry(TocEntryObject entry) {
-        if (entry instanceof ProductCmptTocEntry) {
-            ProductCmptTocEntry prodEntry = (ProductCmptTocEntry)entry;
+        if (entry instanceof ProductCmptTocEntry prodEntry) {
             pcIdTocEntryMap.put(prodEntry.getIpsObjectId(), prodEntry);
             pcNameTocEntryMap.put(prodEntry.getIpsObjectQualifiedName(), prodEntry);
             Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
@@ -204,8 +203,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         if (!isModifiable()) {
             throw new UnsupportedOperationException("Table of contents is not modifiable");
         }
-        if (entry instanceof ProductCmptTocEntry) {
-            ProductCmptTocEntry prodEntry = (ProductCmptTocEntry)entry;
+        if (entry instanceof ProductCmptTocEntry prodEntry) {
             boolean removed = pcIdTocEntryMap.remove(prodEntry.getIpsObjectId()) != null;
             pcNameTocEntryMap.remove(prodEntry.getIpsObjectQualifiedName());
             Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
@@ -233,8 +231,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         if (entry instanceof EnumXmlAdapterTocEntry) {
             return enumXmlAdapterTocEntryMap.remove(entry.getIpsObjectId()) != null;
         }
-        if (entry instanceof CustomTocEntryObject<?>) {
-            CustomTocEntryObject<?> tocEntry = (CustomTocEntryObject<?>)entry;
+        if (entry instanceof CustomTocEntryObject<?> tocEntry) {
             Map<String, CustomTocEntryObject<?>> map = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
             return map != null && map.remove(tocEntry.getIpsObjectQualifiedName()) != null;
         }

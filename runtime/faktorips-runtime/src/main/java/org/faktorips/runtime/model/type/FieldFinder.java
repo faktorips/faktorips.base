@@ -65,8 +65,8 @@ class FieldFinder<ANNOTATION extends Annotation, T> {
     }
 
     private Optional<Field> findField() {
-        if (type instanceof ProductCmptType && changingOverTime) {
-            return ((ProductCmptType)type).findDeclaredFieldFromGeneration(annotationClass, matcher);
+        if (type instanceof ProductCmptType productType && changingOverTime) {
+            return productType.findDeclaredFieldFromGeneration(annotationClass, matcher);
         }
         return type.findDeclaredField(annotationClass, matcher);
     }

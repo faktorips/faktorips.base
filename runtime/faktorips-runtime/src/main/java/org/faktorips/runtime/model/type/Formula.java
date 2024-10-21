@@ -59,8 +59,8 @@ public class Formula extends TypePart {
      */
     public String getFormulaText(IProductComponent productComponent, @CheckForNull Calendar effectiveDate) {
         Object relevantProductObject = getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
-        if (relevantProductObject instanceof ProductComponent) {
-            return FormulaUtilAccess.getFormulaText((ProductComponent)relevantProductObject, getFormulaName());
+        if (relevantProductObject instanceof ProductComponent productCmpt) {
+            return FormulaUtilAccess.getFormulaText(productCmpt, getFormulaName());
         } else {
             return FormulaUtilAccess.getFormulaText((ProductComponentGeneration)relevantProductObject,
                     getFormulaName());
@@ -80,8 +80,8 @@ public class Formula extends TypePart {
             @CheckForNull Calendar effectiveDate,
             String formulaText) {
         Object relevantProductObject = getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
-        if (relevantProductObject instanceof ProductComponent) {
-            FormulaUtilAccess.setFormulaText((ProductComponent)relevantProductObject, getFormulaName(), formulaText);
+        if (relevantProductObject instanceof ProductComponent productCmpt) {
+            FormulaUtilAccess.setFormulaText(productCmpt, getFormulaName(), formulaText);
         } else {
             FormulaUtilAccess.setFormulaText((ProductComponentGeneration)relevantProductObject, getFormulaName(),
                     formulaText);

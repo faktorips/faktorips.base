@@ -114,10 +114,10 @@ public class CardinalityRange extends IntegerRange {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof CardinalityRange) {
+        if (obj != null && obj instanceof CardinalityRange range) {
             boolean upperLowerAndStepEqual = super.equals(obj);
             return upperLowerAndStepEqual
-                    && getDefaultCardinality().equals(((CardinalityRange)obj).getDefaultCardinality());
+                    && getDefaultCardinality().equals(range.getDefaultCardinality());
         } else {
             return false;
         }

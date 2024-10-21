@@ -585,18 +585,13 @@ public class Message implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         switch (severity) {
-            case ERROR:
-                sb.append("ERROR");
-                break;
-            case WARNING:
-                sb.append("WARNING ");
-                break;
-            case INFO:
-                sb.append("INFO");
-                break;
-            default:
+            case ERROR -> sb.append("ERROR");
+            case WARNING -> sb.append("WARNING ");
+            case INFO -> sb.append("INFO");
+            default -> {
                 sb.append("Severity ");
                 sb.append(severity);
+            }
         }
         sb.append(' ');
         sb.append(code);
@@ -623,10 +618,9 @@ public class Message implements Serializable {
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Message)) {
+        if (!(o instanceof Message other)) {
             return false;
         }
-        Message other = (Message)o;
         if (!Objects.equals(code, other.code) || !Objects.equals(text, other.text) || (severity != other.severity)
                 || !Objects.equals(invalidOp, other.invalidOp)) {
             return false;
