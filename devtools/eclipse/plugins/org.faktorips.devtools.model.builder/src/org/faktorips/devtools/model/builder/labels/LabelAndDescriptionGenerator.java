@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.builder.labels;
 
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.faktorips.devtools.model.builder.propertybuilder.AbstractPropertiesGenerator;
@@ -63,8 +64,14 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
         }
         if (ipsObjectPart instanceof IDescribedElement) {
             IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getLocale());
-            if (description != null && IpsStringUtils.isNotBlank(description.getText())) {
-                labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.DESCRIPTION, description.getText());
+            if (description != null) {
+                String text = description.getText();
+                if (IpsStringUtils.isNotBlank(text)) {
+                    if (Abstractions.getWorkspace().isWindows()) {
+                        text = text.replace("\r\n", "\n");
+                    }
+                    labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.DESCRIPTION, text);
+                }
             }
         }
     }
