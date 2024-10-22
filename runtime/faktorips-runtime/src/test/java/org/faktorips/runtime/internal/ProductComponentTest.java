@@ -348,6 +348,14 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testDescription_nullDescription() {
+        pc = new TestProductComponent(new InMemoryRuntimeRepository(), "", "", "");
+
+        String description = pc.getDescription(Locale.ENGLISH);
+        assertEquals(IpsStringUtils.EMPTY, description);
+    }
+
+    @Test
     public void testWriteDescriptionToXml() {
         pc.initFromXml(getTestDocument().getDocumentElement());
         Document newDocument = newDocument();

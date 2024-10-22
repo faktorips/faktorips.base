@@ -278,12 +278,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     @Override
     public String getDescription(Locale locale) {
-        String string = description.get(locale);
-        if (string == null) {
+        if (description == null || locale == null) {
             return IpsStringUtils.EMPTY;
-        } else {
-            return string;
         }
+
+        String result = description.get(locale);
+        return result != null ? result : IpsStringUtils.EMPTY;
     }
 
     /**
