@@ -52,10 +52,6 @@
             <artifactId>faktorips-runtime</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.sun.activation</groupId>
             <artifactId>javax.activation</artifactId>
         </dependency>
