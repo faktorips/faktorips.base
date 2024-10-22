@@ -184,7 +184,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
                 .findAny();
         assertThat(eclipseLink25.isPresent(), is(true));
         assertThat(eclipseLink25.get().getGroupId(), is("org.eclipse.persistence"));
-        assertThat(eclipseLink25.get().getVersion(), is("2.5.0"));
+        assertThat(eclipseLink25.get().getVersion(), is("2.7.13"));
     }
 
     @Test

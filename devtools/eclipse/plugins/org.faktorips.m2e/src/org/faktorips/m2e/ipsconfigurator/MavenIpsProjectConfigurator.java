@@ -378,7 +378,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                     addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "1.1.0");
                     break;
                 case PersistenceSupportNames.ID_ECLIPSE_LINK_2_5:
-                    addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "2.5.0");
+                    addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "2.7.13");
                     break;
                 case PersistenceSupportNames.ID_ECLIPSE_LINK_3_0:
                     addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "3.0.2");
