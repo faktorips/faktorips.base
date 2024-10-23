@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -46,6 +48,8 @@ import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,6 +84,42 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(2, values2.size());
         assertEquals(value1, values2.get(0));
         assertEquals(value2, values2.get(1));
+    }
+
+    @Test
+    public void testRemoveEnumValues_EnumTypeExists() {
+        List<TestEnumValue> values = new ArrayList<>();
+        TestEnumValue value1 = new TestEnumValue("1");
+        TestEnumValue value2 = new TestEnumValue("2");
+        values.add(value1);
+        values.add(value2);
+        repository.putEnumValues(TestEnumValue.class, values, new InternationalString() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String get(Locale locale) {
+
+                return "Test Description";
+            }
+        });
+
+        List<TestEnumValue> values2 = repository.getEnumValues(TestEnumValue.class);
+        assertEquals(2, values2.size());
+        assertEquals(value1, values2.get(0));
+        assertEquals(value2, values2.get(1));
+        assertEquals("Test Description", repository.getEnumDescription(TestEnumValue.class).get(null));
+
+        repository.removeEnumValues(TestEnumValue.class);
+        values2 = repository.getEnumValues(TestEnumValue.class);
+        InternationalString enumDescription = repository.getEnumDescription(TestEnumValue.class);
+        assertTrue(values2.isEmpty());
+        assertEquals(enumDescription, DefaultInternationalString.EMPTY);
+    }
+
+    @Test
+    public void testRemoveEnumValues_EnumTypeDoesNotExist() {
+        assertFalse(repository.removeEnumValues(TestEnumValue.class));
     }
 
     @Test

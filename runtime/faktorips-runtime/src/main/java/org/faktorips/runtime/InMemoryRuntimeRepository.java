@@ -232,6 +232,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     @Override
+    public <T> boolean removeEnumValues(Class<T> enumTypeClass) {
+        return enumValuesMap.remove(enumTypeClass) != null | enumDescriptionMap.remove(enumTypeClass) != null;
+    }
+
+    @Override
     public <T> InternationalString getEnumDescription(Class<T> enumClazz) {
         return enumDescriptionMap.getOrDefault(enumClazz, DefaultInternationalString.EMPTY);
     }

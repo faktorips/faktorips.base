@@ -68,6 +68,17 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
     }
 
     /**
+     * removes the enum values and description of the given enumType from the repository.
+     *
+     * @param enumTypeClass the Java class representing the enumeration type
+     *
+     * @return whether the given enum type was part of this repository and was successfully removed
+     * 
+     * @since 25.1
+     */
+    <T> boolean removeEnumValues(Class<T> enumTypeClass);
+
+    /**
      * Puts the test case into the repository.
      */
     void putIpsTestCase(IpsTestCaseBase test);
