@@ -62,6 +62,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -190,7 +191,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         if (tocFile == null) {
             return;
         }
-        String encoding = root.getIpsProject().getXmlFileCharset();
+        IIpsProject ipsProject = root.getIpsProject();
+        String encoding = ipsProject.getXmlFileCharset();
         if (encoding == null) {
             return;
         }
@@ -200,7 +202,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersionForToC();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
-            xml = XmlUtil.nodeToString(doc, encoding);
+            xml = XmlUtil.nodeToString(doc, encoding, DefaultLineSeparator.of(ipsProject));
         } catch (TransformerException e) {
             throw new IpsException(
                     new IpsStatus("Error transforming product component registry's table of contents to xml.", e)); //$NON-NLS-1$
@@ -208,7 +210,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
         boolean newlyCreated = createFileIfNotThere(tocFile);
         if (!newlyCreated) {
-            replaceTocFileIfContentHasChanged(root.getIpsProject(), tocFile, xml);
+            replaceTocFileIfContentHasChanged(ipsProject, tocFile, xml);
         } else {
             try {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(xml.getBytes(encoding));

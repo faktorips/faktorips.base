@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.labels;
 
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
@@ -18,6 +19,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractPropertiesGenerator;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -28,7 +30,8 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
     public LabelAndDescriptionGenerator(AFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             AbstractLocalizedPropertiesBuilder labelAndDescriptionPropertiesBuilder) {
         super(messagesPropertiesFile, supportedLanguage, labelAndDescriptionPropertiesBuilder,
-                new LabelAndDescriptionProperties(supportedLanguage.isDefaultLanguage()));
+                new LabelAndDescriptionProperties(supportedLanguage.isDefaultLanguage(),
+                        DefaultLineSeparator.of(messagesPropertiesFile)));
     }
 
     void addLabelsAndDescriptions(IIpsObjectPartContainer ipsObjectPartContainer,
@@ -63,8 +66,14 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
         }
         if (ipsObjectPart instanceof IDescribedElement) {
             IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getLocale());
-            if (description != null && IpsStringUtils.isNotBlank(description.getText())) {
-                labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.DESCRIPTION, description.getText());
+            if (description != null) {
+                String text = description.getText();
+                if (IpsStringUtils.isNotBlank(text)) {
+                    if (Abstractions.getWorkspace().isWindows()) {
+                        text = text.replace("\r\n", "\n");
+                    }
+                    labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.DESCRIPTION, text);
+                }
             }
         }
     }
@@ -81,7 +90,7 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
 
     protected LabelAndDescriptionProperties createLocalizedProperties(IIpsObject ipsObject) {
         LabelAndDescriptionProperties tmpLabelsAndDescriptions = new LabelAndDescriptionProperties(
-                getSupportedLanguage().isDefaultLanguage());
+                getSupportedLanguage().isDefaultLanguage(), DefaultLineSeparator.of(ipsObject));
         addLabelsAndDescriptions(ipsObject, tmpLabelsAndDescriptions);
         return tmpLabelsAndDescriptions;
     }

@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.test
 Bundle-Version: 24.1.17.qualifier
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.stdbuilder
-Require-Bundle: org.hamcrest;bundle-version="2.2"
+Require-Bundle: org.hamcrest;bundle-version="2.2",
+ org.faktorips.devtools.model.builder
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.faktorips.abstracttest,

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
@@ -42,7 +43,7 @@ import org.w3c.dom.Element;
 
 /**
  * Abstract super type that all IPS objects should extend.
- * 
+ *
  * @author unascribed
  */
 public abstract class IpsObject extends IpsObjectPartContainer implements IIpsObject {
@@ -54,7 +55,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     /**
      * Creates a new <code>IpsObject</code>.
-     * 
+     *
      * @param file The <code>IIpsSrcFile</code> in which this <code>IpsObject</code> will be stored
      *            in.
      */
@@ -173,13 +174,13 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * Hook for subclasses to implement their own dependency examination. This method returns always
      * an empty array.
-     * 
+     *
      * @param details The map to collect dependency details for all found dependencies. Can be
      *            <code>null</code> - no details have to be collected in this case.
-     * 
+     *
      * @return An array of found dependencies. If no dependencies are found, this method has to
      *             return an empty array.
-     * 
+     *
      */
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         return new IDependency[0];
@@ -208,7 +209,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     /**
      * Returns whether the XML for this {@link IpsObject} uses an XML schema.
-     * 
+     *
      * <p>
      * If this method returns {@code true}, {@link #getXmlNamespace()} and
      * {@link #getXmlSchemaLocation()} must also be implemented.
@@ -258,7 +259,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /**
      * This operation is extended by <code>IpsObject</code> to perform validations on the name
      * property.
-     * 
+     *
      * @see #validateNamingConventions(MessageList, String, String)
      */
     @Override
@@ -282,7 +283,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
 
     /**
      * Validate the naming conventions for the given name.
-     * 
+     *
      * @param list The list the message will be added if the name is invalid.
      * @param nameToValidate The name which will be validated against the naming conventions.
      * @param property The property which contains the name, the message will be related to this
@@ -317,7 +318,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
         element = toXml(doc);
         try {
             String encoding = getIpsProject().getXmlFileCharset();
-            String contents = XmlUtil.nodeToString(element, encoding);
+            String contents = XmlUtil.nodeToString(element, encoding, DefaultLineSeparator.of(getIpsProject()));
             ipsSrcFile = targetFragment.createIpsFile(filename, contents, force, monitor);
         } catch (TransformerException e) {
             throw new RuntimeException(e);

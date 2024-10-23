@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,7 +33,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void testPut() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
 
         validationMessages.put("abc", "message");
 
@@ -42,7 +42,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldCallPropertiesRemove() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
 
         validationMessages.put("abc", "message");
         validationMessages.remove("abc");
@@ -52,7 +52,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldBeModifiedAfterSuccessfullPut() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
         assertFalse(validationMessages.isModified());
 
         validationMessages.put("key", "message");
@@ -66,7 +66,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldBeModifiedAfterSuccessfullRemove() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
         assertFalse(validationMessages.isModified());
 
         validationMessages.remove("key");
@@ -82,7 +82,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void testStoreNoTimestamp() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
         validationMessages.remove("key");
         validationMessages.put("key", "message");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -96,7 +96,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldCallPropertyLoad() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
 
         InputStream inputStream = mock(InputStream.class);
         validationMessages.load(inputStream);
@@ -107,7 +107,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldNotBeModifiedAfterLoad() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
         assertFalse(validationMessages.isModified());
 
         validationMessages.put("abc", "text");
@@ -121,7 +121,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldNotBeModifiedAfterStore() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
         assertFalse(validationMessages.isModified());
 
         String messageText = "text";
@@ -136,7 +136,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldGetSizeFromProperties() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
 
         validationMessages.put("abc", "123");
         validationMessages.put("abc", "312");
@@ -147,7 +147,7 @@ public class MessagesPropertiesTest {
 
     @Test
     public void shouldSortPropertyKeys() throws Exception {
-        MessagesProperties validationMessages = new MessagesProperties();
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
 
         validationMessages.put("aaa1", "123");
         validationMessages.put("aaa0", "123");

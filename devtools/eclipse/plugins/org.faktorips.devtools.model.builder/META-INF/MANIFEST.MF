@@ -13,6 +13,7 @@ Require-Bundle:
  org.faktorips.eclipse.emf.codegen;bundle-version="22.12.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.model.builder.java,
+ org.faktorips.devtools.model.builder.plugin,
  org.faktorips.devtools.model.builder.settings
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-17

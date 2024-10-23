@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,6 +27,8 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.faktorips.devtools.model.builder.plugin.IpsBuilderPlugin;
+import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.util.IoUtil;
 
 public class MessagesProperties {
@@ -38,13 +40,13 @@ public class MessagesProperties {
     /**
      * Default constructor creating a new {@link Properties} object.
      */
-    public MessagesProperties() {
-        properties = new SortedProperties();
+    public MessagesProperties(String lineSeparator) {
+        properties = new SortedProperties(lineSeparator);
     }
 
     /**
      * Manually set the modification state
-     * 
+     *
      * @param modified the new modification state
      */
     private void setModified(boolean modified) {
@@ -58,7 +60,7 @@ public class MessagesProperties {
     /**
      * Putting a message text for a message key in map of messages and setting the modification
      * state if map has changed.
-     * 
+     *
      * @param messageKey the key of the message
      * @param messageText the text of the message
      */
@@ -71,7 +73,7 @@ public class MessagesProperties {
 
     /**
      * Getting the message stored for the given key or null if there is no message for this key
-     * 
+     *
      * @param key The key of the message you want to get
      * @return the message stored for the key or null if there is none
      */
@@ -82,7 +84,7 @@ public class MessagesProperties {
     /**
      * Removing the message with the given key and setting the modification state if the map
      * changed.
-     * 
+     *
      * @param key the key of the message to be removed.
      */
     public void remove(String key) {
@@ -93,7 +95,7 @@ public class MessagesProperties {
 
     /**
      * Clear all existing elements and load new properties form stream.
-     * 
+     *
      * @param stream The {@link InputStream} to load, @see {@link Properties#load(InputStream)}
      */
     public void load(InputStream stream) {
@@ -102,7 +104,7 @@ public class MessagesProperties {
             properties.load(stream);
             setModified(false);
         } catch (IOException e) {
-            StdBuilderPlugin.log(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
+            IpsLog.get().log(new Status(IStatus.ERROR, IpsBuilderPlugin.PLUGIN_ID,
                     "Error occured while reading file", e));
         } finally {
             IoUtil.close(stream);
@@ -114,7 +116,7 @@ public class MessagesProperties {
             properties.store(outputStream, null);
             setModified(false);
         } catch (IOException e) {
-            StdBuilderPlugin.log(new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID,
+            IpsLog.get().log(new Status(IStatus.ERROR, IpsBuilderPlugin.PLUGIN_ID,
                     "Error occured while saving message file", e));
         } finally {
             IoUtil.close(outputStream);
@@ -152,6 +154,12 @@ public class MessagesProperties {
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
         };
 
+        private final String lineSeparator;
+
+        public SortedProperties(String lineSeparator) {
+            this.lineSeparator = lineSeparator;
+        }
+
         @Override
         public synchronized Enumeration<Object> keys() {
             return Collections.enumeration(new TreeSet<>(super.keySet()));
@@ -187,7 +195,7 @@ public class MessagesProperties {
                      */
                     val = saveConvert(val, false);
                     bw.write(key + "=" + val);
-                    bw.newLine();
+                    bw.write(lineSeparator);
                 }
             }
             bw.flush();
@@ -196,7 +204,7 @@ public class MessagesProperties {
         /*
          * Converts Unicode characters to encoded &#92;uxxxx and escapes special characters with a
          * preceding slash.
-         * 
+         *
          * Copied from Properties#saveConvert(String, boolean, boolean)
          */
         // CSOFF: CyclomaticComplexity

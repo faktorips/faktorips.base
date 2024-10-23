@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -48,10 +50,11 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
     }
 
     private String getContentsOfIpsObject(IIpsObject ipsObject) {
-        String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+        IIpsProject ipsProject = ipsObject.getIpsProject();
+        String encoding = ipsProject.getXmlFileCharset();
         Element xml = ipsObject.toXml(XmlUtil.getDocumentBuilder().newDocument());
         try {
-            return XmlUtil.nodeToString(xml, encoding);
+            return XmlUtil.nodeToString(xml, encoding, DefaultLineSeparator.of(ipsProject));
         } catch (TransformerException e) {
             // This is a programming error, re-throw as runtime exception
             throw new RuntimeException(e);

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -81,7 +81,8 @@ public class ValidationRuleMessagePropertiesTest {
         mockRuleProperties(rule1, pcType1, RULE1);
         mockRuleProperties(rule2, pcType1, RULE2);
         mockRuleProperties(rule3, pcType2, RULE3);
-        ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties(false);
+        ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties(false,
+                System.lineSeparator());
         validationMessages.put(rule1, "123");
         validationMessages.put(rule2, "123");
         validationMessages.put(rule3, "312");

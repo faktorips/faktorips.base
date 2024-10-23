@@ -39,12 +39,14 @@ import org.faktorips.devtools.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.model.util.BeanUtil;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -346,11 +348,12 @@ public class IpsSrcFileContent {
                         System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
                     }
                     Document doc = XmlUtil.getDocumentBuilder().newDocument();
-                    String encoding = ipsObject.getIpsProject().getXmlFileCharset();
+                    IIpsProject ipsProject = ipsObject.getIpsProject();
+                    String encoding = ipsProject.getXmlFileCharset();
                     Element xml = getIpsObject().toXml(doc);
                     org.faktorips.devtools.model.util.XmlUtil.removeIds(xml);
-                    String newXml = XmlUtil.nodeToString(xml, encoding,
-                            ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
+                    String newXml = XmlUtil.nodeToString(xml, encoding, DefaultLineSeparator.of(ipsProject),
+                            ipsProject.getReadOnlyProperties().isEscapeNonStandardBlanks());
                     ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
                     AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
                     file.setContents(is, true, monitor1);

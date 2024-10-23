@@ -54,6 +54,7 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.XmlUtil;
@@ -253,7 +254,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         element.removeAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
         try {
             String encoding = getIpsProject().getXmlFileCharset();
-            String contents = XmlUtil.nodeToString(element, encoding);
+            String contents = XmlUtil.nodeToString(element, encoding, DefaultLineSeparator.of(getIpsProject()));
             return createIpsFile(filename, contents, force, monitor);
         } catch (TransformerException e) {
             throw new RuntimeException(e);

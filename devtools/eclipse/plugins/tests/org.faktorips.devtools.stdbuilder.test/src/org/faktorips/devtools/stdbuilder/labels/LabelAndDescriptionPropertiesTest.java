@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,6 @@ import org.faktorips.runtime.model.type.DocumentationKind;
 import org.junit.Test;
 
 public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
-
     private IPolicyCmptType pcType;
     private IPolicyCmptTypeAttribute attribute;
     private IPolicyCmptTypeAssociation association;
@@ -44,8 +43,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         association.setTarget(target.getQualifiedName());
         association.setTargetRoleSingular("target");
         tableStructure = newTableStructure(ipsProject, "my.deep.table.Structure");
-
-        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false);
+        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false, System.lineSeparator());
     }
 
     @Test
@@ -55,9 +53,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         labelAndDescriptionProperties.put(attribute, DocumentationKind.DESCRIPTION, "Lorem Ipsum\ndolor sit amet");
         labelAndDescriptionProperties.put(association, DocumentationKind.LABEL, "Hello World");
         labelAndDescriptionProperties.put(tableStructure, DocumentationKind.LABEL, "TabTab");
-
         labelAndDescriptionProperties.deleteAllMessagesFor(pcType.getQualifiedNameType());
-
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
                 .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(0));
@@ -72,14 +68,12 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation association2 = pcType.newPolicyCmptTypeAssociation();
         association2.setTarget(target.getQualifiedName());
         association2.setTargetRoleSingular("foobar2");
-
         labelAndDescriptionProperties.put(attribute, DocumentationKind.LABEL, "Hello World");
         labelAndDescriptionProperties.put(attribute, DocumentationKind.DESCRIPTION, "Lorem Ipsum\ndolor sit amet");
         labelAndDescriptionProperties.put(attribute2, DocumentationKind.LABEL, "Foo");
         labelAndDescriptionProperties.put(association, DocumentationKind.LABEL, "Hello World");
         labelAndDescriptionProperties.put(association2, DocumentationKind.LABEL, "Bar");
         labelAndDescriptionProperties.put(tableStructure, DocumentationKind.LABEL, "TabTab");
-
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
                 .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(5)));
@@ -103,19 +97,17 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void testPutAndGet_emptyMessage() throws Exception {
         createObjectsAndMessages();
-        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false);
+        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false, System.lineSeparator());
         IPolicyCmptTypeAttribute attribute2 = pcType.newPolicyCmptTypeAttribute("foobar");
         IPolicyCmptTypeAssociation association2 = pcType.newPolicyCmptTypeAssociation();
         association2.setTarget(target.getQualifiedName());
         association2.setTargetRoleSingular("foobar2");
-
         labelAndDescriptionProperties.put(attribute, DocumentationKind.LABEL, "Hello World");
         labelAndDescriptionProperties.put(attribute, DocumentationKind.DESCRIPTION, "Lorem Ipsum\ndolor sit amet");
         labelAndDescriptionProperties.put(attribute2, DocumentationKind.LABEL, "Foo");
         labelAndDescriptionProperties.put(association, DocumentationKind.LABEL, "Hello World");
         labelAndDescriptionProperties.put(association2, DocumentationKind.LABEL, "Bar");
         labelAndDescriptionProperties.put(tableStructure, DocumentationKind.LABEL, "TabTab");
-
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
                 .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(5)));
@@ -139,10 +131,9 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void testPutAndGet_emptyMessageWithDefaultLanguage() throws Exception {
         createObjectsAndMessages();
-        labelAndDescriptionProperties = new LabelAndDescriptionProperties(true);
+        labelAndDescriptionProperties = new LabelAndDescriptionProperties(true, System.lineSeparator());
         labelAndDescriptionProperties.put(attribute, DocumentationKind.LABEL, "");
         labelAndDescriptionProperties.put(attribute, DocumentationKind.DESCRIPTION, "");
-
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
                 .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(2)));
@@ -158,9 +149,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         createObjectsAndMessages();
         labelAndDescriptionProperties.put(attribute, DocumentationKind.LABEL, "Hello World");
         labelAndDescriptionProperties.put(attribute, DocumentationKind.DESCRIPTION, "Lorem Ipsum\ndolor sit amet");
-
         labelAndDescriptionProperties.remove(new MessageKey(attribute, DocumentationKind.LABEL));
-
         Collection<MessageKey> keysForPcType = labelAndDescriptionProperties.getKeysForIpsObject(pcType
                 .getQualifiedNameType());
         assertThat(keysForPcType.size(), is(equalTo(1)));
