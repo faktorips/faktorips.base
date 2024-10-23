@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -61,5 +61,12 @@ public interface AProject extends AContainer {
      * Returns the default character set used for files in this project.
      */
     Charset getDefaultCharset();
+
+    /**
+     * Returns the default line separator used for files in this project.
+     */
+    default String getDefaultLineSeparator() {
+        return System.lineSeparator();
+    }
 
 }

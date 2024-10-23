@@ -40,8 +40,8 @@ public class MessagesProperties {
     /**
      * Default constructor creating a new {@link Properties} object.
      */
-    public MessagesProperties() {
-        properties = new SortedProperties();
+    public MessagesProperties(String lineSeparator) {
+        properties = new SortedProperties(lineSeparator);
     }
 
     /**
@@ -154,6 +154,12 @@ public class MessagesProperties {
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
         };
 
+        private final String lineSeparator;
+
+        public SortedProperties(String lineSeparator) {
+            this.lineSeparator = lineSeparator;
+        }
+
         @Override
         public synchronized Enumeration<Object> keys() {
             return Collections.enumeration(new TreeSet<>(super.keySet()));
@@ -189,7 +195,7 @@ public class MessagesProperties {
                      */
                     val = saveConvert(val, false);
                     bw.write(key + "=" + val);
-                    bw.newLine();
+                    bw.write(lineSeparator);
                 }
             }
             bw.flush();

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.pctype.IValidationRuleMessageText;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.values.LocalizedString;
 
 public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator {
@@ -29,7 +30,7 @@ public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator
     public ValidationRuleMessagesGenerator(AFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             ValidationRuleMessagesPropertiesBuilder builder) {
         super(messagesPropertiesFile, supportedLanguage, builder, new ValidationRuleMessageProperties(
-                supportedLanguage.isDefaultLanguage()));
+                supportedLanguage.isDefaultLanguage(), DefaultLineSeparator.of(messagesPropertiesFile)));
     }
 
     public void generate(IPolicyCmptType ipsObject) {
@@ -45,7 +46,7 @@ public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator
     /**
      * Getting the message text from {@link IValidationRule} and convert the replace parameters to
      * match java {@link MessageFormat}
-     * 
+     *
      * @param validationRule The validationRule holding the message text
      * @return the text of validationRule with converted replacement parameters
      */
@@ -85,7 +86,7 @@ public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator
      * component types and a list of ruleNames that were stored in the type during last build. This
      * method deletes the message for every rule that is located in the ruleNameSet but not in the
      * list of validation rules.
-     * 
+     *
      * @param policyCmptType The name of the policy component type used to get the message key
      */
     void deleteMessagesForDeletedRules(IPolicyCmptType policyCmptType) {
@@ -94,7 +95,7 @@ public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator
 
     protected AbstractLocalizedProperties createLocalizedProperties(IPolicyCmptType pcType) {
         ValidationRuleMessageProperties validationRuleMessageProperties = new ValidationRuleMessageProperties(
-                getSupportedLanguage().isDefaultLanguage());
+                getSupportedLanguage().isDefaultLanguage(), DefaultLineSeparator.of(pcType));
         addValidationRuleMessages(pcType, validationRuleMessageProperties);
         return validationRuleMessageProperties;
     }

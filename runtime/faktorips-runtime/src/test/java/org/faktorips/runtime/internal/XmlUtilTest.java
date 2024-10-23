@@ -169,14 +169,14 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     @Test
     public void testNodeToString() throws TransformerException {
         Document doc = newDocument();
-        XmlUtil.nodeToString(doc, "Cp1252"); //$NON-NLS-1$
+        XmlUtil.nodeToString(doc, "Cp1252", LF); //$NON-NLS-1$
 
         Element element = doc.createElement("el");
         doc.appendChild(element);
         CDATASection cdataSection = doc.createCDATASection("a" + LF + "b");
         element.appendChild(cdataSection);
 
-        String string = XmlUtil.nodeToString(doc, "Cp1252");
+        String string = XmlUtil.nodeToString(doc, "Cp1252", LF);
         String expected = "<?xml version=\"1.0\" encoding=\"WINDOWS-1252\" standalone=\"no\"?>"
                 + LF + "<el><![CDATA[a" + LF + "b]]></el>"
                 + LF;
@@ -191,7 +191,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         Element element = doc.createElement("el");
         doc.appendChild(element);
 
-        String string = XmlUtil.nodeToString(doc, UTF8);
+        String string = XmlUtil.nodeToString(doc, UTF8, LF);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF + "<el/>"
                 + LF;
         assertEquals(expected, string);
@@ -208,7 +208,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         root.appendChild(element);
         doc.appendChild(root);
 
-        String string = XmlUtil.nodeToString(root, UTF8);
+        String string = XmlUtil.nodeToString(root, UTF8, LF);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
                 + "<root xml:space=\"preserve\">" + LF + " <el/>" + LF
                 + "</root>" + LF;
@@ -237,7 +237,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
                         + " " + SYS_LINE_SEPARATOR
                         + "</root>" + SYS_LINE_SEPARATOR));
         // java9 fix with regex, removes empty lines
-        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8, LF),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
                         + "<root>" + LF
                         + " <element>SOME_DATA</element>" + LF
@@ -282,7 +282,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
                         + " " + SYS_LINE_SEPARATOR
                         + "</DocElement>" + SYS_LINE_SEPARATOR));
         // TestDocument has no Tabs and no empty lines
-        assertThat(XmlUtil.nodeToString(root, UTF8),
+        assertThat(XmlUtil.nodeToString(root, UTF8, LF),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
                         + "<DocElement>" + LF
                         + " <TestElement value=\"öäüÖÄÜß\">blabla</TestElement>" + LF
@@ -326,7 +326,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
                         + " </element>" + SYS_LINE_SEPARATOR + " " + SYS_LINE_SEPARATOR
                         + "</root>" + SYS_LINE_SEPARATOR));
         // java9 fix with regex, removes empty lines
-        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8, LF),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
                         + "<root>" + LF
                         + " <element> SOME_DATA_WITH_LEADING_SPACE<ExtensionProperties>" + LF
@@ -348,7 +348,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         el.setTextContent(
                 "For\u00A0some\u202Freason,\uFEFFsomeone\u2000used\u2001a\u2002lot\u2003of\u2004different\u2005spaces.\u2006Thanks\u2007to\u2008apache\u2009commons\u200Awe\u205Fcan\u3000replace them.");
         docElement.appendChild(el);
-        String string = XmlUtil.nodeToString(doc, "UTF-8", true);
+        String string = XmlUtil.nodeToString(doc, "UTF-8", LF, true);
         assertThat(string, containsString(
                 "For&#160;some&#8239;reason,&#65279;someone&#8192;used&#8193;a&#8194;lot&#8195;of&#8196;different&#8197;spaces.&#8198;Thanks&#8199;to&#8200;apache&#8201;commons&#8202;we&#8287;can&#12288;replace them."));
     }
@@ -361,7 +361,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         el.setTextContent(
                 "For\u00A0some\u202Freason,\uFEFFsomeone\u2000used\u2001a\u2002lot\u2003of\u2004different\u2005spaces.\u2006Thanks\u2007to\u2008apache\u2009commons\u200Awe\u205Fcan\u3000replace them.");
         docElement.appendChild(el);
-        String string = XmlUtil.nodeToString(doc, "UTF-8", false);
+        String string = XmlUtil.nodeToString(doc, "UTF-8", LF, false);
         assertThat(string, containsString(
                 "For\u00A0some\u202Freason,\uFEFFsomeone\u2000used\u2001a\u2002lot\u2003of\u2004different\u2005spaces.\u2006Thanks\u2007to\u2008apache\u2009commons\u200Awe\u205Fcan\u3000replace them."));
     }
@@ -377,7 +377,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
             el.setTextContent("prefix" + unicodeEntity + "suffix" + (int)c);
             docElement.appendChild(el);
 
-            String string = XmlUtil.nodeToString(doc, "UTF-8", true);
+            String string = XmlUtil.nodeToString(doc, "UTF-8", LF, true);
             if (c == '\t' || c == '\n') {
                 assertThat(string, containsString(unicodeEntity));
                 assertThat(string, not(containsString(escapedEntity)));
@@ -406,7 +406,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         Document doc = XmlUtil.parseDocument(new ByteArrayInputStream(content.getBytes()));
         Element rootElement = XmlUtil.getFirstElement(doc, "root");
 
-        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8, LF),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
                         + "<root>" + LF
                         + " <element>SOME_DATA</element>" + LF
@@ -424,7 +424,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         Document doc = XmlUtil.parseDocument(new ByteArrayInputStream(content.getBytes()));
         Element rootElement = XmlUtil.getFirstElement(doc, "root");
 
-        assertThat(XmlUtil.nodeToString(rootElement, UTF8),
+        assertThat(XmlUtil.nodeToString(rootElement, UTF8, LF),
                 is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LF
                         + "<root>" + LF
                         + " <element>SOME_DATA</element>" + LF

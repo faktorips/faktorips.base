@@ -45,7 +45,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
         association.setTargetRoleSingular("target");
         tableStructure = newTableStructure(ipsProject, "my.deep.table.Structure");
 
-        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false);
+        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false, System.lineSeparator());
     }
 
     @Test
@@ -103,7 +103,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void testPutAndGet_emptyMessage() throws Exception {
         createObjectsAndMessages();
-        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false);
+        labelAndDescriptionProperties = new LabelAndDescriptionProperties(false, System.lineSeparator());
         IPolicyCmptTypeAttribute attribute2 = pcType.newPolicyCmptTypeAttribute("foobar");
         IPolicyCmptTypeAssociation association2 = pcType.newPolicyCmptTypeAssociation();
         association2.setTarget(target.getQualifiedName());
@@ -139,7 +139,7 @@ public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void testPutAndGet_emptyMessageWithDefaultLanguage() throws Exception {
         createObjectsAndMessages();
-        labelAndDescriptionProperties = new LabelAndDescriptionProperties(true);
+        labelAndDescriptionProperties = new LabelAndDescriptionProperties(true, System.lineSeparator());
         labelAndDescriptionProperties.put(attribute, DocumentationKind.LABEL, "");
         labelAndDescriptionProperties.put(attribute, DocumentationKind.DESCRIPTION, "");
 

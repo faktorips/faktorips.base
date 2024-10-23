@@ -73,7 +73,7 @@ public class PlainJavaProject extends PlainJavaFolder implements AProject {
 
     @Override
     public Charset getDefaultCharset() {
-        // TODO FIPS-8693: von Maven / Filesystem abfragen?
+        // TODO von Maven / Filesystem abfragen?
         return StandardCharsets.UTF_8;
     }
 

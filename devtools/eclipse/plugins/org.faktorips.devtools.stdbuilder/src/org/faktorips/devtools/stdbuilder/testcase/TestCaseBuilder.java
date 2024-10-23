@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,6 +47,7 @@ import org.faktorips.devtools.model.testcase.ITestRule;
 import org.faktorips.devtools.model.testcase.ITestValue;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -57,7 +58,7 @@ import org.w3c.dom.Element;
 
 /**
  * A builder that transforms the test case into an xml file in runtime format.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseBuilder extends AbstractArtefactBuilder {
@@ -94,7 +95,8 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             Element element = toRuntimeTestCaseXml(doc, testCase);
             String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" //$NON-NLS-1$
                     : testCase.getIpsProject().getXmlFileCharset();
-            content = org.faktorips.runtime.internal.XmlUtil.nodeToString(element, encoding);
+            content = org.faktorips.runtime.internal.XmlUtil.nodeToString(element, encoding,
+                    DefaultLineSeparator.of(ipsSrcFile));
             is = convertContentAsStream(content, encoding);
 
             AFile file = getXmlContentFile(ipsSrcFile);
@@ -149,7 +151,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
     /**
      * Returns the relative path to the generated XML file.
-     * 
+     *
      * @param ipsSrcFile The {@link IIpsSrcFile} you want to generate
      * @return the relative path to the generated XML file
      */
@@ -172,10 +174,10 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Transforms the given test case object to an ips test case xml which can executed as ips test
      * case in runtime.
-     * 
+     *
      * @param doc the xml document that can be used as a factory to create xml elment. @param
      *            testCase the test case which will be transformed to the runtime test case format.
-     * 
+     *
      * @return the xml representation of the test case
      */
     private Element toRuntimeTestCaseXml(Document doc, ITestCase testCase) {

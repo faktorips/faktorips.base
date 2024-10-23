@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -46,7 +47,10 @@ public abstract class AbstractValidationMessagesBuilderTest {
     }
 
     protected IIpsPackageFragment mockPackageFragment() {
+        AProject project = mock(AProject.class);
+        when(project.getDefaultLineSeparator()).thenReturn(System.lineSeparator());
         AFile file = mock(AFile.class);
+        when(file.getProject()).thenReturn(project);
 
         AFolder derivedFolder = mock(AFolder.class);
         when(derivedFolder.getFile(any(Path.class))).thenReturn(file);

@@ -409,8 +409,9 @@ public class XmlUtil {
     /**
      * Transforms the given node to a String.
      */
-    public static final String nodeToString(Node node, String encoding) throws TransformerException {
-        return nodeToString(node, encoding, false);
+    public static final String nodeToString(Node node, String encoding, String lineSeparator)
+            throws TransformerException {
+        return nodeToString(node, encoding, lineSeparator, false);
     }
 
     /**
@@ -422,7 +423,7 @@ public class XmlUtil {
      * @return the node as {@link String}
      * @throws TransformerException for errors that occurred during the transformation process
      */
-    public static final String nodeToString(Node node, String encoding, boolean escapeBlanks)
+    public static final String nodeToString(Node node, String encoding, String lineSeparator, boolean escapeBlanks)
             throws TransformerException {
         boolean preserveSpace = removePreserveSpace(node);
 
@@ -435,7 +436,7 @@ public class XmlUtil {
         }
         xml = noIndentationAroundCDATA(xml);
         xml = noIndentationToXmlDataContent(xml);
-        return removeOrEscapeUnwantedCharacters(xml, escapeBlanks);
+        return removeOrEscapeUnwantedCharacters(xml, escapeBlanks, lineSeparator);
     }
 
     /**
@@ -530,9 +531,10 @@ public class XmlUtil {
      *
      * @param xml the XML to replace
      * @param escapeBlanks whether to escape non standard blanks
+     * @param lineSeparator the line separator to use
      * @return the replaced XML
      */
-    private static String removeOrEscapeUnwantedCharacters(String xml, boolean escapeBlanks) {
+    private static String removeOrEscapeUnwantedCharacters(String xml, boolean escapeBlanks, String lineSeparator) {
         ArrayList<String> searchList = new ArrayList<>();
         ArrayList<String> replacementList = new ArrayList<>();
 
@@ -561,7 +563,11 @@ public class XmlUtil {
         }
 
         searchList.add("\r\n");
-        replacementList.add("\n");
+        replacementList.add(lineSeparator);
+        searchList.add("\r");
+        replacementList.add(lineSeparator);
+        searchList.add("\n");
+        replacementList.add(lineSeparator);
 
         for (int i = 0; i <= 31; i++) {
             if (i != '\t' && i != '\n') {

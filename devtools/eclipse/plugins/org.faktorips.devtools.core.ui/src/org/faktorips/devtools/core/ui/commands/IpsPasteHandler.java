@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -71,6 +71,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.StringUtil;
 
@@ -132,7 +133,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * Try to paste an <code>IIpsObject</code> to an <code>IIpsObjectPartContainer</code>. If it is
      * not possible because the stored data does not support this (e.g. is a resource and not a
      * string) paste(IIpsPackageFragement) is called.
-     * 
+     *
      * @param parent The parent to paste to.
      */
     protected List<IIpsObjectPart> paste(IpsObjectPartContainer parent) {
@@ -170,7 +171,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     /**
      * obtain the package fragment of the given part container
-     * 
+     *
      * @param parent a part container
      * @return the package fragment of the given part container
      */
@@ -239,7 +240,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     private void copyResources(IIpsPackageFragment parent, IResource[] resources) {
         for (IResource resource2 : resources) {
             try {
-                IResource resource = ((IIpsElement)parent).getCorrespondingResource().unwrap();
+                IResource resource = parent.getCorrespondingResource().unwrap();
                 if (resource != null) {
                     copy(resource, resource2);
                 } else {
@@ -381,9 +382,8 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
         String contents;
         try {
-            contents = XmlUtil.nodeToString(
-                    ipsObject.toXml(XmlUtil.getDocumentBuilder().newDocument()),
-                    encoding);
+            contents = XmlUtil.nodeToString(ipsObject.toXml(XmlUtil.getDocumentBuilder().newDocument()),
+                    encoding, DefaultLineSeparator.of(ipsObject));
         } catch (TransformerException e) {
             throw new RuntimeException(e);
             // This is a programing error, rethrow as runtime exception
@@ -545,7 +545,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     /**
      * Copy the given resource to the given target path.
-     * 
+     *
      * @throws IpsException If copy failed.
      */
     private void copy(IResource targetParent, IResource resource) {
@@ -580,7 +580,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Copies the {@link IResource resource} to a new file with the given name under the
      * {@link IPath target path}.
-     * 
+     *
      * @param resource the {@link IResource} to copy
      * @param targetPath the {@link IPath} for the target directory
      * @param newName the name for the new file

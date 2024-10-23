@@ -25,7 +25,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -34,6 +33,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.builder.labels.LabelAndDescriptionProperties.MessageKey;
 import org.faktorips.devtools.model.builder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.model.builder.propertybuilder.AbstractLocalizedPropertiesBuilder;
@@ -48,7 +48,6 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.junit.Test;
@@ -67,46 +66,56 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    private AFile aFile;
+
+    private AProject mockProject;
+
+    private AbstractLocalizedPropertiesBuilder builder;
+
+    private InputStream inputStream;
+
     public void setUpPcType() throws Exception {
         ipsProject = newIpsProject("myProject");
         pcType = newPolicyCmptType(ipsProject, MY_QNAME);
         enumType = newEnumType(ipsProject, MY_ENUM_QNAME);
         enumContent = newEnumContent(enumType, MY_ENUM_QNAME);
+        aFile = mock(AFile.class);
+        mockProject = mock(AProject.class);
+        builder = mock(LabelAndDescriptionPropertiesBuilder.class);
+        inputStream = mock(InputStream.class);
+
+        when(aFile.getProject()).thenReturn(mockProject);
+        when(mockProject.getDefaultLineSeparator()).thenReturn(System.lineSeparator());
     }
 
     @Test
     public void testLoadMessagesFromFile() throws Exception {
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
-        InputStream inputStream = mock(InputStream.class);
-        when(propertyFile.getContents()).thenReturn(inputStream);
+        setUpPcType();
+        when(aFile.getContents()).thenReturn(inputStream);
 
-        new LabelAndDescriptionGenerator(propertyFile, new SupportedLanguage(Locale.GERMAN), builder);
+        new LabelAndDescriptionGenerator(aFile, new SupportedLanguage(Locale.GERMAN), builder);
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
         verifyNoInteractions(inputStream);
 
-        when(propertyFile.exists()).thenReturn(true);
+        when(aFile.exists()).thenReturn(true);
 
-        new LabelAndDescriptionGenerator(propertyFile, new SupportedLanguage(Locale.GERMAN), builder);
+        new LabelAndDescriptionGenerator(aFile, new SupportedLanguage(Locale.GERMAN), builder);
 
-        verify(propertyFile).getContents();
+        verify(aFile).getContents();
         verify(inputStream).close();
     }
 
     @Test
     public void testGenerate() throws Exception {
         setUpPcType();
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
-        InputStream inputStream = mock(InputStream.class);
-        LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(propertyFile,
-                new SupportedLanguage(Locale.GERMAN), builder);
+
+        LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(
+                aFile, new SupportedLanguage(Locale.GERMAN), builder);
         AbstractLocalizedProperties labelsAndDescriptions = messagesGenerator.getLocalizedProperties();
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
+        verify(aFile).getProject();
         verifyNoInteractions(inputStream);
         assertFalse(labelsAndDescriptions.isModified());
 
@@ -129,9 +138,9 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).create(any(InputStream.class), isNull());
+        verify(aFile).create(any(InputStream.class), isNull());
 
-        reset(propertyFile);
+        reset(aFile);
         reset(inputStream);
 
         messagesGenerator.generate(pcType);
@@ -139,70 +148,65 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.generate(enumContent);
         assertFalse(labelsAndDescriptions.isModified());
 
-        verifyNoInteractions(propertyFile);
+        verifyNoInteractions(aFile);
         verifyNoInteractions(inputStream);
     }
 
     @Test
     public void testSafeIfModified() throws Exception {
         setUpPcType();
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
-        LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(propertyFile,
+        LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
+        verify(aFile).getProject();
 
         setLabel(pcType, "foo");
         messagesGenerator.generate(pcType);
 
-        reset(propertyFile);
+        reset(aFile);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), isNull());
+        verify(aFile).exists();
+        verify(aFile).create(any(InputStream.class), isNull());
     }
 
     @Test
     public void testSafeIfModified_notModified() throws Exception {
         setUpPcType();
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
-        LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(propertyFile,
+        LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
+        verify(aFile).getProject();
 
         setLabel(pcType, "foo");
         messagesGenerator.generate(pcType);
 
-        reset(propertyFile);
+        reset(aFile);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), isNull());
+        verify(aFile).exists();
+        verify(aFile).create(any(InputStream.class), isNull());
 
         messagesGenerator.loadMessages();
         messagesGenerator.generate(pcType);
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile, never()).setContents(any(InputStream.class), anyBoolean(),
+        verify(aFile, never()).setContents(any(InputStream.class), anyBoolean(),
                 any(NullProgressMonitor.class));
     }
 
     @Test
     public void testDeleteAllMessagesFor() throws Exception {
         setUpPcType();
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(AFile.class),
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         setLabel(pcType, "foo");
@@ -227,8 +231,19 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     @Test
     public void testAddLabelsAndDescriptions_emptyMessage() throws Exception {
         setUpPcType();
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(AFile.class),
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(aFile,
+                new SupportedLanguage(Locale.GERMAN), builder);
+
+        labelAndDescriptionGenerator.addLabelAndDescription(pcType);
+
+        assertThat(labelAndDescriptionGenerator.getLocalizedProperties().isModified(), is(false));
+        assertThat(labelAndDescriptionGenerator.getLocalizedProperties().size(), is(equalTo(0)));
+    }
+
+    @Test
+    public void testAddLabelsAndDescriptions_ReplacesWindowsLineSeparator() throws Exception {
+        setUpPcType();
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         labelAndDescriptionGenerator.addLabelAndDescription(pcType);
@@ -240,19 +255,20 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     @Test
     public void testGeneratePluralLabel() throws Exception {
         setUpPcType();
-        AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(AFile.class),
+        pcType.setDescriptionText(Locale.GERMAN, "Foo" + System.lineSeparator() + "Bar");
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
-        IAssociation association = pcType.newAssociation();
-        setLabel(association, "asso", "assos");
 
-        labelAndDescriptionGenerator.addLabelAndDescription(association);
+        labelAndDescriptionGenerator.addLabelAndDescription(pcType);
 
         assertThat(
                 labelAndDescriptionGenerator.getLocalizedProperties()
                         .getKeysForIpsObject(pcType.getQualifiedNameType()),
-                hasItems(new MessageKey(association, DocumentationKind.LABEL), new MessageKey(association,
-                        DocumentationKind.PLURAL_LABEL)));
+                hasItems(new MessageKey(pcType, DocumentationKind.DESCRIPTION)));
+        assertThat(
+                labelAndDescriptionGenerator.getLocalizedProperties()
+                        .getMessage(new MessageKey(pcType, DocumentationKind.DESCRIPTION).getKey()),
+                is("Foo\nBar"));
     }
 
     private void setLabel(ILabeledElement labeledElement, String value) {
