@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,13 +23,14 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 
 /**
  * This property generator helps the {@link EnumPropertyBuilder} to generate a concrete property
  * file. There will be one {@link EnumPropertyGenerator} for every property file that is generated
  * by the {@link EnumPropertyBuilder}. You could tell the generator to read an existing property
  * file so the generator could recognize any changes to the exiting properties.
- * 
+ *
  * @author dirmeier
  */
 public class EnumPropertyGenerator {
@@ -47,7 +48,7 @@ public class EnumPropertyGenerator {
     public EnumPropertyGenerator(IEnumType enumType, Locale locale) {
         this.enumType = enumType;
         this.locale = locale;
-        messagesProperties = new MessagesProperties();
+        messagesProperties = new MessagesProperties(DefaultLineSeparator.of(enumType));
     }
 
     public MessagesProperties getMessagesProperties() {

@@ -162,7 +162,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
                                         .getSchemaLocation(srcFile.getIpsObjectType()));
             }
             String xmlFileCharset = srcFile.getIpsProject().getXmlFileCharset();
-            String nodeToString = XmlUtil.nodeToString(doc, xmlFileCharset,
+            String nodeToString = XmlUtil.nodeToString(doc, xmlFileCharset, System.lineSeparator(),
                     srcFile.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
             EclipseIOUtil.writeToFile(srcFile.getCorrespondingFile().unwrap(),
                     new ByteArrayInputStream(nodeToString.getBytes(xmlFileCharset)), true, true,

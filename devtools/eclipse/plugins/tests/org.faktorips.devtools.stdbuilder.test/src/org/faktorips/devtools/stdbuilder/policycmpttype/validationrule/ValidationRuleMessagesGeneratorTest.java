@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -32,6 +31,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -51,6 +51,9 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType pcType;
     private IIpsProject ipsProject;
+    private AProject aProject;
+    private AFile aFile;
+    private ValidationRuleMessagesPropertiesBuilder builder;
 
     @Override
     @Before
@@ -58,40 +61,41 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         pcType = newPolicyCmptType(ipsProject, MY_QNAME);
+        aProject = mock(AProject.class);
+        aFile = mock(AFile.class);
+        builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
+
+        when(aFile.getProject()).thenReturn(aProject);
+        when(aProject.getDefaultLineSeparator()).thenReturn(System.lineSeparator());
     }
 
     @Test
     public void testLoadMessagesFromFile() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
         InputStream inputStream = mock(InputStream.class);
-        when(propertyFile.getContents()).thenReturn(inputStream);
 
-        new ValidationRuleMessagesGenerator(propertyFile, new SupportedLanguage(Locale.GERMAN), builder);
+        when(aFile.getContents()).thenReturn(inputStream);
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        new ValidationRuleMessagesGenerator(aFile, new SupportedLanguage(Locale.GERMAN), builder);
+
+        verify(aFile).exists();
         verifyNoInteractions(inputStream);
 
-        when(propertyFile.exists()).thenReturn(true);
+        when(aFile.exists()).thenReturn(true);
 
-        new ValidationRuleMessagesGenerator(propertyFile, new SupportedLanguage(Locale.GERMAN), builder);
+        new ValidationRuleMessagesGenerator(aFile, new SupportedLanguage(Locale.GERMAN), builder);
 
-        verify(propertyFile).getContents();
+        verify(aFile).getContents();
         verify(inputStream).close();
     }
 
     @Test
     public void testGenerate() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
         InputStream inputStream = mock(InputStream.class);
-        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
+        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
         ValidationRuleMessageProperties validationMessages = messagesGenerator.getValidationMessages();
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
         verifyNoInteractions(inputStream);
         assertFalse(validationMessages.isModified());
 
@@ -113,29 +117,26 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).create(any(InputStream.class), isNull());
+        verify(aFile).create(any(InputStream.class), isNull());
 
-        reset(propertyFile);
+        reset(aFile);
         reset(inputStream);
 
         messagesGenerator.generate(pcType);
         assertFalse(validationMessages.isModified());
 
-        verifyNoInteractions(propertyFile);
+        verifyNoInteractions(aFile);
         verifyNoInteractions(inputStream);
     }
 
     @Test
     public void testSafeIfModified() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
-        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
+        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
 
         List<IValidationRule> vRulesList = new ArrayList<>();
         IValidationRule validationRule1 = pcType.newRule();
@@ -145,25 +146,22 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         vRulesList.add(validationRule1);
         messagesGenerator.generate(pcType);
 
-        reset(propertyFile);
+        reset(aFile);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), isNull());
+        verify(aFile).exists();
+        verify(aFile).create(any(InputStream.class), isNull());
     }
 
     @Test
     public void testSafeIfModified_notModified() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
-        AFile propertyFile = mock(AFile.class);
-        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
+        ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(aFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verifyNoMoreInteractions(propertyFile);
+        verify(aFile).exists();
 
         IValidationRule validationRule1 = pcType.newRule();
         validationRule1.setName(RULE_NAME_1);
@@ -171,26 +169,25 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         messagesGenerator.generate(pcType);
 
-        reset(propertyFile);
+        reset(aFile);
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), isNull());
+        verify(aFile).exists();
+        verify(aFile).create(any(InputStream.class), isNull());
 
         messagesGenerator.loadMessages();
         messagesGenerator.generate(pcType);
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile, never()).setContents(any(InputStream.class), anyBoolean(),
+        verify(aFile, never()).setContents(any(InputStream.class), anyBoolean(),
                 any(NullProgressMonitor.class));
     }
 
     @Test
     public void testDeleteMessagesForDeletedRules() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(AFile.class), new SupportedLanguage(Locale.GERMAN), builder);
+                aFile, new SupportedLanguage(Locale.GERMAN), builder);
 
         IPolicyCmptType pcType2 = newPolicyCmptType(ipsProject, "pcType2");
 
@@ -223,9 +220,8 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDeleteAllMessagesFor() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(AFile.class), new SupportedLanguage(Locale.GERMAN), builder);
+                aFile, new SupportedLanguage(Locale.GERMAN), builder);
 
         IPolicyCmptType pcType2 = newPolicyCmptType(ipsProject, "pcType2");
 
@@ -253,9 +249,8 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddValidationRuleMessage_emptyMessage() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(AFile.class), new SupportedLanguage(Locale.GERMAN), builder);
+                aFile, new SupportedLanguage(Locale.GERMAN), builder);
 
         IValidationRule validationRule1 = pcType.newRule();
         validationRule1.setName(RULE_NAME_1);
@@ -268,9 +263,8 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddValidationRuleMessage_emptyMessageDefaultLang() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(AFile.class), new SupportedLanguage(Locale.GERMAN, true), builder);
+                aFile, new SupportedLanguage(Locale.GERMAN, true), builder);
 
         IValidationRule validationRule1 = pcType.newRule();
         validationRule1.setName(RULE_NAME_1);
@@ -284,10 +278,9 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetMessageText() throws Exception {
-        ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         Locale locale = Locale.GERMAN;
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
-                mock(AFile.class), new SupportedLanguage(locale), builder);
+                aFile, new SupportedLanguage(locale), builder);
 
         IValidationRule validationRule = pcType.newRule();
 

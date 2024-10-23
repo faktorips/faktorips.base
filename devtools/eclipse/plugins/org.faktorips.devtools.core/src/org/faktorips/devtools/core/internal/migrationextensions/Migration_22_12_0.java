@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -81,7 +81,8 @@ public class Migration_22_12_0 extends MarkAsDirtyMigration {
     private void write(IFile file, Document document)
             throws TransformerException, UnsupportedEncodingException, CoreException {
         String encoding = getIpsProject().getXmlFileCharset();
-        String contents = XmlUtil.nodeToString(document.getDocumentElement(), encoding);
+        String contents = XmlUtil.nodeToString(document.getDocumentElement(), encoding,
+                System.lineSeparator());
         InputStream is = new ByteArrayInputStream(contents.getBytes(encoding));
         file.setContents(is, true, true, new NullProgressMonitor());
     }

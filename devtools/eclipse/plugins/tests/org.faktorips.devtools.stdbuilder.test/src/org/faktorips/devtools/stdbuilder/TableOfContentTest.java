@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -46,7 +46,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class TableOfContentTest extends XmlAbstractTestCase {
@@ -316,15 +316,18 @@ public class TableOfContentTest extends XmlAbstractTestCase {
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
-        String tocString = XmlUtil.nodeToString(toc.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8");
+        String tocString = XmlUtil.nodeToString(toc.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8",
+                System.lineSeparator());
         TableOfContent toc2 = new TableOfContent();
         toc2.addOrReplaceTocEntry(entry1);
         toc2.addOrReplaceTocEntry(entry0);
-        String toc2String = XmlUtil.nodeToString(toc2.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8");
+        String toc2String = XmlUtil.nodeToString(toc2.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8",
+                System.lineSeparator());
 
         assertEquals(tocString, toc2String);
 
-        toc2String = XmlUtil.nodeToString(toc2.toXml(new DefaultVersion("other"), newDocument()), "UTF-8");
+        toc2String = XmlUtil.nodeToString(toc2.toXml(new DefaultVersion("other"), newDocument()), "UTF-8",
+                System.lineSeparator());
         assertNotSame(tocString.intern(), toc2String.intern());
 
         Pattern versionPattern = Pattern.compile("productDataVersion=\".*?\"\\s*");

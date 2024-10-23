@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -61,6 +62,9 @@ public class EnumPropertyGeneratorTest {
 
     @Mock
     private IIpsProject ipsProject;
+    
+    @Mock
+    private AProject aProject;
 
     @Before
     public void initEnumType() {
@@ -85,6 +89,10 @@ public class EnumPropertyGeneratorTest {
         doReturn(ValueFactory.createStringValue("myId")).when(idAttributeValue).getValue();
 
         when(enumType.getIpsProject()).thenReturn(ipsProject);
+        
+        when(aProject.getDefaultLineSeparator()).thenReturn(System.lineSeparator());
+        
+        when(ipsProject.getProject()).thenReturn(aProject);
     }
 
     @Test

@@ -22,12 +22,13 @@ public abstract class AbstractLocalizedProperties {
 
     private final MultiMap<QualifiedNameType, PropertyKey> propertyKeysForIpsObject = MultiMap.createWithSetsAsValues();
 
-    private final MessagesProperties messagesProperties = new MessagesProperties();
+    private final MessagesProperties messagesProperties;
 
     private final boolean defaultLang;
 
-    public AbstractLocalizedProperties(boolean defaultLang) {
+    public AbstractLocalizedProperties(boolean defaultLang, String lineSeparator) {
         this.defaultLang = defaultLang;
+        messagesProperties = new MessagesProperties(lineSeparator);
     }
 
     public void store(OutputStream outputStream) {

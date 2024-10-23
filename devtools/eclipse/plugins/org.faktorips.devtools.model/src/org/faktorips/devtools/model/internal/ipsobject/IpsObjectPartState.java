@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Storage for a state-snapshot of an IpsObject.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class IpsObjectPartState {
@@ -129,7 +129,7 @@ public class IpsObjectPartState {
     @Override
     public String toString() {
         try {
-            return XmlUtil.nodeToString(state, "UTF-8"); //$NON-NLS-1$
+            return XmlUtil.nodeToString(state, "UTF-8", System.lineSeparator()); //$NON-NLS-1$
         } catch (TransformerException e) {
             throw new RuntimeException(e);
         }
@@ -138,7 +138,7 @@ public class IpsObjectPartState {
     /**
      * Creates a new IIpsObjectPart from the currently stored state (if modifications took place in
      * the source of this state object, these are NOT reflected here!).
-     * 
+     *
      * @param parent The parent to create the part in.
      * @return The newly created IIpsObjectPart, initialized to match the stored state.
      */
@@ -161,7 +161,7 @@ public class IpsObjectPartState {
 
     /**
      * Returns the type this {@link IpsObjectPartState} stores.
-     * 
+     *
      * @return the type this {@link IpsObjectPartState} stores
      */
     public Class<? extends IIpsObjectPart> getType() {

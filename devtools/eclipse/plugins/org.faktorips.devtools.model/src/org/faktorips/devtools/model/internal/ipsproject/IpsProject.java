@@ -107,6 +107,7 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -248,7 +249,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String charset = getXmlFileCharset();
         String contents;
         try {
-            contents = XmlUtil.nodeToString(doc, charset);
+            contents = XmlUtil.nodeToString(doc, charset, DefaultLineSeparator.of(getIpsProject()));
         } catch (TransformerException e) {
             throw new IpsException(new IpsStatus("Error transforming project data to xml string", e)); //$NON-NLS-1$
         }

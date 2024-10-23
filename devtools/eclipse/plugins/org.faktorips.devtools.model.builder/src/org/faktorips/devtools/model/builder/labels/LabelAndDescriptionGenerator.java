@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.DocumentationKind;
 
@@ -29,7 +30,8 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
     public LabelAndDescriptionGenerator(AFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             AbstractLocalizedPropertiesBuilder labelAndDescriptionPropertiesBuilder) {
         super(messagesPropertiesFile, supportedLanguage, labelAndDescriptionPropertiesBuilder,
-                new LabelAndDescriptionProperties(supportedLanguage.isDefaultLanguage()));
+                new LabelAndDescriptionProperties(supportedLanguage.isDefaultLanguage(),
+                        DefaultLineSeparator.of(messagesPropertiesFile)));
     }
 
     void addLabelsAndDescriptions(IIpsObjectPartContainer ipsObjectPartContainer,
@@ -88,7 +90,7 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
 
     protected LabelAndDescriptionProperties createLocalizedProperties(IIpsObject ipsObject) {
         LabelAndDescriptionProperties tmpLabelsAndDescriptions = new LabelAndDescriptionProperties(
-                getSupportedLanguage().isDefaultLanguage());
+                getSupportedLanguage().isDefaultLanguage(), DefaultLineSeparator.of(ipsObject));
         addLabelsAndDescriptions(ipsObject, tmpLabelsAndDescriptions);
         return tmpLabelsAndDescriptions;
     }
