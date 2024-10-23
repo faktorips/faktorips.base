@@ -331,7 +331,7 @@ public class TableUsageTest {
             super(repository, "id", "kindId", "versionId");
         }
 
-        @IpsTableUsage(name = "table1")
+        @IpsTableUsage(name = "table1", tableClasses = { FooTable.class })
         public FooTable getTable1() {
             return TABLE1;
         }
@@ -346,7 +346,7 @@ public class TableUsageTest {
             table1Name = name;
         }
 
-        @IpsTableUsage(name = "table2")
+        @IpsTableUsage(name = "table2", tableClasses = { BarTable.class })
         public BarTable getTable2() {
             return TABLE2;
         }
@@ -361,7 +361,7 @@ public class TableUsageTest {
             table2Name = name;
         }
 
-        @IpsTableUsage(name = "multitable")
+        @IpsTableUsage(name = "multitable", tableClasses = { FooTable.class, BarTable.class })
         public ITable<?> getMultitable() {
             return null;
         }
@@ -393,7 +393,7 @@ public class TableUsageTest {
             super(product);
         }
 
-        @IpsTableUsage(name = "tableGen")
+        @IpsTableUsage(name = "tableGen", tableClasses = { BarTable.class })
         public BarTable getTableGen() {
             return TABLE_GEN;
         }
@@ -412,7 +412,7 @@ public class TableUsageTest {
 
         private String table3Name = "Foo";
 
-        @IpsTableUsage(name = "table3")
+        @IpsTableUsage(name = "table3", tableClasses = { FooTable.class })
         public FooTable getTable3() {
             return TABLE3;
         }
