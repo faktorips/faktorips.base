@@ -33,6 +33,18 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
             T runtimeObject);
 
     /**
+     * removes the runtimeObject from the repository.
+     *
+     * @param type the Java class representing the runtime object
+     * @param ipsObjectQualifiedName the qualified name of the runtime object
+     *
+     * @return whether the given runtime object was part of this repository
+     *
+     * @since 25.1
+     */
+    <T> boolean removeCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName);
+
+    /**
      * Puts the given enum values and description in the repository replacing all existing values
      * for the given enumType.
      *

@@ -461,12 +461,18 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     @Override
-    protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String id) {
+    protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName) {
         Map<String, IRuntimeObject> otherRuntimeObjects = customRuntimeObjectsByType.get(type);
         if (otherRuntimeObjects != null) {
-            return cast(otherRuntimeObjects.get(id));
+            return cast(otherRuntimeObjects.get(ipsObjectQualifiedName));
         }
         return null;
+    }
+
+    @Override
+    public <T> boolean removeCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName) {
+        Map<String, IRuntimeObject> otherRuntimeObjects = customRuntimeObjectsByType.get(type);
+        return otherRuntimeObjects != null ? otherRuntimeObjects.remove(ipsObjectQualifiedName) != null : false;
     }
 
     @SuppressWarnings("unchecked")

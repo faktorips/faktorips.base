@@ -757,6 +757,43 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     @Test
+    public void testRemoveCustomRuntimeObject_WhenObjectExists() {
+        class MyRuntimeObject extends RuntimeObject {
+            // another class
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        repository.putCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
+        assertEquals(myRuntimeObject, repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+        assertTrue(repository.removeCustomRuntimeObject(myRuntimeObject.getClass(), ipsObjectQualifiedName));
+        assertNull(repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+
+    }
+
+    @Test
+    public void testRemoveCustomRuntimeObject_WhenObjectDoesNotExists_InvalidType() {
+        class MyRuntimeObject extends RuntimeObject {
+            // another class
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        assertFalse(repository.removeCustomRuntimeObject(myRuntimeObject.getClass(), ipsObjectQualifiedName));
+
+    }
+
+    @Test
+    public void testRemoveCustomRuntimeObject_WhenObjectDoesNotExists_InvalidId() {
+        class MyRuntimeObject extends RuntimeObject {
+            // another class
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        repository.putCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
+        assertEquals(myRuntimeObject, repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+        assertFalse(repository.removeCustomRuntimeObject(myRuntimeObject.getClass(), "MyOtherRuntimeObjectId"));
+    }
+
+    @Test
     public void testGetByType() {
         repository.putCustomRuntimeObject(DummyRuntimeObject.class, "dummy.DummyRuntimeObject",
                 new DummyRuntimeObject());
