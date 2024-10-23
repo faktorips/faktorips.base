@@ -41,6 +41,7 @@ import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
+import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
@@ -405,6 +406,42 @@ public class InMemoryRuntimeRepositoryTest {
         repository.putIpsTestCase(formulaTestCase);
         assertEquals(formulaTestCase, repository.getIpsTest("ipsFormulaTest"));
         assertEquals(2, repository.getAllIpsTestCases(repository).size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveIpsTestCase_Null() {
+        repository.removeIpsTestCase(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveIpsTestCase_EmptyQualifiedName() {
+        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+        when(testCase.getQualifiedName()).thenReturn("");
+        repository.removeIpsTestCase(testCase);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveIpsTestCase_NullQualifiedName() {
+        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+        when(testCase.getQualifiedName()).thenReturn(null);
+        repository.removeIpsTestCase(testCase);
+    }
+
+    @Test
+    public void testRemoveIpsTestCase_NotFound() {
+        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+        when(testCase.getQualifiedName()).thenReturn("testCase1");
+
+        assertFalse(repository.removeIpsTestCase(testCase));
+    }
+
+    @Test
+    public void testRemoveIpsTestCase() {
+        TestPremiumCalculation testPremiumCalculation = new TestPremiumCalculation("ipsTest");
+        repository.putIpsTestCase(testPremiumCalculation);
+
+        assertTrue(repository.removeIpsTestCase(testPremiumCalculation));
+        assertFalse(repository.removeIpsTestCase(testPremiumCalculation));
     }
 
     @Test

@@ -328,6 +328,17 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     @Override
+    public boolean removeIpsTestCase(IpsTestCaseBase test) {
+        Objects.requireNonNull(test);
+
+        String qualifiedName = test.getQualifiedName();
+        if (IpsStringUtils.isBlank(qualifiedName)) {
+            throw new IllegalArgumentException("The given test case has no qualified name.");
+        }
+        return testCasesByQName.remove(qualifiedName) != null;
+    }
+
+    @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
         if ((productCmptId == null) || (effectiveDate == null)) {

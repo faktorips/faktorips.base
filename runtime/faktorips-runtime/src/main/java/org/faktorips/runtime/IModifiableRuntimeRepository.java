@@ -144,4 +144,19 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      */
     boolean removeProductCmptGeneration(IProductComponentGeneration productCmptGeneration);
 
+    /**
+     * Removes the specified IPS test case.
+     *
+     * @param test the IPS test case to be removed. It must not be {@code null}.
+     *
+     * @return {@code true} if the test case was successfully removed, {@code false} if no test case
+     *             with the given test case's qualified name exists.
+     *
+     * @throws NullPointerException if {@code test} is {@code null}.
+     * @throws IllegalArgumentException if the given test case has no qualified name.
+     *
+     * @since 25.1
+     */
+    boolean removeIpsTestCase(IpsTestCaseBase test);
+
 }
