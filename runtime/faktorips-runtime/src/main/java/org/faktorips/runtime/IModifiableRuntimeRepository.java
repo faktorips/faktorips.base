@@ -130,4 +130,18 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      */
     boolean removeTable(ITable<?> table);
 
+    /**
+     * Removes the given product component generation from the list of generations
+     *
+     * @param productCmptGeneration the product component generation to be removed;
+     * @return {@code true} if the product component generation was successfully removed,
+     *             {@code false} if the generation was not found in the list of generations.
+     * @throws NullPointerException if {@code productCmptGen} is {@code null}.
+     * @throws IllegalArgumentException if the associated product component of the generation has no
+     *             valid ID, or if no generations are found for the product component.
+     * 
+     * @since 25.1
+     */
+    boolean removeProductCmptGeneration(IProductComponentGeneration productCmptGeneration);
+
 }

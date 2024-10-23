@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -351,6 +352,46 @@ public class InMemoryRuntimeRepositoryTest {
 
         assertTrue(repository.removeProductComponent(productComponent));
         assertFalse(repository.removeProductComponent(productComponent));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveProductCmptGeneration_Null() {
+        repository.removeProductCmptGeneration(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveProductCmptGeneration_NullId() {
+        IProductComponent productComponent = mock(IProductComponent.class);
+        when(productComponent.getId()).thenReturn(null);
+
+        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+        when(generation.getProductComponent()).thenReturn(productComponent);
+
+        repository.removeProductCmptGeneration(generation);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveProductCmptGeneration_NoId() {
+        IProductComponent productComponent = mock(IProductComponent.class);
+        when(productComponent.getId()).thenReturn("");
+
+        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+        when(generation.getProductComponent()).thenReturn(productComponent);
+
+        repository.removeProductCmptGeneration(generation);
+    }
+
+    @Test
+    public void testRemoveProductCmptGeneration() {
+        TestProductComponent productComponent = new TestProductComponent(repository, "P1", "P", "1");
+
+        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+        when(generation.getProductComponent()).thenReturn(productComponent);
+
+        repository.putProductCmptGeneration(generation);
+
+        assertTrue(repository.removeProductCmptGeneration(generation));
+        assertFalse(repository.removeProductCmptGeneration(generation));
     }
 
     @Test

@@ -308,6 +308,26 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     @Override
+    public boolean removeProductCmptGeneration(IProductComponentGeneration productCmptGeneration) {
+        Objects.requireNonNull(productCmptGeneration);
+        IProductComponent productComponent = productCmptGeneration.getProductComponent();
+        if (productComponent == null) {
+            throw new IllegalArgumentException("Product component generation has no associated product component");
+        }
+
+        String id = productComponent.getId();
+        if (IpsStringUtils.isBlank(id)) {
+            throw new IllegalArgumentException("Product component has no ID");
+        }
+
+        if (productCmptGenLists.get(id) == null) {
+            throw new IllegalArgumentException("No generations found for product component with ID: " + id);
+        }
+
+        return productCmptGenLists.get(id).remove(productCmptGeneration);
+    }
+
+    @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
         if ((productCmptId == null) || (effectiveDate == null)) {
