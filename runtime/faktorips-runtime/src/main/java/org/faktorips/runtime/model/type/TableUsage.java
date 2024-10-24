@@ -12,7 +12,9 @@ package org.faktorips.runtime.model.type;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -125,9 +127,13 @@ public class TableUsage extends TypePart {
     }
 
     /**
+     *
+     * @deprecated This method is deprecated. Use {@link #getTableStructures()} instead.
+     *
      * @return the model for the table structure referenced in this table usage.
      * @throws UnsupportedOperationException if this table usage uses multiple table structures.
      */
+    @Deprecated(forRemoval = true)
     public TableStructure getTableStructure() {
         @SuppressWarnings("unchecked")
         Class<? extends ITable<?>> tableClass = (Class<? extends ITable<?>>)getter.getReturnType()
@@ -139,6 +145,17 @@ public class TableUsage extends TypePart {
         }
 
         return IpsModel.getTableStructure(tableClass);
+    }
+
+    /**
+     * {@return a list of models for the table structures referenced in this table usage.}
+     */
+    public List<TableStructure> getTableStructures() {
+        Class<? extends ITable<?>>[] tableClasses = getter.getAnnotation(IpsTableUsage.class).tableClasses();
+
+        return Arrays.stream(tableClasses)
+                .map(IpsModel::getTableStructure)
+                .toList();
     }
 
     private IllegalArgumentException getterError(IProductComponent source, Exception e) {

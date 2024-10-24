@@ -10,13 +10,16 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.annotation.IpsTableUsage;
 import org.faktorips.runtime.model.annotation.IpsTableUsages;
+import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.table.TableStructureKind;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -122,34 +126,34 @@ public class TableUsageTest {
             tableNames.add(tableUsageModel.getName());
         }
 
-        assertThat(tableNames.get(0), is("table3"));
-        assertThat(tableNames.get(1), is("table1"));
-        assertThat(tableNames.get(2), is("table2"));
+        assertThat(tableNames, contains("table3", "table1", "table2", "multitable", "tableGen"));
     }
 
     @Test
-    public void testGetTableStructure() {
+    public void testGetTableStructures() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
 
-        assertThat(productCmptType.getTableUsage("table1").getTableStructure(),
-                is(IpsModel.getTableStructure(FooTable.class)));
-        assertThat(productCmptType.getTableUsage("table2").getTableStructure(),
-                is(IpsModel.getTableStructure(BarTable.class)));
+        List<TableStructure> tableStructures1 = productCmptType.getTableUsage("table1").getTableStructures();
+
+        assertThat(tableStructures1.size(), is(1));
+        assertThat(tableStructures1, hasItem(IpsModel.getTableStructure(FooTable.class)));
+
+        List<TableStructure> tableStructures2 = productCmptType.getTableUsage("table2").getTableStructures();
+
+        assertThat(tableStructures2, hasSize(1));
+        assertThat(tableStructures2, hasItem(IpsModel.getTableStructure(BarTable.class)));
     }
 
     @Test
-    public void testGetTableStructure_MultipleStructures() {
+    public void testGetTableStructures_MultipleStructures() {
         TableUsage tableUsage = IpsModel.getProductCmptType(Product.class).getTableUsage("multitable");
         assertNotNull(tableUsage);
-        try {
-            tableUsage.getTableStructure();
-            fail("Expected " + UnsupportedOperationException.class + " because there are multiple table structures");
-        } catch (UnsupportedOperationException e) {
-            // expected
-        } catch (Throwable t) {
-            fail("Expected " + UnsupportedOperationException.class
-                    + " because there are multiple table structures, but got " + t);
-        }
+
+        List<TableStructure> tableStructures = tableUsage.getTableStructures();
+
+        assertThat(tableStructures, hasSize(2));
+        assertThat(tableStructures,
+                hasItems(IpsModel.getTableStructure(BarTable.class), IpsModel.getTableStructure(FooTable.class)));
     }
 
     @Test
@@ -225,6 +229,7 @@ public class TableUsageTest {
         Product product = new Product();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         TableUsage tableUsage = productCmptType.getTableUsage("table2");
+
         assertThat(tableUsage, is(notNullValue()));
         assertThat(tableUsage.getTableName(product, effectiveDate), is("Bar"));
     }
@@ -234,6 +239,7 @@ public class TableUsageTest {
         ChildProduct product = new ChildProduct();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         TableUsage tableUsage = productCmptType.getTableUsage("table3");
+
         assertThat(tableUsage, is(notNullValue()));
         assertThat(tableUsage.getTableName(product, effectiveDate), is("Foo"));
     }
@@ -243,6 +249,7 @@ public class TableUsageTest {
         Product product = new Product();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         TableUsage tableUsage = productCmptType.getTableUsage("table1");
+
         assertThat(tableUsage, is(notNullValue()));
         tableUsage.setTableName("NotFoo", product, effectiveDate);
         assertThat(product.getTable1Name(), is("NotFoo"));
@@ -253,6 +260,7 @@ public class TableUsageTest {
         Product product = new Product();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         TableUsage tableUsage = productCmptType.getTableUsage("table2");
+
         assertThat(tableUsage, is(notNullValue()));
         tableUsage.setTableName("NotBar", product, effectiveDate);
         assertThat(product.getTable2Name(), is("NotBar"));
@@ -263,6 +271,7 @@ public class TableUsageTest {
         ChildProduct product = new ChildProduct();
         ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
         TableUsage tableUsage = productCmptType.getTableUsage("table3");
+
         assertThat(tableUsage, is(notNullValue()));
         tableUsage.setTableName("NotFoo", product, effectiveDate);
         assertThat(product.getTable3Name(), is("NotFoo"));
