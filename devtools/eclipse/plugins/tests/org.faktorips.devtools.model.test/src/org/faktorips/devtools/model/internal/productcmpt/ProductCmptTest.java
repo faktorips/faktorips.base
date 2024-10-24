@@ -839,9 +839,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.setRuntimeId("MotorProductId");
         productCmpt.setTemplate("MeinTemplate");
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(1999, 0, 1));
         IConfiguredDefault ce1 = gen1.newPropertyValue(policyAttr, IConfiguredDefault.class);
         ce1.setValue("0.15");
-        productCmpt.newGeneration();
+        IIpsObjectGeneration gen2 = productCmpt.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2000, 0, 1));
 
         Element element = productCmpt.toXml(newDocument());
         ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
@@ -1284,7 +1286,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IIpsObjectPart part = productCmpt.newPartThis(element, "genID");
         assertNotNull(part);
 
-        when(element.getNodeName()).thenReturn((String)IAttributeValue.TAG_NAME);
+        when(element.getNodeName()).thenReturn(IAttributeValue.TAG_NAME);
         part = productCmpt.newPartThis(element, "attrID");
         assertNotNull(part);
 
@@ -1642,9 +1644,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidationRuleByName() {
-        IValidationRule rule;
-
-        rule = policyCmptType.newRule();
+        IValidationRule rule = policyCmptType.newRule();
         rule.setName("rule1");
         productCmpt.newValidationRuleConfig(rule);
 

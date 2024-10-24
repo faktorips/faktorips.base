@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
     <booleanAttribute key="append.args" value="true"/>
-    <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
     <booleanAttribute key="askclear" value="false"/>
     <booleanAttribute key="automaticAdd" value="false"/>
     <booleanAttribute key="automaticValidate" value="true"/>
@@ -83,7 +82,6 @@
         <setEntry value="org.apache.commons.commons-text@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3*3.13.0@default:default"/>
-        <setEntry value="org.apache.commons.lang@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
@@ -227,7 +225,7 @@
         <setEntry value="org.eclipse.osgi.util@default:default"/>
         <setEntry value="org.eclipse.osgi@-1:true"/>
         <setEntry value="org.eclipse.platform@default:default"/>
-        <setEntry value="org.eclipse.search.core@2:default"/>
+        <setEntry value="org.eclipse.search.core@default:default"/>
         <setEntry value="org.eclipse.search@default:default"/>
         <setEntry value="org.eclipse.swt.gtk.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.swt@default:default"/>
@@ -298,12 +296,13 @@
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.faktorips.abstracttest@default:default"/>
-        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:true"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
-        <setEntry value="org.faktorips.devtools.abstraction@default:true"/>
+        <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.eclipse@default:true"/>
-        <setEntry value="org.faktorips.devtools.model.test@default:false"/>
+        <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.test@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
@@ -314,7 +313,7 @@
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
-    <stringAttribute key="timestamp" value="1713187568997"/>
+    <stringAttribute key="timestamp" value="1710159406842"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>

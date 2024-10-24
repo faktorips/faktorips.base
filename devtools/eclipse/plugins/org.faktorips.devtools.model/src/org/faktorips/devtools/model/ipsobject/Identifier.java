@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.ipsobject;
 
 import static org.faktorips.devtools.model.ipsobject.Identifier.getAttribute;
-import static org.faktorips.devtools.model.ipsobject.Identifier.getId;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.commons.collections4.CollectionUtils;
+
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -32,9 +31,16 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.internal.productcmpttype.TableStructureUsage.TableStructureReference;
 import org.faktorips.devtools.model.internal.tablecontents.Row;
+import org.faktorips.devtools.model.internal.tablestructure.ForeignKey;
+import org.faktorips.devtools.model.internal.tablestructure.Index;
+import org.faktorips.devtools.model.internal.tablestructure.Key;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmpt;
 import org.faktorips.devtools.model.internal.testcase.TestPolicyCmptLink;
 import org.faktorips.devtools.model.internal.testcase.TestValue;
+import org.faktorips.devtools.model.internal.testcasetype.TestParameter;
+import org.faktorips.devtools.model.internal.testcasetype.TestPolicyCmptTypeParameter;
+import org.faktorips.devtools.model.internal.testcasetype.TestRuleParameter;
+import org.faktorips.devtools.model.internal.testcasetype.TestValueParameter;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.method.IBaseMethod;
 import org.faktorips.devtools.model.method.IParameter;
@@ -49,8 +55,11 @@ import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
+import org.faktorips.devtools.model.tablestructure.IKey;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestValue;
+import org.faktorips.devtools.model.testcasetype.ITestParameter;
+import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.util.XmlUtil;
@@ -62,16 +71,6 @@ import org.w3c.dom.Node;
 @SuppressWarnings("unused")
 public interface Identifier {
 
-    /**
-     * When comparing {@link IIpsObjectPart IIpsObjectParts} their unique id is used. If an
-     * {@link IIpsObjectPart} can be uniquely identified by their name, this method can be used to
-     * implement this behavior.
-     *
-     * @param other the other {@link IIpsObjectPart IIpsObjectParts} identifier
-     * @return true if the identifier finds that the two objects are the same
-     */
-    boolean isSame(Identifier other);
-
     // CSOFF: CyclomaticComplexity
     /**
      * Creates a new {@link Identifier} based on the type of the given {@link IIpsObjectPart}
@@ -81,13 +80,12 @@ public interface Identifier {
      * @return a new {@link Identifier}
      */
     static Identifier of(IIpsObjectPart part, AtomicInteger index) {
-        String id = part.getId();
         // TODO Java 21 turn to switch
         if (part instanceof ILabel label) {
             return LabelIdentifier.of(label);
         }
         if (part instanceof IDescription description) {
-            return new DescriptionIdentifier(id, description.getLocale());
+            return new DescriptionIdentifier(description.getLocale());
         }
         if (part instanceof IColumnRange columnRange) {
             return ColumnRangeIdentifier.of(columnRange);
@@ -116,6 +114,9 @@ public interface Identifier {
         if (part instanceof ITableContentUsage tableContentUsage) {
             return TableContentUsageIdentifier.of(tableContentUsage);
         }
+        if (part instanceof IKey key) {
+            return KeyIdentifier.of(key);
+        }
         if (part instanceof IIpsObjectGeneration generation) {
             return GenerationIdentifier.of(generation);
         }
@@ -134,25 +135,28 @@ public interface Identifier {
         if (part instanceof TestPolicyCmptLink testPolicyCmptLink) {
             return TestPolicyCmptLinkIdentifier.of(testPolicyCmptLink);
         }
+        if (part instanceof TestParameter testParameter) {
+            return TestParameterIdentifier.of(testParameter);
+        }
         if (part instanceof IEnumValue enumValue) {
             return EmumValueIdentifier.of(enumValue);
         }
         if (part instanceof IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue) {
-            return new ByTypeIdentifier(enumLiteralNameAttributeValue.getId(), IEnumLiteralNameAttributeValue.XML_TAG);
+            return new ByTypeIdentifier(IEnumLiteralNameAttributeValue.XML_TAG);
         }
 
         if (part instanceof IPartIdentifiedByIndex indexedPart) {
-            return new IndexedIdentifier(indexedPart.getId(), index.getAndIncrement());
+            return new IndexedIdentifier(index.getAndIncrement());
         }
         String name = part.getName();
         if (IpsStringUtils.isNotBlank(name)) {
-            return new NamedIdentifier(id, name);
+            return new NamedIdentifier(name);
         }
         List<IdentityProvider> list = IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
         return list.stream().map(idProvider -> idProvider.getIdentity(part))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(new IdIdentifier(id));
+                .orElse(null);
     }
     // CSON: CyclomaticComplexityCheck
 
@@ -179,6 +183,7 @@ public interface Identifier {
             case ITableStructureUsage.TAG_NAME -> TableStructureUsageIdentifier.of(partEl);
             case ITableStructureUsage.TAG_NAME_TABLE_STRUCTURE -> TableStructureReferenceIdentifier.of(partEl);
             case ITableContentUsage.TAG_NAME -> TableContentUsageIdentifier.of(partEl);
+            case ForeignKey.TAG_NAME, Index.TAG_NAME, "UniqueKey" -> KeyIdentifier.of(partEl);
             case IIpsObjectGeneration.TAG_NAME -> GenerationIdentifier.of(partEl);
             case IExpression.TAG_NAME -> FormulaIdentifier.of(partEl);
             case IProductCmptLink.TAG_NAME -> {
@@ -190,21 +195,21 @@ public interface Identifier {
             }
             case BaseMethod.XML_ELEMENT_NAME -> MethodIdentifier.of(partEl);
             case TestPolicyCmpt.TAG_NAME -> TestPolicyCmptIdentifier.of(partEl);
+            case TestPolicyCmptTypeParameter.TAG_NAME, TestRuleParameter.TAG_NAME, TestValueParameter.TAG_NAME -> TestParameterIdentifier
+                    .of(partEl);
             case IEnumValue.XML_TAG -> EmumValueIdentifier.of(partEl, (IEnumValueContainer)container);
-            case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(getId(partEl),
-                    IEnumAttributeValue.XML_TAG);
-            case Row.TAG_NAME, IEnumAttributeValue.XML_TAG -> new IndexedIdentifier(getId(partEl),
-                    index.getAndIncrement());
+            case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(IEnumAttributeValue.XML_TAG);
+            case Row.TAG_NAME, IEnumAttributeValue.XML_TAG -> new IndexedIdentifier(index.getAndIncrement());
             default -> {
                 String name = getAttribute(partEl, IIpsElement.PROPERTY_NAME);
                 if (IpsStringUtils.isNotEmpty(name)) {
-                    yield new NamedIdentifier(getId(partEl), name);
+                    yield new NamedIdentifier(name);
                 }
                 List<IdentityProvider> list = IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
                 yield list.stream().map(idProvider -> idProvider.getIdentity(partEl))
                         .filter(Objects::nonNull)
                         .findFirst()
-                        .orElse(new IdIdentifier(getId(partEl)));
+                        .orElse(null);
             }
         };
     }
@@ -227,41 +232,47 @@ public interface Identifier {
         return a != null && b != null && a.equals(b);
     }
 
-    record IdIdentifier(String id) implements Identifier {
+    record NamedIdentifier(String name) implements Identifier {
 
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof IdIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id));
+        public NamedIdentifier(String name) {
+            this.name = IpsStringUtils.isBlank(name) ? "" : name;
         }
     }
 
-    record NamedIdentifier(String id, String name) implements Identifier {
+    record IndexedIdentifier(int index) implements Identifier {
+    }
 
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof NamedIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id) || isEqualsNotNull(name, otherIdentifier.name));
+    record KeyIdentifier(String[] keyItemNames) implements Identifier {
+
+        public KeyIdentifier(String[] keyItemNames) {
+            this.keyItemNames = keyItemNames == null ? new String[0] : keyItemNames;
+        }
+
+        static KeyIdentifier of(IKey key) {
+            return new KeyIdentifier(key.getKeyItemNames());
+        }
+
+        static KeyIdentifier of(Element partEl) {
+            List<Element> itemElements = org.faktorips.runtime.internal.XmlUtil.getChildElements(partEl,
+                    Key.KEY_ITEM_TAG_NAME);
+            String[] keyItemNames = itemElements.stream().map(itemElement -> getAttribute(itemElement, "name"))
+                    .toArray(String[]::new);
+            return new KeyIdentifier(keyItemNames);
         }
     }
 
-    record IndexedIdentifier(String id, int index) implements Identifier {
+    record EmumValueIdentifier(String idAttributeValue) implements Identifier {
 
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof IndexedIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id) || index == otherIdentifier.index);
+        public EmumValueIdentifier(String idAttributeValue) {
+            this.idAttributeValue = IpsStringUtils.isBlank(idAttributeValue) ? "" : idAttributeValue;
         }
-    }
-
-    record EmumValueIdentifier(String id, String idAttributeValue) implements Identifier {
 
         static Identifier of(IEnumValue enumValue) {
             IEnumValueContainer enumValueContainer = enumValue.getEnumValueContainer();
             return findIdAttribute(enumValueContainer)
-                    .map(idAttribute -> (Identifier)new EmumValueIdentifier(enumValue.getId(),
+                    .map(idAttribute -> (Identifier)new EmumValueIdentifier(
                             enumValue.getEnumAttributeValue(idAttribute).getStringValue()))
-                    .orElseGet(() -> new IdIdentifier(enumValue.getId()));
+                    .orElse(null);
         }
 
         private static Optional<IEnumAttribute> findIdAttribute(IEnumValueContainer enumValueContainer) {
@@ -282,11 +293,11 @@ public interface Identifier {
                         .orElse(-1);
             }
             if (indexOfIdAttribute < 0) {
-                return new IdIdentifier(getId(partEl));
+                return null;
             }
             Element idAttributeElement = XmlUtil.getElement(partEl, IEnumAttributeValue.XML_TAG, indexOfIdAttribute);
             String idAttributeValue = XmlUtil.getCDATAorTextContent(idAttributeElement);
-            return new EmumValueIdentifier(getId(partEl), idAttributeValue);
+            return new EmumValueIdentifier(idAttributeValue);
         }
 
         private static int findIdAttributeIndex(Element partEl) {
@@ -300,43 +311,42 @@ public interface Identifier {
             }
             return -1;
         }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof EmumValueIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(idAttributeValue, otherIdentifier.idAttributeValue));
-        }
     }
 
-    record TestPolicyCmptIdentifier(String id, String testPolicyCmptTypeParameter) implements Identifier {
+    record TestPolicyCmptIdentifier(String testPolicyCmptTypeParameter) implements Identifier {
+
+        public TestPolicyCmptIdentifier(String testPolicyCmptTypeParameter) {
+            this.testPolicyCmptTypeParameter = IpsStringUtils.isBlank(testPolicyCmptTypeParameter) ? ""
+                    : testPolicyCmptTypeParameter;
+        }
 
         static TestPolicyCmptIdentifier of(ITestPolicyCmpt testPolicyCmpt) {
             String testPolicyCmptTypeParameter = testPolicyCmpt.getTestPolicyCmptTypeParameter();
-            return new TestPolicyCmptIdentifier(testPolicyCmpt.getId(), testPolicyCmptTypeParameter);
+            return new TestPolicyCmptIdentifier(testPolicyCmptTypeParameter);
         }
 
         static TestPolicyCmptIdentifier of(Element partEl) {
             String testPolicyCmptTypeParameter = getAttribute(partEl, ITestPolicyCmpt.PROPERTY_TESTPOLICYCMPTTYPE);
-            return new TestPolicyCmptIdentifier(getId(partEl), testPolicyCmptTypeParameter);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof TestPolicyCmptIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id) || isEqualsNotNull(testPolicyCmptTypeParameter,
-                            otherIdentifier.testPolicyCmptTypeParameter));
+            return new TestPolicyCmptIdentifier(testPolicyCmptTypeParameter);
         }
     }
 
-    record TestPolicyCmptLinkIdentifier(String id, String testPolicyCmptTypeParameter, String targetId)
+    record TestPolicyCmptLinkIdentifier(String testPolicyCmptTypeParameter, String targetId, String targetName)
             implements Identifier {
+
+        public TestPolicyCmptLinkIdentifier(String testPolicyCmptTypeParameter, String targetId, String targetName) {
+            this.testPolicyCmptTypeParameter = IpsStringUtils.isBlank(testPolicyCmptTypeParameter) ? ""
+                    : testPolicyCmptTypeParameter;
+            this.targetId = IpsStringUtils.isBlank(targetId) ? "" : targetId;
+            this.targetName = IpsStringUtils.isBlank(targetName) ? "" : targetName;
+        }
 
         static TestPolicyCmptLinkIdentifier of(TestPolicyCmptLink testPolicyCmptLink) {
             ITestPolicyCmpt target = testPolicyCmptLink.findTarget();
             String targetId = target != null ? target.getProductCmpt() : "";
-            return new TestPolicyCmptLinkIdentifier(testPolicyCmptLink.getId(),
-                    testPolicyCmptLink.getTestPolicyCmptTypeParameter(), targetId);
+            String targetName = target != null ? target.getName() : "";
+            return new TestPolicyCmptLinkIdentifier(testPolicyCmptLink.getTestPolicyCmptTypeParameter(), targetId,
+                    targetName);
         }
 
         static TestPolicyCmptLinkIdentifier of(Element partEl) {
@@ -347,328 +357,286 @@ public interface Identifier {
             if (targetId == null) {
                 targetId = "";
             }
+            String targetName = targetElement != null
+                    ? getAttribute(targetElement, IIpsElement.PROPERTY_NAME)
+                    : "";
+            if (targetName == null) {
+                targetName = "";
+            }
             String testPolicyCmptTypeParameter = getAttribute(partEl, TestPolicyCmptLink.PROPERTY_POLICYCMPTTYPE);
-            return new TestPolicyCmptLinkIdentifier(getId(partEl), testPolicyCmptTypeParameter, targetId);
+            return new TestPolicyCmptLinkIdentifier(testPolicyCmptTypeParameter, targetId, targetName);
         }
 
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof TestPolicyCmptLinkIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || (isEqualsNotNull(testPolicyCmptTypeParameter,
-                                    otherIdentifier.testPolicyCmptTypeParameter)
-                                    && isEqualsNotNull(targetId, otherIdentifier.targetId)));
-        }
     }
 
-    record FormulaIdentifier(String id, String formulaSignature) implements Identifier {
+    record TestParameterIdentifier(String name, TestParameterType type) implements Identifier {
+
+        public TestParameterIdentifier(String name, TestParameterType type) {
+            this.name = IpsStringUtils.isBlank(name) ? "" : name;
+            this.type = type;
+        }
+
+        static TestParameterIdentifier of(TestParameter testParameter) {
+            return new TestParameterIdentifier(testParameter.getName(), testParameter.getTestParameterType());
+        }
+
+        static TestParameterIdentifier of(Element partEl) {
+            String name = getAttribute(partEl, IIpsElement.PROPERTY_NAME);
+            TestParameterType type = TestParameterType
+                    .getTestParameterType(partEl.getAttribute(ITestParameter.PROPERTY_TEST_PARAMETER_TYPE));
+            return new TestParameterIdentifier(name, type);
+        }
+
+    }
+
+    record FormulaIdentifier(String formulaSignature) implements Identifier {
+
+        public FormulaIdentifier(String formulaSignature) {
+            this.formulaSignature = IpsStringUtils.isBlank(formulaSignature) ? "" : formulaSignature;
+        }
 
         static FormulaIdentifier of(IFormula formula) {
-            return new FormulaIdentifier(formula.getId(), formula.getFormulaSignature());
+            return new FormulaIdentifier(formula.getFormulaSignature());
         }
 
         static FormulaIdentifier of(Element partEl) {
             String formulaSignature = getAttribute(partEl, IExpression.PROPERTY_FORMULA_SIGNATURE_NAME);
-            return new FormulaIdentifier(getId(partEl), formulaSignature);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof FormulaIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(formulaSignature, otherIdentifier.formulaSignature));
+            return new FormulaIdentifier(formulaSignature);
         }
     }
 
-    record GenerationIdentifier(String id, String validFrom) implements Identifier {
+    record GenerationIdentifier(String validFrom) implements Identifier {
+
+        public GenerationIdentifier(String validFrom) {
+            this.validFrom = IpsStringUtils.isBlank(validFrom) ? "" : validFrom;
+        }
 
         static GenerationIdentifier of(IIpsObjectGeneration generation) {
-            return new GenerationIdentifier(generation.getId(),
-                    XmlUtil.gregorianCalendarToXmlDateString(generation.getValidFrom()));
+            return new GenerationIdentifier(XmlUtil.gregorianCalendarToXmlDateString(generation.getValidFrom()));
         }
 
         static GenerationIdentifier of(Element partEl) {
             String validFrom = getAttribute(partEl, IIpsObjectGeneration.PROPERTY_VALID_FROM);
-            return new GenerationIdentifier(getId(partEl), validFrom);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof GenerationIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(validFrom, otherIdentifier.validFrom));
+            return new GenerationIdentifier(validFrom);
         }
     }
 
-    record ByTypeIdentifier(String id, String type) implements Identifier {
+    record ByTypeIdentifier(String type) implements Identifier {
 
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof ByTypeIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id) || isEqualsNotNull(type, otherIdentifier.type));
+        public ByTypeIdentifier(String type) {
+            this.type = IpsStringUtils.isBlank(type) ? "" : type;
         }
     }
 
-    record TableStructureUsageIdentifier(String id, String roleName) implements Identifier {
+    record TableStructureUsageIdentifier(String roleName) implements Identifier {
+
+        public TableStructureUsageIdentifier(String roleName) {
+            this.roleName = IpsStringUtils.isBlank(roleName) ? "" : roleName;
+        }
 
         static TableStructureUsageIdentifier of(ITableStructureUsage tableStructureUsage) {
-            return new TableStructureUsageIdentifier(tableStructureUsage.getId(), tableStructureUsage.getRoleName());
+            return new TableStructureUsageIdentifier(tableStructureUsage.getRoleName());
         }
 
         static TableStructureUsageIdentifier of(Element partEl) {
             String roleName = getAttribute(partEl, ITableStructureUsage.PROPERTY_ROLENAME);
-            return new TableStructureUsageIdentifier(getId(partEl), roleName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof TableStructureUsageIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id) || isEqualsNotNull(roleName, otherIdentifier.roleName));
+            return new TableStructureUsageIdentifier(roleName);
         }
     }
 
-    record TableStructureReferenceIdentifier(String id, String tableStructureName) implements Identifier {
+    record TableStructureReferenceIdentifier(String tableStructureName) implements Identifier {
+
+        public TableStructureReferenceIdentifier(String tableStructureName) {
+            this.tableStructureName = IpsStringUtils.isBlank(tableStructureName) ? "" : tableStructureName;
+        }
 
         static TableStructureReferenceIdentifier of(TableStructureReference tableStructureReference) {
-            return new TableStructureReferenceIdentifier(tableStructureReference.getId(),
-                    tableStructureReference.getTableStructure());
+            return new TableStructureReferenceIdentifier(tableStructureReference.getTableStructure());
         }
 
         static TableStructureReferenceIdentifier of(Element partEl) {
             String tableStructureName = getAttribute(partEl, ITableStructureUsage.PROPERTY_TABLESTRUCTURE);
-            return new TableStructureReferenceIdentifier(getId(partEl), tableStructureName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof TableStructureReferenceIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(tableStructureName, otherIdentifier.tableStructureName));
+            return new TableStructureReferenceIdentifier(tableStructureName);
         }
     }
 
-    record TableContentUsageIdentifier(String id, String roleName) implements Identifier {
+    record TableContentUsageIdentifier(String roleName) implements Identifier {
+
+        public TableContentUsageIdentifier(String roleName) {
+            this.roleName = IpsStringUtils.isBlank(roleName) ? "" : roleName;
+        }
 
         static TableContentUsageIdentifier of(ITableContentUsage tableContentUsage) {
-            return new TableContentUsageIdentifier(tableContentUsage.getId(), tableContentUsage.getStructureUsage());
+            return new TableContentUsageIdentifier(tableContentUsage.getStructureUsage());
         }
 
         static TableContentUsageIdentifier of(Element partEl) {
             String tableUsageName = getAttribute(partEl, ITableContentUsage.PROPERTY_STRUCTURE_USAGE);
-            return new TableContentUsageIdentifier(getId(partEl), tableUsageName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof TableContentUsageIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id) || isEqualsNotNull(roleName, otherIdentifier.roleName));
+            return new TableContentUsageIdentifier(tableUsageName);
         }
     }
 
-    record AttributeValueIdentifier(String id, String attributeName) implements Identifier {
+    record AttributeValueIdentifier(String attributeName) implements Identifier {
+
+        public AttributeValueIdentifier(String attributeName) {
+            this.attributeName = IpsStringUtils.isBlank(attributeName) ? "" : attributeName;
+        }
 
         static AttributeValueIdentifier of(IAttributeValue attributeValue) {
-            return new AttributeValueIdentifier(attributeValue.getId(), attributeValue.getAttribute());
+            return new AttributeValueIdentifier(attributeValue.getAttribute());
         }
 
         static AttributeValueIdentifier of(Element partEl) {
             String attributeName = getAttribute(partEl, IAttributeValue.PROPERTY_ATTRIBUTE);
-            return new AttributeValueIdentifier(getId(partEl), attributeName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof AttributeValueIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(attributeName, otherIdentifier.attributeName));
+            return new AttributeValueIdentifier(attributeName);
         }
     }
 
-    record ConfiguredDefaultIdentifier(String id, String attributeName) implements Identifier {
+    record ConfiguredDefaultIdentifier(String attributeName) implements Identifier {
+
+        public ConfiguredDefaultIdentifier(String attributeName) {
+            this.attributeName = IpsStringUtils.isBlank(attributeName) ? "" : attributeName;
+        }
 
         static ConfiguredDefaultIdentifier of(IConfiguredDefault configuredDefault) {
-            return new ConfiguredDefaultIdentifier(configuredDefault.getId(),
-                    configuredDefault.getPolicyCmptTypeAttribute());
+            return new ConfiguredDefaultIdentifier(configuredDefault.getPolicyCmptTypeAttribute());
         }
 
         static ConfiguredDefaultIdentifier of(Element partEl) {
             String attributeName = getAttribute(partEl, IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE);
-            return new ConfiguredDefaultIdentifier(getId(partEl), attributeName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof ConfiguredDefaultIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(attributeName, otherIdentifier.attributeName));
+            return new ConfiguredDefaultIdentifier(attributeName);
         }
     }
 
-    record ConfiguredValueSetIdentifier(String id, String attributeName) implements Identifier {
+    record ConfiguredValueSetIdentifier(String attributeName) implements Identifier {
+
+        public ConfiguredValueSetIdentifier(String attributeName) {
+            this.attributeName = IpsStringUtils.isBlank(attributeName) ? "" : attributeName;
+        }
 
         static ConfiguredValueSetIdentifier of(IConfiguredValueSet configuredValueSet) {
-            return new ConfiguredValueSetIdentifier(configuredValueSet.getId(),
-                    configuredValueSet.getPolicyCmptTypeAttribute());
+            return new ConfiguredValueSetIdentifier(configuredValueSet.getPolicyCmptTypeAttribute());
         }
 
         static ConfiguredValueSetIdentifier of(Element partEl) {
             String attributeName = getAttribute(partEl, IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE);
-            return new ConfiguredValueSetIdentifier(getId(partEl), attributeName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof ConfiguredValueSetIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(attributeName, otherIdentifier.attributeName));
+            return new ConfiguredValueSetIdentifier(attributeName);
         }
     }
 
-    record AssociationIdentifier(String id, String targetRoleName) implements Identifier {
+    record AssociationIdentifier(String targetRoleName) implements Identifier {
+
+        public AssociationIdentifier(String targetRoleName) {
+            this.targetRoleName = IpsStringUtils.isBlank(targetRoleName) ? "" : targetRoleName;
+        }
 
         static AssociationIdentifier of(IAssociation association) {
-            return new AssociationIdentifier(association.getId(), association.getTargetRoleSingular());
+            return new AssociationIdentifier(association.getTargetRoleSingular());
         }
 
         static AssociationIdentifier of(Element partEl) {
             String targetRoleName = getAttribute(partEl, Association.PROPERTY_TARGET_ROLE_SINGULAR);
-            return new AssociationIdentifier(getId(partEl), targetRoleName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof AssociationIdentifier otherIdentifier
-                    && (isEqualsNotNull(id, otherIdentifier.id)
-                            || isEqualsNotNull(targetRoleName, otherIdentifier.targetRoleName));
+            return new AssociationIdentifier(targetRoleName);
         }
     }
 
-    record LabelIdentifier(String id, Locale locale) implements Identifier {
+    record LabelIdentifier(Locale locale) implements Identifier {
 
         static LabelIdentifier of(ILabel label) {
-            return new LabelIdentifier(label.getId(), label.getLocale());
+            return new LabelIdentifier(label.getLocale());
         }
 
         static LabelIdentifier of(Element partEl) {
             String localeCode = getAttribute(partEl, ILabel.PROPERTY_LOCALE);
-            return new LabelIdentifier(getId(partEl),
-                    IpsStringUtils.isNotEmpty(localeCode) ? new Locale(localeCode) : null);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof LabelIdentifier otherLabel
-                    && (isEqualsNotNull(id, otherLabel.id) || isEqualsNotNull(locale, otherLabel.locale));
+            return new LabelIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? new Locale(localeCode) : null);
         }
     }
 
-    record DescriptionIdentifier(String id, Locale locale) implements Identifier {
+    record DescriptionIdentifier(Locale locale) implements Identifier {
 
         static DescriptionIdentifier of(IDescription description) {
-            return new DescriptionIdentifier(description.getId(), description.getLocale());
+            return new DescriptionIdentifier(description.getLocale());
         }
 
         static DescriptionIdentifier of(Element partEl) {
             String localeCode = getAttribute(partEl, IDescription.PROPERTY_LOCALE);
-            return new DescriptionIdentifier(getId(partEl),
-                    IpsStringUtils.isNotEmpty(localeCode) ? new Locale(localeCode) : null);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof DescriptionIdentifier otherDescription
-                    && (isEqualsNotNull(id, otherDescription.id) || isEqualsNotNull(locale, otherDescription.locale));
+            return new DescriptionIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? new Locale(localeCode) : null);
         }
     }
 
-    record ColumnRangeIdentifier(String id, String parameterName, ColumnRangeType rangeType) implements Identifier {
+    record ColumnRangeIdentifier(String parameterName, ColumnRangeType rangeType) implements Identifier {
+
+        public ColumnRangeIdentifier(String parameterName, ColumnRangeType rangeType) {
+            this.parameterName = IpsStringUtils.isBlank(parameterName) ? "" : parameterName;
+            this.rangeType = rangeType;
+        }
 
         static ColumnRangeIdentifier of(IColumnRange columnRange) {
-            return new ColumnRangeIdentifier(columnRange.getId(), columnRange.getParameterName(),
-                    columnRange.getColumnRangeType());
+            return new ColumnRangeIdentifier(columnRange.getParameterName(), columnRange.getColumnRangeType());
         }
 
         static ColumnRangeIdentifier of(Element partEl) {
             String parameterName = getAttribute(partEl, IColumnRange.PROPERTY_PARAMETER_NAME);
             String rangeTypeId = getAttribute(partEl, IColumnRange.PROPERTY_RANGE_TYPE);
             ColumnRangeType rangeType = ColumnRangeType.getValueById(rangeTypeId);
-            return new ColumnRangeIdentifier(getId(partEl), parameterName, rangeType);
-        }
-
-        @Override
-        public boolean isSame(Identifier other) {
-            return other instanceof ColumnRangeIdentifier otherColumnRange
-                    && (isEqualsNotNull(id, otherColumnRange.id)
-                            || (isEqualsNotNull(parameterName, otherColumnRange.parameterName)
-                                    && rangeType == otherColumnRange.rangeType));
+            return new ColumnRangeIdentifier(parameterName, rangeType);
         }
     }
 
-    record LinkIdentifier(String id, String associationName, String targetRuntimeId) implements Identifier {
+    record LinkIdentifier(String associationName, String targetRuntimeId) implements Identifier {
+
+        public LinkIdentifier(String associationName, String targetRuntimeId) {
+            this.associationName = IpsStringUtils.isBlank(associationName) ? "" : associationName;
+            this.targetRuntimeId = IpsStringUtils.isBlank(targetRuntimeId) ? "" : targetRuntimeId;
+        }
 
         static LinkIdentifier of(IProductCmptLink link) {
-            return new LinkIdentifier(link.getId(), link.getAssociation(), link.getTargetRuntimeId());
+            return new LinkIdentifier(link.getAssociation(), link.getTargetRuntimeId());
         }
 
         static LinkIdentifier of(Element partEl) {
             String associationName = getAttribute(partEl, IProductCmptLink.PROPERTY_ASSOCIATION);
             String targetRuntimeId = getAttribute(partEl, IProductCmptLink.PROPERTY_TARGET_RUNTIME_ID);
-            return new LinkIdentifier(getId(partEl), associationName, targetRuntimeId);
-        }
-
-        @Override
-        public boolean isSame(Identifier other) {
-            return other instanceof LinkIdentifier otherColumnRange
-                    && (isEqualsNotNull(id, otherColumnRange.id)
-                            || (isEqualsNotNull(associationName, otherColumnRange.associationName)
-                                    && isEqualsNotNull(targetRuntimeId, otherColumnRange.targetRuntimeId)));
+            return new LinkIdentifier(associationName, targetRuntimeId);
         }
     }
 
-    record TestValueIdentifier(String id, String testParameterName) implements Identifier {
+    record TestValueIdentifier(String testParameterName) implements Identifier {
+
+        public TestValueIdentifier(String testParameterName) {
+            this.testParameterName = IpsStringUtils.isBlank(testParameterName) ? "" : testParameterName;
+        }
 
         static TestValueIdentifier of(ITestValue testValue) {
-            return new TestValueIdentifier(testValue.getId(), testValue.getTestParameterName());
+            return new TestValueIdentifier(testValue.getTestParameterName());
         }
 
         static TestValueIdentifier of(Element partEl) {
             String testParameterName = getAttribute(partEl, ITestValue.PROPERTY_VALUE_PARAMETER);
-            return new TestValueIdentifier(getId(partEl), testParameterName);
-        }
-
-        @Override
-        public final boolean isSame(Identifier other) {
-            return other instanceof TestValueIdentifier otherTestValue
-                    && (isEqualsNotNull(id, otherTestValue.id)
-                            || isEqualsNotNull(testParameterName, otherTestValue.testParameterName));
+            return new TestValueIdentifier(testParameterName);
         }
     }
 
-    record MethodIdentifier(String id, String name, String returnValue, List<String> parameters) implements Identifier {
+    record MethodIdentifier(String name, String returnValue, List<String> parameters) implements Identifier {
+
+        public MethodIdentifier(String name, String returnValue, List<String> parameters) {
+            this.name = IpsStringUtils.isBlank(name) ? "" : name;
+            this.returnValue = IpsStringUtils.isBlank(returnValue) ? "" : returnValue;
+            this.parameters = parameters == null ? List.of() : parameters;
+        }
+
         static MethodIdentifier of(IMethod method) {
-            return new MethodIdentifier(method.getId(), method.getName(), method.getDatatype(),
+            return new MethodIdentifier(method.getName(), method.getDatatype(),
                     Arrays.stream(method.getParameters()).map(IParameter::getDatatype).toList());
         }
 
         static MethodIdentifier of(Element partEl) {
             partEl.getChildNodes();
-            return new MethodIdentifier(getId(partEl), getAttribute(partEl, IBaseMethod.PROPERTY_NAME),
+            return new MethodIdentifier(getAttribute(partEl, IBaseMethod.PROPERTY_NAME),
                     getAttribute(partEl, IBaseMethod.PROPERTY_DATATYPE),
                     org.faktorips.runtime.internal.XmlUtil.getChildElements(partEl,
                             IParameter.TAG_NAME).stream().map(p -> p.getAttribute(IParameter.PROPERTY_DATATYPE))
                             .toList());
-        }
-
-        @Override
-        public boolean isSame(Identifier other) {
-            return other instanceof MethodIdentifier otherMethod
-                    && (isEqualsNotNull(id, otherMethod.id)
-                            || isSameMethodSignature(otherMethod));
-        }
-
-        private boolean isSameMethodSignature(MethodIdentifier otherMethod) {
-            return isEqualsNotNull(name, otherMethod.name) && isEqualsNotNull(returnValue, otherMethod.returnValue)
-                    && CollectionUtils.isEqualCollection(parameters, otherMethod.parameters);
         }
     }
 }

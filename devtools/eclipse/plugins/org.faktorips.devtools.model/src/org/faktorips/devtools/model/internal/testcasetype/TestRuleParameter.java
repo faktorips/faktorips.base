@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,12 +27,12 @@ import org.w3c.dom.Element;
 
 /**
  * Test rule parameter class. Defines a validation rule for a specific test case type.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestRuleParameter extends TestParameter implements ITestRuleParameter {
 
-    static final String TAG_NAME = "RuleParameter"; //$NON-NLS-1$
+    public static final String TAG_NAME = "RuleParameter"; //$NON-NLS-1$
 
     public TestRuleParameter(IIpsObject parent, String id) {
         super(parent, id);
