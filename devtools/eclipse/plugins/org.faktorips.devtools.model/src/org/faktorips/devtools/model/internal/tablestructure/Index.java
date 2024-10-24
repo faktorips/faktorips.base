@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 
 public class Index extends Key implements IIndex {
 
-    static final String TAG_NAME = "Index"; //$NON-NLS-1$
+    public static final String TAG_NAME = "Index"; //$NON-NLS-1$
 
     private static final String XML_ATTRIBUTE_UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
 

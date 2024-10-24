@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -45,7 +45,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseTypeTest extends AbstractDependencyTest {
@@ -167,11 +167,14 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         ITestValueParameter valueParamExpectedResult = type.newExpectedResultValueParameter();
         ITestRuleParameter ruleParamExpectedResult = type.newExpectedResultRuleParameter();
         ruleParamExpectedResult.setName("Rule1");
-        type.newInputTestPolicyCmptTypeParameter();
-        type.newExpectedResultPolicyCmptTypeParameter();
+        type.newInputTestPolicyCmptTypeParameter().setName("in1");
+        type.newExpectedResultPolicyCmptTypeParameter().setName("ex1");
 
+        valueParamInput.setName("val1");
         valueParamInput.setValueDatatype("Integer");
+        valueParamInput.setName("val2");
         valueParamInput2.setValueDatatype("Decimal");
+        valueParamExpectedResult.setName("valEx");
         valueParamExpectedResult.setValueDatatype("Money");
         Document doc = newDocument();
         Element el = type.toXml(doc);
@@ -187,7 +190,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
         assertEquals("Integer", ((ITestValueParameter)type.getInputTestParameters()[0]).getValueDatatype());
         assertEquals("Decimal", ((ITestValueParameter)type.getInputTestParameters()[1]).getValueDatatype());
         assertEquals("Money", ((ITestValueParameter)type.getExpectedResultTestParameters()[0]).getValueDatatype());
-        assertEquals("Rule1", ((ITestRuleParameter)type.getExpectedResultTestParameters()[1]).getName());
+        assertEquals("Rule1", type.getExpectedResultTestParameters()[1].getName());
     }
 
     @Test

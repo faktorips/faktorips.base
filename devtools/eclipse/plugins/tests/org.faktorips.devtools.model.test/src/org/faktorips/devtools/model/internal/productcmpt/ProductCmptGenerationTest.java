@@ -304,13 +304,13 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
         generation.newPropertyValue(attribute1, IConfiguredDefault.class);
         generation.newPropertyValue(attribute1, IConfiguredValueSet.class);
-        generation.newLink("coverage");
-        generation.newLink("coverage");
-        generation.newLink("coverage");
-        generation.newFormula();
-        generation.newFormula();
-        generation.newAttributeValue();
-        generation.newTableContentUsage();
+        generation.newLink("coverage").setTargetRuntimeId("t1");
+        generation.newLink("coverage").setTargetRuntimeId("t2");
+        generation.newLink("coverage").setTargetRuntimeId("t3");
+        generation.newFormula().setFormulaSignature("f1");
+        generation.newFormula().setFormulaSignature("f2");
+        generation.newAttributeValue().setAttribute("a1");
+        generation.newTableContentUsage().setTableContentName("tc1");
         newValidationRuleConfig("rule1");
         newValidationRuleConfig("rule2");
 
@@ -611,9 +611,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValidationRuleByName() {
-        IValidationRule rule;
-
-        rule = policyCmptType.newRule();
+        IValidationRule rule = policyCmptType.newRule();
         rule.setName("rule1");
         generation.newValidationRuleConfig(rule);
 
