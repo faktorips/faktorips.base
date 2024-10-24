@@ -1,14 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.builder.java.annotations.productcmpt;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -24,8 +27,29 @@ public class TableUsageAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        return new JavaCodeFragmentBuilder()
-                .annotationLn(IpsTableUsage.class, "name = \"" + modelNode.getName() + "\"").getFragment();
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("name = \"").append(modelNode.getName()).append("\"");
+
+        XTableUsage tableUsage = (XTableUsage)modelNode;
+        List<String> tableClassNames = tableUsage.getAllTableClassNames();
+
+        if (!tableClassNames.isEmpty()) {
+            String joinedTableClasses = tableClassNames.stream()
+                    .map(className -> className + ".class")
+                    .collect(Collectors.joining(", "));
+
+            stringBuilder.append(", tableClasses = ");
+            if (tableClassNames.size() > 1) {
+                stringBuilder.append("{").append(joinedTableClasses).append("}");
+            } else {
+                stringBuilder.append(joinedTableClasses);
+            }
+        }
+
+        builder.annotationLn(IpsTableUsage.class, stringBuilder.toString());
+        return builder.getFragment();
     }
 
     @Override

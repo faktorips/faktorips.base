@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
@@ -64,6 +68,17 @@ public class XTableUsage extends AbstractGeneratorModelNode {
             XTable xTable = getModelNode(tableStructure, XTable.class);
             return xTable.getSimpleName(BuilderAspect.IMPLEMENTATION);
         }
+    }
+
+    public List<String> getAllTableClassNames() {
+        return Arrays.stream(getTableStructureUsage().getTableStructures())
+                .map(tableStructureName -> (ITableStructure)getIpsProject()
+                        .findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableStructureName))
+                .filter(Objects::nonNull)
+                .map(tableStructure -> getModelNode(tableStructure, XTable.class))
+                .filter(Objects::nonNull)
+                .map(xTable -> xTable.getSimpleName(BuilderAspect.IMPLEMENTATION))
+                .toList();
     }
 
     public String getConstantNameTable() {
