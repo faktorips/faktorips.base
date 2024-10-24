@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,7 +48,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
@@ -131,7 +131,6 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.setMinInstances(7);
         policyCmptTypeParameterInput.setMaxInstances(8);
         policyCmptTypeParameterInput.setRequiresProductCmpt(true);
-        policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
         policyCmptTypeParameterInput.setTestParameterType(TestParameterType.INPUT);
         ITestPolicyCmptTypeParameter targetChild = policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
 
@@ -154,13 +153,12 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         policyCmptTypeParameterInput.newInputTestAttribute();
         policyCmptTypeParameterInput.newInputTestAttribute();
         policyCmptTypeParameterInput.setTestParameterType(TestParameterType.EXPECTED_RESULT);
-        policyCmptTypeParameterInput.newTestPolicyCmptTypeParamChild();
 
         // check the value stored before
         policyCmptTypeParameterInput.initFromXml(el);
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "Name1", "base.Test2", "association1", 7,
                 8, true, false, false);
-        assertEquals(3, policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChilds().length);
+        assertEquals(2, policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChilds().length);
         assertEquals(1, policyCmptTypeParameterInput.getTestAttributes().length);
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "Name1", "base.Test2", "association1", 7,
                 8, true, false, false);
@@ -580,7 +578,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
 
         // association exists twice
         // find product cmpt only once
-        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar(2000, 0, 0));
         productCmptLink = generation.newLink("Coverage");
         productCmptLink.setTarget(testContent.coverageProductA.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);
@@ -597,7 +595,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         // test with two generations
         // coverageProductA specified in generation 1
         // coverageProductB specified in generation 2
-        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar());
+        generation = (IProductCmptGeneration)testContent.policyProduct.newGeneration(new GregorianCalendar(2010, 0, 1));
         productCmptLink = generation.newLink("Coverage");
         productCmptLink.setTarget(testContent.coverageProductB.getQualifiedName());
         allowedProductCmpt = testContent.childParameter.getAllowedProductCmpt(project, testContent.policyProduct);

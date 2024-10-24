@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.testcasetype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -19,6 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
@@ -32,6 +36,7 @@ import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -44,13 +49,14 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
 
     private ITestAttribute testAttribute;
     private IIpsProject ipsProject;
+    private ITestCaseType type;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        ITestCaseType type = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
+        type = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "PremiumCalculation");
         testAttribute = type.newExpectedResultPolicyCmptTypeParameter().newExpectedResultTestAttribute();
     }
@@ -463,4 +469,34 @@ public class TestAttributeTest extends AbstractIpsPluginTest {
         ml = testAttribute.validate(ipsProject);
         assertThat(ml, lacksMessageCode(ITestAttribute.MSGCODE_INVALID_TEST_ATTRIBUTE_NAME));
     }
+
+    @Test
+    public void testDirectChangesToTheCorrespondingFile_TestAttribute() throws Exception {
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("===== Start testDirectChangesToTestAttribute() =====");
+        }
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy1", "SubProduct1");
+        IIpsSrcFile ipsFile = testAttribute.getIpsSrcFile();
+        testAttribute.setAttribute("foobar");
+        testAttribute.setDatatype("String");
+        testAttribute.setPolicyCmptType(policyCmptType.getName());
+        testAttribute.setName("foobar");
+        ipsFile.save(null);
+
+        String encoding = testAttribute.getIpsProject().getXmlFileCharset();
+        AFile file = testAttribute.getIpsSrcFile().getCorrespondingFile();
+        String content = StringUtil.readFromInputStream(file.getContents(), encoding);
+        content = content.replace("foobar", "newFoobar");
+        file.setContents(StringUtil.getInputStreamForString(content, encoding), false, null);
+
+        type.getIpsObject();
+        ITestAttribute testAttribute = type.getTestPolicyCmptTypeParameters()[0].getTestAttributes()[0];
+
+        assertThat(testAttribute.isDeleted(), is(false));
+        assertThat(testAttribute.getAttribute(), is("newFoobar"));
+        if (IpsModel.TRACE_MODEL_MANAGEMENT) {
+            System.out.println("===== Finished testDirectChangesToTestAttribute() =====");
+        }
+    }
+
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,12 +42,12 @@ import org.w3c.dom.Element;
 /**
  * Test policy component type parameter class. Defines a test policy component type parameter for a
  * specific test case type.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestPolicyCmptTypeParameter extends TestParameter implements ITestPolicyCmptTypeParameter {
 
-    static final String TAG_NAME = "PolicyCmptTypeParameter"; //$NON-NLS-1$
+    public static final String TAG_NAME = "PolicyCmptTypeParameter"; //$NON-NLS-1$
 
     private String policyCmptType = ""; //$NON-NLS-1$
 

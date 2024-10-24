@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IParameter extends IIpsObjectPart {
 
+    String TAG_NAME = "Parameter"; //$NON-NLS-1$
     String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /**

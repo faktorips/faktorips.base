@@ -739,8 +739,10 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         rule2.setName("rule2");
         IPolicyCmptTypeAssociation r1 = policyCmptType.newPolicyCmptTypeAssociation();
         r1.setTarget("t1");
+        r1.setTargetRoleSingular("t1");
         IPolicyCmptTypeAssociation r2 = policyCmptType.newPolicyCmptTypeAssociation();
         r2.setTarget("t2");
+        r2.setTargetRoleSingular("t2");
 
         Element element = policyCmptType.toXml(newDocument());
 

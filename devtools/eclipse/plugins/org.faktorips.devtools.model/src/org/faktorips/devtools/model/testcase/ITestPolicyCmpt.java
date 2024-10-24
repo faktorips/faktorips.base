@@ -26,6 +26,8 @@ import org.faktorips.devtools.model.type.IAttribute;
  */
 public interface ITestPolicyCmpt extends ITestObject {
 
+    String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
+
     String PROPERTY_TESTPOLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
     String PROPERTY_PRODUCTCMPT = "productCmpt"; //$NON-NLS-1$
     String PROPERTY_POLICYCMPTTYPE = "policyCmptType"; //$NON-NLS-1$

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -52,12 +52,12 @@ import org.w3c.dom.Element;
 
 /**
  * Test policy component. Defines a test policy component within a test case definition.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
-    static final String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
+    public static final String TAG_NAME = "PolicyCmptTypeObject"; //$NON-NLS-1$
 
     private String testPolicyCmptType = ""; //$NON-NLS-1$
 
@@ -573,7 +573,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * Fix the sort order of the child test policy cmpt links in order to the corresponding test
      * policy cmpt type parameter.
-     * 
+     *
      * @throws IpsException in case of an error
      */
     void fixDifferentChildSortOrder() {
@@ -616,7 +616,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
     /**
      * Fix the sort order of the test attribute values in order to the corresponding test policy
      * cmpt type parameter test attributes.
-     * 
+     *
      * @throws IpsException in case of an error
      */
     void fixDifferentTestAttrValueSortOrder() {

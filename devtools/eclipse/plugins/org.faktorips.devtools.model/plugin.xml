@@ -27,7 +27,7 @@
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
    <extension-point id="formulaCompiler" name="Formula Compiler" schema="schema/formulaCompiler.exsd"/>
    <extension-point id="implementationClassProvider" name="Implementation Class Provider" schema="schema/implementationClassProvider.exsd"/>
-
+   <extension-point id="ipsObjectPartIdentityProvider" name="IpsObjectPart IdentityProvider Implementation" schema="schema/ipsObjectPartIdentityProvider.exsd"/>
     
 <!-- 
     Default Datatypes

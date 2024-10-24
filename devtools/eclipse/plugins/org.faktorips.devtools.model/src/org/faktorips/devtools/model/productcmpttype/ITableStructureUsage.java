@@ -22,6 +22,10 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
  */
 public interface ITableStructureUsage extends IProductCmptProperty {
 
+    String TAG_NAME = "TableStructureUsage"; //$NON-NLS-1$
+    
+    String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
+    
     String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
 
     String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$

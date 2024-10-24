@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,7 +37,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * Test for threading issues (we hopefully once HAD).
- * 
+ *
  * @author Jan Ortmann
  */
 public class ModelManagementTest extends AbstractIpsPluginTest {
@@ -95,8 +96,9 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         content = content.replace("Blabla", "NewBlabla");
         file.setContents(StringUtil.getInputStreamForString(content, encoding), false, null);
         type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
-        assertThat(description.isDeleted(), is(true));
+        assertThat(description.isDeleted(), is(false));
         assertEquals("NewBlabla", type.getDescription(Locale.GERMAN).getText());
+        assertSame(description, type.getDescription(Locale.GERMAN));
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("===== Finished testDirectChangesToTheCorrespondingFile() =====");
         }
@@ -135,8 +137,9 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
             file.refreshLocal(AResourceTreeTraversalDepth.INFINITE, null);
 
             type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
-            assertThat(description.isDeleted(), is(true));
+            assertThat(description.isDeleted(), is(false));
             assertEquals("NewBlabla", type.getDescription(Locale.GERMAN).getText());
+            assertSame(description, type.getDescription(Locale.GERMAN));
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println("===== Finished testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() =====");
             }
