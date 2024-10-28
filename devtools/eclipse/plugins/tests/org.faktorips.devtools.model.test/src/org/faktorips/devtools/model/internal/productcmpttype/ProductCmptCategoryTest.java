@@ -357,6 +357,27 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testFindProductCmptProperties_OverwritingMethodsWithDiffSignatures() {
+        IProductCmptType superProdcutType = createSuperProductType(productType, "Super");
+        IProductCmptCategory superCategory = superProdcutType.newCategory("superCategory");
+        IProductCmptTypeMethod superFormula = superProdcutType.newFormulaSignature("formula1");
+        superFormula.newParameter("String", "param");
+        superFormula.setCategory(superCategory.getName());
+        superFormula.setCategoryPosition(6);
+        IProductCmptTypeMethod overwritingFormula = productType.newFormulaSignature("formula1");
+        overwritingFormula.setOverloadsFormula(true);
+        overwritingFormula.newParameter("Integer", "otherParam");
+        overwritingFormula.setCategory(superCategory.getName());
+        IProductCmptTypeMethod anotherFormula = productType.newFormulaSignature("formula2");
+        anotherFormula.setCategory(superCategory.getName());
+        anotherFormula.setCategoryPosition(4);
+
+        List<IProductCmptProperty> properties = superCategory.findProductCmptProperties(productType, true, ipsProject);
+
+        assertThat(properties, contains(overwritingFormula, anotherFormula));
+    }
+
+    @Test
     public void testSetDefaultForFormulaSignatureDefinitions() {
         category.setDefaultForFormulaSignatureDefinitions(true);
         assertTrue(category.isDefaultForFormulaSignatureDefinitions());
