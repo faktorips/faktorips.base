@@ -22,19 +22,29 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.DummyTocEntryFactory.DummyRuntimeObject;
+import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.internal.RuntimeObject;
 import org.faktorips.runtime.internal.TestProductCmptGeneration;
 import org.faktorips.runtime.internal.TestProductComponent;
 import org.faktorips.runtime.internal.TestSingleContentTable;
 import org.faktorips.runtime.internal.TestTable;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
+import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
+import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
@@ -44,8 +54,10 @@ import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.runtime.xml.IToXmlSupport;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Element;
 
 public class InMemoryRuntimeRepositoryTest {
 
@@ -246,6 +258,25 @@ public class InMemoryRuntimeRepositoryTest {
         assertNull(repository.getTable("testTable"));
         assertNull(repository.getTable(TestSingleContentTable.class));
         assertFalse(repository.removeTable(t));
+
+    }
+
+    @Test
+    public void testGetAllModelTypeImplementationClasses() {
+        ProductComponent p1 = new TestConfiguringProduct1(repository, "p1", "p1Kind", "p1Version");
+        ProductComponent p2 = new TestConfiguringProduct2(repository, "p2", "p2Kind", "p2Version");
+        repository.putProductComponent(p1);
+        repository.putProductComponent(p2);
+
+        TestEnumValue e1 = new TestEnumValue("enumTest");
+        repository.putEnumValues(TestEnumValue.class, List.of(e1));
+
+        Set<String> result = new HashSet<>();
+        result = repository.getAllModelTypeImplementationClasses();
+        assertEquals(3, result.size());
+        assertTrue(result.contains(IpsModel.getProductCmptType(p1).getPolicyCmptType().getJavaClass().getName()));
+        assertTrue(result.contains(IpsModel.getProductCmptType(p2).getPolicyCmptType().getJavaClass().getName()));
+        assertTrue(result.contains(e1.getClass().getName()));
 
     }
 
@@ -779,6 +810,148 @@ public class InMemoryRuntimeRepositoryTest {
         }
         NoClass noClassObject = repository.getCustomRuntimeObject(NoClass.class, "dummy.DummyRuntimeObject");
         assertNull(noClassObject);
+    }
+
+    @IpsProductCmptType(name = "TestConfiguringProduct_1")
+    @IpsConfigures(TestConfiguredPolicy1.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.InMemoryRuntimeRepositoryTest", defaultLocale = "de")
+    public class TestConfiguringProduct1 extends ProductComponent implements IToXmlSupport {
+
+        public TestConfiguringProduct1(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        public TestConfiguredPolicy1 createConfiguredPolicy() {
+            return new TestConfiguredPolicy1(this);
+        }
+
+        @Override
+        public TestConfiguredPolicy1 createPolicyComponent() {
+            return createConfiguredPolicy();
+        }
+
+        @Override
+        public void writePropertiesToXml(Element element) {
+            // not implemented, but overwrites the super-implementation that throws an exception to
+            // allow testing of other parts written to XML.
+
+        }
+
+    }
+
+    @IpsProductCmptType(name = "TestConfiguringProduct_2")
+    @IpsConfigures(TestConfiguredPolicy2.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.InMemoryRuntimeRepositoryTest", defaultLocale = "de")
+    public class TestConfiguringProduct2 extends ProductComponent implements IToXmlSupport {
+
+        public TestConfiguringProduct2(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        public TestConfiguredPolicy2 createConfiguredPolicy() {
+            return new TestConfiguredPolicy2(this);
+        }
+
+        @Override
+        public TestConfiguredPolicy2 createPolicyComponent() {
+            return createConfiguredPolicy();
+        }
+
+        @Override
+        public void writePropertiesToXml(Element element) {
+            // not implemented, but overwrites the super-implementation that throws an exception to
+            // allow testing of other parts written to XML.
+
+        }
+
+    }
+
+    @IpsPolicyCmptType(name = "TestConfiguredPolicy_1")
+    @IpsConfiguredBy(TestConfiguringProduct1.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.InMemoryRuntimeRepository", defaultLocale = "de")
+    public class TestConfiguredPolicy1 extends AbstractModelObject implements IConfigurableModelObject {
+
+        private ProductConfiguration productConfiguration;
+
+        public TestConfiguredPolicy1(TestConfiguringProduct1 productCmpt) {
+            super();
+            productConfiguration = new ProductConfiguration(productCmpt);
+        }
+
+        public TestConfiguringProduct1 getConfiguringProduct() {
+            return (TestConfiguringProduct1)getProductComponent();
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public void initialize() {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
+
+    @IpsPolicyCmptType(name = "TestConfiguredPolicy_2")
+    @IpsConfiguredBy(TestConfiguringProduct2.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.InMemoryRuntimeRepository", defaultLocale = "de")
+    public class TestConfiguredPolicy2 extends AbstractModelObject implements IConfigurableModelObject {
+
+        private ProductConfiguration productConfiguration;
+
+        public TestConfiguredPolicy2(TestConfiguringProduct2 productCmpt) {
+            super();
+            productConfiguration = new ProductConfiguration(productCmpt);
+        }
+
+        public TestConfiguringProduct2 getConfiguringProduct() {
+            return (TestConfiguringProduct2)getProductComponent();
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public void initialize() {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 
 }

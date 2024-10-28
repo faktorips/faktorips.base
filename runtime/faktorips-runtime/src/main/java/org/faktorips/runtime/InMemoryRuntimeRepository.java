@@ -32,6 +32,9 @@ import java.util.stream.Stream;
 
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.type.PolicyCmptType;
+import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
@@ -379,7 +382,23 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
 
     @Override
     protected void getAllModelTypeImplementationClasses(Set<String> result) {
-        throw new RuntimeException("Currently not supported by InMemoryRuntimeRepository.");
+        Stream.concat(getPolicyCmptTypeClasses(),
+                getAllEnumClasses().stream())
+                .map(Class::getName)
+                .distinct()
+                .forEach(result::add);
+    }
+
+    private Stream<Class<?>> getPolicyCmptTypeClasses() {
+        return getAllPolicyCmptTypes().stream()
+                .map(PolicyCmptType::getJavaClass);
+    }
+
+    private List<PolicyCmptType> getAllPolicyCmptTypes() {
+        return getAllProductComponents().stream()
+                .map(IpsModel::getProductCmptType)
+                .filter(ProductCmptType::isConfigurationForPolicyCmptType)
+                .map(ProductCmptType::getPolicyCmptType).toList();
     }
 
     @Override
