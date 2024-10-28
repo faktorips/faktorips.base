@@ -140,4 +140,8 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      */
     void setChangingOverTime(boolean changingOverTime);
 
+    @Override
+    default IMethod findOverriddenElement(IIpsProject ipsProject) {
+        return findOverloadedFormulaMethod(ipsProject);
+    }
 }

@@ -321,15 +321,16 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         bMethod.newParameter(Datatype.STRING.toString(), "param1");
         bMethod.newParameter(Datatype.INTEGER.toString(), "param2");
 
-        IProductCmptTypeMethod overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
+        IProductCmptTypeMethod overloadedFormulaMethod = (IProductCmptTypeMethod)bMethod
+                .findOverriddenElement(ipsProject);
         assertNull(overloadedFormulaMethod);
 
         bMethod.setOverloadsFormula(true);
-        overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
+        overloadedFormulaMethod = (IProductCmptTypeMethod)bMethod.findOverriddenElement(ipsProject);
         assertEquals(aMethod, overloadedFormulaMethod);
 
         bType.setSupertype(null);
-        overloadedFormulaMethod = bMethod.findOverloadedFormulaMethod(ipsProject);
+        overloadedFormulaMethod = (IProductCmptTypeMethod)bMethod.findOverriddenElement(ipsProject);
         assertNull(overloadedFormulaMethod);
 
         bType.setSupertype(aType.getQualifiedName());
