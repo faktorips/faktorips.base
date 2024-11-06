@@ -29,7 +29,7 @@ public class Migration_24_7_5 extends MarkAsDirtyMigration {
                 featureId,
                 Set.of(IIpsModel.get().getIpsObjectTypes()),
                 migrationVersion,
-                Messages.Migration_24_7_0_description);
+                Messages.Migration_24_7_5_description);
     }
 
     public static class Factory implements IIpsProjectMigrationOperationFactory {

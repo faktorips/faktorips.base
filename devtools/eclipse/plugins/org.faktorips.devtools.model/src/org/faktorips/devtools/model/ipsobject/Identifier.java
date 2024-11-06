@@ -148,15 +148,21 @@ public interface Identifier {
         if (part instanceof IPartIdentifiedByIndex indexedPart) {
             return new IndexedIdentifier(index.getAndIncrement());
         }
-        String name = part.getName();
-        if (IpsStringUtils.isNotBlank(name)) {
-            return new NamedIdentifier(name);
-        }
-        List<IdentityProvider> list = IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
-        return list.stream().map(idProvider -> idProvider.getIdentity(part))
+        return getIdProviders().stream()
+                .map(idProvider -> idProvider.getIdentity(part))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> {
+                    String name = part.getName();
+                    if (IpsStringUtils.isNotBlank(name)) {
+                        return new NamedIdentifier(name);
+                    }
+                    return null;
+                });
+    }
+
+    private static List<IdentityProvider> getIdProviders() {
+        return IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
     }
     // CSON: CyclomaticComplexityCheck
 
@@ -200,17 +206,17 @@ public interface Identifier {
             case IEnumValue.XML_TAG -> EmumValueIdentifier.of(partEl, (IEnumValueContainer)container);
             case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(IEnumAttributeValue.XML_TAG);
             case Row.TAG_NAME, IEnumAttributeValue.XML_TAG -> new IndexedIdentifier(index.getAndIncrement());
-            default -> {
-                String name = getAttribute(partEl, IIpsElement.PROPERTY_NAME);
-                if (IpsStringUtils.isNotEmpty(name)) {
-                    yield new NamedIdentifier(name);
-                }
-                List<IdentityProvider> list = IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
-                yield list.stream().map(idProvider -> idProvider.getIdentity(partEl))
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .orElse(null);
-            }
+            default -> getIdProviders().stream()
+                    .map(idProvider -> idProvider.getIdentity(partEl))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElseGet(() -> {
+                        String name = getAttribute(partEl, IIpsElement.PROPERTY_NAME);
+                        if (IpsStringUtils.isNotEmpty(name)) {
+                            return new NamedIdentifier(name);
+                        }
+                        return null;
+                    });
         };
     }
     // CSON: NestedBlocks

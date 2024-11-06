@@ -79,7 +79,7 @@ public class MarkAsDirtyMigration extends DefaultMigration {
 
     @Override
     protected void migrate(IIpsSrcFile srcFile) {
-        if (typesToMigrate.contains(srcFile.getIpsObjectType())) {
+        if (typesToMigrate.contains(srcFile.getIpsObjectType()) && srcFile.isContentParsable()) {
             srcFile.markAsDirty();
         }
     }

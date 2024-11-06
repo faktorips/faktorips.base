@@ -14,12 +14,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -105,6 +108,24 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
         assertTrue(enumType.getIpsSrcFile().isDirty());
         assertFalse(enumContent.getIpsSrcFile().isDirty());
         assertFalse(testCase.getIpsSrcFile().isDirty());
+    }
+
+    @Test
+    public void testMigrate_NonParsableFilesAreNotMigrated() throws Exception {
+        setUpMigration();
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy1");
+        IIpsSrcFile ipsSrcFile = policyCmptType.getIpsSrcFile();
+        ipsSrcFile.save(null);
+        ipsSrcFile.getCorrespondingFile()
+                .setContents(new ByteArrayInputStream("broken".getBytes(StandardCharsets.UTF_8)), false, null);
+
+        assertFalse(ipsSrcFile.isDirty());
+
+        migration.migrate(new NullProgressMonitor());
+
+        assertFalse(ipsSrcFile.isDirty());
+        assertThat(new String(ipsSrcFile.getCorrespondingFile().getContents().readAllBytes(), StandardCharsets.UTF_8),
+                is("broken"));
     }
 
 }
