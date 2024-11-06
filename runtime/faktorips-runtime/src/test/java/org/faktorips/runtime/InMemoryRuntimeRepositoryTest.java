@@ -20,12 +20,14 @@ import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -50,11 +52,14 @@ import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.test.IpsFormulaTestCase;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCase2;
+import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.runtime.xml.IToXmlSupport;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -90,6 +95,42 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(2, values2.size());
         assertEquals(value1, values2.get(0));
         assertEquals(value2, values2.get(1));
+    }
+
+    @Test
+    public void testRemoveEnumValues_EnumTypeExists() {
+        List<TestEnumValue> values = new ArrayList<>();
+        TestEnumValue value1 = new TestEnumValue("1");
+        TestEnumValue value2 = new TestEnumValue("2");
+        values.add(value1);
+        values.add(value2);
+        repository.putEnumValues(TestEnumValue.class, values, new InternationalString() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public String get(Locale locale) {
+
+                return "Test Description";
+            }
+        });
+
+        List<TestEnumValue> values2 = repository.getEnumValues(TestEnumValue.class);
+        assertEquals(2, values2.size());
+        assertEquals(value1, values2.get(0));
+        assertEquals(value2, values2.get(1));
+        assertEquals("Test Description", repository.getEnumDescription(TestEnumValue.class).get(null));
+
+        repository.removeEnumValues(TestEnumValue.class);
+        values2 = repository.getEnumValues(TestEnumValue.class);
+        InternationalString enumDescription = repository.getEnumDescription(TestEnumValue.class);
+        assertTrue(values2.isEmpty());
+        assertEquals(enumDescription, DefaultInternationalString.EMPTY);
+    }
+
+    @Test
+    public void testRemoveEnumValues_EnumTypeDoesNotExist() {
+        assertFalse(repository.removeEnumValues(TestEnumValue.class));
     }
 
     @Test
@@ -384,6 +425,46 @@ public class InMemoryRuntimeRepositoryTest {
         assertFalse(repository.removeProductComponent(productComponent));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testRemoveProductCmptGeneration_Null() {
+        repository.removeProductCmptGeneration(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveProductCmptGeneration_NullId() {
+        IProductComponent productComponent = mock(IProductComponent.class);
+        when(productComponent.getId()).thenReturn(null);
+
+        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+        when(generation.getProductComponent()).thenReturn(productComponent);
+
+        repository.removeProductCmptGeneration(generation);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveProductCmptGeneration_NoId() {
+        IProductComponent productComponent = mock(IProductComponent.class);
+        when(productComponent.getId()).thenReturn("");
+
+        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+        when(generation.getProductComponent()).thenReturn(productComponent);
+
+        repository.removeProductCmptGeneration(generation);
+    }
+
+    @Test
+    public void testRemoveProductCmptGeneration() {
+        TestProductComponent productComponent = new TestProductComponent(repository, "P1", "P", "1");
+
+        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+        when(generation.getProductComponent()).thenReturn(productComponent);
+
+        repository.putProductCmptGeneration(generation);
+
+        assertTrue(repository.removeProductCmptGeneration(generation));
+        assertFalse(repository.removeProductCmptGeneration(generation));
+    }
+
     @Test
     public void testPutIpsTestCase() {
         TestPremiumCalculation testCase = new TestPremiumCalculation("ipsTest");
@@ -395,6 +476,42 @@ public class InMemoryRuntimeRepositoryTest {
         repository.putIpsTestCase(formulaTestCase);
         assertEquals(formulaTestCase, repository.getIpsTest("ipsFormulaTest"));
         assertEquals(2, repository.getAllIpsTestCases(repository).size());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRemoveIpsTestCase_Null() {
+        repository.removeIpsTestCase(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveIpsTestCase_EmptyQualifiedName() {
+        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+        when(testCase.getQualifiedName()).thenReturn("");
+        repository.removeIpsTestCase(testCase);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveIpsTestCase_NullQualifiedName() {
+        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+        when(testCase.getQualifiedName()).thenReturn(null);
+        repository.removeIpsTestCase(testCase);
+    }
+
+    @Test
+    public void testRemoveIpsTestCase_NotFound() {
+        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+        when(testCase.getQualifiedName()).thenReturn("testCase1");
+
+        assertFalse(repository.removeIpsTestCase(testCase));
+    }
+
+    @Test
+    public void testRemoveIpsTestCase() {
+        TestPremiumCalculation testPremiumCalculation = new TestPremiumCalculation("ipsTest");
+        repository.putIpsTestCase(testPremiumCalculation);
+
+        assertTrue(repository.removeIpsTestCase(testPremiumCalculation));
+        assertFalse(repository.removeIpsTestCase(testPremiumCalculation));
     }
 
     @Test
@@ -785,6 +902,43 @@ public class InMemoryRuntimeRepositoryTest {
         String ipsObjectQualifiedName = "MyRuntimeObjectId";
         repository.putCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
         assertEquals(myRuntimeObject, repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+    }
+
+    @Test
+    public void testRemoveCustomRuntimeObject_WhenObjectExists() {
+        class MyRuntimeObject extends RuntimeObject {
+            // another class
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        repository.putCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
+        assertEquals(myRuntimeObject, repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+        assertTrue(repository.removeCustomRuntimeObject(myRuntimeObject.getClass(), ipsObjectQualifiedName));
+        assertNull(repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+
+    }
+
+    @Test
+    public void testRemoveCustomRuntimeObject_WhenObjectDoesNotExists_InvalidType() {
+        class MyRuntimeObject extends RuntimeObject {
+            // another class
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        assertFalse(repository.removeCustomRuntimeObject(myRuntimeObject.getClass(), ipsObjectQualifiedName));
+
+    }
+
+    @Test
+    public void testRemoveCustomRuntimeObject_WhenObjectDoesNotExists_InvalidId() {
+        class MyRuntimeObject extends RuntimeObject {
+            // another class
+        }
+        MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
+        String ipsObjectQualifiedName = "MyRuntimeObjectId";
+        repository.putCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName, myRuntimeObject);
+        assertEquals(myRuntimeObject, repository.getCustomRuntimeObject(MyRuntimeObject.class, ipsObjectQualifiedName));
+        assertFalse(repository.removeCustomRuntimeObject(myRuntimeObject.getClass(), "MyOtherRuntimeObjectId"));
     }
 
     @Test

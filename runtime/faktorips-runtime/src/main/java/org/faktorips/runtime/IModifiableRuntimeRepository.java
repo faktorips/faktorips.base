@@ -33,6 +33,18 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
             T runtimeObject);
 
     /**
+     * removes the runtimeObject from the repository.
+     *
+     * @param type the Java class representing the runtime object
+     * @param ipsObjectQualifiedName the qualified name of the runtime object
+     *
+     * @return whether the given runtime object was part of this repository
+     *
+     * @since 25.1
+     */
+    <T> boolean removeCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName);
+
+    /**
      * Puts the given enum values and description in the repository replacing all existing values
      * for the given enumType.
      *
@@ -54,6 +66,17 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
     default <T> void putEnumValues(Class<T> enumTypeClass, List<T> enumValues) {
         putEnumValues(enumTypeClass, enumValues, DefaultInternationalString.EMPTY);
     }
+
+    /**
+     * removes the enum values and description of the given enumType from the repository.
+     *
+     * @param enumTypeClass the Java class representing the enumeration type
+     *
+     * @return whether the given enum type was part of this repository and was successfully removed
+     * 
+     * @since 25.1
+     */
+    <T> boolean removeEnumValues(Class<T> enumTypeClass);
 
     /**
      * Puts the test case into the repository.
@@ -117,5 +140,34 @@ public interface IModifiableRuntimeRepository extends IRuntimeRepository {
      * @throws IllegalArgumentException if table has no name.
      */
     boolean removeTable(ITable<?> table);
+
+    /**
+     * Removes the given product component generation from the list of generations
+     *
+     * @param productCmptGeneration the product component generation to be removed;
+     * @return {@code true} if the product component generation was successfully removed,
+     *             {@code false} if the generation was not found in the list of generations.
+     * @throws NullPointerException if {@code productCmptGen} is {@code null}.
+     * @throws IllegalArgumentException if the associated product component of the generation has no
+     *             valid ID, or if no generations are found for the product component.
+     * 
+     * @since 25.1
+     */
+    boolean removeProductCmptGeneration(IProductComponentGeneration productCmptGeneration);
+
+    /**
+     * Removes the specified IPS test case.
+     *
+     * @param test the IPS test case to be removed. It must not be {@code null}.
+     *
+     * @return {@code true} if the test case was successfully removed, {@code false} if no test case
+     *             with the given test case's qualified name exists.
+     *
+     * @throws NullPointerException if {@code test} is {@code null}.
+     * @throws IllegalArgumentException if the given test case has no qualified name.
+     *
+     * @since 25.1
+     */
+    boolean removeIpsTestCase(IpsTestCaseBase test);
 
 }

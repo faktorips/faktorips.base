@@ -235,6 +235,11 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     @Override
+    public <T> boolean removeEnumValues(Class<T> enumTypeClass) {
+        return enumValuesMap.remove(enumTypeClass) != null | enumDescriptionMap.remove(enumTypeClass) != null;
+    }
+
+    @Override
     public <T> InternationalString getEnumDescription(Class<T> enumClazz) {
         return enumDescriptionMap.getOrDefault(enumClazz, DefaultInternationalString.EMPTY);
     }
@@ -308,6 +313,37 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
             return singleContentTables.remove(table);
         }
 
+    }
+
+    @Override
+    public boolean removeProductCmptGeneration(IProductComponentGeneration productCmptGeneration) {
+        Objects.requireNonNull(productCmptGeneration);
+        IProductComponent productComponent = productCmptGeneration.getProductComponent();
+        if (productComponent == null) {
+            throw new IllegalArgumentException("Product component generation has no associated product component");
+        }
+
+        String id = productComponent.getId();
+        if (IpsStringUtils.isBlank(id)) {
+            throw new IllegalArgumentException("Product component has no ID");
+        }
+
+        if (productCmptGenLists.get(id) == null) {
+            throw new IllegalArgumentException("No generations found for product component with ID: " + id);
+        }
+
+        return productCmptGenLists.get(id).remove(productCmptGeneration);
+    }
+
+    @Override
+    public boolean removeIpsTestCase(IpsTestCaseBase test) {
+        Objects.requireNonNull(test);
+
+        String qualifiedName = test.getQualifiedName();
+        if (IpsStringUtils.isBlank(qualifiedName)) {
+            throw new IllegalArgumentException("The given test case has no qualified name.");
+        }
+        return testCasesByQName.remove(qualifiedName) != null;
     }
 
     @Override
@@ -480,12 +516,18 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
     }
 
     @Override
-    protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String id) {
+    protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName) {
         Map<String, IRuntimeObject> otherRuntimeObjects = customRuntimeObjectsByType.get(type);
         if (otherRuntimeObjects != null) {
-            return cast(otherRuntimeObjects.get(id));
+            return cast(otherRuntimeObjects.get(ipsObjectQualifiedName));
         }
         return null;
+    }
+
+    @Override
+    public <T> boolean removeCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName) {
+        Map<String, IRuntimeObject> otherRuntimeObjects = customRuntimeObjectsByType.get(type);
+        return otherRuntimeObjects != null ? otherRuntimeObjects.remove(ipsObjectQualifiedName) != null : false;
     }
 
     @SuppressWarnings("unchecked")
