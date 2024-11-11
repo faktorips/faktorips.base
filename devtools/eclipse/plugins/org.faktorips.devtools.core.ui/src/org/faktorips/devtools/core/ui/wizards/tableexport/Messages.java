@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,6 +33,16 @@ public class Messages extends NLS {
     public static String TableExportWizard_msgFileExistsTitle;
     public static String TableExportWizard_msgFileExists;
     public static String TableExportWizard_operationName;
+    public static String TableExportWizard_operationText;
+    public static String TableExportWizard_operationCanceled;
+    public static String TableExportWizard_operationError;
     public static String TableExportPage_msgStructureNotValid;
+    public static String TableSelectionPage_labelFolderField;
+    public static String TableSelectionPage_msgFolderPathEmpty;
+    public static String TableSelectionPage_msgFolderNonExisting;
+    public static String TableSelectionPage_msgDuplicateFileNames;
+    public static String TableSelectionPage_labelFolderSelectionButton;
+    public static String TableSelectionPage_folderSelectionText;
+    public static String TableSelectionPage_folderSelectionMessage;
 
 }

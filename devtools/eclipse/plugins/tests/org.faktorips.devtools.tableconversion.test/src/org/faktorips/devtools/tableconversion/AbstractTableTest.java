@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -164,7 +165,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
         ITableContents contents = createValidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
-                exportColumnHeaderRow, new MessageList());
+                exportColumnHeaderRow, new MessageList(),new NullProgressMonitor());
     }
 
     /**
@@ -180,7 +181,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
         ITableContents contents = createInvalidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
-                exportColumnHeaderRow, new MessageList());
+                exportColumnHeaderRow, new MessageList(),new NullProgressMonitor());
     }
 
     private ITableRows createExportSource(IIpsProject ipsProject, ITableContents contents) {

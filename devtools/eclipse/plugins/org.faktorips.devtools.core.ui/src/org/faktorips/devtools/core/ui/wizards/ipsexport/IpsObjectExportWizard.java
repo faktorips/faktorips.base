@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,11 +21,12 @@ import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
+import org.faktorips.devtools.core.ui.wizards.tableexport.TableExportPage;
 
 /**
  * Base class for wizards exporting <code>IIpsObject</code> types like <code>IEnumType</code>,
  * <code>IEnumContent</code> or <code>ITableContents</code>.
- * 
+ *
  * @author Roman Grutza
  */
 public abstract class IpsObjectExportWizard extends Wizard implements IExportWizard {
@@ -61,7 +62,7 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         IpsObjectExportPage exportPage = (IpsObjectExportPage)getStartingPage();
-        if (page == exportPage) {
+        if (page instanceof TableExportPage) {
             exportPage.validateObjectToExport();
             boolean isValid = exportPage.getErrorMessage() == null;
 

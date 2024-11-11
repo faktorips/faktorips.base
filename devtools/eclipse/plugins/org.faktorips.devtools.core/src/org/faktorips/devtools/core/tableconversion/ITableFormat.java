@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.tableconversion;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -110,7 +111,8 @@ public interface ITableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
-            MessageList list);
+            MessageList list,
+            IProgressMonitor monitor);
 
     /**
      * @param structure The structure for the imported table

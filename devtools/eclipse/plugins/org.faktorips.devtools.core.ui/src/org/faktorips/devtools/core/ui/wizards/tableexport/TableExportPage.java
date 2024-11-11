@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard page for configuring table contents ({@link ITableContents}) for export.
- * 
+ *
  * @author Thorsten Waertel
  */
 public class TableExportPage extends IpsObjectExportPage {
@@ -37,7 +37,8 @@ public class TableExportPage extends IpsObjectExportPage {
     public static final String PAGE_NAME = "TableExportPage"; //$NON-NLS-1$
 
     public TableExportPage(IStructuredSelection selection) throws JavaModelException {
-        super(Messages.TableExportPage_title, selection);
+        super(Messages.TableExportPage_title, selection, false);
+
     }
 
     @Override
@@ -67,7 +68,7 @@ public class TableExportPage extends IpsObjectExportPage {
 
     /**
      * Extracts the selected table content from the provided {@link IIpsSrcFile}.
-     * 
+     *
      * @param src The {@link IIpsSrcFile} matching with the currently selected view
      */
     private void setDefaultByTableContents(IIpsSrcFile src) {
@@ -82,7 +83,7 @@ public class TableExportPage extends IpsObjectExportPage {
 
     /**
      * Provides the currently selected table content by getting it from the UI control.
-     * 
+     *
      * @return The currently selected {@link ITableContents}
      */
     public ITableContents getTableContents() {
@@ -94,7 +95,7 @@ public class TableExportPage extends IpsObjectExportPage {
 
     /**
      * Sets the selected table content for the UI control.
-     * 
+     *
      * @param contents The selected {@link ITableContents}
      */
     private void setTableContents(ITableContents contents) {

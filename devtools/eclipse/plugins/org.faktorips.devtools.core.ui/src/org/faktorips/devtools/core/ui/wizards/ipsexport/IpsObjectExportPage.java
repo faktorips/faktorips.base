@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -53,6 +53,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -63,7 +65,7 @@ import org.faktorips.util.StringUtil;
  * <p>
  * Despite a filename and the IPS object to export this page allows to set advanced parameters for
  * the target format of the export.
- * 
+ *
  * @author Roman Grutza
  */
 public abstract class IpsObjectExportPage extends WizardDataTransferPage implements ValueChangeListener {
@@ -78,7 +80,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected Composite pageControl;
 
     protected IpsProjectRefControl projectControl;
-    protected Combo fileFormatControl;
+    private Combo fileFormatControl;
     protected Text nullRepresentation;
     protected TextButtonField filenameField;
     protected TextButtonField projectField;
@@ -96,28 +98,35 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     private boolean validateInput;
 
-    public IpsObjectExportPage(String pageName, IStructuredSelection selection) throws JavaModelException {
+    public IpsObjectExportPage(String pageName, IStructuredSelection selection, boolean isMassExport)
+            throws JavaModelException {
         super(pageName);
         validateInput = true;
-        if (selection.getFirstElement() instanceof IResource) {
-            selectedResource = (IResource)selection.getFirstElement();
-        } else if (selection.getFirstElement() instanceof IJavaElement) {
-            selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-        } else if (selection.getFirstElement() instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)selection.getFirstElement();
-            if (ipsElement instanceof IIpsObject) {
-                selectedIpsSrcFile = ((IIpsObject)ipsElement).getIpsSrcFile();
-            }
-            selectedResource = ipsElement.getEnclosingResource().unwrap();
+        if (selection.getFirstElement() != null && !isMassExport) {
+            selectedResource = resolveResource(selection.getFirstElement());
         } else {
             selectedResource = null;
         }
     }
 
+    protected IResource resolveResource(Object selection) throws JavaModelException {
+        if (selection instanceof IResource) {
+            return (IResource)selection;
+        } else if (selection instanceof IJavaElement) {
+            return ((IJavaElement)selection).getCorrespondingResource();
+        } else if (selection instanceof IIpsElement ipsElement) {
+            if (ipsElement instanceof IIpsObject) {
+                selectedIpsSrcFile = ((IIpsObject)ipsElement).getIpsSrcFile();
+            }
+            return ipsElement.getEnclosingResource().unwrap();
+        }
+        return null;
+    }
+
     /**
      * Creates a label and an IPS object reference control for the <code>IIpsObject</code> to
      * export.
-     * 
+     *
      * @param toolkit A form toolkit
      * @param parent The parent composite
      * @return A concrete <code>IpsObjectRefControl</code> instance, like TableContentsRefControl,
@@ -133,7 +142,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     /**
      * Derives the default values for source folder and package from the selected resource.
-     * 
+     *
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
@@ -141,7 +150,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     /**
      * Gets the {@link IpsSrcFile} which contains the data required for the export.
-     * 
+     *
      * @param selectedResource The currently selected resource
      * @return The required IIpsSrcFile or null if is does not exist
      */
@@ -149,19 +158,14 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         IIpsElement srcElement = null;
         if (selectedIpsSrcFile != null) {
             srcElement = selectedIpsSrcFile;
+
         } else if (selectedResource != null) {
             srcElement = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         } else {
             return null;
         }
 
-        if (srcElement instanceof IpsSrcFileExternal) {
-            return ((IpsSrcFileExternal)srcElement).getMutableIpsSrcFile();
-        } else if (srcElement instanceof IIpsSrcFile) {
-            return (IIpsSrcFile)srcElement;
-        }
-
-        return null;
+        return getIpsSrcFileFromIpsElement(srcElement);
     }
 
     public void setFilename(String newName) {
@@ -172,11 +176,28 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         return filenameField.getText();
     }
 
+    protected IIpsSrcFile getIpsSrcFileFromIpsElement(IIpsElement ipsElement) {
+        if (ipsElement instanceof IpsSrcFileExternal external) {
+            return external.getMutableIpsSrcFile();
+        } else if (ipsElement instanceof IIpsSrcFile ipssrcFile) {
+            return ipssrcFile;
+        }
+        return null;
+    }
+
+    public Combo getFileFormatControl() {
+        return fileFormatControl;
+    }
+
+    public void setFileFormatControl(Combo fileFormatControl) {
+        this.fileFormatControl = fileFormatControl;
+    }
+
     public ITableFormat getFormat() {
-        if (fileFormatControl.getSelectionIndex() == -1) {
+        if (getFileFormatControl().getSelectionIndex() == -1) {
             return null;
         }
-        return formats[fileFormatControl.getSelectionIndex()];
+        return formats[getFileFormatControl().getSelectionIndex()];
     }
 
     public IIpsProject getIpsProject() {
@@ -184,9 +205,42 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
                 : IIpsModel.get().getIpsProject(projectField.getText());
     }
 
+    protected void validateTableContent(ITableContents contents) {
+
+        if (contents == null || !contents.exists()) {
+            setErrorMessage(
+                    org.faktorips.devtools.core.ui.wizards.tableexport.Messages.TableExportPage_msgNonExisitingContents);
+            return;
+        }
+        ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
+        if (structure == null || !structure.exists()) {
+            setErrorMessage(
+                    org.faktorips.devtools.core.ui.wizards.tableexport.Messages.TableExportPage_msgNonExisitingStructure);
+            return;
+        }
+        MessageList structureValidationMessages = structure.validate(structure.getIpsProject());
+        removeVersionFormatValidation(structureValidationMessages);
+        if (structureValidationMessages.containsErrorMsg()) {
+            setWarningMessage(
+                    org.faktorips.devtools.core.ui.wizards.tableexport.Messages.TableExportPage_msgStructureNotValid);
+        } else {
+            clearWarningMessage();
+        }
+        if (structure.getNumOfColumns() > MAX_EXCEL_COLUMNS) {
+            Object[] objects = new Object[3];
+            objects[0] = Integer.valueOf(structure.getNumOfColumns());
+            objects[1] = structure;
+            objects[2] = Short.valueOf(MAX_EXCEL_COLUMNS);
+            String text = NLS
+                    .bind(org.faktorips.devtools.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
+                            objects);
+            setErrorMessage(text);
+        }
+    }
+
     protected void validateFormat() {
         // must not be empty
-        if (fileFormatControl.getSelectionIndex() == -1) {
+        if (getFileFormatControl().getSelectionIndex() == -1) {
             setErrorMessage(Messages.IpsObjectExportPage_msgMissingFileFormat);
         }
     }
@@ -244,7 +298,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      * <p>
      * This check does not affect the validation process since it is only used for improving the
      * usability.
-     * 
+     *
      * @throws IpsException if an error occurs during the validation
      */
     protected void validateObjectToExportUniqueness() {
@@ -294,7 +348,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         boolean complete = !"".equals(projectField.getText()) //$NON-NLS-1$
                 && !"".equals(filenameField.getText()) //$NON-NLS-1$
                 && !"".equals(exportedIpsObjectField.getText()) //$NON-NLS-1$
-                && fileFormatControl.getSelectionIndex() != -1;
+                && getFileFormatControl().getSelectionIndex() != -1;
         setPageComplete(complete);
     }
 
@@ -306,6 +360,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         }
         exportWithColumnHeaderRowField.getCheckbox().setChecked(settings.getBoolean(EXPORT_WITH_COLUMN_HEADER));
         nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
+
     }
 
     protected void projectChanged() {
@@ -329,6 +384,67 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         }
         settings.put(EXPORT_WITH_COLUMN_HEADER, exportWithColumnHeaderRowField.getCheckbox().isChecked());
         settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
+
+    }
+
+    private void createProjectFieldComposite(UIToolkit toolkit) {
+        Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        toolkit.createFormLabel(locationComposite, Messages.IpsObjectExportPage_labelProject);
+        projectControl = toolkit.createIpsProjectRefControl(locationComposite);
+        projectField = new TextButtonField(projectControl);
+        projectField.addChangeListener(this);
+    }
+
+    private void createFileNameControl(UIToolkit toolkit, Composite lowerComposite) {
+        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelName);
+        filenameField = new TextButtonField(new FileSelectionDialogWithDefault(lowerComposite, toolkit));
+        filenameField.addChangeListener(this);
+    }
+
+    private void creatIpsObjectControl(UIToolkit toolkit, Composite lowerComposite) {
+        exportedIpsObjectControl = createExportedIpsObjectRefControlWithLabel(toolkit, lowerComposite);
+        exportedIpsObjectField = new TextButtonField(exportedIpsObjectControl);
+        exportedIpsObjectField.addChangeListener(this);
+    }
+
+    protected void createPageControl(Composite parent) {
+        pageControl = new Composite(parent, SWT.NONE);
+        pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout pageLayout = new GridLayout(1, false);
+        pageLayout.verticalSpacing = 20;
+        pageControl.setLayout(pageLayout);
+        setControl(pageControl);
+    }
+
+    protected void createSeparator(Composite composite) {
+        Label separator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+        separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    }
+
+    protected void createNullPresentationControl(UIToolkit toolkit, Composite composite) {
+        toolkit.createFormLabel(composite, Messages.IpsObjectExportPage_labelNullRepresentation);
+        nullRepresentation = toolkit.createText(composite);
+        nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+    }
+
+    protected void createFileFormatControl(UIToolkit toolkit, Composite composite) {
+        toolkit.createFormLabel(composite, Messages.IpsObjectExportPage_labelFileFormat);
+        setFileFormatControl(toolkit.createCombo(composite));
+        formats = IpsPlugin.getDefault().getExternalTableFormats();
+        for (ITableFormat format : formats) {
+            getFileFormatControl().add(format.getName());
+        }
+        getFileFormatControl().select(0);
+        fileFormatField = new StringValueComboField(getFileFormatControl());
+        fileFormatField.addChangeListener(this);
+    }
+
+    protected void createColumHeaderCheckBox(UIToolkit toolkit, Composite composite) {
+        Checkbox withColumnHeaderRow = toolkit.createCheckbox(composite,
+                Messages.IpsObjectExportPage_firstRowContainsHeader);
+        exportWithColumnHeaderRowField = new CheckboxField(withColumnHeaderRow);
+        exportWithColumnHeaderRowField.addChangeListener(this);
+        withColumnHeaderRow.setChecked(true);
     }
 
     @Override
@@ -337,53 +453,19 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         validateInput = false;
         setTitle(Messages.IpsObjectExportPage_pageTitle);
 
-        pageControl = new Composite(parent, SWT.NONE);
-        pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout pageLayout = new GridLayout(1, false);
-        pageLayout.verticalSpacing = 20;
-        pageControl.setLayout(pageLayout);
-        setControl(pageControl);
+        createPageControl(parent);
 
-        Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
-        toolkit.createFormLabel(locationComposite, Messages.IpsObjectExportPage_labelProject);
-        projectControl = toolkit.createIpsProjectRefControl(locationComposite);
-        projectField = new TextButtonField(projectControl);
-        projectField.addChangeListener(this);
-
-        Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
-        line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        createProjectFieldComposite(toolkit);
+        createSeparator(pageControl);
 
         Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
 
-        // this creates a label and the control
-        exportedIpsObjectControl = createExportedIpsObjectRefControlWithLabel(toolkit, lowerComposite);
-        exportedIpsObjectField = new TextButtonField(exportedIpsObjectControl);
-        exportedIpsObjectField.addChangeListener(this);
+        creatIpsObjectControl(toolkit, lowerComposite);
+        createFileFormatControl(toolkit, lowerComposite);
+        createFileNameControl(toolkit, lowerComposite);
+        createNullPresentationControl(toolkit, lowerComposite);
 
-        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelFileFormat);
-        fileFormatControl = toolkit.createCombo(lowerComposite);
-
-        formats = IpsPlugin.getDefault().getExternalTableFormats();
-        for (ITableFormat format : formats) {
-            fileFormatControl.add(format.getName());
-        }
-        fileFormatControl.select(0);
-        fileFormatField = new StringValueComboField(fileFormatControl);
-        fileFormatField.addChangeListener(this);
-
-        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelName);
-        filenameField = new TextButtonField(new FileSelectionDialogWithDefault(lowerComposite, toolkit));
-        filenameField.addChangeListener(this);
-
-        toolkit.createFormLabel(lowerComposite, Messages.IpsObjectExportPage_labelNullRepresentation);
-        nullRepresentation = toolkit.createText(lowerComposite);
-        nullRepresentation.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-
-        Checkbox withColumnHeaderRow = toolkit.createCheckbox(pageControl,
-                Messages.IpsObjectExportPage_firstRowContainsHeader);
-        exportWithColumnHeaderRowField = new CheckboxField(withColumnHeaderRow);
-        exportWithColumnHeaderRowField.addChangeListener(this);
-        withColumnHeaderRow.setChecked(true);
+        createColumHeaderCheckBox(toolkit, pageControl);
 
         setDefaults(selectedResource);
 

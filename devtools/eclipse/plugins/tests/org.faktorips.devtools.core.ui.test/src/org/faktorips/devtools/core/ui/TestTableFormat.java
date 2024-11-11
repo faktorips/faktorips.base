@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
@@ -46,7 +47,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
-            MessageList list) {
+            MessageList list,IProgressMonitor monitor) {
         return false;
     }
 
