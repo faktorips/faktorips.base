@@ -375,6 +375,10 @@
             id="org.faktorips.devtools.core.ui.command.CopyRuntimeId"
             name="%org.faktorips.devtools.core.ui.command.CopyRuntimeId.name">
       </command>
+      <command
+            id="org.faktorips.devtools.core.ui.commands.SortAlphabetically"
+            name="%SortAlphabetically">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -1926,6 +1930,12 @@
          </class>
       </handler>
       <handler
+            commandId="org.faktorips.devtools.core.ui.commands.SortAlphabetically">
+         <class
+               class="org.faktorips.devtools.core.ui.editors.productcmpt.SortAlphabetically">
+         </class>
+      </handler>
+      <handler
             commandId="org.faktorips.devtools.core.ui.wizards.tablecontents.addTableContents">
          <class
                class="org.faktorips.devtools.core.ui.wizards.tablecontents.SelectExistingTableContentsHandler">
@@ -2691,6 +2701,14 @@
                style="push">
             <visibleWhen
                   checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.commands.SortAlphabetically"
+               label="%SortAlphabetically_name"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
             </visibleWhen>
          </command>
       </menuContribution>
