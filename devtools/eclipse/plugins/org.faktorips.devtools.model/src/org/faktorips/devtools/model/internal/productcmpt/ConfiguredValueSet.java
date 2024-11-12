@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +40,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -110,6 +112,11 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
+        if (valueSetToValidate.isEnum() && modelValueSet.isRange()) {
+            validateEnumAgainstRange(list, ipsProject, (IEnumValueSet)valueSetToValidate,
+                    (IRangeValueSet)modelValueSet);
+            return;
+        }
         if (valueSetToValidate.isEnum()) {
             if (modelValueSet.isStringLength()) {
                 MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
@@ -160,6 +167,47 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         ObjectProperty[] invalidOP = invalidObjectProperties
                 .toArray(new ObjectProperty[invalidObjectProperties.size()]);
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
+    }
+
+    private void validateEnumAgainstRange(MessageList list,
+            IIpsProject ipsProject,
+            IEnumValueSet enumValueSet,
+            IRangeValueSet rangeValueSet) {
+        String[] values = enumValueSet.getValues();
+        if (values.length == 0 && !rangeValueSet.isContainsNull()) {
+            String text = MessageFormat.format(Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                    getPolicyCmptTypeAttribute());
+            list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this,
+                    PROPERTY_VALUE_SET));
+            return;
+        }
+
+        ValueDatatype datatype = findValueDatatype(ipsProject);
+        Arrays.stream(values).forEach(value -> {
+            if (IpsStringUtils.isEmpty(value)) {
+                if (!rangeValueSet.isContainsNull()) {
+                    String text = Messages.ConfiguredValueSet_error_msg_nullNotAllowed;
+                    list.add(new Message(MSGCODE_NULL_NOT_ALLOWED, text, Message.ERROR, this,
+                            PROPERTY_VALUE_SET));
+                }
+            } else {
+                try {
+                    datatype.getValue(value);
+                    if (!rangeValueSet.containsValue(value, ipsProject)) {
+                        String text = MessageFormat.format(Messages.ConfiguredValueSet_error_msg_valueNotInRange,
+                                value, rangeValueSet.toShortString());
+                        list.add(new Message(MSGCODE_VALUE_NOT_IN_RANGE, text, Message.ERROR, this,
+                                PROPERTY_VALUE_SET));
+                    }
+                } catch (IllegalArgumentException e) {
+                    String text = MessageFormat.format(Messages.ConfiguredValueSet_error_msg_invalidNumber,
+                            value, datatype.getName());
+                    list.add(new Message(MSGCODE_INVALID_NUMBER_FORMAT, text, Message.ERROR, this,
+                            PROPERTY_VALUE_SET));
+                }
+            }
+        });
+
     }
 
     private void validateNullIncompatible(MessageList list, IValueSet modelValueSet, IValueSet valueSetToValidate) {

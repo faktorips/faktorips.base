@@ -51,6 +51,9 @@ public class Messages extends NLS {
     public static String ConfiguredDefault_caption;
     public static String ConfiguredValueSet_caption;
     public static String ConfiguredValueSet_error_msg_mandatoryAttribute;
+    public static String ConfiguredValueSet_error_msg_nullNotAllowed;
+    public static String ConfiguredValueSet_error_msg_valueNotInRange;
+    public static String ConfiguredValueSet_error_msg_invalidNumber;
 
     public static String Formula_msgExpressionMissing;
     public static String Formula_msgFormulaSignatureMissing;
