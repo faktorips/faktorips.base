@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -100,8 +102,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         // case 1: attribute not found
         attribute.setName("unknown");
         List<ValueSetType> types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
-        assertEquals(configuredValueSet.getValueSet().getValueSetType(), types.get(0));
+        assertThat(types, hasSize(1));
+        assertThat(types, contains(configuredValueSet.getValueSet().getValueSetType()));
 
         // case 2: attribute found, value set type is unrestricted, data type is Integer
         // => all types should be available
@@ -111,34 +113,32 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         a1.setValueSetConfiguredByProduct(true);
         a1.setValueSetType(ValueSetType.UNRESTRICTED);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(3, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.RANGE));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.RANGE, ValueSetType.ENUM));
 
         // case 3: as before, but with datatype String
         // => only unrestricted and enum should be available
         a1.setDatatype("String");
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(2, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
 
-        // case 4: as before, but with datatype String
-        // => only unrestricted and enum should be available
+        // case 4: Integer with RANGE value set
+        // => should allow both RANGE and ENUM
         a1.setDatatype("Integer");
         a1.setValueSetType(ValueSetType.RANGE);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
-        assertTrue(types.contains(ValueSetType.RANGE));
+        assertThat(types, contains(ValueSetType.RANGE, ValueSetType.ENUM));
 
         // case 5: attribute is derived, but still product relevant
         a1.setValueSetType(ValueSetType.DERIVED);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(3, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.RANGE));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.RANGE, ValueSetType.ENUM));
+
+        // case 6: String with STRINGLENGTH value set
+        // => should allow both STRINGLENGTH and ENUM
+        a1.setDatatype("String");
+        a1.setValueSetType(ValueSetType.STRINGLENGTH);
+        types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
+        assertThat(types, contains(ValueSetType.STRINGLENGTH, ValueSetType.ENUM));
     }
 
     @Test

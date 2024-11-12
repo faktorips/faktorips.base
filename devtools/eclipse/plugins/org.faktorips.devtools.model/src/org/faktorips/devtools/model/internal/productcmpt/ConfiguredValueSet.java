@@ -214,7 +214,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             ValueSetType attributeValueSetType = attribute.getValueSet().getValueSetType();
             types.add(attributeValueSetType);
 
-            if (attributeValueSetType == ValueSetType.STRINGLENGTH) {
+            if (attributeValueSetType == ValueSetType.STRINGLENGTH || attributeValueSetType == ValueSetType.RANGE) {
                 types.add(ValueSetType.ENUM);
             }
         }
