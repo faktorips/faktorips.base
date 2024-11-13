@@ -164,5 +164,15 @@ public class IpsSrcFileWrapperAdapterFactoryTest {
         IpsPlugin.getDefault().getIpsPreferences().setSimpleContextMenuEnabled(false);
         assertThat(factory.getAdapter(wrapper, IFile.class), is(file));
     }
+    
+    @Test
+    public void testGetAdapter_NoCorrespondingFile() {
+        IIpsSrcFileWrapper wrapper = mock(IIpsSrcFileWrapper.class);
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        when(wrapper.getWrappedIpsSrcFile()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getCorrespondingFile()).thenReturn(null);
+        IpsPlugin.getDefault().getIpsPreferences().setSimpleContextMenuEnabled(false);
+        assertThat(factory.getAdapter(wrapper, IFile.class), is(nullValue()));
+    }
 
 }
