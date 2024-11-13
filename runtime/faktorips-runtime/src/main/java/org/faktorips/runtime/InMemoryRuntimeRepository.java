@@ -35,6 +35,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
+import org.faktorips.runtime.model.type.Type;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
@@ -418,23 +419,35 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
 
     @Override
     protected void getAllModelTypeImplementationClasses(Set<String> result) {
-        Stream.concat(getPolicyCmptTypeClasses(),
-                getAllEnumClasses().stream())
+        streamAllModelTypes()
                 .map(Class::getName)
                 .distinct()
                 .forEach(result::add);
     }
 
-    private Stream<Class<?>> getPolicyCmptTypeClasses() {
-        return getAllPolicyCmptTypes().stream()
-                .map(PolicyCmptType::getJavaClass);
+    private Stream<? extends Class<?>> streamAllModelTypes() {
+        return Stream.of(includingSuperTypes(getAllPolicyCmptTypes()).map(Type::getJavaClass),
+                includingSuperTypes(getAllProductCmptTypes()).map(Type::getJavaClass),
+                getAllEnumClasses().stream(),
+                getAllTables().stream().map(ITable::getClass))
+                .flatMap(s -> s);
     }
 
-    private List<PolicyCmptType> getAllPolicyCmptTypes() {
-        return getAllProductComponents().stream()
-                .map(IpsModel::getProductCmptType)
+    private Stream<? extends Type> includingSuperTypes(Stream<? extends Type> streamOfTypes) {
+        return streamOfTypes.flatMap(type -> type.isSuperTypePresent()
+                ? Stream.concat(Stream.of(type), includingSuperTypes(Stream.of(type.getSuperType())))
+                : Stream.of(type));
+    }
+
+    private Stream<PolicyCmptType> getAllPolicyCmptTypes() {
+        return getAllProductCmptTypes()
                 .filter(ProductCmptType::isConfigurationForPolicyCmptType)
-                .map(ProductCmptType::getPolicyCmptType).toList();
+                .map(ProductCmptType::getPolicyCmptType);
+    }
+
+    private Stream<ProductCmptType> getAllProductCmptTypes() {
+        return getAllProductComponents().stream()
+                .map(IpsModel::getProductCmptType);
     }
 
     @Override
