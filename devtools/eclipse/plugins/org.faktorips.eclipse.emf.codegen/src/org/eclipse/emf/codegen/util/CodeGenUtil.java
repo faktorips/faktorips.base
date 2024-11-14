@@ -457,7 +457,7 @@ public class CodeGenUtil {
      * recombining them using the specified separator. A prefix can also be given to be recognized
      * as a separate word or to be trimmed. Leading underscores can be ignored or can cause a
      * leading separator to be prepended.
-     * 
+     *
      * @since 2.2
      */
     public static String format(String name,
@@ -554,7 +554,7 @@ public class CodeGenUtil {
      * and '$', and non-Java identifier characters. It then composes those
      * {@link #capName(String, Locale) capitalized} words into a valid Java identifier, prefixing
      * the result with "_" if that's necessary to make the result a well-formed Java identifier.
-     * 
+     *
      * @since 2.8
      */
     public static String javaIdentifier(String sourceName, Locale locale) {
@@ -596,7 +596,7 @@ public class CodeGenUtil {
      * Returns the package name for a qualified class name, i.e., a substring from the first char
      * until the last &quot;.&quot;. If the argument is <code>null</code> or a non-qualified name,
      * this method returns <code>null</code>.
-     * 
+     *
      * @param qualifiedClassName
      * @return String
      */
@@ -614,7 +614,7 @@ public class CodeGenUtil {
      * Returns the simple class name for a qualified class name, i.e., a substring from starting
      * after the last &quot;.&quot;. If the argument is a non-qualified name, this method returns
      * the argument.
-     * 
+     *
      * @param qualifiedClassName
      * @return String
      */
@@ -820,7 +820,7 @@ public class CodeGenUtil {
     /**
      * Return true if the string representing a type contains type arguments that specify anything
      * other than unbounded wildcards.
-     * 
+     *
      * @since 2.9
      */
     public static boolean isUncheckedCast(String type) {
@@ -848,12 +848,12 @@ public class CodeGenUtil {
          * A constant that will always represent the latest language level supported by the version
          * of JDT in the installed runtime. It will determine the
          */
-        private static final int JLS = AST.JLS18;
+        private static final int JLS = AST.getJLSLatest();
 
         /**
          * Return an ASTParser that supports the latest language level in the version of the JDT in
          * the installed runtime.
-         * 
+         *
          * @since 2.9
          */
         public static ASTParser newASTParser() {
@@ -911,7 +911,7 @@ public class CodeGenUtil {
         /**
          * An {@link IClasspathAttribute#getName() class path attribute name} that records the
          * originating plugin ID for each classpath entry created
-         * 
+         *
          * @since 2.3
          */
         public static final String PLUGIN_ID_CLASSPATH_ATTRIBUTE_NAME = "plugin_id";
