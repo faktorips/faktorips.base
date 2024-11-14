@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -162,6 +162,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
             literalNameAttribute.setIdentifier(true);
             fail();
         } catch (UnsupportedOperationException e) {
+            // expected
         }
     }
 
@@ -172,6 +173,18 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
             literalNameAttribute.setInherited(true);
             fail();
         } catch (UnsupportedOperationException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testGetSetMandatory() {
+        assertTrue(literalNameAttribute.isMandatory());
+        try {
+            literalNameAttribute.setMandatory(false);
+            fail();
+        } catch (UnsupportedOperationException e) {
+            // expected
         }
     }
 
@@ -182,6 +195,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
             literalNameAttribute.setUsedAsNameInFaktorIpsUi(true);
             fail();
         } catch (UnsupportedOperationException e) {
+            // expected
         }
     }
 

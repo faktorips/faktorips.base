@@ -68,6 +68,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             genderEnumAttributeId.findSuperEnumAttribute(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         assertNull(genderEnumAttributeId.findSuperEnumAttribute(ipsProject));
@@ -112,6 +113,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             genderEnumAttributeId.setName(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -125,6 +127,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             genderEnumAttributeId.setDatatype(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -138,6 +141,32 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(genderEnumAttributeId.isUnique());
         assertFalse(genderEnumAttributeId.isUsedAsNameInFaktorIpsUi());
         assertFalse(genderEnumAttributeId.isIdentifier());
+        assertFalse(genderEnumAttributeId.isMandatory());
+    }
+
+    @Test
+    public void testSetInherited_CopiesFromSuper() {
+        var superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        superEnumType.setAbstract(true);
+        genderEnumType.setSuperEnumType("SuperEnumType");
+
+        superEnumType.newEnumLiteralNameAttribute();
+
+        var superGenderEnumAttributeId = superEnumType.newEnumAttribute();
+        superGenderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_ID_NAME);
+        superGenderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
+        superGenderEnumAttributeId.setUnique(true);
+        superGenderEnumAttributeId.setIdentifier(true);
+        superGenderEnumAttributeId.setMandatory(true);
+
+        genderEnumAttributeId.setInherited(true);
+
+        assertTrue(genderEnumAttributeId.isInherited());
+        assertEquals(Datatype.STRING.getQualifiedName(), genderEnumAttributeId.getDatatype());
+        assertTrue(genderEnumAttributeId.isUnique());
+        assertFalse(genderEnumAttributeId.isUsedAsNameInFaktorIpsUi());
+        assertTrue(genderEnumAttributeId.isIdentifier());
+        assertTrue(genderEnumAttributeId.isMandatory());
     }
 
     @Test
@@ -145,6 +174,17 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(genderEnumAttributeId.isUnique());
         genderEnumAttributeId.setUnique(false);
         assertFalse(genderEnumAttributeId.isUnique());
+    }
+
+    @Test
+    public void testSetIdentifierAlsoSetsMandatory() {
+        genderEnumAttributeId.setIdentifier(false);
+        genderEnumAttributeId.setMandatory(false);
+
+        genderEnumAttributeId.setIdentifier(true);
+
+        assertTrue(genderEnumAttributeId.isIdentifier());
+        assertTrue(genderEnumAttributeId.isMandatory());
     }
 
     @Test
@@ -373,6 +413,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             genderEnumAttributeId.findDatatype(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         // Test inherited.
@@ -389,10 +430,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             inheritedEnumAttributeId.findIsUnique(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         assertTrue(inheritedEnumAttributeId.findIsUnique(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
+        inheritedEnumAttributeId.setUnique(false);
         assertFalse(inheritedEnumAttributeId.findIsUnique(ipsProject));
 
         genderEnumAttributeId.setInherited(true);
@@ -405,10 +448,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             inheritedEnumAttributeId.findIsIdentifier(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         assertTrue(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
+        inheritedEnumAttributeId.setIdentifier(false);
         assertFalse(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
 
         inheritedEnumAttributeId.setInherited(true);
@@ -429,10 +474,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
             inheritedEnumAttributeId.findIsUsedAsNameInFaktorIpsUi(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         assertTrue(inheritedEnumAttributeName.findIsUsedAsNameInFaktorIpsUi(ipsProject));
         inheritedEnumAttributeName.setInherited(false);
+        inheritedEnumAttributeName.setUsedAsNameInFaktorIpsUi(false);
         assertFalse(inheritedEnumAttributeName.findIsUsedAsNameInFaktorIpsUi(ipsProject));
 
         genderEnumAttributeName.setInherited(true);

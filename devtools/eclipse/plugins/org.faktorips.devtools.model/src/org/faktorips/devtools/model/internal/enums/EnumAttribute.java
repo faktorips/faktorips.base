@@ -69,7 +69,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
      * Flag indicating whether this attribute is mandatory, always requiring a value (or, with
      * {@code false}, optional, allowing empty/{@code null} values).
      */
-    private boolean mandatory;
+    private boolean mandatory = true;
 
     /**
      * Creates a new <code>IEnumAttribute</code>.
@@ -119,7 +119,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         identifier = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_IDENTIFIER);
         usedAsNameInFaktorIpsUi = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         inherited = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_INHERITED);
-        mandatory = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MANDATORY);
+        mandatory = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MANDATORY) || identifier;
 
         super.initPropertiesFromXml(element, id);
     }
@@ -353,10 +353,20 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         valueChanged(oldIsInherited, isInherited);
 
         if (isInherited) {
-            setDatatype(""); //$NON-NLS-1$
-            setUnique(false);
-            setIdentifier(false);
-            setUsedAsNameInFaktorIpsUi(false);
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(getIpsProject());
+            if (superEnumAttribute == null) {
+                setDatatype(""); //$NON-NLS-1$
+                setUnique(false);
+                setMandatory(false);
+                setIdentifier(false);
+                setUsedAsNameInFaktorIpsUi(false);
+            } else {
+                setDatatype(superEnumAttribute.getDatatype());
+                setUnique(superEnumAttribute.isUnique());
+                setMandatory(superEnumAttribute.isMandatory());
+                setIdentifier(superEnumAttribute.isIdentifier());
+                setUsedAsNameInFaktorIpsUi(superEnumAttribute.isUsedAsNameInFaktorIpsUi());
+            }
         }
     }
 
@@ -394,6 +404,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     @Override
     public void setMandatory(boolean mandatory) {
+        boolean oldMandatory = this.mandatory;
+        setMandatoryInternal(mandatory);
+        valueChanged(oldMandatory, mandatory, PROPERTY_MANDATORY);
+    }
+
+    protected void setMandatoryInternal(boolean mandatory) {
         this.mandatory = mandatory;
     }
 
@@ -486,6 +502,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         boolean oldUsedAsIdInFaktorIpsUi = identifier;
         identifier = usedAsIdInFaktorIpsUi;
         valueChanged(oldUsedAsIdInFaktorIpsUi, usedAsIdInFaktorIpsUi);
+        if (usedAsIdInFaktorIpsUi) {
+            setMandatory(true);
+        }
     }
 
     @Override
@@ -521,6 +540,20 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
             return superEnumAttribute.isUsedAsNameInFaktorIpsUi();
         }
         return isUsedAsNameInFaktorIpsUi();
+    }
+
+    @Override
+    public boolean findIsMandatory(IIpsProject ipsProject) {
+        ArgumentCheck.notNull(ipsProject);
+
+        if (inherited) {
+            IEnumAttribute superEnumAttribute = findSuperEnumAttribute(ipsProject);
+            if (superEnumAttribute == null) {
+                return false;
+            }
+            return superEnumAttribute.isMandatory();
+        }
+        return isMandatory();
     }
 
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -53,6 +53,7 @@ public class Messages extends NLS {
     public static String EnumAttributeEditDialog_labelIdentifier;
     public static String EnumAttributeEditDialog_labelDisplayName;
     public static String EnumAttributeEditDialog_labelIsInherited;
+    public static String EnumAttributeEditDialog_labelMandatory;
     public static String EnumAttributeEditDialog_labelDefaultValueProviderAttribute;
     public static String EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint;
 

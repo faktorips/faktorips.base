@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -44,21 +44,21 @@ import org.faktorips.devtools.model.value.ValueTypeMismatch;
 import org.faktorips.util.StringUtil;
 
 /**
- * Dialog to edit an <code>IEnumAttribute</code> of an <code>IEnumType</code>.
- * 
+ * Dialog to edit an {@code IEnumAttribute</code> of an <code>IEnumType}.
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
-    /** The <code>IEnumAttribute</code> being edited. */
+    /** The {@code IEnumAttribute} being edited. */
     private IEnumAttribute enumAttribute;
 
     /** The extension property factory that may extend the controls. */
     private ExtensionPropertyControlFactory extFactory;
 
-    /** The UI control to set the <code>name</code> property. */
+    /** The UI control to set the {@code name} property. */
     private Text nameText;
 
     /**
@@ -67,28 +67,31 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private final String initialName;
 
     /**
-     * The UI control to set the <code>defaultValueProviderAttribute</code> property (only for
-     * <code>IEnumLiteralNameAttribute</code>).
+     * The UI control to set the {@code defaultValueProviderAttribute} property (only for
+     * {@code IEnumLiteralNameAttribute}).
      */
     private Text defaultValueProviderAttributeText;
 
-    /** The UI control to set the <code>datatype</code> property. */
+    /** The UI control to set the {@code datatype} property. */
     private DatatypeRefControl datatypeControl;
 
-    /** The UI control to set the <code>multilingual</code> property. */
+    /** The UI control to set the {@code multilingual} property. */
     private Checkbox multilingualCheckbox;
 
-    /** The UI control to set the <code>unique</code> property. */
+    /** The UI control to set the {@code unique} property. */
     private Checkbox uniqueCheckbox;
 
-    /** The UI control to set the <code>identifier</code> property. */
+    /** The UI control to set the {@code identifier} property. */
     private Checkbox identifierCheckbox;
 
-    /** The UI control to set the <code>inherited</code> property. */
+    /** The UI control to set the {@code inherited} property. */
     private Checkbox inheritedCheckbox;
 
-    /** The UI control to set the <code>usedAsNameInFaktorIpsUi</code> property. */
+    /** The UI control to set the {@code usedAsNameInFaktorIpsUi} property. */
     private Checkbox displayNameCheckbox;
+
+    /** The UI control to set the {@code mandatory} property. */
+    private Checkbox mandatoryCheckbox;
 
     /** The canvas. */
     private Composite workArea;
@@ -96,18 +99,18 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
     private InfoLabel infoLabel;
 
     /**
-     * Flag indicating whether the given <code>IEnumAttribute</code> is a
-     * <code>IEnumLiteralNameAttribute</code> which leads to a variation of this dialog.
+     * Flag indicating whether the given {@code IEnumAttribute} is a
+     * {@code IEnumLiteralNameAttribute} which leads to a variation of this dialog.
      */
     private boolean literalNameAttribute;
 
     private boolean inherited;
 
     /**
-     * Creates a new <code>EnumAttributeEditDialog</code> for the user to edit the given
-     * <code>IEnumAttribute</code> with.
-     * 
-     * @param enumAttribute The <code>IEnumAttribute</code> to edit with the dialog.
+     * Creates a new {@code EnumAttributeEditDialog} for the user to edit the given
+     * {@code IEnumAttribute} with.
+     *
+     * @param enumAttribute The {@code IEnumAttribute} to edit with the dialog.
      * @param parentShell The parent UI shell.
      */
     public EnumAttributeEditDialog(IEnumAttribute enumAttribute, Shell parentShell) {
@@ -175,7 +178,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         infoLabel = new InfoLabel(control);
     }
 
-    /** Creates the UI fields for a <code>IEnumLiteralNameAttribute</code>. */
+    /** Creates the UI fields for a {@code IEnumLiteralNameAttribute}. */
     private void createFieldsForLiteralNameAttribute() {
         // Name
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
@@ -189,7 +192,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
                 IEnumLiteralNameAttribute.PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
     }
 
-    /** Creates the UI fields for a normal <code>IEnumAttribute</code>. */
+    /** Creates the UI fields for a normal {@code IEnumAttribute}. */
     private void createFieldsForNormalAttribute() {
         // Name
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelName);
@@ -223,15 +226,19 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelIsInherited);
         inheritedCheckbox = getToolkit().createCheckbox(workArea);
 
+        // Mandatory
+        getToolkit().createFormLabel(workArea, Messages.EnumAttributeEditDialog_labelMandatory);
+        mandatoryCheckbox = getToolkit().createCheckbox(workArea);
+
     }
 
     /**
-     * Searches all the <code>IEnumType</code>s that are subclasses of the <code>IEnumType</code>
-     * the <code>IEnumAttribute</code> to edit belongs to. All those sub <code>IEnumType</code>s and
-     * the <code>IEnumType</code> itself will not be available in the data type selection.
+     * Searches all the {@code IEnumType</code>s that are subclasses of the <code>IEnumType}
+     * the {@code IEnumAttribute</code> to edit belongs to. All those sub <code>IEnumType}s and
+     * the {@code IEnumType} itself will not be available in the data type selection.
      * <p>
-     * Also, if the <code>IEnumType</code> does contain values all <code>IEnumType</code> that do
-     * not contain values will be disallowed to select, too.
+     * Also, if the {@code IEnumType</code> does contain values all <code>IEnumType} that do not
+     * contain values will be disallowed to select, too.
      */
     private void filterDatatypes() {
         IEnumType enumType = enumAttribute.getEnumType();
@@ -271,8 +278,8 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     /**
      * Binds the contents of the fields to the contents of the super enumeration attribute if the
-     * <code>IEnumAttribute</code> to be edited is marked as being inherited. Otherwise the contens
-     * are bound to the respective properties of the attribute.
+     * {@link IEnumAttribute} to be edited is marked as being inherited. Otherwise the contents are
+     * bound to the respective properties of the attribute.
      * <p>
      * Also handles the enabled states of the fields.
      * <p>
@@ -293,6 +300,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         }
         getBindingContext().bindContent(multilingualCheckbox, enumAttribute, IEnumAttribute.PROPERTY_MULTILINGUAL);
         getBindingContext().bindContent(inheritedCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED);
+        getBindingContext().bindContent(mandatoryCheckbox, enumAttribute, IEnumAttribute.PROPERTY_MANDATORY);
 
         bindEnabledStates();
     }
@@ -305,12 +313,16 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         uniqueCheckbox.setChecked(enumAttribute.findIsUnique(ipsProject));
         identifierCheckbox.setChecked(enumAttribute.findIsIdentifier(ipsProject));
         displayNameCheckbox.setChecked(enumAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject));
+        mandatoryCheckbox.setChecked(enumAttribute.findIsMandatory(ipsProject));
     }
 
     private void bindEnabledStates() {
         getBindingContext().bindEnabled(datatypeControl, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(uniqueCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(identifierCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
+        getBindingContext().bindEnabled(mandatoryCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED,
+                inherited -> (!(boolean)inherited || !enumAttribute.findIsMandatory(enumAttribute.getIpsProject()))
+                        && !enumAttribute.isIdentifier());
         getBindingContext().bindEnabled(displayNameCheckbox, enumAttribute, IEnumAttribute.PROPERTY_INHERITED, false);
         getBindingContext().bindEnabled(multilingualCheckbox, enumAttribute,
                 IEnumAttribute.PROPERTY_MULTILINGUAL_SUPPORTED, true);
