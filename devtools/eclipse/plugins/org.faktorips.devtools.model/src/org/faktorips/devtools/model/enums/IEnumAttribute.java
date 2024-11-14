@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,11 +37,11 @@ import org.faktorips.devtools.model.type.IOverridableLabeledElement;
  * <p>
  * For more information about how <code>IEnumAttribute</code>s relate to the entire Faktor-IPS
  * enumeration concept please read the documentation of <code>IEnumType</code>.
- * 
+ *
  * @see IEnumType
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public interface IEnumAttribute
@@ -69,6 +69,8 @@ public interface IEnumAttribute
     String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
 
     String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
+
+    String PROPERTY_MANDATORY = "mandatory"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
     String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
@@ -210,9 +212,9 @@ public interface IEnumAttribute
 
     /**
      * Sets the name of this <code>IEnumAttribute</code>.
-     * 
+     *
      * @param name The new name for this <code>IEnumAttribute</code>.
-     * 
+     *
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
     void setName(String name);
@@ -223,7 +225,7 @@ public interface IEnumAttribute
      * <strong>Important:</strong> This operation does not search the supertype hierarchy for the
      * data type if this <code>IEnumAttribute</code> is inherited. Use
      * <code>findDatatype(IIpsProject)</code> in this case.
-     * 
+     *
      * @see #findDatatype(IIpsProject)
      */
     String getDatatype();
@@ -236,13 +238,13 @@ public interface IEnumAttribute
      * <p>
      * Returns <code>null</code> if no <code>ValueDatatype</code> can be found or if the super
      * <code>IEnumAttribute</code> could not be found.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used for the search of the super
      *            enumeration attribute. This is not necessarily the project this
      *            <code>IEnumAttribute</code> is part of.
-     * 
+     *
      * @see #getDatatype()
-     * 
+     *
      * @throws IpsException If an error occurs while searching the given IPS project for the value
      *             data type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
@@ -254,14 +256,14 @@ public interface IEnumAttribute
      * another enum type this method returns an {@link EnumTypeDatatypeAdapter} that only reflects
      * the values that are defined in the enum type not the values of any separated content. If the
      * datatype is no enum type it simply returns the same as {@link #findDatatype(IIpsProject)}.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used for the search of the super
      *            enumeration attribute. This is not necessarily the project this
      *            <code>IEnumAttribute</code> is part of.
-     * 
+     *
      * @see #getDatatype()
      * @see #findDatatype(IIpsProject)
-     * 
+     *
      * @throws IpsException If an error occurs while searching the given IPS project for the value
      *             data type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
@@ -270,9 +272,9 @@ public interface IEnumAttribute
 
     /**
      * Sets the data type of this <code>IEnumAttribute</code>.
-     * 
+     *
      * @param dataType The unqualified name of the data type.
-     * 
+     *
      * @throws NullPointerException If <code>dataType</code> is <code>null</code>.
      */
     void setDatatype(String dataType);
@@ -293,7 +295,7 @@ public interface IEnumAttribute
      * from the original <code>IEnumAttribute</code>. The properties will be set to an empty string
      * or <code>false</code> and the respective setters and getters will throw
      * <code>IllegalStateException</code>s when called from now on.
-     * 
+     *
      * @param isInherited Flag indicating whether this <code>IEnumAttribute</code> is inherited from
      *            the super type hierarchy.
      */
@@ -313,7 +315,7 @@ public interface IEnumAttribute
      * <strong>Important:</strong> This method does not search the super type hierarchy for the
      * <code>unique</code> property. The method <code>findIsUnique()</code> takes the super type
      * hierarchy into account.
-     * 
+     *
      * @see #findIsUnique(IIpsProject)
      */
     boolean isUnique();
@@ -324,12 +326,12 @@ public interface IEnumAttribute
      * <p>
      * If this attribute is inherited the property of the super type attribute will be returned.
      * Returns <code>false</code> if the super type attribute cannot be found.
-     * 
+     *
      * @see #isUnique()
-     * 
+     *
      * @param ipsProject The IPS project that is used to the search the <code>unique</code> property
      *            in the super type hierarchy.
-     * 
+     *
      * @throws IpsException If an error occurs while searching
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
@@ -337,7 +339,7 @@ public interface IEnumAttribute
 
     /**
      * Sets whether this <code>IEnumAttribute</code> is a unique identifier.
-     * 
+     *
      * @param uniqueIdentifier Flag indicating whether this <code>IEnumAttribute</code> will be a
      *            unique identifier.
      */
@@ -346,7 +348,7 @@ public interface IEnumAttribute
     /**
      * Sets whether the values of this <code>IEnumAttribute</code> shall be used as name of
      * enumeration values in the Faktor-IPS UI.
-     * 
+     *
      * @param usedAsNameInFaktorIpsUi Flag indicating whether this <code>IEnumAttribute</code> shall
      *            be used as name of enumeration values in the Faktor-IPS UI (<code>true</code>) or
      *            not ( <code>false</code>).
@@ -360,7 +362,7 @@ public interface IEnumAttribute
      * <strong>Important:</strong> This operation does not search the super type hierarchy for the
      * <code>usedAsNameInFaktorIpsUi</code> property if this <code>IEnumAttribute</code> is
      * inherited. Use <code>findIsUsedAsNameInFaktorIpsUi()</code> in this case.
-     * 
+     *
      * @see #findIsUsedAsNameInFaktorIpsUi(IIpsProject)
      */
     boolean isUsedAsNameInFaktorIpsUi();
@@ -368,7 +370,7 @@ public interface IEnumAttribute
     /**
      * Sets whether the values of this <code>IEnumAttribute</code> shall be used as (default)
      * identifier of enumeration values in the Faktor-IPS UI.
-     * 
+     *
      * @param identifier Flag indicating whether this <code>IEnumAttribute</code> shall be used as
      *            (default) identifier of enumeration values in the Faktor-IPS UI
      *            (<code>true</code>) or not ( <code>false</code>).
@@ -382,7 +384,7 @@ public interface IEnumAttribute
      * <p>
      * <strong>Important:</strong> This method does not search the super type hierarchy to look for
      * the this property. Use <code>findIsIdentifier()</code> if necessary.
-     * 
+     *
      * @see #findIsIdentifier(IIpsProject)
      */
     boolean isIdentifier();
@@ -394,13 +396,13 @@ public interface IEnumAttribute
      * If this <code>IEnumAttribute</code> is inherited the property of the super
      * <code>IEnumAttribute</code> will be returned. Returns <code>false</code> if the super
      * <code>IEnumAttribute</code> cannot be found.
-     * 
+     *
      * @see #isUsedAsNameInFaktorIpsUi()
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used for the search of the super
      *            <code>IEnumAttribute</code>. This is not necessarily the project this
      *            <code>IEnumAttribute</code> is part of.
-     * 
+     *
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject);
@@ -421,12 +423,12 @@ public interface IEnumAttribute
      * If this <code>IEnumAttribute</code> is inherited the property of the super
      * <code>IEnumAttribute</code> will be returned. Returns <code>false</code> if the super
      * <code>IEnumAttribute</code> cannot be found.
-     * 
+     *
      * @see #isIdentifier()
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
      *            necessarily the project this <code>IEnumAttribute</code> is part of.
-     * 
+     *
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
     boolean findIsIdentifier(IIpsProject ipsProject);
@@ -446,10 +448,10 @@ public interface IEnumAttribute
     /**
      * Returns a list containing all copies of this <code>IEnumAttribute</code> in the hierarchy of
      * subclasses.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used for the search. This is not
      *            necessarily the project this <code>IEnumAttribute</code> is part of.
-     * 
+     *
      * @throws IpsException If an error occurs while searching for the copies.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
@@ -464,7 +466,7 @@ public interface IEnumAttribute
      * Sets the multilingual property of this attribute. If multilingual is set to <code>true</code>
      * and the datatype of this attribute is String, the attribute value can be specified in
      * different languages.
-     * 
+     *
      * @param multilingual true to enable multi language support, false otherwise.
      */
     void setMultilingual(boolean multilingual);
@@ -472,7 +474,7 @@ public interface IEnumAttribute
     /**
      * Returns true if multi language support for this attribute is activated and supported, false
      * otherwise.
-     * 
+     *
      * Note that the return value of this method can be false although multi value support has
      * previously been enabled by calling <code>setMultilingual(true)</code>. This happens if multi
      * language support has been set but is not supported by this attribute (for example, because it
@@ -484,6 +486,15 @@ public interface IEnumAttribute
      * Returns true if multi language support for this attribute is supported, false otherwise.
      */
     boolean isMultilingualSupported();
+
+    /** {@return whether this attribute is mandatory, always requiring a value} */
+    boolean isMandatory();
+
+    /**
+     * Sets this attribute to mandatory, always requiring a value (or, with {@code false}, to
+     * optional, allowing empty/{@code null} values).
+     */
+    void setMandatory(boolean mandatory);
 
     @Override
     default IOverridableElement findOverriddenElement(IIpsProject ipsProject) {

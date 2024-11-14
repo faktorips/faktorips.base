@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,9 +37,9 @@ import org.junit.Before;
  * The payment mode <code>IEnumType</code> stores its values directly.
  * <p>
  * Utility methods and helpful string constants are provided.
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
@@ -124,6 +124,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
         genderEnumAttributeId.setUnique(true);
         genderEnumAttributeId.setIdentifier(true);
+        genderEnumAttributeId.setMandatory(true);
         genderEnumAttributeName = genderEnumType.newEnumAttribute();
         genderEnumAttributeName.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         genderEnumAttributeName.setDatatype(Datatype.STRING.getQualifiedName());
@@ -138,9 +139,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     }
 
     private void initGenderEnumValues() {
-        IEnumAttributeValue tempAttributeValueRef;
-
-        tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(0);
+        IEnumAttributeValue tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(0);
         tempAttributeValueRef.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_MALE_ID));
         tempAttributeValueRef = genderEnumValueMale.getEnumAttributeValues().get(1);
         tempAttributeValueRef.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_MALE_NAME));

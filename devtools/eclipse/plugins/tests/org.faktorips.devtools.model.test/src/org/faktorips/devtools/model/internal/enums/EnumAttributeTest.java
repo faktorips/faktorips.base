@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -157,6 +157,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getTextContent());
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IDENTIFIER).getTextContent()));
+        assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_MANDATORY).getTextContent()));
 
         IEnumAttribute loadedEnumAttribute = genderEnumType.newEnumAttribute();
         loadedEnumAttribute.initFromXml(xmlElement);
@@ -166,6 +167,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertTrue(loadedEnumAttribute.isIdentifier());
         assertFalse(loadedEnumAttribute.isUsedAsNameInFaktorIpsUi());
         assertFalse(loadedEnumAttribute.isInherited());
+        assertTrue(loadedEnumAttribute.isMandatory());
     }
 
     @Test

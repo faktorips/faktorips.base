@@ -66,6 +66,12 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     private boolean multilingual;
 
     /**
+     * Flag indicating whether this attribute is mandatory, always requiring a value (or, with
+     * {@code false}, optional, allowing empty/{@code null} values).
+     */
+    private boolean mandatory;
+
+    /**
      * Creates a new <code>IEnumAttribute</code>.
      *
      * @param parent The <code>IEnumType</code> this <code>IEnumAttribute</code> belongs to.
@@ -113,6 +119,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         identifier = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_IDENTIFIER);
         usedAsNameInFaktorIpsUi = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
         inherited = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_INHERITED);
+        mandatory = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MANDATORY);
 
         super.initPropertiesFromXml(element, id);
     }
@@ -137,6 +144,9 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
         }
         if (inherited) {
             element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
+        }
+        if (mandatory) {
+            element.setAttribute(PROPERTY_MANDATORY, String.valueOf(mandatory));
         }
     }
 
@@ -375,6 +385,16 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     @Override
     public boolean isMultilingualSupported() {
         return Datatype.STRING.equals(findDatatype(getIpsProject()));
+    }
+
+    @Override
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    @Override
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
     @Override
