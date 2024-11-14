@@ -86,12 +86,12 @@
         <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
-        <setEntry value="org.apache.commons.commons-io@default:default"/>
-        <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.commons-io*2.17.0@default:default"/>
         <setEntry value="org.apache.commons.compress@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
-        <setEntry value="org.apache.commons.lang3*3.13.0@default:default"/>
+        <setEntry value="org.apache.commons.lang3*3.17.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
+        <setEntry value="org.apache.commons.text@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
@@ -446,9 +446,8 @@
         <setEntry value="org.w3c.dom.events@default:default"/>
         <setEntry value="org.w3c.dom.smil@default:default"/>
         <setEntry value="org.w3c.dom.svg@default:default"/>
-        <setEntry value="slf4j.api*2.0.9@default:default"/>
-        <setEntry value="slf4j.nop@default:default"/>
-        <setEntry value="slf4j.simple@default:default"/>
+        <setEntry value="slf4j.api*1.7.36@default:default"/>
+        <setEntry value="slf4j.nop*1.7.36@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">

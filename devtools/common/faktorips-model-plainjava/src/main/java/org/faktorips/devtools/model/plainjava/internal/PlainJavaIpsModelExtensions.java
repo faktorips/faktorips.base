@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,6 +37,8 @@ import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaExtensionPoints;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.runtime.MessageList;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionPoints {
 
     private static /* final */ PlainJavaIpsModelExtensions instance = new PlainJavaIpsModelExtensions();
@@ -44,6 +46,7 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
 
     private Map<String, IVersionProviderFactory> versionProviderFactoryOverrides = new LinkedHashMap<>();
 
+    @SuppressFBWarnings(value = "SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR", justification = "Must be overwritten from MavenIpsModelExtensions")
     protected PlainJavaIpsModelExtensions() {
         super(new PlainJavaRegistryProvider().getRegistry());
     }
@@ -54,7 +57,7 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
 
     /**
      * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
-     * 
+     *
      * @param testInstance an PlainJavaIpsModelExtensions with test data
      */
     protected static void setInstanceForTest(PlainJavaIpsModelExtensions testInstance) {

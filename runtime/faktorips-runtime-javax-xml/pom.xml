@@ -123,7 +123,7 @@
             <!-- needed when running the tests with Java > 8 -->
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.0.1</version>
+            <version>2.3.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>

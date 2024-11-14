@@ -21,7 +21,7 @@
     <properties>
         <java.version>17</java.version>
         <!-- Maven plugin versions -->
-        <maven-archetype-plugin.version>3.2.1</maven-archetype-plugin.version>
+        <maven-archetype-plugin.version>3.3.1</maven-archetype-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     </properties>
 
@@ -59,18 +59,6 @@
                 <configuration>
                     <escapeString>\</escapeString>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,12 +13,14 @@ package org.faktorips.runtime.internal.tableindex;
 import java.io.Serializable;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * An immutable data object representing a range by defining its upper and lower bound. It is used
  * by the {@link TwoColumnRangeStructure} as key object for the internal map.
  * <p>
  * Infinite ranges can be defined by setting the upper and/or lower bound to <code>null</code>.
- * 
+ *
  * @see TwoColumnRangeStructure
  */
 class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoColumnRange<K>>, Serializable {
@@ -43,7 +45,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <li>Calling <code>new TwoColumnRange(null, null)</code> defines a range from negative to
      * positive infinity. This range includes all values.</li>
      * </ul>
-     * 
+     *
      * @param lowerBound The lowerBound of this TwoColumnRange, <code>null</code> for negative
      *            infinity.
      * @param upperBound The upperBound of this TwoColumnRange, <code>null</code> for positive
@@ -61,7 +63,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <p>
      * These flags are ignored for infinite bounds, infinity is always implicitly excluded. For more
      * information on infinite ranges see {@link #TwoColumnRange(Comparable, Comparable)}
-     * 
+     *
      * @param lowerBound The lowerBound of this TwoColumnRange, <code>null</code> for negative
      *            infinity.
      * @param upperBound The upperBound of this TwoColumnRange, <code>null</code> for positive
@@ -101,11 +103,11 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <li>Returns zero if both lower bounds are equal and both ranges define the lower bound as
      * exclusive or inclusive respectively.</li>
      * </ul>
-     * 
+     *
      * @param other The other range whose lower bound is compared to this one
      * @return a negative integer, zero or a positive integer as the lower bound of this range is
      *             less than, equal to or greater than the lower bound of the other range.
-     * 
+     *
      */
     @Override
     public int compareTo(TwoColumnRange<K> other) {
@@ -128,11 +130,11 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <li>Returns zero if both upper bounds are equal and both ranges define the upper bound as
      * exclusive or inclusive respectively.</li>
      * </ul>
-     * 
+     *
      * @param otherKey The other range whose upper bound is compared to this one
      * @return a negative integer, zero or a positive integer as the upper bound of this range is
      *             less than, equal to or greater than the upper bound of the other range.
-     * 
+     *
      */
     public int compareToUpperBound(TwoColumnRange<K> otherKey) {
         return upperBound.compareTo(otherKey.upperBound);
@@ -147,7 +149,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * <li>[3..5] and [5..8] overlap, both contain 5.</li>
      * <li>[3..5[ and [5..8] do not overlap, however, as [3..5[ does not include 5.</li>
      * </ul>
-     * 
+     *
      * @param otherRange The other range that is tested to overlaps this range
      * @return <code>true</code> if the ranges overlap, <code>false</code> if they are disjoint
      */
@@ -188,7 +190,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
 
     /**
      * Returns whether the lower bound is inclusive or not.
-     * 
+     *
      * @return <code>true</code> if the lower bound is inclusive otherwise <code>false</code>
      */
     public boolean isLowerInclusive() {
@@ -204,7 +206,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
 
     /**
      * Returns whether the upper bound is inclusive or not.
-     * 
+     *
      * @return <code>true</code> if the upper bound is inclusive otherwise <code>false</code>
      */
     public boolean isUpperInclusive() {
@@ -221,6 +223,9 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * Represents a bound of a range. Holds the boundary value and the direction to which the brace
      * is opened.
      */
+
+    @SuppressFBWarnings(value = { "SING_SINGLETON_HAS_NONPRIVATE_CONSTRUCTOR",
+            "SING_SINGLETON_IMPLEMENTS_SERIALIZABLE" }, justification = "SpotBugs wrongly assumes this class is a singleton, but it has two static final instances and is instantiated in generated code.")
     private static final class Bound<K extends Comparable<? super K>> implements Comparable<Bound<K>>, Serializable {
 
         private static final long serialVersionUID = 1L;
@@ -234,7 +239,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
         private final IntervalDirection direction;
 
         /**
-         * 
+         *
          * @param boundaryValue the value that is the upper or lower bound of the range
          * @param direction the direction to which the brace is opened. Right for "[", left for "]".
          */

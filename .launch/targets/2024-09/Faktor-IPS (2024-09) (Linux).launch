@@ -14,7 +14,7 @@
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
-    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2024-06"/>
+    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2024-09"/>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <mapAttribute key="org.eclipse.debug.core.environmentVariables">
         <mapEntry key="SWT_GTK3" value="0"/>
@@ -77,7 +77,7 @@
         <setEntry value="junit-platform-suite-commons@default:default"/>
         <setEntry value="junit-platform-suite-engine@default:default"/>
         <setEntry value="junit-vintage-engine@default:default"/>
-        <setEntry value="net.bytebuddy.byte-buddy*1.12.14@default:default"/>
+        <setEntry value="net.bytebuddy.byte-buddy*1.15.4@default:default"/>
         <setEntry value="net.bytebuddy.byte-buddy-agent@default:default"/>
         <setEntry value="net.i2p.crypto.eddsa@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
@@ -93,12 +93,12 @@
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
-        <setEntry value="org.apache.commons.commons-io@default:default"/>
-        <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.commons-io*2.17.0@default:default"/>
         <setEntry value="org.apache.commons.io@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
-        <setEntry value="org.apache.commons.lang3*3.16.0@default:default"/>
+        <setEntry value="org.apache.commons.lang3*3.17.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
+        <setEntry value="org.apache.commons.text@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
@@ -148,6 +148,7 @@
         <setEntry value="org.eclipse.core.externaltools@default:default"/>
         <setEntry value="org.eclipse.core.filebuffers.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.filebuffers@default:default"/>
+        <setEntry value="org.eclipse.core.filesystem.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.core.filesystem.nl_de@default:false"/>
         <setEntry value="org.eclipse.core.filesystem@default:default"/>
         <setEntry value="org.eclipse.core.jobs.nl_de@default:false"/>
@@ -259,6 +260,7 @@
         <setEntry value="org.eclipse.equinox.frameworkadmin@default:default"/>
         <setEntry value="org.eclipse.equinox.http.service.api@default:default"/>
         <setEntry value="org.eclipse.equinox.http.servlet@default:default"/>
+        <setEntry value="org.eclipse.equinox.launcher.gtk.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.equinox.launcher@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.artifact.repository.nl_de@default:false"/>
         <setEntry value="org.eclipse.equinox.p2.artifact.repository@default:default"/>
@@ -322,6 +324,7 @@
         <setEntry value="org.eclipse.equinox.p2.updatesite@default:default"/>
         <setEntry value="org.eclipse.equinox.preferences@default:default"/>
         <setEntry value="org.eclipse.equinox.registry@default:default"/>
+        <setEntry value="org.eclipse.equinox.security.linux@default:false"/>
         <setEntry value="org.eclipse.equinox.security.ui@default:default"/>
         <setEntry value="org.eclipse.equinox.security@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator.nl_de@default:false"/>
@@ -442,6 +445,7 @@
         <setEntry value="org.eclipse.search.core@default:default"/>
         <setEntry value="org.eclipse.search.nl_de@default:false"/>
         <setEntry value="org.eclipse.search@default:default"/>
+        <setEntry value="org.eclipse.swt.gtk.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.swt.nl_de@default:false"/>
         <setEntry value="org.eclipse.swt@default:default"/>
         <setEntry value="org.eclipse.team.core.nl_de@default:false"/>
@@ -560,14 +564,14 @@
         <setEntry value="org.snakeyaml.engine@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
         <setEntry value="slf4j.api*2.0.16@default:default"/>
-        <setEntry value="slf4j.nop@default:default"/>
+        <setEntry value="slf4j.nop*2.0.16@default:default"/>
         <setEntry value="slf4j.simple@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.faktorips.abstracttest.core@default:default"/>
         <setEntry value="org.faktorips.abstracttest@default:default"/>
-        <setEntry value="org.faktorips.devtools.abstraction.eclipse.test@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse.test@default:false"/>
         <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.testsetup@default:default"/>

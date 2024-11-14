@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2024-03)" sequenceNumber="22">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2024-03)" sequenceNumber="23">
     <locations>
         <location includeAllPlatforms="false" includeConfigurePhase="false"
             includeMode="slicer" includeSource="true" type="InstallableUnit">
@@ -515,7 +515,6 @@
             <unit id="org.sat4j.pb" version="0.0.0" />
             <unit id="org.snakeyaml.engine" version="0.0.0" />
             <unit id="org.tukaani.xz" version="0.0.0" />
-            <unit id="slf4j.api" version="0.0.0" />
             <unit id="slf4j.simple" version="0.0.0" />
             <repository location="https://update.faktorzehn.org/p2repositories/2024-03/" />
         </location>

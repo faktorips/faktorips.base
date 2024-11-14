@@ -75,31 +75,31 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <git.user>${user.name}</git.user>
         <!-- plugin versions -->
-        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
-        <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
-        <maven-project-info-reports-plugin.version>3.4.5</maven-project-info-reports-plugin.version>
-        <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
-        <maven-scm-plugin.version>2.0.1</maven-scm-plugin.version>
-        <maven-site-plugin.version>4.0.0-M11</maven-site-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+        <maven-project-info-reports-plugin.version>3.8.0</maven-project-info-reports-plugin.version>
+        <maven-site-plugin.version>4.0.0-M16</maven-site-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
+        <maven-plugin-dependency-commons-collections.version>3.2.2</maven-plugin-dependency-commons-collections.version>
+        <maven-plugin-dependency-commons-pool2.version>2.12.0</maven-plugin-dependency-commons-pool2.version>
         <!-- Code quality -->
-        <maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
-        <checkstyle.version>10.12.4</checkstyle.version>
-        <jacoco.version>0.8.11</jacoco.version>
-        <spotbugs-maven-plugin.version>4.7.3.6</spotbugs-maven-plugin.version>
-        <spotbugs.version>4.7.3</spotbugs.version>
+        <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+        <checkstyle.version>10.20.1</checkstyle.version>
+        <jacoco.version>0.8.12</jacoco.version>
+        <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
+        <spotbugs.version>4.8.6</spotbugs.version>
         <!-- Tycho & Eclipse-->
         <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
         <tycho.version>3.0.5</tycho.version>
-        <xtend-maven-plugin.version>2.32.0</xtend-maven-plugin.version>
+        <xtend-maven-plugin.version>2.37.0.M2</xtend-maven-plugin.version>
         <!-- Others -->
-        <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
-        <moditect-maven-plugin.version>1.0.0.Final</moditect-maven-plugin.version>
-        <flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
+        <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
+        <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
         <auto-service.version>1.1.1</auto-service.version>
         <dependency-check-plugin.version>9.1.0</dependency-check-plugin.version>
         <dependency-check-postgres.version>42.7.3</dependency-check-postgres.version>
@@ -151,11 +151,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
                 <!-- Maven plugins -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven-release-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${maven-checkstyle-plugin.version}</version>
                     <dependencies>
@@ -184,6 +179,18 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>${maven-site-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>jcl-over-slf4j</artifactId>
+                            <version>${maven-plugin-dependency-jcl-over-slf4j.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>commons-collections</groupId>
+                            <artifactId>commons-collections</artifactId>
+                            <version>${maven-plugin-dependency-commons-collections.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -223,16 +230,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-scm-plugin</artifactId>
-                    <version>${maven-scm-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>${exec-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -498,12 +495,12 @@ license terms are available from Faktor Zehn GmbH.</comments>
                             <dependency>
                                 <groupId>commons-collections</groupId>
                                 <artifactId>commons-collections</artifactId>
-                                <version>3.2.2</version>
+                                <version>${maven-plugin-dependency-commons-collections.version}</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.apache.commons</groupId>
                                 <artifactId>commons-pool2</artifactId>
-                                <version>2.12.0</version>
+                                <version>${maven-plugin-dependency-commons-pool2.version}</version>
                             </dependency>
                         </dependencies>
                         <configuration>

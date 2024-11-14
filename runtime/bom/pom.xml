@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM
-/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.faktorips</groupId>
@@ -16,20 +15,20 @@
     <description>Defines versions for all Faktor-IPS libraries useable as runtime dependencies and for the dependencies they use.</description>
 
     <properties>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <commons-text.version>1.10.0</commons-text.version>
-        <groovy.version>3.0.17</groovy.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-text.version>1.12.0</commons-text.version>
+        <groovy.version>4.0.24</groovy.version>
         <javax.activation.version>1.2.0</javax.activation.version>
-        <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
-        <jakarta-xml-api.version>4.0.0</jakarta-xml-api.version>
-        <joda.version>2.11.1</joda.version>
-        <opencsv.version>5.6</opencsv.version>
-        <spotbugs-annotations.version>4.7.3</spotbugs-annotations.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jakarta-xml-api.version>4.0.2</jakarta-xml-api.version>
+        <joda.version>2.13.0</joda.version>
+        <opencsv.version>5.9</opencsv.version>
+        <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
         <!-- Test dependencies -->
-        <mockito-core.version>4.7.0</mockito-core.version>
+        <mockito-core.version>5.14.2</mockito-core.version>
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>4.13.2</junit.version>
-        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <junit-jupiter.version>5.11.3</junit-jupiter.version>
         <!-- Encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -148,7 +147,7 @@
             </dependency>
             <!-- For formulas interpreted at runtime -->
             <dependency>
-                <groupId>org.codehaus.groovy</groupId>
+                <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
                 <version>${groovy.version}</version>
             </dependency>

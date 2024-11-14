@@ -638,6 +638,7 @@
                 <artifactId>org.eclipse.help</artifactId>
                 <version>${org-eclipse-help.version}</version>
             </dependency>
+            <!-- also used in base/maven/validation/pom.xml -->
             <dependency>
                 <groupId>org.eclipse.jdt</groupId>
                 <artifactId>org.eclipse.jdt.core</artifactId>

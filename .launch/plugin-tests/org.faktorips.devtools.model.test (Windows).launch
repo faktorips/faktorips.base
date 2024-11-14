@@ -78,7 +78,7 @@
     <setAttribute key="selected_target_bundles">
         <setEntry value="bcpg@default:default"/>
         <setEntry value="bcprov@default:default"/>
-        <setEntry value="com.google.guava*32.1.3.jre@default:default"/>
+        <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
@@ -103,8 +103,7 @@
         <setEntry value="org.apache.commons.collections*3.2.2.v201511171945@default:default"/>
         <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
-        <setEntry value="org.apache.commons.commons-io@default:default"/>
-        <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.commons-io*2.17.0@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3*3.13.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
@@ -327,7 +326,6 @@
         <setEntry value="org.faktorips.devtools.model@1:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>
-        <setEntry value="org.faktorips.nls.devtools.model.builder.nl1@default:false"/>
         <setEntry value="org.faktorips.runtime.xml.jakarta@default:default"/>
         <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
