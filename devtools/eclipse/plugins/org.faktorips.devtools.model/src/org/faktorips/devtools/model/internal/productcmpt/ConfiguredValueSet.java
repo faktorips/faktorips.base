@@ -262,7 +262,8 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             ValueSetType attributeValueSetType = attribute.getValueSet().getValueSetType();
             types.add(attributeValueSetType);
 
-            if (attributeValueSetType == ValueSetType.STRINGLENGTH || attributeValueSetType == ValueSetType.RANGE) {
+            if (attributeValueSetType == ValueSetType.STRINGLENGTH
+                    || (attributeValueSetType == ValueSetType.RANGE && usesOnlyUnifiedValueSetMethods(ipsProject))) {
                 types.add(ValueSetType.ENUM);
             }
         }
@@ -272,6 +273,12 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             types.add(ValueSetType.UNRESTRICTED);
         }
         return types;
+    }
+
+    private boolean usesOnlyUnifiedValueSetMethods(IIpsProject ipsProject) {
+        return ipsProject.getIpsArtefactBuilderSet().usesUnifiedValueSets()
+                && ipsProject.getDirectlyReferencedIpsProjects().stream()
+                        .allMatch(this::usesOnlyUnifiedValueSetMethods);
     }
 
     @Override

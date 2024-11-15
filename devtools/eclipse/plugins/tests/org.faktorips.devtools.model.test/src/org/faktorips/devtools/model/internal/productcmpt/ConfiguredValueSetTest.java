@@ -121,10 +121,16 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
         assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
 
-        // case 4: Integer with RANGE value set
-        // => should allow both RANGE and ENUM
+        // case 4a: Integer with RANGE value set
+        // => should allow only RANGE
         a1.setDatatype("Integer");
         a1.setValueSetType(ValueSetType.RANGE);
+        types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
+        assertThat(types, contains(ValueSetType.RANGE));
+
+        // case 4b: Integer with RANGE value set in project with unified value set method names
+        // => should allow both RANGE and ENUM
+        ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
         assertThat(types, contains(ValueSetType.RANGE, ValueSetType.ENUM));
 
