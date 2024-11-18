@@ -29,6 +29,7 @@ public class Messages extends NLS {
     public static String Migration_24_1_0_description;
     public static String Migration_24_7_0_description;
     public static String Migration_25_1_0_description;
+    public static String Migration_25_1_0_mandatoryEnumAttributes;
     public static String Migration_Option_JAXB_Variant_Description;
     public static String Migration_IpsVersionTooOld;
 

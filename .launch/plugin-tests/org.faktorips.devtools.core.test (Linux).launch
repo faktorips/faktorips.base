@@ -46,8 +46,8 @@
         <setEntry value="bcprov@default:default"/>
         <setEntry value="bcutil@default:default"/>
         <setEntry value="com.google.gson@default:default"/>
-        <setEntry value="com.google.guava*32.1.3.jre@default:default"/>
         <setEntry value="com.google.guava.failureaccess@default:default"/>
+        <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.googlecode.javaewah.JavaEWAH@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
@@ -190,8 +190,6 @@
         <setEntry value="org.eclipse.help.base@default:default"/>
         <setEntry value="org.eclipse.help.ui@default:default"/>
         <setEntry value="org.eclipse.help@default:default"/>
-        <setEntry value="org.eclipse.jdt.compiler.apt@default:false"/>
-        <setEntry value="org.eclipse.jdt.compiler.tool@default:false"/>
         <setEntry value="org.eclipse.jdt.core.compiler.batch@default:default"/>
         <setEntry value="org.eclipse.jdt.core.manipulation@default:default"/>
         <setEntry value="org.eclipse.jdt.core@default:default"/>
@@ -203,7 +201,6 @@
         <setEntry value="org.eclipse.jdt.junit@default:default"/>
         <setEntry value="org.eclipse.jdt.launching@default:default"/>
         <setEntry value="org.eclipse.jdt.ui@default:default"/>
-        <setEntry value="org.eclipse.jem.util@default:default"/>
         <setEntry value="org.eclipse.jface.databinding@default:default"/>
         <setEntry value="org.eclipse.jface.text@default:default"/>
         <setEntry value="org.eclipse.jface@default:default"/>
@@ -227,12 +224,6 @@
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
         <setEntry value="org.eclipse.osgi@-1:true"/>
-        <setEntry value="org.eclipse.pde.build@default:default"/>
-        <setEntry value="org.eclipse.pde.core@default:default"/>
-        <setEntry value="org.eclipse.pde.launching@default:default"/>
-        <setEntry value="org.eclipse.pde.runtime@default:default"/>
-        <setEntry value="org.eclipse.pde.ui@default:default"/>
-        <setEntry value="org.eclipse.pde@default:default"/>
         <setEntry value="org.eclipse.platform@default:default"/>
         <setEntry value="org.eclipse.search.core@default:default"/>
         <setEntry value="org.eclipse.search@default:default"/>
@@ -252,7 +243,6 @@
         <setEntry value="org.eclipse.ui.intro@default:default"/>
         <setEntry value="org.eclipse.ui.navigator.resources@default:default"/>
         <setEntry value="org.eclipse.ui.navigator@default:default"/>
-        <setEntry value="org.eclipse.ui.trace@default:default"/>
         <setEntry value="org.eclipse.ui.views.log@default:default"/>
         <setEntry value="org.eclipse.ui.views.properties.tabbed@default:default"/>
         <setEntry value="org.eclipse.ui.views@default:default"/>
@@ -265,13 +255,9 @@
         <setEntry value="org.eclipse.wst.common.emf@default:default"/>
         <setEntry value="org.eclipse.wst.common.environment@default:default"/>
         <setEntry value="org.eclipse.wst.common.frameworks@default:default"/>
-        <setEntry value="org.eclipse.wst.common.project.facet.core@default:default"/>
         <setEntry value="org.eclipse.wst.common.uriresolver@default:default"/>
         <setEntry value="org.eclipse.wst.sse.core@default:default"/>
-        <setEntry value="org.eclipse.wst.validation@default:default"/>
         <setEntry value="org.eclipse.wst.xml.core@default:default"/>
-        <setEntry value="org.eclipse.wst.xsd.core@default:default"/>
-        <setEntry value="org.eclipse.xsd@default:default"/>
         <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
@@ -289,7 +275,6 @@
         <setEntry value="org.osgi.service.metatype@default:default"/>
         <setEntry value="org.osgi.service.prefs@default:default"/>
         <setEntry value="org.osgi.service.provisioning@default:default"/>
-        <setEntry value="org.osgi.service.repository@default:default"/>
         <setEntry value="org.osgi.service.upnp@default:default"/>
         <setEntry value="org.osgi.service.useradmin@default:default"/>
         <setEntry value="org.osgi.service.wireadmin@default:default"/>
@@ -300,7 +285,6 @@
         <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
-        <setEntry value="org.slf4j.api@default:default"/>
         <setEntry value="org.tukaani.xz@default:default"/>
         <setEntry value="org.w3c.css.sac@default:default"/>
         <setEntry value="org.w3c.dom.events@default:default"/>
