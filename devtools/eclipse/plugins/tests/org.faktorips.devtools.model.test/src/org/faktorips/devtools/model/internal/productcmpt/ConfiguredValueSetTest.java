@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -100,8 +102,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         // case 1: attribute not found
         attribute.setName("unknown");
         List<ValueSetType> types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
-        assertEquals(configuredValueSet.getValueSet().getValueSetType(), types.get(0));
+        assertThat(types, hasSize(1));
+        assertThat(types, contains(configuredValueSet.getValueSet().getValueSetType()));
 
         // case 2: attribute found, value set type is unrestricted, data type is Integer
         // => all types should be available
@@ -111,34 +113,38 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         a1.setValueSetConfiguredByProduct(true);
         a1.setValueSetType(ValueSetType.UNRESTRICTED);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(3, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.RANGE));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.RANGE, ValueSetType.ENUM));
 
         // case 3: as before, but with datatype String
         // => only unrestricted and enum should be available
         a1.setDatatype("String");
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(2, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
 
-        // case 4: as before, but with datatype String
-        // => only unrestricted and enum should be available
+        // case 4a: Integer with RANGE value set
+        // => should allow only RANGE
         a1.setDatatype("Integer");
         a1.setValueSetType(ValueSetType.RANGE);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
-        assertTrue(types.contains(ValueSetType.RANGE));
+        assertThat(types, contains(ValueSetType.RANGE));
+
+        // case 4b: Integer with RANGE value set in project with unified value set method names
+        // => should allow both RANGE and ENUM
+        ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
+        types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
+        assertThat(types, contains(ValueSetType.RANGE, ValueSetType.ENUM));
 
         // case 5: attribute is derived, but still product relevant
         a1.setValueSetType(ValueSetType.DERIVED);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(3, types.size());
-        assertTrue(types.contains(ValueSetType.ENUM));
-        assertTrue(types.contains(ValueSetType.RANGE));
-        assertTrue(types.contains(ValueSetType.UNRESTRICTED));
+        assertThat(types, contains(ValueSetType.UNRESTRICTED, ValueSetType.RANGE, ValueSetType.ENUM));
+
+        // case 6: String with STRINGLENGTH value set
+        // => should allow both STRINGLENGTH and ENUM
+        a1.setDatatype("String");
+        a1.setValueSetType(ValueSetType.STRINGLENGTH);
+        types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
+        assertThat(types, contains(ValueSetType.STRINGLENGTH, ValueSetType.ENUM));
     }
 
     @Test
@@ -266,30 +272,35 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         setUpRangeIntegerAttr();
 
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
-
         MessageList ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
         ml = configuredValueSet.validate(ipsProject);
-        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
-
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         attribute.changeValueSetType(ValueSetType.UNRESTRICTED);
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+
         configuredValueSet.changeValueSetType(ValueSetType.UNRESTRICTED);
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+
+        attribute.setValueSetType(ValueSetType.ENUM);
+        configuredValueSet.setValueSetType(ValueSetType.RANGE);
+        ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
     }
 
     @Test
@@ -304,12 +315,11 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         templateValueSet.changeValueSetType(ValueSetType.ENUM);
         assertThat(configuredValueSet.validate(ipsProject),
-                hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+                lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
         configuredValueSet.changeValueSetType(ValueSetType.RANGE);
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
-
         assertThat(configuredValueSet.validate(ipsProject),
                 lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
@@ -317,6 +327,10 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         assertThat(configuredValueSet.validate(ipsProject),
                 lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        templateValueSet.changeValueSetType(ValueSetType.RANGE);
+        assertThat(configuredValueSet.validate(ipsProject),
+                hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
     }
 
     @Test
@@ -810,7 +824,97 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         assertThat(configuredValueSet.getValueSet(), is(enumValueSet));
         assertThat(enumValueSet, is(not(empty())));
         assertThat(enumValueSet, contains("1", "2"));
-
     }
 
+    @Test
+    public void testValidateEnumAgainstRange_WithInteger() {
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet modelRangeValueSet = (IRangeValueSet)attribute.getValueSet();
+        modelRangeValueSet.setLowerBound("0");
+        modelRangeValueSet.setUpperBound("100");
+
+        configuredValueSet.setValueSetType(ValueSetType.ENUM);
+        IEnumValueSet enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
+
+        // Values within range
+        enumValueSet.addValue("0");
+        enumValueSet.addValue("59");
+        enumValueSet.addValue("100");
+        MessageList list = configuredValueSet.validate(ipsProject);
+        assertThat(list, isEmpty());
+
+        // Value outside range
+        enumValueSet.addValue("107");
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUE_NOT_IN_RANGE));
+
+        // Invalid number
+        enumValueSet.addValue("IamNotNumber");
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_INVALID_NUMBER_FORMAT));
+
+        // Empty enum with non-null range
+        configuredValueSet.setValueSetType(ValueSetType.ENUM);
+        enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
+        modelRangeValueSet.setContainsNull(false);
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+
+        // Null value within non-null range
+        enumValueSet.addValue(null);
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_NULL_NOT_ALLOWED));
+
+        // Null value with null-allowing range
+        modelRangeValueSet.setContainsNull(true);
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, isEmpty());
+    }
+
+    @Test
+    public void testValidateEnumAgainstRange_WithDecimal() {
+        attribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet modelRangeValueSet = (IRangeValueSet)attribute.getValueSet();
+        modelRangeValueSet.setLowerBound("0.0");
+        modelRangeValueSet.setUpperBound("100.0");
+
+        configuredValueSet.setValueSetType(ValueSetType.ENUM);
+        IEnumValueSet enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
+
+        // Values within range
+        enumValueSet.addValue("0.0");
+        enumValueSet.addValue("51.5");
+        enumValueSet.addValue("100.0");
+        MessageList list = configuredValueSet.validate(ipsProject);
+        assertThat(list, isEmpty());
+
+        // Value outside range
+        enumValueSet.addValue("100.1");
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUE_NOT_IN_RANGE));
+
+        // Invalid decimal
+        enumValueSet.addValue("ImNotADecimal");
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_INVALID_NUMBER_FORMAT));
+
+        // Empty enum with non-null range
+        configuredValueSet.setValueSetType(ValueSetType.ENUM);
+        enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
+        modelRangeValueSet.setContainsNull(false);
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+
+        // Null value with non-null range
+        enumValueSet.addValue(null);
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, hasMessageCode(IConfiguredValueSet.MSGCODE_NULL_NOT_ALLOWED));
+
+        // Null value with null-allowing range
+        modelRangeValueSet.setContainsNull(true);
+        list = configuredValueSet.validate(ipsProject);
+        assertThat(list, isEmpty());
+    }
 }

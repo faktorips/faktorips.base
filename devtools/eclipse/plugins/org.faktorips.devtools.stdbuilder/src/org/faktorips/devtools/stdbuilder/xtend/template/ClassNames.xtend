@@ -206,6 +206,10 @@ class ClassNames {
         addImport(typeof(OrderedValueSet)) + "<" + genericType + ">"
     }
 
+    def static OrderedValueSet(AbstractGeneratorModelNode it) {
+        addImport(typeof(OrderedValueSet))
+    }
+
     def static StringLengthValueSet(AbstractGeneratorModelNode it) {
         addImport(typeof(StringLengthValueSet))
     }

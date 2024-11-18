@@ -1,11 +1,13 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
 import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.AllowedValuesForAttributeRule
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.GenerateValueSetTypeRule
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductClass
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter
 
 import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
@@ -14,7 +16,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.temp
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -44,7 +46,7 @@ class DefaultAndAllowedValuesTmpl {
          * @generated
          */
         «getAnnotations(DEPRECATION)»
-        private «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
+        private «getValueSetJavaClassName(canBeChangedFromRangeToEnum ? GenerateValueSetType.GENERATE_UNIFIED : GenerateValueSetType.GENERATE_BY_TYPE)» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
     '''
 
     def package static getterAndSetter(XPolicyAttribute it) '''
@@ -63,7 +65,7 @@ class DefaultAndAllowedValuesTmpl {
         /**
          *«localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
          *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»
-                    *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+            * @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
          «ENDIF»
          * @generated
          */
@@ -71,7 +73,7 @@ class DefaultAndAllowedValuesTmpl {
         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
         public «attributeSuperType.getValueSetJavaClassName(valueSetMethods)» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
         «IF genInterface() || isAbstract()»;«ELSE» {
-                  return «castFromTo(attributeSuperType.getValueSetJavaClassName(valueSetMethods.inverse), attributeSuperType.getValueSetJavaClassName(valueSetMethods))»super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
+                return «castFromTo(attributeSuperType.getValueSetJavaClassName(valueSetMethods.inverse), attributeSuperType.getValueSetJavaClassName(valueSetMethods))»super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
             }
         «ENDIF»
     '''
@@ -87,9 +89,9 @@ class DefaultAndAllowedValuesTmpl {
         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)»
         public «IF isAbstract»abstract «ENDIF»«javaClassName» «method(methodNameGetDefaultValue)»
         «IF genInterface || isAbstract»;«ELSE»
-                {
-                    return «fieldNameDefaultValue»;
-                }
+            {
+                return «fieldNameDefaultValue»;
+            }
         «ENDIF»
     '''
 
@@ -104,10 +106,10 @@ class DefaultAndAllowedValuesTmpl {
         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)»
         public «IF isAbstract»abstract «ENDIF»void «method(methodNameSetDefaultValue, javaClassName, fieldNameDefaultValue)»
         «IF genInterface || isAbstract»;«ELSE»
-                {
-                    «checkRepositoryModifyable»
-                    this.«fieldNameDefaultValue» = «fieldNameDefaultValue»;
-                }
+            {
+                «checkRepositoryModifyable»
+                this.«fieldNameDefaultValue» = «fieldNameDefaultValue»;
+            }
         «ENDIF»
     '''
 
@@ -116,20 +118,20 @@ class DefaultAndAllowedValuesTmpl {
             /**
              *«inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
-            *
+             *
             «IF isGetAllowedValuesMethodDeprecated(rule)»
-                * @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+                 * @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
             «ENDIF»
-            * @generated
-            */
+             * @generated
+             */
             «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
             «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
             «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
             public «IF isAbstract»abstract «ENDIF»«getValueSetJavaClassName(rule.fromMethod)» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
             «IF genInterface || isAbstract»;«ELSE»
-                    {
-                        return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
-                    }
+                {
+                    return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
+                }
             «ENDIF»
         «ENDIF»
     '''
@@ -145,10 +147,15 @@ class DefaultAndAllowedValuesTmpl {
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideSetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
         public «IF isAbstract»abstract «ENDIF»void «method(methodNameSetAllowedValuesFor, ValueSet(javaClassUsedForValueSet), fieldNameValueSet)»
         «IF genInterface || isAbstract»;«ELSE»
-                {
-                    «checkRepositoryModifyable»
-                    this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE))»«fieldNameValueSet»;
-                }
+            {
+                «checkRepositoryModifyable»
+                «IF canBeChangedFromRangeToEnum»
+                    if («fieldNameValueSet» != null && !(«fieldNameValueSet».isRange() || «fieldNameValueSet» instanceof «OrderedValueSet»)) {
+                        throw new «typeof(ClassCastException).name»(«fieldNameValueSet» + " is neither a range nor an ordered value set");
+                    }
+                «ENDIF»
+                this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),getValueSetJavaClassName(canBeChangedFromRangeToEnum ? GenerateValueSetType.GENERATE_UNIFIED : GenerateValueSetType.GENERATE_BY_TYPE))»«fieldNameValueSet»;
+            }
         «ENDIF»
     '''
 
@@ -163,8 +170,8 @@ class DefaultAndAllowedValuesTmpl {
             /**
              * @generated
              */
-             private void «method(methodNameDoInitFromXml, Map("String", Element), "configMap")» {
-             Element defaultValueElement = configMap.get(«CONFIGURED_DEFAULT_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
+            private void «method(methodNameDoInitFromXml, Map("String", Element), "configMap")» {
+            Element defaultValueElement = configMap.get(«CONFIGURED_DEFAULT_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
             if (defaultValueElement != null) {
                 String value = «ValueToXmlHelper».«getValueFromElement("defaultValueElement")»;
                 «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
@@ -172,7 +179,7 @@ class DefaultAndAllowedValuesTmpl {
             Element valueSetElement = configMap.get(«CONFIGURED_VALUE_SET_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
             if (valueSetElement != null) {
                 «IF valueSetDerived»
-                     «fieldNameValueSet» = «newDerivedValueSetInstance»;
+                    «fieldNameValueSet» = «newDerivedValueSetInstance»;
                 «ELSEIF valueSetUnrestricted || valueSetConfiguredDynamic »
                     «IF ipsEnum»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
@@ -187,11 +194,11 @@ class DefaultAndAllowedValuesTmpl {
                 «IF valueSetStringLength»
                     «StringLengthValueSet» stringLengthValueSet = «ValueToXmlHelper».«getStringLengthValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (stringLengthValueSet != null) {
-                    	«fieldNameValueSet» = stringLengthValueSet;
-                    	return;
+                        «fieldNameValueSet» = stringLengthValueSet;
+                        return;
                     }
                 «ENDIF»
-                «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength || valueSetConfiguredDynamic) && enumValueSetSupported)»
+                «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength || valueSetConfiguredDynamic) && enumValueSetSupported) || canBeChangedFromRangeToEnum»
                     «EnumValues» values = «ValueToXmlHelper».«getEnumValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (values != null) {
                         «List_(javaClassUsedForValueSet)» enumValues = new «ArrayList»();
@@ -217,6 +224,14 @@ class DefaultAndAllowedValuesTmpl {
             }
             «ENDIF»
     '''
+
+    protected def static boolean canBeChangedFromRangeToEnum(XPolicyAttribute it) {
+        valueSetRange && enumValueSetSupported && policyCmptNode.usesOnlyUnifiedValueSetMethods
+    }
+    protected def static boolean usesOnlyUnifiedValueSetMethods(XPolicyCmptClass it) {
+        context.getGeneratorConfig(ipsObjectPartContainer).getValueSetMethods() == ValueSetMethods.Unified
+        && (!hasSupertype || supertype.usesOnlyUnifiedValueSetMethods)
+    }
 
     def package static writeAttributeToXmlMethodCall(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
@@ -249,7 +264,7 @@ class DefaultAndAllowedValuesTmpl {
                         valueSetElement.appendChild(valueElement);
                     }
                 «ENDIF»
-                «IF (valueSetUnrestricted || valueSetDerived || valueSetStringLength) && rangeSupported»
+                «IF ((valueSetUnrestricted || valueSetDerived || valueSetStringLength) && rangeSupported) || canBeChangedFromRangeToEnum»
                     if («fieldNameValueSet» instanceof «qnameRange("?")») {
                         «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
                         «writeRange("range", it)»
@@ -257,7 +272,7 @@ class DefaultAndAllowedValuesTmpl {
                 «ELSEIF valueSetRange»
                     «writeRange(fieldNameValueSet, it)»
                 «ENDIF»
-                «IF (valueSetUnrestricted || valueSetDerived || valueSetStringLength) && enumValueSetSupported»
+                «IF ((valueSetUnrestricted || valueSetDerived || valueSetStringLength) && enumValueSetSupported) || canBeChangedFromRangeToEnum»
                     if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
                         «writeEnumValueSet»
                     }

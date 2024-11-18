@@ -60,6 +60,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -268,6 +269,10 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()
                 || attribute.getValueSet().isStringLength()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return;
+        }
+        if (valueSet.getValueSetType() == ValueSetType.ENUM
+                && attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
             return;
         }
         if (!valueSet.isSameTypeOfValueSet(attribute.getValueSet())) {
