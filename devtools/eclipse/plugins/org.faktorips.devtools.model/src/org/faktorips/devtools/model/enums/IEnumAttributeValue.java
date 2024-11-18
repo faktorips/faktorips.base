@@ -73,6 +73,11 @@ public interface IEnumAttributeValue extends IIpsObjectPart, IPartIdentifiedByIn
     String MSGCODE_INVALID_VALUE_TYPE = MSGCODE_PREFIX + "InvalidValueType"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a mandatory attribute does not have a value set.
+     */
+    String MSGCODE_MANDATORY_ATTRIBUTE_IS_EMPTY = "ENUM_ATTRIBUTE-MANDATORY_ATTRIBUTE_IS_EMPTY";
+
+    /**
      * Searches and returns the <code>IEnumAttribute</code> this <code>IEnumAttributeValue</code>
      * refers to. Returns <code>null</code> if none could be found.
      * <p>

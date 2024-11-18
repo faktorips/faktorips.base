@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -54,6 +54,7 @@ public class Messages extends NLS {
     public static String EnumAttribute_PropertyDisplayName_Identifier;
     public static String EnumAttribute_PropertyDisplayName_LiteralName;
     public static String EnumAttribute_PropertyDisplayNameDisplayName;
+    public static String EnumAttribute_MandatoryValueNotSet;
 
     public static String EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist;
     public static String EnumLiteralNameAttribute_DefaultValueProviderAttributeNotOfDatatypeString;
