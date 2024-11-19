@@ -59,6 +59,22 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     String MSGCODE_UNKNOWN_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that null value is not allowed
+     */
+    String MSGCODE_NULL_NOT_ALLOWED = "NULL_NOT_ALLOWED";
+
+    /**
+     * Validation message code indicating that a value is outside the permissible range defined in
+     * the model.
+     */
+    String MSGCODE_VALUE_NOT_IN_RANGE = "VALUE_NOT_IN_RANGE";
+
+    /**
+     * Validation message code indicating that a value has an invalid number format.
+     */
+    String MSGCODE_INVALID_NUMBER_FORMAT = "INVALID_NUMBER_FORMAT";
+
+    /**
      * Validation message code to indicate that the config elements value set is empty while the
      * value set defined in the model is mandatory.
      */

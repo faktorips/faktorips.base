@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,14 +33,14 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Operation to export an ipstablecontents to an excel-file.
- * 
+ *
  * @author Thorsten Waertel, Thorsten Guenther, Alexander Weickmann
  */
 public class ExcelTableExportOperation extends AbstractExcelExportOperation {
 
     /**
-     * 
-     * 
+     *
+     *
      * @param typeToExport An <code>ITableContents</code> instance.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
@@ -104,7 +104,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
 
     /**
      * Create the header as first row.
-     * 
+     *
      * @param sheet The sheet where to create the header.
      * @param columns The columns defined by the structure.
      * @param exportColumnHeaderRow column header names included or not.
@@ -121,7 +121,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
 
     /**
      * Create the cells for the export
-     * 
+     *
      * @param sheet The sheet to create the cells within.
      * @param generation The generation of the content to get the values from.
      * @param structure The structure the content is bound to.

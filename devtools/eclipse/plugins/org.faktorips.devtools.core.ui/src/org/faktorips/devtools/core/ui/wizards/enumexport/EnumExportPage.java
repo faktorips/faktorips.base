@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,16 +29,16 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard page for configuring an enum type or enum content for export.
- * 
+ *
  * @see IEnumType
  * @see IEnumContent
- * 
+ *
  * @author Roman Grutza
  */
 public class EnumExportPage extends IpsObjectExportPage {
 
     public EnumExportPage(IStructuredSelection selection) throws JavaModelException {
-        super(Messages.EnumExportPage_title, selection);
+        super(Messages.EnumExportPage_title, selection, false);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class EnumExportPage extends IpsObjectExportPage {
 
     /**
      * Extracts the selected enum from the provided {@link IIpsSrcFile}.
-     * 
+     *
      * @param src The {@link IIpsSrcFile} matching with the currently selected view
      */
     private void setDefaultByEnumValueContainer(IIpsSrcFile src) {
@@ -139,7 +139,7 @@ public class EnumExportPage extends IpsObjectExportPage {
 
     /**
      * Sets the selected enum for the UI control.
-     * 
+     *
      * @param enumContainer The selected {@link IEnumValueContainer}
      */
     private void setEnum(IEnumValueContainer enumContainer) {
@@ -154,7 +154,7 @@ public class EnumExportPage extends IpsObjectExportPage {
 
     /**
      * Provides the currently selected enum by getting it from the UI control.
-     * 
+     *
      * @return The currently selected {@link IEnumValueContainer}
      */
     public IEnumValueContainer getEnum() {

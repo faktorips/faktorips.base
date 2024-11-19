@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -25,6 +26,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -49,11 +51,12 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
-            MessageList list) {
+            MessageList list,
+            IProgressMonitor monitor) {
         try {
             ExcelTableExportOperation excelTableExportOperation = new ExcelTableExportOperation(contents,
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
-            excelTableExportOperation.run(new NullProgressMonitor());
+            excelTableExportOperation.run(monitor);
             return true;
         } catch (IpsException e) {
             IpsPlugin.log(e);

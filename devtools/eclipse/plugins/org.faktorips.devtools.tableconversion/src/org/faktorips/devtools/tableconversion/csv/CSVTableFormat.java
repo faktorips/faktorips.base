@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,6 +24,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -67,7 +68,8 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
-            MessageList list) {
+            MessageList list,
+            IProgressMonitor monitor) {
         try {
             CSVTableExportOperation tableExportOperation = new CSVTableExportOperation(contents, filename.toOSString(),
                     this, nullRepresentationString, exportColumnHeaderRow, list);

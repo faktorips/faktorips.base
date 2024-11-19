@@ -12,6 +12,7 @@ package org.faktorips.runtime;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -25,7 +26,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -306,19 +306,39 @@ public class InMemoryRuntimeRepositoryTest {
     public void testGetAllModelTypeImplementationClasses() {
         ProductComponent p1 = new TestConfiguringProduct1(repository, "p1", "p1Kind", "p1Version");
         ProductComponent p2 = new TestConfiguringProduct2(repository, "p2", "p2Kind", "p2Version");
+        TestSingleContentTable t1 = new TestSingleContentTable();
+        repository.putTable(t1);
         repository.putProductComponent(p1);
         repository.putProductComponent(p2);
 
         TestEnumValue e1 = new TestEnumValue("enumTest");
         repository.putEnumValues(TestEnumValue.class, List.of(e1));
 
-        Set<String> result = new HashSet<>();
-        result = repository.getAllModelTypeImplementationClasses();
-        assertEquals(3, result.size());
-        assertTrue(result.contains(IpsModel.getProductCmptType(p1).getPolicyCmptType().getJavaClass().getName()));
-        assertTrue(result.contains(IpsModel.getProductCmptType(p2).getPolicyCmptType().getJavaClass().getName()));
-        assertTrue(result.contains(e1.getClass().getName()));
+        Set<String> result = repository.getAllModelTypeImplementationClasses();
 
+        assertThat(result, containsInAnyOrder(
+                IpsModel.getProductCmptType(p1).getPolicyCmptType().getJavaClass().getName(),
+                IpsModel.getProductCmptType(p2).getPolicyCmptType().getJavaClass().getName(),
+                IpsModel.getProductCmptType(p1).getJavaClass().getName(),
+                IpsModel.getProductCmptType(p2).getJavaClass().getName(),
+                IpsModel.getProductCmptType(TestProductComponent.class).getJavaClass().getName(),
+                e1.getClass().getName(),
+                t1.getClass().getName()));
+    }
+
+    @Test
+    public void testGetAllModelTypeImplementationClasses_withSubTypes() {
+        Product p1 = new Product(repository, "p1", "p1Kind", "p1Version");
+        repository.putProductComponent(p1);
+
+        Set<String> result = repository.getAllModelTypeImplementationClasses();
+
+        assertThat(result, containsInAnyOrder(
+                IpsModel.getProductCmptType(p1).getPolicyCmptType().getJavaClass().getName(),
+                IpsModel.getProductCmptType(p1).getJavaClass().getName(),
+                IpsModel.getProductCmptType(p1).getPolicyCmptType().getSuperType().getJavaClass().getName(),
+                IpsModel.getProductCmptType(p1).getSuperType().getJavaClass().getName(),
+                IpsModel.getProductCmptType(TestProductComponent.class).getJavaClass().getName()));
     }
 
     @Test
@@ -1063,8 +1083,7 @@ public class InMemoryRuntimeRepositoryTest {
 
         @Override
         public void initialize() {
-            // TODO Auto-generated method stub
-
+            // initialize
         }
 
     }
@@ -1102,10 +1121,75 @@ public class InMemoryRuntimeRepositoryTest {
 
         @Override
         public void initialize() {
-            // TODO Auto-generated method stub
-
+            // initialize
         }
 
     }
 
+    @IpsPolicyCmptType(name = "Policy")
+    @IpsConfiguredBy(Product.class)
+    public class Policy extends AbstractPolicy {
+
+        private Product product;
+
+        public Policy(Product product) {
+            this.product = product;
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return product;
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            product = (Product)productComponent;
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public void initialize() {
+            // initialize
+        }
+
+    }
+
+    @IpsProductCmptType(name = "Product")
+    @IpsConfigures(Policy.class)
+    public class Product extends AbstractProduct {
+
+        public Product(IRuntimeRepository repository, String id, String productKindId, String versionId) {
+            super(repository, id, productKindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return new Policy(this);
+        }
+    }
+
+    @IpsPolicyCmptType(name = "AbstractPolicy")
+    @IpsConfiguredBy(AbstractProduct.class)
+    public abstract class AbstractPolicy extends AbstractModelObject implements IConfigurableModelObject {
+        // empty
+    }
+
+    @IpsProductCmptType(name = "AbstractProduct")
+    @IpsConfigures(AbstractPolicy.class)
+    public abstract class AbstractProduct extends ProductComponent {
+
+        public AbstractProduct(IRuntimeRepository repository, String id, String productKindId, String versionId) {
+            super(repository, id, productKindId, versionId);
+        }
+
+    }
 }
