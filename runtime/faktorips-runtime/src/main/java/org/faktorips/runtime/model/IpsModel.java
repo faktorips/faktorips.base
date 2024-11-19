@@ -10,10 +10,17 @@
 
 package org.faktorips.runtime.model;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.faktorips.annotation.UtilityClass;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.caching.Memoizer;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
@@ -245,6 +252,27 @@ public enum IpsModel {
         } else {
             return getEnumType(enumInstance.getClass());
         }
+    }
+
+    /**
+     * Validates all product components and enum values in the given repository against their model.
+     *
+     * @see ProductCmptType#validate(IProductComponent, MessageList, IValidationContext)
+     * @see EnumType#validate(MessageList, IValidationContext, List)
+     *
+     * @param context the {@link IValidationContext}, needed to determine the {@link Locale} in
+     *            which to create {@link Message Messages}
+     * @return a {@link MessageList} containing all validation messages
+     *
+     * @since 25.1
+     */
+    public static MessageList validate(IRuntimeRepository repository, IValidationContext context) {
+        MessageList messages = new MessageList();
+        repository.getAllProductComponents()
+                .forEach(p -> IpsModel.getProductCmptType(p).validate(p, messages, context));
+        repository.getAllEnumClasses().stream().map(IpsModel::getEnumType)
+                .forEach(et -> et.validate(messages, context, repository.getEnumValues(et.getEnumClass())));
+        return messages;
     }
 
 }

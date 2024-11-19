@@ -350,9 +350,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString("attr1"));
         assertThat(message.getText(), containsString("12345678910"));
         assertThat(message.getText(), containsString("String length ≤ 10"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(productComponent));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("attr1"));
     }
 
     @Test
@@ -371,9 +373,11 @@ public class ProductAttributeTest {
         assertThat(message, is(not(nullValue())));
         assertThat(message.getSeverity(), is(Severity.ERROR));
         assertThat(message.getText(), containsString("1, 2, 1"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(productComponent));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("multiPrimitiveIntAttr"));
     }
 
     @Test
@@ -407,9 +411,11 @@ public class ProductAttributeTest {
         assertThat(message.getSeverity(), is(Severity.ERROR));
         assertThat(message.getText(), containsString("[a, d]"));
         assertThat(message.getText(), containsString("[a, b, c]"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(productComponent));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("multiText"));
     }
 
     @Test
@@ -443,9 +449,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString("publishedAttribute"));
         assertThat(message.getText(), containsString("100"));
         assertThat(message.getText(), containsString("[1.0, 1.5, 2]"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("publishedAttribute"));
     }
 
     @Test
@@ -480,9 +488,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString("publishedAttributeAdj"));
         assertThat(message.getText(), containsString("100"));
         assertThat(message.getText(), containsString("0-10, 2"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("publishedAttributeAdj"));
     }
 
     @Test
@@ -516,9 +526,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString("unpublishedAttribute"));
         assertThat(message.getText(), containsString("100"));
         assertThat(message.getText(), containsString("[2, 2.5, 3]"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("unpublishedAttribute"));
     }
 
     @Test
@@ -553,9 +565,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString("publishedAttributeAdj"));
         assertThat(message.getText(), containsString("100"));
         assertThat(message.getText(), containsString("10-20, 2"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("unpublishedAttributeAdj"));
     }
 
     @Test
@@ -575,9 +589,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATE));
         assertThat(message.getText(), containsString("Jan 1, 2024"));
         assertThat(message.getText(), containsString("Jan 1, 2020, Jan 1, 2021"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_LOCALDATE));
     }
 
     @Test
@@ -597,9 +613,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATE));
         assertThat(message.getText(), containsString("01.01.2024"));
         assertThat(message.getText(), containsString("01.01.2020, 01.01.2021"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_LOCALDATE));
     }
 
     @Test
@@ -619,9 +637,12 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_GREGORIANCALENDAR));
         assertThat(message.getText(), containsString("Jan 1, 2024"));
         assertThat(message.getText(), containsString("Jan 1, 2020, Jan 1, 2021"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(),
+                is(ProductWithDates.PROPERTY_GREGORIANCALENDAR));
     }
 
     @Test
@@ -641,9 +662,12 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_GREGORIANCALENDAR));
         assertThat(message.getText(), containsString("01.01.2024"));
         assertThat(message.getText(), containsString("01.01.2020, 01.01.2021"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(),
+                is(ProductWithDates.PROPERTY_GREGORIANCALENDAR));
     }
 
     @Test
@@ -663,9 +687,12 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATETIME));
         assertThat(message.getText(), containsString("Jan 1, 2024, 12:12:00 PM"));
         assertThat(message.getText(), containsString("Jan 1, 2020, 12:00:01 AM, Jan 1, 2021, 12:01:01 AM"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(),
+                is(ProductWithDates.PROPERTY_LOCALDATETIME));
     }
 
     @Test
@@ -685,9 +712,12 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATETIME));
         assertThat(message.getText(), containsString("01.01.2024, 12:12:00"));
         assertThat(message.getText(), containsString("01.01.2020, 00:00:01, 01.01.2021, 00:01:01"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(),
+                is(ProductWithDates.PROPERTY_LOCALDATETIME));
     }
 
     @Test
@@ -707,9 +737,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALTIME));
         assertThat(message.getText(), containsString("12:00:00 PM"));
         assertThat(message.getText(), containsString("12:00:01 AM, 12:01:01 AM"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_LOCALTIME));
     }
 
     @Test
@@ -729,9 +761,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALTIME));
         assertThat(message.getText(), containsString("12:00:00"));
         assertThat(message.getText(), containsString("00:00:01, 00:01:01"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_LOCALTIME));
     }
 
     @Test
@@ -751,9 +785,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_MONTHDAY));
         assertThat(message.getText(), containsString("06-01"));
         assertThat(message.getText(), containsString("01-01, 02-01"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_MONTHDAY));
     }
 
     @Test
@@ -773,9 +809,11 @@ public class ProductAttributeTest {
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_MONTHDAY));
         assertThat(message.getText(), containsString("06-01"));
         assertThat(message.getText(), containsString("01-01, 02-01"));
-        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(product));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_MONTHDAY));
     }
 
     @IpsProductCmptType(name = "ProductXYZ")

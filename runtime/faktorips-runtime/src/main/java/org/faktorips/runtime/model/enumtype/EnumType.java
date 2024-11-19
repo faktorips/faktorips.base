@@ -1,23 +1,30 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.model.enumtype;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
@@ -31,6 +38,7 @@ import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.runtime.util.StringBuilderJoiner;
+import org.faktorips.values.ListUtil;
 
 /**
  * Description of an enum's attributes and extensibility.
@@ -71,7 +79,7 @@ public class EnumType extends ModelElement {
 
     /**
      * The qualified name an enum content extending this enum must have.
-     * 
+     *
      * @see #isExtensible()
      */
     public String getEnumContentQualifiedName() {
@@ -167,6 +175,87 @@ public class EnumType extends ModelElement {
     @Override
     protected String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
         return Documentation.of(this, type, locale, fallback, this::findSuperEnumType);
+    }
+
+    /**
+     * Validates this enum's configuration in the given enum values against the model.
+     *
+     * @param list a {@link MessageList}, to which validation messages may be added
+     * @param context the {@link IValidationContext}, needed to determine the {@link Locale} in
+     *            which to create {@link Message Messages}
+     * @param enumValues the enum value instances to validate
+     *
+     * @throws IllegalArgumentException if any of the given enum values does not match this enum
+     *             type
+     *
+     * @since 25.1
+     */
+    public void validate(MessageList list,
+            IValidationContext context,
+            List<?> enumValues) {
+        requireNonNull(list, "list must not be null");
+        requireNonNull(context, "context must not be null");
+        requireNonNull(enumValues, "enumValues must not be null");
+        enumValues.forEach(enumValue -> validate(list, context, enumValue));
+        getAttributes().stream()
+                .filter(EnumAttribute::isUnique)
+                .forEach(a -> validateUniqueValues(list, context, enumValues, a));
+    }
+
+    private void validateUniqueValues(MessageList list,
+            IValidationContext context,
+            List<?> enumValues,
+            EnumAttribute a) {
+        mapAttributeValuesToEnumValues(enumValues, a)
+                .entrySet().stream()
+                .filter(e -> e.getValue().size() > 1)
+                .forEach(e -> {
+                    String allDuplicates = e.getValue().stream()
+                            .map(Object::toString)
+                            .collect(Collectors.joining(", "));
+                    e.getValue()
+                            .forEach(v -> a.addErrorMessage(list, context, EnumAttribute.MSGCODE_NOT_UNIQUE,
+                                    EnumAttribute.MSGKEY_NOT_UNIQUE, v, a.getLabel(context.getLocale()),
+                                    allDuplicates));
+                });
+    }
+
+    private <T> Map<Object, List<T>> mapAttributeValuesToEnumValues(List<T> enumValues, EnumAttribute enumAttribute) {
+        return enumValues.stream()
+                .collect(Collectors.toMap(enumAttribute::getValue, List::of, ListUtil::join));
+    }
+
+    /**
+     * Validates this enum's configuration in the given enum value against the model. Only
+     * properties inherent to an enum value (like {@link EnumAttribute#isMandatory() mandatory}) are
+     * validated here, properties that can only be validated in context with other enum values like
+     * {@link EnumAttribute#isUnique() unique} are only validated in
+     * {@link EnumType#validate(MessageList, IValidationContext, List)} (which also calls this
+     * validation for every enum value).
+     *
+     * @see #validate(MessageList, IValidationContext, List)
+     * @see EnumAttribute#validate(MessageList, IValidationContext, Object)
+     *
+     * @param list a {@link MessageList}, to which validation messages may be added
+     * @param context the {@link IValidationContext}, needed to determine the {@link Locale} in
+     *            which to create {@link Message Messages}
+     * @param enumValue the enum value instances to validate
+     *
+     * @throws IllegalArgumentException if the given enum value does not match this enum type
+     *
+     * @since 25.1
+     */
+    public void validate(MessageList list,
+            IValidationContext context,
+            Object enumValue) {
+        requireNonNull(list, "list must not be null");
+        requireNonNull(context, "context must not be null");
+        requireNonNull(enumValue, "enumValues must not be null");
+
+        if (!getEnumClass().isInstance(enumValue)) {
+            throw new IllegalArgumentException(enumValue + " is not a " + this);
+        }
+        getAttributes().forEach(a -> a.validate(list, context, enumValue));
     }
 
     @FunctionalInterface

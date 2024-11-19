@@ -21,6 +21,7 @@ import java.util.List;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -144,14 +145,16 @@ public class ProductAttribute extends Attribute {
                 ProductAttribute::contains,
                 MSGCODE_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_VALUE_NOT_IN_VALUE_SET,
-                PROPERTY_VALUE);
+                PROPERTY_VALUE,
+                new ObjectProperty(product, getName()));
         validate(list, context,
                 () -> (T)getValue(product, effectiveDate),
                 this::isMultiValue,
                 (value, multiValue) -> !multiValue || new HashSet<>((List<T>)value).size() == ((List<T>)value).size(),
                 MSGCODE_DUPLICATE_VALUE,
                 MSGKEY_DUPLICATE_VALUE,
-                PROPERTY_VALUE);
+                PROPERTY_VALUE,
+                new ObjectProperty(product, getName()));
     }
 
     private static <T> boolean contains(T value, ValueSet<T> valueSet) {

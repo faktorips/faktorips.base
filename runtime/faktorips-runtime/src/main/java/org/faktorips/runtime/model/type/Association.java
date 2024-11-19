@@ -298,13 +298,14 @@ public abstract class Association extends TypePart {
             BiPredicate<V, R> valueChecker,
             String msgCode,
             String msgKey,
-            String property) {
+            String property,
+            ObjectProperty invalidObjectProperty) {
         validate(list, valueGetter, referenceValueGetter, valueChecker,
                 (value, referenceValue) -> generateValidationMessage(context.getLocale(),
                         getResourceBundleName(), msgKey,
                         value, getLabel(context.getLocale()), referenceValue),
                 msgCode,
-                new ObjectProperty(this, property));
+                new ObjectProperty(this, property), invalidObjectProperty);
     }
     // CSON: ParameterNumber
 

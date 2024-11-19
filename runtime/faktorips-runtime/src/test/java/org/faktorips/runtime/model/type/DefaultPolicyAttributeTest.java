@@ -1008,10 +1008,13 @@ public class DefaultPolicyAttributeTest {
         assertThat(messageList.isEmpty(), is(false));
         Message message = messageList.getMessage(0);
         assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
-        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
         ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
         assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
         assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("orderedValueSet"));
     }
 
     @Test
@@ -1046,10 +1049,13 @@ public class DefaultPolicyAttributeTest {
         assertThat(message.getText(), containsString("foo"));
         assertThat(message.getText(), containsString("value set"));
         assertThat(message.getText(), containsString("bar"));
-        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
         ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
         assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
         assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attr1"));
     }
 
     @Test
@@ -1117,10 +1123,13 @@ public class DefaultPolicyAttributeTest {
         assertThat(message.getText(), containsString("foo"));
         assertThat(message.getText(), containsString("Wertemenge"));
         assertThat(message.getText(), containsString("bar"));
-        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
         ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
         assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
         assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attr1"));
     }
 
     @Test
@@ -1199,14 +1208,17 @@ public class DefaultPolicyAttributeTest {
         assertThat(message.getText(), containsString("-1000-1000"));
         assertThat(message.getText(), containsString("value set"));
         assertThat(message.getText(), containsString("0-100"));
-        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
         ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
         assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
         assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE));
     }
 
     @Test
-    public void testValidateValueSet_DefaultValueNotAllowedInValueSet_LocaleDE() {
+    public void testValidateValueSet_ValueSetNotInValueSet_LocaleDE() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfiguredPolicy.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
                 .getAttribute(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE);
@@ -1225,10 +1237,13 @@ public class DefaultPolicyAttributeTest {
         assertThat(message.getText(), containsString("-1000-1000"));
         assertThat(message.getText(), containsString("Wertemenge"));
         assertThat(message.getText(), containsString("0-100"));
-        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
         ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
         assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
         assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE));
     }
 
     @IpsPolicyCmptType(name = "Vertragxyz")
@@ -1527,7 +1542,7 @@ public class DefaultPolicyAttributeTest {
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsConfigures(ConfVertrag.class)
     @IpsChangingOverTime(ProduktGen.class)
-    private static class Produkt extends ProductComponent {
+    static class Produkt extends ProductComponent {
 
         private int defaultValueInt = 1;
         private long defaultValueLong = 1L;
@@ -1559,7 +1574,7 @@ public class DefaultPolicyAttributeTest {
         }
 
         /**
-         * @param context
+         * @param context ignored here
          */
         @IpsAllowedValues("attrInt")
         public ValueSet<Integer> getSetOfAllowedValuesForInt(IValidationContext context) {
@@ -1582,7 +1597,7 @@ public class DefaultPolicyAttributeTest {
         }
 
         /**
-         * @param context
+         * @param context ignored here
          */
         @IpsAllowedValues("attrLong")
         public ValueSet<Long> getSetOfAllowedValuesForLong(IValidationContext context) {
@@ -1605,7 +1620,7 @@ public class DefaultPolicyAttributeTest {
         }
 
         /**
-         * @param context
+         * @param context ignored here
          */
         @IpsAllowedValues("attrBoolean")
         public ValueSet<Boolean> getSetOfAllowedValuesForBoolean(IValidationContext context) {
@@ -1739,7 +1754,7 @@ public class DefaultPolicyAttributeTest {
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsConfigures(ConfVertrag.class)
     @IpsChangingOverTime(ProduktGen.class)
-    private class FailingProdukt extends ProductComponent {
+    class FailingProdukt extends ProductComponent {
 
         public FailingProdukt() {
             super(repository, "id", "kindId", "versionId");
@@ -2127,7 +2142,7 @@ public class DefaultPolicyAttributeTest {
     @IpsProductCmptType(name = "ConfiguringProduct")
     @IpsConfigures(ConfiguredPolicy.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
-    private static class ConfiguringProduct extends ProductComponent {
+    static class ConfiguringProduct extends ProductComponent {
 
         private Integer defaultValueIntegerAttribute = null;
 

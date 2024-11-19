@@ -45,6 +45,7 @@ public class Formula extends TypePart {
         this.changingOverTime = changingOverTime;
     }
 
+    @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
     }

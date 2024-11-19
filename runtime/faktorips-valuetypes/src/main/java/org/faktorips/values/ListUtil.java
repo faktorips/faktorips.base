@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * A collection of general utility methods for lists.
@@ -88,6 +89,15 @@ public class ListUtil {
     @SafeVarargs
     public static final <T> List<T> unmodifiableList(T... values) {
         return Collections.unmodifiableList(Arrays.asList(values));
+    }
+
+    /**
+     * Creates a new list that contains all values of the given lists.
+     * 
+     * @return A new unmodifiable list containing all values
+     */
+    public static <T> List<T> join(List<T> l1, List<T> l2) {
+        return Stream.concat(l1.stream(), l2.stream()).toList();
     }
 
 }

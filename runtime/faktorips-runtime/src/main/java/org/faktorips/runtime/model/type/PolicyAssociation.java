@@ -365,4 +365,15 @@ public class PolicyAssociation extends Association {
     public boolean isQualified() {
         return getAnnotation().qualified();
     }
+
+    /**
+     * A {@link PolicyAssociation} is never changing over time, but it's associated
+     * {@link ProductAssociation} might be.
+     *
+     * @since 25.1
+     */
+    @Override
+    public boolean isChangingOverTime() {
+        return false;
+    }
 }

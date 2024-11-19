@@ -480,6 +480,7 @@ public class ProductAssociation extends Association {
      *
      * @return <code>true</code> if this association is changing over time, else <code>false</code>
      */
+    @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
     }
@@ -552,6 +553,7 @@ public class ProductAssociation extends Association {
      * @param effectiveDate the date that determines which {@link IProductComponentGeneration} is to
      *            be validated, if the {@link IProductComponent} has any
      */
+    @Override
     public void validate(MessageList list,
             IValidationContext context,
             IProductComponent source,
@@ -575,7 +577,8 @@ public class ProductAssociation extends Association {
                 (links, minCardinality) -> links.compareTo(minCardinality) < 0,
                 MSGCODE_MIN_CARDINALITY_NOT_VALID,
                 MSGKEY_MIN_CARDINALITY_NOT_VALID,
-                PROPERTY_MIN_CARDINALITY);
+                PROPERTY_MIN_CARDINALITY,
+                new ObjectProperty(source, getName()));
 
         findMatchingAssociation().ifPresent(
                 policyAssociation -> validateTotalMin(list, policyAssociation, getLinks(source, effectiveDate),
@@ -594,7 +597,8 @@ public class ProductAssociation extends Association {
                 (links, maxCardinality) -> links.compareTo(maxCardinality) > 0,
                 MSGCODE_MAX_CARDINALITY_NOT_VALID,
                 MSGKEY_MAX_CARDINALITY_NOT_VALID,
-                PROPERTY_MAX_CARDINALITY);
+                PROPERTY_MAX_CARDINALITY,
+                new ObjectProperty(source, getName()));
 
         findMatchingAssociation().ifPresent(
                 policyAssociation -> validateTotalMax(list, policyAssociation, getLinks(source, effectiveDate),
@@ -626,7 +630,8 @@ public class ProductAssociation extends Association {
                             generateValidationMessage(context.getLocale(),
                                     getResourceBundleName(), MSGKEY_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
                                     sumCardinality, link.getTargetId(), maxType, getUsedName()),
-                            link.getCardinality(), Range.PROPERTY_UPPER_BOUND);
+                            new ObjectProperty(link.getCardinality(), Range.PROPERTY_UPPER_BOUND),
+                            new ObjectProperty(link.getSource(), getName()));
 
                 }
             }
@@ -656,7 +661,8 @@ public class ProductAssociation extends Association {
                         generateValidationMessage(context.getLocale(),
                                 getResourceBundleName(), MSGKEY_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN,
                                 sumMaxCardinality, link.getTargetId(), minType, getUsedName()),
-                        link.getCardinality(), Range.PROPERTY_LOWER_BOUND);
+                        new ObjectProperty(link.getCardinality(), Range.PROPERTY_LOWER_BOUND),
+                        new ObjectProperty(link.getSource(), getName()));
 
             }
 
@@ -677,7 +683,8 @@ public class ProductAssociation extends Association {
                             getResourceBundleName(), MSGKEY_DATE_TO_NOT_VALID,
                             targetDate, target, sourceDate, source),
                     MSGCODE_DATE_TO_NOT_VALID,
-                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_TO));
+                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_TO),
+                    new ObjectProperty(source, getName()));
         }
 
     }
@@ -698,7 +705,8 @@ public class ProductAssociation extends Association {
                             getResourceBundleName(), MSGKEY_DATE_FROM_NOT_VALID,
                             targetDate, target, sourceDate, source),
                     MSGCODE_DATE_FROM_NOT_VALID,
-                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_FROM));
+                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_FROM),
+                    new ObjectProperty(source, getName()));
         }
 
     }
