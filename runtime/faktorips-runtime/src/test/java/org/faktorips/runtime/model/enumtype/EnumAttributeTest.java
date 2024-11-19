@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -81,6 +81,12 @@ public class EnumAttributeTest {
     public void testIsDisplayName() {
         assertThat(fooModel.isDisplayName(), is(false));
         assertThat(barModel.isDisplayName(), is(true));
+    }
+
+    @Test
+    public void testIsMandatory() {
+        assertThat(fooModel.isMandatory(), is(true));
+        assertThat(barModel.isMandatory(), is(false));
     }
 
     @Test
@@ -177,7 +183,7 @@ public class EnumAttributeTest {
             this.bar = bar;
         }
 
-        @IpsEnumAttribute(name = "foo", unique = true, identifier = true)
+        @IpsEnumAttribute(name = "foo", unique = true, identifier = true, mandatory = true)
         public Integer getFoo() {
             return foo;
         }

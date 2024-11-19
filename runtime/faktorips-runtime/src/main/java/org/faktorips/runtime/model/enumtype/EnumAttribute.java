@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -76,10 +76,17 @@ public class EnumAttribute extends ModelElement {
     }
 
     /**
+     * Whether this attribute's values are mandatory (no empty/{@code null} values allowed).
+     */
+    public boolean isMandatory() {
+        return annotation.mandatory();
+    }
+
+    /**
      * Returns the value for this attribute from the enum value. If the attribute
      * {@linkplain #isMultilingual() is multilingual}, the {@linkplain Locale#getDefault() default
      * Locale} is used.
-     * 
+     *
      * @see EnumAttribute#getValue(Object, Locale) for getting a multilingual value for a specific
      *          locale
      */
@@ -98,7 +105,7 @@ public class EnumAttribute extends ModelElement {
      * Returns the value for this attribute from the enum value. If the attribute
      * {@linkplain #isMultilingual() is multilingual}, the given locale is used, otherwise it is
      * ignored.
-     * 
+     *
      * @see EnumAttribute#getValue(Object) for getting a locale independent value
      */
     public Object getValue(Object enumInstance, Locale locale) {
