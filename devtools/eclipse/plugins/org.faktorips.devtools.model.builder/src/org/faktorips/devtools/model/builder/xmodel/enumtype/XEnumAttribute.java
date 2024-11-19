@@ -64,6 +64,10 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
         return getEnumAttribute().isMultilingual();
     }
 
+    public boolean isMandatory() {
+        return getEnumAttribute().isMandatory();
+    }
+
     public boolean isDeclaredIn(XEnumType xEnumType) {
         return !xEnumType.hasSuperEnumType() || getEnumAttribute().getEnumType() == xEnumType.getEnumType();
     }
