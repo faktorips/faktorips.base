@@ -18,23 +18,29 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.Table;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.annotation.IpsTableUsage;
@@ -154,6 +160,70 @@ public class TableUsageTest {
         assertThat(tableStructures, hasSize(2));
         assertThat(tableStructures,
                 hasItems(IpsModel.getTableStructure(BarTable.class), IpsModel.getTableStructure(FooTable.class)));
+    }
+
+    @Test
+    public void testValidate_OptionalTablePresent() {
+        MessageList messageList = new MessageList();
+        IValidationContext validationContext = mock(IValidationContext.class);
+        when(validationContext.getLocale()).thenReturn(Locale.ENGLISH);
+
+        Calendar effectiveDate = new GregorianCalendar(1999, Calendar.FEBRUARY, 1);
+        Product product = new Product();
+        TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("table1");
+
+        tableUsage.validate(messageList, validationContext, product, effectiveDate);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_OptionalTableNotSet() {
+        MessageList messageList = new MessageList();
+        IValidationContext validationContext = mock(IValidationContext.class);
+        when(validationContext.getLocale()).thenReturn(Locale.ENGLISH);
+
+        Calendar effectiveDate = new GregorianCalendar(1999, Calendar.FEBRUARY, 1);
+        Product product = new Product();
+        product.setTable1Name("");
+        TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("table1");
+
+        tableUsage.validate(messageList, validationContext, product, effectiveDate);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_RequiredTablePresent() {
+        MessageList messageList = new MessageList();
+        IValidationContext validationContext = mock(IValidationContext.class);
+        when(validationContext.getLocale()).thenReturn(Locale.ENGLISH);
+
+        Calendar effectiveDate = new GregorianCalendar(1999, Calendar.FEBRUARY, 1);
+        ProductWithRequireUsageSet product = new ProductWithRequireUsageSet();
+        TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("table1");
+
+        tableUsage.validate(messageList, validationContext, product, effectiveDate);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_RequiredTableNotSet() {
+        MessageList messageList = new MessageList();
+        IValidationContext validationContext = mock(IValidationContext.class);
+        when(validationContext.getLocale()).thenReturn(Locale.ENGLISH);
+
+        Calendar effectiveDate = new GregorianCalendar(1999, Calendar.FEBRUARY, 1);
+        ProductWithRequireUsageNotSet product = new ProductWithRequireUsageNotSet();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(product);
+
+        TableUsage tableUsage = productCmptType.getTableUsage("table1");
+
+        tableUsage.validate(messageList, validationContext, product, effectiveDate);
+        assertThat(messageList.getMessage(0).getCode(), is(TableUsage.MSGCODE_REQUIRED_TABLE_IS_NOT_SET));
+        assertThat(messageList.getMessage(0).getText(), containsString("Label of tableUsage"));
+        assertThat(messageList.getMessage(0).getText(), containsString("id"));
     }
 
     @Test
@@ -277,6 +347,19 @@ public class TableUsageTest {
         assertThat(product.getTable3Name(), is("NotFoo"));
     }
 
+    @Test
+    public void testGetDocumentation() {
+        ProductWithRequireUsageSet product = new ProductWithRequireUsageSet();
+        TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("table1");
+        assertThat(tableUsage.getDescription(Locale.GERMAN), is("Description of tableUsage"));
+        assertThat(tableUsage.getLabel(Locale.GERMAN), is("Label of tableUsage"));
+
+        ProductWithRequireUsageNotSet productWithRequireUsageNotSet = new ProductWithRequireUsageNotSet();
+        tableUsage = IpsModel.getProductCmptType(productWithRequireUsageNotSet).getTableUsage("table1");
+        assertThat(tableUsage.getDescription(Locale.GERMAN), is("Description of tableUsage"));
+        assertThat(tableUsage.getLabel(Locale.GERMAN), is("Label of tableUsage"));
+    }
+
     @IpsTableStructure(name = "FooTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = {})
     private class FooTable extends Table<FooTableRow> {
 
@@ -378,6 +461,84 @@ public class TableUsageTest {
         @SuppressWarnings("unused")
         public String getMultitableName() {
             return null;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            // not used
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+    }
+
+    @IpsProductCmptType(name = "MyProduct")
+    @IpsTableUsages({ "table1" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.tableUsage.test", defaultLocale = "de")
+    private class ProductWithRequireUsageNotSet extends ProductComponent {
+
+        private String table1Name = null;
+
+        public ProductWithRequireUsageNotSet() {
+            super(repository, "id", "kindId", "versionId");
+        }
+
+        @IpsTableUsage(name = "table1", required = true, tableClasses = { FooTable.class })
+        public FooTable getTable1() {
+            return null;
+        }
+
+        @SuppressWarnings("unused")
+        public String getTable1Name() {
+            return table1Name;
+        }
+
+        @SuppressWarnings("unused")
+        public void setTable1Name(String name) {
+            table1Name = name;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            // not used
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+    }
+
+    @IpsProductCmptType(name = "MyProduct")
+    @IpsTableUsages({ "table1" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.tableUsage.test", defaultLocale = "de")
+    private class ProductWithRequireUsageSet extends ProductComponent {
+
+        public final FooTable TABLE1 = new FooTable();
+
+        private String table1Name = "Foo";
+
+        public ProductWithRequireUsageSet() {
+            super(repository, "id", "kindId", "versionId");
+        }
+
+        @IpsTableUsage(name = "table1", required = true, tableClasses = { FooTable.class })
+        public FooTable getTable1() {
+            return TABLE1;
+        }
+
+        @SuppressWarnings("unused")
+        public String getTable1Name() {
+            return table1Name;
+        }
+
+        @SuppressWarnings("unused")
+        public void setTable1Name(String name) {
+            table1Name = name;
         }
 
         @Override

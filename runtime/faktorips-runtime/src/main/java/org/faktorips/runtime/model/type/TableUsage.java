@@ -15,10 +15,15 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsTableUsage;
@@ -28,6 +33,11 @@ import org.faktorips.runtime.model.table.TableStructure;
  * Describes the model information for a table usage.
  */
 public class TableUsage extends TypePart {
+
+    public static final String MSGCODE_REQUIRED_TABLE_IS_NOT_SET = "REQUIRED_TABLE_IS_NOT_SET";
+    public static final String MSGKEY_REQUIRED_TABLE_IS_NOT_SET = "TableUsage.RequiredTableIsNotSet";
+
+    public static final String PROPERTY_REQUIRED_TABLE = "requiredTable";
 
     private final Method getter;
 
@@ -136,6 +146,26 @@ public class TableUsage extends TypePart {
      */
     public boolean isRequired() {
         return getter.getAnnotation(IpsTableUsage.class).required();
+    }
+
+    @Override
+    public void validate(MessageList list,
+            IValidationContext context,
+            IProductComponent productComponent,
+            Calendar effectiveDate) {
+
+        ResourceBundle messages = ResourceBundle.getBundle(TableUsage.class.getName(), context.getLocale());
+        String formatString = String.format(messages.getString(MSGKEY_REQUIRED_TABLE_IS_NOT_SET),
+                getLabel(context.getLocale()), productComponent.getId());
+
+        if (isRequired()) {
+            if (IpsStringUtils.isEmpty(getTableName(productComponent, effectiveDate))) {
+                list.newError(MSGCODE_REQUIRED_TABLE_IS_NOT_SET, formatString,
+                        new ObjectProperty(this, PROPERTY_REQUIRED_TABLE),
+                        new ObjectProperty(productComponent, getName()));
+            }
+        }
+
     }
 
     @Override
