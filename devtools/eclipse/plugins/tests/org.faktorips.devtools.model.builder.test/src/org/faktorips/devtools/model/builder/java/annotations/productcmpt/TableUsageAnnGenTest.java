@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XTableUsage;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -31,43 +32,52 @@ public class TableUsageAnnGenTest {
     @Mock
     private XTableUsage tableUsage;
 
+    @Mock
+    private ITableStructureUsage tableStructureUsage;
+
     private TableUsageAnnGen generator = new TableUsageAnnGen();
 
     @Test
-    public void testCreateTableUsageAnnotation_withNameOnly() {
+    public void testCreateTableUsageAnnotation_withNameOnly_NotRequired() {
         when(tableUsage.getName()).thenReturn("TestTableName");
+        when(tableUsage.getTableStructureUsage()).thenReturn(tableStructureUsage);
+        when(tableStructureUsage.isMandatoryTableContent()).thenReturn(false);
 
         JavaCodeFragment annotationCode = generator.createAnnotation(tableUsage);
 
         assertThat(annotationCode.getSourcecode(),
-                is("@IpsTableUsage(name = \"TestTableName\")" + System.lineSeparator()));
+                is("@IpsTableUsage(name = \"TestTableName\", required = false)" + System.lineSeparator()));
         assertThat(annotationCode.getImportDeclaration().getImports(),
                 hasItem("org.faktorips.runtime.model.annotation.IpsTableUsage"));
     }
 
     @Test
-    public void testCreateTableUsageAnnotation_withOneTableClass() {
+    public void testCreateTableUsageAnnotation_withOneTableClass_Required() {
         when(tableUsage.getName()).thenReturn("TestTableName");
         when(tableUsage.getAllTableClassNames()).thenReturn(Collections.singletonList("TableClass1"));
+        when(tableUsage.getTableStructureUsage()).thenReturn(tableStructureUsage);
+        when(tableStructureUsage.isMandatoryTableContent()).thenReturn(true);
 
         JavaCodeFragment annotationCode = generator.createAnnotation(tableUsage);
 
         assertThat(annotationCode.getSourcecode(),
-                is("@IpsTableUsage(name = \"TestTableName\", tableClasses = TableClass1.class)"
+                is("@IpsTableUsage(name = \"TestTableName\", required = true, tableClasses = TableClass1.class)"
                         + System.lineSeparator()));
         assertThat(annotationCode.getImportDeclaration().getImports(),
                 hasItem("org.faktorips.runtime.model.annotation.IpsTableUsage"));
     }
 
     @Test
-    public void testCreateTableUsageAnnotation_withMultipleTableClasses() {
+    public void testCreateTableUsageAnnotation_withMultipleTableClasses_Required() {
         when(tableUsage.getName()).thenReturn("TestTableName");
         when(tableUsage.getAllTableClassNames()).thenReturn(Arrays.asList("TableClass1", "TableClass2", "TableClass3"));
+        when(tableUsage.getTableStructureUsage()).thenReturn(tableStructureUsage);
+        when(tableStructureUsage.isMandatoryTableContent()).thenReturn(true);
 
         JavaCodeFragment annotationCode = generator.createAnnotation(tableUsage);
 
         assertThat(annotationCode.getSourcecode(), is(
-                "@IpsTableUsage(name = \"TestTableName\", tableClasses = {TableClass1.class, TableClass2.class, TableClass3.class})"
+                "@IpsTableUsage(name = \"TestTableName\", required = true, tableClasses = {TableClass1.class, TableClass2.class, TableClass3.class})"
                         + System.lineSeparator()));
         assertThat(annotationCode.getImportDeclaration().getImports(),
                 hasItem("org.faktorips.runtime.model.annotation.IpsTableUsage"));

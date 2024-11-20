@@ -35,6 +35,9 @@ public class TableUsageAnnGen implements IAnnotationGenerator {
         XTableUsage tableUsage = (XTableUsage)modelNode;
         List<String> tableClassNames = tableUsage.getAllTableClassNames();
 
+        boolean isRequired = tableUsage.getTableStructureUsage().isMandatoryTableContent();
+        stringBuilder.append(", required = ").append(isRequired);
+
         if (!tableClassNames.isEmpty()) {
             String joinedTableClasses = tableClassNames.stream()
                     .map(className -> className + ".class")
