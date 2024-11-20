@@ -122,6 +122,22 @@ public class TableUsage extends TypePart {
         }
     }
 
+    /**
+     * Determines whether the associated table usage is marked as required.
+     *
+     * <p>
+     * This method retrieves the {@link IpsTableUsage} annotation from the getter method and checks
+     * the {@code required} attribute of the annotation.
+     *
+     * @return {@code true} if the {@code required} attribute of the {@link IpsTableUsage}
+     *             annotation is set to {@code true}; otherwise, {@code false}.
+     *
+     * @since 25.1
+     */
+    public boolean isRequired() {
+        return getter.getAnnotation(IpsTableUsage.class).required();
+    }
+
     @Override
     public boolean isChangingOverTime() {
         return IProductComponentGeneration.class.isAssignableFrom(getter.getDeclaringClass());
