@@ -29,6 +29,13 @@ public @interface IpsTableUsage {
     String name();
 
     /**
+     * Indicates whether the table usage is required.
+     *
+     * @return true if the table usage is required, false otherwise
+     */
+    boolean required() default false;
+
+    /**
      * Returns the allowed table types.
      *
      * @return an array of classes representing the allowed table types
