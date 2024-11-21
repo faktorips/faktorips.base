@@ -96,6 +96,15 @@ public class Formula extends TypePart {
         return annotation.name();
     }
 
+    /**
+     * @return {@code true} if the formula is required, {@code false} otherwise
+     *
+     * @since 25.1
+     */
+    public boolean isRequired() {
+        return annotation.required();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getFormulaName());

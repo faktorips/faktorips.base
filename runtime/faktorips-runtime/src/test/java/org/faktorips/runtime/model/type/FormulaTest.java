@@ -74,8 +74,20 @@ public class FormulaTest {
         assertThat(formulaText, is("111"));
     }
 
+    @Test
+    public void testIsRequired() {
+        // required formula
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
+        var requiredFormula = productCmptType.getFormula("requiredFormula");
+        assertThat(requiredFormula.isRequired(), is(true));
+
+        // optional formula
+        var optionalFormula = productCmptType.getFormula("formula");
+        assertThat(optionalFormula.isRequired(), is(false));
+    }
+
     @IpsProductCmptType(name = "MyProduct")
-    @IpsFormulas({ "formula", "formulaGen" })
+    @IpsFormulas({ "formula", "requiredFormula", "formulaGen" })
     @IpsChangingOverTime(ProductGen.class)
     private class Product extends ProductComponent {
 
@@ -86,6 +98,11 @@ public class FormulaTest {
         @IpsFormula(name = "formula")
         public Integer computeFormula(String param) throws FormulaExecutionException {
             return (Integer)getFormulaEvaluator().evaluate("computeFormula", param);
+        }
+
+        @IpsFormula(name = "requiredFormula", required = true)
+        public Integer computeRequiredFormula(String param) throws FormulaExecutionException {
+            return (Integer)getFormulaEvaluator().evaluate("computeRequiredFormula", param);
         }
 
         @Override
