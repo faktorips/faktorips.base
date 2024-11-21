@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,9 +24,18 @@ public class FormulaAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        return new JavaCodeFragmentBuilder()
-                .annotationLn(IpsFormula.class, "name = \"" + ((XMethod)modelNode).getFormularName() + "\"")
-                .getFragment();
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("name = \"").append(((XMethod)modelNode).getFormularName()).append("\"");
+
+        boolean isRequired = !((XMethod)modelNode).isFormulaOptional();
+        if (isRequired) {
+            stringBuilder.append(", required = ").append(true);
+        }
+
+        builder.annotationLn(IpsFormula.class, stringBuilder.toString());
+        return builder.getFragment();
     }
 
     @Override

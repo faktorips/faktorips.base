@@ -38,7 +38,7 @@ public class TableUsageAnnGenTest {
     private TableUsageAnnGen generator = new TableUsageAnnGen();
 
     @Test
-    public void testCreateTableUsageAnnotation_withNameOnly_NotRequired() {
+    public void testCreateTableUsageAnnotation_withNameOnly_OptionalTable() {
         when(tableUsage.getName()).thenReturn("TestTableName");
         when(tableUsage.getTableStructureUsage()).thenReturn(tableStructureUsage);
         when(tableStructureUsage.isMandatoryTableContent()).thenReturn(false);
@@ -46,13 +46,13 @@ public class TableUsageAnnGenTest {
         JavaCodeFragment annotationCode = generator.createAnnotation(tableUsage);
 
         assertThat(annotationCode.getSourcecode(),
-                is("@IpsTableUsage(name = \"TestTableName\", required = false)" + System.lineSeparator()));
+                is("@IpsTableUsage(name = \"TestTableName\")" + System.lineSeparator()));
         assertThat(annotationCode.getImportDeclaration().getImports(),
                 hasItem("org.faktorips.runtime.model.annotation.IpsTableUsage"));
     }
 
     @Test
-    public void testCreateTableUsageAnnotation_withOneTableClass_Required() {
+    public void testCreateTableUsageAnnotation_withOneTableClass_RequiredTable() {
         when(tableUsage.getName()).thenReturn("TestTableName");
         when(tableUsage.getAllTableClassNames()).thenReturn(Collections.singletonList("TableClass1"));
         when(tableUsage.getTableStructureUsage()).thenReturn(tableStructureUsage);
@@ -68,7 +68,7 @@ public class TableUsageAnnGenTest {
     }
 
     @Test
-    public void testCreateTableUsageAnnotation_withMultipleTableClasses_Required() {
+    public void testCreateTableUsageAnnotation_withMultipleTableClasses_RequiredTable() {
         when(tableUsage.getName()).thenReturn("TestTableName");
         when(tableUsage.getAllTableClassNames()).thenReturn(Arrays.asList("TableClass1", "TableClass2", "TableClass3"));
         when(tableUsage.getTableStructureUsage()).thenReturn(tableStructureUsage);
