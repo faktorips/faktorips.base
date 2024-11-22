@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
@@ -265,6 +266,27 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     @Override
     public boolean hasTemplateForProperty(IIpsProject ipsProject) {
         return TemplateValueFinder.hasTemplateForValue(this, ITableContentUsage.class);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        return prime * result + Objects.hash(structureUsage, tableContentName, templateValueSettings.getStatus());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        TableContentUsage other = (TableContentUsage)obj;
+        return Objects.equals(structureUsage, other.structureUsage)
+                && Objects.equals(tableContentName, other.tableContentName)
+                && Objects.equals(templateValueSettings.getStatus(), other.templateValueSettings.getStatus());
     }
 
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,7 @@ import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -41,7 +42,7 @@ import org.w3c.dom.Element;
 
 /**
  * Tests for product component structure.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class TableContentUsageTest extends AbstractIpsPluginTest {
@@ -213,6 +214,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
             structUsage.getCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -248,6 +250,31 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         templateContentUsage.setTableContentName(content.getQualifiedName());
 
         assertThat(contentUsage.getTableContentName(), is(content.getQualifiedName()));
+    }
+
+    @Test
+    public void testEquals() {
+        contentUsage.setTableContentName("my.table");
+        assertEquals(contentUsage, contentUsage);
+
+        var structUsage2 = productCmptType.newTableStructureUsage();
+        structUsage2.addTableStructure(structure.getQualifiedName());
+        structUsage2.setRoleName(STRUCTURE_ROLENAME + '2');
+
+        var contentUsage2 = cmpt.getProductCmptGeneration(0).newTableContentUsage(structUsage2);
+        contentUsage.setTableContentName("my.table");
+
+        // same name, different structure usage
+        assertNotEquals(contentUsage, contentUsage2);
+
+        var contentUsage3 = cmpt.getProductCmptGeneration(0).newTableContentUsage(structUsage);
+        contentUsage3.setTableContentName("my.table");
+        // same name, same structure usage
+        assertEquals(contentUsage, contentUsage3);
+
+        addTemplateContentUsage();
+        // same name, same structure usage, different template settings
+        assertNotEquals(contentUsage, contentUsage3);
     }
 
     private ITableContentUsage addTemplateContentUsage() {
