@@ -240,11 +240,25 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             // Unique identifier and literal name validations.
             if (isUniqueIdentifierEnumAttributeValue(enumAttribute)) {
                 validateUniqueIdentifierEnumAttributeValue(list);
+            } else {
+                validateMandatory(list, enumAttribute);
             }
         }
 
         IdentifierBoundaryValidator validator = new IdentifierBoundaryValidator(this, enumType, datatype, ipsProject);
         list.add(validator.validateIfPossible());
+    }
+
+    private void validateMandatory(MessageList list, IEnumAttribute enumAttribute) {
+        IValue<?> uniqueIdentifierValue = getValue();
+        ValueUtil valueUtil = ValueUtil.createUtil(uniqueIdentifierValue);
+        if (enumAttribute.isMandatory() && (valueUtil.isPartlyEmpty(getIpsProject()))) {
+            String text = MessageFormat.format(Messages.EnumAttribute_MandatoryValueNotSet,
+                    enumAttribute.getName(), enumAttribute.getParent().getName());
+            Message validationMessage = new Message(MSGCODE_MANDATORY_ATTRIBUTE_IS_EMPTY, text,
+                    Message.ERROR, this, PROPERTY_VALUE);
+            list.add(validationMessage);
+        }
     }
 
     private void validateMultilingual(MessageList list, IEnumAttribute enumAttribute) {

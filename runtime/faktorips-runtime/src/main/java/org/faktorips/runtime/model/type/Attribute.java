@@ -31,6 +31,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.values.ObjectUtil;
@@ -69,6 +70,7 @@ public abstract class Attribute extends TypePart {
      *
      * @return <code>true</code> if the attribute is changing over time, <code>false</code> if not
      */
+    @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
     }
@@ -188,6 +190,7 @@ public abstract class Attribute extends TypePart {
      * @param effectiveDate the date that determines which {@link IProductComponentGeneration} is to
      *            be validated, if the {@link IProductComponent} has any
      */
+    @Override
     public void validate(MessageList list,
             IValidationContext context,
             IProductComponent product,
@@ -224,7 +227,8 @@ public abstract class Attribute extends TypePart {
             BiPredicate<V, R> valueChecker,
             String msgCode,
             String msgKey,
-            String property) {
+            String property,
+            ObjectProperty invalidObjectProperty) {
         V value = valueGetter.get();
         if (!ObjectUtil.isNull(value)) {
             R referenceValue = referenceValueGetter.get();
@@ -247,7 +251,7 @@ public abstract class Attribute extends TypePart {
                             locale,
                             messages);
                 }
-                list.newError(msgCode, formatString, this, property);
+                list.newError(msgCode, formatString, new ObjectProperty(this, property), invalidObjectProperty);
             }
         }
     }

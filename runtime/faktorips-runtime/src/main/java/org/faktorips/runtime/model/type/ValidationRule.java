@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,10 +34,11 @@ public class ValidationRule extends TypePart {
 
     /**
      * Returns whether this validation rule is changing over time.
-     * 
+     *
      * @return <code>true</code> if this validation rule is changing over time, otherwise
      *             <code>false</code>
      */
+    @Override
     public boolean isChangingOverTime() {
         if (validationConfigurationRule != null) {
             return validationConfigurationRule.changingOverTime();
@@ -47,7 +48,7 @@ public class ValidationRule extends TypePart {
 
     /**
      * Returns whether this validation rule is activated by default.
-     * 
+     *
      * @return <code>true</code> if this validation rule is activated by default,otherwise
      *             <code>false</code>
      */
@@ -60,7 +61,7 @@ public class ValidationRule extends TypePart {
 
     /**
      * Returns whether this validation rule can be configured by a product component.
-     * 
+     *
      * @return <code>true</code> if this validation rule can be configured by a product component,
      *             otherwise <code>false</code>
      */
@@ -73,7 +74,7 @@ public class ValidationRule extends TypePart {
 
     /**
      * Returns the name of the validation rule.
-     * 
+     *
      * @return the name of the validation rule
      */
     @Override
@@ -83,7 +84,7 @@ public class ValidationRule extends TypePart {
 
     /**
      * Returns the message code of the validation rule.
-     * 
+     *
      * @return the message code of the validation rule
      */
     public String getMsgCode() {
@@ -92,7 +93,7 @@ public class ValidationRule extends TypePart {
 
     /**
      * Returns the {@link Severity} of the validation rule.
-     * 
+     *
      * @return {@link Severity} of the validation rule
      */
     public Severity getSeverity() {

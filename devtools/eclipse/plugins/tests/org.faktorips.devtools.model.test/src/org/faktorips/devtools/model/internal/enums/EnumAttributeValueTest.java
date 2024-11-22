@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.internal.value.StringValue;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.MessageList;
@@ -261,6 +262,59 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         assertEquals(1, validationMessageList.size());
         assertNotNull(validationMessageList
                 .getMessageByCode(IEnumAttributeValue.MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY));
+    }
+
+    @Test
+    public void testValidateThis_Mandatory() {
+        IEnumAttribute stringAttribute = genderEnumType.newEnumAttribute();
+        stringAttribute.setMandatory(true);
+        stringAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        stringAttribute.setName("StringAttribute");
+
+        IEnumAttribute integerAttribute = genderEnumType.newEnumAttribute();
+        integerAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        integerAttribute.setName("IntegerAttribute");
+        integerAttribute.setMandatory(true);
+
+        IEnumValue newEnumValue = genderEnumType.newEnumValue();
+        IEnumAttributeValue stringNewAttributeValue = newEnumValue.getEnumAttributeValues().get(0);
+        stringNewAttributeValue.setValue(ValueFactory.createStringValue("123"));
+
+        // Test for integer attribute not set
+        IEnumAttributeValue integerNewAttributeValue = newEnumValue.getEnumAttributeValues().get(3);
+        integerNewAttributeValue.setValue(ValueFactory.createStringValue(null));
+        MessageList validationMessageList = integerNewAttributeValue.validate(ipsProject);
+        assertOneValidationMessage(validationMessageList);
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_MANDATORY_ATTRIBUTE_IS_EMPTY));
+        IEnumAttributeValue booleanNewAttributeValue = newEnumValue.getEnumAttributeValues().get(2);
+        booleanNewAttributeValue.setValue(ValueFactory.createStringValue("true"));
+        validationMessageList = booleanNewAttributeValue.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        // Test for integer attribute set
+        integerNewAttributeValue.setValue(ValueFactory.createStringValue("123"));
+        validationMessageList = integerNewAttributeValue.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        // Test for string attribute set
+        stringNewAttributeValue.setValue(ValueFactory.createStringValue("Test"));
+        validationMessageList = stringNewAttributeValue.validate(ipsProject);
+        assertTrue(validationMessageList.isEmpty());
+
+        // Test for multilingual string attribute set
+        stringAttribute.setMultilingual(true);
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, "foo"));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, ""));
+        IEnumAttributeValue internationalStringAttributeValue = newEnumValue.getEnumAttributeValue(stringAttribute);
+        internationalStringAttributeValue.setValue(internationalStringValue);
+        validationMessageList = internationalStringAttributeValue.validate(ipsProject);
+        assertEquals(2, validationMessageList.size());
+        assertNotNull(validationMessageList
+                .getMessageByCode(IEnumAttributeValue.MSGCODE_MANDATORY_ATTRIBUTE_IS_EMPTY));
+        assertNotNull(validationMessageList
+                .getMessageByCode(IAttributeValue.MSGCODE_MULTILINGUAL_NOT_SET));
     }
 
     @Test

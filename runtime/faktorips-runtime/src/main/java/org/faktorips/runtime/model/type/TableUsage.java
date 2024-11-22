@@ -122,7 +122,8 @@ public class TableUsage extends TypePart {
         }
     }
 
-    private boolean isChangingOverTime() {
+    @Override
+    public boolean isChangingOverTime() {
         return IProductComponentGeneration.class.isAssignableFrom(getter.getDeclaringClass());
     }
 

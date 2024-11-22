@@ -23,6 +23,7 @@ import org.faktorips.runtime.IProductComponentLinkSource;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
@@ -284,10 +285,12 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         validate(list, context,
                 () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
                 () -> (ValueSet<T>)getValueSetFromModel(),
-                (valueSet, modelValueSet) -> !valueSet.isEmpty() || modelValueSet.containsNull(),
+                (valueSet, modelValueSet) -> !valueSet.isEmpty() || modelValueSet.containsNull()
+                        || modelValueSet.isEmpty(),
                 MSGCODE_MANDATORY_VALUESET_IS_EMPTY,
                 MSGKEY_MANDATORY_VALUESET_IS_EMPTY,
-                PROPERTY_VALUE_SET);
+                PROPERTY_VALUE_SET,
+                new ObjectProperty(source, getName()));
     }
 
     @SuppressWarnings("unchecked")
@@ -301,7 +304,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 this::allowsAsDefault,
                 MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
                 MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET,
-                PROPERTY_DEFAULT_VALUE);
+                PROPERTY_DEFAULT_VALUE,
+                new ObjectProperty(source, getName()));
     }
 
     /**
@@ -331,7 +335,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
                 ValueSet::isSubsetOf,
                 MSGCODE_VALUE_SET_NOT_IN_VALUE_SET,
                 MSGKEY_VALUE_SET_NOT_IN_VALUE_SET,
-                PROPERTY_VALUE_SET);
+                PROPERTY_VALUE_SET,
+                new ObjectProperty(source, getName()));
     }
 
     @Override

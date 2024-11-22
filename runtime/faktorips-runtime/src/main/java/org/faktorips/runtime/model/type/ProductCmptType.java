@@ -10,18 +10,28 @@
 
 package org.faktorips.runtime.model.type;
 
+import static java.util.function.Predicate.not;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.stream.Stream;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
@@ -408,6 +418,63 @@ public class ProductCmptType extends Type {
     public <T extends Annotation> Optional<Field> findDeclaredField(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
         return super.findDeclaredField(annotationClass, matcher);
+    }
+
+    /**
+     * Validates the given product component against this type, provided it matches.
+     *
+     * @param productComponent the enum value instances to validate
+     * @param messages a {@link MessageList}, to which validation messages may be added
+     * @param context the {@link IValidationContext}, needed to determine the {@link Locale} in
+     *            which to create {@link Message Messages}
+     *
+     * @throws IllegalArgumentException if the given product component does not match this type
+     *
+     * @since 25.1
+     */
+    public void validate(IProductComponent productComponent,
+            MessageList messages,
+            IValidationContext context) {
+        if (!getJavaClass().isInstance(productComponent)) {
+            throw new IllegalArgumentException(productComponent + " is not a " + this);
+        }
+        var validFroms = collectValidFroms(productComponent);
+        getAttributes().forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
+        if (isConfigurationForPolicyCmptType()) {
+            getPolicyCmptType().getAttributes().stream().filter(PolicyAttribute::isProductRelevant)
+                    .forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
+        }
+        getAssociations().stream().filter(not(ProductAssociation::isDerivedUnion))
+                .forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
+    }
+
+    private <T extends TypePart> void validatePart(T part,
+            MessageList messages,
+            IValidationContext context,
+            IProductComponent productComponent,
+            List<Calendar> validFroms) {
+        if (part.isChangingOverTime()) {
+            validFroms.forEach(effectiveDate -> part.validate(messages, context, productComponent, effectiveDate));
+        } else {
+            part.validate(messages, context, productComponent, null);
+        }
+    }
+
+    private List<Calendar> collectValidFroms(IProductComponent productComponent) {
+        var validFroms = productComponent.getRepository()
+                .getProductComponentGenerations(productComponent).stream()
+                .map(IProductComponentGeneration::getValidFrom)
+                .map(this::toCalendar)
+                .toList();
+        if (validFroms.isEmpty()) {
+            validFroms = new ArrayList<>();
+            validFroms.add(toCalendar(productComponent.getValidFrom()));
+        }
+        return validFroms;
+    }
+
+    private Calendar toCalendar(DateTime d) {
+        return d == null ? null : d.toGregorianCalendar(TimeZone.getDefault());
     }
 
     static class TableUsagesCollector extends TypeHierarchyVisitor {

@@ -10,12 +10,14 @@
 
 package org.faktorips.runtime.model;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -27,15 +29,21 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModifiableRuntimeRepository;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.TestTable;
@@ -44,11 +52,18 @@ import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
+import org.faktorips.runtime.model.enumtype.EnumAttribute;
+import org.faktorips.runtime.model.enumtype.EnumAttributeTest.MyEnumForMandatoryTests;
 import org.faktorips.runtime.model.enumtype.EnumType;
+import org.faktorips.runtime.model.enumtype.EnumTypeTest.Foo;
 import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
+import org.faktorips.runtime.model.type.ProductCmptTypeTest.ConfiguringProduct;
+import org.faktorips.runtime.model.type.ProductCmptTypeTest.ConfiguringProductAdj;
+import org.faktorips.runtime.model.type.ProductCmptTypeTest.TargetProduct;
 import org.faktorips.runtime.model.type.Type;
+import org.faktorips.valueset.StringLengthValueSet;
 import org.junit.Test;
 
 public class IpsModelTest {
@@ -421,6 +436,55 @@ public class IpsModelTest {
         assertNotNull(model);
         assertEquals("MyProduct", model.getName());
         assertSame(IpsModel.getProductCmptType(MyProduct.class), model);
+    }
+
+    @Test
+    public void testValidate() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        IpsModel.getProductCmptType(ConfiguringProduct.class);
+        TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
+        repository.putProductComponent(targetProduct);
+        ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+        productComponent.setAllowedValuesForStaticPolicyAttribute(new StringLengthValueSet(42));
+        productComponent.setStaticProductAttribute("foo");
+        productComponent.addStaticProductAssociation(targetProduct, new CardinalityRange(100, 200, 150));
+        repository.putProductComponent(productComponent);
+        ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
+        configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
+        configuringProductAdj1.setProductAttribute(-1);
+        configuringProductAdj1.setDefaultValuePolicyAttribute(99);
+        repository.putProductCmptGeneration(configuringProductAdj1);
+        Foo e1a = new Foo(1, "Eins", true);
+        Foo e1b = new Foo(1, "Eins", true);
+        Foo e2 = new Foo(2, "Eins", true);
+        repository.putEnumValues(Foo.class, List.of(e1a, e1b, e2));
+        repository.putEnumValues(MyEnumForMandatoryTests.class,
+                List.of(MyEnumForMandatoryTests.allSet, MyEnumForMandatoryTests.allNulls,
+                        MyEnumForMandatoryTests.allEmpty));
+
+        MessageList messages = IpsModel.validate(repository, new ValidationContext());
+
+        assertThat(messages.containsErrorMsg(), is(true));
+        assertThat(messages.size(), is(16));
+        assertThat(messages.toString(), containsString("200"));
+        assertThat(messages.toString(), containsString("1"));
+        assertThat(messages.toString(), containsString("foo"));
+        assertThat(messages.toString(), containsString("42"));
+        assertThat(messages.toString(), containsString("-1"));
+        assertThat(messages.toString(), containsString("99"));
+        assertThat(messages.stream()
+                .filter(m -> m.getCode().equals(EnumAttribute.MSGCODE_MANDATORY_ATTRIBUTE_IS_EMPTY))
+                .map(Message::getInvalidObjectProperties)
+                .flatMap(List::stream).toList(),
+                contains(
+                        new ObjectProperty(MyEnumForMandatoryTests.allNulls, "mandatoryString"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allNulls, "mandatoryMultilingualString"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allNulls, "mandatoryInteger"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allNulls, "mandatoryDecimal"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allEmpty, "mandatoryString"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allEmpty, "mandatoryMultilingualString"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allEmpty, "mandatoryInteger"),
+                        new ObjectProperty(MyEnumForMandatoryTests.allEmpty, "mandatoryDecimal")));
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")

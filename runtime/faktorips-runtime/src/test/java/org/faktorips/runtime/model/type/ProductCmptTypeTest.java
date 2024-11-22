@@ -1,43 +1,80 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IModifiableRuntimeRepository;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.ITimedConfigurableModelObject;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
+import org.faktorips.runtime.internal.ProductComponentLink;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsAllowedValues;
+import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
+import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
+import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
+import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
+import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.annotation.IpsDefaultValue;
+import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsFormula;
 import org.faktorips.runtime.model.annotation.IpsFormulas;
+import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.type.DefaultPolicyAttributeTest.Produkt;
+import org.faktorips.runtime.util.ProductComponentLinks;
+import org.faktorips.valueset.IntegerRange;
+import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.StringLengthValueSet;
+import org.faktorips.valueset.ValueSet;
 import org.junit.Test;
 
 public class ProductCmptTypeTest {
@@ -76,7 +113,7 @@ public class ProductCmptTypeTest {
 
     @Test(expected = NullPointerException.class)
     public void testGetPolicyCmptType_NPE_NotConfigured() throws Exception {
-        assertThat(superProductModel.getPolicyCmptType().getName(), is(nullValue()));
+        superProductModel.getPolicyCmptType().getName();
     }
 
     @Test
@@ -265,6 +302,76 @@ public class ProductCmptTypeTest {
         assertThat(IpsModel.getProductCmptType(SuperProduct.class).isSameOrSub(productCmptType), is(false));
     }
 
+    @Test
+        public void testValidatePart_WrongType() {
+            IRuntimeRepository repository = new InMemoryRuntimeRepository();
+            Produkt productComponent = new Produkt(repository);
+            ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+    
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                    () -> productCmptType.validate(productComponent, new MessageList(), new ValidationContext()));
+            assertThat(exception.getMessage(), containsString("id"));
+            assertThat(exception.getMessage(), containsString("ConfiguringProduct"));
+        }
+
+    @Test
+        public void testValidatePart_Attributes() {
+            IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+            ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+            ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+            productComponent.setAllowedValuesForStaticPolicyAttribute(new StringLengthValueSet(42));
+            productComponent.setStaticProductAttribute("foo");
+            repository.putProductComponent(productComponent);
+            TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
+            repository.putProductComponent(targetProduct);
+            ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
+            configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
+            configuringProductAdj1.setProductAttribute(-1);
+            configuringProductAdj1.setDefaultValuePolicyAttribute(99);
+            configuringProductAdj1.addProductAssociation(targetProduct, CardinalityRange.MANDATORY);
+            repository.putProductCmptGeneration(configuringProductAdj1);
+            MessageList messages = new MessageList();
+    
+            productCmptType.validate(productComponent, messages, new ValidationContext());
+    
+            assertThat(messages.containsErrorMsg(), is(true));
+            assertThat(messages.size(), is(4));
+            assertThat(messages.toString(), containsString("foo"));
+            assertThat(messages.toString(), containsString("42"));
+            assertThat(messages.toString(), containsString("-1"));
+            assertThat(messages.toString(), containsString("99"));
+            assertThat(
+                    messages.getMessageByCode(DefaultPolicyAttribute.MSGCODE_VALUE_SET_NOT_IN_VALUE_SET)
+                            .getInvalidObjectProperties().get(0).getProperty(),
+                    is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+            assertThat(
+                    messages.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET)
+                            .getInvalidObjectProperties().get(0).getProperty(),
+                    is(ProductAttribute.PROPERTY_VALUE));
+        }
+
+    @Test
+        public void testValidatePart_Associations() {
+            IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+            ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+            TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
+            repository.putProductComponent(targetProduct);
+            ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+            productComponent.addStaticProductAssociation(targetProduct, new CardinalityRange(100, 200, 150));
+            repository.putProductComponent(productComponent);
+            ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
+            configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
+            repository.putProductCmptGeneration(configuringProductAdj1);
+            MessageList messages = new MessageList();
+    
+            productCmptType.validate(productComponent, messages, new ValidationContext());
+    
+            assertThat(messages.containsErrorMsg(), is(true));
+            assertThat(messages.size(), is(2));
+            assertThat(messages.toString(), containsString("200"));
+            assertThat(messages.toString(), containsString("1"));
+        }
+
     @IpsProductCmptType(name = "MyProduct")
     @IpsConfigures(Policy.class)
     @IpsChangingOverTime(ProductGen.class)
@@ -402,4 +509,580 @@ public class ProductCmptTypeTest {
 
     }
 
+    @IpsPolicyCmptType(name = "ConfiguredPolicy")
+    @IpsAttributes({ "staticPolicyAttribute", "policyAttribute" })
+    @IpsAssociations({ "staticPolicyAssociation", "policyAssociation" })
+    @IpsConfiguredBy(ConfiguringProduct.class)
+    @IpsDocumented(bundleName = "org.faktorips.sample.model.model-label-and-descriptions", defaultLocale = "en")
+    public static class ConfiguredPolicy extends AbstractModelObject implements ITimedConfigurableModelObject {
+
+        public static final IntegerRange MAX_MULTIPLICITY_OF_STATIC_POLICY_ASSOCIATION = IntegerRange.valueOf(0, 1);
+
+        public static final String ASSOCIATION_STATIC_POLICY_ASSOCIATION = "staticPolicyAssociation";
+
+        public static final IntegerRange MAX_MULTIPLICITY_OF_POLICY_ASSOCIATION = IntegerRange.valueOf(1, 2147483647);
+
+        public static final String ASSOCIATION_POLICY_ASSOCIATIONS = "policyAssociations";
+
+        public static final String PROPERTY_STATICPOLICYATTRIBUTE = "staticPolicyAttribute";
+        @IpsAllowedValues("staticPolicyAttribute")
+        public static final ValueSet<String> MAX_ALLOWED_STRING_LENGTH_FOR_STATIC_POLICY_ATTRIBUTE = new StringLengthValueSet(
+                5, false);
+        @IpsDefaultValue("staticPolicyAttribute")
+        public static final String DEFAULT_VALUE_FOR_STATIC_POLICY_ATTRIBUTE = null;
+        public static final String PROPERTY_POLICYATTRIBUTE = "policyAttribute";
+        @IpsAllowedValues("policyAttribute")
+        public static final OrderedValueSet<Integer> MAX_ALLOWED_VALUES_FOR_POLICY_ATTRIBUTE = new OrderedValueSet<>(
+                false,
+                null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3));
+        @IpsDefaultValue("policyAttribute")
+        public static final Integer DEFAULT_VALUE_FOR_POLICY_ATTRIBUTE = null;
+
+        private String staticPolicyAttribute = DEFAULT_VALUE_FOR_STATIC_POLICY_ATTRIBUTE;
+        private Integer policyAttribute = DEFAULT_VALUE_FOR_POLICY_ATTRIBUTE;
+
+        private ProductConfiguration productConfiguration;
+
+        private TargetPolicy staticPolicyAssociation = null;
+
+        private List<TargetPolicy> policyAssociations = new ArrayList<>();
+
+        public ConfiguredPolicy() {
+            super();
+            productConfiguration = new ProductConfiguration();
+        }
+
+        public ConfiguredPolicy(ConfiguringProduct productCmpt) {
+            super();
+            productConfiguration = new ProductConfiguration(productCmpt);
+        }
+
+        @IpsAllowedValues("staticPolicyAttribute")
+        public ValueSet<String> getAllowedValuesForStaticPolicyAttribute() {
+            return getConfiguringProduct().getAllowedValuesForStaticPolicyAttribute();
+        }
+
+        @IpsAttribute(name = "staticPolicyAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.StringLength)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public String getStaticPolicyAttribute() {
+            return staticPolicyAttribute;
+        }
+
+        @IpsAttributeSetter("staticPolicyAttribute")
+        public void setStaticPolicyAttribute(String newValue) {
+            staticPolicyAttribute = newValue;
+        }
+
+        @IpsAllowedValues("policyAttribute")
+        public ValueSet<Integer> getAllowedValuesForPolicyAttribute() {
+            return getConfiguringProductAdj().getAllowedValuesForPolicyAttribute();
+        }
+
+        @IpsAttribute(name = "policyAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Enum)
+        @IpsConfiguredAttribute(changingOverTime = true)
+        public Integer getPolicyAttribute() {
+            return policyAttribute;
+        }
+
+        @IpsAttributeSetter("policyAttribute")
+        public void setPolicyAttribute(Integer newValue) {
+            policyAttribute = newValue;
+        }
+
+        @IpsAssociation(name = "staticPolicyAssociation", pluralName = "", kind = AssociationKind.Composition, targetClass = TargetPolicy.class, min = 0, max = 1)
+        @IpsMatchingAssociation(source = ConfiguringProduct.class, name = "staticProductAssociation")
+        public TargetPolicy getStaticPolicyAssociation() {
+            return staticPolicyAssociation;
+        }
+
+        @IpsAssociationAdder(association = "staticPolicyAssociation")
+        public void setStaticPolicyAssociation(TargetPolicy newObject) {
+            staticPolicyAssociation = newObject;
+        }
+
+        public TargetPolicy newStaticPolicyAssociation() {
+            TargetPolicy newStaticPolicyAssociation = new TargetPolicy();
+            setStaticPolicyAssociation(newStaticPolicyAssociation);
+            newStaticPolicyAssociation.initialize();
+            return newStaticPolicyAssociation;
+        }
+
+        public TargetPolicy newStaticPolicyAssociation(TargetProduct targetProduct) {
+            if (targetProduct == null) {
+                return newStaticPolicyAssociation();
+            }
+            TargetPolicy newStaticPolicyAssociation = targetProduct.createTargetPolicy();
+            setStaticPolicyAssociation(newStaticPolicyAssociation);
+            newStaticPolicyAssociation.initialize();
+            return newStaticPolicyAssociation;
+        }
+
+        public int getNumOfPolicyAssociations() {
+            return policyAssociations.size();
+        }
+
+        public boolean containsPolicyAssociation(TargetPolicy objectToTest) {
+            return policyAssociations.contains(objectToTest);
+        }
+
+        @IpsAssociation(name = "policyAssociation", pluralName = "policyAssociations", kind = AssociationKind.Composition, targetClass = TargetPolicy.class, min = 0, max = Integer.MAX_VALUE)
+        @IpsMatchingAssociation(source = ConfiguringProduct.class, name = "ProductAssociation")
+        public List<? extends TargetPolicy> getPolicyAssociations() {
+            return Collections.unmodifiableList(policyAssociations);
+        }
+
+        public TargetPolicy getPolicyAssociation(int index) {
+            return policyAssociations.get(index);
+        }
+
+        @IpsAssociationAdder(association = "policyAssociation")
+        public void addPolicyAssociation(TargetPolicy objectToAdd) {
+            if (objectToAdd == null) {
+                throw new NullPointerException("Can't add null to association policyAssociation of " + this);
+            }
+            if (policyAssociations.contains(objectToAdd)) {
+                return;
+            }
+            policyAssociations.add(objectToAdd);
+        }
+
+        public TargetPolicy newPolicyAssociation() {
+            TargetPolicy newPolicyAssociation = new TargetPolicy();
+            addPolicyAssociation(newPolicyAssociation);
+            newPolicyAssociation.initialize();
+            return newPolicyAssociation;
+        }
+
+        public TargetPolicy newPolicyAssociation(TargetProduct targetProduct) {
+            if (targetProduct == null) {
+                return newPolicyAssociation();
+            }
+            TargetPolicy newPolicyAssociation = targetProduct.createTargetPolicy();
+            addPolicyAssociation(newPolicyAssociation);
+            newPolicyAssociation.initialize();
+            return newPolicyAssociation;
+        }
+
+        @IpsAssociationRemover(association = "policyAssociation")
+        public void removePolicyAssociation(TargetPolicy objectToRemove) {
+            if (objectToRemove == null) {
+                return;
+            }
+            policyAssociations.remove(objectToRemove);
+        }
+
+        @Override
+        public void initialize() {
+            if (getConfiguringProduct() != null) {
+                setStaticPolicyAttribute(getConfiguringProduct().getDefaultValueStaticPolicyAttribute());
+            }
+        }
+
+        public ConfiguringProduct getConfiguringProduct() {
+            return (ConfiguringProduct)getProductComponent();
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        public ConfiguringProductAdj getConfiguringProductAdj() {
+            return (ConfiguringProductAdj)getProductCmptGeneration();
+        }
+
+        @Override
+        public IProductComponentGeneration getProductCmptGeneration() {
+            return productConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
+        }
+
+        public void setProductCmptGeneration(IProductComponentGeneration productComponentGeneration) {
+            productConfiguration.setProductCmptGeneration(productComponentGeneration);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+    }
+
+    @IpsProductCmptType(name = "ConfiguringProduct")
+    @IpsAttributes({ "staticProductAttribute", "productAttribute" })
+    @IpsAssociations({ "staticProductAssociation", "ProductAssociation" })
+    @IpsConfigures(ConfiguredPolicy.class)
+    @IpsChangingOverTime(ConfiguringProductAdj.class)
+    @IpsDocumented(bundleName = "org.faktorips.sample.model.model-label-and-descriptions", defaultLocale = "en")
+    public static class ConfiguringProduct extends ProductComponent {
+
+        public static final String PROPERTY_STATICPRODUCTATTRIBUTE = "staticProductAttribute";
+        @IpsAllowedValues("staticProductAttribute")
+        public static final OrderedValueSet<String> MAX_ALLOWED_VALUES_FOR_STATIC_PRODUCT_ATTRIBUTE = new OrderedValueSet<>(
+                false, null, "a", "b", "c");
+        @IpsDefaultValue("staticProductAttribute")
+        public static final String DEFAULT_VALUE_FOR_STATIC_PRODUCT_ATTRIBUTE = null;
+
+        private String staticProductAttribute = DEFAULT_VALUE_FOR_STATIC_PRODUCT_ATTRIBUTE;
+
+        private String defaultValueStaticPolicyAttribute = null;
+        private ValueSet<String> maximumLengthStaticPolicyAttribute = ConfiguredPolicy.MAX_ALLOWED_STRING_LENGTH_FOR_STATIC_POLICY_ATTRIBUTE;
+
+        private Map<String, IProductComponentLink<TargetProduct>> staticProductAssociations = new LinkedHashMap<>(0);
+
+        public ConfiguringProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        public ConfiguringProductAdj getConfiguringProductAdj(Calendar effectiveDate) {
+            return (ConfiguringProductAdj)getRepository().getProductComponentGeneration(getId(), effectiveDate);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+
+        @IpsAttribute(name = "staticProductAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Enum)
+        public String getStaticProductAttribute() {
+            return staticProductAttribute;
+        }
+
+        @IpsAttributeSetter("staticProductAttribute")
+        public void setStaticProductAttribute(String newValue) {
+            setStaticProductAttributeInternal(newValue);
+        }
+
+        protected final void setStaticProductAttributeInternal(String newValue) {
+            staticProductAttribute = newValue;
+        }
+
+        @IpsDefaultValue("staticPolicyAttribute")
+        public String getDefaultValueStaticPolicyAttribute() {
+            return defaultValueStaticPolicyAttribute;
+        }
+
+        @IpsDefaultValueSetter("staticPolicyAttribute")
+        public void setDefaultValueStaticPolicyAttribute(String defaultValueStaticPolicyAttribute) {
+            this.defaultValueStaticPolicyAttribute = defaultValueStaticPolicyAttribute;
+        }
+
+        @IpsAllowedValues("staticPolicyAttribute")
+        public ValueSet<String> getAllowedValuesForStaticPolicyAttribute() {
+            return maximumLengthStaticPolicyAttribute;
+        }
+
+        @IpsAllowedValuesSetter("staticPolicyAttribute")
+        public void setAllowedValuesForStaticPolicyAttribute(ValueSet<String> maximumLengthStaticPolicyAttribute) {
+            this.maximumLengthStaticPolicyAttribute = maximumLengthStaticPolicyAttribute;
+        }
+
+        @IpsAssociation(name = "staticProductAssociation", pluralName = "staticProductAssociations", kind = AssociationKind.Composition, targetClass = TargetProduct.class, min = 0, max = Integer.MAX_VALUE)
+        @IpsMatchingAssociation(source = ConfiguredPolicy.class, name = "staticPolicyAssociation")
+        public List<? extends TargetProduct> getStaticProductAssociations() {
+            List<TargetProduct> result = new ArrayList<>(staticProductAssociations.size());
+            for (IProductComponentLink<TargetProduct> staticProductAssociation : staticProductAssociations.values()) {
+                if (!staticProductAssociation.getCardinality().isEmpty()) {
+                    result.add(staticProductAssociation.getTarget());
+                }
+            }
+            return result;
+        }
+
+        public TargetProduct getStaticProductAssociation(int index) {
+            return ProductComponentLinks.getTarget(index, staticProductAssociations);
+        }
+
+        @IpsAssociationAdder(association = "staticProductAssociation")
+        public void addStaticProductAssociation(TargetProduct target) {
+            staticProductAssociations.put(target.getId(),
+                    new ProductComponentLink<>(this, target, "staticProductAssociation"));
+        }
+
+        @IpsAssociationAdder(association = "staticProductAssociation", withCardinality = true)
+        public void addStaticProductAssociation(TargetProduct target, CardinalityRange cardinality) {
+            staticProductAssociations.put(target.getId(),
+                    new ProductComponentLink<>(this, target, cardinality, "staticProductAssociation"));
+        }
+
+        @IpsAssociationRemover(association = "staticProductAssociation")
+        public void removeStaticProductAssociation(TargetProduct target) {
+            staticProductAssociations.remove(target.getId());
+        }
+
+        @IpsAssociationLinks(association = "staticProductAssociation")
+        public Collection<IProductComponentLink<TargetProduct>> getLinksForStaticProductAssociations() {
+            return Collections.unmodifiableCollection(staticProductAssociations.values());
+        }
+
+        public IProductComponentLink<TargetProduct> getLinkForStaticProductAssociation(TargetProduct productComponent) {
+            return staticProductAssociations.get(productComponent.getId());
+        }
+
+        public CardinalityRange getCardinalityForStaticPolicyAssociation(TargetProduct productCmpt) {
+            if (productCmpt != null) {
+                return staticProductAssociations.containsKey(productCmpt.getId())
+                        ? staticProductAssociations.get(productCmpt.getId())
+                                .getCardinality()
+                        : null;
+            }
+            return null;
+        }
+
+        public int getNumOfstaticProductAssociations() {
+            return staticProductAssociations.size();
+        }
+
+        public ConfiguredPolicy createConfiguredPolicy() {
+            ConfiguredPolicy policy = new ConfiguredPolicy(this);
+            policy.initialize();
+            return policy;
+        }
+
+        @Override
+        public ConfiguredPolicy createPolicyComponent() {
+            return createConfiguredPolicy();
+        }
+
+        @Override
+        public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
+            if ("staticProductAssociation".equals(linkName)) {
+                return getLinkForStaticProductAssociation((TargetProduct)target);
+            }
+            return null;
+        }
+
+        @Override
+        public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
+            List<IProductComponentLink<? extends IProductComponent>> list = new ArrayList<>();
+            list.addAll(getLinksForStaticProductAssociations());
+            return list;
+        }
+    }
+
+    public static class ConfiguringProductAdj extends ProductComponentGeneration {
+
+        public static final String PROPERTY_PRODUCTATTRIBUTE = "productAttribute";
+        @IpsAllowedValues("productAttribute")
+        public static final IntegerRange MAX_ALLOWED_RANGE_FOR_PRODUCT_ATTRIBUTE = IntegerRange
+                .valueOf(Integer.valueOf("0"), Integer.valueOf(100), Integer.valueOf(10), false);
+        @IpsDefaultValue("productAttribute")
+        public static final Integer DEFAULT_VALUE_FOR_PRODUCT_ATTRIBUTE = null;
+
+        private Integer productAttribute = DEFAULT_VALUE_FOR_PRODUCT_ATTRIBUTE;
+
+        private Integer defaultValuePolicyAttribute = null;
+        private OrderedValueSet<Integer> allowedValuesForPolicyAttribute = ConfiguredPolicy.MAX_ALLOWED_VALUES_FOR_POLICY_ATTRIBUTE;
+        private Map<String, IProductComponentLink<TargetProduct>> productAssociations = new LinkedHashMap<>(0);
+
+        public ConfiguringProductAdj(ConfiguringProduct productCmpt) {
+            super(productCmpt);
+        }
+
+        @IpsAttribute(name = "productAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Range)
+        public Integer getProductAttribute() {
+            return productAttribute;
+        }
+
+        @IpsAttributeSetter("productAttribute")
+        public void setProductAttribute(Integer newValue) {
+            setProductAttributeInternal(newValue);
+        }
+
+        protected final void setProductAttributeInternal(Integer newValue) {
+            productAttribute = newValue;
+        }
+
+        @IpsDefaultValue("policyAttribute")
+        public Integer getDefaultValuePolicyAttribute() {
+            return defaultValuePolicyAttribute;
+        }
+
+        @IpsDefaultValueSetter("policyAttribute")
+        public void setDefaultValuePolicyAttribute(Integer defaultValuePolicyAttribute) {
+            this.defaultValuePolicyAttribute = defaultValuePolicyAttribute;
+        }
+
+        @IpsAllowedValues("policyAttribute")
+        public ValueSet<Integer> getAllowedValuesForPolicyAttribute() {
+            return allowedValuesForPolicyAttribute;
+        }
+
+        @IpsAllowedValuesSetter("policyAttribute")
+        public void setAllowedValuesForPolicyAttribute(ValueSet<Integer> allowedValuesForPolicyAttribute) {
+            this.allowedValuesForPolicyAttribute = (OrderedValueSet<Integer>)allowedValuesForPolicyAttribute;
+        }
+
+        @IpsAssociation(name = "ProductAssociation", pluralName = "ProductAssociations", kind = AssociationKind.Composition, targetClass = TargetProduct.class, min = 1, max = Integer.MAX_VALUE)
+        @IpsMatchingAssociation(source = ConfiguredPolicy.class, name = "policyAssociation")
+        public List<? extends TargetProduct> getProductAssociations() {
+            List<TargetProduct> result = new ArrayList<>(productAssociations.size());
+            for (IProductComponentLink<TargetProduct> productAssociation : productAssociations.values()) {
+                if (!productAssociation.getCardinality().isEmpty()) {
+                    result.add(productAssociation.getTarget());
+                }
+            }
+            return result;
+        }
+
+        public TargetProduct getProductAssociation(int index) {
+            return ProductComponentLinks.getTarget(index, productAssociations);
+        }
+
+        @IpsAssociationAdder(association = "ProductAssociation")
+        public void addProductAssociation(TargetProduct target) {
+            productAssociations.put(target.getId(), new ProductComponentLink<>(this, target, "ProductAssociation"));
+        }
+
+        @IpsAssociationAdder(association = "ProductAssociation", withCardinality = true)
+        public void addProductAssociation(TargetProduct target, CardinalityRange cardinality) {
+            productAssociations.put(target.getId(),
+                    new ProductComponentLink<>(this, target, cardinality, "ProductAssociation"));
+        }
+
+        @IpsAssociationRemover(association = "ProductAssociation")
+        public void removeProductAssociation(TargetProduct target) {
+            productAssociations.remove(target.getId());
+        }
+
+        @IpsAssociationLinks(association = "ProductAssociation")
+        public Collection<IProductComponentLink<TargetProduct>> getLinksForProductAssociations() {
+            return Collections.unmodifiableCollection(productAssociations.values());
+        }
+
+        public IProductComponentLink<TargetProduct> getLinkForProductAssociation(TargetProduct productComponent) {
+            return productAssociations.get(productComponent.getId());
+        }
+
+        public CardinalityRange getCardinalityForPolicyAssociation(TargetProduct productCmpt) {
+            if (productCmpt != null) {
+                return productAssociations.containsKey(productCmpt.getId())
+                        ? productAssociations.get(productCmpt.getId())
+                                .getCardinality()
+                        : null;
+            }
+            return null;
+        }
+
+        public int getNumOfProductAssociations() {
+            return productAssociations.size();
+        }
+
+        public ConfiguringProduct getConfiguringProduct() {
+            return (ConfiguringProduct)getProductComponent();
+        }
+
+        public ConfiguredPolicy createConfiguredPolicy() {
+            ConfiguredPolicy policy = new ConfiguredPolicy(getConfiguringProduct());
+            policy.setProductCmptGeneration(this);
+            policy.initialize();
+            return policy;
+        }
+
+        @Override
+        public ConfiguredPolicy createPolicyComponent() {
+            return createConfiguredPolicy();
+        }
+
+        @Override
+        public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
+            if ("ProductAssociation".equals(linkName)) {
+                return getLinkForProductAssociation((TargetProduct)target);
+            }
+            return null;
+        }
+
+        @Override
+        public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
+            List<IProductComponentLink<? extends IProductComponent>> list = new ArrayList<>();
+            list.addAll(getLinksForProductAssociations());
+            return list;
+        }
+
+    }
+
+    @IpsPolicyCmptType(name = "TargetPolicy")
+    @IpsConfiguredBy(TargetProduct.class)
+    @IpsDocumented(bundleName = "org.faktorips.sample.model.model-label-and-descriptions", defaultLocale = "en")
+    public static class TargetPolicy extends AbstractModelObject implements IConfigurableModelObject {
+
+        private ProductConfiguration productConfiguration;
+
+        public TargetPolicy() {
+            super();
+            productConfiguration = new ProductConfiguration();
+        }
+
+        public TargetPolicy(TargetProduct productCmpt) {
+            super();
+            productConfiguration = new ProductConfiguration(productCmpt);
+        }
+
+        @Override
+        public void initialize() {
+            // nothing to do
+        }
+
+        public TargetProduct getTargetProduct() {
+            return (TargetProduct)getProductComponent();
+        }
+
+        public void setTargetProduct(TargetProduct targetProduct, boolean initPropertiesWithConfiguratedDefaults) {
+            setProductComponent(targetProduct);
+            if (initPropertiesWithConfiguratedDefaults) {
+                initialize();
+            }
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
+            productConfiguration.resetProductCmptGeneration();
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+    }
+
+    @IpsProductCmptType(name = "TargetProduct")
+    @IpsConfigures(TargetPolicy.class)
+    @IpsDocumented(bundleName = "org.faktorips.sample.model.model-label-and-descriptions", defaultLocale = "en")
+    public static class TargetProduct extends ProductComponent {
+
+        public TargetProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        public TargetPolicy createTargetPolicy() {
+            TargetPolicy policy = new TargetPolicy(this);
+            policy.initialize();
+            return policy;
+        }
+
+        @Override
+        public TargetPolicy createPolicyComponent() {
+            return createTargetPolicy();
+        }
+
+    }
 }

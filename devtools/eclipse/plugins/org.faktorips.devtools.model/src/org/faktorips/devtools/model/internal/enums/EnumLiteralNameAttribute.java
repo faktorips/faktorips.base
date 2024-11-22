@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,11 +27,11 @@ import org.w3c.dom.Element;
 /**
  * Implementation of <code>IEnumLiteralNameAttribute</code>, see the corresponding interface for
  * more details.
- * 
+ *
  * @see org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.4
  */
 public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLiteralNameAttribute {
@@ -44,7 +44,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
 
     /**
      * Creates a new <code>IEnumLiteralNameAttribute</code>.
-     * 
+     *
      * @param parent The <code>IEnumType</code> this <code>IEnumLiteralNameAttribute</code> belongs
      *            to.
      * @param id A unique ID for this <code>IEnumLiteralNameAttribute</code>.
@@ -52,6 +52,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     public EnumLiteralNameAttribute(IEnumType parent, String id) {
         super(parent, id);
         defaultValueProviderAttribute = ""; //$NON-NLS-1$
+        setMandatoryInternal(true);
     }
 
     @Override
@@ -72,6 +73,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     protected void initPropertiesFromXml(Element element, String id) {
         defaultValueProviderAttribute = element.getAttribute(PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE);
         super.initPropertiesFromXml(element, id);
+        setMandatoryInternal(true);
     }
 
     @Override
@@ -155,7 +157,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
 
     /**
      * Not supported by <code>IEnumLiteralNameAttribute</code>s.
-     * 
+     *
      * @throws UnsupportedOperationException If the operation is called.
      */
     @Override
@@ -165,7 +167,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
 
     /**
      * Not supported by <code>IEnumLiteralNameAttribute</code>s.
-     * 
+     *
      * @throws UnsupportedOperationException If the operation is called.
      */
     @Override
@@ -175,7 +177,20 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
 
     /**
      * Not supported by <code>IEnumLiteralNameAttribute</code>s.
-     * 
+     *
+     * @throws UnsupportedOperationException If the operation is called.
+     */
+    @Override
+    public void setMandatory(boolean isInherited) {
+        if (!isInherited) {
+            throw new UnsupportedOperationException("An EnumLiteralNameAttribute is always mandatory."); //$NON-NLS-1$
+        }
+        super.setMandatory(true);
+    }
+
+    /**
+     * Not supported by <code>IEnumLiteralNameAttribute</code>s.
+     *
      * @throws UnsupportedOperationException If the operation is called.
      */
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -72,17 +72,30 @@ public class EnumAttributeAnnGenTest {
     }
 
     @Test
+    public void testCreateAnnotation_mandatory() throws Exception {
+        when(attribute.getName()).thenReturn("baz");
+        when(attribute.isMandatory()).thenReturn(true);
+
+        JavaCodeFragment annotation = new EnumAttributeAnnGen().createAnnotation(attribute);
+
+        assertThat(annotation.getSourcecode(),
+                is(equalTo("@IpsEnumAttribute(name = \"baz\", mandatory = true)" + System.lineSeparator())));
+    }
+
+    @Test
     public void testCreateAnnotation_full() throws Exception {
         when(attribute.getName()).thenReturn("foobar");
         when(attribute.isIdentifier()).thenReturn(true);
         when(attribute.isUnique()).thenReturn(true);
         when(attribute.isDisplayName()).thenReturn(true);
+        when(attribute.isMandatory()).thenReturn(true);
 
         JavaCodeFragment annotation = new EnumAttributeAnnGen().createAnnotation(attribute);
 
         assertThat(annotation.getSourcecode(),
-                is(equalTo("@IpsEnumAttribute(name = \"foobar\", identifier = true, unique = true, displayName = true)"
-                        + System.lineSeparator())));
+                is(equalTo(
+                        "@IpsEnumAttribute(name = \"foobar\", identifier = true, unique = true, displayName = true, mandatory = true)"
+                                + System.lineSeparator())));
     }
 
 }
