@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,11 +23,11 @@ import java.util.List;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpt.AbstractValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
-import org.faktorips.devtools.model.internal.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
+import org.faktorips.devtools.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * The default value holder for attribute values holding a single value. The StringValue does not
  * mean that the element in the model needs to be of type String but that it is persisted as a
  * String value. It can also be an InternationalStringValue.
- * 
+ *
  * @since 3.7
  * @author dirmeier
  */
@@ -50,7 +50,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     /**
      * Create a new SingleValueHolder with an empty {@link IValue} as value
-     * 
+     *
      * @param parent Attribute
      */
     public SingleValueHolder(IAttributeValue parent) {
@@ -59,7 +59,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     /**
      * Create a new SingleValueHolder with a new StringValue
-     * 
+     *
      * @param parent Attribute
      * @param value String
      */
@@ -69,7 +69,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     /**
      * Create a new SingleValueHolder with the {@link IValue}
-     * 
+     *
      * @param parent Attribute
      * @param value IValue
      */
@@ -188,7 +188,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
     }
 
     @Override
-    protected SingleValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
+    public SingleValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
         return new SingleValueHolderValidator(this, parent, ipsProject);
     }
 
@@ -226,7 +226,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> implements
 
     /**
      * This factory creates {@link SingleValueHolder} objects.
-     * 
+     *
      * @author dirmeier
      */
     public static class Factory implements IAttributeValueHolderFactory<IValue<?>> {

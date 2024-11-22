@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueF
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
+import org.faktorips.devtools.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;

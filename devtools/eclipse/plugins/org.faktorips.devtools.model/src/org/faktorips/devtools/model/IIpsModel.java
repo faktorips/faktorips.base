@@ -16,6 +16,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
@@ -341,6 +342,46 @@ public interface IIpsModel extends IIpsElement {
      * @return true if the listener was removed
      */
     boolean removeIpsSrcFilesChangedListener(IIpsSrcFilesChangeListener listener);
+
+    /**
+     * Returns the datatype identified by the given qualified name or null, if the IPS project does
+     * not contain such a datatype.
+     *
+     * @param ipsProject the IPS project to search for the datatype.
+     * @param qName the qualified name of the datatype to find.
+     *
+     * @return the {@link Datatype} matching the qualified name
+     *
+     * @since 25.1
+     */
+    Datatype getDatatypeDefinedInProjectProperties(IIpsProject ipsProject, String qName);
+
+    /**
+     * Adds the datatypes defined in the IPS project properties to the set of datatypes.
+     *
+     * @param ipsProject the IPS project whose datatypes will be added.
+     * @param valuetypesOnly if {@code true}, the included datatypes represents values.
+     * @param includePrimitives if {@code true}, java primitive types will also be included.
+     * @param datatypes the set to which the datatypes will be added.
+     *
+     * @since 25.1
+     */
+    void getDatatypesDefinedInProjectProperties(IIpsProject ipsProject,
+            boolean valuetypesOnly,
+            boolean includePrimitives,
+            Set<Datatype> datatypes);
+
+    /**
+     * Retrieves a map of datatypes defined in the IPS project properties
+     *
+     * @param ipsProject the IPS project to search for the datatype.
+     *
+     * @return a map where the keys are qualified names of datatypes and the values are the
+     *             {@link Datatype} objects.
+     *
+     * @since 25.1
+     */
+    Map<String, Datatype> getDatatypesDefinedInProjectProperties(IIpsProject ipsProject);
 
     /**
      * Returns the version provider according to {@link IIpsProject#getVersionProvider()}

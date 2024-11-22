@@ -42,7 +42,6 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AFile;
@@ -705,6 +704,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * Returns the datatype identified by the given qualified name or null, if the IPS project does
      * not contain such a datatype.
      */
+    @Override
     public Datatype getDatatypeDefinedInProjectProperties(IIpsProject ipsProject, String qName) {
         Map<String, Datatype> map = getDatatypesDefinedInProjectProperties(ipsProject);
         return map.get(qName);
@@ -713,6 +713,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Adds the datatypes defined in the IPS project properties to the set of datatypes.
      */
+    @Override
     public void getDatatypesDefinedInProjectProperties(IIpsProject ipsProject,
             boolean valuetypesOnly,
             boolean includePrimitives,
@@ -727,6 +728,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
     }
 
+    @Override
     public Map<String, Datatype> getDatatypesDefinedInProjectProperties(IIpsProject ipsProject) {
         reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
         Map<String, Datatype> map = getIpsProjectData(ipsProject).getProjectDatatypesMap();
@@ -1284,7 +1286,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     private List<IIpsArtefactBuilderSetInfo> createIpsArtefactBuilderSetInfosIfNecessary() {
-        IExtensionRegistry registry = ((IpsModelExtensionsViaExtensionPoints)IIpsModelExtensions.get()).getExtensionRegistry();
+        IExtensionRegistry registry = ((IpsModelExtensionsViaExtensionPoints)IIpsModelExtensions.get())
+                .getExtensionRegistry();
         List<IIpsArtefactBuilderSetInfo> tmpList = new ArrayList<>();
         IpsArtefactBuilderSetInfo.loadExtensions(registry, IpsLog.get(), tmpList,
                 this);

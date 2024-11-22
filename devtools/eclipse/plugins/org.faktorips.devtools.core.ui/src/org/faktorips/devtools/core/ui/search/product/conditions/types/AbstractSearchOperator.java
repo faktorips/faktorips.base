@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.internal.productcmpt.DelegatingValueHolder;
+import org.faktorips.devtools.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;

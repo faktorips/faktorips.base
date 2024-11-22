@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.devtools.model.internal.productcmpt.treestructure.ProductCmptTreeStructure;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
 /**
@@ -30,10 +32,29 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
  * It is also not possible to setup the structure for a special generation but for a concrete date.
  * This is because the structure is built for a set of product components which may have different
  * adjustment dates.
- * 
+ *
  * @author Thorsten Guenther
  */
 public interface IProductCmptTreeStructure {
+
+    /**
+     * Factory method to create a ProductCmptTreeStructure instance.
+     *
+     * @param root The product component to create a structure for.
+     * @param date The date the structure has to be valid for.
+     * @param project The IPS project used as a search path.
+     *
+     * @return A new instance of IProductCmptTreeStructure.
+     *
+     * @throws CycleInProductStructureException if a cycle is detected.
+     * @throws NullPointerException if root or date is null.
+     *
+     * @since 25.1
+     */
+    static IProductCmptTreeStructure of(IProductCmpt root, GregorianCalendar date, IIpsProject project)
+            throws CycleInProductStructureException {
+        return new ProductCmptTreeStructure(root, date, project);
+    }
 
     /**
      * Returns the reference wrapping the root product component of this structure.
@@ -42,7 +63,7 @@ public interface IProductCmptTreeStructure {
 
     /**
      * Refreshes the structure to reflect changes to the underlying objects.
-     * 
+     *
      * @throws CycleInProductStructureException If a circle is detected.
      */
     void refresh() throws CycleInProductStructureException;
@@ -55,7 +76,7 @@ public interface IProductCmptTreeStructure {
 
     /**
      * Returns all references contained in this structure as plain list.
-     * 
+     *
      * @param productCmptOnly <code>true</code> to get only references to <code>IProductCmpt</code>
      *            s.
      */
@@ -63,7 +84,7 @@ public interface IProductCmptTreeStructure {
 
     /**
      * Returns the parent reference to the given one which refers to a <code>IProductCmpt</code>.
-     * 
+     *
      * @param child The child reference to get the parent from.
      * @return The found reference to the parent <code>IProductCmpt</code> or <code>null</code> if
      *             no parent was found (if the given child is the root of the structure, for
@@ -74,7 +95,7 @@ public interface IProductCmptTreeStructure {
     /**
      * Returns the parent reference to the given one which refers to a
      * <code>IProductCmptTypeRelation</code>.
-     * 
+     *
      * @param child The child reference to get the parent from.
      * @return The found references to the parent <code>IProductCmptTypeRelation</code> or
      *             <code>null</code> if no parent was found (if the given child is the root of the
@@ -92,8 +113,8 @@ public interface IProductCmptTreeStructure {
     /**
      * Get all product component type association references from the parent structure reference.
      * Empty associations are included.
-     * 
-     * 
+     *
+     *
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
      */
@@ -102,7 +123,7 @@ public interface IProductCmptTreeStructure {
 
     /**
      * Get all product component type association references from the parent structure reference.
-     * 
+     *
      * @param parent The parent-reference to start the search for child-references.
      * @param includeEmptyAssociations true if empty associations have to be included
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
@@ -127,7 +148,7 @@ public interface IProductCmptTreeStructure {
     /**
      * Searches this structure/tree for {@link IProductCmptReference IProductCmptReferences}
      * containing the given qualified name of a {@link IProductCmpt}.
-     * 
+     *
      * @param string the {@link IProductCmpt}'s qualified name to search for
      * @return <code>true</code> if this structure references the given qualified name,
      *             <code>false</code> otherwise.
@@ -137,7 +158,7 @@ public interface IProductCmptTreeStructure {
     /**
      * Searches this structure/tree for {@link IProductCmptReference references} to any of the given
      * {@link IProductCmpt product components}.
-     * 
+     *
      * @return a list of references referring to at least one {@link IProductCmpt} given in the
      *             list.
      */

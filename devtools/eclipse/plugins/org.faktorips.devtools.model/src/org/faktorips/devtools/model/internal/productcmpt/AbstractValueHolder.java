@@ -15,6 +15,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
+import org.faktorips.devtools.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.runtime.Severity;
@@ -170,6 +171,6 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
      *            part of when validating the value holder
      * @param ipsProject the IPS project to use
      */
-    protected abstract IValueHolderValidator newValidator(IAttributeValue parentForValidation, IIpsProject ipsProject);
+    public abstract IValueHolderValidator newValidator(IAttributeValue parentForValidation, IIpsProject ipsProject);
 
 }

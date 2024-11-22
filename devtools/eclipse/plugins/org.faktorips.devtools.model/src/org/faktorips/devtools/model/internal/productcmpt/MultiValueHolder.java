@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,7 +42,7 @@ import org.w3c.dom.NodeList;
  * <p>
  * This holder just contains a list of {@link SingleValueHolder}. The list validation and XML
  * handling is delegated to the internal string value holders.
- * 
+ *
  * @since 3.7
  * @author dirmeier
  */
@@ -70,7 +70,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
 
     /**
      * Default constructor only needs the attribute value used as parent object.
-     * 
+     *
      * @param attributeValue The parent attribute value
      */
     public MultiValueHolder(IAttributeValue attributeValue) {
@@ -80,7 +80,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
 
     /**
      * A constructor to directly set a default value after creating the value holder.
-     * 
+     *
      * @param attributeValue the parent attribute value
      * @param defaultValue a default value
      */
@@ -234,7 +234,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
     }
 
     @Override
-    protected MultiValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
+    public MultiValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
         return new MultiValueHolderValidator(this, parent, ipsProject);
     }
 
@@ -257,7 +257,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
 
     /**
      * This factory creates {@link MultiValueHolder} objects
-     * 
+     *
      * @author dirmeier
      */
     public static class Factory implements IAttributeValueHolderFactory<List<ISingleValueHolder>> {

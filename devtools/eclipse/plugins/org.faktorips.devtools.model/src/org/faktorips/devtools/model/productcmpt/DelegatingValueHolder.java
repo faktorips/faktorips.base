@@ -8,14 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.model.internal.productcmpt;
+package org.faktorips.devtools.model.productcmpt;
 
 import java.util.List;
 import java.util.Objects;
 
+import org.faktorips.devtools.model.internal.productcmpt.AbstractValueHolder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.MessageList;

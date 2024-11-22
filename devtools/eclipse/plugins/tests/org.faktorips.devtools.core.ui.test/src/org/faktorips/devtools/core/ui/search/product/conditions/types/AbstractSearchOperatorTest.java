@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.internal.productcmpt.DelegatingValueHolder;
+import org.faktorips.devtools.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.junit.Test;
