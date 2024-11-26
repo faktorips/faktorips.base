@@ -134,7 +134,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.eclipse.equinox.common" version="3.11.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi.services" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.objenesis"/>
-      <import plugin="org.apache.commons.commons-text"/>
+      <import plugin="org.apache.commons.text"/>
       <import plugin="org.apache.commons.lang3"/>
       <import plugin="org.apache.commons.commons-collections4"/>
       <import plugin="com.google.guava"/>
