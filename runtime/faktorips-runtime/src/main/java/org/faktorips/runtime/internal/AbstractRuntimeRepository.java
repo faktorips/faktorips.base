@@ -10,11 +10,9 @@
 
 package org.faktorips.runtime.internal;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +36,7 @@ import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.runtime.model.table.TableStructureKind;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
@@ -56,8 +55,6 @@ import org.faktorips.runtime.xml.IXmlBindingSupport;
 public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     private static final String ROOTIPSTESTSUITENAME = "ipstest"; //$NON-NLS-1$
-
-    private static final ConcurrentHashMap<Class<?>, List<?>> ENUMVALUECACHE = new ConcurrentHashMap<>();
 
     // The name of the repository
     private String name;
@@ -795,59 +792,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract <T> List<T> getEnumValuesInternal(Class<T> clazz);
 
     /**
-     * Returns the values that are defined in the type by a constant called 'VALUES'. If no such
-     * constant is available an empty list is returned. If the constant is available but is either
-     * not accessible or of wrong type an exception is thrown.
-     * <p>
-     * For performance optimization the values are cached in the static map {@link #ENUMVALUECACHE}.
-     * We only check once if there is already a cached value. We disclaim a double checking with
-     * synchronization because in worst case two threads simply getting the same result. The
-     * {@link #ENUMVALUECACHE} is realized by a {@link ConcurrentHashMap}. Only the first evaluation
-     * will be put into the cache using {@link ConcurrentHashMap#putIfAbsent(Object, Object)}.
+     * Returns all enum values that are defined directly in the given enum type class.
      *
      * @param enumClass The class of which you want to get the enumeration values
      * @return A list of instances of enumClass that are defined as enumeration values of the
      *             specified type.
      */
-    protected <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
-        if (ENUMVALUECACHE.containsKey(enumClass)) {
-            return getCachedEnumValuesDefinedInType(enumClass);
-        } else {
-            return getEnumValuesDefinedInTypeByReflection(enumClass);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> List<T> getCachedEnumValuesDefinedInType(Class<T> enumClass) {
-        return (List<T>)ENUMVALUECACHE.get(enumClass);
-    }
-
-    private <T> List<T> getEnumValuesDefinedInTypeByReflection(Class<T> enumClass) {
-        if (enumClass.isEnum()) {
-            return Arrays.asList(enumClass.getEnumConstants());
-        }
-        try {
-            Field valuesField = enumClass.getDeclaredField("VALUES");
-            @SuppressWarnings("unchecked")
-            List<T> values = (List<T>)valuesField.get(null);
-            List<?> previousValues = ENUMVALUECACHE.putIfAbsent(enumClass, values);
-            if (previousValues != null) {
-                return castPreviousValues(previousValues);
-            } else {
-                return values;
-            }
-        } catch (NoSuchFieldException e) {
-            // No values are defined in the enum class
-            ENUMVALUECACHE.putIfAbsent(enumClass, List.of());
-            return List.of();
-        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> List<T> castPreviousValues(List<?> previousValues) {
-        return (List<T>)previousValues;
+    public static <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
+        return EnumType.getValuesFromType(enumClass);
     }
 
     @Override

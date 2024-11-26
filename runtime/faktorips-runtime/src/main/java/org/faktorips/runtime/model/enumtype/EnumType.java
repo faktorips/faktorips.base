@@ -14,11 +14,13 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IRuntimeRepository;
@@ -37,6 +39,7 @@ import org.faktorips.runtime.model.type.Documentation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
+import org.faktorips.runtime.util.ReflectionHelper;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.values.ListUtil;
 
@@ -46,6 +49,8 @@ import org.faktorips.values.ListUtil;
 public class EnumType extends ModelElement {
 
     public static final String KIND_NAME = "EnumType";
+
+    private static final ConcurrentHashMap<Class<?>, List<?>> ENUMVALUECACHE = new ConcurrentHashMap<>();
 
     private final MessagesHelper messagesHelper;
 
@@ -120,6 +125,34 @@ public class EnumType extends ModelElement {
      */
     public EnumAttribute getDisplayNameAttribute() {
         return findMarkedAttribute("DisplayName", EnumAttribute::isDisplayName);
+    }
+
+    /**
+     * Returns the values that are defined in the type, if any. Values defined in an enum content
+     * are not returned here but must be retrieved via
+     * {@link IRuntimeRepository#getEnumValues(Class)}.
+     *
+     * @param enumClass The class of which you want to get the enumeration values
+     * @return A list of instances of {@code enumClass} that are defined as enumeration values of
+     *             the specified type.
+     *
+     * @since 25.1
+     */
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> getValuesFromType(Class<T> enumClass) {
+        return Collections.unmodifiableList(
+                (List<T>)ENUMVALUECACHE.computeIfAbsent(enumClass, EnumType::findEnumValuesDefinedInType));
+    }
+
+    private static <T> List<T> findEnumValuesDefinedInType(Class<T> enumClass) {
+        if (enumClass.isEnum()) {
+            return Arrays.asList(enumClass.getEnumConstants());
+        }
+
+        return ReflectionHelper.<List<T>> findStaticFieldValue(enumClass, "VALUES")
+                .map(Collections::unmodifiableList)
+                .orElseGet(List::of);
     }
 
     /**

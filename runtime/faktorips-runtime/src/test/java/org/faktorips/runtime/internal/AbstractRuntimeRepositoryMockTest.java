@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -49,20 +48,28 @@ public class AbstractRuntimeRepositoryMockTest {
 
     @Test
     public void testGetEnumValuesDefinedInType() {
-        AbstractRuntimeRepository abstractRuntimeRepository = mock(AbstractRuntimeRepository.class, CALLS_REAL_METHODS);
-
-        List<ExtensibleEnum> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
+        List<ExtensibleEnum> enumValues = AbstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
 
         assertEquals(ExtensibleEnum.VALUES, enumValues);
     }
 
     @Test
     public void testGetEnumValuesDefinedInType_JavaEnum() {
-        AbstractRuntimeRepository abstractRuntimeRepository = mock(AbstractRuntimeRepository.class, CALLS_REAL_METHODS);
-
-        List<RealEnum> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(RealEnum.class);
+        List<RealEnum> enumValues = AbstractRuntimeRepository.getEnumValuesDefinedInType(RealEnum.class);
 
         assertEquals(List.of(RealEnum.values()), enumValues);
+    }
+
+    @Test
+    public void testGetEnumValuesDefinedInType_Cache() {
+        List<ExtensibleEnum> expectedValues = ExtensibleEnum.VALUES;
+        List<ExtensibleEnum> firstCall = AbstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
+        assertEquals(expectedValues, firstCall);
+        ExtensibleEnum.VALUES = List.of(ExtensibleEnum.VALUE2);
+        List<ExtensibleEnum> secondCall = AbstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
+        assertEquals(expectedValues, secondCall);
+        assertEquals(firstCall, secondCall);
+        ExtensibleEnum.VALUES = List.of(ExtensibleEnum.VALUE1, ExtensibleEnum.VALUE2);
     }
 
     @Test
@@ -138,7 +145,7 @@ public class AbstractRuntimeRepositoryMockTest {
 
         public static final ExtensibleEnum VALUE2 = new ExtensibleEnum();
 
-        public static final List<ExtensibleEnum> VALUES = List.of(VALUE1, VALUE2);
+        public static List<ExtensibleEnum> VALUES = List.of(VALUE1, VALUE2);
 
     }
 

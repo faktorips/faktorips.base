@@ -262,17 +262,12 @@ public class EnumAttribute extends ModelElement {
     }
 
     private boolean isFromExtension(Object enumValue) {
-        // TODO FIPS-12259 Use EnumType#getValuesFromType instead?
-        try {
-            Field field = enumType.getEnumClass().getDeclaredField("productRepository");
-            field.setAccessible(true);
-            return field.get(enumValue) != null;
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            throw new IllegalStateException(
-                    "Can't validate multilingual attribute " + enumType + "." + this
-                            + " because accessing the internal field failed",
-                    e);
+        if (enumValue == null) {
+            return false;
         }
+
+        List<?> typeValues = EnumType.getValuesFromType(enumValue.getClass());
+        return !typeValues.contains(enumValue);
     }
 
 }

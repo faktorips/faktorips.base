@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -27,6 +28,9 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.ValidationContext;
+import org.faktorips.runtime.internal.AbstractRuntimeRepository;
+import org.faktorips.runtime.internal.AbstractRuntimeRepositoryMockTest.ExtensibleEnum;
+import org.faktorips.runtime.internal.AbstractRuntimeRepositoryMockTest.RealEnum;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
@@ -93,6 +97,32 @@ public class EnumTypeTest {
     @Test
     public void testGetIdAttribute() {
         assertThat(new EnumType(Foo.class).getIdAttribute().getName(), is(equalTo("x")));
+    }
+
+    @Test
+    public void testGetValuesFromType() {
+        List<ExtensibleEnum> enumValues = EnumType.getValuesFromType(ExtensibleEnum.class);
+
+        assertEquals(ExtensibleEnum.VALUES, enumValues);
+    }
+
+    @Test
+    public void testGetValuesFromType_Cache() {
+        List<ExtensibleEnum> expectedValues = ExtensibleEnum.VALUES;
+        List<ExtensibleEnum> firstCall = AbstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
+        assertEquals(expectedValues, firstCall);
+        ExtensibleEnum.VALUES = List.of(ExtensibleEnum.VALUE2);
+        List<ExtensibleEnum> secondCall = AbstractRuntimeRepository.getEnumValuesDefinedInType(ExtensibleEnum.class);
+        assertEquals(expectedValues, secondCall);
+        assertEquals(firstCall, secondCall);
+        ExtensibleEnum.VALUES = List.of(ExtensibleEnum.VALUE1, ExtensibleEnum.VALUE2);
+    }
+
+    @Test
+    public void testGetValuesFromType_JavaEnum() {
+        List<RealEnum> enumValues = EnumType.getValuesFromType(RealEnum.class);
+
+        assertEquals(List.of(RealEnum.values()), enumValues);
     }
 
     @Test(expected = IllegalStateException.class)
