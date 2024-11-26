@@ -9,7 +9,7 @@ pipeline {
 
     parameters {
         string description: 'Die nächste Version, z.B. 22.12.1 (-SNAPSHOT wird automatisch hinzugefügt)', name: 'NEW_VERSION'
-        string branch: defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH'
+        string defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH'
     }
 
     tools {
