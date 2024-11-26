@@ -448,9 +448,12 @@ class ProductAssociationTmpl {
                         this.«fieldName».put(link.getTargetId(), link);
                     }
                 «ELSE»
-                    Element element = associationElements.get(0);
-                    «fieldName» = new «ProductComponentLink»(this);
-                    «fieldName».initFromXml(element);
+                    for (Element element : associationElements) {
+                        if (!"0".equals(element.getAttribute("maxCardinality"))) {
+                            «fieldName» = new «ProductComponentLink»(this);
+                            «fieldName».initFromXml(element);
+                        }
+                    }
                 «ENDIF»
                 }
             }
