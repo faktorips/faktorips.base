@@ -12,11 +12,16 @@ package org.faktorips.runtime.model.type;
 
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.FormulaUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -30,6 +35,11 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
  * @since 24.7
  */
 public class Formula extends TypePart {
+
+    public static final String MSGCODE_REQUIRED_FORMULA_IS_EMPTY = "MSGCODE_REQUIRED_FORMULA_IS_EMPTY";
+    public static final String MSGKEY_REQUIRED_FORMULA_IS_EMPTY = "Formula.RequiredFormulaIsEmpty";
+
+    public static final String PROPERTY_REQUIRED_FORMULA = "requiredFormula";
 
     private final IpsFormula annotation;
 
@@ -96,6 +106,15 @@ public class Formula extends TypePart {
         return annotation.name();
     }
 
+    /**
+     * @return {@code true} if the formula is required, {@code false} otherwise
+     *
+     * @since 25.1
+     */
+    public boolean isRequired() {
+        return annotation.required();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getFormulaName());
@@ -105,6 +124,22 @@ public class Formula extends TypePart {
         sb.append(": ");
         sb.append(getter.getReturnType());
         return sb.toString();
+    }
+
+    @Override
+    public void validate(MessageList list,
+            IValidationContext context,
+            IProductComponent productComponent,
+            Calendar effectiveDate) {
+        ResourceBundle messages = ResourceBundle.getBundle(Formula.class.getName(), context.getLocale());
+        String formatString = String.format(messages.getString(MSGKEY_REQUIRED_FORMULA_IS_EMPTY),
+                getLabel(context.getLocale()), productComponent.getId());
+
+        if (isRequired() && IpsStringUtils.isEmpty(getFormulaText(productComponent, effectiveDate))) {
+            list.newError(MSGCODE_REQUIRED_FORMULA_IS_EMPTY, formatString,
+                    new ObjectProperty(this, PROPERTY_REQUIRED_FORMULA),
+                    new ObjectProperty(productComponent, getName()));
+        }
     }
 
     private static class FormulaUtilAccess extends FormulaUtil {

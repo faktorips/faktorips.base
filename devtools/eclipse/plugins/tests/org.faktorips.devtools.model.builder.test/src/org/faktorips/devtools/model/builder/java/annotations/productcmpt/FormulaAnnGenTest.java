@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.xmodel.XMethod;
-import org.faktorips.devtools.model.builder.xmodel.productcmpt.XTableUsage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -32,8 +31,22 @@ public class FormulaAnnGenTest {
     private FormulaAnnGen generator = new FormulaAnnGen();
 
     @Test
-    public void testCreateFormulaMethodAnnotation() {
+    public void testCreateFormulaMethodAnnotation_RequiredFormula() {
         when(method.getFormularName()).thenReturn("testFormula");
+        when(method.isFormulaOptional()).thenReturn(false);
+
+        JavaCodeFragment annotationCode = generator.createAnnotation(method);
+
+        assertEquals("@IpsFormula(name = \"testFormula\", required = true)" + System.lineSeparator(),
+                annotationCode.getSourcecode());
+        assertThat(annotationCode.getImportDeclaration().getImports(),
+                hasItem("org.faktorips.runtime.model.annotation.IpsFormula"));
+    }
+
+    @Test
+    public void testCreateFormulaMethodAnnotation_OptionalFormula() {
+        when(method.getFormularName()).thenReturn("testFormula");
+        when(method.isFormulaOptional()).thenReturn(true);
 
         JavaCodeFragment annotationCode = generator.createAnnotation(method);
 

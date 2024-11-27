@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,4 +28,16 @@ public @interface IpsFormula {
      * The formula name.
      */
     String name();
+
+    /**
+     * Indicates whether the formula is required.
+     *
+     * <p>
+     * When set to {@code true}, this signifies that the formula must be present. The default value
+     * is {@code false}.
+     * </p>
+     *
+     * @return {@code true} if the formula is required, {@code false} otherwise
+     */
+    boolean required() default false;
 }

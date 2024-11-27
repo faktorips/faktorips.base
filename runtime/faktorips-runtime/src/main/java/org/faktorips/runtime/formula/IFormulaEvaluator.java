@@ -31,11 +31,11 @@ public interface IFormulaEvaluator {
     /**
      * Evaluates the formula with the given name and the specified parameters.
      * 
-     * @param formularName The name of the formula to evaluate
+     * @param formulaName The name of the formula to evaluate
      * @param parameters the parameters the formula requires when being evaluated
      * @return the result of the evaluated formula
      */
-    Object evaluate(String formularName, Object... parameters);
+    Object evaluate(String formulaName, Object... parameters);
 
     /**
      * Returns a defensive copy of the map of expressions/formulas held by this evaluator.

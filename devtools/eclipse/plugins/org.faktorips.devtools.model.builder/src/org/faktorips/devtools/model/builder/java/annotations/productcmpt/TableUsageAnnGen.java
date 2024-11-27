@@ -36,7 +36,9 @@ public class TableUsageAnnGen implements IAnnotationGenerator {
         List<String> tableClassNames = tableUsage.getAllTableClassNames();
 
         boolean isRequired = tableUsage.getTableStructureUsage().isMandatoryTableContent();
-        stringBuilder.append(", required = ").append(isRequired);
+        if (isRequired) {
+            stringBuilder.append(", required = ").append(true);
+        }
 
         if (!tableClassNames.isEmpty()) {
             String joinedTableClasses = tableClassNames.stream()
