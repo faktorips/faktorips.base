@@ -322,7 +322,7 @@ public class TestCaseTypeSection extends IpsSection {
         public Section getSection(IIpsObjectPart mainSectionObject) {
             var part = mainSectionObject;
             if (part instanceof ITestAttribute) {
-                part = (IIpsObjectPart)((ITestAttribute)part).getParent();
+                part = (IIpsObjectPart)part.getParent();
             }
             return sections.get(getKeyFor(part));
         }
@@ -800,7 +800,7 @@ public class TestCaseTypeSection extends IpsSection {
             selectSection(section);
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter;
             if (object instanceof ITestAttribute) {
-                testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)((ITestAttribute)object).getParent();
+                testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)object.getParent();
             } else if (object instanceof ITestPolicyCmptTypeParameter) {
                 testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)object;
             } else {
@@ -1416,7 +1416,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void addAttributeClicked(IIpsObjectPart object) {
         ITestPolicyCmptTypeParameter testPolicyCmptTypeParam;
         if (object instanceof ITestAttribute) {
-            testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)((ITestAttribute)object).getParent();
+            testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object.getParent();
         } else if (object instanceof ITestPolicyCmptTypeParameter) {
             testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object;
         } else {
@@ -2348,16 +2348,17 @@ public class TestCaseTypeSection extends IpsSection {
     }
 
     private ITestParameter updateTestParam(ITestParameter testParam) {
-        ITestPolicyCmptTypeParameter updatedTestParameter = (ITestPolicyCmptTypeParameter)getUpdatedIpsElement(
-                testParam);
-        objectCache.getAllSectionButtons().forEach(sb -> {
-            if (sb.testParameter == testParam) {
-                sb.testParameter = updatedTestParameter;
-            }
-        });
-        var value = objectCache.getAttributeDetails(testParam);
-        objectCache.putAttributeDetails(updatedTestParameter, value);
-        return updatedTestParameter;
+        ITestParameter updatedIpsElement = getUpdatedIpsElement(testParam);
+        if (updatedIpsElement instanceof ITestPolicyCmptTypeParameter updatedTestParameter) {
+            objectCache.getAllSectionButtons().forEach(sb -> {
+                if (sb.testParameter == testParam) {
+                    sb.testParameter = updatedTestParameter;
+                }
+            });
+            var value = objectCache.getAttributeDetails(testParam);
+            objectCache.putAttributeDetails(updatedTestParameter, value);
+        }
+        return updatedIpsElement;
     }
 
     private <R extends IIpsElement> R getUpdatedIpsElement(R ipsElement) {
