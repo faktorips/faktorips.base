@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -282,10 +283,13 @@ public interface Identifier {
         }
 
         private static Optional<IEnumAttribute> findIdAttribute(IEnumValueContainer enumValueContainer) {
-            return enumValueContainer.findEnumType(enumValueContainer.getIpsProject())
-                    .getEnumAttributes(false).stream()
-                    .filter(a -> a.findIsIdentifier(enumValueContainer.getIpsProject()))
-                    .findFirst();
+            IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+            return enumType == null
+                    ? Optional.empty()
+                    : enumType
+                            .getEnumAttributes(false).stream()
+                            .filter(a -> a.findIsIdentifier(enumValueContainer.getIpsProject()))
+                            .findFirst();
         }
 
         static Identifier of(Element partEl, IEnumValueContainer enumValueContainer) {
