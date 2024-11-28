@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -74,6 +74,9 @@ public class Messages extends NLS {
     public static String NewTestParamDetailWizardPage_Description;
     public static String NewRootParamWizardPage_Label_Datatype;
     public static String NewRootParamWizardPage_Error_DatatypeDoesNotExists;
+    public static String NewRootParamWizardPage_Error_DatatypeFieldIsEmpty;
+    public static String NewRootParamWizardPage_Error_NameFieldIsEmpty;
+    public static String NewRootParamWizardPage_Error_ParamTypeFieldIsEmpty;
     public static String TestCaseTypeSection_Button_NewRootParameter;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName;
     public static String TestCaseTypeSection_AttributeTable_ColumnTitleAttribute;

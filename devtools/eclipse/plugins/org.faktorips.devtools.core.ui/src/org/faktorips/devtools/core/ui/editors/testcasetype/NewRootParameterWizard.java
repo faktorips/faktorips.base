@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.faktorips.util.memento.Memento;
  * Wizard to create a root test policy cmpt type param or value datatype. First page selection of
  * value datatype or policy cmpt type. Second page if value datatype: name and type if policy cmpt
  * type: name, type, min instance, max instance and requires product
- * 
+ *
  * @author Joerg Ortmann
  */
 public class NewRootParameterWizard extends Wizard implements IBlockedValidationWizard {
@@ -86,6 +86,9 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
 
     @Override
     public boolean performFinish() {
+        if (kindOfTestParameter == TEST_RULE_PARAMETER) {
+            connectNewParameterToModel();
+        }
         return true;
     }
 
@@ -145,14 +148,17 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
 
     /**
      * Creates a new test rule parameter
+     *
+     * @param name the name of the new rule parameter.
+     *
+     * @return the newly created test rule parameter as an {@link ITestParameter}.
      */
-    public ITestParameter newTestRuleParameter() {
+    public ITestParameter newTestRuleParameter(String name) {
         createMemento();
 
         isTestPolicyCmptTypeParam = false;
         newTestParameter = testCaseType.newExpectedResultRuleParameter();
-
-        connectNewParameterToModel();
+        newTestParameter.setName(name);
 
         return newTestParameter;
     }

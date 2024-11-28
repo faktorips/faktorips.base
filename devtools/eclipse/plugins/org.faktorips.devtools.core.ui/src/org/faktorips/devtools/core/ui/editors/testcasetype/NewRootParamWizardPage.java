@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * Wizard page to create a new root test policy cmpt type parameter.<br>
  * The following fields will be handled: Datatype (ValuaDatatype or policy cmpt type), parameter
  * name and the test parameter type (input, exp result or combined).
- * 
+ *
  * @author Joerg Ortmann
  */
 public class NewRootParamWizardPage extends WizardPage implements ValueChangeListener {
@@ -54,6 +54,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     private EnumField<TestParameterType> editFieldParamType;
 
     private String prevDatatypeOrRule;
+    private String prevName;
 
     private Composite parentComposite;
 
@@ -88,7 +89,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         createEditFieldParamType(c);
 
         setControl(c);
-
+        validatePage();
         setPageComplete(false);
     }
 
@@ -104,6 +105,10 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == editFieldDatatypeOrRule) {
             datatypeChanged(editFieldDatatypeOrRule.getText());
+        }
+
+        if (e.field == editFieldName) {
+            nameChanged(editFieldName.getText());
         }
         wizard.postAsyncRunnable(() -> {
             Shell shell = wizard.getShell();
@@ -133,6 +138,22 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     }
 
     /**
+     * Name of the rule parameter has changed.
+     *
+     * @param name the name of the rule parameter.
+     */
+    private void nameChanged(String name) {
+        if (name.equals(prevName) || IpsStringUtils.isEmpty(name)) {
+            return;
+        }
+        prevName = name;
+
+        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER) {
+            wizard.newTestRuleParameter(name);
+        }
+    }
+
+    /**
      * Finds and returns the datatype with the given name.
      */
     private Datatype findDatatype(String datatype) {
@@ -148,6 +169,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (editFieldDatatypeOrRule != null && !editFieldDatatypeOrRule.getControl().isDisposed()) {
             datatypeOrRule = editFieldDatatypeOrRule.getText();
             if (IpsStringUtils.isEmpty(datatypeOrRule)) {
+                setErrorMessage(Messages.NewRootParamWizardPage_Error_DatatypeFieldIsEmpty);
                 return false;
             }
         }
@@ -159,7 +181,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             }
         }
 
-        if ("".equals(editFieldParamType.getText()) || "".equals(editFieldName.getText())) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (editFieldName.getText().isEmpty()) {
+            setErrorMessage(Messages.NewRootParamWizardPage_Error_NameFieldIsEmpty);
             return false;
         }
 
@@ -170,7 +193,15 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             return false;
         }
 
-        return validatePolicyTypeParametersAndPage(newTestParameter);
+        if (editFieldParamType.getText().isEmpty()) {
+            setErrorMessage(Messages.NewRootParamWizardPage_Error_ParamTypeFieldIsEmpty);
+            return false;
+        }
+
+        return wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER
+                ? wizard.isPageValid(PAGE_NUMBER)
+                : validatePolicyTypeParametersAndPage(newTestParameter);
+
     }
 
     private boolean validatePolicyTypeParametersAndPage(ITestParameter newTestParameter) {
@@ -227,7 +258,10 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (!editFieldDatatypeOrRule.getControl().isDisposed()) {
             editFieldDatatypeOrRule.setText(""); //$NON-NLS-1$
         }
-        editFieldName.setText(""); //$NON-NLS-1$
+        prevName = ""; //$NON-NLS-1$
+        if (!editFieldName.getControl().isDisposed()) {
+            editFieldName.setText(""); //$NON-NLS-1$
+        }
 
         contentComposite.dispose();
         createControl(parentComposite);
@@ -237,7 +271,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
         // in case of a rule parameter create the test rule parameter, no further input is necessary
         if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER) {
-            wizard.newTestRuleParameter();
+            wizard.newTestRuleParameter("");
         }
 
         setErrorMessage(null);
