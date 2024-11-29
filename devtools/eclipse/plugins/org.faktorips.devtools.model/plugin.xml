@@ -145,4 +145,57 @@
             id="org.faktorips.devtools.model.bundleVersionProvider">
       </versionProvider>
    </extension>
+   <extension
+         point="org.eclipse.wst.xml.core.catalogContributions">
+      <catalogContribution id="default">
+        <system
+              id="enumContent"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/EnumContent.xsd"
+              uri="xsd-schema/EnumContent.xsd"/>
+        <system
+              id="enumType"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/EnumType.xsd"
+              uri="xsd-schema/EnumType.xsd"/>
+        <system
+              id="ips-global"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ips-global.xsd"
+              uri="xsd-schema/ips-global.xsd"/>
+        <system
+              id="ipsProjectProperties"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ipsProjectProperties.xsd"
+              uri="xsd-schema/ipsProjectProperties.xsd"/>
+        <system
+              id="policyCmptType"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/PolicyCmptType.xsd"
+              uri="xsd-schema/PolicyCmptType.xsd"/>
+        <system
+              id="productCmpt"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ProductCmpt.xsd"
+              uri="xsd-schema/ProductCmpt.xsd"/>
+        <system
+              id="productCmptType2"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ProductCmptType2.xsd"
+              uri="xsd-schema/ProductCmptType2.xsd"/>
+        <system
+              id="tableContents"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TableContents.xsd"
+              uri="xsd-schema/TableContents.xsd"/>
+        <system
+              id="tableOfContents"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TableOfContents.xsd"
+              uri="xsd-schema/TableOfContents.xsd"/>
+        <system
+              id="tableStructure"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TableStructure.xsd"
+              uri="xsd-schema/TableStructure.xsd"/>
+        <system
+              id="testCase"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TestCase.xsd"
+              uri="xsd-schema/TestCase.xsd"/>
+        <system
+              id="testCaseType"
+              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TestCaseType.xsd"
+              uri="xsd-schema/TestCaseType.xsd"/>
+      </catalogContribution>
+   </extension>
 </plugin>
