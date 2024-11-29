@@ -150,51 +150,51 @@
       <catalogContribution id="default">
         <system
               id="enumContent"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/EnumContent.xsd"
+              systemId="%xsd.enumcontent.url"
               uri="xsd-schema/EnumContent.xsd"/>
         <system
               id="enumType"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/EnumType.xsd"
+              systemId="%xsd.enumtype.url"
               uri="xsd-schema/EnumType.xsd"/>
         <system
               id="ips-global"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ips-global.xsd"
+              systemId="%xsd.ipsglobal.url"
               uri="xsd-schema/ips-global.xsd"/>
         <system
               id="ipsProjectProperties"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ipsProjectProperties.xsd"
+              systemId="%xsd.ipsproject.url"
               uri="xsd-schema/ipsProjectProperties.xsd"/>
         <system
               id="policyCmptType"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/PolicyCmptType.xsd"
+              systemId="%xsd.policycmpttype.url"
               uri="xsd-schema/PolicyCmptType.xsd"/>
         <system
               id="productCmpt"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ProductCmpt.xsd"
+              systemId="%xsd.productcmpt.url"
               uri="xsd-schema/ProductCmpt.xsd"/>
         <system
               id="productCmptType2"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/ProductCmptType2.xsd"
+              systemId="%xsd.productcmpttype.url"
               uri="xsd-schema/ProductCmptType2.xsd"/>
         <system
               id="tableContents"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TableContents.xsd"
+              systemId="%xsd.tablecontents.url"
               uri="xsd-schema/TableContents.xsd"/>
         <system
               id="tableOfContents"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TableOfContents.xsd"
+              systemId="%xsd.tableofcontents.url"
               uri="xsd-schema/TableOfContents.xsd"/>
         <system
               id="tableStructure"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TableStructure.xsd"
+              systemId="%xsd.tablestructure.url"
               uri="xsd-schema/TableStructure.xsd"/>
         <system
               id="testCase"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TestCase.xsd"
+              systemId="%xsd.testcase.url"
               uri="xsd-schema/TestCase.xsd"/>
         <system
               id="testCaseType"
-              systemId="https://doc.faktorzehn.org/schema/faktor-ips/25.1/TestCaseType.xsd"
+              systemId="%xsd.testcasetype.url"
               uri="xsd-schema/TestCaseType.xsd"/>
       </catalogContribution>
    </extension>

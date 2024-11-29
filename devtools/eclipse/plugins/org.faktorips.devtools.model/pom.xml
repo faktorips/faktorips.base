@@ -71,6 +71,55 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+
+                    <!-- Change the xsd urls in plugin.properties -->
+                    <execution>
+                        <id>update-plugin-xsd-urls</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/plugin.properties" tofile="${basedir}/plugin.properties.backup" />
+                                <loadresource property="majorVersion">
+                                  <string value="${unqualifiedVersion}"/>
+                                  <filterchain>
+                                    <tokenfilter>
+                                      <replaceregex pattern="(\w+).(\w+).\w+.*\w*" replace="\1"/>
+                                    </tokenfilter>
+                                  </filterchain>
+                                </loadresource>
+                                <loadresource property="minorVersion">
+                                  <string value="${unqualifiedVersion}"/>
+                                  <filterchain>
+                                    <tokenfilter>
+                                      <replaceregex pattern="(\w+).(\w+).\w+.*\w*" replace="\2"/>
+                                    </tokenfilter>
+                                  </filterchain>
+                                </loadresource>
+                                <replace file="${basedir}/plugin.properties">
+                                    <replacefilter token="@version@" value="${majorVersion}.${minorVersion}" />
+                                </replace>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Restore the plugin.properties with tokens -->
+                    <execution>
+                        <id>restore-plugin-xsd-urls</id>
+                        <phase>verify</phase>
+                        <configuration>
+                            <target>
+                                <delete file="${basedir}/plugin.properties" />
+                                <move file="${basedir}/plugin.properties.backup" tofile="${basedir}/plugin.properties" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+
                 </executions>
             </plugin>
             <plugin>
