@@ -12,7 +12,9 @@ package org.faktorips.runtime;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -228,6 +230,207 @@ public class InMemoryRuntimeRepositoryTest {
         TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
         repository.putTable(t1);
         assertEquals(t1, repository.getTable("motor.RateTable"));
+    }
+
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.SINGLE_CONTENT, columns = { "company",
+            "Gender", "rate" })
+    public class TestSingleContentTable3 extends TestSingleContentTable {
+        public TestSingleContentTable3(String qName) {
+            super(qName);
+            rows = new ArrayList<>();
+            init();
+        }
+    }
+
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.SINGLE_CONTENT, columns = { "company",
+            "Gender", "rate" })
+    public class TestSingleContentTable4 extends TestSingleContentTable {
+        public TestSingleContentTable4(String qName) {
+            super(qName);
+            rows = new ArrayList<>();
+            init();
+        }
+    }
+
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.SINGLE_CONTENT, columns = { "company",
+            "Gender", "rate" })
+    public class TestSingleContentTable5 extends TestSingleContentTable {
+        public TestSingleContentTable5(String qName) {
+            super(qName);
+            rows = new ArrayList<>();
+            init();
+        }
+    }
+
+    @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.SINGLE_CONTENT, columns = { "company",
+            "Gender", "rate" })
+    public class TestSingleContentTable6 extends TestSingleContentTable {
+        public TestSingleContentTable6(String qName) {
+            super(qName);
+            rows = new ArrayList<>();
+            init();
+        }
+    }
+
+    @Test
+    public void testGetAllTables_MultiAndSingleContent() {
+        TestSingleContentTable3 t1 = new TestSingleContentTable3("your.ZSingleContent");
+        repository.putTable(t1);
+        TestTable t2 = new TestTable("my.MultiContent");
+        repository.putTable(t2);
+        TestTable t3 = new TestTable("my.MultiContentTwice");
+        repository.putTable(t3);
+        TestSingleContentTable4 t4 = new TestSingleContentTable4("my.aaSingleContent");
+        repository.putTable(t4);
+        TestTable t5 = new TestTable("my.FifthTable");
+        repository.putTable(t5);
+
+        assertThat(repository.getAllTables(), contains(t4, t5, t2, t3, t1));
+    }
+
+    @Test
+    public void testGetAllTables_SingleContent() {
+        // since all TestSingleContentTables here extend from TestSingleContentTable, we don't test
+        // with TestSingleContentTable since putTable overwrites it
+        TestSingleContentTable3 t3 = new TestSingleContentTable3("my.aComSingleContentTable");
+        repository.putTable(t3);
+        TestSingleContentTable4 t4 = new TestSingleContentTable4("my.BSingleContentTable");
+        repository.putTable(t4);
+        TestSingleContentTable5 t5 = new TestSingleContentTable5("my.aSingleContentTable");
+        repository.putTable(t5);
+        TestSingleContentTable6 t6 = new TestSingleContentTable6("a.aSingleContentTable");
+        repository.putTable(t6);
+
+        assertThat(repository.getAllTables(), contains(t6, t3, t5, t4));
+    }
+
+    @Test
+    public void testGetAllTables_OverwriteSingleContent() {
+        TestSingleContentTable t1 = new TestSingleContentTable("my.S1");
+        repository.putTable(t1);
+        TestSingleContentTable3 t2 = new TestSingleContentTable3("my.S2");
+        repository.putTable(t2);
+
+        assertThat(repository.getAllTables(), contains(t2));
+    }
+
+    @Test
+    public void testGetAllTables_MultiContent() {
+        TestTable t1 = new TestTable("my.Content");
+        repository.putTable(t1);
+        TestTable t2 = new TestTable("my.Content2");
+        repository.putTable(t2);
+        TestTable t3 = new TestTable("my.AContent");
+        repository.putTable(t3);
+
+        assertThat(repository.getAllTables(), contains(t3, t1, t2));
+    }
+
+    @Test
+    public void testGetAllTables_EmptyAfterRemoval() {
+        TestTable t1 = new TestTable("my.T1");
+        repository.putTable(t1);
+        TestSingleContentTable t2 = new TestSingleContentTable("my.T2");
+        repository.putTable(t2);
+        assertThat(repository.getAllTables(), contains(t1, t2));
+        repository.removeTable(t1);
+        repository.removeTable(t2);
+
+        assertThat(repository.getAllTables(), empty());
+    }
+
+    @Test
+    public void testGetAllTableIds_MultiAndSingleContent() {
+        TestSingleContentTable3 t1 = new TestSingleContentTable3("your.ZSingleContent");
+        repository.putTable(t1);
+        TestTable t2 = new TestTable("my.MultiContent");
+        repository.putTable(t2);
+        TestTable t3 = new TestTable("my.MultiContentTwice");
+        repository.putTable(t3);
+        TestSingleContentTable4 t4 = new TestSingleContentTable4("my.aaSingleContent");
+        repository.putTable(t4);
+        TestTable t5 = new TestTable("my.FifthTable");
+        repository.putTable(t5);
+
+        String id1 = t1.getName();
+        String id2 = t2.getName();
+        String id3 = t3.getName();
+        String id4 = t4.getName();
+        String id5 = t5.getName();
+
+        assertThat(repository.getAllTableIds(), contains(id4, id5, id2, id3, id1));
+    }
+
+    @Test
+    public void testGetAllTableIds_SingleContent() {
+        TestSingleContentTable3 t3 = new TestSingleContentTable3("my.aComSingleContentTable");
+        repository.putTable(t3);
+        TestSingleContentTable4 t4 = new TestSingleContentTable4("my.BSingleContentTable");
+        repository.putTable(t4);
+        TestSingleContentTable5 t5 = new TestSingleContentTable5("my.aSingleContentTable");
+        repository.putTable(t5);
+        TestSingleContentTable6 t6 = new TestSingleContentTable6("a.aSingleContentTable");
+        repository.putTable(t6);
+
+        String id3 = t3.getName();
+        String id4 = t4.getName();
+        String id5 = t5.getName();
+        String id6 = t6.getName();
+
+        assertThat(repository.getAllTableIds(), contains(id6, id3, id5, id4));
+    }
+
+    @Test
+    public void testGetAllTableIds_OverwriteSingleContent() {
+        TestSingleContentTable t1 = new TestSingleContentTable("my.S1");
+        repository.putTable(t1);
+        TestSingleContentTable3 t2 = new TestSingleContentTable3("my.S2");
+        repository.putTable(t2);
+
+        String id = t2.getName();
+
+        assertThat(repository.getAllTableIds(), contains(id));
+    }
+
+    @Test
+    public void testGetAllTableIds_MultiContent() {
+        TestTable t1 = new TestTable("my.Content");
+        repository.putTable(t1);
+        TestTable t2 = new TestTable("my.Content2");
+        repository.putTable(t2);
+        TestTable t3 = new TestTable("my.AContent");
+        repository.putTable(t3);
+
+        String id1 = t1.getName();
+        String id2 = t2.getName();
+        String id3 = t3.getName();
+
+        assertThat(repository.getAllTableIds(), contains(id3, id1, id2));
+    }
+
+    @Test
+    public void testGetAllTableIds_AfterRemoval() {
+        TestTable t1 = new TestTable("my.T1");
+        repository.putTable(t1);
+        TestSingleContentTable t2 = new TestSingleContentTable("my.T2");
+        repository.putTable(t2);
+        assertThat(repository.getAllTables(), contains(t1, t2));
+        repository.removeTable(t1);
+        repository.removeTable(t2);
+
+        assertThat(repository.getAllTableIds(), empty());
+    }
+
+    @Test
+    public void testGetAllTableIds_DuplicateNames() {
+        TestTable t1 = new TestTable("my.T1");
+        repository.putTable(t1);
+        TestSingleContentTable t2 = new TestSingleContentTable("my.T1");
+        repository.putTable(t2);
+
+        String id = t1.getName();
+
+        assertThat(repository.getAllTableIds(), contains(id));
     }
 
     @Test

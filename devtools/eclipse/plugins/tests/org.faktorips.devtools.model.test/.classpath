@@ -7,6 +7,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="var" path="M2_REPO/org/objenesis/objenesis/3.2/objenesis-3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

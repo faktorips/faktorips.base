@@ -10,8 +10,6 @@
 
 package org.faktorips.runtime;
 
-import static java.util.function.Predicate.not;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -143,13 +141,18 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
 
     @Override
     protected void getAllTables(List<ITable<?>> result) {
-        result.addAll(singleContentTables);
+        Stream.concat(
+                singleContentTables.stream(),
+                multipleContentTables.values().stream())
+                .sorted(Comparator.comparing(ITable::getName, String.CASE_INSENSITIVE_ORDER))
+                .forEach(result::add);
     }
 
     @Override
     public void getAllTableIds(List<String> result) {
         Stream.concat(singleContentTables.stream().map(ITable::getName), multipleContentTables.keySet().stream())
-                .filter(not(result::contains))
+                .distinct()
+                .sorted(String.CASE_INSENSITIVE_ORDER)
                 .forEach(result::add);
     }
 
