@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>24.7.6-SNAPSHOT</version>
+        <version>24.7.6.release</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
