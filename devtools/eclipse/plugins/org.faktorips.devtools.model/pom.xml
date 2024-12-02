@@ -21,7 +21,6 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.6</version>
                 <executions>
-
                     <!-- Change the plugin.properties -->
                     <execution>
                         <id>update-plugin-properties</id>
@@ -33,7 +32,6 @@
                                     <replacefilter token="@version@" value="${unqualifiedVersion}" />
                                     <replacefilter token="@buildId@" value="${buildQualifier}" />
                                 </replace>
-
                             </target>
                         </configuration>
                         <goals>
@@ -79,24 +77,16 @@
                         <configuration>
                             <target>
                                 <copy file="${basedir}/plugin.properties" tofile="${basedir}/plugin.properties.backup" />
-                                <loadresource property="majorVersion">
+                                <loadresource property="majorMinorVersion">
                                   <string value="${unqualifiedVersion}"/>
                                   <filterchain>
                                     <tokenfilter>
-                                      <replaceregex pattern="(\w+).(\w+).\w+.*\w*" replace="\1"/>
-                                    </tokenfilter>
-                                  </filterchain>
-                                </loadresource>
-                                <loadresource property="minorVersion">
-                                  <string value="${unqualifiedVersion}"/>
-                                  <filterchain>
-                                    <tokenfilter>
-                                      <replaceregex pattern="(\w+).(\w+).\w+.*\w*" replace="\2"/>
+                                      <replaceregex pattern="(\d+)\.(\d+).*" replace="\1.\2"/>
                                     </tokenfilter>
                                   </filterchain>
                                 </loadresource>
                                 <replace file="${basedir}/plugin.properties">
-                                    <replacefilter token="@version@" value="${majorVersion}.${minorVersion}" />
+                                    <replacefilter token="@version@" value="${majorMinorVersion}" />
                                 </replace>
                             </target>
                         </configuration>
@@ -119,7 +109,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-
                 </executions>
             </plugin>
             <plugin>
