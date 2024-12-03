@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -170,7 +170,9 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
         } else if (maximumLength == null) {
             equality = 1;
         } else {
-            equality = Integer.compare(Integer.parseInt(maximumLength), Integer.parseInt(oLength));
+            equality = Integer.compare(
+                    IpsStringUtils.isBlank(maximumLength) ? Integer.MAX_VALUE : Integer.parseInt(maximumLength),
+                    IpsStringUtils.isBlank(oLength) ? Integer.MAX_VALUE : Integer.parseInt(oLength));
         }
         return equality == 0 ? compareContainsNull(o) : equality;
     }

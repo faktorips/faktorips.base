@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -161,9 +161,12 @@ public class StringLengthValueSetTest extends AbstractIpsPluginTest {
         StringLengthValueSet sl = new StringLengthValueSet(cValueSet, "50", "20");
         StringLengthValueSet sl2 = new StringLengthValueSet(cValueSet, "50", "12");
         StringLengthValueSet sl3 = new StringLengthValueSet(cValueSet, "50", "100");
+        StringLengthValueSet empty = new StringLengthValueSet(cValueSet, "50", "");
 
         assertTrue(sl.containsValueSet(sl2));
         assertFalse(sl.containsValueSet(sl3));
+        assertTrue(empty.containsValueSet(sl));
+        assertFalse(sl.containsValueSet(empty));
     }
 
     @Test
