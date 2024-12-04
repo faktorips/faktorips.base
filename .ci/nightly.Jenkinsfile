@@ -21,7 +21,7 @@ pipeline {
                 axes {
                     axis {
                         name 'TARGET_PLATFORM'
-                        values '2023-12', '2024-03', '2024-06', '2024-09'
+                        values '2023-12', '2024-03', '2024-06', '2024-09', '2024-12'
                     }
                 }
                 stages {
