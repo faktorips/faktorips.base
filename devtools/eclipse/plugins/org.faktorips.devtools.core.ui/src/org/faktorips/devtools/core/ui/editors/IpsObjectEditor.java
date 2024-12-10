@@ -38,6 +38,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -601,7 +602,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     protected boolean isVisible() {
-        return getSite().getPage().isPartVisible(this);
+        IWorkbenchPage page = getSite().getPage();
+        if (page != null) {
+            return page.isPartVisible(this);
+        }
+        return false;
     }
 
     protected void handleEditorActivation() {
