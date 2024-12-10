@@ -67,7 +67,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public Integer getParsedMaximumLength() {
-        return maximumLength == null ? null : Integer.parseInt(maximumLength);
+        return IpsStringUtils.isBlank(maximumLength) ? null : Integer.parseInt(maximumLength);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
         if (IpsStringUtils.isBlank(value)) {
             return isContainsNull();
         }
-        if (maximumLength == null) {
+        if (getParsedMaximumLength() == null) {
             return true;
         }
         return value.length() <= Integer.parseInt(maximumLength);

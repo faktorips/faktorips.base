@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ public class StringLengthValueSetValidator extends AbstractValueSetValidator<Str
         if (ValidationUtils.checkParsable(Datatype.INTEGER, maxLengthValue, getValueSet(),
                 StringLengthValueSet.PROPERTY_MAXIMUMLENGTH,
                 messages)) {
-            Integer maxLength = maxLengthValue == null ? null : Integer.parseInt(maxLengthValue);
+            Integer maxLength = getValueSet().getParsedMaximumLength();
             if (maxLength != null && maxLength < 0) {
                 messages.newError(StringLengthValueSet.MSGCODE_NEGATIVE_VALUE,
                         Messages.StringLength_msgNegativeValue, StringLengthValueSet.PROPERTY_MAXIMUMLENGTH);
