@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.faktorips.devtools.model.valueset.IValueSet.MSGCODE_UNKNOWN_DATATYPE;
 
-import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -40,7 +39,7 @@ public class StringLengthValueSetValidator extends AbstractValueSetValidator<Str
         if (ValidationUtils.checkParsable(Datatype.INTEGER, maxLengthValue, getValueSet(),
                 StringLengthValueSet.PROPERTY_MAXIMUMLENGTH,
                 messages)) {
-            Integer maxLength = StringUtils.isBlank(maxLengthValue) ? null : Integer.parseInt(maxLengthValue);
+            Integer maxLength = getValueSet().getParsedMaximumLength();
             if (maxLength != null && maxLength < 0) {
                 messages.newError(StringLengthValueSet.MSGCODE_NEGATIVE_VALUE,
                         Messages.StringLength_msgNegativeValue, StringLengthValueSet.PROPERTY_MAXIMUMLENGTH);
