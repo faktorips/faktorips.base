@@ -14,7 +14,8 @@ Export-Package: org.faktorips.devtools.model.decorators,
   x-friends:="org.faktorips.devtools.core.ui,
    org.faktorips.devtools.htmlexport.ui,
    org.faktorips.productvariant.decorators,
-   org.faktorips.productvariant.ui"
+   org.faktorips.productvariant.ui,
+   org.faktorips.devtools.multiediting"
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,

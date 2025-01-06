@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,6 +27,7 @@ public interface IIpsDecorators {
     /**
      * Returns the singleton instance.
      */
+    @SuppressWarnings("deprecation")
     static IIpsDecorators get() {
         return IpsDecorators.get();
     }
@@ -47,7 +48,7 @@ public interface IIpsDecorators {
 
     /**
      * Returns the {@link ImageDescriptor} for the given element.
-     * 
+     *
      * @see IIpsElementDecorator#getImageDescriptor(IIpsElement)
      */
     static ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
@@ -61,7 +62,7 @@ public interface IIpsDecorators {
 
     /**
      * Returns the default {@link ImageDescriptor} for the given element class.
-     * 
+     *
      * @see IIpsElementDecorator#getDefaultImageDescriptor()
      */
     static ImageDescriptor getDefaultImageDescriptor(Class<? extends IIpsElement> ipsElementClass) {
@@ -72,7 +73,7 @@ public interface IIpsDecorators {
 
     /**
      * Returns the default {@link ImageDescriptor} for the given {@link IpsObjectType}.
-     * 
+     *
      * @see IIpsElementDecorator#getDefaultImageDescriptor()
      */
     static ImageDescriptor getDefaultImageDescriptor(IpsObjectType ipsObjectType) {

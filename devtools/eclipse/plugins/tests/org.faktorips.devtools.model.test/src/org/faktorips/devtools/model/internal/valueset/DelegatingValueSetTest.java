@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -366,6 +367,36 @@ public class DelegatingValueSetTest {
         when(enumDelegate.getValuesAsList()).thenReturn(Arrays.asList(ANY_VALUE));
 
         assertThat(delegatingValueSet.getValuesAsList(), is(Arrays.asList(ANY_VALUE)));
+    }
+
+    @Test
+    public void testGetMaximumLength() throws Exception {
+        StringLengthValueSet stringLengthDelegate = mock(StringLengthValueSet.class);
+        delegatingValueSet = new DelegatingValueSet(stringLengthDelegate, parent);
+        when(stringLengthDelegate.getMaximumLength()).thenReturn("5");
+
+        assertThat(delegatingValueSet.getMaximumLength(), is("5"));
+    }
+
+    @Test
+    public void testSetMaximumLength() throws Exception {
+        StringLengthValueSet stringLengthDelegate = mock(StringLengthValueSet.class);
+        delegatingValueSet = new DelegatingValueSet(stringLengthDelegate, parent);
+        try {
+            delegatingValueSet.setMaximumLength("99");
+            fail("Expect IllegalStateException to be thrown");
+        } catch (IllegalStateException e) {
+            assertThat(e.getMessage(), is("DelegatingValueSets cannot be changed"));
+        }
+    }
+
+    @Test
+    public void testGetParsedMaximumLength() throws Exception {
+        StringLengthValueSet stringLengthDelegate = mock(StringLengthValueSet.class);
+        delegatingValueSet = new DelegatingValueSet(stringLengthDelegate, parent);
+        when(stringLengthDelegate.getParsedMaximumLength()).thenReturn(5);
+
+        assertThat(delegatingValueSet.getParsedMaximumLength(), is(5));
     }
 
     @Test

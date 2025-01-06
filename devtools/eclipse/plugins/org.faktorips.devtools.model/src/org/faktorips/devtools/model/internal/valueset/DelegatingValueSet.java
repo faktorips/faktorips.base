@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  * A {@link DelegatingValueSet} is a value set implementation that delegates every reading call to
  * another value set. Depending on the delegate target it acts as {@link IEnumValueSet},
  * {@link IRangeValueSet} or {@link IUnrestrictedValueSet}.
- * 
+ *
  * Every writing call leads to an {@link IllegalStateException}
  */
 public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegatingValueSet {
@@ -82,12 +82,12 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public final void setValuesOf(IValueSet source) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void setAbstract(boolean isAbstract) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
@@ -162,30 +162,30 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
 
     }
 
     @Override
     public void setLowerBound(String lowerBound) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void setStep(String step) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void setUpperBound(String upperBound) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     private IRangeValueSet getRangeDelegate() {
         if (delegate instanceof IRangeValueSet) {
             return (IRangeValueSet)delegate;
         } else {
-            throw new IllegalStateException("DelegateValueSets is not a range"); //$NON-NLS-1$
+            throw new IllegalStateException("DelegatingValueSet is not a range"); //$NON-NLS-1$
         }
     }
 
@@ -208,7 +208,7 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
         if (delegate instanceof EnumValueSet) {
             return (EnumValueSet)delegate;
         } else {
-            throw new IllegalStateException("DelegateValueSets is not a enum"); //$NON-NLS-1$
+            throw new IllegalStateException("DelegatingValueSet is not a enum"); //$NON-NLS-1$
         }
     }
 
@@ -224,27 +224,27 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public void addValue(String val) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void addValues(List<String> values) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void removeValue(int index) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void removeValue(String string) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void removeValues(List<String> values) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
@@ -254,7 +254,7 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public void setValue(int index, String value) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
@@ -269,7 +269,7 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public void addValuesFromDatatype(EnumDatatype datatype) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
@@ -279,12 +279,12 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public void move(List<Integer> indexes, boolean up) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
     public void move(List<Integer> indices, int targetIndex, boolean insertBelow) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 
     @Override
@@ -292,6 +292,29 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
         AbstractValueSetValidator<?> validator = delegate.createValidator(getValueSetOwner(),
                 getValueSetOwner().findValueDatatype(ipsProject));
         list.add(validator.validate());
+    }
+
+    private StringLengthValueSet getStringLengthDelegate() {
+        if (delegate instanceof StringLengthValueSet) {
+            return (StringLengthValueSet)delegate;
+        } else {
+            throw new IllegalStateException("DelegatingValueSet is not a StringLengthValueSet"); //$NON-NLS-1$
+        }
+    }
+
+    @Override
+    public String getMaximumLength() {
+        return getStringLengthDelegate().getMaximumLength();
+    }
+
+    @Override
+    public void setMaximumLength(String maximumLength) {
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
+    }
+
+    @Override
+    public Integer getParsedMaximumLength() {
+        return getStringLengthDelegate().getParsedMaximumLength();
     }
 
     @Override
@@ -318,6 +341,6 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
 
     @Override
     public void setEmpty(boolean empty) {
-        throw new IllegalStateException("DelegateValueSets cannot be changed"); //$NON-NLS-1$
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
 }
