@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -193,7 +193,7 @@ public class ImageHandling implements IImageHandling {
             return getImage(descriptor);
         } else {
             if (descriptor != null) {
-                return (Image)getResourceManager().find(descriptor);
+                return getResourceManager().find(descriptor);
             } else {
                 return null;
             }
@@ -214,10 +214,10 @@ public class ImageHandling implements IImageHandling {
     @Override
     public Image getImage(ImageDescriptor descriptor, boolean returnMissingImage) {
         if (descriptor != null) {
-            return (Image)getResourceManager().get(descriptor);
+            return getResourceManager().get(descriptor);
         }
         if (returnMissingImage) {
-            return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
+            return getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
         }
         return null;
     }
@@ -225,14 +225,14 @@ public class ImageHandling implements IImageHandling {
     @Override
     public Image createImage(ImageDescriptor descriptor) {
         if (descriptor != null) {
-            return getResourceManager().createImage(descriptor);
+            return getResourceManager().create(descriptor);
         }
-        return (Image)getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
+        return getResourceManager().get(ImageDescriptor.getMissingImageDescriptor());
     }
 
     @Override
     public void disposeImage(ImageDescriptor descriptor) {
-        getResourceManager().destroyImage(descriptor);
+        getResourceManager().destroy(descriptor);
     }
 
     @Override
