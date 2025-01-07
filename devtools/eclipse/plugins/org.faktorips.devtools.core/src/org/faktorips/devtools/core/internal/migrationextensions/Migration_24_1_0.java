@@ -35,7 +35,7 @@ import org.faktorips.runtime.MessageList;
 
 public class Migration_24_1_0 extends MarkAsDirtyMigration {
 
-    private static final String VERSION = "24.1.0"; //$NON-NLS-1$
+    public static final String VERSION = "24.1.0"; //$NON-NLS-1$
     private static final Set<String> ALLOWED_XML_CONTENT = Set.of(
             "<" + IpsObjectType.TABLE_CONTENTS.getXmlElementName(),
             "<" + IpsObjectType.ENUM_CONTENT.getXmlElementName(),
