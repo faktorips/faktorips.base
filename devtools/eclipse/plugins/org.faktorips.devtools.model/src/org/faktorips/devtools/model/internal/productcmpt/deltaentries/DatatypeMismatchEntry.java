@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,8 +23,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.internal.value.StringValue;
-import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
-import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -34,6 +32,8 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 
 public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
@@ -46,7 +46,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
      * Sets the input for conversion, which will be done with the {@code fix()} method. Instead of
      * this constructor the {@link #forEachMismatch(List)} factory method should be used to create
      * all DatatypeMismatchEntries for a {@link IPropertyValueContainer}'s properties.
-     * 
+     *
      * @param propertyValue The product properties.
      * @param oldValues A list of not converted {@link String} values.
      * @param converter The converter with whom the old Values should be modified.
@@ -215,7 +215,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     }
 
-    private static class EnumValueSetDatatypeMismatch extends ConfiguredValueSetDatatypeMismatch<EnumValueSet> {
+    private static class EnumValueSetDatatypeMismatch extends ConfiguredValueSetDatatypeMismatch<IEnumValueSet> {
 
         public EnumValueSetDatatypeMismatch(IConfiguredValueSet propertyValue) {
             super(propertyValue);
@@ -238,7 +238,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     }
 
-    private static class RangeValueSetDatatypeMismatch extends ConfiguredValueSetDatatypeMismatch<RangeValueSet> {
+    private static class RangeValueSetDatatypeMismatch extends ConfiguredValueSetDatatypeMismatch<IRangeValueSet> {
 
         public RangeValueSetDatatypeMismatch(IConfiguredValueSet propertyValue) {
             super(propertyValue);
