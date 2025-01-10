@@ -8,9 +8,11 @@
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
-                <xsd:element ref="ValueParameter" minOccurs="0" maxOccurs="unbounded" />
-                <xsd:element ref="PolicyCmptTypeParameter" minOccurs="0" maxOccurs="unbounded" />
-                <xsd:element ref="RuleParameter" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                    <xsd:element ref="ValueParameter" minOccurs="0" maxOccurs="unbounded" />
+                    <xsd:element ref="PolicyCmptTypeParameter" minOccurs="0" maxOccurs="unbounded" />
+                    <xsd:element ref="RuleParameter" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:choice>
             </xsd:sequence>
             <xsd:attribute ref="xml:space" />
         </xsd:complexType>
