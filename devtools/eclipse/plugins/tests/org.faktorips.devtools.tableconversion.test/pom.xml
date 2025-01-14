@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
-        <version>25.1.1.release</version>
+        <version>25.1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.devtools.tableconversion.test</artifactId>
