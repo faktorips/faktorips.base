@@ -53,6 +53,7 @@ import org.faktorips.devtools.model.internal.preferences.DefaultIpsModelPreferen
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -474,6 +475,57 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertNotNull(rows);
 
         table.addPartThis(rows);
+    }
+
+    @Test
+    public void testAddPartThis_WithInvalidPartType() {
+        IIpsObjectPart invalidPart = mock(IIpsObjectPart.class);
+
+        assertThat(table.addPartThis(invalidPart), is(false));
+        assertThat(table.getColumnReferencesCount(), is(0));
+    }
+
+    @Test
+    public void testAddPartThis_WithTableRows_NotInitialized() {
+        TableRows newTableRows = new TableRows(table, "rows");
+        table.setTableRowsInternal(null);
+
+        assertThat(table.addPartThis(newTableRows), is(true));
+        assertThat(table.getTableRows(), is(newTableRows));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAddPartThis_WithTableRows_AlreadyInitialized() {
+        TableRows firstTableRows = new TableRows(table, "rows1");
+        table.addPartThis(firstTableRows);
+
+        TableRows secondTableRows = new TableRows(table, "rows2");
+        table.addPartThis(secondTableRows);
+    }
+
+    @Test
+    public void testAddPartThis_WithTableColumnReference() {
+        TableColumnReference columnRef = new TableColumnReference(table, "columnRef");
+        columnRef.setName("columnRef");
+
+        assertThat(table.addPartThis(columnRef), is(true));
+        assertThat(table.getColumnReferencesCount(), is(1));
+        assertThat(table.getColumnReferences().get(0).getName(), is("columnRef"));
+    }
+
+    @Test
+    public void testAddPartThis_WithMultipleTableColumnReferences() {
+        TableColumnReference columnRef1 = new TableColumnReference(table, "ref1");
+        TableColumnReference columnRef2 = new TableColumnReference(table, "ref2");
+        columnRef1.setName("column1");
+        columnRef2.setName("column2");
+
+        table.addPartThis(columnRef1);
+        table.addPartThis(columnRef2);
+
+        assertThat(table.getColumnReferencesCount(), is(2));
+        assertThat(table.getColumnReferences().get(0).getName(), is("column1"));
+        assertThat(table.getColumnReferences().get(1).getName(), is("column2"));
     }
 
     @Test
