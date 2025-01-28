@@ -304,9 +304,9 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.setValidFrom(new GregorianCalendar(2005, 0, 1));
         generation.newPropertyValue(attribute1, IConfiguredDefault.class);
         generation.newPropertyValue(attribute1, IConfiguredValueSet.class);
-        generation.newLink("coverage").setTargetRuntimeId("t1");
-        generation.newLink("coverage").setTargetRuntimeId("t2");
-        generation.newLink("coverage").setTargetRuntimeId("t3");
+        generation.newLink("coverage").setTarget("t1");
+        generation.newLink("coverage").setTarget("t2");
+        generation.newLink("coverage").setTarget("t3");
         generation.newFormula().setFormulaSignature("f1");
         generation.newFormula().setFormulaSignature("f2");
         generation.newAttributeValue().setAttribute("a1");

@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -147,15 +148,21 @@ public interface Identifier {
         if (part instanceof IPartIdentifiedByIndex indexedPart) {
             return new IndexedIdentifier(index.getAndIncrement());
         }
-        String name = part.getName();
-        if (IpsStringUtils.isNotBlank(name)) {
-            return new NamedIdentifier(name);
-        }
-        List<IdentityProvider> list = IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
-        return list.stream().map(idProvider -> idProvider.getIdentity(part))
+        return getIdProviders().stream()
+                .map(idProvider -> idProvider.getIdentity(part))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(null);
+                .orElseGet(() -> {
+                    String name = part.getName();
+                    if (IpsStringUtils.isNotBlank(name)) {
+                        return new NamedIdentifier(name);
+                    }
+                    return null;
+                });
+    }
+
+    private static List<IdentityProvider> getIdProviders() {
+        return IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
     }
     // CSON: CyclomaticComplexityCheck
 
@@ -199,17 +206,17 @@ public interface Identifier {
             case IEnumValue.XML_TAG -> EmumValueIdentifier.of(partEl, (IEnumValueContainer)container);
             case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(IEnumAttributeValue.XML_TAG);
             case Row.TAG_NAME, IEnumAttributeValue.XML_TAG -> new IndexedIdentifier(index.getAndIncrement());
-            default -> {
-                String name = getAttribute(partEl, IIpsElement.PROPERTY_NAME);
-                if (IpsStringUtils.isNotEmpty(name)) {
-                    yield new NamedIdentifier(name);
-                }
-                List<IdentityProvider> list = IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
-                yield list.stream().map(idProvider -> idProvider.getIdentity(partEl))
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .orElse(null);
-            }
+            default -> getIdProviders().stream()
+                    .map(idProvider -> idProvider.getIdentity(partEl))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElseGet(() -> {
+                        String name = getAttribute(partEl, IIpsElement.PROPERTY_NAME);
+                        if (IpsStringUtils.isNotEmpty(name)) {
+                            return new NamedIdentifier(name);
+                        }
+                        return null;
+                    });
         };
     }
     // CSON: NestedBlocks
@@ -275,10 +282,13 @@ public interface Identifier {
         }
 
         private static Optional<IEnumAttribute> findIdAttribute(IEnumValueContainer enumValueContainer) {
-            return enumValueContainer.findEnumType(enumValueContainer.getIpsProject())
-                    .getEnumAttributes(false).stream()
-                    .filter(a -> a.findIsIdentifier(enumValueContainer.getIpsProject()))
-                    .findFirst();
+            IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+            return enumType == null
+                    ? Optional.empty()
+                    : enumType
+                            .getEnumAttributes(false).stream()
+                            .filter(a -> a.findIsIdentifier(enumValueContainer.getIpsProject()))
+                            .findFirst();
         }
 
         static Identifier of(Element partEl, IEnumValueContainer enumValueContainer) {
@@ -582,20 +592,20 @@ public interface Identifier {
         }
     }
 
-    record LinkIdentifier(String associationName, String targetRuntimeId) implements Identifier {
+    record LinkIdentifier(String associationName, String target) implements Identifier {
 
-        public LinkIdentifier(String associationName, String targetRuntimeId) {
+        public LinkIdentifier(String associationName, String target) {
             this.associationName = IpsStringUtils.isBlank(associationName) ? "" : associationName;
-            this.targetRuntimeId = IpsStringUtils.isBlank(targetRuntimeId) ? "" : targetRuntimeId;
+            this.target = IpsStringUtils.isBlank(target) ? "" : target;
         }
 
         static LinkIdentifier of(IProductCmptLink link) {
-            return new LinkIdentifier(link.getAssociation(), link.getTargetRuntimeId());
+            return new LinkIdentifier(link.getAssociation(), link.getTarget());
         }
 
         static LinkIdentifier of(Element partEl) {
             String associationName = getAttribute(partEl, IProductCmptLink.PROPERTY_ASSOCIATION);
-            String targetRuntimeId = getAttribute(partEl, IProductCmptLink.PROPERTY_TARGET_RUNTIME_ID);
+            String targetRuntimeId = getAttribute(partEl, IProductCmptLink.PROPERTY_TARGET);
             return new LinkIdentifier(associationName, targetRuntimeId);
         }
     }
