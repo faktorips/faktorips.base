@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -73,6 +74,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
             genderEnumContent.moveEnumValues(null, true);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
@@ -112,6 +114,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
             genderEnumContent.moveEnumValues(null, false);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
@@ -122,8 +125,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
         List<IEnumValue> moveList = new ArrayList<>(1);
         moveList.add(genderEnumValueMale);
-        int[] newIndizes;
-        newIndizes = genderEnumContent.moveEnumValues(moveList, false);
+        int[] newIndizes = genderEnumContent.moveEnumValues(moveList, false);
         assertEquals(1, newIndizes[0]);
         assertEquals(genderEnumValueFemale, genderEnumContent.getEnumValues().get(0));
         assertEquals(genderEnumValueMale, genderEnumContent.getEnumValues().get(1));
@@ -155,6 +157,23 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
         assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
 
         assertEquals(-1, genderEnumContent.getIndexOfEnumValue(paymentMode.getEnumValues().get(0)));
+    }
+
+    @Test
+    public void testGetIndexOfEnumValue_WithOutdatedValueWithSameId() {
+        // init identifierattribute
+        genderEnumContent.findEnumValue(GENDER_ENUM_LITERAL_FEMALE_ID, ipsProject);
+        genderEnumValueFemale.delete();
+        var anotherGenderEnumValueFemale = genderEnumContent.newEnumValue();
+        var attributeValue = anotherGenderEnumValueFemale.getEnumAttributeValues().get(0);
+        attributeValue.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_FEMALE_ID));
+        attributeValue = anotherGenderEnumValueFemale.getEnumAttributeValues().get(1);
+        attributeValue.setValue(ValueFactory.createStringValue(GENDER_ENUM_LITERAL_FEMALE_NAME));
+        assertEquals(0, genderEnumContent.getIndexOfEnumValue(genderEnumValueMale));
+        assertEquals(1, genderEnumContent.getIndexOfEnumValue(anotherGenderEnumValueFemale));
+        assertEquals(1, genderEnumContent.getIndexOfEnumValue(genderEnumValueFemale));
+        assertSame(anotherGenderEnumValueFemale,
+                genderEnumContent.findEnumValue(GENDER_ENUM_LITERAL_FEMALE_ID, ipsProject));
     }
 
     @Test
