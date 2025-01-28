@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -280,7 +280,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * read the whole table contents ({@link TableRows}). This is the only way to stop the SAX
      * parser and not reading the whole file. If there is another exception included in the
      * {@link SAXException} we want to throw this as {@link CoreException}.
-     * 
+     *
      */
     private void handleSaxException(SAXException e) {
         if (e.getCause() != null) {
@@ -301,7 +301,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * The reading of XML for {@link TableContents} is normally done by
      * {@link TableContentsSaxHandler}. These methods are only for compatibility to the common XML
      * DOM parser.
-     * 
+     *
      * @see #initFromInputStream(InputStream)
      */
     @Override
@@ -322,7 +322,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * hence the {@link TableRows} were table generations derived from {@link IpsObjectGeneration}.
      * Because of these circumstances the old XML format had the tag name "Generations". We still
      * need to read the old format in this method.
-     * 
+     *
      * @see #initFromInputStream(InputStream)
      */
     @Override
@@ -358,13 +358,15 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof ITableRows) {
+        if (part instanceof ITableRows tableRows) {
             if (!isRowsInitialized()) {
-                setTableRowsInternal(((ITableRows)part));
+                setTableRowsInternal(tableRows);
                 return true;
             } else {
                 throw new IllegalStateException("TableRows object already set for " + this); //$NON-NLS-1$
             }
+        } else if (part instanceof TableColumnReference tableColumnReference) {
+            return columnReferences.addPart(tableColumnReference);
         } else {
             return false;
         }
@@ -599,8 +601,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     private void addNewColumnReference(String name) {
-        ITableStructure newTableStructure;
-        newTableStructure = findTableStructure(getIpsProject());
+        ITableStructure newTableStructure = findTableStructure(getIpsProject());
         if (newTableStructure != null) {
             IPartReference newReference = new TableColumnReference(this, getNextPartId());
             newReference.setName(name);
@@ -617,12 +618,11 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     /**
      * Removes the corresponding ColumnReference based on the given index
-     * 
+     *
      * @param columnIndex index of the ColumnReference to be deleted
      */
     private void removeColumnReference(int columnIndex) {
-        ITableStructure newTableStructure;
-        newTableStructure = findTableStructure(getIpsProject());
+        ITableStructure newTableStructure = findTableStructure(getIpsProject());
         if (newTableStructure != null) {
             columnReferences.removePart(columnReferences.getPart(columnIndex));
         }
@@ -632,7 +632,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
      * Internal function to sort all {@link TableColumnReference TableColumnReferences} in the right
      * order corresponding to given columnList. columnReferences size has to be the same as the
      * columnList
-     * 
+     *
      * @param columnList List of columns of the referenced TableStructure
      */
     private void sortColumnReferencesInternal(IColumn[] columnList) {
@@ -657,8 +657,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     @Override
     public void fixColumnReferences() {
-        ITableStructure newTableStructure;
-        newTableStructure = findTableStructure(getIpsProject());
+        ITableStructure newTableStructure = findTableStructure(getIpsProject());
         if (newTableStructure != null) {
             updateReferences(newTableStructure);
             sortColumnReferencesInternal(newTableStructure.getColumns());
