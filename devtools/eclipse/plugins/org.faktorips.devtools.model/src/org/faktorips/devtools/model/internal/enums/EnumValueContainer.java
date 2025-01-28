@@ -283,7 +283,22 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     @Override
     public int getIndexOfEnumValue(IEnumValue enumValue) {
         ArgumentCheck.notNull(enumValue);
-        return enumValues.indexOf(enumValue);
+        int index = enumValues.indexOf(enumValue);
+        if (index == -1) {
+            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(identifierAttribute);
+            if (enumAttributeValue != null) {
+                String identifier = enumAttributeValue.getValue().getDefaultLocalizedContent(getIpsProject());
+                for (IEnumValue enumValue2 : enumValues) {
+                    enumAttributeValue = enumValue2.getEnumAttributeValue(identifierAttribute);
+                    String identifier2 = enumAttributeValue.getValue().getDefaultLocalizedContent(getIpsProject());
+                    if (Objects.equals(identifier, identifier2)) {
+                        enumValuesByIdentifier.put(identifier, enumValue2);
+                        return enumValues.indexOf(enumValue2);
+                    }
+                }
+            }
+        }
+        return index;
     }
 
     @Override
@@ -365,8 +380,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
 
     @Override
     public void fixAllEnumAttributeValues() {
-        IEnumType enumType;
-        enumType = findEnumType(getIpsProject());
+        IEnumType enumType = findEnumType(getIpsProject());
         if (enumType != null) {
             List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (IEnumAttribute enumAttribute : enumAttributes) {
