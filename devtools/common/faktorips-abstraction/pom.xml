@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-parent</artifactId>
-        <version>24.1.16.release</version>
+        <version>24.1.17-SNAPSHOT</version>
     </parent>
 
     <artifactId>faktorips-abstraction</artifactId>
