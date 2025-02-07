@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.AbstractPrimitiveDatatypeHelper;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.java.util.LocaleGeneratorUtil;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.util.ArgumentCheck;
 
@@ -319,6 +321,17 @@ public class XEnumType extends XClass {
         String expression = valueOrExpression;
         if (!isExpression) {
             expression = "\"" + valueOrExpression + "\""; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        /*
+         * An Enum with primitive identifier attribute can still be null, therefore no identifier
+         * attribute is saved. When loading such an value from XML the conversion from String to
+         * primitive fails with an NPE
+         */
+        if (repositoryExp != null && datatypeHelper instanceof AbstractPrimitiveDatatypeHelper) {
+            fragment.appendClassName(IpsStringUtils.class).append(".isEmpty(") //$NON-NLS-1$
+                    .append(expression).append(") ? "); //$NON-NLS-1$
+            fragment.append("null");
+            fragment.append(" : "); //$NON-NLS-1$
         }
         /*
          * As the data type of the identifier attribute needn't be a String, we have to convert the
