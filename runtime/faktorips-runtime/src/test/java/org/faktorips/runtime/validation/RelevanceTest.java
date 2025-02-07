@@ -609,10 +609,9 @@ public class RelevanceTest {
 
     @Test
     public void testAsValueSetFor_Mandatory_ValueSetTypeEnum() {
-        assertThat(
-                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerEnum(),
-                        TestPolicyWithIntegerEnum.PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM),
-                is(new OrderedValueSet<>(false, null)));
+        ValueSet<Integer> valueSet = Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerEnum(),
+                TestPolicyWithIntegerEnum.PROPERTY_INTEGER_ATTRIBUTE_WITH_ENUM);
+        assertThat(valueSet, is(new OrderedValueSet<>(false, null)));
         assertThat(
                 Relevance.MANDATORY.asValueSetFor(new TestPolicyWithMoneyEnum(),
                         TestPolicyWithMoneyEnum.PROPERTY_MONEY_ATTRIBUTE_WITH_ENUM),
@@ -621,14 +620,29 @@ public class RelevanceTest {
 
     @Test
     public void testAsValueSetFor_Mandatory_DatatypeEnum() {
+        TestPolicyWithUnrestrictedEnum testPolicyWithUnrestrictedEnum = new TestPolicyWithUnrestrictedEnum();
         assertThat(
-                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                Relevance.MANDATORY.asValueSetFor(testPolicyWithUnrestrictedEnum,
                         TestPolicyWithUnrestrictedEnum.PROPERTY_NON_IPS_ENUM_ATTRIBUTE),
                 is(new OrderedValueSet<>(false, null, TestEnum.values())));
-        assertThat(
-                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
-                        TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_ENUM_ATTRIBUTE),
-                is(new OrderedValueSet<>(false, null, TestConcreteJavaEnum.values())));
+        ValueSet<TestConcreteJavaEnum> valueSet = Relevance.MANDATORY.asValueSetFor(
+                testPolicyWithUnrestrictedEnum,
+                TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_ENUM_ATTRIBUTE);
+        assertThat(valueSet, is(new OrderedValueSet<>(false, null, TestConcreteJavaEnum.values())));
+        assertThat(((OrderedValueSet<TestConcreteJavaEnum>)valueSet).isVirtual(), is(true));
+        valueSet = Relevance.MANDATORY.asValueSetFor(
+                testPolicyWithUnrestrictedEnum,
+                TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_ENUM_ATTRIBUTE, new OrderedValueSet<>(true, null,
+                        TestConcreteJavaEnum.values()));
+        assertThat(valueSet, is(new OrderedValueSet<>(false, null, TestConcreteJavaEnum.values())));
+        assertThat(((OrderedValueSet<TestConcreteJavaEnum>)valueSet).isVirtual(), is(false));
+
+        testPolicyWithUnrestrictedEnum.setAllowedValuesForIpsEnumAttribute(new UnrestrictedValueSet<>());
+        valueSet = Relevance.MANDATORY.asValueSetFor(
+                testPolicyWithUnrestrictedEnum,
+                TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_ENUM_ATTRIBUTE);
+        assertThat(valueSet, is(new OrderedValueSet<>(false, null, TestConcreteJavaEnum.values())));
+        assertThat(((OrderedValueSet<TestConcreteJavaEnum>)valueSet).isVirtual(), is(true));
     }
 
     @Test

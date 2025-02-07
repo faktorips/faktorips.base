@@ -153,10 +153,12 @@ public enum Relevance {
     }
 
     private static <T> ValueSet<T> asEnum(Class<T> datatype, boolean containsNull, ValueSet<T> values) {
+        boolean virtual = values instanceof OrderedValueSet<T> orderedValueSet && orderedValueSet.isVirtual()
+                || values instanceof UnrestrictedValueSet<T>;
         if (values != null && values.isDiscrete()) {
-            return new OrderedValueSet<>(values.getValues(true), containsNull, nullValue(datatype), true);
+            return new OrderedValueSet<>(values.getValues(true), containsNull, nullValue(datatype), virtual);
         } else if (!IpsModel.isExtensibleEnumType(datatype) && !datatype.isInterface()) {
-            return new OrderedValueSet<>(containsNull, true, nullValue(datatype), datatype.getEnumConstants());
+            return new OrderedValueSet<>(containsNull, virtual, nullValue(datatype), datatype.getEnumConstants());
         } else {
             return new UnrestrictedValueSet<>(containsNull);
         }
