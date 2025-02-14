@@ -39,6 +39,7 @@ public class Messages extends NLS {
     public static String ConfigElement_msgTypeMismatch;
     public static String ConfigElement_policyCmptTypeNotFound;
     public static String ConfigElement_valueSetIsNotASubset;
+    public static String ConfiguredValueSet_error_msg_valueSetMustBeMandatory;
     public static String ConfigElement_stringTooLong;
     public static String ConfigElement_msgAttrNotDefined;
     public static String FormulaElement_msgDatatypeMissing;

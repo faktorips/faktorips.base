@@ -107,17 +107,20 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                     PROPERTY_VALUE_SET));
             return;
         }
+
         if (valueSetToValidate.isAbstract()) {
             String text = Messages.ConfiguredValueSet_error_msg_abstractValueSet;
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
+
         if (valueSetToValidate.isEnum() && modelValueSet.isRange()) {
             validateEnumAgainstRange(list, ipsProject, (IEnumValueSet)valueSetToValidate,
                     (IRangeValueSet)modelValueSet);
             return;
         }
-        if (valueSetToValidate.isEnum()) {
+
+        if (valueSetToValidate.isEnum() || valueSetToValidate.isRange()) {
             if (modelValueSet.isStringLength()) {
                 MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
                         (IEnumValueSet)valueSetToValidate,
@@ -126,24 +129,41 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                     list.add(valueValidationResult);
                     return;
                 }
+            }
+            // TODO: FIPS-13827 works but FIPS-12831 is still open, careful when fixing
+            if (attribute.isValueSetConfiguredByProduct() && !modelValueSet.isEmpty()) {
+                ValueDatatype valueDatatype = attribute.findValueDatatype(ipsProject);
+                if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                        && (!modelValueSet.isAbstract() || valueDatatype.isPrimitive())) {
 
+                    String textForAtLeastOneValueRequired = MessageFormat.format(
+                            Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                            getPolicyCmptTypeAttribute());
+                    list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
+                            Message.ERROR, this, PROPERTY_VALUE_SET));
+
+                    if (attribute.isRelevanceConfiguredByProduct()) {
+                        String textForMandatoryMustRemainMandatory = MessageFormat.format(
+                                Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
+                                getPolicyCmptTypeAttribute());
+                        list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
+                                textForMandatoryMustRemainMandatory, Message.ERROR, this, PROPERTY_VALUE_SET));
+                    }
+
+                    return;
+                }
             }
-            ValueDatatype valueDatatype = attribute.findValueDatatype(ipsProject);
-            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
-                    && (!modelValueSet.isAbstract() || valueDatatype.isPrimitive())) {
-                String text = MessageFormat.format(Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
-                        getPolicyCmptTypeAttribute());
-                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this,
-                        PROPERTY_VALUE_SET));
-                return;
-            }
+
         }
+
         if (valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
             // situations like model value set is unrestricted, and this value set is a range
             // are ok.
             return;
         }
+
         validateNullIncompatible(list, modelValueSet, valueSetToValidate);
+
         String msgCode;
         String text;
         if (!valueSetToValidate.isSameTypeOfValueSet(modelValueSet)) {
@@ -152,12 +172,13 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                     modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName());
         } else if (!modelValueSet.containsValueSet(valueSetToValidate)) {
             msgCode = IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
-            text = MessageFormat.format(Messages.ConfigElement_valueSetIsNotASubset, valueSetToValidate.toShortString(),
-                    modelValueSet.toShortString());
+            text = MessageFormat.format(Messages.ConfigElement_valueSetIsNotASubset,
+                    valueSetToValidate.toShortString(), modelValueSet.toShortString());
         } else {
             // should never happen
             throw new RuntimeException();
         }
+
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
         List<ObjectProperty> invalidObjectProperties = new ArrayList<>();
         invalidObjectProperties.add(new ObjectProperty(this, PROPERTY_VALUE_SET));

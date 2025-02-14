@@ -81,6 +81,12 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     String MSGCODE_MANDATORY_VALUESET_IS_EMPTY = MSGCODE_PREFIX + "MandatoryValueSetIsEmpty"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the config elements value set is not set to
+     * mandatory while the value set defined in the model is mandatory.
+     */
+    String MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY = MSGCODE_PREFIX + "ValueSetMustBeMandatory"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that a string is too long to fit into the value set.
      */
     String MSGCODE_STRING_TOO_LONG = MSGCODE_PREFIX + "StringTooLong"; //$NON-NLS-1$

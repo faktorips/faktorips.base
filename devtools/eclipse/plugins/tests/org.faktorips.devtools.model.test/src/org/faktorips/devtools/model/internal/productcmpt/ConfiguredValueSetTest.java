@@ -46,6 +46,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.model.internal.valueset.DelegatingValueSet;
+import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -237,6 +238,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate_MandatoryValueSetIsEmpty() {
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.setDatatype("Integer");
         attribute.getValueSet().setContainsNull(false);
 
@@ -245,14 +247,34 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_MandatoryValueSetIsEmptyInModel() {
+    public void testValidate_MandatoryEnumValueSetIsEmptyInModel() {
         attribute.setDatatype("Integer");
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.setRelevanceConfiguredByProduct(true);
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.getValueSet().setContainsNull(false);
+
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
+        assertTrue(ml.isEmpty());
+    }
+
+    @Test
+    public void testValidate_MandatoryRangeValueSetIsEmptyInModel() {
+        attribute.setDatatype("Integer");
+        attribute.setValueSetConfiguredByProduct(true);
+        attribute.setRelevanceConfiguredByProduct(true);
+        attribute.changeValueSetType(ValueSetType.RANGE);
+        attribute.getValueSet().setContainsNull(false);
+        RangeValueSet valueSet = (RangeValueSet)attribute.getValueSet();
+        valueSet.setLowerBound("0");
+        configuredValueSet.changeValueSetType(ValueSetType.RANGE);
+        RangeValueSet configuredSet = (RangeValueSet)configuredValueSet.getValueSet();
+        configuredSet.setEmpty(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY));
     }
 
     @Test
@@ -273,11 +295,12 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     public void testValidate_MandatoryValueSetIsEmptyInModel_PrimitiveAttribute() {
         attribute.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         attribute.changeValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(true);
         attribute.getValueSet().setContainsNull(false);
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+        assertTrue(ml.isEmpty());
     }
 
     @Test
