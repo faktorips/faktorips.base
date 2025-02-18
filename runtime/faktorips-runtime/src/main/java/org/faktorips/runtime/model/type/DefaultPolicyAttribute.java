@@ -285,12 +285,19 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         validate(list, context,
                 () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
                 () -> (ValueSet<T>)getValueSetFromModel(),
-                (valueSet, modelValueSet) -> !valueSet.isEmpty() || modelValueSet.containsNull()
-                        || modelValueSet.isEmpty(),
+                this::notEmptyIfMandatory,
                 MSGCODE_MANDATORY_VALUESET_IS_EMPTY,
                 MSGKEY_MANDATORY_VALUESET_IS_EMPTY,
                 PROPERTY_VALUE_SET,
                 new ObjectProperty(source, getName()));
+    }
+
+    private <T> boolean notEmptyIfMandatory(ValueSet<T> valueSet, ValueSet<T> modelValueSet) {
+        if (getDatatype().isPrimitive()) {
+            return !valueSet.isEmpty();
+        }
+        return !valueSet.isEmpty() || modelValueSet.containsNull()
+                || modelValueSet.isEmpty();
     }
 
     @SuppressWarnings("unchecked")
