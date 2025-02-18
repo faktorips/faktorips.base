@@ -61,6 +61,8 @@
     <!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated -->
     <merge:pull targetMarkup="^(gen|restrained)$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\R.*)?(\*/)" targetPut="Member/setComment" />
 
+    <!-- Keep enum values in order -->
+    <merge:sort select="EnumConstant"/>
 </merge:options>
 
 
