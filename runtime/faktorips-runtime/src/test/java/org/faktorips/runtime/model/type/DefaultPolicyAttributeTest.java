@@ -1018,6 +1018,30 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
+    public void testValidateValueSetNotEmptyIfMandatory_Primitives() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attrInt");
+        Produkt product = new Produkt(repository);
+        product.defaultValueInt = 0;
+        product.allowedValuesForInt = OrderedValueSet.empty();
+
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSetNotEmptyIfMandatory(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attrInt"));
+    }
+
+    @Test
     public void testValidateDefaultValue_OK() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
