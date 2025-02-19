@@ -12,7 +12,7 @@ package org.faktorips.valueset;
 
 import static org.faktorips.values.ObjectUtil.isNull;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -384,15 +384,11 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
         int numberOfEntries = sizeForDiscreteValuesExcludingNull();
 
-        Set<T> values = null;
+        Set<T> values = new LinkedHashSet<>();
 
         if (containsNull() && !excludeNull) {
-            values = new HashSet<>(numberOfEntries + 1);
             values.add(getNullValue());
-        } else {
-            values = new HashSet<>(numberOfEntries);
         }
-
         T nextValue = getLowerBound();
         values.add(nextValue);
         for (int i = 1; i < numberOfEntries; i++) {
