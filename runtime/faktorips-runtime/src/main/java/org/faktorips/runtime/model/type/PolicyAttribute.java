@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -230,6 +231,24 @@ public abstract class PolicyAttribute extends Attribute {
     public abstract void setDefaultValue(IProductComponent target, Calendar effectiveDate, Object defaultValue);
 
     /**
+     * Sets the product configured default value of the attribute identified by this model type
+     * attribute.
+     *
+     *
+     * @param defaultValue the new default value
+     * @param target the product component generation
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws IllegalStateException if the model object has no setter method for this attribute's
+     *             default value. This also occurs if the corresponding policy class is not
+     *             configured by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should set the default
+     *             value for this attribute fails for any reason
+     * @since 25.1
+     */
+    public abstract void setDefaultValue(IProductComponentGeneration target, Object defaultValue);
+
+    /**
      * Returns the value set of the given model object's attribute identified by this model type
      * attribute.
      * <p>
@@ -366,5 +385,30 @@ public abstract class PolicyAttribute extends Attribute {
      * @since 20.6
      */
     public abstract void setValueSet(IProductComponent target, Calendar effectiveDate, ValueSet<?> valueSet);
+
+    /**
+     * Sets the product configured set of allowed values of the attribute identified by this model
+     * type attribute.
+     * <p>
+     * <em>Caution:</em> as generics are erased at runtime, it is possible to set a {@link ValueSet}
+     * of a mismatched type with this method, for example an {@link OrderedValueSet
+     * OrderedValueSet&lt;String&gt;} for an attribute with {@link #getDatatype()} {@link Integer},
+     * which will result in a {@link ClassCastException} on later method calls.
+     *
+     * @param target the product component generation, which will be used to write the attribute
+     *            value set to the corresponding product component to.
+     * @param valueSet the new value set
+     * @throws UnsupportedOperationException if invoked on a
+     *             {@link org.faktorips.runtime.model.type.AttributeKind#CONSTANT} attribute.
+     * @throws ClassCastException if the type of value set does not match the property's
+     *             configuration
+     * @throws IllegalStateException if the model object has no setter method for this attribute's
+     *             value set. This also occurs if the corresponding policy class is not configured
+     *             by a product class.
+     * @throws IllegalArgumentException if the invocation of the method that should set the value
+     *             set for this attribute fails for any reason
+     * @since 25.1
+     */
+    public abstract void setValueSet(IProductComponentGeneration target, ValueSet<?> valueSet);
 
 }

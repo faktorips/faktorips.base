@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -90,12 +92,29 @@ public class Formula extends TypePart {
     public void setFormulaText(IProductComponent productComponent,
             @CheckForNull Calendar effectiveDate,
             String formulaText) {
-        Object relevantProductObject = getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
-        if (relevantProductObject instanceof ProductComponent productCmpt) {
+        setFormulaText(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()), formulaText);
+    }
+
+    /**
+     * Sets the formula text of this formula in the given product component.
+     * <p>
+     * If the formula is not changing over time, the underlying product component is used directly;
+     * otherwise, the given generation is used.
+     * </p>
+     *
+     * @param generation the product component generation to base the formula text update on
+     * @param formulaText the new formula text
+     * @since 25.1
+     */
+    public void setFormulaText(IProductComponentGeneration generation, String formulaText) {
+        setFormulaText(getRelevantProductObject(generation, isChangingOverTime()), formulaText);
+    }
+
+    private void setFormulaText(IProductObject productObject, String formulaText) {
+        if (productObject instanceof ProductComponent productCmpt) {
             FormulaUtilAccess.setFormulaText(productCmpt, getFormulaName(), formulaText);
         } else {
-            FormulaUtilAccess.setFormulaText((ProductComponentGeneration)relevantProductObject, getFormulaName(),
-                    formulaText);
+            FormulaUtilAccess.setFormulaText((ProductComponentGeneration)productObject, getFormulaName(), formulaText);
         }
     }
 

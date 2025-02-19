@@ -181,6 +181,37 @@ public class ProductAttributeTest {
     }
 
     @Test
+    public void testSetValue_withGeneration() {
+        Produkt productComponent = new Produkt(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        IProductComponentGeneration generation = productComponent.getLatestProductComponentGeneration();
+
+        productCmptType.getAttribute("attr1").setValue(generation, "newValue");
+        productCmptType.getAttribute("attr2").setValue(generation, 1);
+        productCmptType.getAttribute("attrGen").setValue(generation, "newValue");
+        productCmptType.getAttribute("multiString").setValue(generation,
+                List.of("new", "value"));
+
+        assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null),
+                is(equalTo((Object)1)));
+        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
+                is(equalTo((Object)List.of("new", "value"))));
+
+        assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)1)));
+        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)List.of("new", "value"))));
+    }
+
+    @Test
     public void testIsChangingOverTime() {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         assertThat(productCmptType.getAttribute("attr1").isChangingOverTime(), is(false));

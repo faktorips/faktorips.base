@@ -19,7 +19,9 @@ import java.util.Objects;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLinkSource;
+import org.faktorips.runtime.IProductObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
@@ -136,13 +138,21 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     @Override
     public void setDefaultValue(IProductComponent source, Calendar effectiveDate, Object defaultValue) {
+        setDefaultValue(getRelevantProductObject(source, effectiveDate), defaultValue);
+    }
+
+    @Override
+    public void setDefaultValue(IProductComponentGeneration generation, Object defaultValue) {
+        setDefaultValue(getRelevantProductObject(generation), defaultValue);
+    }
+
+    private void setDefaultValue(IProductObject productObject, Object defaultValue) {
         if (!isProductRelevant()) {
             throw new IllegalStateException(
-                    "Trying to find default value method in product class, but policy attribute " + getType().getName()
-                            + '.' + getName() + " is not configurable.");
+                    "Trying to find default value method in product class, but policy attribute "
+                            + getType().getName() + '.' + getName() + " is not configurable.");
         }
-        invokeMethod(getDefaultValueSetter(getType().getProductCmptType()),
-                getRelevantProductObject(source, effectiveDate), defaultValue);
+        invokeMethod(getDefaultValueSetter(getType().getProductCmptType()), productObject, defaultValue);
     }
 
     private Method getDefaultValueSetter(Type type) {
@@ -236,13 +246,21 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     @Override
     public void setValueSet(IProductComponent source, Calendar effectiveDate, ValueSet<?> valueSet) {
+        setValueSet(getRelevantProductObject(source, effectiveDate), valueSet);
+    }
+
+    @Override
+    public void setValueSet(IProductComponentGeneration generation, ValueSet<?> valueSet) {
+        setValueSet(getRelevantProductObject(generation), valueSet);
+    }
+
+    private void setValueSet(IProductObject productObject, ValueSet<?> valueSet) {
         if (!isProductRelevant()) {
             throw new IllegalStateException(
                     "Trying to find setter method for allowed values in product class, but policy attribute "
                             + getType().getName() + '.' + getName() + " is not configurable.");
         }
-        invokeMethod(getAllowedValuesSetter(getType().getProductCmptType()),
-                getRelevantProductObject(source, effectiveDate), valueSet);
+        invokeMethod(getAllowedValuesSetter(getType().getProductCmptType()), productObject, valueSet);
     }
 
     private Method getAllowedValuesSetter(Type type) {

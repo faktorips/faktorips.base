@@ -130,6 +130,33 @@ public class FormulaTest {
     }
 
     @Test
+    public void testSetFormulaText_withGeneration_changingOverTime() {
+        Product product = new Product();
+        ProductGen gen = new ProductGen(product);
+        when(repository.getLatestProductComponentGeneration(product)).thenReturn(gen);
+
+        Formula formulaGen = productCmptType.getFormula("formulaGen");
+        assertNull(formulaGen.getFormulaText(product, null));
+
+        formulaGen.setFormulaText(gen, "GenText");
+
+        assertThat(formulaGen.getFormulaText(product, null), is("GenText"));
+    }
+
+    @Test
+    public void testSetFormulaText_withGeneration_nonChanging() {
+        Product product = new Product();
+        ProductGen gen = new ProductGen(product);
+
+        Formula formula = productCmptType.getFormula("formula");
+        assertNull(formula.getFormulaText(product, null));
+
+        formula.setFormulaText(gen, "NewText");
+
+        assertThat(formula.getFormulaText(product, null), is("NewText"));
+    }
+
+    @Test
     public void testGetDocumentation() {
         Formula formula = productCmptType.getFormula("formula");
         assertThat(formula.getDescription(Locale.GERMAN), is("Description of formula"));

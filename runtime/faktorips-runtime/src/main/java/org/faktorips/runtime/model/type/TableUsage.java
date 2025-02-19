@@ -19,6 +19,7 @@ import java.util.ResourceBundle;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductObject;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
@@ -118,16 +119,37 @@ public class TableUsage extends TypePart {
      * @since 24.7
      */
     public void setTableName(String tableName, IProductComponent productComponent, Calendar effectiveDate) {
+        setTableName(tableName, getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
+    }
+
+    /**
+     * Set the table name using a product component generation.
+     * <p>
+     * If the table usage is not changing over time, the underlying product component is used
+     * directly; otherwise, the provided generation is used.
+     * </p>
+     *
+     * @param tableName the name of the table for this table usage in the product component
+     * @param generation the product component generation to determine the target product component
+     *            for setting the table name
+     * @since 25.1
+     */
+    public void setTableName(String tableName, IProductComponentGeneration generation) {
+        setTableName(tableName, getRelevantProductObject(generation, isChangingOverTime()));
+    }
+
+    private void setTableName(String tableName, IProductObject productObject) {
         try {
             String setterNameForTableName = "set" + getter.getName().substring(3) + "Name";
             Method setterForName = getter.getDeclaringClass().getDeclaredMethod(setterNameForTableName, String.class);
-            setterForName.invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()),
-                    tableName);
+            setterForName.invoke(productObject, tableName);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new IllegalArgumentException(
                     String.format("Could not set table name for table usage %s on product component %s.",
-                            getName(), productComponent),
+                            getName(),
+                            productObject instanceof IProductComponentGeneration gen ? gen.getProductComponent()
+                                    : productObject),
                     e);
         }
     }
