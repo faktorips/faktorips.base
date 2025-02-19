@@ -23,6 +23,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductObject;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
@@ -199,10 +201,10 @@ public abstract class ModelElement {
      * @return The given product component or the effective generation, depending on
      *             changingOverTime and effectiveDate.
      */
-    protected static Object getRelevantProductObject(IProductComponent productComponent,
+    protected static IProductObject getRelevantProductObject(IProductComponent productComponent,
             @CheckForNull Calendar effectiveDate,
             boolean changingOverTime) {
-        Object source = productComponent;
+        IProductObject source = productComponent;
         if (changingOverTime) {
             if (effectiveDate == null) {
                 source = productComponent.getLatestProductComponentGeneration();
@@ -211,6 +213,21 @@ public abstract class ModelElement {
             }
         }
         return source;
+    }
+
+    /**
+     * If the <code>changingOverTime</code> is <code>true</code>, the given product component
+     * generation is returned. If changing over time is <code>false</code>, the generation's product
+     * component is returned.
+     *
+     * @param generation the product component generation to use when changing over time
+     * @param changingOverTime whether the model element is changing over time
+     * @return The given product component or the effective generation, depending on
+     *             changingOverTime and effectiveDate.
+     */
+    protected static IProductObject getRelevantProductObject(IProductComponentGeneration generation,
+            boolean changingOverTime) {
+        return changingOverTime ? generation : generation.getProductComponent();
     }
 
     @Override

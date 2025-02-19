@@ -16,6 +16,7 @@ import java.util.Calendar;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -83,6 +84,11 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
     }
 
     @Override
+    public void setDefaultValue(IProductComponentGeneration target, Object defaultValue) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         Object value = getValue(modelObject);
         if (value == null) {
@@ -111,6 +117,11 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
 
     @Override
     public void setValueSet(IConfigurableModelObject modelObject, ValueSet<?> valueSet) {
+        throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
+    }
+
+    @Override
+    public void setValueSet(IProductComponentGeneration target, ValueSet<?> valueSet) {
         throw new UnsupportedOperationException(getName() + " is a constant field and has no product configuration");
     }
 

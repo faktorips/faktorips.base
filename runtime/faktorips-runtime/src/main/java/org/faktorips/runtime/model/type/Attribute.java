@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IProductObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -171,8 +172,12 @@ public abstract class Attribute extends TypePart {
      */
     public abstract Attribute createOverwritingAttributeFor(Type subType);
 
-    protected Object getRelevantProductObject(IProductComponent productComponent, Calendar effectiveDate) {
+    protected IProductObject getRelevantProductObject(IProductComponent productComponent, Calendar effectiveDate) {
         return getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
+    }
+
+    protected IProductObject getRelevantProductObject(IProductComponentGeneration generation) {
+        return getRelevantProductObject(generation, isChangingOverTime());
     }
 
     @Override

@@ -347,6 +347,15 @@ public class TableUsageTest {
         assertThat(product.getTable3Name(), is("NotFoo"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetTableName_withGeneration_exception() {
+        Product product = new Product();
+        ProductGen gen = new ProductGen(product);
+        TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("tableGen");
+
+        tableUsage.setTableName("SomeName", gen);
+    }
+
     @Test
     public void testGetDocumentation() {
         ProductWithRequireUsageSet product = new ProductWithRequireUsageSet();

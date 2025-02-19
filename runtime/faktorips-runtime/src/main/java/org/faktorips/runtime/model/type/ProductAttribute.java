@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -114,6 +115,21 @@ public class ProductAttribute extends Attribute {
      */
     public void setValue(IProductComponent productComponent, Calendar effectiveDate, Object value) {
         invokeMethod(setter, getRelevantProductObject(productComponent, effectiveDate), value);
+    }
+
+    /**
+     * Sets the value of this attribute using a product component generation.
+     * <p>
+     * If the attribute is not changing over time, the underlying product component is used
+     * directly; otherwise, the provided generation is used.
+     * </p>
+     *
+     * @param generation the product component generation to base the value update on
+     * @param value the new value
+     * @since 25.1
+     */
+    public void setValue(IProductComponentGeneration generation, Object value) {
+        invokeMethod(setter, getRelevantProductObject(generation), value);
     }
 
     /**

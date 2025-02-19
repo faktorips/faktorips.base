@@ -857,6 +857,73 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
+    public void testSetValueSet_withGeneration() {
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(produkt);
+        repository.putProductCmptGeneration(gen);
+
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
+        attribute.setValueSet(gen, valueSet);
+
+        assertThat(gen.getSetOfAllowedValuesForAttrChangingOverTime(null), is(valueSet));
+    }
+
+    @Test
+    public void testSetDefaultValue_withGeneration() {
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(produkt);
+        repository.putProductCmptGeneration(gen);
+
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+
+        attribute.setDefaultValue(gen, "newDefault");
+
+        assertThat(gen.getDefaultValueAttrChangingOverTime(), is("newDefault"));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetDefaultValue_withGeneration_NotProductRelevant() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(produkt);
+
+        attribute.setDefaultValue(gen, "newValue");
+    }
+
+    @Test
+    public void testSetValueSet_withGeneration_nonChanging() {
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(produkt);
+        repository.putProductCmptGeneration(gen);
+
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "X", "Y", "Z");
+        attribute.setValueSet(gen, valueSet);
+
+        assertThat(produkt.getSetOfAllowedValuesForAttr1(null), is(valueSet));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetValueSet_withGeneration_NotConfigured() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(produkt);
+
+        attribute.setValueSet(gen, new UnrestrictedValueSet<>());
+    }
+
+    @Test
     public void testIsChangingOverTime() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
