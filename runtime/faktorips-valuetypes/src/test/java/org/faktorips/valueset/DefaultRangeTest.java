@@ -15,10 +15,13 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThrows;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -230,6 +233,25 @@ public class DefaultRangeTest {
         assertThat(new TestRange(5, 5, null).getValues(true), hasItems(Integer.valueOf(5)));
         assertThat(new TestRange(5, 5, null, true).getValues(true), hasItems(Integer.valueOf(5)));
         assertThat(new TestRange(5, 5, null, true).getValues(false), hasItems((Integer)null, Integer.valueOf(5)));
+    }
+
+    @Test
+    public void testGetValues_SortedValues() {
+
+        BigDecimalRange range = BigDecimalRange.valueOf("1", "5", "0.5");
+
+        Set<BigDecimal> values = range.getValues(true);
+
+        assertThat(values, contains(
+                BigDecimal.ONE,
+                new BigDecimal("1.5"),
+                new BigDecimal("2.0"),
+                new BigDecimal("2.5"),
+                new BigDecimal("3.0"),
+                new BigDecimal("3.5"),
+                new BigDecimal("4.0"),
+                new BigDecimal("4.5"),
+                new BigDecimal("5.0")));
     }
 
     @Test(expected = RuntimeException.class)
