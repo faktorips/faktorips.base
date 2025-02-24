@@ -1109,6 +1109,30 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
+    public void testValidateValueSetNotEmptyIfMandatory_PrimitiveBoolean() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attrBoolean");
+        Produkt product = new Produkt(repository);
+        product.defaultValueBoolean = false;
+        product.allowedValuesForBoolean = OrderedValueSet.empty();
+
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSetNotEmptyIfMandatory(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attrBoolean"));
+    }
+
+    @Test
     public void testValidateDefaultValue_OK() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
@@ -1161,7 +1185,17 @@ public class DefaultPolicyAttributeTest {
 
         defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
 
-        assertThat(messageList.isEmpty(), is(true));
+        assertThat(messageList.isEmpty(), is(false));
+        assertThat(messageList.containsErrorMsg(), is(true));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attrInt"));
     }
 
     @Test
@@ -1176,7 +1210,17 @@ public class DefaultPolicyAttributeTest {
 
         defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
 
-        assertThat(messageList.isEmpty(), is(true));
+        assertThat(messageList.isEmpty(), is(false));
+        assertThat(messageList.containsErrorMsg(), is(true));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attrLong"));
     }
 
     @Test
@@ -1191,7 +1235,17 @@ public class DefaultPolicyAttributeTest {
 
         defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
 
-        assertThat(messageList.isEmpty(), is(true));
+        assertThat(messageList.isEmpty(), is(false));
+        assertThat(messageList.containsErrorMsg(), is(true));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(2));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+        ObjectProperty objectProperty2 = message.getInvalidObjectProperties().get(1);
+        assertThat(objectProperty2.getObject(), is(product));
+        assertThat(objectProperty2.getProperty(), is("attrBoolean"));
     }
 
     @Test
