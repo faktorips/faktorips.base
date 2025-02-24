@@ -342,7 +342,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
      * @see NullObjects
      */
     private <T> boolean allowsAsDefault(T defaultValue, ValueSet<T> valueSet) {
-        return (ObjectUtil.isNull(valueSet) || isNullValue(defaultValue) || valueSet.contains(defaultValue));
+        return (ObjectUtil.isNull(valueSet) || (!getDatatype().isPrimitive() && isNullValue(defaultValue))
+                || valueSet.contains(defaultValue));
     }
 
     private <T> boolean isNullValue(T value) {
