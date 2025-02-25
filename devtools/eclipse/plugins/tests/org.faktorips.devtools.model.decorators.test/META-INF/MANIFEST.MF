@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.model.decorators
 Bundle-SymbolicName: org.faktorips.devtools.model.decorators.test;singleton:=true
-Bundle-Version: 25.1.2.release
+Bundle-Version: 25.1.3.qualifier
 Fragment-Host: org.faktorips.devtools.model.decorators
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core;bundle-version="3.4.0",
