@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -551,6 +552,18 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
         return productAsssociation != null
                 && productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * super.hashCode() + Objects.hashCode(association);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj)
+                && obj instanceof ProductCmptLink otherLink
+                && Objects.equals(getAssociation(), otherLink.getAssociation());
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,8 +15,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,9 +26,11 @@ import static org.mockito.Mockito.when;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
@@ -254,6 +258,39 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         linkCollection.remove(link3);
         assertEquals(4, linkCollection.size());
         assertFalse(linkCollection.getLinks().contains(link3));
+    }
+
+    @Test
+    public void testRemoveSameTargetInDifferentAssociations() {
+        ProductCmpt parent = mock(ProductCmpt.class);
+        doReturn(parent).when(parent).getIpsObject();
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(parent.getIpsProject()).thenReturn(ipsProject);
+        IIpsProjectProperties ipsProjectProperties = mock(IIpsProjectProperties.class);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
+        when(ipsProjectProperties.getSupportedLanguages()).thenReturn(Set.of());
+        link1 = new ProductCmptLink(parent, "id1");
+        link1.setAssociation("oneAssociation");
+        link1.setTarget("t1");
+        link2 = new ProductCmptLink(parent, "id2");
+        link2.setAssociation("anotherAssociation");
+        link2.setTarget("t1");
+        link3 = new ProductCmptLink(parent, "id3");
+        link3.setAssociation("oneAssociation");
+        link3.setTarget("t2");
+
+        assertNotEquals(link1.hashCode(), link3.hashCode());
+
+        linkCollection.addLink(link1);
+        linkCollection.addLink(link2);
+        linkCollection.addLink(link3);
+
+        assertEquals(3, linkCollection.size());
+        linkCollection.remove(link2);
+        assertEquals(2, linkCollection.size());
+        assertTrue(linkCollection.getLinks().contains(link1));
+        assertFalse(linkCollection.getLinks().contains(link2));
+        assertTrue(linkCollection.getLinks().contains(link3));
     }
 
     @Test
