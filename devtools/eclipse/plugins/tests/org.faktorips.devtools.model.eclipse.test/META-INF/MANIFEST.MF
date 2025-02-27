@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.17.100",
  org.faktorips.abstracttest,
  org.faktorips.valuetypes
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.faktorips.datatype,

@@ -17,10 +17,6 @@
     <properties>
         <!-- plugin versions -->
         <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
-        <!-- java and compiler options -->
-        <java.version>17</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
     <modules>

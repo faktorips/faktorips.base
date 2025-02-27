@@ -9,9 +9,6 @@
     <artifactId>faktorips-validation-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Validation Maven Plugin</name>
-    <properties>
-        <java.version>17</java.version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>

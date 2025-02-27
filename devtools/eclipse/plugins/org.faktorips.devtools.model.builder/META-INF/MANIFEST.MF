@@ -41,7 +41,7 @@ Export-Package: org.faktorips.devtools.model.builder.fl,
  org.faktorips.devtools.model.builder.xmodel.productcmptbuilder,
  org.faktorips.devtools.model.builder.xmodel.table
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.faktorips.codegen,
  org.faktorips.codegen.dthelpers,
