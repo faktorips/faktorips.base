@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
 /**
  * Container for the {@link ValidationRuleConfiguration} map used by both {@link IProductComponent}
  * and {@link IProductComponentGeneration}.
- * 
+ *
  * @since 3.22
  */
 class ValidationRules {
@@ -48,7 +48,7 @@ class ValidationRules {
      * Creates a map containing the validation rule configurations found in the indicated XML
      * element. For each validation rule configuration the map contains an entry with the rule name
      * as a key and a {@link ValidationRuleConfiguration} instance as value.
-     * 
+     *
      * @param element an XML element containing a product component( generation)'s data
      * @throws NullPointerException if element is <code>null</code>.
      */
@@ -70,14 +70,16 @@ class ValidationRules {
             Element vRuleElement = element.getOwnerDocument().createElement(XML_ELEMENT_VALIDATION_RULE_CONFIG);
             vRuleElement.setAttribute("ruleName", vRuleEntry.getKey());
             ValidationRuleConfiguration vRule = vRuleEntry.getValue();
-            vRuleElement.setAttribute("active", Boolean.toString(vRule.isActive()));
+            if (vRule.isActive()) {
+                vRuleElement.setAttribute("active", Boolean.toString(vRule.isActive()));
+            }
             element.appendChild(vRuleElement);
         }
     }
 
     /**
      * Enables or disables validation for a specific rule.
-     * 
+     *
      * @param ruleName the name of the rule in question
      * @param active indicating whether the validation rule is configured as active
      * @throws IllegalRepositoryModificationException if the {@link IRuntimeRepository} containing
@@ -99,7 +101,7 @@ class ValidationRules {
      * Please be aware that only one of {@link IProductComponent} or
      * {@link IProductComponentGeneration} can configure any given rule depending on its
      * changing-over-time configuration.
-     * 
+     *
      * @param ruleName the name of the rule in question
      * @return <code>true</code> if the rule was activated, <code>false</code> else.
      */
