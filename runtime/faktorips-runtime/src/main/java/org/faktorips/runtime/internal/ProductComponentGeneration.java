@@ -296,13 +296,13 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     @Override
     public Element toXml(Document document) {
         Element genElement = document.createElement(XML_TAG_GENERATION);
+        writeExtensionPropertiesToXml(genElement);
         writeValidFromToXml(genElement);
         writePropertiesToXml(genElement);
-        writeTableUsagesToXml(genElement);
-        writeReferencesToXml(genElement);
         writeFormulaToXml(genElement);
+        writeTableUsagesToXml(genElement);
         writeValidationRuleConfigsToXml(genElement);
-        writeExtensionPropertiesToXml(genElement);
+        writeReferencesToXml(genElement);
         return genElement;
     }
 

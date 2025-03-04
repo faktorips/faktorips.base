@@ -418,6 +418,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
+        writeExtensionPropertiesToXml(prodCmptElement);
         DescriptionXmlHelper.write(description, prodCmptElement);
 
         if (getRepository().getNumberOfProductComponentGenerations(this) == 0) {
@@ -432,15 +433,16 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             Collections.sort(generations, comparing(IProductComponentGeneration::getValidFrom));
             for (IProductComponentGeneration generation : generations) {
                 ProductComponentGeneration gen = (ProductComponentGeneration)generation;
-                prodCmptElement.appendChild(gen.toXml(document));
+                Element genElement = gen.toXml(document);
+                genElement = sortNodesInAlphabeticalOrder(genElement);
+                prodCmptElement.appendChild(genElement);
             }
         }
         ((IToXmlSupport)this).writePropertiesToXml(prodCmptElement);
         writeFormulaToXml(prodCmptElement);
         writeTableUsagesToXml(prodCmptElement);
-        writeReferencesToXml(prodCmptElement);
         writeValidationRuleConfigsToXml(prodCmptElement);
-        writeExtensionPropertiesToXml(prodCmptElement);
+        writeReferencesToXml(prodCmptElement);
 
         return sortNodesInAlphabeticalOrder(prodCmptElement);
     }
