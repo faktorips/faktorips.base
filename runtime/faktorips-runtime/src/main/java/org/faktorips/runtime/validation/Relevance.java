@@ -117,11 +117,11 @@ public enum Relevance {
         if (isCompatible(values, valueSetKind) && values.containsNull() == containsNull) {
             return values;
         }
-        if (isRange(valueSetKind, values)) {
-            return asRange(datatype, containsNull, values);
-        }
         if (isEnum(valueSetKind, values) || datatype.isEnum() || isEnumType(datatype)) {
             return asEnum(datatype, containsNull, values);
+        }
+        if (isRange(valueSetKind, values)) {
+            return asRange(datatype, containsNull, values);
         }
         if (ValueSetKind.StringLength == valueSetKind) {
             return asStringLength(containsNull, values);
