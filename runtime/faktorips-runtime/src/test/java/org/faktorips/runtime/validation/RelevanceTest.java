@@ -677,6 +677,17 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testAsValueSetFor_Mandatory_ValueSetTypeRange_ConfiguredAsOrderedValueSet() {
+        TestPolicyWithIntegerRange testPolicyWithIntegerRange = new TestPolicyWithIntegerRange();
+        testPolicyWithIntegerRange.setAllowedValuesForIntegerAttributeWithRange(OrderedValueSet.of(1, 2, 3, null));
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(testPolicyWithIntegerRange,
+                        TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE,
+                        testPolicyWithIntegerRange.getSetOfAllowedValuesForIntegerAttributeWithRange()),
+                is(OrderedValueSet.of(1, 2, 3)));
+    }
+
+    @Test
     public void testAsValueSetFor_Optional() {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
         PolicyAttribute policyAttribute_Unrestricted = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
@@ -790,6 +801,17 @@ public class RelevanceTest {
                 Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithMoneyRange(),
                         TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE),
                 is(MoneyRange.valueOf((Money)null, null, null, true)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeRange_ConfiguredAsOrderedValueSet() {
+        TestPolicyWithIntegerRange testPolicyWithIntegerRange = new TestPolicyWithIntegerRange();
+        testPolicyWithIntegerRange.setAllowedValuesForIntegerAttributeWithRange(OrderedValueSet.of(1, 2, 3));
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(testPolicyWithIntegerRange,
+                        TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE,
+                        testPolicyWithIntegerRange.getSetOfAllowedValuesForIntegerAttributeWithRange()),
+                is(OrderedValueSet.of(1, 2, 3, null)));
     }
 
     @Test
