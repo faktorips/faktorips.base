@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-       eclipse-release: ['2023-12', '2024-03', '2024-06', '2024-09']
+       eclipse-release: ['2023-12', '2024-03', '2024-06', '2024-09', '2024-12']
 
     env:
        integration-test-release: '2023-12'
@@ -25,7 +25,7 @@ jobs:
     - name: Set up JDKs
       uses: actions/setup-java@v4
       with:
-        java-version: 17
+        java-version: 21
         distribution: 'adopt'
         cache: maven
     - name: build config
