@@ -32,10 +32,10 @@ def package static constants (XValidationRule it) '''
 def package static validationRuleMethods (XValidationRule it, XPolicyCmptClass modelObject) '''
     «IF modelObject !== null»
       «execRuleMethod("get"+ modelObject.implClassName +"().")»
-      «createMessageFor(modelObject.interfaceOrClassName + ".")»
+      «createMessageFor(modelObject.interfaceOrClassName + ".","get"+ modelObject.implClassName +"()")»
     «ELSE»
       «execRuleMethod("")»
-      «createMessageFor("")»
+      «createMessageFor("","this")»
     «ENDIF»
 '''
 
@@ -127,7 +127,7 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     }
 '''
 
-def private static createMessageFor (XValidationRule it, String modelObject) '''
+def private static createMessageFor (XValidationRule it, String modelObject, String that) '''
     /**
      *«localizedJDoc("CREATE_MESSAGE", name)»
     «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
@@ -139,7 +139,7 @@ def private static createMessageFor (XValidationRule it, String modelObject) '''
         «IF validateAttributes && !validatedAttrSpecifiedInSrc»
                 «List_(ObjectProperty())» invalidObjectProperties = «Arrays()».asList(
                 «FOR constant : validatedAttributeConstants SEPARATOR  ","»
-                new «ObjectProperty()»(this, «modelObject»«constant»)
+                new «ObjectProperty()»(«that», «modelObject»«constant»)
                 «ENDFOR»
                  );
         «ENDIF»
