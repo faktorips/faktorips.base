@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
     private volatile Set<PlainJavaMarker> markers = null;
 
     // TODO FIPS-8427: ggf. aus Git/Maven initialisieren?
-    private boolean derived;
+    private final AtomicBoolean derived = new AtomicBoolean(false);
 
     public PlainJavaResource(File wrapped) {
         super(wrapped);
@@ -250,13 +250,13 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     @Override
     public boolean isDerived() {
-        return derived;
+        return derived.get();
     }
 
     @Override
     public void setDerived(boolean isDerived, IProgressMonitor monitor) {
         PlainJavaFileUtil.walk(file(), monitor, "Marking as derived", //$NON-NLS-1$
-                p -> getWorkspace().getRoot().get(p).derived = isDerived);
+                p -> getWorkspace().getRoot().get(p).derived.set(isDerived));
     }
 
     @Override

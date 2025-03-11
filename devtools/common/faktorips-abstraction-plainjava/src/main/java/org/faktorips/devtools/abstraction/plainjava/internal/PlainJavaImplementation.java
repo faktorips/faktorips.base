@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -196,10 +197,10 @@ public enum PlainJavaImplementation implements AImplementation {
     public static final class ResourceChanges {
         private final Set<Consumer<PlainJavaResourceChange>> resourceChangeListeners = new LinkedHashSet<>();
         private final Deque<PlainJavaResourceChange> delayedChangeEvents = new LinkedList<>();
-        private boolean delayChangeEvents;
+        private final AtomicBoolean delayChangeEvents = new AtomicBoolean(false);
 
         void hold() {
-            delayChangeEvents = true;
+            delayChangeEvents.set(true);
         }
 
         void resume() {
@@ -207,13 +208,13 @@ public enum PlainJavaImplementation implements AImplementation {
             synchronized (delayedChangeEvents) {
                 eventsToResend = new LinkedList<>(delayedChangeEvents);
                 delayedChangeEvents.clear();
-                delayChangeEvents = false;
+                delayChangeEvents.set(false);
             }
             eventsToResend.forEach(this::notifyResourceChangeListeners);
         }
 
         private void notifyResourceChangeListeners(PlainJavaResourceChange change) {
-            if (delayChangeEvents) {
+            if (delayChangeEvents.get()) {
                 delayedChangeEvents.add(change);
             } else {
                 resourceChangeListeners.forEach(listener -> listener.accept(change));
