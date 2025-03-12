@@ -16,19 +16,19 @@
 
     <properties>
         <commons-lang3.version>3.17.0</commons-lang3.version>
-        <commons-text.version>1.12.0</commons-text.version>
-        <groovy.version>4.0.24</groovy.version>
+        <commons-text.version>1.13.0</commons-text.version>
+        <groovy.version>4.0.26</groovy.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jakarta-xml-api.version>4.0.2</jakarta-xml-api.version>
-        <joda.version>2.13.0</joda.version>
-        <opencsv.version>5.9</opencsv.version>
-        <spotbugs-annotations.version>4.8.6</spotbugs-annotations.version>
+        <joda.version>2.13.1</joda.version>
+        <opencsv.version>5.10</opencsv.version>
+        <spotbugs-annotations.version>4.9.2</spotbugs-annotations.version>
         <!-- Test dependencies -->
-        <mockito-core.version>5.14.2</mockito-core.version>
+        <mockito-core.version>5.16.0</mockito-core.version>
         <hamcrest.version>2.2</hamcrest.version>
         <junit.version>4.13.2</junit.version>
-        <junit-jupiter.version>5.11.3</junit-jupiter.version>
+        <junit-jupiter.version>5.12.0</junit-jupiter.version>
         <!-- Encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
