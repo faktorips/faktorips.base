@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,18 +47,12 @@ public enum AttributeKind {
     }
 
     public static AttributeKind forName(String name) {
-        if ("changeable".equals(name)) {
-            return CHANGEABLE;
-        }
-        if ("constant".equals(name)) {
-            return CONSTANT;
-        }
-        if ("derived".equals(name)) {
-            return DERIVED_ON_THE_FLY;
-        }
-        if ("computed".equals(name)) {
-            return DERIVED_BY_EXPLICIT_METHOD_CALL;
-        }
-        return null;
+        return switch (name) {
+            case "changeable" -> CHANGEABLE;
+            case "constant" -> CONSTANT;
+            case "derived" -> DERIVED_ON_THE_FLY;
+            case "computed" -> DERIVED_BY_EXPLICIT_METHOD_CALL;
+            default -> null;
+        };
     }
 }

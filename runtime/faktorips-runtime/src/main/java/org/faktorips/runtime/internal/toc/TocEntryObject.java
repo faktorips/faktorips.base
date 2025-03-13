@@ -67,8 +67,7 @@ public abstract class TocEntryObject extends TocEntry {
 
     @Override
     public String toString() {
-        return new StringBuilder().append("TocEntry(").append(getXmlElementTag()).append(':').append(ipsObjectId)
-                .append(')').toString();
+        return "TocEntry(%s:%s)".formatted(getXmlElementTag(), ipsObjectId);
     }
 
     @Override

@@ -134,51 +134,30 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
 
     @Override
     protected void internalAddEntry(TocEntryObject entry) {
-        if (entry instanceof ProductCmptTocEntry prodEntry) {
-            pcIdTocEntryMap.put(prodEntry.getIpsObjectId(), prodEntry);
-            pcNameTocEntryMap.put(prodEntry.getIpsObjectQualifiedName(), prodEntry);
-            Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
-            versions.put(prodEntry.getVersionId(), prodEntry);
-            return;
+        switch (entry) {
+            case ProductCmptTocEntry productCmptEntry -> {
+                pcIdTocEntryMap.put(productCmptEntry.getIpsObjectId(), productCmptEntry);
+                pcNameTocEntryMap.put(productCmptEntry.getIpsObjectQualifiedName(), productCmptEntry);
+                getVersions(productCmptEntry.getKindId()).put(productCmptEntry.getVersionId(), productCmptEntry);
+            }
+            case TableContentTocEntry tableEntry -> {
+                TableContentTocEntry previousTocEntry = tableImplClassTocEntryMap
+                        .put(entry.getImplementationClassName(), tableEntry);
+                removePreviousSingleContent(entry, previousTocEntry);
+                tableContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), tableEntry);
+            }
+            case FormulaTestTocEntry formulaTestEntry -> testCaseNameTocEntryMap
+                    .put(formulaTestEntry.getIpsObjectQualifiedName(), formulaTestEntry);
+            case TestCaseTocEntry testCaseEntry -> testCaseNameTocEntryMap
+                    .put(testCaseEntry.getIpsObjectQualifiedName(), testCaseEntry);
+            case ModelTypeTocEntry modelTypeEntry -> modelTypeNameTocEntryMap
+                    .put(modelTypeEntry.getIpsObjectQualifiedName(), modelTypeEntry);
+            case EnumContentTocEntry enumContentEntry -> addEnumContentTocEntry(enumContentEntry);
+            case EnumXmlAdapterTocEntry enumXmlAdapterEntry -> enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(),
+                    enumXmlAdapterEntry);
+            case CustomTocEntryObject<?> tocEntry -> putTypedTocEntryToMap(tocEntry);
+            default -> throw new IllegalArgumentException("Unknown entry type " + entry);
         }
-
-        if (entry instanceof TableContentTocEntry) {
-            TableContentTocEntry previousTocEntry = tableImplClassTocEntryMap.put(entry.getImplementationClassName(),
-                    (TableContentTocEntry)entry);
-            removePreviousSingleContent(entry, previousTocEntry);
-            tableContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (TableContentTocEntry)entry);
-            return;
-        }
-
-        if (entry instanceof TestCaseTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (TestCaseTocEntry)entry);
-            return;
-        }
-
-        if (entry instanceof FormulaTestTocEntry) {
-            testCaseNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (FormulaTestTocEntry)entry);
-            return;
-        }
-
-        if (entry instanceof ModelTypeTocEntry) {
-            modelTypeNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (ModelTypeTocEntry)entry);
-            return;
-        }
-
-        if (entry instanceof EnumContentTocEntry) {
-            addEnumContentTocEntry(entry);
-            return;
-        }
-        if (entry instanceof EnumXmlAdapterTocEntry) {
-            enumXmlAdapterTocEntryMap.put(entry.getIpsObjectId(), (EnumXmlAdapterTocEntry)entry);
-            return;
-        }
-        if (entry instanceof CustomTocEntryObject<?>) {
-            putTypedTocEntryToMap((CustomTocEntryObject<?>)entry);
-            return;
-        }
-
-        throw new IllegalArgumentException("Unknown entry type " + entry);
     }
 
     /**
@@ -203,40 +182,32 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         if (!isModifiable()) {
             throw new UnsupportedOperationException("Table of contents is not modifiable");
         }
-        if (entry instanceof ProductCmptTocEntry prodEntry) {
-            boolean removed = pcIdTocEntryMap.remove(prodEntry.getIpsObjectId()) != null;
-            pcNameTocEntryMap.remove(prodEntry.getIpsObjectQualifiedName());
-            Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
-            versions.remove(prodEntry.getVersionId());
-            return removed;
-        }
 
-        if (entry instanceof TableContentTocEntry) {
-            boolean removed = tableImplClassTocEntryMap.remove(entry.getImplementationClassName()) != null;
-            removed |= tableContentNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
-            return removed;
-        }
+        return switch (entry) {
+            case ProductCmptTocEntry prodEntry -> {
+                boolean removed = pcIdTocEntryMap.remove(prodEntry.getIpsObjectId()) != null;
+                pcNameTocEntryMap.remove(prodEntry.getIpsObjectQualifiedName());
+                Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
+                versions.remove(prodEntry.getVersionId());
+                yield removed;
+            }
+            case TableContentTocEntry tableEntry -> {
+                boolean removed = tableImplClassTocEntryMap.remove(tableEntry.getImplementationClassName()) != null;
+                removed |= tableContentNameTocEntryMap.remove(tableEntry.getIpsObjectQualifiedName()) != null;
+                yield removed;
+            }
+            case FormulaTestTocEntry formulaCaseEntry -> testCaseNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
+            case TestCaseTocEntry testCaseEntry -> testCaseNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
+            case ModelTypeTocEntry modelTypeEntry -> modelTypeNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
+            case EnumContentTocEntry enumTypeEntry -> enumContentImplClassTocEntryMap.remove(entry.getImplementationClassName()) != null;
+            case EnumXmlAdapterTocEntry enumXmlAdapterEntry -> enumXmlAdapterTocEntryMap.remove(entry.getIpsObjectId()) != null;
+            case CustomTocEntryObject<?> tocEntry -> {
+                Map<String, CustomTocEntryObject<?>> map = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
+                yield map != null && map.remove(tocEntry.getIpsObjectQualifiedName()) != null;
+            }
+            default -> throw new IllegalArgumentException("Unknown entry type " + entry);
+        };
 
-        if ((entry instanceof TestCaseTocEntry) || (entry instanceof FormulaTestTocEntry)) {
-            return testCaseNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
-        }
-
-        if (entry instanceof ModelTypeTocEntry) {
-            return modelTypeNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
-        }
-
-        if (entry instanceof EnumContentTocEntry) {
-            return enumContentImplClassTocEntryMap.remove(entry.getImplementationClassName()) != null;
-        }
-        if (entry instanceof EnumXmlAdapterTocEntry) {
-            return enumXmlAdapterTocEntryMap.remove(entry.getIpsObjectId()) != null;
-        }
-        if (entry instanceof CustomTocEntryObject<?> tocEntry) {
-            Map<String, CustomTocEntryObject<?>> map = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
-            return map != null && map.remove(tocEntry.getIpsObjectQualifiedName()) != null;
-        }
-
-        throw new IllegalArgumentException("Unknown entry type " + entry);
     }
     // CSON: CyclomaticComplexity
 

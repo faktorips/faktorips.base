@@ -15,6 +15,7 @@ import static org.faktorips.runtime.util.StringBuilderJoiner.DEFAULT_SEPARATOR;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -75,8 +76,8 @@ public final class IpsStringUtils {
      */
     public static boolean trimEquals(String s1, String s2) {
         return Objects.equals(
-                s1 != null ? s1.trim() : s1,
-                s2 != null ? s2.trim() : s2);
+                Optional.ofNullable(s1).map(String::trim).orElse(null),
+                Optional.ofNullable(s2).map(String::trim).orElse(null));
     }
 
     /**
@@ -87,7 +88,7 @@ public final class IpsStringUtils {
      * @return whether both strings are equal
      */
     public static boolean equalsNullAsEmpty(String s1, String s2) {
-        return Objects.equals(s1 == null ? EMPTY : s1, s2 == null ? EMPTY : s2);
+        return Objects.equals(Objects.requireNonNullElse(s1, EMPTY), Objects.requireNonNullElse(s2, EMPTY));
     }
 
     /**

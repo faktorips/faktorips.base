@@ -242,12 +242,10 @@ public abstract class ProductComponentGeneration extends RuntimeObject
             String targetId,
             Element relationElement) {
         String maxStr = relationElement.getAttribute("maxCardinality");
-        Integer maxCardinality = null;
-        if ("*".equals(maxStr) || "n".equals(maxStr.toLowerCase())) {
-            maxCardinality = Integer.valueOf(Integer.MAX_VALUE);
-        } else {
-            maxCardinality = Integer.valueOf(maxStr);
-        }
+        Integer maxCardinality = switch (maxStr.toLowerCase()) {
+            case "*", "n" -> Integer.MAX_VALUE;
+            default -> Integer.valueOf(maxStr);
+        };
 
         Integer minCardinality = Integer.valueOf(relationElement.getAttribute("minCardinality"));
         cardinalityMap.put(targetId, IntegerRange.valueOf(minCardinality, maxCardinality));

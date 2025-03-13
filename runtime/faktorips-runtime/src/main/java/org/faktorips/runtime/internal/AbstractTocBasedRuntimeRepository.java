@@ -80,23 +80,26 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     @Override
     public void getAllProductComponents(String kindId, List<IProductComponent> result) {
-        for (ProductCmptTocEntry entry : toc.getProductCmptTocEntries(kindId)) {
-            result.add(getProductComponent(entry.getIpsObjectId()));
-        }
+        toc.getProductCmptTocEntries(kindId)
+                .stream()
+                .map(entry -> getProductComponent(entry.getIpsObjectId()))
+                .forEach(result::add);
     }
 
     @Override
     public void getAllProductComponents(List<IProductComponent> result) {
-        for (TocEntryObject entry : toc.getProductCmptTocEntries()) {
-            result.add(getProductComponent(entry.getIpsObjectId()));
-        }
+        toc.getProductCmptTocEntries()
+                .stream()
+                .map(entry -> getProductComponent(entry.getIpsObjectId()))
+                .forEach(result::add);
     }
 
     @Override
     public void getAllEnumClasses(LinkedHashSet<Class<?>> result) {
-        for (TocEntryObject entry : toc.getEnumContentTocEntries()) {
-            result.add(getClass(entry.getImplementationClassName(), getClassLoader()));
-        }
+        toc.getEnumContentTocEntries()
+                .stream()
+                .map(entry -> getClass(entry.getImplementationClassName(), getClassLoader()))
+                .forEach(result::add);
     }
 
     @Override
@@ -305,20 +308,15 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
 
     @Override
     protected IProductComponent getNotCachedProductComponent(String id) {
-        ProductCmptTocEntry tocEntry = toc.getProductCmptTocEntry(id);
-        if (tocEntry == null) {
-            return null;
-        }
-        return createProductCmpt(tocEntry);
+        return Optional.ofNullable(toc.getProductCmptTocEntry(id))
+                .map(this::createProductCmpt)
+                .orElse(null);
     }
 
     @Override
     protected <T> IpsEnum<T> getNotCachedEnumValues(Class<T> clazz) {
         EnumContentTocEntry tocEntries = toc.getEnumContentTocEntry(clazz.getName());
-        if (tocEntries == null) {
-            return null;
-        }
-        return createEnumValues(tocEntries, clazz);
+        return tocEntries == null ? null : createEnumValues(tocEntries, clazz);
     }
 
     @Override
@@ -344,11 +342,9 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      */
     @Override
     protected synchronized IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository) {
-        TestCaseTocEntry tocEntry = toc.getTestCaseTocEntryByQName(qName);
-        if (tocEntry == null) {
-            return null;
-        }
-        return createTestCase(tocEntry, runtimeRepository);
+        return Optional.ofNullable(toc.getTestCaseTocEntryByQName(qName))
+                .map(entry -> createTestCase(entry, runtimeRepository))
+                .orElse(null);
     }
 
     @Override

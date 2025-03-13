@@ -140,20 +140,14 @@ public abstract class ModelElement {
      * @throws IllegalArgumentException if no such property exists
      */
     public Object getExtensionPropertyValue(String propertyId) {
-        if (extPropertyValues == null) {
-            return null;
-        }
-        return extPropertyValues.get(propertyId);
+        return Optional.ofNullable(extPropertyValues).map(v -> v.get(propertyId)).orElse(null);
     }
 
     /**
      * @return a set of the extension property ids defined for this element
      */
     public Set<String> getExtensionPropertyIds() {
-        if (extPropertyValues == null) {
-            return new HashSet<>(0);
-        }
-        return extPropertyValues.keySet();
+        return extPropertyValues == null ? new HashSet<>(0) : extPropertyValues.keySet();
     }
 
     protected static Object invokeMethod(Method method, Object source, Object... arguments) {

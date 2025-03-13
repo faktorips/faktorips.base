@@ -47,10 +47,9 @@ public enum FormulaEvaluatorUtil {
     public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects,
             String id) {
         for (T modelObject : modelObjects) {
-            if (modelObject instanceof IConfigurableModelObject configurableModelObject) {
-                if (configurableModelObject.getProductComponent().getId().equals(id)) {
-                    return castModelObject(modelObject);
-                }
+            if (modelObject instanceof IConfigurableModelObject configurableModelObject
+                    && configurableModelObject.getProductComponent().getId().equals(id)) {
+                return castModelObject(modelObject);
             }
         }
         return null;
@@ -79,12 +78,11 @@ public enum FormulaEvaluatorUtil {
             String id) {
         List<R> returnList = new ArrayList<>();
         for (T modelObject : modelObjects) {
-            if (modelObject instanceof IConfigurableModelObject configurableModelObject) {
-                if (configurableModelObject.getProductComponent().getId().equals(id)) {
-                    @SuppressWarnings("unchecked")
-                    R castedModelObject = (R)modelObject;
-                    returnList.add(castedModelObject);
-                }
+            if (modelObject instanceof IConfigurableModelObject configurableModelObject
+                    && configurableModelObject.getProductComponent().getId().equals(id)) {
+                @SuppressWarnings("unchecked")
+                R castedModelObject = (R)modelObject;
+                returnList.add(castedModelObject);
             }
         }
         return returnList;
@@ -116,10 +114,7 @@ public enum FormulaEvaluatorUtil {
      * @return the primitive {@code boolean} value of the given {@link Boolean}.
      */
     public static boolean toPrimitiveBoolean(Boolean b) {
-        if (b == null) {
-            return false;
-        }
-        return b.booleanValue();
+        return Boolean.TRUE.equals(b);
     }
 
     /**
@@ -243,11 +238,7 @@ public enum FormulaEvaluatorUtil {
          * @return a {@link List} of Values
          */
         public List<E> getAttributeValues(List<? extends S> objectList) {
-            List<E> values = new ArrayList<>();
-            for (S object : objectList) {
-                values.add(getValueInternal(object));
-            }
-            return values;
+            return objectList.stream().map(this::getValueInternal).toList();
         }
 
         /**
@@ -275,14 +266,8 @@ public enum FormulaEvaluatorUtil {
          * @param listOfValues A List of values.
          */
         public E getResult(List<E> listOfValues) {
-            if (listOfValues == null || listOfValues.isEmpty()) {
-                return getFallBackValue();
-            }
-            E result = listOfValues.get(0);
-            for (int i = 1; i < listOfValues.size(); i++) {
-                result = getPreliminaryResult(result, listOfValues.get(i));
-            }
-            return result;
+            return listOfValues == null ? getFallBackValue()
+                    : listOfValues.stream().reduce(this::getPreliminaryResult).orElse(getFallBackValue());
         }
 
         /**
