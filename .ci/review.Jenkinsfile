@@ -8,6 +8,11 @@ pipeline {
         jdk 'JDK21'
         maven 'maven 3.9'
     }
+    
+    environment {
+        MAVEN_OPTS = '-Xmx4g'
+        MAVEN_REPO = '/tmp/$JOB_NAME/$GERRIT_CHANGE_ID'
+    }
 
     options {
         buildDiscarder(logRotator(daysToKeepStr: '14'))
@@ -16,35 +21,27 @@ pipeline {
     stages {
         stage('Build and Test') {
 
-            environment {
-                MAVEN_OPTS = '-Xmx4g'
-            }
-
             steps {
                 script {
                     currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}-${env.GERRIT_TOPIC}"
-                    sh 'rm -rf $HOME/.m2/repository/.meta'
-                    sh 'rm -rf $HOME/.m2/repository/.cache'
-                    sh 'rm -rf $HOME/.m2/repository/p2'
                 }
 
                 osSpecificMaven commands: [
-                    "mvn -U -V -fae -e clean install -f codequality-config",
-                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -fae -e clean install site -Dtycho.localArtifacts=ignore"
-                    // site:site is not called for the review, as it depends on base and runtime which are not installed when built with only verify
+                    "mvn -U -V -fae -e clean install -f codequality-config -Dmaven.repo.local=$MAVEN_REPO",
+                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -Dmaven.repo.local=$MAVEN_REPO",
+                    "mvn -U -V -T 8 -fae -e clean install site -Dtycho.localArtifacts=ignore -Dmaven.repo.local=$MAVEN_REPO"
                 ]
             }
         }
         stage('Dependency-Check') {
             steps {
                 dir('runtime'){
-                    withMaven(publisherStrategy: 'EXPLICIT') {
+                    withMaven(publisherStrategy: 'EXPLICIT', mavenLocalRepo: "${env.MAVEN_REPO}") {
                         dependencyCheck outputFile: 'dependency-check-runtime-report.html'
                     }
                 }
                 dir('devtools/common'){
-                    withMaven(publisherStrategy: 'EXPLICIT') {
+                    withMaven(publisherStrategy: 'EXPLICIT', mavenLocalRepo: "${env.MAVEN_REPO}") {
                         dependencyCheck outputFile: 'dependency-check-devtools-report.html'
                     }
                 }
