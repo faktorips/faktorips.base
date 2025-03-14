@@ -170,7 +170,9 @@
         <setEntry value="org.eclipse.e4.ui.workbench@default:default"/>
         <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf.identity@default:default"/>
+        <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
+        <setEntry value="org.eclipse.ecf.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.egit.core@default:default"/>
         <setEntry value="org.eclipse.egit.doc@default:default"/>
@@ -391,7 +393,6 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.yaml.snakeyaml@default:default"/>
         <setEntry value="slf4j.api*1.7.36@default:default"/>
-        <setEntry value="slf4j.api*2.0.17@default:default"/>
         <setEntry value="slf4j.nop*1.7.36@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
