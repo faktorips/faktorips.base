@@ -200,7 +200,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
                 .findAny();
         assertThat(eclipseLink30.isPresent(), is(true));
         assertThat(eclipseLink30.get().getGroupId(), is("org.eclipse.persistence"));
-        assertThat(eclipseLink30.get().getVersion(), is("3.0.2"));
+        assertThat(eclipseLink30.get().getVersion(), is("3.0.4"));
         Optional<Dependency> jakarta30 = mavenProject.getDependencies().stream()
                 .filter(dependency -> dependency.getArtifactId().equals("jakarta.persistence-api"))
                 .findAny();

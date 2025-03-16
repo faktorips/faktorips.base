@@ -314,7 +314,7 @@ class PersistenceSupport {
     private final String ECLIPSE_LINK_30_DEPENDENCY = """<dependency>$lineSeparator\
             <groupId>org.eclipse.persistence</groupId>$lineSeparator\
             <artifactId>eclipselink</artifactId>$lineSeparator\
-            <version>3.0.2</version>$lineSeparator\
+            <version>3.0.4</version>$lineSeparator\
         </dependency>$lineSeparator\
         <dependency>$lineSeparator\
             <groupId>jakarta.persistence</groupId>$lineSeparator\
