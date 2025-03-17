@@ -369,7 +369,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         List<List<ComponentNode>> paths = new ArrayList<>();
 
         for (ComponentNode rootElement : rootElements) {
-            computePathForIType(typeToExpand, rootElement, new ArrayList<ComponentNode>(), paths);
+            computePathForIType(typeToExpand, rootElement, new ArrayList<>(), paths);
         }
 
         TreePath[] treePaths = new TreePath[paths.size()];

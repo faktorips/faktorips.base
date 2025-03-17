@@ -108,7 +108,7 @@ public class DependencyResolver {
 
     private void collectDependenciesFor(List<IIpsSrcFile> ipsSrcFiles) {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            collectDependencies(ipsSrcFile.getQualifiedNameType(), new HashSet<IIpsProject>(),
+            collectDependencies(ipsSrcFile.getQualifiedNameType(), new HashSet<>(),
                     EnumSet.allOf(DependencyType.class));
         }
     }
@@ -202,7 +202,7 @@ public class DependencyResolver {
     }
 
     private void collectTransitivDependencies(IDependency dependency, EnumSet<DependencyType> transitiveTypes) {
-        collectDependencies(dependency.getSource(), new HashSet<IIpsProject>(), dependency.getType()
+        collectDependencies(dependency.getSource(), new HashSet<>(), dependency.getType()
                 .getNextTransitiveTypes(transitiveTypes, ipsProject));
     }
 

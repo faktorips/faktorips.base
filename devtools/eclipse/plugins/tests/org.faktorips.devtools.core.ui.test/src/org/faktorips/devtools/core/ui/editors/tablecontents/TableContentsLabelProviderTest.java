@@ -63,7 +63,7 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
         rowValid = gen.newRow();
         rowInvalid = gen.newRow();
         rowNull = gen.newRow();
-        
+
         rowValid.setValue(0, "1");
         rowValid.setValue(1, "2");
         rowValid.setValue(2, "3");

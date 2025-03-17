@@ -51,7 +51,7 @@ public class TextPageElement extends AbstractPageElement {
     }
 
     public TextPageElement(String text, TextType type, DocumentationContext context) {
-        this(text, new LinkedHashSet<Style>(), type, context);
+        this(text, new LinkedHashSet<>(), type, context);
     }
 
     public TextPageElement(String text, Set<Style> styles, DocumentationContext context) {
@@ -59,7 +59,7 @@ public class TextPageElement extends AbstractPageElement {
     }
 
     public TextPageElement(String text, DocumentationContext context) {
-        this(text, new LinkedHashSet<Style>(), TextType.WITHOUT_TYPE, context);
+        this(text, new LinkedHashSet<>(), TextType.WITHOUT_TYPE, context);
     }
 
     /**

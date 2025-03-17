@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -40,7 +41,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * <p>
  * The <code>IpsProblemsLabelDecorator</code> is configurable for flat or hierarchical layout styles
  * in <code>TreeViewer</code>s.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightLabelDecorator {
@@ -64,7 +65,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     public Image decorateImage(Image baseImage, Object element) {
         if (baseImage != null) {
             try {
-                return (Image)getResourceManager().get(
+                return getResourceManager().get(
                         IpsProblemOverlayIcon.createMarkerOverlayIcon(baseImage, findMaxProblemSeverity(element)));
             } catch (IpsException e) {
                 IpsPlugin.log(e);
@@ -115,15 +116,12 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                     throw new IpsException(e);
                 }
             }
-        } else if (element instanceof IResource resource) {
-            if (resource.isAccessible()) {
-                try {
-                    return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
-                } catch (CoreException e) {
-                    throw new IpsException(e);
-                }
-            } else {
-                return DEFAULT_FLAG;
+        } else if ((element instanceof AResource aresource) && aresource.isAccessible()
+                && aresource.unwrap() instanceof IResource resource) {
+            try {
+                return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);
+            } catch (CoreException e) {
+                throw new IpsException(e);
             }
         } else {
             return DEFAULT_FLAG;
@@ -154,7 +152,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
             if (flag == IMarker.SEVERITY_ERROR) {
                 return flag;
             }
-            return result |= flag;
+            return result | flag;
         } else {
             return DEFAULT_FLAG;
         }

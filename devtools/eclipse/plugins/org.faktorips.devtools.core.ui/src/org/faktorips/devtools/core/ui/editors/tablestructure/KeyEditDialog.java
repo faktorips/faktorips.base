@@ -417,7 +417,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             }
 
             ImageDescriptor descriptor = IpsProblemOverlayIcon.createOverlayIcon(image, itemMsgList.getSeverity());
-            return (Image)resourceManager.get(descriptor);
+            return resourceManager.get(descriptor);
         }
 
         private Image setImageByRange(IColumnRange range) {
@@ -425,7 +425,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             if (range != null) {
                 image = super.getImage(range);
             } else {
-                image = (Image)resourceManager.get(tableColumnDescriptor);
+                image = resourceManager.get(tableColumnDescriptor);
             }
             return image;
         }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -52,7 +52,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
     /**
      * Create a new Section to display generations.
-     * 
+     *
      * @param page The page owning this section.
      * @param parent The composite which is parent for this section
      * @param toolkit The toolkit to help creating the UI
@@ -213,7 +213,7 @@ public class GenerationsSection extends SimpleIpsPartsSection {
                 } else {
                     ImageDescriptor disableImageDescriptor = IpsUIPlugin.getImageHandling()
                             .getDisabledImageDescriptor(ImageDescriptor.createFromImage(image));
-                    return (Image)resourceManager.get(disableImageDescriptor);
+                    return resourceManager.get(disableImageDescriptor);
                 }
             }
 

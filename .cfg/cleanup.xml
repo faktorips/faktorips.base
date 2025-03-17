@@ -94,7 +94,7 @@
         <setting id="cleanup.remove_private_constructors" value="true"/>
         <setting id="cleanup.make_parameters_final" value="false"/>
         <setting id="cleanup.substring" value="false"/>
-        <setting id="cleanup.ternary_operator" value="false"/>
+        <setting id="cleanup.ternary_operator" value="true"/>
         <setting id="cleanup.merge_conditional_blocks" value="true"/>
         <setting id="cleanup.return_expression" value="true"/>
         <setting id="cleanup.system_property" value="true"/>
@@ -136,7 +136,7 @@
         <setting id="cleanup.use_parentheses_in_expressions" value="false"/>
         <setting id="cleanup.hash" value="true"/>
         <setting id="cleanup.stringconcat_stringbuffer_stringbuilder" value="true"/>
-        <setting id="cleanup.double_negation" value="false"/>
+        <setting id="cleanup.double_negation" value="true"/>
         <setting id="cleanup.overridden_assignment" value="false"/>
         <setting id="cleanup.primitive_rather_than_wrapper" value="true"/>
         <setting id="cleanup.correct_indentation" value="true"/>

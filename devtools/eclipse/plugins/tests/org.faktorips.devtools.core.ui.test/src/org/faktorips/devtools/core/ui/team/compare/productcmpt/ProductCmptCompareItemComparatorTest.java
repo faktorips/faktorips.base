@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
@@ -61,7 +60,7 @@ public class ProductCmptCompareItemComparatorTest extends AbstractIpsPluginTest 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IIpsProject proj = newIpsProject(new ArrayList<Locale>());
+        IIpsProject proj = newIpsProject(new ArrayList<>());
 
         PolicyCmptType policyCmptType = newPolicyAndProductCmptType(proj, "policyCmptType", "productCmptType");
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute1");

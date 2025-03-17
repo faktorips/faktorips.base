@@ -220,7 +220,7 @@ public final class MoveRenamePackageHelper {
             IProgressMonitor monitor) throws CoreException {
         AFolder folder = (AFolder)sourcePackage.getEnclosingResource();
         IFile rawFile = folder.getFile(fileInfos.getFileName()).unwrap();
-        IPath destination = ((IFolder)((AFolder)targetPackage.getCorrespondingResource()).unwrap()).getFullPath()
+        IPath destination = ((IFolder)targetPackage.getCorrespondingResource().unwrap()).getFullPath()
                 .append(fileInfos.getFileName());
         if (rawFile.exists()) {
             rawFile.move(destination, true, monitor);

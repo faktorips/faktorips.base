@@ -62,7 +62,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             theMonitor = new NullProgressMonitor();
         }
         TreeSet<GregorianCalendar> validFromDates = collectValidFromDates(productCmpt,
-                new HashSet<IProductCmptGeneration>(), productCmpt.getIpsProject(), theMonitor);
+                new HashSet<>(), productCmpt.getIpsProject(), theMonitor);
         List<GenerationDate> result = new ArrayList<>();
         GregorianCalendar lastDate = null;
         GenerationDate lastAdjDate = null;

@@ -66,7 +66,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
     @Override
     protected IValueSet parseInternal(String stringToBeparsed) {
         if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringToBeparsed)) {
-            return createNewEnumValueSet(new ArrayList<String>());
+            return createNewEnumValueSet(new ArrayList<>());
         }
         String[] split = stringToBeparsed.split(Pattern.quote(EnumValueSet.ENUM_VALUESET_SEPARATOR));
         List<String> parsedValues = parseValues(split);

@@ -88,7 +88,7 @@ public class ModelLabelProvider implements ILabelProvider {
         } else if (element instanceof IIpsObjectPathContainer) {
             ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
                     IPS_OBJECT_PATH_CONTAINER_GIF, true);
-            return (Image)resourceManager.get(descriptor);
+            return resourceManager.get(descriptor);
         } else if (element instanceof AAbstraction) {
             return getImage(((AAbstraction)element).unwrap());
         } else if (element instanceof IResource) {
@@ -117,7 +117,7 @@ public class ModelLabelProvider implements ILabelProvider {
             if (descriptor == null) {
                 return null;
             }
-            return (Image)resourceManager.get(descriptor);
+            return resourceManager.get(descriptor);
         }
 
         return null;

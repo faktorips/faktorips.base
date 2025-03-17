@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageEleme
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -45,7 +44,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
     /**
      * creates a page for the given {@link ITableStructure} with the context
-     * 
+     *
      */
     protected TableStructureContentPageElement(ITableStructure object, DocumentationContext context) {
         super(object, context);
@@ -159,7 +158,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         }
 
         List<IPageElement> linkPageElements = new PageElementUtils(getContext()).createLinkPageElements(
-                new ArrayList<>(tableContentsSrcFiles), TargetType.CONTENT, new LinkedHashSet<Style>(),
+                new ArrayList<>(tableContentsSrcFiles), TargetType.CONTENT, new LinkedHashSet<>(),
                 getContext());
         ListPageElement liste = new ListPageElement(linkPageElements, getContext());
 
@@ -170,9 +169,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
     /**
      * a table for foreignKeys of the tableStructure
-     * 
+     *
      * @author dicker
-     * 
+     *
      */
     private static class ForeignKeysTablePageElement extends
             AbstractIpsObjectPartsContainerTablePageElement<IForeignKey> {
@@ -230,9 +229,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
     /**
      * a table for ColumnRanges of the tableStructure
-     * 
+     *
      * @author dicker
-     * 
+     *
      */
     private static class ColumnsRangesTablePageElement extends
             AbstractIpsObjectPartsContainerTablePageElement<IColumnRange> {
@@ -278,9 +277,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
     /**
      * a table for columns of the tableStructure
-     * 
+     *
      * @author dicker
-     * 
+     *
      */
     private static class ColumnsTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IColumn> {
 
@@ -317,9 +316,9 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
 
     /**
      * a table for uniqueKey of the tableStructure
-     * 
+     *
      * @author dicker
-     * 
+     *
      */
     private static class IndexTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IIndex> {
 

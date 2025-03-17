@@ -81,7 +81,7 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
         when(containerEntry.resolveEntries()).thenReturn(ipsObjectPathEntries);
 
         emptyContainer = mock(IIpsObjectPathContainer.class);
-        when(emptyContainer.resolveEntries()).thenReturn(new ArrayList<IIpsObjectPathEntry>());
+        when(emptyContainer.resolveEntries()).thenReturn(new ArrayList<>());
 
         IIpsContainerEntry emptyContainerEntry = mock(IIpsContainerEntry.class);
         when(emptyContainerEntry.getIpsObjectPathContainer()).thenReturn(emptyContainer);

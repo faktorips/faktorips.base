@@ -62,7 +62,7 @@ public class EnumPropertyGeneratorTest {
 
     @Mock
     private IIpsProject ipsProject;
-    
+
     @Mock
     private AProject aProject;
 
@@ -89,9 +89,9 @@ public class EnumPropertyGeneratorTest {
         doReturn(ValueFactory.createStringValue("myId")).when(idAttributeValue).getValue();
 
         when(enumType.getIpsProject()).thenReturn(ipsProject);
-        
+
         when(aProject.getDefaultLineSeparator()).thenReturn(System.lineSeparator());
-        
+
         when(ipsProject.getProject()).thenReturn(aProject);
     }
 

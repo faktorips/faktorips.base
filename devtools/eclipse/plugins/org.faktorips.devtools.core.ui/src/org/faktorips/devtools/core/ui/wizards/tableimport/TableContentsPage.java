@@ -90,7 +90,7 @@ public class TableContentsPage extends IpsObjectPage {
         try {
             selectedObject = getSelectedIpsObject();
             if (selectedObject instanceof ITableStructure) {
-                return ((ITableStructure)selectedObject).getQualifiedName();
+                return selectedObject.getQualifiedName();
             } else if (selectedObject instanceof ITableContents) {
                 return ((ITableContents)selectedObject).getTableStructure();
             }

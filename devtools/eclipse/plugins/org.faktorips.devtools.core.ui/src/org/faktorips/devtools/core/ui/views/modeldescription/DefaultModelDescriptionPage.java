@@ -99,7 +99,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
     protected void setDescriptionData() {
         if (getIpsObject() == null) {
             setTitle(Messages.DefaultModelDescriptionPage_ErrorIpsModelNotFound);
-            setDescriptionItems(new ArrayList<DescriptionItem>());
+            setDescriptionItems(new ArrayList<>());
             return;
         }
         try {

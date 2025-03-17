@@ -517,7 +517,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 if (existingAssociations.size() > 0) {
                     String[] names = new String[existingAssociations.size()];
                     for (int i = 0; i < existingAssociations.size(); i++) {
-                        names[i] = (((IPolicyCmptTypeAssociation)existingAssociations.get(i)).getName());
+                        names[i] = (existingAssociations.get(i).getName());
                     }
                     inverseAssociationPropertyPage.setExistingAssociations(names);
                 } else {

@@ -32,7 +32,7 @@ public class ReferenceDeleteAction extends Action {
         viewer.addSelectionChangedListener(event -> {
             if (event.getSelection() instanceof IStructuredSelection) {
                 IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-                IProductCmptLink[] selectedLinks = getSelectedLinks(selection, new ArrayList<IIpsSrcFile>());
+                IProductCmptLink[] selectedLinks = getSelectedLinks(selection, new ArrayList<>());
                 setEnabled(selectedLinks != null);
             }
         });

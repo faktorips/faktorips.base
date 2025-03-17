@@ -393,7 +393,7 @@ public class TestSelectionComposite extends Composite {
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;
             if (element instanceof IIpsPackageFragment) {
-                testSuites.add(((IIpsPackageFragment)element).getName());
+                testSuites.add(element.getName());
             } else if (element instanceof IIpsObject) {
                 testSuites.add(((IIpsObject)element).getQualifiedName());
             }

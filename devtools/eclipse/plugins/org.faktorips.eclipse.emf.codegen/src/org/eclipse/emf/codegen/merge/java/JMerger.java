@@ -177,7 +177,7 @@ public class JMerger {
 
     private boolean isNotExistingAnnotation(JNode target, String annotationName) {
         return target.getChildren().stream()
-                .filter(c -> c instanceof JAnnotation)
+                .filter(JAnnotation.class::isInstance)
                 .noneMatch(a -> Objects.equals(a.getName(), annotationName));
     }
 
@@ -717,7 +717,7 @@ public class JMerger {
 
     protected boolean applySweepRules(JNode targetNode) {
         if (targetNode instanceof JAnnotation
-                && annotationGenerationSettings.retainedAnnotations().contains(((JAnnotation)targetNode).getName())) {
+                && annotationGenerationSettings.retainedAnnotations().contains(targetNode.getName())) {
             return false;
         }
         for (JControlModel.SweepRule sweepRule : getControlModel().getSweepRules()) {
@@ -873,7 +873,7 @@ public class JMerger {
         String redirect = getControlModel().getRedirect();
         if (redirect != null && node instanceof JAnnotation && sourceParent instanceof JMethod sourceMethod) {
             if (!sourceMethod.isConstructor() && !sourceMethod.getName().endsWith(redirect)
-                    && targetParent instanceof JMethod && ((JMethod)targetParent).getName().endsWith(redirect)) {
+                    && targetParent instanceof JMethod && targetParent.getName().endsWith(redirect)) {
                 return false;
             }
         }

@@ -22,7 +22,7 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
     private String propertyName;
 
     public AbstractFieldPropertyMapping(EditField<T> edit, Object object, String propertyName) {
-        this.field = edit;
+        field = edit;
         this.object = object;
         this.propertyName = propertyName;
     }

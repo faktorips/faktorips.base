@@ -236,8 +236,8 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         if (duplicateGeneration != this) {
             String msg = MessageFormat.format(Messages.IpsObjectGeneration_msgDuplicateGeneration,
                     IIpsModelExtensions.get()
-                    .getModelPreferences().getChangesOverTimeNamingConvention()
-                    .getGenerationConceptNameSingular());
+                            .getModelPreferences().getChangesOverTimeNamingConvention()
+                            .getGenerationConceptNameSingular());
             list.add(Message.newError(MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION, msg, this, PROPERTY_VALID_FROM));
         }
     }

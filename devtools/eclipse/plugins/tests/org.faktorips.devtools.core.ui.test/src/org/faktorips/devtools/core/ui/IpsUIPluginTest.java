@@ -316,7 +316,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
             executableExtensionMap.put("class", testDeepCopySmartModeBehaviors[i]);
             extensions[i] = TestMockingUtils.mockExtension("TestDeepCopySmartModeBehavior",
                     new TestConfigurationElement(IDeepCopySmartModeBehavior.CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR,
-                            new HashMap<String, String>(), null, new IConfigurationElement[0], executableExtensionMap));
+                            new HashMap<>(), null, new IConfigurationElement[0], executableExtensionMap));
         }
         IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsUIPlugin.PLUGIN_ID,
                 IAdditionalDeepCopyWizardPage.EXTENSION_POINT_ID_DEEP_COPY_WIZARD, extensions);

@@ -623,7 +623,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
          * union
          */
         for (IAssociation candidate : candidateSubsets) {
-            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) || !policyCmptTypeAssociation.isCompositionDetailToMaster()) {
+            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation)
+                    || !policyCmptTypeAssociation.isCompositionDetailToMaster()) {
                 continue;
             }
             IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation

@@ -38,11 +38,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-        if (!(adaptableObject instanceof IIpsElement ipsElement)) {
-            return null;
-        }
-
-        if (ipsElement instanceof IIpsObjectPart) {
+        if (!(adaptableObject instanceof IIpsElement ipsElement) || (ipsElement instanceof IIpsObjectPart)) {
             return null;
         }
 

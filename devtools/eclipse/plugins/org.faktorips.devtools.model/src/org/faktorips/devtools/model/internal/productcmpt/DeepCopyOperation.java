@@ -341,7 +341,7 @@ public class DeepCopyOperation implements ICoreRunnable {
         if (parent instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociation productCmptTypeAssociationOld = ((IProductCmptTypeAssociationReference)parent)
                     .getAssociation();
-            IProductCmpt parentProductCmpt = ((IProductCmptReference)((IProductCmptTypeAssociationReference)parent)
+            IProductCmpt parentProductCmpt = ((IProductCmptReference)parent
                     .getParent()).getProductCmpt();
             linkData2newProductCmptQName.put(
                     new LinkData(parentProductCmpt, productCmpt, productCmptTypeAssociationOld), newProductCmptQName);

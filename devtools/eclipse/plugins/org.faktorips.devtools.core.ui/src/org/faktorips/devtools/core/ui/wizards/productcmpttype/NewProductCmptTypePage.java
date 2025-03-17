@@ -121,7 +121,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         if (root != null) {
             ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProjects(Arrays.asList(root.getIpsProject()));
         } else {
-            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProjects(new ArrayList<IIpsProject>());
+            ((IpsObjectRefControl)policyCmptTypeField.getControl()).setIpsProjects(new ArrayList<>());
         }
     }
 

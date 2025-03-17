@@ -86,7 +86,7 @@ public class ProductSearchQueryTest {
         query = new ProductSearchQuery(model, ipsModel);
 
         when(model.getProductSearchConditionPresentationModels()).thenReturn(
-                new ArrayList<ProductSearchConditionPresentationModel>(), Arrays.asList(invalidCondition),
+                new ArrayList<>(), Arrays.asList(invalidCondition),
                 Arrays.asList(invalidCondition, validCondition));
 
         assertTrue(query.isOnlyTypeNameSearch());
@@ -124,7 +124,7 @@ public class ProductSearchQueryTest {
     public void testGetSelectedSrcFilesNoSelectedFiles() {
         query = new ProductSearchQuery(model, ipsModel);
 
-        when(scope.getSelectedIpsSrcFiles()).thenReturn(new HashSet<IIpsSrcFile>());
+        when(scope.getSelectedIpsSrcFiles()).thenReturn(new HashSet<>());
 
         Set<IIpsSrcFile> selectedSrcFiles = query.getSelectedSrcFiles();
 

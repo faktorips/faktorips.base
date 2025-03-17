@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -38,7 +37,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard to import external tables into ipstablecontents.
- * 
+ *
  * @author Thorsten Waertel, Thorsten Guenther
  */
 public class TableImportWizard extends IpsObjectImportWizard {
@@ -237,7 +236,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             return (ITableContents)selectContentsPage.getTargetForImport();
         }
         IIpsSrcFile ipsSrcFile = newTableContentsPage.createIpsSrcFile(new NullProgressMonitor());
-        newTableContentsPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<IIpsObject>());
+        newTableContentsPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<>());
         return newTableContentsPage.getCreatedTableContents();
     }
 

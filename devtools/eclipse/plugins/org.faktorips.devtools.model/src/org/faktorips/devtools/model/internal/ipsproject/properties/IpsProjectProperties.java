@@ -588,7 +588,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         if (isValidateIpsSchema()) {
             projectEl.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
             projectEl.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", //$NON-NLS-1$
-                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + org.faktorips.devtools.model.util.XmlUtil.getIpsProjectPropertiesSchemaLocation()); //$NON-NLS-1$
+                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " //$NON-NLS-1$
+                            + org.faktorips.devtools.model.util.XmlUtil.getIpsProjectPropertiesSchemaLocation());
         }
 
         // required features

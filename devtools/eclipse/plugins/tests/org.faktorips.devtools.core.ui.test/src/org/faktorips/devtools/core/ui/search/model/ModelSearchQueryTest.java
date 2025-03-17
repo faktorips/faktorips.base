@@ -181,7 +181,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingAttribute);
         assertObjectNotMatched(nameMatchingAttributeAtWrongClass);
 
-        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -248,7 +248,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingMethod);
         assertObjectNotMatched(nameMatchingMethodAtWrongClass);
 
-        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -315,7 +315,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingAssociation);
         assertObjectNotMatched(nameMatchingAssociationAtWrongClass);
 
-        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -383,7 +383,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingTableStructureUsage);
         assertObjectNotMatched(nameMatchingTableStructureUsageAtWrongClass);
 
-        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<>());
 
         status = query.run(new NullProgressMonitor());
 
@@ -449,7 +449,7 @@ public class ModelSearchQueryTest {
         assertObjectNotMatched(notMatchingRule);
         assertObjectNotMatched(nameMatchingRuleAtWrongClass);
 
-        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<Class<? extends IIpsObjectPart>>());
+        when(searchModel.getSearchedClazzes()).thenReturn(new HashSet<>());
 
         status = query.run(new NullProgressMonitor());
 

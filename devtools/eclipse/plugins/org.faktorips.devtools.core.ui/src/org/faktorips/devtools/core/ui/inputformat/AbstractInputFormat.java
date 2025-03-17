@@ -59,7 +59,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
     public AbstractInputFormat(String defaultNullString, Locale datatypeLocale) {
         ArgumentCheck.notNull(datatypeLocale);
         ArgumentCheck.notNull(defaultNullString);
-        this.nullStringRepresentation = defaultNullString;
+        nullStringRepresentation = defaultNullString;
         this.datatypeLocale = datatypeLocale;
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
 
     @Override
     public void setNullString(String nullString) {
-        this.nullStringRepresentation = nullString;
+        nullStringRepresentation = nullString;
     }
 
     @Override

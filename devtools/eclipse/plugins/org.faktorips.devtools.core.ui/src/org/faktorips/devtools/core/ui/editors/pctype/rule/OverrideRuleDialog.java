@@ -27,7 +27,8 @@ import org.faktorips.devtools.model.pctype.IValidationRule;
 public class OverrideRuleDialog extends SelectSupertypeHierarchyPartsDialog<IValidationRule> {
 
     /**
-     * @param policyCmptType The {@link IPolicyCmptType policy component type} to get the candidates to possibly overwrite from.
+     * @param policyCmptType The {@link IPolicyCmptType policy component type} to get the candidates
+     *            to possibly overwrite from.
      * @param parent The {@link Shell} to show this dialog in.
      */
     public OverrideRuleDialog(IPolicyCmptType policyCmptType, Shell parent) {
@@ -41,8 +42,8 @@ public class OverrideRuleDialog extends SelectSupertypeHierarchyPartsDialog<IVal
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
 
         /**
-         * @param policyCmptType The {@link IPolicyCmptType policy component type} the {@link IValidationRule validation rules} available for
-         *            selection belong to.
+         * @param policyCmptType The {@link IPolicyCmptType policy component type} the
+         *            {@link IValidationRule validation rules} available for selection belong to.
          */
         public CandidatesContentProvider(IPolicyCmptType policyCmptType) {
             super(policyCmptType);

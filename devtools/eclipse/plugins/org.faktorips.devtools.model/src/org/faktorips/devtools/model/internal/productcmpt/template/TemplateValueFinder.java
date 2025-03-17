@@ -35,7 +35,7 @@ public class TemplateValueFinder<V extends ITemplatedValue, C extends ITemplated
     public TemplateValueFinder(V originalPropertyValue, Class<V> valueClass, ITemplatedValueIdentifier valueIdentifier,
             IIpsProject ipsProject) {
         super(ipsProject);
-        this.originalValue = originalPropertyValue;
+        originalValue = originalPropertyValue;
         this.valueClass = valueClass;
         this.valueIdentifier = valueIdentifier;
     }

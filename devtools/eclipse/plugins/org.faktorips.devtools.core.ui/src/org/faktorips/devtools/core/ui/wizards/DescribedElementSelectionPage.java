@@ -61,7 +61,7 @@ public class DescribedElementSelectionPage<P extends PresentationModelObject, E 
         this.propertyClass = propertyClass;
         this.labelProvider = labelProvider;
         this.selectableValuesSupplier = selectableValuesSupplier;
-        this.uiUpdater = new ValidatingUiUpdater<>(this, pmo, validation);
+        uiUpdater = new ValidatingUiUpdater<>(this, pmo, validation);
         setTitle(title);
         setDescription(description);
     }
@@ -113,7 +113,7 @@ public class DescribedElementSelectionPage<P extends PresentationModelObject, E 
                 PresentationModelObjectValidation<P> validation) {
             super(page);
             this.pmo = pmo;
-            this.presentationModelObjectValidation = validation;
+            presentationModelObjectValidation = validation;
         }
 
         @Override

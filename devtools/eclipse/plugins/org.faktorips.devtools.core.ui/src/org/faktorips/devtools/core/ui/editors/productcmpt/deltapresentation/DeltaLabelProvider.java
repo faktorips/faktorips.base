@@ -94,7 +94,7 @@ public class DeltaLabelProvider extends LabelProvider {
         if (descriptor == null) {
             return getFallbackImage(element);
         } else {
-            return (Image)resourceManager.get(descriptor);
+            return resourceManager.get(descriptor);
         }
     }
 

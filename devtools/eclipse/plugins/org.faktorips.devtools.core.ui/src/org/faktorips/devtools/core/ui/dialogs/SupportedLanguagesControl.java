@@ -50,7 +50,7 @@ public final class SupportedLanguagesControl extends EditTableControl {
     }
 
     public void initialize() {
-        initialize(new ArrayList<Locale>(2), null);
+        initialize(new ArrayList<>(2), null);
     }
 
     @Override

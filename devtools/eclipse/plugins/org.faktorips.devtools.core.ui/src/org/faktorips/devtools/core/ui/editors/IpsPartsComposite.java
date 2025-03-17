@@ -686,7 +686,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
                 editPartCanceled();
             } else if (dialog.getReturnCode() == Window.OK) {
-                newPartConfirmed(newPart);   
+                newPartConfirmed(newPart);
                 tableViewer.setSelection(new StructuredSelection(newPart), true);
             }
         } catch (IpsException ex) {

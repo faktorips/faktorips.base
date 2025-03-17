@@ -81,27 +81,27 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
     public Image getImage(Object element) {
         if (element instanceof IIpsSrcFolderEntry) {
             ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(IpsPackageFragmentRoot.class);
-            return (Image)resourceManager.get(imageDescriptor);
+            return resourceManager.get(imageDescriptor);
         } else if (element instanceof IIpsProjectRefEntry) {
             ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(IpsProject.class);
-            return (Image)resourceManager.get(imageDescriptor);
+            return resourceManager.get(imageDescriptor);
         } else if (element instanceof IIpsArchiveEntry) {
             ImageDescriptor imageDescriptor = IIpsDecorators
                     .getDefaultImageDescriptor(LibraryIpsPackageFragmentRoot.class);
-            return (Image)resourceManager.get(imageDescriptor);
+            return resourceManager.get(imageDescriptor);
         } else if (element instanceof IIpsObjectPathEntryAttribute att) {
             if (att.isTocPath()) {
                 ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(TableContents.class);
-                return (Image)resourceManager.get(imageDescriptor);
+                return resourceManager.get(imageDescriptor);
             }
             if (att.isPackageNameForDerivedSources() || att.isPackageNameForMergableSources()) {
                 ImageDescriptor imageDescriptor = IIpsDecorators
                         .getDefaultImageDescriptor(AbstractIpsPackageFragment.class);
-                return (Image)resourceManager.get(imageDescriptor);
+                return resourceManager.get(imageDescriptor);
             }
         }
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("folder_open.gif"); //$NON-NLS-1$
-        return (Image)resourceManager.get(imageDescriptor);
+        return resourceManager.get(imageDescriptor);
     }
 
     private String getLabelFromAttributeType(IIpsObjectPathEntryAttribute attribute) {

@@ -95,7 +95,7 @@ public class AttributeValueFormatterTest {
     public void testConvertToString_EmptyBracketsOnEmptyList() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.DECIMAL);
-        String convertedString = formatter.convertToString(new ArrayList<String>());
+        String convertedString = formatter.convertToString(new ArrayList<>());
         assertEquals(IpsStringUtils.EMPTY, convertedString);
     }
 

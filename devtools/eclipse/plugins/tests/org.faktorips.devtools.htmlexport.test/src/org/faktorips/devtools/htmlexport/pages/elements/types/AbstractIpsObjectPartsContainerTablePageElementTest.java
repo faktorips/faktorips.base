@@ -70,7 +70,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
     @Test
     public void testGetHeadline_noSinceVersion() throws Exception {
         objectParts.add(part);
-        doReturn(new ArrayList<String>()).when(pageElement).getHeadlineWithIpsObjectPart();
+        doReturn(new ArrayList<>()).when(pageElement).getHeadlineWithIpsObjectPart();
 
         List<String> headline = pageElement.getHeadline();
 
@@ -80,7 +80,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
     @Test
     public void testGetHeadline_sinceVersion() throws Exception {
         objectParts.add(versionControlledElement);
-        doReturn(new ArrayList<String>()).when(pageElement).getHeadlineWithIpsObjectPart();
+        doReturn(new ArrayList<>()).when(pageElement).getHeadlineWithIpsObjectPart();
 
         List<String> headline = pageElement.getHeadline();
 
@@ -90,7 +90,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
     @Test
     public void testGetRow() throws Exception {
         objectParts.add(versionControlledElement);
-        doReturn(new ArrayList<IPageElement>()).when(pageElement).createRowWithIpsObjectPart(versionControlledElement);
+        doReturn(new ArrayList<>()).when(pageElement).createRowWithIpsObjectPart(versionControlledElement);
         doReturn(new DefaultVersion("1.2.3")).when(versionControlledElement).getSinceVersion();
 
         List<IPageElement> result = pageElement.getRow(versionControlledElement);
@@ -103,7 +103,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
     @Test
     public void testGetRow_noVersion() throws Exception {
         objectParts.add(part);
-        doReturn(new ArrayList<IPageElement>()).when(pageElement).createRowWithIpsObjectPart(part);
+        doReturn(new ArrayList<>()).when(pageElement).createRowWithIpsObjectPart(part);
 
         List<IPageElement> result = pageElement.getRow(part);
 

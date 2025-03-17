@@ -102,7 +102,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
                 IpsPlugin.log(exception);
             }
         }
-        return (Image)resourceManager.get(getImageDescriptor(element));
+        return resourceManager.get(getImageDescriptor(element));
     }
 
     public ImageDescriptor getImageDescriptor(Object element) {

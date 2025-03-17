@@ -111,6 +111,6 @@ final class TestCaseDeltaLabelProvider implements ILabelProvider {
         } else if (element instanceof IIpsObjectPart) {
             return IpsUIPlugin.getImageHandling().getImage((IIpsObjectPart)element);
         }
-        return (Image)resourceManager.get(descriptor);
+        return resourceManager.get(descriptor);
     }
 }

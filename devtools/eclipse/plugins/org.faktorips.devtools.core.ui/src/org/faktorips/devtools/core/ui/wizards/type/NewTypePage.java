@@ -114,7 +114,7 @@ public abstract class NewTypePage extends IpsObjectPage {
         if (root != null) {
             ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(Arrays.asList(root.getIpsProject()));
         } else {
-            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(new ArrayList<IIpsProject>());
+            ((IpsObjectRefControl)supertypeField.getControl()).setIpsProjects(new ArrayList<>());
         }
     }
 

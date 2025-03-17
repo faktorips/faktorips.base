@@ -667,25 +667,21 @@ public class TestCase extends IpsObject implements ITestCase {
      * Removes the given test parameter object from the parameter list
      */
     private void remove(ITestObject testObject) {
-        if (testObject instanceof ITestPolicyCmpt testPolicyCmpt) {
-            if (testPolicyCmpt.isRoot()) {
-                removeTestObject(testObject);
-            } else {
-                TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(testPolicyCmpt);
-                testPolicyCmpt = findTestPolicyCmpt(hierarchyPath.toString());
-                if (testPolicyCmpt == null) {
-                    throw new IpsException(new IpsStatus(
-                            MessageFormat.format(Messages.TestCase_Error_TestPolicyCmptNotFound,
-                                    hierarchyPath.toString())));
-                }
-
-                ITestPolicyCmptLink link = (ITestPolicyCmptLink)testPolicyCmpt.getParent();
-                if (link != null) {
-                    ((ITestPolicyCmpt)link.getParent()).removeLink(link);
-                }
-            }
-        } else {
+        if (!(testObject instanceof ITestPolicyCmpt testPolicyCmpt) || testPolicyCmpt.isRoot()) {
             removeTestObject(testObject);
+        } else {
+            TestCaseHierarchyPath hierarchyPath = new TestCaseHierarchyPath(testPolicyCmpt);
+            testPolicyCmpt = findTestPolicyCmpt(hierarchyPath.toString());
+            if (testPolicyCmpt == null) {
+                throw new IpsException(new IpsStatus(
+                        MessageFormat.format(Messages.TestCase_Error_TestPolicyCmptNotFound,
+                                hierarchyPath.toString())));
+            }
+
+            ITestPolicyCmptLink link = (ITestPolicyCmptLink)testPolicyCmpt.getParent();
+            if (link != null) {
+                ((ITestPolicyCmpt)link.getParent()).removeLink(link);
+            }
         }
     }
 

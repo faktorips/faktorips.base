@@ -38,7 +38,7 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
         setPageComplete(false);
         this.uiToolkit = uiToolkit;
         this.contentStrategy = contentStrategy;
-        this.content = contentStrategy.getContent();
+        content = contentStrategy.getContent();
         this.assignContentAttributesPage = assignContentAttributesPage;
     }
 

@@ -103,14 +103,14 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     public boolean isFolderForDerivedSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
                 || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
-                .equals(type));
+                        .equals(type));
     }
 
     @Override
     public boolean isFolderForMergableSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
                 || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
-                .equals(type));
+                        .equals(type));
     }
 
     @Override

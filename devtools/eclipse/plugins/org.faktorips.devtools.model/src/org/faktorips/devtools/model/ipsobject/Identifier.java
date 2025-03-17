@@ -81,91 +81,49 @@ public interface Identifier {
      * @return a new {@link Identifier}
      */
     static Identifier of(IIpsObjectPart part, AtomicInteger index) {
-        // TODO Java 21 turn to switch
-        if (part instanceof ILabel label) {
-            return LabelIdentifier.of(label);
-        }
-        if (part instanceof IDescription description) {
-            return new DescriptionIdentifier(description.getLocale());
-        }
-        if (part instanceof IColumnRange columnRange) {
-            return ColumnRangeIdentifier.of(columnRange);
-        }
-        if (part instanceof ITestValue testValue) {
-            return TestValueIdentifier.of(testValue);
-        }
-        if (part instanceof IAttributeValue attributeValue) {
-            return AttributeValueIdentifier.of(attributeValue);
-        }
-        if (part instanceof IConfiguredDefault configuredDefault) {
-            return ConfiguredDefaultIdentifier.of(configuredDefault);
-        }
-        if (part instanceof IConfiguredValueSet configuredValueSet) {
-            return ConfiguredValueSetIdentifier.of(configuredValueSet);
-        }
-        if (part instanceof IAssociation association) {
-            return AssociationIdentifier.of(association);
-        }
-        if (part instanceof ITableStructureUsage tableStructureUsage) {
-            return TableStructureUsageIdentifier.of(tableStructureUsage);
-        }
-        if (part instanceof TableStructureReference tableStructureReference) {
-            return TableStructureReferenceIdentifier.of(tableStructureReference);
-        }
-        if (part instanceof ITableContentUsage tableContentUsage) {
-            return TableContentUsageIdentifier.of(tableContentUsage);
-        }
-        if (part instanceof IKey key) {
-            return KeyIdentifier.of(key);
-        }
-        if (part instanceof IIpsObjectGeneration generation) {
-            return GenerationIdentifier.of(generation);
-        }
-        if (part instanceof IFormula formula) {
-            return FormulaIdentifier.of(formula);
-        }
-        if (part instanceof IMethod method) {
-            return MethodIdentifier.of(method);
-        }
-        if (part instanceof IProductCmptLink link) {
-            return LinkIdentifier.of(link);
-        }
-        if (part instanceof ITestPolicyCmpt testPolicyCmpt) {
-            return TestPolicyCmptIdentifier.of(testPolicyCmpt);
-        }
-        if (part instanceof TestPolicyCmptLink testPolicyCmptLink) {
-            return TestPolicyCmptLinkIdentifier.of(testPolicyCmptLink);
-        }
-        if (part instanceof TestParameter testParameter) {
-            return TestParameterIdentifier.of(testParameter);
-        }
-        if (part instanceof IEnumValue enumValue) {
-            return EmumValueIdentifier.of(enumValue);
-        }
-        if (part instanceof IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue) {
-            return new ByTypeIdentifier(IEnumLiteralNameAttributeValue.XML_TAG);
-        }
-
-        if (part instanceof IPartIdentifiedByIndex indexedPart) {
-            return new IndexedIdentifier(index.getAndIncrement());
-        }
-        return getIdProviders().stream()
-                .map(idProvider -> idProvider.getIdentity(part))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElseGet(() -> {
-                    String name = part.getName();
-                    if (IpsStringUtils.isNotBlank(name)) {
-                        return new NamedIdentifier(name);
-                    }
-                    return null;
-                });
+        return switch (part) {
+            case ILabel label -> LabelIdentifier.of(label);
+            case IDescription description -> new DescriptionIdentifier(description.getLocale());
+            case IColumnRange columnRange -> ColumnRangeIdentifier.of(columnRange);
+            case ITestValue testValue -> TestValueIdentifier.of(testValue);
+            case IAttributeValue attributeValue -> AttributeValueIdentifier.of(attributeValue);
+            case IConfiguredDefault configuredDefault -> ConfiguredDefaultIdentifier.of(configuredDefault);
+            case IConfiguredValueSet configuredValueSet -> ConfiguredValueSetIdentifier.of(configuredValueSet);
+            case IAssociation association -> AssociationIdentifier.of(association);
+            case ITableStructureUsage tableStructureUsage -> TableStructureUsageIdentifier.of(tableStructureUsage);
+            case TableStructureReference tableStructureReference -> TableStructureReferenceIdentifier
+                    .of(tableStructureReference);
+            case ITableContentUsage tableContentUsage -> TableContentUsageIdentifier.of(tableContentUsage);
+            case IKey key -> KeyIdentifier.of(key);
+            case IIpsObjectGeneration generation -> GenerationIdentifier.of(generation);
+            case IFormula formula -> FormulaIdentifier.of(formula);
+            case IMethod method -> MethodIdentifier.of(method);
+            case IProductCmptLink link -> LinkIdentifier.of(link);
+            case ITestPolicyCmpt testPolicyCmpt -> TestPolicyCmptIdentifier.of(testPolicyCmpt);
+            case TestPolicyCmptLink testPolicyCmptLink -> TestPolicyCmptLinkIdentifier.of(testPolicyCmptLink);
+            case TestParameter testParameter -> TestParameterIdentifier.of(testParameter);
+            case IEnumValue enumValue -> EmumValueIdentifier.of(enumValue);
+            case IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue -> new ByTypeIdentifier(
+                    IEnumLiteralNameAttributeValue.XML_TAG);
+            case IPartIdentifiedByIndex indexedPart -> new IndexedIdentifier(index.getAndIncrement());
+            default -> getIdProviders().stream()
+                    .map(idProvider -> idProvider.getIdentity(part))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElseGet(() -> {
+                        String name = part.getName();
+                        if (IpsStringUtils.isNotBlank(name)) {
+                            return new NamedIdentifier(name);
+                        }
+                        return null;
+                    });
+        };
     }
+    // CSON: CyclomaticComplexityCheck
 
     private static List<IdentityProvider> getIdProviders() {
         return IIpsModelExtensions.get().getIdentifierForIpsObjectParts().get();
     }
-    // CSON: CyclomaticComplexityCheck
 
     // CSOFF: CyclomaticComplexity
     // CSOFF: NestedBlocks
@@ -194,7 +152,6 @@ public interface Identifier {
             case IIpsObjectGeneration.TAG_NAME -> GenerationIdentifier.of(partEl);
             case IExpression.TAG_NAME -> FormulaIdentifier.of(partEl);
             case IProductCmptLink.TAG_NAME -> {
-                // TODO Java 21 use case ... when
                 if (TestPolicyCmpt.TAG_NAME.equals(partEl.getParentNode().getNodeName())) {
                     yield TestPolicyCmptLinkIdentifier.of(partEl);
                 }
@@ -558,7 +515,7 @@ public interface Identifier {
 
         static LabelIdentifier of(Element partEl) {
             String localeCode = getAttribute(partEl, ILabel.PROPERTY_LOCALE);
-            return new LabelIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? new Locale(localeCode) : null);
+            return new LabelIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
         }
     }
 
@@ -570,7 +527,7 @@ public interface Identifier {
 
         static DescriptionIdentifier of(Element partEl) {
             String localeCode = getAttribute(partEl, IDescription.PROPERTY_LOCALE);
-            return new DescriptionIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? new Locale(localeCode) : null);
+            return new DescriptionIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
         }
     }
 

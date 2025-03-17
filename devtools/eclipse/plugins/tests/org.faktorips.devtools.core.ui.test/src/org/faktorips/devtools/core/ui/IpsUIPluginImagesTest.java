@@ -80,7 +80,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
         // getting an image from an already disposed resource manager should reactivate the resource
         // manager
-        Image reImage = (Image)otherManager.get(sharedDesc);
+        Image reImage = otherManager.get(sharedDesc);
         assertFalse(reImage.isDisposed());
         assertFalse(sharedImage.equals(reImage));
 
@@ -122,7 +122,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
         String name = "TestImage.gif";
         ImageDescriptor descriptor = ImageDescriptor.createFromFile(this.getClass(), name);
         ResourceManager rmA = new LocalResourceManager(JFaceResources.getResources());
-        Image imageA = (Image)rmA.get(descriptor);
+        Image imageA = rmA.get(descriptor);
         assertFalse(imageA.isDisposed());
         rmA.dispose();
         if (!eclipseUsesImageCache()) {
@@ -132,8 +132,8 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
         ResourceManager rmB = new LocalResourceManager(JFaceResources.getResources());
 
-        imageA = (Image)rmA.get(descriptor);
-        Image imageB = (Image)rmB.get(descriptor);
+        imageA = rmA.get(descriptor);
+        Image imageB = rmB.get(descriptor);
         assertEquals(imageA, imageB);
         Image imageP = IpsUIPlugin.getImageHandling().getImage(descriptor);
         assertEquals(imageA, imageP);
@@ -184,7 +184,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
         ResourceManager manager = new LocalResourceManager(JFaceResources.getResources());
         for (int i = 0; i < 10000; i++) {
-            Image actual = (Image)manager.get(expDescriptor);
+            Image actual = manager.get(expDescriptor);
             assertEquals(newExpected, actual);
             assertEquals(expected, actual);
         }

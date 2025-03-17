@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 /**
  * This adapter factory tries to get model objects from {@link IProductCmptStructureReference}
  * objects.
- * 
+ *
  * @author dirmeier
  */
 public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
@@ -58,14 +58,11 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
             } else {
                 return null;
             }
-        } else if (adaptableObject instanceof IProductCmptVRuleReference vruleReference) {
-            if (adapterType.isAssignableFrom(IProductCmptGeneration.class)) {
-                IProductCmptStructureReference parent = vruleReference.getParent();
-                if (parent instanceof IProductCmptReference) {
-                    return getGeneration((IProductCmptReference)parent);
-                } else {
-                    return null;
-                }
+        } else if ((adaptableObject instanceof IProductCmptVRuleReference vruleReference)
+                && adapterType.isAssignableFrom(IProductCmptGeneration.class)) {
+            IProductCmptStructureReference parent = vruleReference.getParent();
+            if (parent instanceof IProductCmptReference parentReference) {
+                return getGeneration(parentReference);
             } else {
                 return null;
             }

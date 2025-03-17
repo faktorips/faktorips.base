@@ -90,10 +90,7 @@ public class DefaultInternationalString implements InternationalString {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof DefaultInternationalString other)) {
-            return false;
-        }
-        if (!Objects.equals(defaultLocale, other.defaultLocale)) {
+        if ((obj == null) || !(obj instanceof DefaultInternationalString other) || !Objects.equals(defaultLocale, other.defaultLocale)) {
             return false;
         }
         if (localizedStringMap == null) {

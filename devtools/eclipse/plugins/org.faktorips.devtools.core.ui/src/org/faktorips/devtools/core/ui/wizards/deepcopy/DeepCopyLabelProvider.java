@@ -121,7 +121,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
         if ((element instanceof IProductCmptStructureReference)
                 && isLinkedElement((IProductCmptStructureReference)element)) {
             Image image = getImage(element);
-            return (Image)resourceManager.get(new DecorationOverlayIcon(image, overlay, IDecoration.BOTTOM_RIGHT));
+            return resourceManager.get(new DecorationOverlayIcon(image, overlay, IDecoration.BOTTOM_RIGHT));
         } else {
             return getImage(element);
         }

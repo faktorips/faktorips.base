@@ -238,7 +238,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private void addTypeIfNotPresent(Map<IType, Set<IMember>> javaTypesToJavaElements, IType type) {
         if (!(javaTypesToJavaElements.containsKey(type))) {
-            javaTypesToJavaElements.put(type, new LinkedHashSet<IMember>());
+            javaTypesToJavaElements.put(type, new LinkedHashSet<>());
         }
     }
 
@@ -346,7 +346,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private boolean isConstructor(IJavaElement javaElement) {
         String typeName = getTypeName(javaElement);
         if (javaElement instanceof IMember) {
-            return ((IMember)javaElement).getElementName().equalsIgnoreCase(typeName);
+            return javaElement.getElementName().equalsIgnoreCase(typeName);
         }
         return false;
     }

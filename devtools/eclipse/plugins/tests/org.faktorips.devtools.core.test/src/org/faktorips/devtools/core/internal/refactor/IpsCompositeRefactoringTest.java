@@ -93,7 +93,7 @@ public class IpsCompositeRefactoringTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalArgumentExceptionIfEmptyElementSetGiven() {
-        new TestIpsCompositeRefactoring(new HashSet<IIpsElement>());
+        new TestIpsCompositeRefactoring(new HashSet<>());
     }
 
     @Test(expected = IllegalArgumentException.class)

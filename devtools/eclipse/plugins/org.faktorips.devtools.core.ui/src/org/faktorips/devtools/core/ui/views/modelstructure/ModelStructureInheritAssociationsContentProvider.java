@@ -59,7 +59,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
             List<IType> projectTypes = getProjectITypes(inputProject, ((IType)inputElement).getIpsObjectType());
             monitor.worked(1);
             Collection<IType> rootElementsForIType = getRootElementsForIType((IType)inputElement, projectTypes,
-                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<PathElement>());
+                    ToChildAssociationType.SELF, new ArrayList<>(), new ArrayList<>());
             storedRootElements = ComponentNode.encapsulateComponentTypes(rootElementsForIType, null, inputProject);
             Object[] rootElements = storedRootElements.toArray();
             monitor.worked(1);

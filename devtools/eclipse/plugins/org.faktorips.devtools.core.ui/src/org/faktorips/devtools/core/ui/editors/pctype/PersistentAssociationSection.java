@@ -206,7 +206,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 if (messages.size() > 0) {
                     ImageDescriptor descriptor = IpsProblemOverlayIcon.getOverlay(messages.getSeverity());
                     if (descriptor != null) {
-                        return (Image)getResourceManager().get(descriptor);
+                        return getResourceManager().get(descriptor);
                     }
                 }
                 return null;

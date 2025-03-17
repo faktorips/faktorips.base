@@ -34,15 +34,17 @@ import org.xml.sax.SAXException;
 
 public class InternationalStringXmlReaderWriterTest {
 
-    private static final String XML = "<InternationalString defaultLocale=\"de\">" //
-            + "<LocalizedString locale=\"de\" text=\"blabla\"/>" //
-            + "<LocalizedString locale=\"en\" text=\"english\"/>" //
-            + "</InternationalString>";
+    private static final String XML = """
+            <InternationalString defaultLocale="de">\
+            <LocalizedString locale="de" text="blabla"/>\
+            <LocalizedString locale="en" text="english"/>\
+            </InternationalString>""";
 
-    private static final String WRAPPED_XML = "<Parent><Child><InternationalString defaultLocale=\"de\">" //
-            + "<LocalizedString locale=\"de\" text=\"blabla\"/>" //
-            + "<LocalizedString locale=\"en\" text=\"english\"/>" //
-            + "</InternationalString></Child></Parent>";
+    private static final String WRAPPED_XML = """
+            <Parent><Child><InternationalString defaultLocale="de">\
+            <LocalizedString locale="de" text="blabla"/>\
+            <LocalizedString locale="en" text="english"/>\
+            </InternationalString></Child></Parent>""";
 
     @Test
     public void testFromXml() throws Exception {

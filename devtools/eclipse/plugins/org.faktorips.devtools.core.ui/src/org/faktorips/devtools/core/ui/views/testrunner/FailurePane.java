@@ -42,7 +42,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
@@ -228,7 +227,7 @@ public class FailurePane implements IMenuListener {
                     tableItem.setText(text);
                     ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                             "obj16/stkfrm_msg.gif"); //$NON-NLS-1$
-                    tableItem.setImage((Image)resourceManager.get(imageDescriptor));
+                    tableItem.setImage(resourceManager.get(imageDescriptor));
                 }
             } else if (testCaseFailures[i].startsWith(TEST_ERROR_STACK_INDICATOR)) {
                 showStackTraceAction.setEnabled(true);
@@ -243,7 +242,7 @@ public class FailurePane implements IMenuListener {
                         tableItem.setText(traceLine);
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                                 "obj16/stkfrm_obj.gif"); //$NON-NLS-1$
-                        tableItem.setImage((Image)resourceManager.get(imageDescriptor));
+                        tableItem.setImage(resourceManager.get(imageDescriptor));
                     }
                 }
             } else {
@@ -252,7 +251,7 @@ public class FailurePane implements IMenuListener {
                     tableItem.setText(testCaseFailures[i]);
                     ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                             "obj16/testfail.gif"); //$NON-NLS-1$
-                    tableItem.setImage((Image)resourceManager.get(imageDescriptor));
+                    tableItem.setImage(resourceManager.get(imageDescriptor));
                 }
             }
         }

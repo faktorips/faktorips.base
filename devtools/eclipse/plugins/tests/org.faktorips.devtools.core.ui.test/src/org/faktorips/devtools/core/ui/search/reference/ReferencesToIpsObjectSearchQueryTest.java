@@ -185,7 +185,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
 
     @Test
     public void testFindReferencingIpsObjTypes_NoSrcFile() {
-        when(proj.findAllIpsSrcFiles()).thenReturn(new ArrayList<IIpsSrcFile>());
+        when(proj.findAllIpsSrcFiles()).thenReturn(new ArrayList<>());
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(object1);
         Set<IIpsElement> resultFindReferencingIpsObjTypes = query.findReferencingIpsObjTypes(proj);

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.model.builder.propertydef.AbstractBaseClassBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.junit.Test;
@@ -123,11 +122,11 @@ public class AbstractBaseClassBuilderSetPropertyDefTest {
     }
 
     private static class TestSuperClass {
-
+        // empty
     }
 
     private static class TestSubClass extends TestSuperClass {
-
+        // empty
     }
 
     private static class TestBaseClassBuilderSetPropertyDef extends AbstractBaseClassBuilderSetPropertyDef {

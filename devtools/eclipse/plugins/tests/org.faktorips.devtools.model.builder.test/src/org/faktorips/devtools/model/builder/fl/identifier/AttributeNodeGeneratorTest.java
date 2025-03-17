@@ -37,7 +37,6 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
-import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
@@ -287,7 +286,7 @@ public class AttributeNodeGeneratorTest {
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
 
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
-        when(((IProductCmptProperty)attribute).isChangingOverTime()).thenReturn(isChangingOverTime);
+        when(attribute.isChangingOverTime()).thenReturn(isChangingOverTime);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(contextCompilationResult.getDatatype()).thenReturn(datatypePolicy);
         when(builderSet.getModelNode(datatypePolicy, XPolicyCmptClass.class)).thenReturn(xPolicyCmptClass);

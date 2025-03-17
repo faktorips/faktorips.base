@@ -45,8 +45,8 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
     private final IIpsModel ipsModel;
 
     public AbstractIpsSearchQuery(T model, IIpsModel ipsModel) {
-        this.searchModel = model;
-        this.searchResult = new IpsSearchResult(this);
+        searchModel = model;
+        searchResult = new IpsSearchResult(this);
         this.ipsModel = ipsModel;
     }
 

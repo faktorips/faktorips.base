@@ -135,8 +135,8 @@ public class FolderSelectionControl extends TextButtonControl {
 
         if (dialog.open() == Window.OK) {
             if (dialog.getResult().length == 1) {
-                IFolder folder = (IFolder)dialog.getFirstResult();
-                setFolder(folder);
+                IFolder firstFolder = (IFolder)dialog.getFirstResult();
+                setFolder(firstFolder);
             } else {
                 setText(""); //$NON-NLS-1$
             }
@@ -149,7 +149,7 @@ public class FolderSelectionControl extends TextButtonControl {
         String text = ""; //$NON-NLS-1$
         if (root != null) {
             if (root instanceof IProject) {
-                text = ((IProject)root).getName() + IPath.SEPARATOR;
+                text = root.getName() + IPath.SEPARATOR;
             }
             text += folder.getProjectRelativePath().toOSString();
         }
