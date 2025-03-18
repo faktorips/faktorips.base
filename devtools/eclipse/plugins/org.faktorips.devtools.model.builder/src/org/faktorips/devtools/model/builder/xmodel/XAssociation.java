@@ -283,18 +283,13 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      */
     protected Class<? extends XType> getModelNodeType(boolean considerChangeOverTime) {
         // TODO is there a better way? Cannot move to subclass because of derived unions
-        IAssociation association = getAssociation();
-        if (association instanceof IProductCmptTypeAssociation productAsso) {
-            if (productAsso.isChangingOverTime() && considerChangeOverTime) {
-                return XProductCmptGenerationClass.class;
-            } else {
-                return XProductCmptClass.class;
-            }
-        } else if (association instanceof IPolicyCmptTypeAssociation) {
-            return XPolicyCmptClass.class;
-        } else {
-            throw new RuntimeException("Illegal kind of association " + association);
-        }
+        return switch (getAssociation()) {
+            case IProductCmptTypeAssociation productAsso when productAsso.isChangingOverTime()
+                    && considerChangeOverTime -> XProductCmptGenerationClass.class;
+            case IProductCmptTypeAssociation $ -> XProductCmptClass.class;
+            case IPolicyCmptTypeAssociation $ -> XPolicyCmptClass.class;
+            default -> throw new RuntimeException("Illegal kind of association " + getAssociation());
+        };
     }
 
     public String getMethodNameGetNumOf() {

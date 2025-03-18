@@ -11,11 +11,10 @@
 package org.faktorips.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -112,7 +111,7 @@ public class ClassToInstancesMap<T> {
      * @return The number of discrete values stored in this map.
      */
     public int size() {
-        return valuesInternal().size();
+        return internalMap.values().stream().mapToInt(List::size).sum();
     }
 
     /**
@@ -131,7 +130,7 @@ public class ClassToInstancesMap<T> {
      * @return true if the map is empty or false if there is at least one element.
      */
     public boolean isEmpty() {
-        return valuesInternal().isEmpty();
+        return size() == 0;
     }
 
     /**
@@ -181,8 +180,8 @@ public class ClassToInstancesMap<T> {
      * @return the list of removed objects
      */
     public synchronized <K extends T> List<K> removeAll(Class<K> key) {
-        List<K> list = getInstanceList(key);
-        List<K> result = new ArrayList<>(list);
+        var list = getInstanceList(key);
+        var result = new ArrayList<>(list);
         list.clear();
         return result;
     }
@@ -195,36 +194,18 @@ public class ClassToInstancesMap<T> {
     }
 
     /**
-     * This method returns all values in one collection but does not guaranty any order of the
-     * values.
-     * 
-     * @return All values stored in this map in one collection.
-     */
-    private List<T> valuesInternal() {
-        ArrayList<T> result = new ArrayList<>();
-        for (List<? extends T> list : internalMap.values()) {
-            result.addAll(list);
-        }
-        return result;
-    }
-
-    /**
      * This method returns all values in one collection. The order of the lists of different classes
      * is always the same.
      * 
      * @return All values stored in this map in one collection.
      */
     public List<T> values() {
-        ArrayList<T> result = new ArrayList<>();
-        Set<Class<? extends T>> keySet = internalMap.keySet();
-        ArrayList<Class<? extends T>> sortedKeySet = new ArrayList<>(keySet);
-        Collections.sort(sortedKeySet, Comparator.comparing(Class::getName));
-
-        for (Class<? extends T> key : sortedKeySet) {
-            result.addAll(internalMap.get(key));
-        }
-
-        return result;
+        return internalMap.entrySet().stream()
+                .sorted(Comparator.comparing(e -> e.getKey().getName()))
+                .map(Entry::getValue)
+                .flatMap(List::stream)
+                .map(t -> (T)t)
+                .toList();
     }
 
     /**

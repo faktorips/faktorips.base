@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -134,13 +133,12 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 
     private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) {
         try {
-            NonIPSMoveOperation moveOp = null;
-            if (target instanceof IIpsPackageFragment) {
-                moveOp = new NonIPSMoveOperation(sources, (IIpsPackageFragment)target);
-            } else if (target instanceof IContainer) {
-                moveOp = new NonIPSMoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
-                        .getLocation().toOSString());
-            }
+            NonIPSMoveOperation moveOp = switch (target) {
+                case IIpsPackageFragment packageFragment -> new NonIPSMoveOperation(sources, packageFragment);
+                case IContainer container -> new NonIPSMoveOperation(container.getProject(), sources,
+                        container.getLocation().toOSString());
+                default -> null;
+            };
 
             if (moveOp == null) {
                 return;
@@ -159,12 +157,11 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             return null;
         }
         Object dropTarget = event.item.getData();
-        if (dropTarget instanceof IIpsPackageFragmentRoot) {
-            return ((IIpsPackageFragmentRoot)dropTarget).getDefaultIpsPackageFragment();
-        } else if (dropTarget instanceof IIpsProject) {
-            return ((IIpsProject)dropTarget).getProject();
-        }
-        return dropTarget;
+        return switch (dropTarget) {
+            case IIpsPackageFragmentRoot root -> root.getDefaultIpsPackageFragment();
+            case IIpsProject ipsProject -> ipsProject.getProject();
+            default -> dropTarget;
+        };
     }
 
     @Override

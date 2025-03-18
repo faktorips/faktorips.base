@@ -542,13 +542,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return part;
         }
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
-            return newGenerationInternal(id);
-        } else if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
-            return createAndAddNewLinkInternal(id);
-        } else {
-            return propertyValueCollection.newPropertyValue(xmlTagName, id);
-        }
+        return switch (xmlTagName) {
+            case IIpsObjectGeneration.TAG_NAME -> newGenerationInternal(id);
+            case IProductCmptLink.TAG_NAME -> createAndAddNewLinkInternal(id);
+            default -> propertyValueCollection.newPropertyValue(xmlTagName, id);
+        };
     }
 
     @Override
@@ -709,13 +707,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (super.addPartThis(part)) {
             return true;
         }
-        if (part instanceof IProductCmptLink) {
-            return linkCollection.addLink((IProductCmptLink)part);
-        } else if (part instanceof IPropertyValue propertyValue) {
-            return propertyValueCollection.addPropertyValue(propertyValue);
-        } else {
-            return false;
-        }
+        return switch (part) {
+            case IProductCmptLink productCmptLink -> linkCollection.addLink(productCmptLink);
+            case IPropertyValue propertyValue -> propertyValueCollection.addPropertyValue(propertyValue);
+            default -> false;
+        };
     }
 
     @Override
@@ -723,13 +719,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (super.removePartThis(part)) {
             return true;
         }
-        if (part instanceof IProductCmptLink) {
-            return linkCollection.remove((IProductCmptLink)part);
-        } else if (part instanceof IPropertyValue propertyValue) {
-            return propertyValueCollection.removePropertyValue(propertyValue);
-        } else {
-            return false;
-        }
+        return switch (part) {
+            case IProductCmptLink productCmptLink -> linkCollection.remove(productCmptLink);
+            case IPropertyValue propertyValue -> propertyValueCollection.removePropertyValue(propertyValue);
+            default -> false;
+        };
     }
 
     @Override

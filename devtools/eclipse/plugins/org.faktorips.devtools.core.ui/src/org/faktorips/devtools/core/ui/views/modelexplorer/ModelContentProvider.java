@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,7 +42,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
-import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
@@ -94,54 +93,41 @@ public class ModelContentProvider implements ITreeContentProvider {
      */
     // CSOFF: CyclomaticComplexity
     protected Object[] getUnfilteredChildren(Object parentElement) {
-        if (parentElement instanceof IIpsElement) {
-            if ((parentElement instanceof IPolicyCmptTypeAttribute) || (parentElement instanceof IEnumAttribute)) {
-                return EMPTY_ARRAY;
-            }
-
-            try {
-                if (parentElement instanceof IIpsProject) {
-                    return getProjectContent((IIpsProject)parentElement);
-                } else if (parentElement instanceof IIpsPackageFragmentRoot) {
-                    return getPackageFragmentRootContent((IIpsPackageFragmentRoot)parentElement);
-                } else if (parentElement instanceof IIpsPackageFragment) {
-                    return getPackageFragmentContent((IIpsPackageFragment)parentElement);
-                } else if (parentElement instanceof IIpsSrcFile) {
-                    if (configuration.shouldDisplayChildrenFor(((IIpsSrcFile)parentElement).getIpsObjectType())) {
-                        IIpsObject ipsObject = ((IIpsSrcFile)parentElement).getIpsObject();
-                        return getChildren(ipsObject);
-                    } else {
-                        return EMPTY_ARRAY;
-                    }
-                } else {
-                    return ((IIpsElement)parentElement).getChildren();
+        try {
+            return switch (parentElement) {
+                case IIpsElement ipsElement -> {
+                    yield switch (parentElement) {
+                        case IPolicyCmptTypeAttribute $ -> EMPTY_ARRAY;
+                        case IEnumAttribute $ -> EMPTY_ARRAY;
+                        case IIpsProject ipsProject -> getProjectContent(ipsProject);
+                        case IIpsPackageFragmentRoot root -> getPackageFragmentRootContent(root);
+                        case IIpsPackageFragment packageFragment -> getPackageFragmentContent(packageFragment);
+                        case IIpsSrcFile srcFile when configuration.shouldDisplayChildrenFor(
+                                srcFile.getIpsObjectType()) -> getChildren(srcFile.getIpsObject());
+                        case IIpsSrcFile $ -> EMPTY_ARRAY;
+                        default -> ipsElement.getChildren();
+                    };
                 }
-            } catch (IpsException e) {
-                IpsPlugin.log(e);
-            }
-        } else if (parentElement instanceof AResource) {
-            return getUnfilteredChildren(((AResource)parentElement).unwrap());
-        } else if (parentElement instanceof IResource) {
-            if (parentElement instanceof IAdaptable) {
-                IWorkbenchAdapter adapter = ((IAdaptable)parentElement)
-                        .getAdapter(IWorkbenchAdapter.class);
-
-                if (adapter != null) {
-                    // filter out java classpath entries and outputlocations
-                    // (used for folders in IpsProjects)
-                    if (parentElement instanceof IFolder) {
-                        return getNonJavaResourcesAndNonActiveIpsArchives((IFolder)parentElement);
+                case AResource aResource -> getUnfilteredChildren(aResource.unwrap());
+                case IResource iResource -> {
+                    if (parentElement instanceof IAdaptable adaptable) {
+                        IWorkbenchAdapter adapter = adaptable.getAdapter(IWorkbenchAdapter.class);
+                        if (adapter != null) {
+                            // filter out java classpath entries and outputlocations
+                            // (used for folders in IpsProjects)
+                            if (parentElement instanceof IFolder folder) {
+                                yield getNonJavaResourcesAndNonActiveIpsArchives(folder);
+                            }
+                        }
                     }
+                    yield EMPTY_ARRAY;
                 }
-            }
-        } else if (parentElement instanceof IIpsObjectPathContainer) {
-            try {
-                return ipsObjectPathContainerChildrenProvider.getChildren((IIpsObjectPathContainer)parentElement);
-            } catch (IpsException e) {
-                IpsPlugin.log(e);
-            }
+                case IIpsObjectPathContainer container -> ipsObjectPathContainerChildrenProvider.getChildren(container);
+                default -> EMPTY_ARRAY;
+            };
+        } catch (IpsException e) {
+            IpsPlugin.log(e);
         }
-
         return EMPTY_ARRAY;
     }
     // CSON: CyclomaticComplexity
@@ -149,7 +135,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     /**
      * <p>
      * Returns an array containing all (non-IPS) folders in the given project and all package
-     * fragment roots that exist as folders in the filesystem.
+     * fragment roots that exist as folders in the file system.
      * </p>
      * <p>
      * When calling <code>IpsProject#getIpsPackageFragmentRoots()</code> the project retrieves all
@@ -310,7 +296,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * <code>IpsPackageFragment</code>. If the given <code>IpsPackageFragment</code> is the
      * defaultPackageFragment of its <code>IpsPackageFragmentRoot</code>, only the contained files
      * are returned.
-     * 
+     *
      * @throws IpsException
      */
     private Object[] getPackageFragmentContent(IIpsPackageFragment fragment) {
@@ -325,7 +311,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * Returns an empty array in flat layout style. In hierarchical layout returns all
      * <code>IpsPacakgeFragment</code>s that correspond to a subfolder of the given packagefragments
      * underlying folder.
-     * 
+     *
      * @throws IpsException
      */
     private Object[] getFolderContent(IIpsPackageFragment fragment) {
@@ -421,41 +407,37 @@ public class ModelContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        if (element instanceof IIpsElement) {
-            IIpsElement parent;
-            if (element instanceof IIpsPackageFragment) {
-                // LayoutStyle#getParent() never returns the default package
-                parent = layoutStyle.getParent((IIpsPackageFragment)element);
-            } else {
-                parent = ((IIpsElement)element).getParent();
-            }
+        return switch (element) {
+            case IIpsElement ipsElement -> {
+                IIpsElement parent;
+                if (element instanceof IIpsPackageFragment packageFragment) {
+                    // LayoutStyle#getParent() never returns the default package
+                    parent = layoutStyle.getParent(packageFragment);
+                } else {
+                    parent = ipsElement.getParent();
+                }
 
-            // skip srcfiles in the object hierarchy, as in getChildren()
-            if (parent != null) {
+                // skip srcfiles in the object hierarchy, as in getChildren()
                 if (parent instanceof IIpsSrcFile) {
                     parent = parent.getParent();
                 }
+
+                yield parent;
+
             }
-
-            return parent;
-
-        } else if (element instanceof IResource) {
-            /*
-             * If the given element is the underlying resource of an IpsElement, the (IPS-)parent
-             * must be returned; e.g. an IpsPackageFragment for a ProductCmpt. Thus
-             * (IResource)element).getParent() alone is not sufficient.
-             */
-            IResource parentResource = ((IResource)element).getParent();
-            IIpsElement parentIpsElement = IIpsModel.get()
-                    .getIpsElement(Wrappers.wrap(parentResource).as(AResource.class));
-            if (parentIpsElement != null) {
-                return parentIpsElement;
-            } else {
-                return parentResource;
+            case IResource resource -> {
+                /*
+                 * If the given element is the underlying resource of an IpsElement, the
+                 * (IPS-)parent must be returned; e.g. an IpsPackageFragment for a ProductCmpt. Thus
+                 * (IResource)element).getParent() alone is not sufficient.
+                 */
+                IResource parentResource = resource.getParent();
+                IIpsElement parentIpsElement = IIpsModel.get()
+                        .getIpsElement(Wrappers.wrap(parentResource).as(AResource.class));
+                yield parentIpsElement != null ? parentIpsElement : parentResource;
             }
-        }
-
-        return null;
+            default -> null;
+        };
     }
 
     /**

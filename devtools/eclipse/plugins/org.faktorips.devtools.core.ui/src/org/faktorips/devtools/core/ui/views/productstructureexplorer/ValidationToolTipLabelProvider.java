@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,8 +14,6 @@ import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.faktorips.devtools.model.Validatable;
-import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.runtime.MessageList;
@@ -26,7 +24,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * Extend the {@link DecoratingStyledCellLabelProvider} to add the possibility to get a ToolTip of
  * the actual element. The ToolTip contains the validation Messages of the {@link Validatable}
  * element.
- * 
+ *
  * @author frank
  * @since 3.10.0
  */
@@ -39,16 +37,13 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
 
     @Override
     public String getToolTipText(Object element) {
-        if (element instanceof IProductCmptReference) {
-            IProductCmpt productCmpt = ((IProductCmptReference)element).getProductCmpt();
-            return validateAndReturnErrorMessages(productCmpt);
-        } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)element)
-                    .getTableContentUsage();
-            return validateAndReturnErrorMessages(tableContentUsage);
-        } else {
-            return super.getToolTipText(element);
-        }
+        return switch (element) {
+            case IProductCmptReference productCmptReference -> validateAndReturnErrorMessages(
+                    productCmptReference.getProductCmpt());
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> validateAndReturnErrorMessages(
+                    productCmptStructureTblUsageReference.getTableContentUsage());
+            default -> super.getToolTipText(element);
+        };
     }
 
     private String validateAndReturnErrorMessages(Validatable validatable) {

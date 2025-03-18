@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -87,10 +87,10 @@ import org.faktorips.util.ArgumentCheck;
  * {@link ObjectProperty}. The object that is bound to must be {@link Validatable}. The use of
  * {@link ValidatablePMO}, which allows the mapping of object properties, is encouraged.</li>
  * </ul>
- * 
+ *
  * When disposing a binding context instance all {@link IpsObjectPartPmo} instances it has bindings
  * with will also be disposed.
- * 
+ *
  * @author Jan Ortmann
  */
 public class BindingContext {
@@ -166,9 +166,9 @@ public class BindingContext {
 
     /**
      * Binds the given text control to the given IPS object's property.
-     * 
+     *
      * @return The edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException If the property is not of type String.
      * @throws NullPointerException If any argument is <code>null</code>.
      */
@@ -192,9 +192,9 @@ public class BindingContext {
 
     /**
      * Binds the given label to the given IPS object's property.
-     * 
+     *
      * @return the edit field created to access the value in the label.
-     * 
+     *
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -207,9 +207,9 @@ public class BindingContext {
 
     /**
      * Binds the given checkbox to the given IPS object's property.
-     * 
+     *
      * @return the edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException if the property is not of type Boolean or boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -226,9 +226,9 @@ public class BindingContext {
 
     /**
      * Binds the selection state of the given button to the given IPS object property
-     * 
+     *
      * @return the edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException if the property is not of type Boolean or boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -250,9 +250,9 @@ public class BindingContext {
      * default to prevent the fields returning null or setting the null string representation. If
      * you want to create a field that supports null and the null string representation, use
      * {@link #bindContent(TextButtonControl, Object, String, boolean)}.
-     * 
+     *
      * @return the edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -262,9 +262,9 @@ public class BindingContext {
 
     /**
      * Binds the given text-button control to the given IPS object's property.
-     * 
+     *
      * @return the edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException if the property is not of type String.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -282,9 +282,9 @@ public class BindingContext {
 
     /**
      * Binds the given combo to the given IPS object's property.
-     * 
+     *
      * @return the edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException if the property's type is not a subclass of
      *             DefaultEnumValue.
      * @throws NullPointerException if any argument is <code>null</code>.
@@ -301,9 +301,9 @@ public class BindingContext {
 
     /**
      * Binds the given combo to the given IPS object's property.
-     * 
+     *
      * @return the edit field created to access the value in the text control.
-     * 
+     *
      * @throws IllegalArgumentException if the property's type is not a subclass of
      *             DefaultEnumValue.
      * @throws NullPointerException if any argument is <code>null</code>.
@@ -320,9 +320,9 @@ public class BindingContext {
 
     /**
      * Binds the given edit field to the given IPS object's property.
-     * 
+     *
      * @return the newly created mapping
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public <T> FieldPropertyMapping<T> bindContent(EditField<T> field, Object object, String property) {
@@ -335,7 +335,7 @@ public class BindingContext {
      * Binds the given object's property to the given field to show the problem markers. This
      * binding will not update neither the control nor the object's property. This binding could not
      * be used for object type of {@link IExtensionPropertyAccess}
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public <T> void bindProblemMarker(EditField<T> field, Object object, String propertyName) {
@@ -375,11 +375,11 @@ public class BindingContext {
 
     /**
      * Binds the control's enabled property to the given part container's property.
-     * 
+     *
      * @param control The control which enabled property is bound
      * @param object The object the control is bound to
      * @param property The name of the object's property the control is bound to.
-     * 
+     *
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -389,14 +389,14 @@ public class BindingContext {
 
     /**
      * Binds the control's enabled property to the given part container's property.
-     * 
+     *
      * @param control The control which enabled property is bound
      * @param object The object the control is bound to
      * @param property The name of the object's property the control is bound to.
      * @param enabledIfTrue <code>true</code> if the control should be enabled if the object's
      *            property is <code>true</code>, <code>false</code> if it should be enabled if the
      *            object's property is <code>false</code>.
-     * 
+     *
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -406,13 +406,13 @@ public class BindingContext {
 
     /**
      * Binds the control's enabled property to the given part container's property.
-     * 
+     *
      * @param control The control which enabled property is bound
      * @param object The object the control is bound to
      * @param property The name of the object's property the control is bound to.
      * @param expectedValue the control is enabled when the value given by the property is equal to
      *            the expected value
-     * 
+     *
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -423,13 +423,13 @@ public class BindingContext {
     /**
      * Binds the control's enabled property to the given part container's property. Uses a
      * {@link Predicate} to check whether the control should be enabled or disabled
-     * 
+     *
      * @param control The control which enabled property is bound
      * @param object The object the control is bound to
      * @param property The name of the object's property the control is bound to.
      * @param enabledPredicate A predicate that gets the property from the object and returns
      *            <code>true</code> if the control should be enabled.
-     * 
+     *
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -439,13 +439,13 @@ public class BindingContext {
 
     /**
      * Binds the control's visible property to the given part container's property.
-     * 
+     *
      * @param excludeWhenInvisible if true, the {@link org.eclipse.swt.layout.GridData#exclude
      *            GridData.exclude} is set if the component is invisible
      * @param controlToSpan An optional control which
      *            {@link org.eclipse.swt.layout.GridData#horizontalSpan GridData.horizontalSpan} is
      *            increased when the control is invisible
-     * 
+     *
      * @throws IllegalArgumentException if the object's property is not of type boolean.
      * @throws NullPointerException if any argument is <code>null</code>.
      */
@@ -459,7 +459,7 @@ public class BindingContext {
 
     /**
      * Binds the control's visible property to the given part container's property.
-     * 
+     *
      * @param excludeWhenInvisible if true, the {@link org.eclipse.swt.layout.GridData#exclude
      *            GridData.exclude} is set if the component is invisible
      * @throws IllegalArgumentException if the object's property is not of type boolean.
@@ -570,7 +570,7 @@ public class BindingContext {
      * multiple controls are bound to a specific object and you want to remove all of them at once.
      * This is useful when binding controls to an object that is created or deleted by user
      * interaction (e.g. an IpsObjectPart).
-     * 
+     *
      * @param object the bound object.
      */
     public void removeBindings(Object object) {
@@ -688,7 +688,7 @@ public class BindingContext {
     // We need to catch all exception and only log it to update other not erroneous bindings
     /**
      * Applies all bindings in this context and provides them with the given property name.
-     * 
+     *
      * @param propertyName the name of the changed property, or <code>null</code> if all properties
      *            of an object may have changed.
      */
@@ -720,9 +720,9 @@ public class BindingContext {
      * validation.
      * <p>
      * Returns true if the message code was not already ignored, false otherwise.
-     * 
+     *
      * @param messageCode The message code to ignore during validation
-     * 
+     *
      * @throws NullPointerException If the parameter is null
      */
     public final boolean addIgnoredMessageCode(String messageCode) {
@@ -735,9 +735,9 @@ public class BindingContext {
      * validation.
      * <p>
      * Returns true if the message code was really ignored, false otherwise.
-     * 
+     *
      * @param messageCode The message code to no longer ignore during validation
-     * 
+     *
      */
     public final boolean removeIgnoredMessageCode(String messageCode) {
         return ignoredMessageCodes.remove(messageCode);
@@ -752,9 +752,9 @@ public class BindingContext {
 
     /**
      * Returns whether the given message code is ignored during validation.
-     * 
+     *
      * @param messageCode The message code to check whether it is ignored
-     * 
+     *
      * @throws NullPointerException If the parameter is null
      */
     public final boolean isIgnoredMessageCode(String messageCode) {
@@ -779,14 +779,12 @@ public class BindingContext {
     }
 
     /* private */IIpsObjectPartContainer getMappedPart(Object object) {
-        if (object instanceof IIpsObjectPartContainer) {
-            return (IIpsObjectPartContainer)object;
-        } else if (object instanceof IpsObjectPartPmo) {
-            return ((IpsObjectPartPmo)object).getIpsObjectPartContainer();
-        } else if (object instanceof IAdaptable) {
-            return ((IAdaptable)object).getAdapter(IIpsObjectPartContainer.class);
-        }
-        return null;
+        return switch (object) {
+            case IIpsObjectPartContainer container -> container;
+            case IpsObjectPartPmo pmo -> pmo.getIpsObjectPartContainer();
+            case IAdaptable adaptable -> adaptable.getAdapter(IIpsObjectPartContainer.class);
+            default -> null;
+        };
     }
 
     // CSOFF: IllegalCatch

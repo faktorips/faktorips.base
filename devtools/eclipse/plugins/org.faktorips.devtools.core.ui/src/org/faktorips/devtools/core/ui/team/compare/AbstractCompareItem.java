@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
  * It lets the TextMergeViewer retrieve the document corresponding to this product component and the
  * (text-)range the compareitem represents in the document. The TextMergeViewer uses this
  * information to display differences in a way similar to the java source compare.
- * 
+ *
  * @see org.eclipse.compare.contentmergeviewer.IDocumentRange
  */
 public abstract class AbstractCompareItem
@@ -96,7 +96,7 @@ public abstract class AbstractCompareItem
      * complete document (whole IpsObject).
      * <p>
      * The concrete value is initialized in the {@link #init()} method.
-     * 
+     *
      * @see #init()
      * @see #initTreeContentString(StringBuilder, int)
      */
@@ -136,7 +136,7 @@ public abstract class AbstractCompareItem
      * <code>IIpsElement</code>. If the given parent is null, this <code>AbstractCompareItem</code>
      * is marked as a root element, as indicated by the method isRoot(). The given
      * <code>IIpsElement</code> must not be <code>null</code>.
-     * 
+     *
      * @param parent The parent of this <code>AbstractCompareItem</code>, or null if it is the root
      *            of a tree/structure.
      * @param content The referenced content. Must not be null.
@@ -182,7 +182,7 @@ public abstract class AbstractCompareItem
     /**
      * Returns true if the given CompareItem contains an <code>IIpsElement</code> of type
      * <code>IIpsObjectGeneration</code>, false otherwise.
-     * 
+     *
      */
     protected boolean needsTextSeparator() {
         return getIpsElement() instanceof IIpsObjectGeneration;
@@ -209,7 +209,7 @@ public abstract class AbstractCompareItem
 
     /**
      * Adds the given ProductCmptCompareItem to the list of children.
-     * 
+     *
      */
     private void addChild(AbstractCompareItem child) {
         getChildItems().add(child);
@@ -230,7 +230,7 @@ public abstract class AbstractCompareItem
      * Returns a String representation of this <code>AbstractCompareItem</code> including its
      * attributes but <em>not</em> including its children. For a content string including children
      * the document must be retrieved.
-     * 
+     *
      * @see #getDocument()
      */
     public String getContentString() {
@@ -239,7 +239,7 @@ public abstract class AbstractCompareItem
 
     /**
      * Returns the contentString of this <code>AbstractCompareItem</code> without its whitespace.
-     * 
+     *
      * @see #getContentString()
      */
     public String getContentStringWithoutWhiteSpace() {
@@ -265,7 +265,7 @@ public abstract class AbstractCompareItem
 
     /**
      * Equals if this and other compare item represents the same structural item.
-     * 
+     *
      * @see IStructureComparator#equals(Object)
      */
     @Override
@@ -314,13 +314,11 @@ public abstract class AbstractCompareItem
      */
     @Override
     public int hashCode() {
-        if (ipsElement instanceof IIpsObjectPart part) {
-            return part.getName().hashCode();
-        } else if (ipsElement instanceof IIpsObject ipsObject) {
-            return ipsObject.getIpsObjectType().hashCode();
-        } else {
-            return 0;
-        }
+        return switch (ipsElement) {
+            case IIpsObjectPart part -> part.getName().hashCode();
+            case IIpsObject ipsObject -> ipsObject.getIpsObjectType().hashCode();
+            default -> 0;
+        };
     }
 
     @Override
@@ -334,7 +332,7 @@ public abstract class AbstractCompareItem
     /**
      * Returns true if this <code>ProductCmptCompareItem</code> is the root of a tree, false
      * otherwise. A ProductCmptCompareItem is a root if it does not have a parent.
-     * 
+     *
      */
     public boolean isRoot() {
         return isRoot;
@@ -343,7 +341,7 @@ public abstract class AbstractCompareItem
     /**
      * Returns the parent of this <code>ProductCmptCompareItem</code>, <code>null</code> if this
      * <code>ProductCmptCompareItem</code> is the root of a tree.
-     * 
+     *
      */
     public AbstractCompareItem getParent() {
         return parent;
@@ -351,7 +349,7 @@ public abstract class AbstractCompareItem
 
     /**
      * Returns the <code>IIpsElement</code> this <code>AbstractCompareItem</code> references.
-     * 
+     *
      * @return the referenced <code>IIpsElement</code>.
      */
     public IIpsElement getIpsElement() {
@@ -361,7 +359,7 @@ public abstract class AbstractCompareItem
     /**
      * Returns the document the tree of CompareItems represents. This document is used only for
      * displaying a files' contents in the CompareViewer.
-     * 
+     *
      * @see ProductCmptCompareItemCreator#getContents(Object, boolean)
      */
     @Override
@@ -411,7 +409,7 @@ public abstract class AbstractCompareItem
     /**
      * Initializes the name, the contentString, and the contentStringWithoutWhitespace field of this
      * compare item and calls this method recursively on all its children.
-     * 
+     *
      */
     private void initStrings() {
         contentString = initContentString();

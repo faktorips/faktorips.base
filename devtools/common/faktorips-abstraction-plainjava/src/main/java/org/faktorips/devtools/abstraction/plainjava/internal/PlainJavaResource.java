@@ -14,7 +14,6 @@ import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -230,12 +229,7 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
     private void deletMarkersInternal(String type) {
         if (markers != null) {
             synchronized (markers) {
-                for (Iterator<PlainJavaMarker> iterator = markers.iterator(); iterator.hasNext();) {
-                    PlainJavaMarkerImpl marker = iterator.next().unwrap();
-                    if (marker.equalsType(type)) {
-                        iterator.remove();
-                    }
-                }
+                markers.removeIf(marker -> marker.unwrap().equalsType(type));
             }
         }
     }

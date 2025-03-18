@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,16 +63,17 @@ public class JdtClasspathEntryCreator {
             if (entry == null) {
                 return null;
             }
-            if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-                return createIpsProjectRefEntry();
-            } else if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-                return createLibraryEntry();
-            }
-            IpsLog.log(new IpsStatus(
-                    IStatus.WARNING,
-                    "IpsContainerBasedOnJdtClasspathContainer: Unsupported kind of ClasspathEntry " //$NON-NLS-1$
-                            + entry.getEntryKind()));
-            return null;
+            return switch (entry.getEntryKind()) {
+                case IClasspathEntry.CPE_PROJECT -> createIpsProjectRefEntry();
+                case IClasspathEntry.CPE_LIBRARY -> createLibraryEntry();
+                default -> {
+                    IpsLog.log(new IpsStatus(
+                            IStatus.WARNING,
+                            "IpsContainerBasedOnJdtClasspathContainer: Unsupported kind of ClasspathEntry " //$NON-NLS-1$
+                                    + entry.getEntryKind()));
+                    yield null;
+                }
+            };
         }
 
         /**

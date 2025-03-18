@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -38,7 +38,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Content provider for the test case domain.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseContentProvider implements ITreeContentProvider {
@@ -491,12 +491,11 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         String id = getIdFor(parameter, testObject);
         IDummyTestCaseObject dummyObject = dummyObjects.get(id);
         if (dummyObject == null) {
-            if (testObject instanceof ITestPolicyCmpt) {
-                dummyObject = new TestCaseTypeAssociation((ITestPolicyCmptTypeParameter)parameter,
-                        (ITestPolicyCmpt)testObject);
+            if (testObject instanceof ITestPolicyCmpt testPolicyCmpt) {
+                dummyObject = new TestCaseTypeAssociation((ITestPolicyCmptTypeParameter)parameter, testPolicyCmpt);
                 dummyObjects.put(id, dummyObject);
-            } else if (parameter instanceof ITestRuleParameter) {
-                dummyObject = new TestCaseTypeRule(testCase, (ITestRuleParameter)parameter);
+            } else if (parameter instanceof ITestRuleParameter ruleParameter) {
+                dummyObject = new TestCaseTypeRule(testCase, ruleParameter);
                 dummyObjects.put(id, dummyObject);
             } else if (testObject == null) {
                 dummyObject = new TestCaseTypeAssociation((ITestPolicyCmptTypeParameter)parameter, null);
@@ -509,8 +508,8 @@ public class TestCaseContentProvider implements ITreeContentProvider {
 
     private String getIdFor(ITestParameter parameter, ITestObject testObject) {
         String id = ""; //$NON-NLS-1$
-        if (testObject instanceof ITestPolicyCmpt) {
-            id = parameter.getName() + "#" + new TestCaseHierarchyPath((ITestPolicyCmpt)testObject).toString(); //$NON-NLS-1$
+        if (testObject instanceof ITestPolicyCmpt testPolicyCmpt) {
+            id = parameter.getName() + "#" + new TestCaseHierarchyPath(testPolicyCmpt).toString(); //$NON-NLS-1$
         } else {
             id = parameter.getName() + (testObject == null ? "" : "#" + testObject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }

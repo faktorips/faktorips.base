@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * Viewer filter for IPS archives
- * 
+ *
  * @author Roman Grutza
  */
 public class IpsarViewerFilter extends ViewerFilter {
@@ -39,24 +39,24 @@ public class IpsarViewerFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        if (element instanceof IFile) {
-            IPath fullPath = ((IFile)element).getLocation();
+        if (element instanceof IFile file) {
+            IPath fullPath = file.getLocation();
             if (excluded != null && excluded.contains(fullPath.toOSString())) {
                 return false;
             }
             return isArchiveFile(fullPath);
-        } else if (element instanceof IContainer) {
+        } else if (element instanceof IContainer container) {
             // IProject, IFolder
             if (!recursive) {
                 return true;
             }
             // Ignore closed projects
-            if (element instanceof IProject && !((IProject)element).isOpen()) {
+            if (element instanceof IProject project && !project.isOpen()) {
                 return false;
             }
 
             try {
-                IResource[] resources = ((IContainer)element).members();
+                IResource[] resources = container.members();
                 // recursive! Only show containers that contain an archive
                 for (IResource resource : resources) {
                     if (select(viewer, parentElement, resource)) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -57,7 +57,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * This type selection composite contains of two columns. On the left hand you see a list of types
  * you could select. On the right hand you see the description of the selected element.
- * 
+ *
  * @author dirmeier
  */
 public class TypeAndTemplateSelectionComposite extends Composite {
@@ -79,7 +79,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
 
     /**
      * Constructs a new type selection composite.
-     * 
+     *
      * @param parent the parent composite
      * @param toolkit the {@link UIToolkit} to create the internal controls
      * @param pmo a presentation model object to bind the selected type
@@ -180,7 +180,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
 
     /***
      * Helper method to fill in type and template description
-     * 
+     *
      * @param ipsObject The target object we want to describe
      */
     public void appendNameAndDescription(IIpsObject ipsObject) {
@@ -295,8 +295,8 @@ public class TypeAndTemplateSelectionComposite extends Composite {
             String text = null;
             if (element instanceof IDescribedElement type) {
                 text = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(type);
-            } else if (element instanceof ProductCmptViewItem) {
-                IProductCmpt productCmpt = ((ProductCmptViewItem)element).getProductCmpt();
+            } else if (element instanceof ProductCmptViewItem viewItem) {
+                IProductCmpt productCmpt = viewItem.getProductCmpt();
                 if (productCmpt != null) {
                     text = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(productCmpt);
                 }

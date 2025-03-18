@@ -126,16 +126,18 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
         createMemento();
 
         isTestPolicyCmptTypeParam = false;
-        if (datatype instanceof ValueDatatype) {
-            newTestParameter = testCaseType.newInputTestValueParameter();
-        } else if (datatype instanceof IPolicyCmptType) {
-            newTestParameter = testCaseType.newInputTestPolicyCmptTypeParameter();
-            // root parameters have always 1 min and 1 max instances
-            ((ITestPolicyCmptTypeParameter)newTestParameter).setMinInstances(1);
-            ((ITestPolicyCmptTypeParameter)newTestParameter).setMaxInstances(1);
-            isTestPolicyCmptTypeParam = true;
-        } else {
-            throw new RuntimeException("Instance of selected object not supported!"); //$NON-NLS-1$
+        switch (datatype) {
+            case ValueDatatype $ -> {
+                newTestParameter = testCaseType.newInputTestValueParameter();
+            }
+            case IPolicyCmptType $ -> {
+                newTestParameter = testCaseType.newInputTestPolicyCmptTypeParameter();
+                // root parameters have always 1 min and 1 max instances
+                ((ITestPolicyCmptTypeParameter)newTestParameter).setMinInstances(1);
+                ((ITestPolicyCmptTypeParameter)newTestParameter).setMaxInstances(1);
+                isTestPolicyCmptTypeParam = true;
+            }
+            default -> throw new RuntimeException("Instance of selected object not supported!"); //$NON-NLS-1$
         }
 
         newTestParameter.setDatatype(datatype.getQualifiedName());

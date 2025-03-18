@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,7 +29,7 @@ import org.faktorips.runtime.ObjectProperty;
  * with a thread which is not the UI-thread, this class implements <code>Runnable</code>, so it can
  * be used simply in these other threads by calling
  * <code>getShell().getDisplay().syncExec(new ResultDisplayer(getShell(), messageList));</code>
- * 
+ *
  * @author Thorsten Guenther
  */
 public class ResultDisplayer implements Runnable {
@@ -44,7 +44,7 @@ public class ResultDisplayer implements Runnable {
 
     /**
      * Creates a new ResultDisplayer.
-     * 
+     *
      * @param shell The shell to open the result dialog within.
      * @param operationName The name of the operation, will be displayed in the dialog.
      * @param messageList The list of messages to display.
@@ -75,22 +75,21 @@ public class ResultDisplayer implements Runnable {
                 || messageList.getFirstMessage(Message.WARNING) != null;
         boolean containsErrors = messageList.containsErrorMsg();
 
-        // create a multistatus based on the given message list,
-        // oder errors ascendng
+        // create a multi-status based on the given message list,
+        // oder errors ascending
         if (containsErrors) {
             for (Message msg : messageList) {
                 switch (msg.getSeverity()) {
-                    case ERROR:
-                        multiStatus
-                                .add(new IpsStatus(
-                                        IStatus.ERROR,
-                                        0,
-                                        (containsWarningsOrInfos ? Messages.ResultDisplayer_Errors : "") //$NON-NLS-1$
-                                                + getMessageText(msg),
-                                        null));
-                        break;
-                    default:
-                        break;
+                    case ERROR -> multiStatus
+                            .add(new IpsStatus(
+                                    IStatus.ERROR,
+                                    0,
+                                    (containsWarningsOrInfos ? Messages.ResultDisplayer_Errors : "") //$NON-NLS-1$
+                                            + getMessageText(msg),
+                                    null));
+                    default -> {
+                        // skip
+                    }
                 }
             }
         }
@@ -98,33 +97,24 @@ public class ResultDisplayer implements Runnable {
         if (containsWarningsOrInfos) {
             for (Message msg : messageList) {
                 switch (msg.getSeverity()) {
-                    case WARNING:
-                        multiStatus.add(new IpsStatus(IStatus.WARNING, 0,
-                                (containsErrors ? Messages.ResultDisplayer_Warnings : "") + getMessageText(msg), null)); //$NON-NLS-1$
-                        break;
-                    case INFO:
-                        multiStatus
-                                .add(new IpsStatus(
-                                        IStatus.INFO,
-                                        0,
-                                        (containsErrors ? Messages.ResultDisplayer_Informations : "") //$NON-NLS-1$
-                                                + getMessageText(msg),
-                                        null));
-                        break;
-                    default:
-                        break;
+                    case WARNING -> multiStatus.add(new IpsStatus(IStatus.WARNING, 0,
+                            (containsErrors ? Messages.ResultDisplayer_Warnings : "") + getMessageText(msg), null)); //$NON-NLS-1$
+                    case INFO -> multiStatus
+                            .add(new IpsStatus(IStatus.INFO, 0,
+                                    (containsErrors ? Messages.ResultDisplayer_Informations : "") + getMessageText(msg), //$NON-NLS-1$
+                                    null));
+                    default -> {
+                        // already added
+                    }
                 }
             }
         }
 
-        String messageText;
-        if (multiStatus.getSeverity() == IStatus.WARNING) {
-            messageText = NLS.bind(Messages.ResultDisplayer_msgWarnings, operationName);
-        } else if (multiStatus.getSeverity() == IStatus.INFO) {
-            messageText = NLS.bind(Messages.ResultDisplayer_msgInformations, operationName);
-        } else {
-            messageText = NLS.bind(Messages.ResultDisplayer_msgErrors, operationName);
-        }
+        String messageText = switch (multiStatus.getSeverity()) {
+            case IStatus.WARNING -> NLS.bind(Messages.ResultDisplayer_msgWarnings, operationName);
+            case IStatus.INFO -> NLS.bind(Messages.ResultDisplayer_msgInformations, operationName);
+            default -> NLS.bind(Messages.ResultDisplayer_msgErrors, operationName);
+        };
 
         ErrorDialog.openError(shell, NLS.bind(Messages.ResultDisplayer_titleResults, operationName), messageText,
                 multiStatus);

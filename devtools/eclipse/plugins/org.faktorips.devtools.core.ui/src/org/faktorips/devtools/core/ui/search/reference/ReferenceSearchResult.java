@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -67,10 +67,10 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
         for (Object object : elements) {
             if (object instanceof IIpsElement element) {
                 projects.add(element.getIpsProject());
-            } else if (object instanceof Object[] && ((Object[])object)[0] instanceof IIpsElement) {
-                IIpsElement element = (IIpsElement)(((Object[])object)[0]);
-
-                projects.add(element.getIpsProject());
+            } else if (object instanceof Object[] array
+                    && array.length > 0
+                    && array[0] instanceof IIpsElement elementInArray) {
+                projects.add(elementInArray.getIpsProject());
             }
         }
         return projects.toArray();

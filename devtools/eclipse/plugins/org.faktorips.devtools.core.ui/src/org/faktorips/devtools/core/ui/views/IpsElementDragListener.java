@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,7 +31,7 @@ public class IpsElementDragListener implements DragSourceListener {
 
     /**
      * Constructor for <code>IpsElementDragListener</code> needs a <code>StructuredViewer</code>
-     * 
+     *
      * @param dragSource The source you want to add drag support to; you want to drag from this
      *            structured viewer
      */
@@ -56,9 +56,9 @@ public class IpsElementDragListener implements DragSourceListener {
 
     /**
      * To get the filenames of the selected elements in the structured selection
-     * 
+     *
      * @param selection the selection you want to get the selected filenames from
-     * 
+     *
      * @return an array of string containing the filenames
      */
     public static String[] getFilenames(IStructuredSelection selection) {
@@ -79,14 +79,15 @@ public class IpsElementDragListener implements DragSourceListener {
     }
 
     private static void addSelectedObject(List<String> list, Object selected) {
-        if (selected instanceof IResource) {
-            list.add(((IResource)selected).getLocation().toOSString());
-        } else if (selected instanceof IIpsElement) {
-            if (((IIpsElement)selected).getEnclosingResource() != null) {
-                list.add(((IIpsElement)selected).getEnclosingResource().getLocation().toString());
+        switch (selected) {
+            case IResource resource -> list.add(resource.getLocation().toOSString());
+            case IIpsElement ipsElement when ipsElement.getEnclosingResource() != null -> list
+                    .add(((IIpsElement)selected).getEnclosingResource().getLocation().toString());
+            case IIpsSrcFileWrapper ipsSrcFileWrapper -> list
+                    .add(ipsSrcFileWrapper.getWrappedIpsSrcFile().getEnclosingResource().getLocation().toString());
+            default -> {
+                // nothing to do
             }
-        } else if (selected instanceof IIpsSrcFileWrapper ipsSrcFileWrapper) {
-            list.add(ipsSrcFileWrapper.getWrappedIpsSrcFile().getEnclosingResource().getLocation().toString());
         }
     }
 

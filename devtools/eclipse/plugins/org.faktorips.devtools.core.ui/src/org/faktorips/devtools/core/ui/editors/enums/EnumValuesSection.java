@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -84,12 +84,12 @@ import org.faktorips.util.ArgumentCheck;
  * <p>
  * Fixing the table when editing <code>IEnumContent</code> objects is done manually by the user
  * trough a separate dialog.
- * 
+ *
  * @see org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditorPage
  * @see org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditorPage
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumValuesSection extends IpsObjectPartContainerSection implements ContentsChangeListener {
@@ -166,13 +166,13 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /**
      * Creates a new <code>EnumValuesSection</code> containing the <code>IEnumValue</code>s of the
      * given <code>IEnumValueContainer</code>.
-     * 
+     *
      * @param enumValueContainer The <code>IEnumValue</code>s of this
      *            <code>IEnumValueContainer</code> will be shown.
      * @param editorSite the editor site to register common providers
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
-     * 
+     *
      * @throws IpsException If an error occurs while searching for the <code>IEnumType</code>
      *             referenced by the IPS object being edited.
      * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
@@ -186,14 +186,16 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         this.enumValueContainer = enumValueContainer;
         ipsProject = enumValueContainer.getIpsProject();
 
-        if (enumValueContainer instanceof IEnumType) {
-            enumTypeEditing = true;
-            enumType = (IEnumType)enumValueContainer;
-        } else if (enumValueContainer instanceof IEnumContent) {
-            enumContent = (IEnumContent)enumValueContainer;
-            enumType = enumContent.findEnumType(ipsProject);
-        } else {
-            throw new IpsException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
+        switch (enumValueContainer) {
+            case IEnumType type -> {
+                enumTypeEditing = true;
+                enumType = type;
+            }
+            case IEnumContent content -> {
+                enumContent = content;
+                enumType = enumContent.findEnumType(ipsProject);
+            }
+            default -> throw new IpsException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
         }
 
         loadDialogSettings();
@@ -342,7 +344,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     /**
      * Adds a new column with the given name to the end of the table.
-     * 
+     *
      * @param datatype the datatype to set the correct column style. If data type is null, the
      *            default style configured by the {@link DefaultControlFactory} is used.
      */
@@ -505,8 +507,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     /** Updates the enabled states of the table and the tool bar actions. */
     private void updateEnabledStates() {
-        boolean enabled;
-        enabled = enumValueContainer.isCapableOfContainingValues();
+        boolean enabled = enumValueContainer.isCapableOfContainingValues();
         newEnumValueAction.setEnabled(enabled);
         deleteEnumValueAction.setEnabled(enabled);
         if (enumTypeEditing) {

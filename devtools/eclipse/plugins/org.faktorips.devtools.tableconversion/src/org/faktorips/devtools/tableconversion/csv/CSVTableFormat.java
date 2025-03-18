@@ -209,14 +209,13 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             String nullRepresentation) {
         Datatype[] datatypes;
         try {
-            if (structure instanceof ITableStructure) {
-                datatypes = getDatatypes((ITableStructure)structure);
-            } else if (structure instanceof IEnumType) {
-                datatypes = getDatatypes((IEnumType)structure);
+            if (structure instanceof ITableStructure tableStructure) {
+                datatypes = getDatatypes(tableStructure);
+            } else if (structure instanceof IEnumType enumType) {
+                datatypes = getDatatypes(enumType);
             } else {
                 return Collections.EMPTY_LIST;
             }
-
             return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
         } catch (IpsException e) {
             IpsPlugin.log(e);

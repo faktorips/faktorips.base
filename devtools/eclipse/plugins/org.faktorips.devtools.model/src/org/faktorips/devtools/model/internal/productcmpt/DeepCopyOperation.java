@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -74,7 +74,7 @@ public class DeepCopyOperation implements ICoreRunnable {
 
     /**
      * Creates a new operation to copy the given product components.
-     * 
+     *
      * @param copyElements All product components and table contents that should be copied.
      * @param linkElements All product components and table contents which should be referred from
      *            the copied ones.
@@ -247,9 +247,8 @@ public class DeepCopyOperation implements ICoreRunnable {
                 if (newElement != null) {
                     copiedElements.add(newElement);
                 }
-            } else if (element instanceof IIpsPackageFragment) {
-                IIpsPackageFragment subPackage = targetParent
-                        .getSubPackage(((IIpsPackageFragment)element).getLastSegmentName());
+            } else if (element instanceof IIpsPackageFragment packageFragment) {
+                IIpsPackageFragment subPackage = targetParent.getSubPackage(packageFragment.getLastSegmentName());
                 if (subPackage.exists()) {
                     copiedElements.add(subPackage);
                 }
@@ -264,7 +263,7 @@ public class DeepCopyOperation implements ICoreRunnable {
     /**
      * Returns the {@link IDeepCopyOperationFixup DeepCopyOperationFixups} defined in the extension
      * point {@code org.faktorips.devtools.model.deepCopyOperation}.
-     * 
+     *
      * @return the {@link IDeepCopyOperationFixup DeepCopyOperationFixups}
      */
     public List<IDeepCopyOperationFixup> getAdditionalFixups() {
@@ -378,7 +377,7 @@ public class DeepCopyOperation implements ICoreRunnable {
     /**
      * Fixes all table content usages and all links. Calls the appropriate fix methods with the
      * correct generation(s).
-     * 
+     *
      * @param productCmptNew the new productCmpt which will be fixed
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
      *            productCmpt
@@ -416,7 +415,7 @@ public class DeepCopyOperation implements ICoreRunnable {
 
     /**
      * Fix all tableContentUsages
-     * 
+     *
      * @param productCmptNew the new productCmpt which will be fixed
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
      *            productCmpt
@@ -446,7 +445,7 @@ public class DeepCopyOperation implements ICoreRunnable {
 
     /**
      * Fix all links
-     * 
+     *
      * @param productCmptNew the new productCmpt which will be fixed
      * @param productCmptTemplate the template (old) productCmpt which was used to copy the new
      *            productCmpt
@@ -486,11 +485,11 @@ public class DeepCopyOperation implements ICoreRunnable {
     }
 
     private void setPropertiesFromTemplate(IIpsObject template, IIpsObject newObject) {
-        if (template instanceof IProductCmpt) {
-            ((IProductCmpt)newObject).setProductCmptType(((IProductCmpt)template).getProductCmptType());
-        } else if (template instanceof ITableContents) {
-            ((ITableContents)newObject).setTableStructure(((ITableContents)template).getTableStructure());
-            ((TableContents)newObject).setNumOfColumnsInternal(((ITableContents)template).getNumOfColumns());
+        if (template instanceof IProductCmpt productCmpt) {
+            ((IProductCmpt)newObject).setProductCmptType(productCmpt.getProductCmptType());
+        } else if (template instanceof ITableContents tableContents) {
+            ((ITableContents)newObject).setTableStructure(tableContents.getTableStructure());
+            ((TableContents)newObject).setNumOfColumnsInternal(tableContents.getNumOfColumns());
         }
     }
 

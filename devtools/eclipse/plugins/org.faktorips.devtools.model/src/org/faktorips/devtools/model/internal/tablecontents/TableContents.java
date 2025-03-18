@@ -358,18 +358,18 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof ITableRows tableRows) {
-            if (!isRowsInitialized()) {
-                setTableRowsInternal(tableRows);
-                return true;
-            } else {
-                throw new IllegalStateException("TableRows object already set for " + this); //$NON-NLS-1$
+        return switch (part) {
+            case ITableRows tableRows -> {
+                if (!isRowsInitialized()) {
+                    setTableRowsInternal(tableRows);
+                    yield true;
+                } else {
+                    throw new IllegalStateException("TableRows object already set for " + this); //$NON-NLS-1$
+                }
             }
-        } else if (part instanceof TableColumnReference tableColumnReference) {
-            return columnReferences.addPart(tableColumnReference);
-        } else {
-            return false;
-        }
+            case TableColumnReference tableColumnReference -> columnReferences.addPart(tableColumnReference);
+            default -> false;
+        };
     }
 
     @Override

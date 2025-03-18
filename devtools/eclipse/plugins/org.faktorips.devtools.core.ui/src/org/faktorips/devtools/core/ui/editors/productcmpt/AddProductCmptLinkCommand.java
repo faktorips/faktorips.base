@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,7 +50,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
  * Opens the wizard to create a new product component relation.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptCommand {
@@ -65,12 +65,10 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
         if (selection instanceof IStructuredSelection structuredSelection) {
-            if (structuredSelection.getFirstElement() instanceof IProductCmptStructureReference) {
-                addLinkOnReference(event);
-            } else if (structuredSelection.getFirstElement() instanceof AbstractAssociationViewItem) {
-                addLinksOnAssociation(event);
-            } else {
-                throw new RuntimeException();
+            switch (structuredSelection.getFirstElement()) {
+                case IProductCmptStructureReference $ -> addLinkOnReference(event);
+                case AbstractAssociationViewItem $ -> addLinksOnAssociation(event);
+                default -> throw new RuntimeException();
             }
         }
         return null;

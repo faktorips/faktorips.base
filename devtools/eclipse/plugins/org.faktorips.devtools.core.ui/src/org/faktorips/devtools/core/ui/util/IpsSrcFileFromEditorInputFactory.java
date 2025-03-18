@@ -61,15 +61,13 @@ public class IpsSrcFileFromEditorInputFactory {
      *             {@link IStorageEditorInput})
      */
     public IIpsSrcFile createIpsSrcFile(IEditorInput editorInput) throws PartInitException {
-        IIpsSrcFile ipsSrcFile = null;
-        if (editorInput instanceof IFileEditorInput) {
-            ipsSrcFile = createIpsSrcFileFromFileEditorInput((IFileEditorInput)editorInput);
-        } else if (editorInput instanceof IpsArchiveEditorInput) {
-            ipsSrcFile = ((IpsArchiveEditorInput)editorInput).getIpsSrcFile();
-        } else if (editorInput instanceof IStorageEditorInput) {
-            ipsSrcFile = createIpsSrcFileFromStorageEditorInput((IStorageEditorInput)editorInput);
-        }
-        return ipsSrcFile;
+        return switch (editorInput) {
+            case null -> null;
+            case IFileEditorInput fileEditorInput -> createIpsSrcFileFromFileEditorInput(fileEditorInput);
+            case IpsArchiveEditorInput archiveEditorInput -> archiveEditorInput.getIpsSrcFile();
+            case IStorageEditorInput storageEditorInput -> createIpsSrcFileFromStorageEditorInput(storageEditorInput);
+            default -> null;
+        };
     }
 
     /**

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,15 +35,14 @@ public class SimpleIpsElementDecorator implements IIpsElementDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IVersionControlledElement
-                && ((IVersionControlledElement)ipsElement).isDeprecated()) {
+        if (ipsElement instanceof IVersionControlledElement versionControlled && versionControlled.isDeprecated()) {
             return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(imageDescriptor,
                     OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT);
-        } else if (ipsElement instanceof IIpsSrcFile) {
+        } else if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
             @SuppressWarnings("deprecation")
-            boolean cached = IpsModel.get().isCached((IIpsSrcFile)ipsElement);
+            boolean cached = IpsModel.get().isCached(ipsSrcFile);
             if (cached) {
-                IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                IIpsObject ipsObject = ipsSrcFile.getIpsObject();
                 if (ipsObject instanceof IVersionControlledElement
                         && ((IVersionControlledElement)ipsObject).isDeprecated()) {
                     return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(imageDescriptor,

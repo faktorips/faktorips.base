@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,10 +32,10 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 
 /**
  * Content provider to represent differnces between test case and test case type.
- * 
+ *
  * @see org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaType for all
  *          provided types of delta objects.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseDeltaContentProvider implements ITreeContentProvider {
@@ -327,39 +327,33 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          * Checks the visibility for the given object and delta type.
          */
         private boolean checkVisibility(Object object, TestCaseDeltaType deltaType) {
-            if (object instanceof ITestPolicyCmptLink) {
-                return checkVisibility((ITestPolicyCmptLink)object, deltaType);
-            } else if (object instanceof ITestPolicyCmpt) {
-                return checkVisibility((ITestPolicyCmpt)object, deltaType);
-            } else if (object instanceof ITestObject) {
-                return checkVisibility((ITestObject)object, deltaType);
-            }
-            return false;
+            return switch (object) {
+                case ITestPolicyCmptLink testPolicyCmptLink -> checkVisibility(testPolicyCmptLink, deltaType);
+                case ITestPolicyCmpt testPolicyCmpt -> checkVisibility(testPolicyCmpt, deltaType);
+                case ITestObject testObject -> checkVisibility(testObject, deltaType);
+                default -> false;
+            };
         }
 
         private boolean checkVisibility(ITestPolicyCmpt testPolicyCmpt, TestCaseDeltaType deltaType) {
-            if (deltaType == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE_VALUE) {
-                return isTestAttributeInList(testPolicyCmpt);
-            } else if (deltaType == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE) {
-                return isTestAttributeValueInList(testPolicyCmpt);
-            } else if (deltaType == TestCaseDeltaType.MISSING_TEST_PARAM) {
-                return missingTestObjects.contains(testPolicyCmpt);
-            }
-            return false;
+            return switch (deltaType) {
+                case MISSING_TEST_ATTRIBUTE_VALUE -> isTestAttributeInList(testPolicyCmpt);
+                case MISSING_TEST_ATTRIBUTE -> isTestAttributeValueInList(testPolicyCmpt);
+                case MISSING_TEST_PARAM -> missingTestObjects.contains(testPolicyCmpt);
+                default -> false;
+            };
         }
 
         private boolean checkVisibility(ITestPolicyCmptLink link, TestCaseDeltaType deltaType) {
-            if (deltaType == TestCaseDeltaType.MISSING_TEST_PARAM) {
-                return missingTestPolicyCmptLinks.contains(link);
-            }
-            return false;
+            return deltaType == TestCaseDeltaType.MISSING_TEST_PARAM
+                    ? missingTestPolicyCmptLinks.contains(link)
+                    : false;
         }
 
         private boolean checkVisibility(ITestObject testObject, TestCaseDeltaType deltaType) {
-            if (deltaType == TestCaseDeltaType.MISSING_TEST_PARAM) {
-                return missingTestObjects.contains(testObject);
-            }
-            return false;
+            return deltaType == TestCaseDeltaType.MISSING_TEST_PARAM
+                    ? missingTestObjects.contains(testObject)
+                    : false;
         }
 
         /**

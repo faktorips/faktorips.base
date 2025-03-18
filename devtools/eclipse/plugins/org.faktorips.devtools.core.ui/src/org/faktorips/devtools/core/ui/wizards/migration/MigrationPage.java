@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -107,16 +107,17 @@ public class MigrationPage extends WizardPage {
             UIToolkit toolkit = new UIToolkit(null);
             BindingContext bindingContext = new BindingContext();
             options.values().forEach(option -> {
-                if (option instanceof IpsBooleanMigrationOption) {
-                    Checkbox checkbox = toolkit.createCheckbox(overview, option.getText());
-                    IpsBooleanMigrationOption booleanOption = (IpsBooleanMigrationOption)option;
-                    bindingContext.bindContent(checkbox, booleanOption, IpsMigrationOption.PROPERTY_SELECTED);
-                } else if (option instanceof IpsEnumMigrationOption) {
-                    toolkit.createLabel(overview, option.getText());
-                    Combo combo = toolkit.createCombo(overview);
-                    IpsEnumMigrationOption<?> enumMigrationOption = (IpsEnumMigrationOption<?>)option;
-                    bindingContext.bindContent(combo, enumMigrationOption, IpsMigrationOption.PROPERTY_SELECTED,
-                            enumMigrationOption.getEnumClass());
+                switch (option) {
+                    case IpsBooleanMigrationOption booleanOption -> {
+                        Checkbox checkbox = toolkit.createCheckbox(overview, option.getText());
+                        bindingContext.bindContent(checkbox, booleanOption, IpsMigrationOption.PROPERTY_SELECTED);
+                    }
+                    case IpsEnumMigrationOption<?> enumMigrationOption -> {
+                        toolkit.createLabel(overview, option.getText());
+                        Combo combo = toolkit.createCombo(overview);
+                        bindingContext.bindContent(combo, enumMigrationOption, IpsMigrationOption.PROPERTY_SELECTED,
+                                enumMigrationOption.getEnumClass());
+                    }
                 }
                 bindingContext.updateUI();
             });

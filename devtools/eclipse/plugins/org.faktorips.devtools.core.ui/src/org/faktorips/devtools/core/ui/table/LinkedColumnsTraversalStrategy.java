@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSup
  * <p>
  * The generic Type T defines the type of the object displayed by the columns, provided by the
  * content provider
- * 
+ *
  * @author Stefan Widmaier
  */
 public abstract class LinkedColumnsTraversalStrategy<T> extends AbstractPermanentTraversalStrategy<T> {
@@ -53,20 +53,25 @@ public abstract class LinkedColumnsTraversalStrategy<T> extends AbstractPermanen
 
     @Override
     public void keyTraversed(TraverseEvent e) {
-        if (e.detail == SWT.TRAVERSE_ESCAPE) {
-            if (getCurrentCellEditor() != null) {
-                getCurrentCellEditor().deactivate();
+        switch (e.detail) {
+            case SWT.TRAVERSE_ESCAPE -> {
+                if (getCurrentCellEditor() != null) {
+                    getCurrentCellEditor().deactivate();
+                    e.doit = false;
+                }
+            }
+            case SWT.TRAVERSE_RETURN -> {
+                editNextRow();
                 e.doit = false;
             }
-        } else if (e.detail == SWT.TRAVERSE_RETURN) {
-            editNextRow();
-            e.doit = false;
-        } else if (e.detail == SWT.TRAVERSE_TAB_NEXT) {
-            editNextColumn();
-            e.doit = false;
-        } else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
-            editPreviousColumn();
-            e.doit = false;
+            case SWT.TRAVERSE_TAB_NEXT -> {
+                editNextColumn();
+                e.doit = false;
+            }
+            case SWT.TRAVERSE_TAB_PREVIOUS -> {
+                editPreviousColumn();
+                e.doit = false;
+            }
         }
     }
 
@@ -219,7 +224,7 @@ public abstract class LinkedColumnsTraversalStrategy<T> extends AbstractPermanen
     /**
      * Sets the {@link LinkedColumnsTraversalStrategy} of the following editable column. Sets this
      * Strategy as predecessor of the given follower if not already so.
-     * 
+     *
      * @param foll the new following {@link LinkedColumnsTraversalStrategy}
      */
     public void setFollower(LinkedColumnsTraversalStrategy<T> foll) {
@@ -236,7 +241,7 @@ public abstract class LinkedColumnsTraversalStrategy<T> extends AbstractPermanen
     /**
      * Sets the {@link LinkedColumnsTraversalStrategy} of the previous editable column. Sets this
      * Strategy as follower of the given follower if not already so.
-     * 
+     *
      * @param pred the new previous {@link LinkedColumnsTraversalStrategy}
      */
     public void setPredecessor(LinkedColumnsTraversalStrategy<T> pred) {

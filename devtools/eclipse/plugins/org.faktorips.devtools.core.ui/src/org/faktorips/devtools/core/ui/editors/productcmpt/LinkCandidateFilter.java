@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,13 +31,13 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 
 /**
- * 
+ *
  * This LinkCandidateFilter filters, whether an {@link IIpsSrcFile} can be linked to the
  * {@link IProductCmptGeneration} represented by an {@link IProductCmptStructureReference}.
  * <p>
  * It is recommended, that the {@link #filter(IIpsSrcFile)} is called immediately after
  * instantiation.
- * 
+ *
  * @author dicker
  */
 public class LinkCandidateFilter {
@@ -89,12 +89,12 @@ public class LinkCandidateFilter {
 
     private List<IProductCmptTypeAssociation> getUncheckedAssociations(
             IProductCmptStructureReference structureReference) {
-        if (structureReference instanceof IProductCmptReference productCmptReference) {
-            return getUncheckedAssociations(productCmptReference);
-        } else if (structureReference instanceof IProductCmptTypeAssociationReference associationReference) {
-            return Arrays.asList(associationReference.getAssociation());
-        }
-        return Collections.emptyList();
+        return switch (structureReference) {
+            case IProductCmptReference productCmptReference -> getUncheckedAssociations(productCmptReference);
+            case IProductCmptTypeAssociationReference associationReference -> Arrays
+                    .asList(associationReference.getAssociation());
+            default -> Collections.emptyList();
+        };
     }
 
     private List<IProductCmptTypeAssociation> getUncheckedAssociations(IProductCmptReference productCmptReference) {
@@ -109,12 +109,12 @@ public class LinkCandidateFilter {
     }
 
     private IProductCmpt getProductCmpt(IProductCmptStructureReference structureReference) {
-        if (structureReference instanceof IProductCmptReference productCmptReference) {
-            return productCmptReference.getProductCmpt();
-        } else if (structureReference instanceof IProductCmptTypeAssociationReference associationReference) {
-            return getProductCmpt(associationReference.getParent());
-        }
-        return null;
+        return switch (structureReference) {
+            case IProductCmptReference productCmptReference -> productCmptReference.getProductCmpt();
+            case IProductCmptTypeAssociationReference associationReference -> getProductCmpt(
+                    associationReference.getParent());
+            default -> null;
+        };
     }
 
     private void initAssociations(IProductCmptStructureReference structureReference) {

@@ -1,16 +1,15 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,9 +38,9 @@ import org.faktorips.values.LocalizedString;
  * <p>
  * Warning: this wrapper can only be used to display human readable values <em>not</em> to edit
  * them. If you want to edit a formatted value use {@link FormattingTextField}.
- * 
+ *
  * @see IProductCmptTypeAttribute#isMultiValueAttribute()
- * 
+ *
  * @author Stefan Widmaier
  */
 public class AttributeValueFormatter {
@@ -60,11 +59,11 @@ public class AttributeValueFormatter {
 
     /**
      * Utility method. Shorthand for
-     * 
+     *
      * <pre>
      * AttributValueFormatter#createFormatterFor(IAttributeValue)#getFormattedValue()
      * </pre>
-     * 
+     *
      * @param attrValue the attribute value to format
      * @return the formatted value
      */
@@ -73,8 +72,7 @@ public class AttributeValueFormatter {
     }
 
     public static AttributeValueFormatter createFormatterFor(IAttributeValue attrValue) {
-        IProductCmptTypeAttribute pctAttribute;
-        pctAttribute = attrValue.findAttribute(attrValue.getIpsProject());
+        IProductCmptTypeAttribute pctAttribute = attrValue.findAttribute(attrValue.getIpsProject());
         ValueDatatype datatype;
         if (pctAttribute == null) {
             datatype = Datatype.STRING;
@@ -87,18 +85,15 @@ public class AttributeValueFormatter {
     public String getFormattedValue() {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         IValueHolder<?> valueHolder = getActualValueHolder(attrValue.getValueHolder());
-        if (valueHolder instanceof MultiValueHolder multiHolder) {
-            List<String> stringValues = new ArrayList<>();
-            for (ISingleValueHolder holder : multiHolder.getValue()) {
-                String formattedValue = getFormattedSingleValue(datatypeFormatter, holder);
-                stringValues.add(formattedValue);
-            }
-            return convertToString(stringValues);
-        } else if (valueHolder instanceof ISingleValueHolder) {
-            return getFormattedSingleValue(datatypeFormatter, (ISingleValueHolder)valueHolder);
-        } else {
-            throw new IllegalStateException("Illegal value holder " + valueHolder); //$NON-NLS-1$
-        }
+        return switch (valueHolder) {
+            case MultiValueHolder multiHolder -> convertToString(
+                    multiHolder
+                            .getValue().stream()
+                            .map(h -> getFormattedSingleValue(datatypeFormatter, h))
+                            .toList());
+            case ISingleValueHolder singleValueHolder -> getFormattedSingleValue(datatypeFormatter, singleValueHolder);
+            default -> throw new IllegalStateException("Illegal value holder " + valueHolder); //$NON-NLS-1$
+        };
     }
 
     private String getFormattedSingleValue(UIDatatypeFormatter datatypeFormatter, ISingleValueHolder holder) {

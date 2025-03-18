@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -52,47 +52,45 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof IProductCmptReference) {
-            return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt());
-        } else if (element instanceof IProductCmptTypeAssociationReference) {
-            return IpsUIPlugin.getImageHandling()
-                    .getImage(((IProductCmptTypeAssociationReference)element).getAssociation());
-        } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            return IpsUIPlugin.getImageHandling()
-                    .getImage(((IProductCmptStructureTblUsageReference)element).getTableContentUsage());
-        } else if (element instanceof IProductCmptVRuleReference) {
-            IValidationRuleConfig config = ((IProductCmptVRuleReference)element).getValidationRuleConfig();
-            return IpsUIPlugin.getImageHandling().getImage(config);
-        } else if (element instanceof ViewerLabel) {
-            return ((ViewerLabel)element).getImage();
-        }
-        return null;
+        return switch (element) {
+            case IProductCmptReference productCmptReference -> IpsUIPlugin.getImageHandling()
+                    .getImage(productCmptReference.getProductCmpt());
+            case IProductCmptTypeAssociationReference productCmptTypeAssociationReference -> IpsUIPlugin
+                    .getImageHandling().getImage(productCmptTypeAssociationReference.getAssociation());
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> IpsUIPlugin
+                    .getImageHandling().getImage(productCmptStructureTblUsageReference.getTableContentUsage());
+            case IProductCmptVRuleReference productCmptVRuleReference -> IpsUIPlugin.getImageHandling()
+                    .getImage(productCmptVRuleReference.getValidationRuleConfig());
+            case ViewerLabel viewerLabel -> viewerLabel.getImage();
+            default -> null;
+        };
     }
 
     @Override
     public String getText(Object element) {
-        if (element instanceof IProductCmptReference) {
-            return getProductCmptLabel(((IProductCmptReference)element).getProductCmpt());
-        } else if (element instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
-            if (association.is1ToMany()) {
-                return IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
-            } else {
-                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
+        return switch (element) {
+            case IProductCmptReference productCmptReference -> getProductCmptLabel(
+                    productCmptReference.getProductCmpt());
+            case IProductCmptTypeAssociationReference productCmptTypeAssociationReference -> {
+                IProductCmptTypeAssociation association = productCmptTypeAssociationReference.getAssociation();
+                if (association.is1ToMany()) {
+                    yield IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
+                } else {
+                    yield IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
+                }
             }
-        } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            ITableContentUsage tcu = ((IProductCmptStructureTblUsageReference)element).getTableContentUsage();
-            if (showTableStructureUsageName) {
-                return IIpsModel.get().getMultiLanguageSupport().getDefaultCaption(tcu);
-            } else {
-                return StringUtil.unqualifiedName(tcu.getTableContentName());
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> {
+                ITableContentUsage tcu = productCmptStructureTblUsageReference.getTableContentUsage();
+                if (showTableStructureUsageName) {
+                    yield IIpsModel.get().getMultiLanguageSupport().getDefaultCaption(tcu);
+                } else {
+                    yield StringUtil.unqualifiedName(tcu.getTableContentName());
+                }
             }
-        } else if (element instanceof IProductCmptVRuleReference) {
-            return getRuleLabel((IProductCmptVRuleReference)element);
-        } else if (element instanceof ViewerLabel) {
-            return ((ViewerLabel)element).getText();
-        }
-        return Messages.ProductStructureLabelProvider_undefined;
+            case IProductCmptVRuleReference productCmptVRuleReference -> getRuleLabel(productCmptVRuleReference);
+            case ViewerLabel viewerLabel -> viewerLabel.getText();
+            default -> Messages.ProductStructureLabelProvider_undefined;
+        };
     }
 
     /**
@@ -100,7 +98,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
      * referenced the given {@link IProductCmptVRuleReference}. First tries to find the configured
      * {@link IValidationRule} and return its label using the MultiLanguageSupport. If that fails
      * the original name of the {@link IValidationRuleConfig} (it ipsElement name) is returned.
-     * 
+     *
      * @param element the reference to return a text/label for
      * @return the label for the given IProductCmptVRuleReference
      */
@@ -114,8 +112,8 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     }
 
     /**
-     * Definines if the table content usage role name will be displayed beside the referenced table
-     * content (<code>true</code>), or if the corresponding table structure usage name will be
+     * Defines whether the table content usage role name will be displayed beside the referenced
+     * table content (<code>true</code>), or if the corresponding table structure usage name will be
      * hidden (<code>false</code>).
      */
     public void setShowTableStructureUsageName(boolean showTableStructureUsageName) {

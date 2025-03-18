@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ import org.faktorips.util.ArgumentCheck;
  * <p>
  * Instances of this class are immutable and do not update if the selection changes.
  * </p>
- * 
+ *
  * @param <T> type of the selection
  */
 public class TypedSelection<T> {
@@ -56,7 +56,7 @@ public class TypedSelection<T> {
     /**
      * Creates a new instance of {@link TypedSelection}. The selection is valid if exactly one
      * element of the given type is in the selection.
-     * 
+     *
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
      * @param selection the selection to validate
@@ -68,7 +68,7 @@ public class TypedSelection<T> {
     /**
      * Creates a new instance of {@link TypedSelection}. The selection is valid if it exactly
      * contains the specified number of elements.
-     * 
+     *
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
      * @param selection the selection to validate
@@ -86,7 +86,7 @@ public class TypedSelection<T> {
      * responsibilities (ensuring StructuredSelection, ensuring type safety, ensuring count) for
      * sake of easier and faster implementation. CD made me do it ;-). A stream model would be the
      * ultimate goal, so I can live with this solution until then.
-     * 
+     *
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
      * @param selection the selection to validate
@@ -119,8 +119,8 @@ public class TypedSelection<T> {
         for (Object element : structuredSelection) {
             if (type.isInstance(element)) {
                 elements.add(type.cast(element));
-            } else if (element instanceof IAdaptable) {
-                T adapted = ((IAdaptable)element).getAdapter(type);
+            } else if (element instanceof IAdaptable adaptable) {
+                T adapted = adaptable.getAdapter(type);
                 if (adapted != null) {
                     elements.add(adapted);
                 } else {
@@ -154,7 +154,7 @@ public class TypedSelection<T> {
     /**
      * Creates a new instance of {@link TypedSelection}. The selection is valid if exactly one
      * element of the given type is in the selection.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -168,7 +168,7 @@ public class TypedSelection<T> {
     /**
      * Creates a new instance of {@link TypedSelection}. The selection is valid if at least one
      * element of the given type is in the selection.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -182,7 +182,7 @@ public class TypedSelection<T> {
     /**
      * Creates a new instance of {@link TypedSelection}. The selection is valid if at least the
      * specified number of elements of the given type is in the selection.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -199,7 +199,7 @@ public class TypedSelection<T> {
     /**
      * Creates a new instance of {@link TypedSelection}. The selection is valid if it exactly
      * contains the specified number of elements.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -213,7 +213,7 @@ public class TypedSelection<T> {
 
     /**
      * Creates a new instance of {@link TypedSelection}.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -233,7 +233,7 @@ public class TypedSelection<T> {
      * Compares the specified {@link ISelection} with the given elements of a model collection. Both
      * collections are considered equal if they contain the same elements (ordering is not
      * relevant).
-     * 
+     *
      * @param selection the selection to compare
      * @param collection the collection containing the model elements
      * @return <code>true</code> if both collections are equal
@@ -251,7 +251,7 @@ public class TypedSelection<T> {
      * Compares the specified {@link ISelection} with the given elements of a model collection. Both
      * collections are considered equal if they contain the same elements (ordering is not
      * relevant).
-     * 
+     *
      * @param selection the selection to compare
      * @param collection the collection containing the model elements
      * @return <code>true</code> if both collections are equal
@@ -264,7 +264,7 @@ public class TypedSelection<T> {
      * Converts the specified {@link ISelection} to a collection of the specified type. If the
      * selection contains elements of the wrong type or is empty then an
      * <code>AssertionFailedException</code> is thrown.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -282,7 +282,7 @@ public class TypedSelection<T> {
      * Converts the specified {@link ISelection} to an element of the specified type. If the
      * selection contains elements of the wrong type or does not contain exactly one element then an
      * <code>AssertionFailedException</code> is thrown.
-     * 
+     *
      * @param <T> type of the selection
      * @param type the expected type of the selection (must be the same as the type parameter
      *            <strong>T</strong>)
@@ -302,7 +302,7 @@ public class TypedSelection<T> {
      * {@code Optional.absent()} is returned.
      * <p>
      * This is a more lenient alternative to {@link #convertSingleElement(Class, ISelection)}
-     * 
+     *
      * @param <T> type of the selection
      * @param selection the selection
      * @return an {@link Optional} holding the selected element of the given type or
@@ -323,7 +323,7 @@ public class TypedSelection<T> {
 
     /**
      * Returns whether this selection is valid.
-     * 
+     *
      * @return <code>true</code> if this selection is valid, <code>false</code> otherwise
      */
     public final boolean isValid() {
@@ -332,7 +332,7 @@ public class TypedSelection<T> {
 
     /**
      * Returns the element of this single selection.
-     * 
+     *
      * @return the first element of this single selection.
      */
     public final T getElement() {
@@ -345,7 +345,7 @@ public class TypedSelection<T> {
 
     /**
      * Returns the first element of this selection.
-     * 
+     *
      * @return the first element of this selection.
      */
     public final T getFirstElement() {
@@ -356,7 +356,7 @@ public class TypedSelection<T> {
 
     /**
      * Returns the second element of this selection.
-     * 
+     *
      * @return the second element of this selection.
      */
     public final T getSecondElement() {
@@ -370,7 +370,7 @@ public class TypedSelection<T> {
      * Returns the contents of this selection as an unmodifiable list with "read-only" access.
      * Attempts to modify this list, whether direct or via its iterator, result in an
      * {@link UnsupportedOperationException}.
-     * 
+     *
      * @return the contents of this selection
      */
     public final List<T> getElements() {
@@ -381,7 +381,7 @@ public class TypedSelection<T> {
 
     /**
      * Returns the number of elements in this selection.
-     * 
+     *
      * @return the number of elements in this selection.
      */
     public final int getElementCount() {

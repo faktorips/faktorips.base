@@ -136,13 +136,11 @@ public class AttributeNodeGenerator extends JavaBuilderIdentifierNodeGenerator {
     }
 
     private String getParameterAttributGetterName(final AttributeNode node, Datatype contextDatatype) {
-        IAttribute attribute = node.getAttribute();
-        if (attribute instanceof IPolicyCmptTypeAttribute) {
-            return getPolicyAttributeGetterName((IPolicyCmptTypeAttribute)attribute);
-        } else if (attribute instanceof IProductCmptTypeAttribute) {
-            return getProductAttributeAccessCode(node, contextDatatype);
-        }
-        throw new IpsException("This type of attribute is not supported: " + attribute.getClass()); //$NON-NLS-1$
+        return switch (node.getAttribute()) {
+            case IPolicyCmptTypeAttribute policyAttribute -> getPolicyAttributeGetterName(policyAttribute);
+            case IProductCmptTypeAttribute $ -> getProductAttributeAccessCode(node, contextDatatype);
+            default -> throw new IpsException("This type of attribute is not supported: " + node.getAttribute().getClass()); //$NON-NLS-1$
+        };
     }
 
     private String getPolicyAttributeGetterName(IPolicyCmptTypeAttribute attribute) {

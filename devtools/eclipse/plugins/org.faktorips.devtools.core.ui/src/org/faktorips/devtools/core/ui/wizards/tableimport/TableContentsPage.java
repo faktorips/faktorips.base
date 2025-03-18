@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -91,8 +91,8 @@ public class TableContentsPage extends IpsObjectPage {
             selectedObject = getSelectedIpsObject();
             if (selectedObject instanceof ITableStructure) {
                 return selectedObject.getQualifiedName();
-            } else if (selectedObject instanceof ITableContents) {
-                return ((ITableContents)selectedObject).getTableStructure();
+            } else if (selectedObject instanceof ITableContents tableContents) {
+                return tableContents.getTableStructure();
             }
         } catch (IpsException e) {
             IpsPlugin.log(e);

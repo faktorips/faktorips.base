@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -53,7 +53,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
     /**
      * Builds the {@link IIpsElement} to {@link IFixDifferencesComposite} map by recursively adding
      * all children of the root {@code IFixDifferencesComposite}.
-     * 
+     *
      * @param composites children of the parent {@code IFixDifferencesComposite}.
      */
     private void mapIIpsElementToDifferenceComposite(List<IFixDifferencesComposite> composites) {
@@ -92,7 +92,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * {@link DeltaTypeWrapper DeltaTypeWrappers}, which consist of the {@link DeltaType} and its
      * parent. The parent (i.e. the provided {@code IPropertyValueContainerToTypeDelta} is necessary
      * to find the correct entries for a given {@code DeltaType}.
-     * 
+     *
      * @param delta parent node, containing deltas.
      * @return the children of the node.
      */
@@ -111,7 +111,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * are considered equal (at least for the purpose in this tree), if they are both
      * {@link IPropertyValueContainerToTypeDelta IPropertyValueContainerToTypeDeltas} and the string
      * representation of all their entries are equal.
-     * 
+     *
      * @param a first object to test for equality.
      * @param b second object to test for equality.
      * @return true if, and only if, a and b are instances of
@@ -149,7 +149,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * combines them for several generations if they are equal. Most of the time, differences affect
      * all generations, hence only one generation difference is created. Furthermore, this method
      * also returns the differences on the product component itself (static attributes).
-     * 
+     *
      * @param parent {@code IProductCmpt} of which children are retrieved.
      * @return all children of the product component.
      */
@@ -192,16 +192,13 @@ public class DeltaContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof IProductCmpt) {
-            return getChildrenOfIProductCmpt((IProductCmpt)parentElement);
-        } else if (parentElement instanceof DeltaTypeWrapper delta) {
-            return delta.getDelta().getEntries(delta.getDeltaType());
-        } else if (parentElement instanceof IPropertyValueContainerToTypeDelta delta) {
-            return getPropertyChildren(delta);
-        } else if (parentElement instanceof ProductCmptGenerationsDeltaViewItem) {
-            return getPropertyChildren(((ProductCmptGenerationsDeltaViewItem)parentElement).getDelta());
-        }
-        return new Object[0];
+        return switch (parentElement) {
+            case IProductCmpt productCmpt -> getChildrenOfIProductCmpt(productCmpt);
+            case DeltaTypeWrapper delta -> delta.getDelta().getEntries(delta.getDeltaType());
+            case IPropertyValueContainerToTypeDelta delta -> getPropertyChildren(delta);
+            case ProductCmptGenerationsDeltaViewItem viewItem -> getPropertyChildren(viewItem.getDelta());
+            default -> new Object[0];
+        };
     }
 
     @Override

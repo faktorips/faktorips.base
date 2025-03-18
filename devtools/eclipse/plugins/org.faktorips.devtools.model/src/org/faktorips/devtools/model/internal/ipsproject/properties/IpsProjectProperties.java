@@ -2,10 +2,10 @@
 // CSOFF: RegexpHeaderCheck
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -92,7 +92,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * An IPS project's properties. The project can't keep the properties on its own, as it is a handle.
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsProjectProperties implements IIpsProjectProperties {
@@ -1054,7 +1054,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * Reads the definition of optional constraints from the given &lt;IpsProject&gt; XML
      * <code>Element</code>.
-     * 
+     *
      * @param element The &lt;IpsProject&gt; XML <code>Element</code>.
      */
     private void initAdditionalSettings(Element element) {
@@ -1130,40 +1130,30 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     // CSOFF: CyclomaticComplexity
     // Complexity is high but it is a simple if-else-cascade
     private void applySetting(String name, boolean enabled, String value) {
-        if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
-            derivedUnionIsImplementedRuleEnabled = enabled;
-        } else if (name.equals(SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE)) {
-            referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
-        } else if (name.equals(SETTING_RULES_WITHOUT_REFERENCE)) {
-            rulesWithoutReferencesAllowed = enabled;
-        } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
-            setSharedDetailToMasterAssociations(enabled);
-        } else if (name.equals(SETTING_MARKER_ENUMS)) {
-            setMarkerEnumsEnabled(enabled);
-            initMarkerEnums(value);
-            markerEnumsConfiguredInIpsProjectFile = true;
-        } else if (name.equals(SETTING_CHANGING_OVER_TIME_DEFAULT)) {
-            setChangingOverTimeDefault(enabled);
-        } else if (name.equals(SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT)) {
-            setGenerateValidatorClassDefault(enabled);
-        } else if (name.equals(SETTING_GENERIC_VALIDATION_BY_DEFAULT)) {
-            setGenericValidationDefault(enabled);
-        } else if (name.equals(SETTING_ESCAPE_NON_STANDARD_BLANKS)) {
-            setEscapeNonStandardBlanks(enabled);
-        } else if (name.equals(SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD)) {
-            setInferredTemplateLinkThreshold(Decimal.valueOf(value));
-        } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
-            setInferredTemplatePropertyValueThreshold(Decimal.valueOf(value));
-        } else if (name.equals(SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY)) {
-            setDuplicateProductComponentSeverity(Severity.valueOf(value));
-        } else if (name.contentEquals(SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY)) {
-            setPersistenceColumnSizeChecksSeverity(Severity.valueOf(value));
-        } else if (name.contentEquals(SETTING_MISSING_DATATYPE_SERVERITY)) {
-            setMissingDatatypeSeverity(Severity.valueOf(value));
-        } else if (name.contentEquals(SETTING_TABLE_CONTENT_FORMAT)) {
-            setTableContentFormat(TableContentFormat.valueById(value));
-        } else if (name.contentEquals(SETTING_VALIDATE_IPS_SCHEMA)) {
-            setValidateIpsSchema(enabled);
+        switch (name) {
+            case SETTING_DERIVED_UNION_IS_IMPLEMENTED -> derivedUnionIsImplementedRuleEnabled = enabled;
+            case SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE -> referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
+            case SETTING_RULES_WITHOUT_REFERENCE -> rulesWithoutReferencesAllowed = enabled;
+            case SETTING_SHARED_ASSOCIATIONS -> setSharedDetailToMasterAssociations(enabled);
+            case SETTING_MARKER_ENUMS -> {
+                setMarkerEnumsEnabled(enabled);
+                initMarkerEnums(value);
+                markerEnumsConfiguredInIpsProjectFile = true;
+            }
+            case SETTING_CHANGING_OVER_TIME_DEFAULT -> setChangingOverTimeDefault(enabled);
+            case SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT -> setGenerateValidatorClassDefault(enabled);
+            case SETTING_GENERIC_VALIDATION_BY_DEFAULT -> setGenericValidationDefault(enabled);
+            case SETTING_ESCAPE_NON_STANDARD_BLANKS -> setEscapeNonStandardBlanks(enabled);
+            case SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD -> setInferredTemplateLinkThreshold(Decimal.valueOf(value));
+            case SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD -> setInferredTemplatePropertyValueThreshold(
+                    Decimal.valueOf(value));
+            case SETTING_DUPLICATE_PRODUCT_COMPONENT_SERVERITY -> setDuplicateProductComponentSeverity(
+                    Severity.valueOf(value));
+            case SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY -> setPersistenceColumnSizeChecksSeverity(
+                    Severity.valueOf(value));
+            case SETTING_MISSING_DATATYPE_SERVERITY -> setMissingDatatypeSeverity(Severity.valueOf(value));
+            case SETTING_TABLE_CONTENT_FORMAT -> setTableContentFormat(TableContentFormat.valueById(value));
+            case SETTING_VALIDATE_IPS_SCHEMA -> setValidateIpsSchema(enabled);
         }
     }
 
@@ -1181,7 +1171,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void initFunctionsLanguageLocale(String name, String value) {
         if (name.equals(SETTING_FORMULA_LANGUAGE_LOCALE) && value != null) {
-            formulaLanguageLocale = new Locale(value);
+            formulaLanguageLocale = Locale.of(value);
         }
     }
 

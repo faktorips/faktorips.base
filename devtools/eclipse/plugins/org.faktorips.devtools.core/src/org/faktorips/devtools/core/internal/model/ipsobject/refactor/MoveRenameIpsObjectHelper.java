@@ -274,15 +274,12 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
 
     private boolean isMatching(IDependency dependency) {
         Object target = dependency.getTarget();
-
-        if (target instanceof QualifiedNameType) {
-            return (toBeRefactored.getQualifiedNameType().equals(target));
-        } else if (target instanceof String) {
-            return toBeRefactored.getQualifiedName().equals(target);
-        } else {
-            throw new IpsException(
+        return switch (target) {
+            case QualifiedNameType q -> (toBeRefactored.getQualifiedNameType().equals(q));
+            case String s -> toBeRefactored.getQualifiedName().equals(s);
+            default -> throw new IpsException(
                     new IpsStatus("The type of the dependency-target (" + target + ") is unknown.")); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        };
     }
 
     private IDependency[] getDependencies() {

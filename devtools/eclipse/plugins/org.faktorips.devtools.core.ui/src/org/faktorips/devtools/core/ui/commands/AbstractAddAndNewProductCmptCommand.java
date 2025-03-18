@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  * {@link org.faktorips.devtools.core.ui.editors.productcmpt.AddProductCmptLinkCommand} and
  * {@link org.faktorips.devtools.core.ui.wizards.productcmpt.AddNewProductCmptCommand} will be not
  * enabled.
- * 
- * 
+ *
+ *
  */
 public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandler {
 
@@ -43,19 +43,16 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
             return;
         }
 
-        Object selectedElement = structuredSelection.getFirstElement();
-        if (selectedElement instanceof IProductCmptReference) {
-            setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());
-        } else if (selectedElement instanceof String) {
-            setBaseEnabled(isValidAssociationName((String)selectedElement, activeWorkbenchWindow));
-        } else {
-            setBaseEnabled(true);
+        switch (structuredSelection.getFirstElement()) {
+            case IProductCmptReference ref -> setBaseEnabled(ref.hasAssociationChildren());
+            case String name -> setBaseEnabled(isValidAssociationName(name, activeWorkbenchWindow));
+            default -> setBaseEnabled(true);
         }
     }
 
     /**
      * Queries to the target type of the selected element, target type must be found.
-     * 
+     *
      */
     private boolean isValidAssociationName(String associationName, IWorkbenchWindow activeWorkbenchWindow) {
 

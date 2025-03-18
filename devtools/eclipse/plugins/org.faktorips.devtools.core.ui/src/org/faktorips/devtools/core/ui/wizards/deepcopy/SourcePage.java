@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -78,7 +78,7 @@ import org.faktorips.runtime.Severity;
 
 /**
  * Page to let the user select products related to each other.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class SourcePage extends WizardPage {
@@ -420,7 +420,7 @@ public class SourcePage extends WizardPage {
     /**
      * An Element is grayed if not all children or itself is checked. That means, an element is also
      * gray if none of its children is checked or itself is unchecked.
-     * 
+     *
      */
     public void updateCheckedAndGrayedStatus(IProductCmptTreeStructure structure) {
         updateCheckedAndGrayStatus(structure.getRoot());
@@ -429,7 +429,7 @@ public class SourcePage extends WizardPage {
     /**
      * updating the checked and grayed state of the specified element and returns the grayed state
      * for recursive use.
-     * 
+     *
      */
     private boolean updateCheckedAndGrayStatus(IProductCmptStructureReference reference) {
         if (reference instanceof IProductCmptTypeAssociationReference associationReference) {
@@ -471,16 +471,20 @@ public class SourcePage extends WizardPage {
     }
 
     private void setMessagePleaseEnterWorkingDate() {
-        if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-            String productCmptTypeName;
-            productCmptTypeName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(getStructure().getRoot()
-                    .getProductCmpt().findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
-            setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
-        } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
-            String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
-                    .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
-            setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewGeneration,
-                    versionConceptNameSingular));
+        switch (type) {
+            case DeepCopyWizard.TYPE_COPY_PRODUCT -> {
+                String productCmptTypeName = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedLabel(getStructure().getRoot()
+                                .getProductCmpt()
+                                .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+                setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
+            }
+            case DeepCopyWizard.TYPE_NEW_VERSION -> {
+                String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
+                        .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
+                setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewGeneration,
+                        versionConceptNameSingular));
+            }
         }
     }
 

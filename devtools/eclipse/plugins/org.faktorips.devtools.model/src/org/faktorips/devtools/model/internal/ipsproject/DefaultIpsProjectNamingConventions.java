@@ -1,14 +1,24 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.ipsproject;
+
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.POLICY_CMPT_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_TEMPLATE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TABLE_CONTENTS;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TABLE_STRUCTURE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TEST_CASE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TEST_CASE_TYPE;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -22,6 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.MessageLists;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
@@ -29,7 +40,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Default implementation of the project naming conventions.
- * 
+ *
  * @author Daniel Hohenberger
  */
 public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConventions {
@@ -61,9 +72,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         this.ipsProject = ipsProject;
 
         // initialize special error texts depending on the object type
-        errorMsgTxtNameIsEmpty.put(IpsObjectType.PRODUCT_CMPT_TYPE,
+        errorMsgTxtNameIsEmpty.put(PRODUCT_CMPT_TYPE,
                 Messages.DefaultIpsProjectNamingConventions_msgMissingNameForProductCmpt);
-        errorMsgTxtNameIsQualified.put(IpsObjectType.PRODUCT_CMPT_TYPE,
+        errorMsgTxtNameIsQualified.put(PRODUCT_CMPT_TYPE,
                 Messages.DefaultIpsProjectNamingConventions_msgNameNotValidForProductCmpt);
     }
 
@@ -111,36 +122,19 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             }
         }
 
-        if (IpsObjectType.ENUM_TYPE.equals(type)) {
-            MessageList ml = validateNameForEnumType(name, qualifiedCheck);
-            result.add(ml);
-            return result;
-        } else if (IpsObjectType.POLICY_CMPT_TYPE.equals(type)) {
-            MessageList ml = validateNameForPolicyCmptType(name, qualifiedCheck);
-            result.add(ml);
-            return result;
-        } else if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(type)) {
-            MessageList ml = validateNameForProductCmptType(name, qualifiedCheck);
-            result.add(ml);
-            return result;
-        } else if (IpsObjectType.TABLE_STRUCTURE.equals(type)) {
-            MessageList ml = validateNameForTableStructure(name, qualifiedCheck);
-            result.add(ml);
-            return result;
-        }
-        if (IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.PRODUCT_TEMPLATE.equals(type)) {
-            MessageList ml = validateNameForProductCmpt(name, qualifiedCheck);
-            result.add(ml);
-        } else if (IpsObjectType.TABLE_CONTENTS.equals(type)) {
-            MessageList ml = validateNameForTableContents(name, qualifiedCheck);
-            result.add(ml);
-        } else if (IpsObjectType.TEST_CASE_TYPE.equals(type)) {
-            MessageList ml = validateNameForTestCaseType(name, qualifiedCheck);
-            result.add(ml);
-        } else if (IpsObjectType.TEST_CASE.equals(type)) {
-            MessageList ml = validateNameForTestCase(name, qualifiedCheck);
-            result.add(ml);
-        }
+        result.add(switch (type) {
+            case IpsObjectType t when t.equals(ENUM_TYPE) -> validateNameForEnumType(name, qualifiedCheck);
+            case IpsObjectType t when t.equals(POLICY_CMPT_TYPE) -> validateNameForPolicyCmptType(name, qualifiedCheck);
+            case IpsObjectType t when t.equals(PRODUCT_CMPT_TYPE) -> validateNameForProductCmptType(name,
+                    qualifiedCheck);
+            case IpsObjectType t when t.equals(TABLE_STRUCTURE) -> validateNameForTableStructure(name, qualifiedCheck);
+            case IpsObjectType t when t.equals(PRODUCT_CMPT)
+                    || t.equals(PRODUCT_TEMPLATE) -> validateNameForProductCmpt(name, qualifiedCheck);
+            case IpsObjectType t when t.equals(TABLE_CONTENTS) -> validateNameForTableContents(name, qualifiedCheck);
+            case IpsObjectType t when t.equals(TEST_CASE_TYPE) -> validateNameForTestCaseType(name, qualifiedCheck);
+            case IpsObjectType t when t.equals(TEST_CASE) -> validateNameForTestCase(name, qualifiedCheck);
+            default -> MessageLists.emptyMessageList();
+        });
         return result;
     }
 

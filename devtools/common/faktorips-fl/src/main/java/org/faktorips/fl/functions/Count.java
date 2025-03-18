@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * A function that counts the instances of the path
- * 
+ *
  * @author frank
  * @since 3.11.0
  */
@@ -42,14 +42,15 @@ public class Count extends AbstractFlFunction {
         ArgumentCheck.length(argResults, 1);
         Datatype argType = argResults[0].getDatatype();
         JavaCodeFragment fragment = new JavaCodeFragment();
-        if (argType instanceof ListOfTypeDatatype) {
-            fragment.append(argResults[0].getCodeFragment());
-            fragment.append(".size()"); //$NON-NLS-1$
-        } else {
-            String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, argType);
-            Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
-            return new CompilationResultImpl(msg);
-        }
-        return new CompilationResultImpl(fragment, getType());
+
+        return switch (argType) {
+            case ListOfTypeDatatype listType -> new CompilationResultImpl(
+                    fragment.append(argResults[0].getCodeFragment()).append(".size()"), getType());
+            default -> {
+                String text = Messages.INSTANCE.getString(ERROR_MESSAGE_CODE, argType);
+                Message msg = Message.newError(ERROR_MESSAGE_CODE, text);
+                yield new CompilationResultImpl(msg);
+            }
+        };
     }
 }

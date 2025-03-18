@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -58,8 +58,8 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
         getPmo().setIpsProject(selectedPackage.getIpsProject());
         getPmo().setPackageRoot(selectedPackage.getRoot());
         getPmo().setIpsPackage(selectedPackage);
-        if (selectedIpsObject instanceof ITableStructure) {
-            getPmo().setSelectedStructure((ITableStructure)selectedIpsObject);
+        if (selectedIpsObject instanceof ITableStructure tableStructure) {
+            getPmo().setSelectedStructure(tableStructure);
         } else if (selectedIpsObject instanceof ITableContents tableContent) {
             getPmo().setSelectedStructure(tableContent.findTableStructure(tableContent.getIpsProject()));
         }

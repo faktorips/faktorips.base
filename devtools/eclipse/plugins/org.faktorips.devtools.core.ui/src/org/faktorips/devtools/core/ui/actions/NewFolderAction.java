@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * is possible to create subfolders (subpackages) by specifying a path separated with dots (".").
  * This action will then create the folder defined by the path and all parent folders/packages if
  * they have not been existing yet.
- * 
+ *
  * @author Thorsten Guenther
  * @author Stefan Widmaier
  */
@@ -78,14 +78,12 @@ public class NewFolderAction extends IpsAction {
         if (selected == null) {
             return null;
         }
-        IResource res = null;
-        if (selected instanceof IIpsProject) {
-            res = ((IIpsProject)selected).getProject().unwrap();
-        } else if (selected instanceof IIpsElement) {
-            res = ((IIpsElement)selected).getEnclosingResource().unwrap();
-        } else if (selected instanceof IResource) {
-            res = (IResource)selected;
-        }
+        IResource res = switch (selected) {
+            case IIpsProject ipsProject -> ipsProject.getProject().unwrap();
+            case IIpsElement ipsElement -> ipsElement.getEnclosingResource().unwrap();
+            case IResource resource -> resource;
+            default -> null;
+        };
         // search for next folder
         while (res != null && !(res instanceof IContainer)) {
             res = res.getParent();
@@ -145,7 +143,7 @@ public class NewFolderAction extends IpsAction {
 
     /**
      * Checks that the entered name does not result in an existing folder.
-     * 
+     *
      * @author Thorsten Guenther
      * @author Stefan Widmaier
      */

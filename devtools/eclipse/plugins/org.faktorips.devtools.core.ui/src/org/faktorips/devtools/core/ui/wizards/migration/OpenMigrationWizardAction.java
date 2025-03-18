@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -77,13 +77,13 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
             preSelected = new ArrayList<>();
             IStructuredSelection sel = (IStructuredSelection)selection;
             for (Object selected : sel) {
-                if (selected instanceof IJavaProject) {
-                    IProject javaProject = ((IJavaProject)selected).getProject();
-                    IIpsProject project = IIpsModel.get()
-                            .getIpsProject(Wrappers.wrap(javaProject).as(AProject.class));
-                    addPreselection(project);
-                } else if (selected instanceof IIpsProject) {
-                    addPreselection((IIpsProject)selected);
+                if (selected instanceof IJavaProject javaProject) {
+                    IProject project = javaProject.getProject();
+                    IIpsProject ipsProject = IIpsModel.get()
+                            .getIpsProject(Wrappers.wrap(project).as(AProject.class));
+                    addPreselection(ipsProject);
+                } else if (selected instanceof IIpsProject ipsProject) {
+                    addPreselection(ipsProject);
                 }
             }
         }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -127,7 +127,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     /**
      * Creates a <code>ModelExplorerContextMenuBuilder</code>.
-     * 
+     *
      */
     public ModelExplorerContextMenuBuilder(ModelExplorer modelExplorer, ModelExplorerConfiguration modelExplorerConfig,
             IViewSite viewSite, IWorkbenchPartSite workbenchPartSite, TreeViewer treeViewer) {
@@ -338,12 +338,11 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createRefreshAction(IMenuManager manager, Object selected) {
-        boolean open = false;
-        if (selected instanceof IIpsElement) {
-            open = ((IProject)((IIpsElement)selected).getIpsProject().getProject().unwrap()).isOpen();
-        } else if (selected instanceof IResource) {
-            open = ((IResource)selected).getProject().isOpen();
-        }
+        boolean open = switch (selected) {
+            case IIpsElement element -> ((IProject)element.getIpsProject().getProject().unwrap()).isOpen();
+            case IResource resource -> resource.getProject().isOpen();
+            default -> false;
+        };
         if (open) {
             manager.add(refresh);
             refresh.setEnabled(true);
@@ -351,15 +350,12 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     private IIpsPackageFragmentRoot getPackageFragmentRoot(Object object) {
-        IIpsPackageFragmentRoot root = null;
-        if (object instanceof IIpsObject) {
-            root = ((IIpsObject)object).getIpsPackageFragment().getRoot();
-        } else if (object instanceof IIpsPackageFragment) {
-            root = ((IIpsPackageFragment)object).getRoot();
-        } else if (object instanceof IIpsPackageFragmentRoot) {
-            root = (IIpsPackageFragmentRoot)object;
-        }
-        return root;
+        return switch (object) {
+            case IIpsObject ipsObject -> ipsObject.getIpsPackageFragment().getRoot();
+            case IIpsPackageFragment packageFragment -> packageFragment.getRoot();
+            case IIpsPackageFragmentRoot root -> root;
+            default -> null;
+        };
     }
 
     private boolean isRootArchive(Object object) {

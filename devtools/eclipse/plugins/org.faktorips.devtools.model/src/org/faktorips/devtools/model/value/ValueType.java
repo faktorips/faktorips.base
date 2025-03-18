@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,7 @@ import org.faktorips.devtools.model.internal.value.StringValue;
 
 /**
  * Defines enum types for the {@link IValue}
- * 
+ *
  * @author frank
  * @since 3.9
  */
@@ -30,20 +30,17 @@ public enum ValueType {
      * method returns the {@link ValueType} {@link #INTERNATIONAL_STRING}. if value is {@code null}
      * {@link ValueType} is {@link #STRING}. Other implementations of {@link IValue} throw an
      * {@link IllegalArgumentException}
-     * 
+     *
      * @param value the IValue
      * @throws IllegalArgumentException if {@link IValue} is not supported
      */
     public static ValueType getValueType(IValue<?> value) {
-        if (value == null) {
-            return STRING;
-        }
-        if (value instanceof StringValue) {
-            return STRING;
-        } else if (value instanceof InternationalStringValue) {
-            return INTERNATIONAL_STRING;
-        }
-        throw new IllegalArgumentException("IValue-type not supported: " + value); //$NON-NLS-1$
+        return switch (value) {
+            case null -> STRING;
+            case StringValue $ -> STRING;
+            case InternationalStringValue $ -> INTERNATIONAL_STRING;
+            default -> throw new IllegalArgumentException("IValue-type not supported: " + value); //$NON-NLS-1$
+        };
     }
 
 }

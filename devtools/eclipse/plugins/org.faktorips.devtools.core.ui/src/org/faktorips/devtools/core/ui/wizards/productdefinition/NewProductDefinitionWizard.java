@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -57,7 +57,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     /**
      * Getting the dialog ID. The id should never change and identifies the wizard. It is used to
      * load the dialog settings.
-     * 
+     *
      * @return the id string of this dialog
      */
     @Override
@@ -76,17 +76,14 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
             Object element = selection.getFirstElement();
             if (element instanceof IAdaptable adaptableObject) {
                 IIpsElement ipsElement = adaptableObject.getAdapter(IIpsElement.class);
-                if (ipsElement instanceof IIpsPackageFragmentRoot ipsPackageRoot) {
-                    initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
-                } else if (ipsElement instanceof IIpsPackageFragment packageFragment) {
-                    initDefaults(packageFragment, null);
-                } else if (ipsElement instanceof IIpsObject ipsObject) {
-                    initDefaults(ipsObject.getIpsPackageFragment(), ipsObject);
-                } else if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
-                    IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
-                    initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
-                } else {
-                    initFallback(adaptableObject);
+                switch (ipsElement) {
+                    case IIpsPackageFragmentRoot ipsPackageRoot -> initDefaults(
+                            ipsPackageRoot.getDefaultIpsPackageFragment(), null);
+                    case IIpsPackageFragment packageFragment -> initDefaults(packageFragment, null);
+                    case IIpsObject ipsObject -> initDefaults(ipsObject.getIpsPackageFragment(), ipsObject);
+                    case IIpsSrcFile ipsSrcFile -> initDefaults(ipsSrcFile.getIpsPackageFragment(),
+                            ipsSrcFile.getIpsObject());
+                    default -> initFallback(adaptableObject);
                 }
             }
         }
@@ -109,7 +106,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     /**
      * Initialize the defaults get from selection. The selectedPackage may never be null but may be
      * the default package of the default package fragment root. The selectedIpsObject may be null.
-     * 
+     *
      * @param selectedPackage The package of the selected context or default package.
      * @param selectedIpsObject the selected {@link IIpsObject}, may be null.
      */
@@ -175,7 +172,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
      * Loading some values from wizard settings.
      * <p>
      * May be extended by client.
-     * 
+     *
      * @param settings the dialog settings for this dialog
      */
     protected void loadDialogSettings(IDialogSettings settings) {
@@ -192,7 +189,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
      * Safe settings for the dialog to get them loaded when next opening this wizard.
      * <p>
      * May be extended by client.
-     * 
+     *
      * @param settings the settings you should safe your options to
      */
     protected void safeDialogSettings(IDialogSettings settings) {

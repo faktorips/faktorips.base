@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 
 /**
  * Provides common behavior for all type editors.
- * 
+ *
  * @author Peter Erzberger
  */
 public abstract class TypeEditor extends IpsObjectEditor {
@@ -26,10 +26,9 @@ public abstract class TypeEditor extends IpsObjectEditor {
     @Override
     protected final void addPagesForParsableSrcFile() throws PartInitException, IpsException {
         String sections = IpsPlugin.getDefault().getIpsPreferences().getSectionsInTypeEditors();
-        if (IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
-            addAllInOneSinglePage();
-        } else if (IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE.equals(sections)) {
-            addSplittedInMorePages();
+        switch (sections) {
+            case IpsPreferences.FOUR_SECTIONS_IN_TYPE_EDITOR_PAGE -> addAllInOneSinglePage();
+            case IpsPreferences.TWO_SECTIONS_IN_TYPE_EDITOR_PAGE -> addSplittedInMorePages();
         }
     }
 

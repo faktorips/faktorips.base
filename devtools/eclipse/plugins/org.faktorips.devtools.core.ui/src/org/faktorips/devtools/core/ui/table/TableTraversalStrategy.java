@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingComboField;
  * <code>SWT.TRAVERSE_ESCAPE</code>, <code>SWT.TRAVERSE_RETURN</code>,
  * <code>SWT.TRAVERSE_TAB_NEXT</code>, <code>SWT.TRAVERSE_TAB_PREVIOUS</code>,
  * <code>SWT.ARROW_DOWN</code>, <code>SWT.ARROW_UP</code> keys.
- * 
+ *
  * @author Stefan Widmaier, Alexander Weickmann
  */
 public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
@@ -35,18 +35,23 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     @Override
     public void keyTraversed(TraverseEvent e) {
-        if (e.detail == SWT.TRAVERSE_ESCAPE) {
-            getCellEditor().deactivate();
-            e.doit = false;
-        } else if (e.detail == SWT.TRAVERSE_RETURN) {
-            editNextRow();
-            e.doit = false;
-        } else if (e.detail == SWT.TRAVERSE_TAB_NEXT) {
-            editNextColumn();
-            e.doit = false;
-        } else if (e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
-            editPreviousColumn();
-            e.doit = false;
+        switch (e.detail) {
+            case SWT.TRAVERSE_ESCAPE -> {
+                getCellEditor().deactivate();
+                e.doit = false;
+            }
+            case SWT.TRAVERSE_RETURN -> {
+                editNextRow();
+                e.doit = false;
+            }
+            case SWT.TRAVERSE_TAB_NEXT -> {
+                editNextColumn();
+                e.doit = false;
+            }
+            case SWT.TRAVERSE_TAB_PREVIOUS -> {
+                editPreviousColumn();
+                e.doit = false;
+            }
         }
     }
 
@@ -196,7 +201,7 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
      * <p>
      * For optimization reasons this method only informs the table viewer of a cell edit if the cell
      * has changed.
-     * 
+     *
      * @param rowIndex The index of the table row that shall be edited.
      * @param columnIndex The index of the table column that shall be edited.
      */

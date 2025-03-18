@@ -293,16 +293,17 @@ public abstract class AbstractGeneratorModelNode {
     protected String getJavaClassName(Datatype datatype,
             boolean resolveGenerationNameIfApplicable,
             boolean forceImplementation) {
-        if (datatype instanceof IPolicyCmptType) {
-            return getJavaClassNameForPolicyCmptType(datatype, forceImplementation);
-        } else if (datatype instanceof IProductCmptType) {
-            return getJavaClassNameForProductCmptType(datatype, resolveGenerationNameIfApplicable, forceImplementation);
-        } else if (datatype.isVoid()) {
-            return "void";
-        } else {
-            DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
-            return addImport(datatypeHelper.getJavaClassName());
-        }
+        return switch (datatype) {
+            case IPolicyCmptType policyCmptType -> getJavaClassNameForPolicyCmptType(policyCmptType,
+                    forceImplementation);
+            case IProductCmptType productCmptType -> getJavaClassNameForProductCmptType(productCmptType,
+                    resolveGenerationNameIfApplicable, forceImplementation);
+            case Datatype d when d.isVoid() -> "void";
+            default -> {
+                DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
+                yield addImport(datatypeHelper.getJavaClassName());
+            }
+        };
     }
 
     private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean forceImplementation) {

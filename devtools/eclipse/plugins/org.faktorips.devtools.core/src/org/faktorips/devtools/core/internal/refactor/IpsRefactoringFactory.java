@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -61,26 +61,17 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
     @Override
     public IIpsProcessorBasedRefactoring createRenameRefactoring(IIpsElement ipsElement) {
-        IpsRenameProcessor ipsRenameProcessor = null;
-        if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
-            ipsRenameProcessor = new RenameEnumLiteralNameAttributeValueProcessor(
-                    (IEnumLiteralNameAttributeValue)ipsElement);
-        } else if (ipsElement instanceof IEnumAttribute) {
-            ipsRenameProcessor = new RenameEnumAttributeProcessor((IEnumAttribute)ipsElement);
-        } else if (ipsElement instanceof IAttribute) {
-            ipsRenameProcessor = new RenameAttributeProcessor((IAttribute)ipsElement);
-        } else if (ipsElement instanceof IAssociation) {
-            ipsRenameProcessor = new RenameAssociationProcessor((IAssociation)ipsElement);
-        } else if (ipsElement instanceof IIpsObject) {
-            ipsRenameProcessor = new RenameIpsObjectProcessor((IIpsObject)ipsElement);
-        } else if (ipsElement instanceof IIpsPackageFragment) {
-            ipsRenameProcessor = new RenameIpsPackageFragmentProcessor((IIpsPackageFragment)ipsElement);
-        } else if (ipsElement instanceof IValidationRule) {
-            ipsRenameProcessor = new RenameValidationRuleProcessor((IValidationRule)ipsElement);
-        } else {
-            return null;
-        }
-        return new IpsProcessorBasedRefactoring(ipsRenameProcessor);
+        IpsRenameProcessor ipsRenameProcessor = switch (ipsElement) {
+            case IEnumLiteralNameAttributeValue v -> new RenameEnumLiteralNameAttributeValueProcessor(v);
+            case IEnumAttribute a -> new RenameEnumAttributeProcessor(a);
+            case IAttribute a -> new RenameAttributeProcessor(a);
+            case IAssociation a -> new RenameAssociationProcessor(a);
+            case IIpsObject o -> new RenameIpsObjectProcessor(o);
+            case IIpsPackageFragment f -> new RenameIpsPackageFragmentProcessor(f);
+            case IValidationRule r -> new RenameValidationRuleProcessor(r);
+            default -> null;
+        };
+        return ipsRenameProcessor == null ? null : new IpsProcessorBasedRefactoring(ipsRenameProcessor);
     }
 
     @Override
@@ -99,15 +90,12 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
     @Override
     public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsObject) {
-            IpsMoveProcessor ipsMoveProcessor = new MoveIpsObjectProcessor((IIpsObject)ipsElement);
-            return new IpsProcessorBasedRefactoring(ipsMoveProcessor);
-        } else if (ipsElement instanceof IIpsPackageFragment) {
-            IpsMoveProcessor ipsMoveProcessor = new MoveIpsPackageFragmentProcessor((IIpsPackageFragment)ipsElement);
-            return new IpsProcessorBasedRefactoring(ipsMoveProcessor);
-        } else {
-            return null;
-        }
+        IpsMoveProcessor ipsMoveProcessor = switch (ipsElement) {
+            case IIpsObject o -> new MoveIpsObjectProcessor(o);
+            case IIpsPackageFragment f -> new MoveIpsPackageFragmentProcessor(f);
+            default -> null;
+        };
+        return ipsMoveProcessor == null ? null : new IpsProcessorBasedRefactoring(ipsMoveProcessor);
     }
 
     @Override
@@ -126,15 +114,12 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
 
     @Override
     public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart) {
-        IpsPullUpProcessor ipsPullUpProcessor = null;
-        if (ipsObjectPart instanceof IAttribute) {
-            ipsPullUpProcessor = new PullUpAttributeProcessor((IAttribute)ipsObjectPart);
-        } else if (ipsObjectPart instanceof IEnumAttribute) {
-            ipsPullUpProcessor = new PullUpEnumAttributeProcessor((IEnumAttribute)ipsObjectPart);
-        } else {
-            return null;
-        }
-        return new IpsProcessorBasedRefactoring(ipsPullUpProcessor);
+        IpsPullUpProcessor ipsPullUpProcessor = switch (ipsObjectPart) {
+            case IAttribute a -> new PullUpAttributeProcessor(a);
+            case IEnumAttribute ea -> new PullUpEnumAttributeProcessor(ea);
+            default -> null;
+        };
+        return ipsPullUpProcessor == null ? null : new IpsProcessorBasedRefactoring(ipsPullUpProcessor);
     }
 
     @Override

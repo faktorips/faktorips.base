@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.type.IType;
  * </ul>
  * Only creates constraining, matching and inverse associations if required and if they have not
  * been created yet.
- * 
+ *
  * @author widmaier
  */
 public class CreateConstrainingAssociationOperation {
@@ -42,7 +42,7 @@ public class CreateConstrainingAssociationOperation {
     /**
      * Asserts the given arguments and throws an {@link IllegalArgumentException} if types don't
      * match.
-     * 
+     *
      * @param sourceType the type to create a constraining association in. Must be the same class as
      *            the targetType (both {@link IPolicyCmptType} or both {@link IProductCmptType}.
      * @param constrainedAssociation the association to be constrained. Must be an
@@ -190,13 +190,11 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private IType findMatchingType(IType type) {
-        if (type instanceof IProductCmptType productCmptType) {
-            return productCmptType.findPolicyCmptType(getIpsProject());
-        } else if (type instanceof IPolicyCmptType policyCmptType) {
-            return policyCmptType.findProductCmptType(getIpsProject());
-        } else {
-            return null;
-        }
+        return switch (type) {
+            case IProductCmptType productCmptType -> productCmptType.findPolicyCmptType(getIpsProject());
+            case IPolicyCmptType policyCmptType -> policyCmptType.findProductCmptType(getIpsProject());
+            default -> null;
+        };
     }
 
     private boolean isMatchingAssociationRequired(IAssociation constrainingAssociation) {

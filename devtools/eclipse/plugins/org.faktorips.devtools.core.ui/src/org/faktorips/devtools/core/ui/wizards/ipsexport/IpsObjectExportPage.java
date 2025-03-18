@@ -110,17 +110,17 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     }
 
     protected IResource resolveResource(Object selection) throws JavaModelException {
-        if (selection instanceof IResource) {
-            return (IResource)selection;
-        } else if (selection instanceof IJavaElement) {
-            return ((IJavaElement)selection).getCorrespondingResource();
-        } else if (selection instanceof IIpsElement ipsElement) {
-            if (ipsElement instanceof IIpsObject) {
-                selectedIpsSrcFile = ((IIpsObject)ipsElement).getIpsSrcFile();
+        return switch (selection) {
+            case IResource resource -> resource;
+            case IJavaElement javaElement -> javaElement.getCorrespondingResource();
+            case IIpsElement ipsElement -> {
+                if (ipsElement instanceof IIpsObject) {
+                    selectedIpsSrcFile = ((IIpsObject)ipsElement).getIpsSrcFile();
+                }
+                yield ipsElement.getEnclosingResource().unwrap();
             }
-            return ipsElement.getEnclosingResource().unwrap();
-        }
-        return null;
+            default -> null;
+        };
     }
 
     /**
@@ -177,12 +177,11 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     }
 
     protected IIpsSrcFile getIpsSrcFileFromIpsElement(IIpsElement ipsElement) {
-        if (ipsElement instanceof IpsSrcFileExternal external) {
-            return external.getMutableIpsSrcFile();
-        } else if (ipsElement instanceof IIpsSrcFile ipssrcFile) {
-            return ipssrcFile;
-        }
-        return null;
+        return switch (ipsElement) {
+            case IpsSrcFileExternal external -> external.getMutableIpsSrcFile();
+            case IIpsSrcFile ipssrcFile -> ipssrcFile;
+            default -> null;
+        };
     }
 
     public Combo getFileFormatControl() {

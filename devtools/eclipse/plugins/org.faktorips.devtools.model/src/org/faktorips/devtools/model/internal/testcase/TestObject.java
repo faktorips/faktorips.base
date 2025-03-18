@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 
 /**
  * Test object class. Superclass of all test objects for a specific test case.
- * 
+ *
  * @author Joerg Ortmann
  */
 public abstract class TestObject extends IpsObjectPart implements ITestObject {
@@ -50,17 +50,16 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         TestCase testCase = (TestCase)root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt) {
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            } else if (this instanceof ITestPolicyCmptLink) {
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
+            if (this instanceof ITestPolicyCmpt testPolicyCmpt) {
+                param = testCase.findTestPolicyCmptTypeParameter(testPolicyCmpt, getIpsProject());
+            } else if (this instanceof ITestPolicyCmptLink link) {
+                param = testCase.findTestPolicyCmptTypeParameter(link, getIpsProject());
             }
             if (param != null) {
                 return testCase.isTypeOrDefault(param, TestParameterType.INPUT);
             }
             // CSOFF: Empty Statement
         } catch (IpsException e) {
-            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
         // CSON: Empty Statement
@@ -69,15 +68,14 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
 
     @Override
     public boolean isExpectedResult() {
-        // TODO: mit Joerg klaeren
         TestObject root = (TestObject)getRoot();
         TestCase testCase = (TestCase)root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt) {
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            } else if (this instanceof ITestPolicyCmptLink) {
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
+            if (this instanceof ITestPolicyCmpt testPolicyCmpt) {
+                param = testCase.findTestPolicyCmptTypeParameter(testPolicyCmpt, getIpsProject());
+            } else if (this instanceof ITestPolicyCmptLink link) {
+                param = testCase.findTestPolicyCmptTypeParameter(link, getIpsProject());
             }
 
             if (param != null) {
@@ -85,7 +83,6 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
             }
             // CSOFF: Empty Statement
         } catch (IpsException e) {
-            // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exception check type of root
         }
         // CSON: Empty Statement
@@ -98,10 +95,10 @@ public abstract class TestObject extends IpsObjectPart implements ITestObject {
         TestCase testCase = (TestCase)root.getParent();
         try {
             ITestParameter param = null;
-            if (this instanceof ITestPolicyCmpt) {
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmpt)this, getIpsProject());
-            } else if (this instanceof ITestPolicyCmptLink) {
-                param = testCase.findTestPolicyCmptTypeParameter((ITestPolicyCmptLink)this, getIpsProject());
+            if (this instanceof ITestPolicyCmpt testPolicyCmpt) {
+                param = testCase.findTestPolicyCmptTypeParameter(testPolicyCmpt, getIpsProject());
+            } else if (this instanceof ITestPolicyCmptLink link) {
+                param = testCase.findTestPolicyCmptTypeParameter(link, getIpsProject());
             }
 
             if (param != null) {

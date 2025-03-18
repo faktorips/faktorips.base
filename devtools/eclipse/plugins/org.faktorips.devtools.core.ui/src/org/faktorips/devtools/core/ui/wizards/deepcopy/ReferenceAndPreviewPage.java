@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -38,7 +38,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeSt
 /**
  * Page to preview the changes to the names of copied products and to switch between a copy or a
  * reference.
- * 
+ *
  */
 public class ReferenceAndPreviewPage extends WizardPage {
 
@@ -56,9 +56,9 @@ public class ReferenceAndPreviewPage extends WizardPage {
     /**
      * Create a new page to show the previously selected products with new names and allow the user
      * to choose between copy and reference, select the target package, search- and replace-pattern.
-     * 
+     *
      * @param type The type used to create the <code>DeepCopyWizard</code>.
-     * 
+     *
      * @throws IllegalArgumentException if the given type is neither
      *             DeepCopyWizard.TYPE_COPY_PRODUCT nor DeepCopyWizard.TYPE_NEW_VERSION.
      */
@@ -78,7 +78,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
 
     /**
      * @param type The type of the wizard displaying this page.
-     * 
+     *
      * @return The title for this page - which depends on the given type.
      */
     private static String getTitle(int type) {
@@ -136,18 +136,20 @@ public class ReferenceAndPreviewPage extends WizardPage {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
-            if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
-                String productCmptTypeName;
-                productCmptTypeName = IIpsModel.get().getMultiLanguageSupport()
-                        .getLocalizedLabel(getStructure().getRoot().getProductCmpt()
-                                .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
-                setDescription(
-                        NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy, productCmptTypeName));
-            } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
-                String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
-                        .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
-                setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewGeneration,
-                        versionConceptNameSingular));
+            switch (type) {
+                case DeepCopyWizard.TYPE_COPY_PRODUCT -> {
+                    String productCmptTypeName = IIpsModel.get().getMultiLanguageSupport()
+                            .getLocalizedLabel(getStructure().getRoot().getProductCmpt()
+                                    .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+                    setDescription(
+                            NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy, productCmptTypeName));
+                }
+                case DeepCopyWizard.TYPE_NEW_VERSION -> {
+                    String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
+                            .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();
+                    setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewGeneration,
+                            versionConceptNameSingular));
+                }
             }
 
             try {
@@ -195,7 +197,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
     /**
      * Does only show the nodes which where selected on the source page. As input, an array of all
      * the selected nodes of the source page is expected.
-     * 
+     *
      */
     private class ContentProvider extends DeepCopyContentProvider {
 

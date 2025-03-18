@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -51,7 +51,7 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
  * TextMergeViewer retrieve the document corresponding to this product component and the
  * (text-)range the compareitem represents in the document. The TextMergeViewer uses this
  * information to display differences in a way similar to the java source compare.
- * 
+ *
  * @see org.eclipse.compare.contentmergeviewer.IDocumentRange
  * @author Stefan Widmaier, FaktorZehn AG
  */
@@ -75,7 +75,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * A CompareItem representing a product component or one of its generations is processed
      * separately in
      * {@link #initPropertyValueContainerContentString(IProductPartsContainer, StringBuilder, int)}.
-     * 
+     *
      * @see #getContentString()
      */
     @Override
@@ -355,30 +355,20 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     @Override
     protected String initContentString() {
         StringBuilder sb = new StringBuilder();
-        if (getIpsElement() == null) {
-            return sb.toString();
-        }
-        if (getIpsElement() instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)getIpsElement();
-            initContentStringForProductCmptLink(sb, link);
-        } else if (getIpsElement() instanceof IConfiguredDefault) {
-            IConfiguredDefault configuredDefault = (IConfiguredDefault)getIpsElement();
-            initContentString(sb, configuredDefault);
-        } else if (getIpsElement() instanceof IConfiguredValueSet) {
-            IConfiguredValueSet configValueSet = (IConfiguredValueSet)getIpsElement();
-            initContentString(sb, configValueSet);
-        } else if (getIpsElement() instanceof IValidationRuleConfig) {
-            IValidationRuleConfig rule = (IValidationRuleConfig)getIpsElement();
-            initContentStringForValidationRuleConfig(sb, rule);
-        } else if (getIpsElement() instanceof IPropertyValue) {
-            IPropertyValue value = (IPropertyValue)getIpsElement();
-            initContentStringForPropertyValue(sb, value);
-        } else if (getIpsElement() instanceof IIpsObjectGeneration) {
-            IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-            initContentStringForGeneration(sb, gen);
-        } else if (getIpsElement() instanceof IProductCmpt) {
-            IProductCmpt product = (IProductCmpt)getIpsElement();
-            initContentStringForProductCmpt(sb, product);
+        switch (getIpsElement()) {
+            case null -> {
+                // nothing to add
+            }
+            case IProductCmptLink link -> initContentStringForProductCmptLink(sb, link);
+            case IConfiguredDefault configuredDefault -> initContentString(sb, configuredDefault);
+            case IConfiguredValueSet configValueSet -> initContentString(sb, configValueSet);
+            case IValidationRuleConfig rule -> initContentStringForValidationRuleConfig(sb, rule);
+            case IPropertyValue value -> initContentStringForPropertyValue(sb, value);
+            case IIpsObjectGeneration gen -> initContentStringForGeneration(sb, gen);
+            case IProductCmpt product -> initContentStringForProductCmpt(sb, product);
+            default -> {
+                // nothing to add
+            }
         }
         return sb.toString();
     }
@@ -471,44 +461,28 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     // CSOFF: CyclomaticComplexityCheck
     private void initNameIntenal(StringBuilder sb) {
-        if (getIpsElement() instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK).append(QUOTE)
-                    .append(link.getAssociation()).append(QUOTE);
-        } else if (getIpsElement() instanceof IAttributeValue) {
-            IAttributeValue attrValue = (IAttributeValue)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK).append(QUOTE)
-                    .append(attrValue.getPropertyName()).append(QUOTE);
-        } else if (getIpsElement() instanceof IConfiguredDefault) {
-            IConfiguredDefault configDefault = (IConfiguredDefault)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_Default).append(COLON_BLANK).append(QUOTE)
-                    .append(configDefault.getPropertyName()).append(QUOTE);
-        } else if (getIpsElement() instanceof IConfiguredValueSet) {
-            IConfiguredValueSet configValueSet = (IConfiguredValueSet)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_ValueSet).append(COLON_BLANK).append(QUOTE)
-                    .append(configValueSet.getPropertyName()).append(QUOTE);
-        } else if (getIpsElement() instanceof IFormula) {
-            IFormula formula = (IFormula)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK).append(QUOTE)
-                    .append(formula.getPropertyName()).append(QUOTE);
-        } else if (getIpsElement() instanceof ITableContentUsage) {
-            ITableContentUsage tableUsage = (ITableContentUsage)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_TableContentsLabel).append(COLON_BLANK).append(QUOTE)
-                    .append(tableUsage.getPropertyName()).append(QUOTE);
-        } else if (getIpsElement() instanceof IValidationRuleConfig) {
-            IValidationRuleConfig vRuleConfig = (IValidationRuleConfig)getIpsElement();
-            sb.append(Messages.ProductCmptCompareItem_RuleLabel).append(COLON_BLANK).append(QUOTE)
-                    .append(vRuleConfig.getPropertyName()).append(QUOTE);
-        } else if (getIpsElement() instanceof IIpsObjectGeneration) {
-            IIpsObjectGeneration gen = (IIpsObjectGeneration)getIpsElement();
-            sb.append(getChangingNamingConventionGenerationString()).append(COLON_BLANK).append(QUOTE)
-                    .append(getGenerationDateText(gen)).append(QUOTE);
-        } else if (getIpsElement() instanceof IProductCmpt) {
-            IProductCmpt product = (IProductCmpt)getIpsElement();
-            sb.append(product.getName());
-        } else if (getIpsElement() instanceof IIpsSrcFile) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)getIpsElement();
-            sb.append(getFileName(srcFile));
+        switch (getIpsElement()) {
+            case IProductCmptLink link -> sb.append(Messages.ProductCmptCompareItem_Relation).append(COLON_BLANK)
+                    .append(QUOTE).append(link.getAssociation()).append(QUOTE);
+            case IAttributeValue attrValue -> sb.append(Messages.ProductCmptCompareItem_Attribute).append(COLON_BLANK)
+                    .append(QUOTE).append(attrValue.getPropertyName()).append(QUOTE);
+            case IConfiguredDefault configDefault -> sb.append(Messages.ProductCmptCompareItem_Default)
+                    .append(COLON_BLANK).append(QUOTE).append(configDefault.getPropertyName()).append(QUOTE);
+            case IConfiguredValueSet configValueSet -> sb.append(Messages.ProductCmptCompareItem_ValueSet)
+                    .append(COLON_BLANK).append(QUOTE).append(configValueSet.getPropertyName()).append(QUOTE);
+            case IFormula formula -> sb.append(Messages.ProductCmptCompareItem_Formula).append(COLON_BLANK)
+                    .append(QUOTE).append(formula.getPropertyName()).append(QUOTE);
+            case ITableContentUsage tableUsage -> sb.append(Messages.ProductCmptCompareItem_TableContentsLabel)
+                    .append(COLON_BLANK).append(QUOTE).append(tableUsage.getPropertyName()).append(QUOTE);
+            case IValidationRuleConfig vRuleConfig -> sb.append(Messages.ProductCmptCompareItem_RuleLabel)
+                    .append(COLON_BLANK).append(QUOTE).append(vRuleConfig.getPropertyName()).append(QUOTE);
+            case IIpsObjectGeneration gen -> sb.append(getChangingNamingConventionGenerationString())
+                    .append(COLON_BLANK).append(QUOTE).append(getGenerationDateText(gen)).append(QUOTE);
+            case IProductCmpt product -> sb.append(product.getName());
+            case IIpsSrcFile srcFile -> sb.append(getFileName(srcFile));
+            default -> {
+                // nothing to add
+            }
         }
     }
 
@@ -545,7 +519,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      * for this CompareItem, as returned by getDocument(), is initialized.
      * <p>
      * initDocumentRange() has effect only if this CompareItem is the root of its structure.
-     * 
+     *
      */
     @Override
     public void init() {
@@ -558,7 +532,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     /**
      * Sorts the list of child <code>ProductCmptCompareItem</code>s using the
      * <code>ProductCmptCompareItemComparator</code>.
-     * 
+     *
      * @see ProductCmptCompareItemComparator
      */
     private void sortChildren() {
@@ -570,8 +544,8 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     @Override
     protected boolean isEqualIpsObjectPart(IIpsObjectPart part1, IIpsObjectPart part2) {
-        if (part1 instanceof IPropertyValue && part2 instanceof IPropertyValue) {
-            return ((IPropertyValue)part1).getPropertyName().equals(((IPropertyValue)part2).getPropertyName());
+        if (part1 instanceof IPropertyValue value1 && part2 instanceof IPropertyValue value2) {
+            return value1.getPropertyName().equals(value2.getPropertyName());
         } else if (part1 instanceof IProductCmptLink link1 && part2 instanceof IProductCmptLink link2) {
             return link1.getAssociation().equals(link2.getAssociation()) && link1.getTarget().equals(link2.getTarget());
         }
@@ -587,14 +561,11 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
 
     @Override
     public int hashCode() {
-        IIpsElement ipsElement = getIpsElement();
-        if (ipsElement instanceof IPropertyValue) {
-            return ((IPropertyValue)ipsElement).getPropertyName().hashCode();
-        } else if (ipsElement instanceof IProductCmptLink) {
-            return ((IProductCmptLink)ipsElement).getAssociation().hashCode();
-        } else {
-            return super.hashCode();
-        }
+        return switch (getIpsElement()) {
+            case IPropertyValue value -> value.getPropertyName().hashCode();
+            case IProductCmptLink link -> link.getAssociation().hashCode();
+            default -> super.hashCode();
+        };
     }
 
     @Override

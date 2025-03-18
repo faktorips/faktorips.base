@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.values.DateUtil;
 
 /**
  * Converter for the GregorianCalendarDatatype.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class GregorianCalendarValueConverter extends AbstractValueConverter {
@@ -36,22 +36,25 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
         GregorianCalendarDatatype datatype = (GregorianCalendarDatatype)getSupportedDatatype();
         GregorianCalendar cal = new GregorianCalendar();
         boolean error;
-        if (externalDataValue instanceof Date) {
-            cal.setTime((Date)externalDataValue);
-            error = false;
-        } else if (externalDataValue instanceof Number) {
-            Date date = new Date(((Number)externalDataValue).longValue());
-            cal.setTime(date);
-            error = false;
-        } else if (externalDataValue instanceof String) {
-            try {
-                cal = DateUtil.parseIsoDateStringToGregorianCalendar((String)externalDataValue);
+        switch (externalDataValue) {
+            case Date date -> {
+                cal.setTime(date);
                 error = false;
-            } catch (IllegalArgumentException ignored) {
-                error = true;
             }
-        } else {
-            error = false;
+            case Number number -> {
+                Date date = new Date(number.longValue());
+                cal.setTime(date);
+                error = false;
+            }
+            case String string -> {
+                try {
+                    cal = DateUtil.parseIsoDateStringToGregorianCalendar(string);
+                    error = false;
+                } catch (IllegalArgumentException ignored) {
+                    error = true;
+                }
+            }
+            default -> error = false;
         }
 
         if (error) {

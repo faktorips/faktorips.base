@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,9 +32,9 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
  * types. New parts of these property types will then automatically be referenced by the
  * corresponding <em>default</em> {@link IProductCmptCategory}. Of course, the parts can still be
  * subsequently moved to another {@link IProductCmptCategory}.
- * 
+ *
  * @since 3.6
- * 
+ *
  * @see IProductCmptProperty
  * @see ProductCmptPropertyType
  */
@@ -115,7 +115,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
     /**
      * Sets the name of this {@link IProductCmptCategory}.
-     * 
+     *
      * @see #getName()
      */
     void setName(String name);
@@ -128,13 +128,13 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * <p>
      * The product component properties are sorted according to the order prescribed in the
      * assigning product component types.
-     * 
+     *
      * @param contextType the {@link IProductCmptType} to start the search from. Product component
      *            properties assigned by product component types below the context type are not
      *            returned
      * @param searchSupertypeHierarchy flag indicating whether assignments made in the supertype
      *            hierarchy shall be searched as well
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
@@ -152,11 +152,11 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * <p>
      * The supertype hierarchy of this category's {@link IProductCmptType} is considered while
      * searching for categories.
-     * 
+     *
      * @param property the {@link IProductCmptProperty} to check for containment
      * @param contextType the {@link IProductCmptType} to start the search from. Properties assigned
      *            by product component types below the context type are not considered
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     boolean findIsContainingProperty(IProductCmptProperty property,
@@ -196,7 +196,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     /**
      * Sets whether this {@link IProductCmptCategory} is marked as default category for formula
      * signature definitions.
-     * 
+     *
      * @see #isDefaultForFormulaSignatureDefinitions()
      */
     void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions);
@@ -214,7 +214,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
      * for product relevant policy component type attributes.
-     * 
+     *
      * @see #isDefaultForPolicyCmptTypeAttributes()
      */
     void setDefaultForPolicyCmptTypeAttributes(boolean defaultForPolicyCmptTypeAttributes);
@@ -232,7 +232,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
      * for product component type attributes.
-     * 
+     *
      * @see #isDefaultForProductCmptTypeAttributes()
      */
     void setDefaultForProductCmptTypeAttributes(boolean defaultForProductCmptTypeAttributes);
@@ -250,7 +250,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
      * for table structure usages.
-     * 
+     *
      * @see #isDefaultForTableStructureUsages()
      */
     void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
@@ -268,7 +268,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
      * for configurable validation rules.
-     * 
+     *
      * @see #isDefaultForValidationRules()
      */
     void setDefaultForValidationRules(boolean defaultForValidationRules);
@@ -278,14 +278,14 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * <p>
      * The {@link Position} gives an indication of where this {@link IProductCmptCategory} is placed
      * by the user interface.
-     * 
+     *
      * @see Position
      */
     Position getPosition();
 
     /**
      * Sets the {@link Position} of this {@link IProductCmptCategory}.
-     * 
+     *
      * @see #getPosition()
      * @see Position
      */
@@ -308,7 +308,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * If one of the indexes is 0 (the first object), no property is moved up. If one of the indexes
      * is the number objects - 1 (the last object), no property is moved down. Returns true if a
      * move was actually performed.
-     * 
+     *
      * @param indexes the indexes identifying the product component properties to be moved
      * @param up flag indicating whether to move up or down
      * @param contextType the {@link IProductCmptType} the move is performed for. The provided
@@ -316,12 +316,12 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      *            properties from supertypes occupy the lesser indexes. Properties assigned to this
      *            {@link IProductCmptCategory} by product component types below the context type are
      *            ignored
-     * 
+     *
      * @return the new indexes of the moved properties
-     * 
+     *
      * @throws IndexOutOfBoundsException if not all provided indexes identify properties assigned to
      *             this {@link IProductCmptCategory} by the context type
-     * 
+     *
      * @throws IpsException if an error occurs while searching the supertype hierarchy or while
      *             searching for policy component types
      */
@@ -336,7 +336,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * properties cannot be computed, the operation will fail. In this case, false is returned.
      * <p>
      * Note that only a single <em>whole content changed</em> event will be fired by this operation.
-     * 
+     *
      * @param property the {@link IProductCmptProperty} to insert into this
      *            {@link IProductCmptCategory}
      * @param targetProperty the {@link IProductCmptProperty} to be inserted will be positioned just
@@ -344,9 +344,9 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      *            null - in this case the {@link IProductCmptProperty} is inserted at the end
      * @param above flag indicating whether to insert the {@link IProductCmptProperty} above or
      *            below the target {@link IProductCmptProperty}
-     * 
+     *
      * @return true if the operation was successful, false if not
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the indices of the currently
      *             assigned properties or while moving properties
      */

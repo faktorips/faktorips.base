@@ -89,8 +89,8 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IStructuredSelection selection = (IStructuredSelection)HandlerUtil.getCurrentSelectionChecked(event);
-        Clipboard clipboard = new Clipboard(HandlerUtil.getActiveShellChecked(event).getDisplay());
-        pasteFromClipboard(selection, clipboard, HandlerUtil.getActiveShellChecked(event), true);
+        Clipboard clip = new Clipboard(HandlerUtil.getActiveShellChecked(event).getDisplay());
+        pasteFromClipboard(selection, clip, HandlerUtil.getActiveShellChecked(event), true);
         return null;
     }
 
@@ -106,25 +106,26 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             return;
         }
         if (adaptable.getAdapter(IIpsElement.class) != null) {
-            IIpsElement selected = adaptable.getAdapter(IIpsElement.class);
-            if (selected instanceof IIpsSrcFile) {
-                IIpsObject ipsObject = ((IIpsSrcFile)selected).getIpsObject();
-                if (ipsObject instanceof IpsObjectPartContainer ipsObjectPartContainer) {
-                    paste(ipsObjectPartContainer);
-                }
-            } else if (selected instanceof IpsObjectPartContainer) {
-                paste((IpsObjectPartContainer)selected);
-            } else if (selected instanceof IIpsProject) {
-                paste((IProject)((IIpsProject)selected).getProject().unwrap());
-            } else if (selected instanceof IIpsPackageFragmentRoot) {
-                paste(((IIpsPackageFragmentRoot)selected).getDefaultIpsPackageFragment());
-            } else if (selected instanceof IIpsPackageFragment) {
-                paste((IIpsPackageFragment)selected);
-            }
+            paste(adaptable);
         } else if (adaptable.getAdapter(IResource.class) != null) {
             IResource selected = adaptable.getAdapter(IResource.class);
             if (selected instanceof IContainer) {
                 paste((IContainer)selected);
+            }
+        }
+    }
+
+    private void paste(IAdaptable adaptable) {
+        switch (adaptable.getAdapter(IIpsElement.class)) {
+            case IIpsSrcFile ipsSrcFile when ipsSrcFile
+                    .getIpsObject() instanceof IpsObjectPartContainer ipsObjectPartContainer -> paste(
+                            ipsObjectPartContainer);
+            case IpsObjectPartContainer container -> paste(container);
+            case IIpsProject ipsProject -> paste((IProject)ipsProject.getProject().unwrap());
+            case IIpsPackageFragmentRoot root -> paste(root.getDefaultIpsPackageFragment());
+            case IIpsPackageFragment packageFragment -> paste(packageFragment);
+            default -> {
+                // nothing to paste
             }
         }
     }

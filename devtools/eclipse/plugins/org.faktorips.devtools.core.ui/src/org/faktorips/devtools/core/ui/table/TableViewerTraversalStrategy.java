@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
  * <code>SWT.TRAVERSE_ESCAPE</code>, <code>SWT.TRAVERSE_RETURN</code>,
  * <code>SWT.TRAVERSE_TAB_NEXT</code>, <code>SWT.TRAVERSE_TAB_PREVIOUS</code>,
  * <code>SWT.ARROW_DOWN</code>, <code>SWT.ARROW_UP</code> keys.
- * 
+ *
  * @author Stefan Widmaier, Alexander Weickmann
  */
 public class TableViewerTraversalStrategy extends TableTraversalStrategy {
@@ -93,7 +93,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * <li>If this <code>TableCellEditor</code> is configured to not create rows the last cell of
      * the last row of the table is edited.
      * </ul>
-     * 
+     *
      */
     @Override
     protected void editNextColumn() {
@@ -216,7 +216,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * <p>
      * For optimization reasons this method only informs the table viewer of a cell edit if the cell
      * has changed.
-     * 
+     *
      * @param rowIndex The index of the table row that shall be edited.
      * @param columnIndex The index of the table column that shall be edited.
      */
@@ -246,17 +246,15 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * Does nothing otherwise.
      */
     private Object appendTableRow() {
-        if (tableViewer.getInput() instanceof ITableContents) {
-            ITableContents tableContents = (ITableContents)tableViewer.getInput();
-            IRow newRow = tableContents.getTableRows().newRow();
-            tableViewer.refresh();
-            return newRow;
-        } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
-            IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
-            return enumValueContainer.newEnumValue();
-        } else {
-            return null;
-        }
+        return switch (tableViewer.getInput()) {
+            case ITableContents tableContents -> {
+                IRow newRow = tableContents.getTableRows().newRow();
+                tableViewer.refresh();
+                yield newRow;
+            }
+            case IEnumValueContainer enumValueContainer -> enumValueContainer.newEnumValue();
+            default -> null;
+        };
     }
 
     /** Returns the index of the row that is currently being edited. */
@@ -320,7 +318,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
      * If <code>false</code> is given this <code>TableCellEditor</code> will not create any rows and
      * simply edit the last cell of the table. On the other hand, if <code>true</code> is given a
      * new row is created when needed.
-     * 
+     *
      * @param rowCreating Flag indicating whether new rows shall be created by this cell editor when
      *            the need to do so arises.
      */

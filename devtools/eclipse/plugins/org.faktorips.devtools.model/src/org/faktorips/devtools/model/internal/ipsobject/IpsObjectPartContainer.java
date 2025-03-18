@@ -585,15 +585,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param part The {@link IIpsObjectPart} to add to this container.
      */
     protected final boolean addPart(IIpsObjectPart part) {
-        if (part instanceof ILabel) {
-            labels.add((ILabel)part);
-            return true;
-
-        } else if (part instanceof IDescription) {
-            descriptions.add((IDescription)part);
-            return true;
-        }
-        return addPartThis(part);
+        return switch (part) {
+            case ILabel label -> labels.add(label);
+            case IDescription description -> descriptions.add(description);
+            default -> addPartThis(part);
+        };
     }
 
     /**
@@ -620,15 +616,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param part The {@link IIpsObjectPart} to remove from this container.
      */
     protected final boolean removePart(IIpsObjectPart part) {
-        if (part instanceof ILabel) {
-            labels.remove(part);
-            return true;
-
-        } else if (part instanceof IDescription) {
-            descriptions.remove(part);
-            return true;
-        }
-        return removePartThis(part);
+        return switch (part) {
+            case ILabel label -> labels.remove(label);
+            case IDescription description -> descriptions.remove(description);
+            default -> removePartThis(part);
+        };
     }
 
     /**
@@ -648,20 +640,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     protected final IIpsObjectPart newPart(Element xmlTag, String id) {
         String nodeName = xmlTag.getNodeName();
-        if (nodeName.equals(ILabel.XML_TAG_NAME)) {
-            if (this instanceof ILabeledElement) {
-                return newLabel(id);
-            } else {
-                return null;
-            }
-        } else if (nodeName.equals(IDescription.XML_TAG_NAME)) {
-            if (this instanceof IDescribedElement) {
-                return newDescription(id);
-            } else {
-                return null;
-            }
-        }
-        return newPartThis(xmlTag, id);
+        return switch (nodeName) {
+            case ILabel.XML_TAG_NAME -> this instanceof ILabeledElement ? newLabel(id) : null;
+            case IDescription.XML_TAG_NAME -> this instanceof IDescribedElement ? newDescription(id) : null;
+            default -> newPartThis(xmlTag, id);
+        };
     }
 
     /**

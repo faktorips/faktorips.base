@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * Abstract base action for global actions.
- * 
+ *
  * @author Thorsten Guenther
  * @author Stefan Widmaier
  */
@@ -119,7 +119,7 @@ public abstract class IpsAction extends Action {
      * This method returns an <code>IIpsObject</code> for the first element of the given
      * <code>StructuredSelection</code>. Returns <code>null</code> if the selection is empty or does
      * not contain the expected types.
-     * 
+     *
      * @see IpsAction#getIpsObjectForSelection(Object)
      */
     protected IIpsObject getIpsObjectForSelection(IStructuredSelection selection) {
@@ -180,15 +180,15 @@ public abstract class IpsAction extends Action {
      * the corresponding <code>IIpsSrcFile</code> is returned.
      * <p>
      * Returns <code>null</code> if the selection is empty or does not contain the expected types.
-     * 
+     *
      * @see IpsAction#getIpsObjectForSelection(IStructuredSelection)
      */
     private IIpsSrcFile getIpsSrcFileForSelection(Object selected) {
-        if (selected instanceof IIpsSrcFile) {
+        if (selected instanceof IIpsSrcFile ipsSrcFile) {
             // avoid reading IpsSrcFile in getIpsObjectForSelection()
-            return (IIpsSrcFile)selected;
-        } else if (selected instanceof IpsSrcFileViewItem) {
-            return ((IpsSrcFileViewItem)selected).getIpsSrcFile();
+            return ipsSrcFile;
+        } else if (selected instanceof IpsSrcFileViewItem viewItem) {
+            return viewItem.getIpsSrcFile();
         }
 
         IIpsObject ipsObject = getIpsObjectForSelection(selected);
@@ -206,7 +206,7 @@ public abstract class IpsAction extends Action {
      * corresponding <code>IIpsSrcFile</code> is returned.
      * <p>
      * Returns <code>null</code> if the selection is empty or does not contain the expected types.
-     * 
+     *
      * @see IpsAction#getIpsObjectForSelection(IStructuredSelection)
      */
     protected IIpsSrcFile getIpsSrcFileForSelection(IStructuredSelection selection) {
@@ -249,7 +249,7 @@ public abstract class IpsAction extends Action {
     /**
      * Returns <code>true</code> if the action is enabled based on the given selection, otherwise
      * <code>false</code>. The default implementation always returns <code>true</code>.
-     * 
+     *
      * @param selection The user selection to check for enabled state of this action.
      */
     protected boolean computeEnabledProperty(IStructuredSelection selection) {

@@ -265,16 +265,18 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
         String defaultProjectLanguage = getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale()
                 .getLanguage();
         ValueTypeMismatch typeMismatch = checkValueTypeMismatch(enumAttribute);
-        if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
-            list.add(new Message(MSGCODE_INVALID_VALUE_TYPE,
+        switch (typeMismatch) {
+            case STRING_TO_INTERNATIONAL_STRING -> list.add(new Message(MSGCODE_INVALID_VALUE_TYPE,
                     MessageFormat.format(Messages.EnumAttributeValue_MultiLingual, enumAttribute.getName(),
                             defaultProjectLanguage),
                     Message.ERROR, new ObjectProperty(this, PROPERTY_VALUE)));
-        } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
-            list.add(new Message(
+            case INTERNATIONAL_STRING_TO_STRING -> list.add(new Message(
                     MSGCODE_INVALID_VALUE_TYPE, MessageFormat.format(Messages.EnumAttributeValue_NotMultiLingual,
                             enumAttribute.getName(), defaultProjectLanguage),
                     Message.ERROR, new ObjectProperty(this, PROPERTY_VALUE)));
+            case NO_MISMATCH -> {
+                // OK
+            }
         }
     }
 
@@ -286,10 +288,12 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     @Override
     public void fixValueType(boolean multilingual) {
         ValueTypeMismatch typeMismatch = ValueTypeMismatch.getMismatch(getValue(), multilingual);
-        if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(typeMismatch)) {
-            convertStringToInternationalString();
-        } else if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(typeMismatch)) {
-            convertInternationalStringToString();
+        switch (typeMismatch) {
+            case STRING_TO_INTERNATIONAL_STRING -> convertStringToInternationalString();
+            case INTERNATIONAL_STRING_TO_STRING -> convertInternationalStringToString();
+            case NO_MISMATCH -> {
+                // OK
+            }
         }
     }
 

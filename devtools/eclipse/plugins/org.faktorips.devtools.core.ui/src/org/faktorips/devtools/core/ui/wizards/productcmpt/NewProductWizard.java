@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,9 +31,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  * selected project.
  * <p>
  * This wizard was completely rewritten in version 3.6
- * 
+ *
  * @author dirmeier
- * 
+ *
  */
 public abstract class NewProductWizard extends NewProductDefinitionWizard {
 
@@ -95,16 +95,12 @@ public abstract class NewProductWizard extends NewProductDefinitionWizard {
 
     @Override
     protected void initDefaults(IIpsPackageFragment selectedPackage, IIpsObject selectedIpsObject) {
-        if (selectedIpsObject == null) {
-            initDefaults(selectedPackage, null, null);
-        } else if (selectedIpsObject instanceof IProductCmpt) {
-            IProductCmptType cmptType = ((IProductCmpt)selectedIpsObject).findProductCmptType(selectedIpsObject
-                    .getIpsProject());
-            initDefaults(selectedPackage, cmptType, (IProductCmpt)selectedIpsObject);
-        } else if (selectedIpsObject instanceof IProductCmptType) {
-            initDefaults(selectedPackage, (IProductCmptType)selectedIpsObject, null);
-        } else {
-            initDefaults(selectedPackage, null, null);
+        switch (selectedIpsObject) {
+            case null -> initDefaults(selectedPackage, null, null);
+            case IProductCmpt productCmpt -> initDefaults(selectedPackage,
+                    productCmpt.findProductCmptType(productCmpt.getIpsProject()), productCmpt);
+            case IProductCmptType productCmptType -> initDefaults(selectedPackage, productCmptType, null);
+            default -> initDefaults(selectedPackage, null, null);
         }
     }
 
@@ -116,7 +112,7 @@ public abstract class NewProductWizard extends NewProductDefinitionWizard {
      * null, if not null it is used to specify the base type as well as the current selected type,
      * if it is not abstract. The default product component may also be null. It does not change the
      * default type but is used to fill default kind id and version id.
-     * 
+     *
      * @param defaultPackage Used for default project, package root and package fragment, should not
      *            be null.
      * @param defaultType The type to initialize the selected base type and selected concrete type
@@ -138,7 +134,7 @@ public abstract class NewProductWizard extends NewProductDefinitionWizard {
      * available base type. With this behavior the list of selectable concrete types contains
      * exactly the types that could be selected for this association. If the target type of the
      * association is not abstract it is also used as default selected type.
-     * 
+     *
      * @param addToproductCmptGen The generation you want to add the new product component to
      * @param addToAssociation the association in which context the new product component is added
      * @see #initDefaults(IIpsPackageFragment, IProductCmptType, IProductCmpt)

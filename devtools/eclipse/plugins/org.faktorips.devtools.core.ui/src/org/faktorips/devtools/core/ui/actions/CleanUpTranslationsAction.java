@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -66,9 +66,9 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
  * This action is only a temporary solution that is needed in case supported languages are added or
  * removed from an IPS project. It will be replaced at a later time by preference pages that allow
  * to edit the properties of an IPS project.
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 3.1
  */
 public class CleanUpTranslationsAction extends IpsAction implements IObjectActionDelegate {
@@ -111,12 +111,12 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             IIpsProject ipsProject = null;
             if (adaptable instanceof IIpsElement) {
                 ipsProject = ((IIpsElement)adaptable).getIpsProject();
-            } else if (adaptable instanceof IResource) {
+            } else if (adaptable instanceof IResource resource) {
                 ipsProject = IIpsModel.get()
-                        .getIpsProject(Wrappers.wrap(((IResource)adaptable).getProject()).as(AProject.class));
-            } else if (adaptable instanceof IJavaElement) {
+                        .getIpsProject(Wrappers.wrap(resource.getProject()).as(AProject.class));
+            } else if (adaptable instanceof IJavaElement javaElement) {
                 ipsProject = IIpsModel.get()
-                        .getIpsProject(Wrappers.wrap(((IJavaElement)adaptable).getJavaProject().getProject())
+                        .getIpsProject(Wrappers.wrap(javaElement.getJavaProject().getProject())
                                 .as(AProject.class));
             }
             if (!(ipsProjects.contains(ipsProject)) && ipsProject != null) {

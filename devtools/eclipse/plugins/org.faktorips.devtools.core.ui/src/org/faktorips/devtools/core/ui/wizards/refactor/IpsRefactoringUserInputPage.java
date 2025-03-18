@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,11 +27,12 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Abstract base class providing common functionality for {@link UserInputWizardPage}s used by
  * Faktor-IPS refactorings.
- * 
+ *
  * @author Alexander Weickmann
  */
 abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
@@ -41,7 +42,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
 
     /**
      * @param pageName A name for this user input page
-     * 
+     *
      * @throws NullPointerException If any parameter is null
      */
     IpsRefactoringUserInputPage(String pageName) {
@@ -58,9 +59,9 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
 
     /**
      * Subclass implementation responsible for creating the page control.
-     * 
+     *
      * @param parent The parent {@link Composite}
-     * 
+     *
      * @see IDialogPage#createControl(Composite)
      */
     protected abstract void createControlThis(Composite parent);
@@ -79,21 +80,15 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      */
     // TODO AW: This should be moved to the core model
     protected final String getIpsElementName(IIpsElement ipsElement) {
-        String ipsElementName = ""; //$NON-NLS-1$
-        if (ipsElement instanceof IAttribute) {
-            ipsElementName = Messages.ElementNames_Attribute;
-        } else if (ipsElement instanceof IMethod) {
-            ipsElementName = Messages.ElementNames_Method;
-        } else if (ipsElement instanceof IAssociation) {
-            ipsElementName = Messages.ElementNames_Association;
-        } else if (ipsElement instanceof IType) {
-            ipsElementName = Messages.ElementNames_Type;
-        } else if (ipsElement instanceof IEnumLiteralNameAttributeValue) {
-            ipsElementName = Messages.ElementNames_EnumLiteralNameAttributeValue;
-        } else if (ipsElement instanceof IValidationRule) {
-            ipsElementName = Messages.ElementNames_ValidationRule;
-        }
-        return ipsElementName;
+        return switch (ipsElement) {
+            case IAttribute $ -> Messages.ElementNames_Attribute;
+            case IMethod $ -> Messages.ElementNames_Method;
+            case IAssociation $ -> Messages.ElementNames_Association;
+            case IType $ -> Messages.ElementNames_Type;
+            case IEnumLiteralNameAttributeValue $ -> Messages.ElementNames_EnumLiteralNameAttributeValue;
+            case IValidationRule $ -> Messages.ElementNames_ValidationRule;
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     /**
@@ -121,7 +116,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
 
     /**
      * Subclass implementation responsible for validating the user input.
-     * 
+     *
      * @param status {@link RefactoringStatus} to add messages to
      */
     protected abstract void validateUserInputThis(RefactoringStatus status) throws IpsException;

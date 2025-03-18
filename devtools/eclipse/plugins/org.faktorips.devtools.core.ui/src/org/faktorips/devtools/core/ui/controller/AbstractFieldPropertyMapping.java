@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -86,11 +86,11 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
                         // don't set the new value
                         return;
                     }
-                } else if (getField() instanceof RadioButtonGroupField) {
+                } else if (getField() instanceof RadioButtonGroupField radioButtonGroupField) {
                     /*
                      * Unfortunately, the same special case applies to radio button groups as well.
                      */
-                    if (((RadioButtonGroupField<?>)getField()).getRadioButtonGroup().getSelectedButton() != null) {
+                    if (radioButtonGroupField.getRadioButtonGroup().getSelectedButton() != null) {
                         return;
                     }
                 } else {

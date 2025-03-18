@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,13 +39,10 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
 
         ISelection selection = HandlerUtil.getCurrentSelection(event);
         if (selection instanceof IStructuredSelection structuredSelection) {
-            Object firstElement = structuredSelection.getFirstElement();
-            if (firstElement instanceof AbstractAssociationViewItem) {
-                addNewLinkInEditor(event);
-            } else if (firstElement instanceof IProductCmptStructureReference) {
-                addNewLinkOnReference(event);
-            } else {
-                throw new RuntimeException();
+            switch (structuredSelection.getFirstElement()) {
+                case AbstractAssociationViewItem $ -> addNewLinkInEditor(event);
+                case IProductCmptStructureReference $ -> addNewLinkOnReference(event);
+                default -> throw new RuntimeException("Unknown element: " + structuredSelection.getFirstElement());
             }
         }
         return null;

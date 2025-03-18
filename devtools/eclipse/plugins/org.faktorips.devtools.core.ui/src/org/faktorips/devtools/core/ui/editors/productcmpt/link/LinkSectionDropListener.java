@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  * This listener is very similar to the {@link LinkDropListener} which is responsible for
  * drag&amp;drop in the product structure view. Because of the different items provided by the
  * different content providers, these two listeners are separated.
- * 
+ *
  * @author dirmeier
  */
 public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
@@ -211,13 +211,11 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     }
 
     private String getAssociationName(Object target) {
-        String associationName = null;
-        if (target instanceof IProductCmptLink targetCmptLink) {
-            associationName = targetCmptLink.getAssociation();
-        } else if (target instanceof ILinkSectionViewItem) {
-            associationName = ((ILinkSectionViewItem)target).getAssociationName();
-        }
-        return associationName;
+        return switch (target) {
+            case IProductCmptLink targetCmptLink -> targetCmptLink.getAssociation();
+            case ILinkSectionViewItem viewItem -> viewItem.getAssociationName();
+            default -> null;
+        };
     }
 
     private IProductCmptTypeAssociation getAssociation(Object target) {
@@ -302,39 +300,41 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
 
         private boolean moveLink(IProductCmptLink link, Object target) {
-            if (target instanceof AbstractAssociationViewItem) {
-                String associationName = ((AbstractAssociationViewItem)target).getAssociationName();
-                // move to first position of this association
-                boolean moveResult = false;
-                IProductCmptLinkContainer linkContainer = link.getProductCmptLinkContainer();
-                for (IProductCmptLink firstTarget : linkContainer.getLinksAsList()) {
-                    if (firstTarget.getAssociation().equals(associationName)) {
-                        // first link of correct association type, move after this and break
-                        moveResult = linkContainer.moveLink(link, firstTarget, true);
-                        break;
+            return switch (target) {
+                case AbstractAssociationViewItem associationViewItem -> {
+                    String associationName = associationViewItem.getAssociationName();
+                    // move to first position of this association
+                    boolean moveResult = false;
+                    IProductCmptLinkContainer linkContainer = link.getProductCmptLinkContainer();
+                    for (IProductCmptLink firstTarget : linkContainer.getLinksAsList()) {
+                        if (firstTarget.getAssociation().equals(associationName)) {
+                            // first link of correct association type, move after this and break
+                            moveResult = linkContainer.moveLink(link, firstTarget, true);
+                            break;
+                        }
                     }
+                    // no link of this association type found, move to first position (if there is
+                    // any)
+                    if (linkContainer.getLinksAsList().size() > 0) {
+                        moveResult = linkContainer.moveLink(link, linkContainer.getLinksAsList().get(0), true);
+                    } else {
+                        // if there is no element yet, move is ok
+                        yield true;
+                    }
+                    if (moveResult) {
+                        // setting correct asscociation
+                        link.setAssociation(associationName);
+                    }
+                    yield moveResult;
                 }
-                // no link of this association type found, move to first position (if there is any)
-                if (linkContainer.getLinksAsList().size() > 0) {
-                    moveResult = linkContainer.moveLink(link, linkContainer.getLinksAsList().get(0), true);
-                } else {
-                    // if there is no element yet, move is ok
-                    return true;
+                case LinkViewItem linkViewItem -> moveLink(link, linkViewItem.getLink());
+                case IProductCmptLink targetLink -> {
+                    IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
+                    boolean before = getCurrentLocation() == LOCATION_BEFORE;
+                    yield linkContainer.moveLink(link, targetLink, before);
                 }
-                if (moveResult) {
-                    // setting correct asscociation
-                    link.setAssociation(associationName);
-                }
-                return moveResult;
-            } else if (target instanceof LinkViewItem) {
-                return moveLink(link, ((LinkViewItem)target).getLink());
-            } else if (target instanceof IProductCmptLink targetLink) {
-                IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
-                boolean before = getCurrentLocation() == LOCATION_BEFORE;
-                return linkContainer.moveLink(link, targetLink, before);
-            } else {
-                return false;
-            }
+                default -> false;
+            };
         }
 
         private boolean createLinks() {
@@ -389,7 +389,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     /**
      * Listener to handle the move of relations.
-     * 
+     *
      * @author Cornelius Dirmeier
      */
     public class MoveLinkDragListener implements DragSourceListener {

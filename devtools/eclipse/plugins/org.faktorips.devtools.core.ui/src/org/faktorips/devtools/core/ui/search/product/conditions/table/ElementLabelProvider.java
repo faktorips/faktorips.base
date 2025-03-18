@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This is the {@link CellLabelProvider} for the column of the elements
- * 
+ *
  * @author dicker
  */
 final class ElementLabelProvider extends CellLabelProvider {
@@ -34,16 +34,15 @@ final class ElementLabelProvider extends CellLabelProvider {
      * Returns the label or name of the given {@link IIpsElement}. If no label is set, the name of
      * the {@link IIpsElement ipsElement} will be returned. If the {@link IIpsElement ipsElement} is
      * <code>null</code> an empty <code>String</code> is returned.
-     * 
+     *
      * @param ipsElement the {@link IIpsElement} to get the label or name
      */
     public String getLabelOrName(IIpsElement ipsElement) {
-        if (ipsElement == null) {
-            return IpsStringUtils.EMPTY;
-        } else if (ipsElement instanceof ILabeledElement) {
-            return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)ipsElement);
-        } else {
-            return ipsElement.getName();
-        }
+        return switch (ipsElement) {
+            case null -> IpsStringUtils.EMPTY;
+            case ILabeledElement labeledElement -> IIpsModel.get().getMultiLanguageSupport()
+                    .getLocalizedLabel(labeledElement);
+            default -> ipsElement.getName();
+        };
     }
 }

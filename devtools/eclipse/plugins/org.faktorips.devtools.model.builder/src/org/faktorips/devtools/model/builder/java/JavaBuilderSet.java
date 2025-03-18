@@ -270,13 +270,11 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
 
     @Override
     public String getJavaClassName(Datatype datatype, boolean interfaces) {
-        if (datatype instanceof IPolicyCmptType) {
-            return getJavaClassNameForPolicyCmptType((IPolicyCmptType)datatype, interfaces);
-        } else if (datatype instanceof IProductCmptType) {
-            return getJavaClassNameForProductCmptType((IProductCmptType)datatype, interfaces);
-        } else {
-            return getDatatypeHelper(datatype).getJavaClassName();
-        }
+        return switch (datatype) {
+            case IPolicyCmptType policyCmptType -> getJavaClassNameForPolicyCmptType(policyCmptType, interfaces);
+            case IProductCmptType productCmptType -> getJavaClassNameForProductCmptType(productCmptType, interfaces);
+            default -> getDatatypeHelper(datatype).getJavaClassName();
+        };
     }
 
     private String getJavaClassNameForPolicyCmptType(IPolicyCmptType type, boolean interfaces) {

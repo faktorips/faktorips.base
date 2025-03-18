@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -65,7 +65,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * NOTE: In eclipse 3.5 there are some new features for {@link FilteredItemsSelectionDialog}. The
  * new feature highlighting filter entries in the list is implemented in this dialog but not
  * activated until eclipse 3.5 support.
- * 
+ *
  * @author Daniel Hohenberger
  * @author Cornelius Dirmeier
  */
@@ -79,7 +79,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     /**
      * Creates a list selection dialog.
-     * 
+     *
      * @param parent the parent widget.
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context) {
@@ -88,7 +88,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     /**
      * Creates a list selection dialog and allowed the multi select of IpsObjects.
-     * 
+     *
      * @param parent the parent widget.
      * @param multi allowed the multi select in list.
      */
@@ -198,12 +198,11 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     }
 
     private static IIpsPackageFragment getPackageFragment(Object element) {
-        if (element instanceof IIpsObject ipsObject) {
-            return ipsObject.getIpsPackageFragment();
-        } else if (element instanceof IIpsSrcFile srcFile) {
-            return srcFile.getIpsPackageFragment();
-        }
-        return null;
+        return switch (element) {
+            case IIpsObject ipsObject -> ipsObject.getIpsPackageFragment();
+            case IIpsSrcFile srcFile -> srcFile.getIpsPackageFragment();
+            default -> null;
+        };
     }
 
     private class IpsSrcFileFilter extends ItemsFilter {
@@ -331,7 +330,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
         /**
          * Create the bold variant of the currently used font.
-         * 
+         *
          * @return the bold font
          */
         private Font getBoldFont() {

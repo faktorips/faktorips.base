@@ -92,28 +92,20 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof ITestAttribute) {
-            testAttributes.add((ITestAttribute)part);
-            return true;
-
-        } else if (part instanceof TestPolicyCmptTypeParameter) {
-            testPolicyCmptTypeChilds.add((TestPolicyCmptTypeParameter)part);
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case ITestAttribute testAttribute -> testAttributes.add(testAttribute);
+            case TestPolicyCmptTypeParameter parameter -> testPolicyCmptTypeChilds.add(parameter);
+            default -> false;
+        };
     }
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof TestAttribute) {
-            testAttributes.remove(part);
-            return true;
-
-        } else if (part instanceof TestPolicyCmptTypeParameter) {
-            testPolicyCmptTypeChilds.remove(part);
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case ITestAttribute testAttribute -> testAttributes.remove(testAttribute);
+            case TestPolicyCmptTypeParameter parameter -> testPolicyCmptTypeChilds.remove(parameter);
+            default -> false;
+        };
     }
 
     @Override
@@ -123,13 +115,11 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-        String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(TestAttribute.TAG_NAME)) {
-            return newTestAttributeInternal(id);
-        } else if (xmlTagName.equals(TAG_NAME)) {
-            return newTestPolicyCmptTypeParamChildInternal(id);
-        }
-        return null;
+        return switch (xmlTag.getNodeName()) {
+            case TestAttribute.TAG_NAME -> newTestAttributeInternal(id);
+            case TAG_NAME -> newTestPolicyCmptTypeParamChildInternal(id);
+            default -> null;
+        };
     }
 
     @Override

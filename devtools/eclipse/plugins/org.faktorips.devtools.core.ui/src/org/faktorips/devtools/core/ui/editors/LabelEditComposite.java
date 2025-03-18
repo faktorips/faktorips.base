@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,9 +41,9 @@ import org.faktorips.runtime.MessageList;
 /**
  * A composite that allows to edit the {@link ILabel}s attached to an {@link ILabeledElement}. It
  * consists of a table with two columns listing all the labels with their associated language.
- * 
+ *
  * @since 3.1
- * 
+ *
  * @author Alexander Weickmann
  */
 public final class LabelEditComposite extends Composite {
@@ -291,10 +291,9 @@ public final class LabelEditComposite extends Composite {
         }
 
         private void setPropertyValue(String property, String value, ILabel label) {
-            if (property.equals(ILabel.PROPERTY_VALUE)) {
-                label.setValue(value);
-            } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
-                label.setPluralValue(value);
+            switch (property) {
+                case ILabel.PROPERTY_VALUE -> label.setValue(value);
+                case ILabel.PROPERTY_PLURAL_VALUE -> label.setPluralValue(value);
             }
             // The property locale (PROPERTY_LOCALE) cannot be modified
         }

@@ -656,13 +656,11 @@ public class XPolicyAttribute extends XAttribute {
             if (isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType()) {
                 valueSetType = getOverwrittenAttribute().getValueSetType();
             }
-            if (valueSetType == ValueSetType.ENUM) {
-                prefix = "getAllowedValuesFor";
-            } else if (valueSetType == ValueSetType.RANGE) {
-                prefix = "getRangeFor";
-            } else {
-                prefix = "getSetOfAllowedValuesFor";
-            }
+            prefix = switch (valueSetType) {
+                case ENUM -> "getAllowedValuesFor";
+                case RANGE -> "getRangeFor";
+                default -> "getSetOfAllowedValuesFor";
+            };
         } else {
             prefix = "getAllowedValuesFor";
         }

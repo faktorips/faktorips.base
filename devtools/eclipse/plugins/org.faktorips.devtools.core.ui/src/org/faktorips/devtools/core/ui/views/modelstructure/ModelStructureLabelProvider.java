@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public final class ModelStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
@@ -97,12 +98,11 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
     @Override
     public String getText(Object element) {
-        if (element instanceof ComponentNode node) {
-            return node.getValue().getName();
-        } else if (element instanceof String) {
-            return element.toString();
-        }
-        return ""; //$NON-NLS-1$
+        return switch (element) {
+            case ComponentNode node -> node.getValue().getName();
+            case String s -> s;
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     @Override
@@ -166,7 +166,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
     /**
      * Toggles the show cardinalities state.
-     * 
+     *
      * @see #setShowCardinalities(boolean)
      */
     public void toggleShowCardinalities() {
@@ -189,7 +189,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
     /**
      * Toggles the show role names state.
-     * 
+     *
      * @see #setShowRolenames(boolean)
      */
     public void toggleShowRolenames() {
@@ -212,7 +212,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
     /**
      * Toggles the show projects state.
-     * 
+     *
      * @see #setShowProjects(boolean)
      */
     public void toggleShowProjects() {

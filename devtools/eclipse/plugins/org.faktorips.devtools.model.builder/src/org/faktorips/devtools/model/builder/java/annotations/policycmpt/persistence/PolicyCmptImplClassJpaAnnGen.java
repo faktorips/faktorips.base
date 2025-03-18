@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,6 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.InheritanceStrategy;
-import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
@@ -36,7 +35,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * Each persistent policy component type needs at least an <code>@Entity</code> annotation. The
  * information which annotations to generate is pulled from the class {@link IPersistentTypeInfo}
  * which is part of persistent {@link IPolicyCmptType}s.
- * 
+ *
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS
  */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -50,16 +49,16 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
 
             IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
 
-            if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
-                fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Entity));
-
-                addAnnotationsForInheritanceStrategy(persistenceProvider, fragmentBuilder, persistenceTypeInfo);
-                addAnnotationsForDiscriminator(persistenceProvider, fragmentBuilder, persistenceTypeInfo);
-            } else if (persistenceTypeInfo.getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
-                fragmentBuilder
+            switch (persistenceTypeInfo.getPersistentType()) {
+                case ENTITY -> {
+                    fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Entity));
+                    addAnnotationsForInheritanceStrategy(persistenceProvider, fragmentBuilder, persistenceTypeInfo);
+                    addAnnotationsForDiscriminator(persistenceProvider, fragmentBuilder, persistenceTypeInfo);
+                }
+                case MAPPED_SUPERCLASS -> fragmentBuilder
                         .annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.MappedSuperclass));
-            } else {
-                throw new RuntimeException("Unknown persistent type: " + persistenceTypeInfo.getPersistentType());
+                default -> throw new RuntimeException(
+                        "Unknown persistent type: " + persistenceTypeInfo.getPersistentType());
             }
 
         }
@@ -92,22 +91,25 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
             return;
         }
 
-        if (inhStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
-            JavaCodeFragment param = new JavaCodeFragment();
-            param.append("strategy = ");
-            param.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.InheritanceType));
-            param.append(".JOINED");
-            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
-                    param);
-        } else if (inhStrategy == InheritanceStrategy.SINGLE_TABLE) {
-            // note that the single table inheritance strategy is the default
-            // strategy, nevertheless we add this annotation
-            JavaCodeFragment param = new JavaCodeFragment();
-            param.append("strategy = ");
-            param.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.InheritanceType));
-            param.append(".SINGLE_TABLE");
-            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
-                    param);
+        switch (inhStrategy) {
+            case JOINED_SUBCLASS -> {
+                JavaCodeFragment param = new JavaCodeFragment();
+                param.append("strategy = ");
+                param.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.InheritanceType));
+                param.append(".JOINED");
+                fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
+                        param);
+            }
+            case SINGLE_TABLE -> {
+                // note that the single table inheritance strategy is the default
+                // strategy, nevertheless we add this annotation
+                JavaCodeFragment param = new JavaCodeFragment();
+                param.append("strategy = ");
+                param.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.InheritanceType));
+                param.append(".SINGLE_TABLE");
+                fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
+                        param);
+            }
         }
     }
 

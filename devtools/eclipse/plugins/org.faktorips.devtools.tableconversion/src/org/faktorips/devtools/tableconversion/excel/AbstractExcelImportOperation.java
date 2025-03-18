@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,8 +33,8 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
- * 
- * 
+ *
+ *
  * @author Alexander Weickmann
  */
 public abstract class AbstractExcelImportOperation extends AbstractTableImportOperation {
@@ -71,25 +71,29 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
     }
 
     protected String readCell(Cell cell, Datatype datatype) {
-        if (cell.getCellType() == CellType.NUMERIC) {
-            if (DateUtil.isCellDateFormatted(cell) || isReserved(cell.getCellStyle().getDataFormat())) {
-                Date dateCellValue = cell.getDateCellValue();
-                if (mightBeOpenOffice) {
-                    dateCellValue = correctOffset(cell, messageList);
+        switch (cell.getCellType()) {
+            case CellType.NUMERIC -> {
+                if (DateUtil.isCellDateFormatted(cell) || isReserved(cell.getCellStyle().getDataFormat())) {
+                    Date dateCellValue = cell.getDateCellValue();
+                    if (mightBeOpenOffice) {
+                        dateCellValue = correctOffset(cell, messageList);
+                    }
+                    return format.getIpsValue(dateCellValue, datatype, messageList);
                 }
-                return format.getIpsValue(dateCellValue, datatype, messageList);
+                double numericCellValue = cell.getNumericCellValue();
+                BigDecimal roundedResult = roundNumericCellValue(numericCellValue);
+                return format.getIpsValue(roundedResult, datatype, messageList);
             }
-            double numericCellValue = cell.getNumericCellValue();
-            BigDecimal roundedResult = roundNumericCellValue(numericCellValue);
-            return format.getIpsValue(roundedResult, datatype, messageList);
-        } else if (cell.getCellType() == CellType.BOOLEAN) {
-            return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
-        } else {
-            String value = cell.getStringCellValue();
-            if (nullRepresentationString.equals(value)) {
-                return null;
+            case CellType.BOOLEAN -> {
+                return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
             }
-            return format.getIpsValue(value, datatype, messageList);
+            default -> {
+                String value = cell.getStringCellValue();
+                if (nullRepresentationString.equals(value)) {
+                    return null;
+                }
+                return format.getIpsValue(value, datatype, messageList);
+            }
         }
     }
 
@@ -106,10 +110,10 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
      * 16th position. To avoid different representations, Excel always round every number after the
      * 15th digit. Hence we need to do it like Excel in order to get the same number
      * representations.
-     * 
+     *
      * @see <a href="https://support.microsoft.com/kb/78113">Excel-FloatingPoints</a>
      * @see <a href="http://support.microsoft.com/kb/269370">Excel-LongDigits</a>
-     * 
+     *
      * @param numericCellValue the potential inaccurate cell content
      * @return the correct rounded numericCellValue
      */

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,7 +48,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 
 /**
- * 
+ *
  * @author Daniel Hohenberger
  */
 public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
@@ -126,28 +126,23 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     /* private */ void addElementToFix(Set<IFixDifferencesToModelSupport> ipsElementsToFix, Object selected) {
-        if (selected instanceof AAbstraction abstraction) {
-            addElementToFix(ipsElementsToFix, abstraction.unwrap());
-        }
-        if (selected instanceof IJavaProject javaProject) {
-            IIpsProject project = getIpsProject(javaProject);
-            addIpsElements(project, ipsElementsToFix);
-        } else if (selected instanceof IIpsProject ipsProject) {
-            addIpsElements(ipsProject, ipsElementsToFix);
-        } else if (selected instanceof IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
-            addIpsElements(ipsPackageFragmentRoot, ipsElementsToFix);
-        } else if (selected instanceof IIpsPackageFragment ipsPackageFragment) {
-            addIpsElements(ipsPackageFragment, ipsElementsToFix);
-        } else if (selected instanceof IIpsSrcFile ipsSrcFile) {
-            addElementToFix(ipsElementsToFix, ipsSrcFile.getIpsObject());
-        } else if (selected instanceof IIpsSrcFileWrapper ipsSrcFileWrapper) {
-            addElementToFix(ipsElementsToFix, ipsSrcFileWrapper.getWrappedIpsSrcFile().getIpsObject());
-        } else if (selected instanceof IFixDifferencesToModelSupport fixDifferencesToModelSupport) {
-            addIpsElement(fixDifferencesToModelSupport, ipsElementsToFix);
-        } else if (selected instanceof IResource) {
-            Object objToAdd = IIpsModel.get()
-                    .getIpsElement(Wrappers.wrap(selected).as(AResource.class));
-            addElementToFix(ipsElementsToFix, objToAdd);
+        switch (selected) {
+            case AAbstraction abstraction -> addElementToFix(ipsElementsToFix, abstraction.unwrap());
+            case IJavaProject javaProject -> addIpsElements(getIpsProject(javaProject), ipsElementsToFix);
+            case IIpsProject ipsProject -> addIpsElements(ipsProject, ipsElementsToFix);
+            case IIpsPackageFragmentRoot ipsPackageFragmentRoot -> addIpsElements(ipsPackageFragmentRoot,
+                    ipsElementsToFix);
+            case IIpsPackageFragment ipsPackageFragment -> addIpsElements(ipsPackageFragment, ipsElementsToFix);
+            case IIpsSrcFile ipsSrcFile -> addElementToFix(ipsElementsToFix, ipsSrcFile.getIpsObject());
+            case IIpsSrcFileWrapper ipsSrcFileWrapper -> addElementToFix(ipsElementsToFix,
+                    ipsSrcFileWrapper.getWrappedIpsSrcFile().getIpsObject());
+            case IFixDifferencesToModelSupport fixDifferencesToModelSupport -> addIpsElement(
+                    fixDifferencesToModelSupport, ipsElementsToFix);
+            case IResource resource -> addElementToFix(ipsElementsToFix,
+                    IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class)));
+            default -> {
+                // nothing to add
+            }
         }
     }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,7 +50,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Helper-Class for move or rename a {@link IIpsPackageFragment}.
- * 
+ *
  */
 public final class MoveRenamePackageHelper {
 
@@ -92,7 +92,7 @@ public final class MoveRenamePackageHelper {
 
     /**
      * Calculates the name of the package after it is moved or renamed.
-     * 
+     *
      * @param targetPackageFragement the package the original package should be moved into
      * @return the resulting name of the moved package fragment
      */
