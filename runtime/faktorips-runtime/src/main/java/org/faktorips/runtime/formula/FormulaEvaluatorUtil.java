@@ -267,7 +267,7 @@ public enum FormulaEvaluatorUtil {
          */
         public E getResult(List<E> listOfValues) {
             return listOfValues == null ? getFallBackValue()
-                    : listOfValues.stream().reduce(this::getPreliminaryResult).orElse(getFallBackValue());
+                    : listOfValues.stream().reduce(this::getPreliminaryResult).orElseGet(() -> getFallBackValue());
         }
 
         /**
