@@ -129,7 +129,7 @@ public class GeneratorModelContext {
         IIpsProjectProperties properties = ipsProject.getProperties();
         IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel = clone(properties.getBuilderSetConfig());
         String builderSetId = ipsProject.getIpsModel().getBuilderSetId(properties);
-        overwriteProperties(ipsArtefactBuilderSetConfigModel, properties, ipsStorage, builderSetId);
+        overwriteProperties(ipsArtefactBuilderSetConfigModel, ipsStorage, builderSetId);
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
                 .getIpsArtefactBuilderSetInfo(builderSetId);
         IIpsArtefactBuilderSetConfig config = ipsArtefactBuilderSetConfigModel.create(ipsProject, builderSetInfo);
@@ -144,8 +144,7 @@ public class GeneratorModelContext {
     }
 
     private void overwriteProperties(IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel,
-            IIpsProjectProperties properties,
-            IIpsStorage ipsStorage, 
+            IIpsStorage ipsStorage,
             String builderSetId) {
         IpsBundleManifest bundleManifest = ((AbstractIpsBundle)ipsStorage).getBundleManifest();
         Map<String, String> generatorConfig = bundleManifest.getGeneratorConfig(builderSetId);

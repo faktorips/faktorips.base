@@ -17,7 +17,7 @@ Export-Package: org.faktorips.devtools.model.decorators,
    org.faktorips.productvariant.ui,
    org.faktorips.devtools.multiediting"
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.faktorips.datatype,
  org.faktorips.devtools.abstraction.exception,

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -57,7 +56,7 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         assertTrue(items[2].isDuplicateName());
         assertFalse(items[2].isInstanceOfMetaClass());
 
-        items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<IIpsSrcFile>(), type);
+        items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<>(), type);
         assertEquals(0, items.length);
 
         // MetaObjectClass = null !
@@ -67,13 +66,14 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         assertFalse(items[1].isInstanceOfMetaClass());
         assertFalse(items[2].isInstanceOfMetaClass());
 
-        items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<IIpsSrcFile>(), type);
+        items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<>(), type);
         assertEquals(0, items.length);
 
         try {
             InstanceIpsSrcFileViewItem.createItems(null, null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
     }

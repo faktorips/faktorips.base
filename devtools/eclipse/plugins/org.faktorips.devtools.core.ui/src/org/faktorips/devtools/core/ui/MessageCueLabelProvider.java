@@ -77,7 +77,7 @@ public class MessageCueLabelProvider extends LabelProvider implements IStyledLab
 
         // get the cached problem descriptor for the base image
         ImageDescriptor descriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage, list.getSeverity());
-        return (Image)resourceManager.get(descriptor);
+        return resourceManager.get(descriptor);
     }
 
     /**

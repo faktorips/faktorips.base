@@ -54,11 +54,11 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
             progress.worked(50);
 
             Collection<IType> rootCandidates = getRootElementsForIType(input, projectTypes,
-                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<PathElement>());
+                    ToChildAssociationType.SELF, new ArrayList<>(), new ArrayList<>());
             progress.worked(25);
 
             rootComponents = getRootElementsForIType(input, projectTypes, ToChildAssociationType.SELF, rootCandidates,
-                    new ArrayList<PathElement>());
+                    new ArrayList<>());
             progress.worked(25);
 
         } else {

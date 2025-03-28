@@ -89,13 +89,11 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     }
 
     private IResource getSelectedResource(Object selectedObject) {
-        if (selectedObject instanceof IIpsElement) {
-            return ((IIpsElement)selectedObject).getEnclosingResource().unwrap();
-        } else if (selectedObject instanceof IAdaptable adaptable) {
-            return adaptable.getAdapter(IResource.class);
-        } else {
-            return null;
-        }
+        return switch (selectedObject) {
+            case IIpsElement ipsElement -> ipsElement.getEnclosingResource().unwrap();
+            case IAdaptable adaptable -> adaptable.getAdapter(IResource.class);
+            default -> null;
+        };
     }
 
     @Override
@@ -174,26 +172,24 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             return;
         }
         IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
-        if (element instanceof IIpsProject) {
-            IIpsPackageFragmentRoot[] roots;
-            roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
-            if (roots.length > 0) {
-                setIpsPackageFragment(roots[0].getDefaultIpsPackageFragment());
+        switch (element) {
+            case IIpsProject ipsProject -> {
+                IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
+                if (roots.length > 0) {
+                    setIpsPackageFragment(roots[0].getDefaultIpsPackageFragment());
+                }
             }
-        } else if (element instanceof IIpsPackageFragmentRoot) {
-            setIpsPackageFragment(((IIpsPackageFragmentRoot)element).getDefaultIpsPackageFragment());
-        } else if (element instanceof IIpsPackageFragment pack) {
-            setIpsPackageFragment(pack);
-        } else if (element instanceof IIpsSrcFile) {
-            IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
-            setIpsPackageFragment(pack);
-        } else {
-            if (selectedResource instanceof IProject) {
-                // selectedResource is no IpsProject
-                setIpsPackageFragment(null);
-            } else {
-                IProject project = selectedResource.getProject();
-                setDefaults(project);
+            case IIpsPackageFragmentRoot root -> setIpsPackageFragment(root.getDefaultIpsPackageFragment());
+            case IIpsPackageFragment pack -> setIpsPackageFragment(pack);
+            case IIpsSrcFile srcFile -> setIpsPackageFragment((IIpsPackageFragment)srcFile.getParent());
+            default -> {
+                if (selectedResource instanceof IProject) {
+                    // selectedResource is no IpsProject
+                    setIpsPackageFragment(null);
+                } else {
+                    IProject project = selectedResource.getProject();
+                    setDefaults(project);
+                }
             }
         }
     }

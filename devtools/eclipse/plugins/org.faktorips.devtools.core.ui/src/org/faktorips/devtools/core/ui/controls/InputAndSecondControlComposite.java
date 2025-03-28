@@ -98,7 +98,7 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
-        ((Control)text).setEnabled(value);
+        text.setEnabled(value);
         secondControl.setEnabled(value);
     }
 
@@ -143,7 +143,7 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
 
     @Override
     public boolean setFocus() {
-        return ((Control)text).setFocus();
+        return text.setFocus();
     }
 
     @Override
@@ -162,6 +162,6 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
      */
     @Override
     public void setBackground(Color color) {
-        ((Control)text).setBackground(color);
+        text.setBackground(color);
     }
 }

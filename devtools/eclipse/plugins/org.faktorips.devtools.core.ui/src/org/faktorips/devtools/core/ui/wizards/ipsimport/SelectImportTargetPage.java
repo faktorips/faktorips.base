@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,7 +41,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * The page consists of two TextButtonFields, the upper one for selecting an IPS project and the
  * lower one for selecting the actual target IPS object (e.g. an Enum Type/Content or an Table
  * Content).
- * 
+ *
  * @author Roman Grutza
  */
 public abstract class SelectImportTargetPage extends WizardPage implements ValueChangeListener {
@@ -67,15 +67,12 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     public SelectImportTargetPage(IStructuredSelection selection, String pageName) throws JavaModelException {
         super(pageName);
         if (selection != null) {
-            if (selection.getFirstElement() instanceof IResource) {
-                selectedResource = (IResource)selection.getFirstElement();
-            } else if (selection.getFirstElement() instanceof IJavaElement) {
-                selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
-            } else if (selection.getFirstElement() instanceof IIpsElement) {
-                selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource().unwrap();
-            } else {
-                selectedResource = null;
-            }
+            selectedResource = switch (selection.getFirstElement()) {
+                case IResource resource -> resource;
+                case IJavaElement javaElement -> javaElement.getCorrespondingResource();
+                case IIpsElement ipsElement -> ipsElement.getEnclosingResource().unwrap();
+                default -> null;
+            };
         }
         setPageComplete(false);
     }
@@ -90,7 +87,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
 
     /**
      * Sets the given IPS project for this wizard page.
-     * 
+     *
      * @param project A valid IPS project.
      */
     public void setIpsProject(IIpsProject project) {
@@ -99,7 +96,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
 
     /**
      * Derives the default value for the project from the selected resource.
-     * 
+     *
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
@@ -158,7 +155,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
 
     /**
      * Returns the type into which the external data will be imported.
-     * 
+     *
      * @throws IpsException If an exception occurs while searching for the target type.
      */
     public abstract IIpsObject getTargetForImport() throws IpsException;

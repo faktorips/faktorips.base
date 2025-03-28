@@ -35,7 +35,7 @@ public abstract class AbstractIdentifierResolver<T extends CodeFragment> impleme
         this.expression = expression;
         this.exprCompiler = exprCompiler;
         ipsProject = expression.getIpsProject();
-        this.parser = new IdentifierParser(expression, ipsProject);
+        parser = new IdentifierParser(expression, ipsProject);
     }
 
     public IExpression getExpression() {

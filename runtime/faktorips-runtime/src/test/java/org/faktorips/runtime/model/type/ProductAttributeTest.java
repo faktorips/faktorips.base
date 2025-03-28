@@ -716,8 +716,8 @@ public class ProductAttributeTest {
         assertThat(message, is(notNullValue()));
         assertThat(message.getSeverity(), is(Severity.ERROR));
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALDATETIME));
-        assertThat(message.getText(), containsString("Jan 1, 2024, 12:12:00 PM"));
-        assertThat(message.getText(), containsString("Jan 1, 2020, 12:00:01 AM, Jan 1, 2021, 12:01:01 AM"));
+        assertThat(message.getText(), containsString("Jan 1, 2024, 12:12:00\u202FPM"));
+        assertThat(message.getText(), containsString("Jan 1, 2020, 12:00:01\u202FAM, Jan 1, 2021, 12:01:01\u202FAM"));
         assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
@@ -766,8 +766,8 @@ public class ProductAttributeTest {
         assertThat(message, is(notNullValue()));
         assertThat(message.getSeverity(), is(Severity.ERROR));
         assertThat(message.getText(), containsString(ProductWithDates.PROPERTY_LOCALTIME));
-        assertThat(message.getText(), containsString("12:00:00 PM"));
-        assertThat(message.getText(), containsString("12:00:01 AM, 12:01:01 AM"));
+        assertThat(message.getText(), containsString("12:00:00\u202FPM"));
+        assertThat(message.getText(), containsString("12:00:01\u202FAM, 12:01:01\u202FAM"));
         assertThat(message.getInvalidObjectProperties().size(), is(2));
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));

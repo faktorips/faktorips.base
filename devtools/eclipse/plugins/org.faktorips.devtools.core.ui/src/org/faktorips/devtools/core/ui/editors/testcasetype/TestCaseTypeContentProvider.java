@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,7 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 /**
  * Content provider for the test case domain.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseTypeContentProvider implements ITreeContentProvider {
@@ -32,13 +32,11 @@ public class TestCaseTypeContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof TestCaseTypeTreeRootElement) {
-            ITestCaseType testCaseType = ((TestCaseTypeTreeRootElement)parentElement).getTestCaseType();
-            return testCaseType.getTestParameters();
-        } else if (parentElement instanceof ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
-            return testPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds();
-        }
-        return EMPTY_ARRAY;
+        return switch (parentElement) {
+            case TestCaseTypeTreeRootElement rootElement -> rootElement.getTestCaseType().getTestParameters();
+            case ITestPolicyCmptTypeParameter param -> param.getTestPolicyCmptTypeParamChilds();
+            default -> EMPTY_ARRAY;
+        };
     }
 
     @Override

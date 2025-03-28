@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,7 +40,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 /**
  * This class is loaded by the Faktor-IPS 'Rename' refactoring to participate in this process by
  * renaming the Java source code.
- * 
+ *
  * @author Alexander Weickmann
  */
 public final class RenameRefactoringParticipant extends RenameParticipant {
@@ -119,10 +119,10 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
         public List<IJavaElement> initializeJavaElements(IIpsObjectPartContainer ipsObjectPartContainer,
                 IJavaBuilderSet builderSet) {
             List<IJavaElement> javaElements = super.initializeJavaElements(ipsObjectPartContainer, builderSet);
-            if (ipsObjectPartContainer instanceof IAttribute) {
-                javaElements.addAll(initializeJavaElements((IAttribute)ipsObjectPartContainer, builderSet));
-            } else if (ipsObjectPartContainer instanceof IEnumAttribute) {
-                javaElements.addAll(initializeJavaElements((IEnumAttribute)ipsObjectPartContainer, builderSet));
+            if (ipsObjectPartContainer instanceof IAttribute a) {
+                javaElements.addAll(initializeJavaElements(a, builderSet));
+            } else if (ipsObjectPartContainer instanceof IEnumAttribute ea) {
+                javaElements.addAll(initializeJavaElements(ea, builderSet));
             }
             return javaElements;
         }

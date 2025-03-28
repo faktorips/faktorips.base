@@ -25,8 +25,8 @@
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_ATTR_USE_ARGFILE" value="false"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
-    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+    <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl EN -consoleLog"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -Xmx4096m"/>
     <stringAttribute key="pde.version" value="3.3"/>
@@ -76,7 +76,7 @@
         <setEntry value="junit-platform-suite-commons@default:default"/>
         <setEntry value="junit-platform-suite-engine@default:default"/>
         <setEntry value="junit-vintage-engine@default:default"/>
-        <setEntry value="net.bytebuddy.byte-buddy*1.15.4@default:default"/>
+        <setEntry value="net.bytebuddy.byte-buddy*1.17.2@default:default"/>
         <setEntry value="net.bytebuddy.byte-buddy-agent@default:default"/>
         <setEntry value="net.i2p.crypto.eddsa@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
@@ -86,12 +86,12 @@
         <setEntry value="org.apache.batik.util@default:default"/>
         <setEntry value="org.apache.commons.cli@default:default"/>
         <setEntry value="org.apache.commons.codec@default:default"/>
-        <setEntry value="org.apache.commons.collections*3.2.2@default:default"/>
-        <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
+        <setEntry value="org.apache.commons.collections@default:default"/>
+        <setEntry value="org.apache.commons.commons-beanutils*1.10.1@default:default"/>
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
-        <setEntry value="org.apache.commons.commons-io*2.17.0@default:default"/>
+        <setEntry value="org.apache.commons.commons-io*2.18.0@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3*3.17.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
@@ -170,7 +170,9 @@
         <setEntry value="org.eclipse.e4.ui.workbench@default:default"/>
         <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
         <setEntry value="org.eclipse.ecf.identity@default:default"/>
+        <setEntry value="org.eclipse.ecf.provider.filetransfer.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
+        <setEntry value="org.eclipse.ecf.ssl@default:false"/>
         <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.egit.core@default:default"/>
         <setEntry value="org.eclipse.egit.doc@default:default"/>
@@ -391,7 +393,6 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="org.yaml.snakeyaml@default:default"/>
         <setEntry value="slf4j.api*1.7.36@default:default"/>
-        <setEntry value="slf4j.api*2.0.16@default:default"/>
         <setEntry value="slf4j.nop*1.7.36@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>

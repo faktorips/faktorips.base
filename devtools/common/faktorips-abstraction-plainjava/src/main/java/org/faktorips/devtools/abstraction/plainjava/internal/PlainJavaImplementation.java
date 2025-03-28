@@ -14,6 +14,7 @@ import static org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaRes
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Deque;
@@ -23,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -125,13 +127,12 @@ public enum PlainJavaImplementation implements AImplementation {
             String className = getClass().getSimpleName() + ".class"; //$NON-NLS-1$
             URL theClassUrl = getClass().getResource(className);
             if ("jar".equalsIgnoreCase(theClassUrl.getProtocol())) { //$NON-NLS-1$
-                return new URL(
-                        theClassUrl.toString().substring(0, theClassUrl.toString().lastIndexOf("!") + 1) //$NON-NLS-1$
-                                + MANIFEST_PATH);
+                return URI.create(theClassUrl.toString().substring(0, theClassUrl.toString().lastIndexOf("!") + 1) //$NON-NLS-1$
+                        + MANIFEST_PATH).toURL();
             } else {
                 String classpathOfClass = getClass().getPackageName().replace(".", "/") + "/" + className; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                return new URL("file", "", //$NON-NLS-1$ //$NON-NLS-2$
-                        theClassUrl.getPath().replace(classpathOfClass, MANIFEST_PATH));
+                return new URI("file", null, //$NON-NLS-1$
+                        theClassUrl.getPath().replace(classpathOfClass, MANIFEST_PATH), null).toURL();
             }
             // CSOFF: Illegal Catch
         } catch (Exception e) {
@@ -181,25 +182,24 @@ public enum PlainJavaImplementation implements AImplementation {
         @Override
         public void log(IStatus status) {
             logListeners.keySet().forEach(l -> l.logging(status, ID));
-            if (status.getSeverity() == IStatus.ERROR) {
-                Logger.getLogger(ID).log(Level.SEVERE, status.getMessage());
-            } else if (status.getSeverity() == IStatus.WARNING) {
-                Logger.getLogger(ID).log(Level.WARNING, status.getMessage());
-            } else if (status.getSeverity() == IStatus.INFO) {
-                Logger.getLogger(ID).log(Level.INFO, status.getMessage());
-            } else {
-                Logger.getLogger(ID).log(Level.FINE, status.getMessage());
-            }
+            Level logLevel = switch (status.getSeverity()) {
+                case IStatus.ERROR -> Level.SEVERE;
+                case IStatus.WARNING -> Level.WARNING;
+                case IStatus.INFO -> Level.INFO;
+                default -> Level.FINE;
+            };
+
+            Logger.getLogger(ID).log(logLevel, status.getMessage());
         }
     }
 
     public static final class ResourceChanges {
         private final Set<Consumer<PlainJavaResourceChange>> resourceChangeListeners = new LinkedHashSet<>();
         private final Deque<PlainJavaResourceChange> delayedChangeEvents = new LinkedList<>();
-        private boolean delayChangeEvents;
+        private final AtomicBoolean delayChangeEvents = new AtomicBoolean(false);
 
         void hold() {
-            delayChangeEvents = true;
+            delayChangeEvents.set(true);
         }
 
         void resume() {
@@ -207,13 +207,13 @@ public enum PlainJavaImplementation implements AImplementation {
             synchronized (delayedChangeEvents) {
                 eventsToResend = new LinkedList<>(delayedChangeEvents);
                 delayedChangeEvents.clear();
-                delayChangeEvents = false;
+                delayChangeEvents.set(false);
             }
             eventsToResend.forEach(this::notifyResourceChangeListeners);
         }
 
         private void notifyResourceChangeListeners(PlainJavaResourceChange change) {
-            if (delayChangeEvents) {
+            if (delayChangeEvents.get()) {
                 delayedChangeEvents.add(change);
             } else {
                 resourceChangeListeners.forEach(listener -> listener.accept(change));

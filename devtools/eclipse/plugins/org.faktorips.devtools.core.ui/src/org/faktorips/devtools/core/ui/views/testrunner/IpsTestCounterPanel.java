@@ -17,7 +17,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -63,7 +62,7 @@ public class IpsTestCounterPanel extends Composite {
         Label label = new Label(this, SWT.NONE);
         if (imageDescriptor != null) {
             // image.setBackground(label.getBackground());
-            label.setImage((Image)resourceManager.get(imageDescriptor));
+            label.setImage(resourceManager.get(imageDescriptor));
         }
         label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 

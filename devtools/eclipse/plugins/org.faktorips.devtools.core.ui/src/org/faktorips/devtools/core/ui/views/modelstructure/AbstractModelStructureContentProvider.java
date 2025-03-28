@@ -97,7 +97,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
             AssociationType... types) {
         List<IType> elementsToRemove = new ArrayList<>();
         for (IType rootCandidate : rootCandidates) {
-            if (!isContainingSourceProjectElement(rootCandidate, sourceProject, new ArrayList<IType>(), types)) {
+            if (!isContainingSourceProjectElement(rootCandidate, sourceProject, new ArrayList<>(), types)) {
                 elementsToRemove.add(rootCandidate);
             }
         }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.value.IValue;
  * This delta entry describes a mismatch of the value between an attribute and its attribute value.
  * For example the attribute is marked as multi value attribute but the attribute value has a single
  * value.
- * 
+ *
  * @author dirmeier
  */
 public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
@@ -69,9 +69,8 @@ public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
             }
             SingleValueHolder newValue = new SingleValueHolder(getPropertyValue(), oldValue);
             getPropertyValue().setValueHolder(newValue);
-        } else if (attribute.isMultiValueAttribute() && value instanceof SingleValueHolder) {
+        } else if (attribute.isMultiValueAttribute() && value instanceof SingleValueHolder singleValue) {
             List<ISingleValueHolder> oldValueList = new ArrayList<>();
-            SingleValueHolder singleValue = (SingleValueHolder)value;
             if (singleValue.getValue() != null) {
                 oldValueList.add(singleValue);
             }

@@ -10,6 +10,12 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import static org.faktorips.devtools.core.ui.editors.testcasetype.NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER;
+import static org.faktorips.devtools.core.ui.editors.testcasetype.NewRootParameterWizard.TEST_RULE_PARAMETER;
+import static org.faktorips.devtools.core.ui.editors.testcasetype.NewRootParameterWizard.TEST_VALUE_PARAMETER;
+import static org.faktorips.devtools.model.testcasetype.TestParameterType.EXPECTED_RESULT;
+import static org.faktorips.devtools.model.testcasetype.TestParameterType.INPUT;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -76,7 +82,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         contentComposite = c;
 
         // in case of a rule parameter no reference browser necessary
-        if (wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_RULE_PARAMETER) {
+        if (wizard.getKindOfTestParameter() != TEST_RULE_PARAMETER) {
             uiToolkit.createLabel(c, Messages.NewRootParamWizardPage_Label_Datatype);
             createRefEditControl(c);
         }
@@ -128,7 +134,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         }
         prevDatatypeOrRule = newDatatypeOrRule;
 
-        if (wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_RULE_PARAMETER) {
+        if (wizard.getKindOfTestParameter() != TEST_RULE_PARAMETER) {
             if (findDatatype(newDatatypeOrRule) == null) {
                 return;
             }
@@ -148,7 +154,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         }
         prevName = name;
 
-        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER) {
+        if (wizard.getKindOfTestParameter() == TEST_RULE_PARAMETER) {
             wizard.newTestRuleParameter(name);
         }
     }
@@ -174,7 +180,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             }
         }
 
-        if (wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_RULE_PARAMETER) {
+        if (wizard.getKindOfTestParameter() != TEST_RULE_PARAMETER) {
             if (findDatatype(datatypeOrRule) == null) {
                 setErrorMessage(NLS.bind(Messages.NewRootParamWizardPage_Error_DatatypeDoesNotExists, datatypeOrRule));
                 return false;
@@ -198,7 +204,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             return false;
         }
 
-        return wizard.getKindOfTestParameter() != NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER
+        return wizard.getKindOfTestParameter() != TEST_POLICY_CMPT_TYPE_PARAMETER
                 ? wizard.isPageValid(PAGE_NUMBER)
                 : validatePolicyTypeParametersAndPage(newTestParameter);
 
@@ -270,7 +276,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         parentComposite.getParent().layout();
 
         // in case of a rule parameter create the test rule parameter, no further input is necessary
-        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER) {
+        if (wizard.getKindOfTestParameter() == TEST_RULE_PARAMETER) {
             wizard.newTestRuleParameter("");
         }
 
@@ -284,17 +290,18 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (editFieldDatatypeOrRule != null) {
             editFieldDatatypeOrRule.getControl().dispose();
         }
-        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_POLICY_CMPT_TYPE_PARAMETER) {
-            editFieldDatatypeOrRule = new TextButtonField(wizard.getUiToolkit().createPcTypeRefControl(
-                    wizard.getTestCaseType().getIpsProject(), c));
-        } else if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_VALUE_PARAMETER) {
-            DatatypeRefControl datatypeRefControl = wizard.getUiToolkit().createDatatypeRefEdit(
-                    wizard.getTestCaseType().getIpsProject(), c);
-            datatypeRefControl.setOnlyValueDatatypesAllowed(true);
-            editFieldDatatypeOrRule = new TextButtonField(datatypeRefControl);
-        } else {
-            throw new RuntimeException("Unsupported kind of test parameter!"); //$NON-NLS-1$
-        }
+        editFieldDatatypeOrRule = switch (wizard.getKindOfTestParameter()) {
+            case TEST_POLICY_CMPT_TYPE_PARAMETER -> new TextButtonField(
+                    wizard.getUiToolkit().createPcTypeRefControl(
+                            wizard.getTestCaseType().getIpsProject(), c));
+            case TEST_VALUE_PARAMETER -> {
+                DatatypeRefControl datatypeRefControl = wizard.getUiToolkit().createDatatypeRefEdit(
+                        wizard.getTestCaseType().getIpsProject(), c);
+                datatypeRefControl.setOnlyValueDatatypesAllowed(true);
+                yield new TextButtonField(datatypeRefControl);
+            }
+            default -> throw new RuntimeException("Unsupported kind of test parameter!"); //$NON-NLS-1$
+        };
         editFieldDatatypeOrRule.addChangeListener(this);
     }
 
@@ -305,14 +312,11 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         if (editFieldParamType != null) {
             editFieldParamType.getControl().dispose();
         }
-        TestParameterType[] allowedValues;
-        if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_RULE_PARAMETER) {
-            allowedValues = new TestParameterType[] { TestParameterType.EXPECTED_RESULT };
-        } else if (wizard.getKindOfTestParameter() == NewRootParameterWizard.TEST_VALUE_PARAMETER) {
-            allowedValues = new TestParameterType[] { TestParameterType.INPUT, TestParameterType.EXPECTED_RESULT };
-        } else {
-            allowedValues = TestParameterType.values();
-        }
+        TestParameterType[] allowedValues = switch (wizard.getKindOfTestParameter()) {
+            case TEST_RULE_PARAMETER -> new TestParameterType[] { EXPECTED_RESULT };
+            case TEST_VALUE_PARAMETER -> new TestParameterType[] { INPUT, EXPECTED_RESULT };
+            default -> TestParameterType.values();
+        };
         editFieldParamType = new EnumField<>(wizard.getUiToolkit().createCombo(c), allowedValues);
         editFieldParamType.addChangeListener(this);
     }

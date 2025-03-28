@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
 
     /**
      * Creates a new <code>IpsObjectEditorPage</code>.
-     * 
+     *
      * @param editor The editor the page belongs to.
      * @param id Page id used to identify the page.
      * @param tabPageName The page name shown at the bottom of the editor as tab page.
@@ -131,7 +131,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * Subclasses might implement this method to provide the visible content of this page.
      * <p>
      * The default implementation just creates the page toolbar.
-     * 
+     *
      * @param formBody The root composite where the content of this page needs to be added to.
      * @param toolkit The layout conform toolkit to create widgets with.
      */
@@ -146,7 +146,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * Subclasses might implement this method to provide actions to the page toolbar.
      * <p>
      * The default implementation does nothing.
-     * 
+     *
      * @param toolbarManager The toolbar manager for the page toolbar to add actions to
      */
     protected void createToolbarActions(IToolBarManager toolbarManager) {
@@ -156,7 +156,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * Creates a grid layout for the page with the indicated number of columns and the default
      * margins.
-     * 
+     *
      * @param numOfColumns Number of columns in the grid.
      * @param equalSize Set to <code>true</code> if the columns should have the same size.
      */
@@ -173,7 +173,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     /**
      * Creates a grid composite for the inner page structure. The composite has no margins but the
      * default spacing settings.
-     * 
+     *
      * @param numOfColumns Number of columns in the grid.
      * @param equalSize Set to <code>true</code> if the columns should have the same size.
      */
@@ -215,10 +215,10 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
     private void refresh(Composite composite) {
         Control[] children = composite.getChildren();
         for (Control element : children) {
-            if (element instanceof IpsSection) {
-                ((IpsSection)element).refresh();
-            } else if (element instanceof Composite) {
-                refresh((Composite)element);
+            if (element instanceof IpsSection section) {
+                section.refresh();
+            } else if (element instanceof Composite childComposite) {
+                refresh(childComposite);
             }
         }
     }
@@ -239,7 +239,7 @@ public abstract class IpsObjectEditorPage extends FormPage implements IDataChang
      * shown on this page. If the user can change editor's data in general, the
      * <code>computeDataChangeableState()</code> is called to evaluate if the data shown on this
      * page can be changed.
-     * 
+     *
      * @see #computeDataChangeableState()
      */
     public void updateDataChangeableState() {

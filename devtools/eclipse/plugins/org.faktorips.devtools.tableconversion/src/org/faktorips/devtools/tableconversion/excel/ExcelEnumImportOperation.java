@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,14 +35,13 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.Messages;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
 
 /**
  * Operation to import IPS enum types or contents from an Excel file.
- * 
+ *
  * @author Roman Grutza, Alexander Weickmann
  */
 public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
@@ -154,12 +153,13 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
     }
 
     private void setValueAttribute(IEnumAttributeValue enumAttribute, String value) {
-        if (enumAttribute.getValueType().equals(ValueType.STRING)) {
-            enumAttribute.setValue(ValueFactory.createStringValue(value));
-        } else if (enumAttribute.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
-            IValue<?> internationalStringValue = enumAttribute.getValue();
-            IInternationalString content = (IInternationalString)internationalStringValue.getContent();
-            content.add(new LocalizedString(getDefaultLanguage(enumAttribute.getIpsProject()), value));
+        switch (enumAttribute.getValueType()) {
+            case STRING -> enumAttribute.setValue(ValueFactory.createStringValue(value));
+            case INTERNATIONAL_STRING -> {
+                IValue<?> internationalStringValue = enumAttribute.getValue();
+                IInternationalString content = (IInternationalString)internationalStringValue.getContent();
+                content.add(new LocalizedString(getDefaultLanguage(enumAttribute.getIpsProject()), value));
+            }
         }
     }
 

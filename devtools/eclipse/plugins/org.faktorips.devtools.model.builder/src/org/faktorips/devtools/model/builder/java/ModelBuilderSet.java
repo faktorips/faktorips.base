@@ -33,7 +33,7 @@ import org.faktorips.util.ArgumentCheck;
  * An {@link IIpsArtefactBuilderSet} implementation that is used in a PlainJavaIpsModel.
  */
 public class ModelBuilderSet extends JavaBuilderSet {
-    
+
     public static final String ID = "org.faktorips.devtools.model.builder.modelbuilderset";
 
     public ModelBuilderSet() {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -99,7 +99,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
     protected void setDescriptionData() {
         if (getIpsObject() == null) {
             setTitle(Messages.DefaultModelDescriptionPage_ErrorIpsModelNotFound);
-            setDescriptionItems(new ArrayList<DescriptionItem>());
+            setDescriptionItems(new ArrayList<>());
             return;
         }
         try {
@@ -131,21 +131,14 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
     }
 
     private String createLabel(IDescribedElement describedElement) {
-        String label;
-        if (describedElement instanceof IAssociation association) {
-            if (association.is1ToMany()) {
-                label = IIpsModel.get().getMultiLanguageSupport()
-                        .getLocalizedPluralLabel(((ILabeledElement)describedElement));
-            } else {
-                label = IIpsModel.get().getMultiLanguageSupport()
-                        .getLocalizedLabel(((ILabeledElement)describedElement));
-            }
-        } else if (describedElement instanceof ILabeledElement) {
-            label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(((ILabeledElement)describedElement));
-        } else {
-            label = describedElement.getName();
-        }
-        return label;
+        return switch (describedElement) {
+            case IAssociation association when association.is1ToMany() -> IIpsModel.get().getMultiLanguageSupport()
+                    .getLocalizedPluralLabel(association);
+            case IAssociation association -> IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
+            case ILabeledElement labeledElement -> IIpsModel.get().getMultiLanguageSupport()
+                    .getLocalizedLabel(labeledElement);
+            default -> describedElement.getName();
+        };
     }
 
     private String createDescription(IDescribedElement describedElement) {
@@ -248,7 +241,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
     /**
      * Create a single ExpandableComposite object with name=faktorips.attributename and
      * child(text)=faktorips.description.
-     * 
+     *
      * @param parent rootContainer object
      * @param index flag for switching the background colour
      */
@@ -484,7 +477,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
     /**
      * Set headline. Use the title to identify the content of the ModelDescriptionPage e.g.
      * tablename, product name ...
-     * 
+     *
      * @param title set title of the form (ProductCmpt name or table name)
      */
     public void setTitle(String title) {
@@ -493,9 +486,9 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
     /**
      * Set the DescriptionItems. The item list is used for creating the controls.
-     * 
+     *
      * The caller defines the default sort order.
-     * 
+     *
      * @param items List with DescriptionItems.
      */
     public void setDescriptionItems(List<DescriptionItem> items) {
@@ -617,7 +610,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
     /**
      * Comparator for DescriptionItems. Sort DescriptionItems by Name & Unicodestyle: z < ä,ö,ü,ß.
-     * 
+     *
      * @author Markus Blum
      */
     class DescriptionItemComparator implements Comparator<DescriptionItem> {

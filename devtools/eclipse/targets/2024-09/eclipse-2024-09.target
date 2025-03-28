@@ -55,7 +55,7 @@
             <unit id="jakarta.annotation-api" version="2.1.1" />
             <unit id="jakarta.inject.jakarta.inject-api" version="1.0.5" />
             <unit id="jakarta.inject.jakarta.inject-api" version="2.0.1" />
-            <unit id="jakarta.servlet-api" version="0.0.0" />
+            <unit id="jakarta.servlet-api" version="6.1.0" />
             <unit id="jakarta.xml.bind" version="0.0.0" />
             <unit id="javax.activation" version="0.0.0" />
             <unit id="javax.xml" version="0.0.0" />
@@ -525,10 +525,6 @@
             <repository location="https://update.faktorzehn.org/p2repositories/2024-09/" />
         </location>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="jakarta.servlet-api" version="4.0.0" />
-            <repository location="https://update.faktorzehn.org/p2repositories/2024-06/" />
-        </location>
-        <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
             <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0" />
             <unit id="org.eclipse.babel.nls_modeling.emf_de.feature.group" version="0.0.0" />
             <unit id="org.eclipse.babel.nls_technology.egit_de.feature.group" version="0.0.0" />
@@ -548,6 +544,11 @@
                     <artifactId>jakarta.servlet.jsp-api</artifactId>
                     <version>2.3.6</version>
                     <type>jar</type>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <version>4.0.2</version>
                 </dependency>
             </dependencies>
         </location>

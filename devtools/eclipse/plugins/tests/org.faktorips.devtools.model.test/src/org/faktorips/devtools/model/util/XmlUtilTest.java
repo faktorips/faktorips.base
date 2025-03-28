@@ -109,7 +109,6 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals("123", XmlUtil.getTextNode(child).getData()); //$NON-NLS-1$
     }
 
-
     @Test
     public void testRemoveIds() {
         Document inputDoc = newDocument();

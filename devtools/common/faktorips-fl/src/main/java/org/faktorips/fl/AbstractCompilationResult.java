@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.fl;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.faktorips.codegen.CodeFragment;
@@ -47,7 +48,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
 
     /**
      * Creates a CompilationResult that contains the given message and source code fragment.
-     * 
+     *
      * @throws IllegalArgumentException if message is null.
      */
     public AbstractCompilationResult(Message message, T codeFragment) {
@@ -126,7 +127,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
 
     /**
      * Adds the message to the result.
-     * 
+     *
      * @throws IllegalArgumentException if the given message is null.
      */
     public void addMessage(Message msg) {
@@ -135,7 +136,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
 
     /**
      * Adds the message list to the result.
-     * 
+     *
      * @throws IllegalArgumentException if list is null.
      */
     public void addMessages(MessageList list) {
@@ -181,11 +182,9 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
      * Extracts the datatypes from an array of compilation results.
      */
     public final Datatype[] getDatatypes(CompilationResult<T>[] results) {
-        Datatype[] types = new Datatype[results.length];
-        for (int i = 0; i < types.length; i++) {
-            types[i] = results[i].getDatatype();
-        }
-        return types;
+        return Arrays.stream(results)
+                .map(CompilationResult::getDatatype)
+                .toArray(Datatype[]::new);
     }
 
 }

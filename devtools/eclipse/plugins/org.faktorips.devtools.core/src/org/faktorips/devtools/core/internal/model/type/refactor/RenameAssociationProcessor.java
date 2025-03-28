@@ -55,8 +55,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
         HashSet<IIpsSrcFile> result = new HashSet<>();
         result.add(getAssociation().getIpsSrcFile());
-        if (getAssociation() instanceof IPolicyCmptTypeAssociation) {
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)getAssociation();
+        if (getAssociation() instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
             IPolicyCmptTypeAssociation inverseAssociation = policyCmptTypeAssociation
                     .findInverseAssociation(policyCmptTypeAssociation.getIpsProject());
             if (inverseAssociation != null) {

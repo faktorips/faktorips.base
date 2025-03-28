@@ -44,7 +44,7 @@ public class TestConfigurationElement
 
     public TestConfigurationElement(String name, Map<String, String> attributes, String value,
             IConfigurationElement[] children) {
-        this(name, attributes, value, children, new HashMap<String, Object>());
+        this(name, attributes, value, children, new HashMap<>());
     }
 
     public TestConfigurationElement(String name, Map<String, String> attributes, String value,

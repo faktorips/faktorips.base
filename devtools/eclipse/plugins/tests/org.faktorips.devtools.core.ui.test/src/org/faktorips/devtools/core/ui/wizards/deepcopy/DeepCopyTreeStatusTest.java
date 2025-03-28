@@ -185,11 +185,11 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         when(ruleConfigs.get(1).getName()).thenReturn("RuleTwo");
 
         when(productCmptGenerations[0].getValidationRuleConfigs()).thenReturn(ruleConfigs);
-        when(productCmptGenerations[1].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptGenerations[2].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptGenerations[3].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptGenerations[4].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
-        when(productCmptGenerations[5].getValidationRuleConfigs()).thenReturn(new ArrayList<IValidationRuleConfig>());
+        when(productCmptGenerations[1].getValidationRuleConfigs()).thenReturn(new ArrayList<>());
+        when(productCmptGenerations[2].getValidationRuleConfigs()).thenReturn(new ArrayList<>());
+        when(productCmptGenerations[3].getValidationRuleConfigs()).thenReturn(new ArrayList<>());
+        when(productCmptGenerations[4].getValidationRuleConfigs()).thenReturn(new ArrayList<>());
+        when(productCmptGenerations[5].getValidationRuleConfigs()).thenReturn(new ArrayList<>());
     }
 
     private void initDeepCopyTreeStatusWithStructure() throws CycleInProductStructureException {

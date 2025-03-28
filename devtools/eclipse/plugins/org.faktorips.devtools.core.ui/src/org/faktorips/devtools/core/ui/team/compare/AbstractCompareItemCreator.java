@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,7 +42,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  * the result structure represents a difference/change between local and remote ipsobject. By
  * doubleclicking such a node, a text representation of the ipsobject is displayed in the content
  * mergeviewer (parallel scrollable textviewers at the bottom of the compare window).
- * 
+ *
  * @author Stefan Widmaier
  */
 public abstract class AbstractCompareItemCreator implements IStructureCreator {
@@ -72,17 +72,17 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
                 }
             }
         }
-        if (input instanceof ResourceNode) {
-            IResource file = ((ResourceNode)input).getResource();
+        if (input instanceof ResourceNode resourceNode) {
+            IResource file = resourceNode.getResource();
             IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(file).as(AResource.class));
             if (element instanceof IIpsSrcFile) {
                 return getStructureForIpsSrcFile((IIpsSrcFile)element);
             }
-        } else if (input instanceof IEncodedStreamContentAccessor && input instanceof ITypedElement) {
+        } else if (input instanceof IEncodedStreamContentAccessor remoteContent
+                && input instanceof ITypedElement typedElement) {
             try {
-                final IEncodedStreamContentAccessor remoteContent = (IEncodedStreamContentAccessor)input;
                 InputStream is = remoteContent.getContents();
-                String name = ((ITypedElement)input).getName();
+                String name = typedElement.getName();
                 IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable(name, is);
                 return getStructureForIpsSrcFile(srcFile);
             } catch (CoreException e) {
@@ -96,11 +96,11 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
                     return getStructureForIpsSrcFile((IIpsSrcFile)element);
                 }
             }
-        } else if (input instanceof HistoryItem) {
-            IResource res = ((HistoryItem)input).getResource();
+        } else if (input instanceof HistoryItem historyItem) {
+            IResource res = historyItem.getResource();
             IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(res).as(AResource.class));
-            if (element instanceof IIpsSrcFile) {
-                return getStructureForIpsSrcFile((IIpsSrcFile)element);
+            if (element instanceof IIpsSrcFile ipsSrcFile) {
+                return getStructureForIpsSrcFile(ipsSrcFile);
             }
         }
         return null;
@@ -131,10 +131,10 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
      * org.eclipse.compare.structuremergeviewer.Differencer). It ist NOT used for text comparision
      * (RangeDifferencing) in <code>TextMergeViewer</code>, where the document contained in
      * compareItems is used.
-     * 
+     *
      * @see AbstractCompareItem#getContentString()
      * @see AbstractCompareItem#getContentStringWithoutWhiteSpace()
-     * 
+     *
      */
     @Override
     public String getContents(Object node, boolean ignoreWhitespace) {

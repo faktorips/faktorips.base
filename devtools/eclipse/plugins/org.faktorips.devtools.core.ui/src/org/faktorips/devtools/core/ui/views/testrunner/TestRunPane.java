@@ -264,7 +264,7 @@ public class TestRunPane {
 
         TableItem tableItem = new TableItem(fTable, SWT.NONE);
         tableItem.setText(qualifiedTestName);
-        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(testImageDescriptor));
+        tableItem.setImage(testRunnerViewPart.getResourceManager().get(testImageDescriptor));
 
         TestTableEntry testTableEntry = new TestTableEntry(qualifiedTestName, tableItem);
         fTableItemMap.put(testId, testTableEntry);
@@ -290,7 +290,7 @@ public class TestRunPane {
      */
     private void updateTestEntryStatusImage(TestTableEntry testTableEntry) {
         TableItem tableItem = testTableEntry.getTableItem();
-        Image baseImage = (Image)testRunnerViewPart.getResourceManager().get(testImageDescriptor);
+        Image baseImage = testRunnerViewPart.getResourceManager().get(testImageDescriptor);
         ImageDescriptor overlay = null;
         if (testTableEntry.isError()) {
             overlay = OverlayIcons.ERROR_OVR_DESC;
@@ -300,7 +300,7 @@ public class TestRunPane {
             overlay = OverlayIcons.SUCCESS_OVR_DESC;
         }
         ImageDescriptor imageDescriptor = new DecorationOverlayIcon(baseImage, overlay, IDecoration.BOTTOM_LEFT);
-        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
+        tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
 
         if (showErrorsOrFailureOnly && !(testTableEntry.isError() || testTableEntry.isFailure())) {
             // remove successfully tested element from table,
@@ -321,7 +321,7 @@ public class TestRunPane {
 
         TableItem tableItem = testTableEntry.getTableItem();
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testrun.gif"); //$NON-NLS-1$
-        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
+        tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
 
         // select current item and scroll
         if (!scrollLocked) {
@@ -360,7 +360,7 @@ public class TestRunPane {
         }
         TableItem tableItem = testTableEntry.getTableItem();
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testerr.gif"); //$NON-NLS-1$
-        tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
+        tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
         testTableEntry.setErrorDetails(errorDetails);
         testTableEntry.setStatus(TestTableEntry.ERROR);
 
@@ -440,7 +440,7 @@ public class TestRunPane {
                 // failure filter
                 ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
                         "obj16/testok.gif"); //$NON-NLS-1$
-                tableItem.setImage((Image)testRunnerViewPart.getResourceManager().get(imageDescriptor));
+                tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
                 tableItem.setData(tableEntry);
                 tableEntry.setTableItem(tableItem);
             }

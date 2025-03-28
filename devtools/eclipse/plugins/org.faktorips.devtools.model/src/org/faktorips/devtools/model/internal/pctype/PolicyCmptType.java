@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import static org.faktorips.devtools.model.pctype.AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
+import static org.faktorips.devtools.model.pctype.AttributeType.DERIVED_ON_THE_FLY;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -195,11 +198,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
         for (IAttribute attr : attributes) {
             IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)attr;
-            if (attribute.getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL) {
+            AttributeType attributeType = attribute.getAttributeType();
+            if (DERIVED_BY_EXPLICIT_METHOD_CALL == attributeType) {
                 if (!attribute.isProductRelevant()) {
                     return true;
                 }
-            } else if (attribute.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY) {
+            } else if (DERIVED_ON_THE_FLY == attributeType) {
                 return true;
             }
         }
@@ -623,7 +627,8 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
          * union
          */
         for (IAssociation candidate : candidateSubsets) {
-            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) || !policyCmptTypeAssociation.isCompositionDetailToMaster()) {
+            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation)
+                    || !policyCmptTypeAssociation.isCompositionDetailToMaster()) {
                 continue;
             }
             IPolicyCmptTypeAssociation inverseAssociationOfCandidate = policyCmptTypeAssociation

@@ -30,7 +30,7 @@ public abstract class AbstractRootPageElement extends AbstractCompositePageEleme
     @Override
     protected void buildInternal() {
         createId();
-        setSubElements(new ArrayList<IPageElement>());
+        setSubElements(new ArrayList<>());
     }
 
     @Override

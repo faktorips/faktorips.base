@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,12 +31,13 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Sorter for the ModelExplorer-TreeViewer. Sorts folders displayed in the ModelExplorer by the
  * sorting number set in the folder properties. PackageFragments are placed above Files,
  * PolicyCmptTypes are placed above table structures.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ModelExplorerSorter extends ViewerComparator {
@@ -78,31 +79,24 @@ public class ModelExplorerSorter extends ViewerComparator {
 
     @Override
     public int category(Object element) {
-        if (element instanceof IIpsObjectPathContainer) {
+        return switch (element) {
             // Containers are the number one
-            return ModelExplorerCategory.CAT_IPS_CONTAINERS.getOrder();
-        }
-        if (element instanceof IIpsElement ipsElement) {
-            if (ipsElement instanceof IIpsObject) {
-                return category(((IIpsObject)ipsElement).getIpsObjectType());
-            } else if (ipsElement instanceof IIpsSrcFile) {
-                return category(((IIpsSrcFile)ipsElement).getIpsObjectType());
-            } else {
-                // Projects and Fragments above other values (IpsObjectParts doesn't matter)
-                return ModelExplorerCategory.CAT_PROJECT.getOrder();
+            case IIpsObjectPathContainer $ -> ModelExplorerCategory.CAT_IPS_CONTAINERS.getOrder();
+            case IIpsElement ipsElement -> {
+                yield switch (ipsElement) {
+                    case IIpsObject ipsObject -> category(ipsObject.getIpsObjectType());
+                    case IIpsSrcFile ipsSrcFile -> category(ipsSrcFile.getIpsObjectType());
+                    // Projects and Fragments above other values (IpsObjectParts doesn't matter)
+                    default -> ModelExplorerCategory.CAT_PROJECT.getOrder();
+                };
             }
-        } else {
-            if (element instanceof IProject) {
-                // IProjects in same category as IpsProject
-                return ModelExplorerCategory.CAT_PROJECT.getOrder();
-            } else if (element instanceof IFolder) {
-                // other Folders after IpsFragments(Root)
-                return ModelExplorerCategory.CAT_FOLDER.getOrder();
-            } else {
-                // any other item above all
-                return Integer.MAX_VALUE;
-            }
-        }
+            // IProjects in same category as IpsProject
+            case IProject $ -> ModelExplorerCategory.CAT_PROJECT.getOrder();
+            // other Folders after IpsFragments(Root)
+            case IFolder $ -> ModelExplorerCategory.CAT_FOLDER.getOrder();
+            // any other item above all
+            default -> Integer.MAX_VALUE;
+        };
     }
 
     private int category(IpsObjectType ipsObjectType) {
@@ -218,32 +212,22 @@ public class ModelExplorerSorter extends ViewerComparator {
     }
 
     private String getProjectName(Object o) {
-        if (o instanceof IProject) {
-            return ((IProject)o).getName();
-        } else if (o instanceof IIpsProject) {
-            return ((IIpsProject)o).getName();
-        } else {
-            return ""; //$NON-NLS-1$
-        }
+        return switch (o) {
+            case IProject project -> project.getName();
+            case IIpsProject ipsProject -> ipsProject.getName();
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     private int getTypeMemberOrder(Object member) {
-        if (member instanceof IAttribute) {
-            return 1;
-        }
-        if (member instanceof IAssociation) {
-            return 2;
-        }
-        if (member instanceof IMethod) {
-            return 3;
-        }
-        if (member instanceof ITableStructure) {
-            return 4;
-        }
-        if (member instanceof IValidationRule) {
-            return 5;
-        }
-        return -1;
+        return switch (member) {
+            case IAttribute $ -> 1;
+            case IAssociation $ -> 2;
+            case IMethod $ -> 3;
+            case ITableStructure $ -> 4;
+            case IValidationRule $ -> 5;
+            default -> -1;
+        };
 
     }
 }

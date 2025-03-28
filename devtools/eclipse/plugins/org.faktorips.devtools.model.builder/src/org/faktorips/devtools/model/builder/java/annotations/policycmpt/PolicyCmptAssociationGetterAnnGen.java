@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,13 +39,12 @@ public class PolicyCmptAssociationGetterAnnGen extends AbstractAssociationAnnGen
     }
 
     protected XPolicyAssociation getXPolicyAssociation(AbstractGeneratorModelNode modelNode) {
-        if (modelNode instanceof XPolicyAssociation) {
-            return (XPolicyAssociation)modelNode;
-        } else if (modelNode instanceof XDerivedUnionAssociation derivedUnionAssociation) {
-            return modelNode.getModelNode(derivedUnionAssociation.getAssociation(), XPolicyAssociation.class);
-        } else {
-            throw new IllegalArgumentException("Unsupported model node " + modelNode);
-        }
+        return switch (modelNode) {
+            case XPolicyAssociation policyAssociation -> policyAssociation;
+            case XDerivedUnionAssociation derivedUnionAssociation -> modelNode
+                    .getModelNode(derivedUnionAssociation.getAssociation(), XPolicyAssociation.class);
+            default -> throw new IllegalArgumentException("Unsupported model node " + modelNode);
+        };
     }
 
     protected JavaCodeFragment createAnnInverseAssociation(XPolicyAssociation association) {

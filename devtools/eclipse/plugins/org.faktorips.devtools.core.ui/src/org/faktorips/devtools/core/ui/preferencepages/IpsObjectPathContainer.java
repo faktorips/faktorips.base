@@ -155,14 +155,14 @@ public class IpsObjectPathContainer {
         orderComposite = new ObjectPathOrderComposite(folder);
 
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_source,
-                (Image)resourceManager.get(PACKAGE_FRAGMENT_ROOT_IMAGE), srcFolderComposite);
+                resourceManager.get(PACKAGE_FRAGMENT_ROOT_IMAGE), srcFolderComposite);
 
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, (Image)resourceManager.get(PROJECT_IMAGE),
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_projects, resourceManager.get(PROJECT_IMAGE),
                 refProjectsComposite);
-        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, (Image)resourceManager.get(ARCHIVE_IMAGE),
+        addTabItem(folder, Messages.IpsObjectPathContainer_tab_archives, resourceManager.get(ARCHIVE_IMAGE),
                 archiveComposite);
         addTabItem(folder, Messages.IpsObjectPathContainer_tab_path_order,
-                (Image)resourceManager.get(OBJECT_PATH_IMAGE),
+                resourceManager.get(OBJECT_PATH_IMAGE),
                 orderComposite);
 
         srcFolderComposite.init(ipsObjectPath);

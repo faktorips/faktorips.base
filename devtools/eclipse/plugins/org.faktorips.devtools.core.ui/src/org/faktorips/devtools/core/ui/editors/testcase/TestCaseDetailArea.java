@@ -1,14 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.testcase;
+
+import static org.faktorips.devtools.model.testcase.TestRuleViolationType.getTestRuleViolationType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +69,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Detail section class of the test case editor. Supports dynamic creation of detail edit controls.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseDetailArea {
@@ -209,15 +211,14 @@ public class TestCaseDetailArea {
         GridLayout layout = new GridLayout(1, false);
         container.setLayout(layout);
         for (ITestObject testObject : testObjects) {
-            if (testObject instanceof ITestValue) {
-                Composite borderedComosite = createBorderComposite(container);
-                createTestValuesSection((ITestValue)testObject, borderedComosite);
-            } else if (testObject instanceof ITestRule) {
-                Composite borderedComosite = createBorderComposite(container);
-                createTestRuleSection((ITestRule)testObject, borderedComosite);
-            } else if (testObject instanceof ITestPolicyCmpt) {
-                Composite borderedComosite = createBorderComposite(container);
-                createPolicyCmptAndLinkSection((ITestPolicyCmpt)testObject, borderedComosite);
+            switch (testObject) {
+                case ITestValue testValue -> createTestValuesSection(testValue, createBorderComposite(container));
+                case ITestRule testRule -> createTestRuleSection(testRule, createBorderComposite(container));
+                case ITestPolicyCmpt testPolicyCmpt -> createPolicyCmptAndLinkSection(testPolicyCmpt,
+                        createBorderComposite(container));
+                default -> {
+                    // can't handle
+                }
             }
         }
         scrolledComposite.setContent(container);
@@ -790,13 +791,13 @@ public class TestCaseDetailArea {
         IIpsObjectPart object = editField2ModelObject.get(editField);
         String actualValueToSet = nullIfNullRepresentation(actualValue);
         if (object != null) {
-            if (object instanceof ITestValue) {
-                ((ITestValue)object).setValue(actualValueToSet);
-            } else if (object instanceof ITestAttributeValue) {
-                ((ITestAttributeValue)object).setValue(actualValueToSet);
-            } else if (object instanceof ITestRule) {
-                ((ITestRule)object).setViolationType(
-                        TestRuleViolationType.getTestRuleViolationType(actualValue));
+            switch (object) {
+                case ITestValue testValue -> testValue.setValue(actualValueToSet);
+                case ITestAttributeValue testAttributeValue -> testAttributeValue.setValue(actualValueToSet);
+                case ITestRule testRule -> testRule.setViolationType(getTestRuleViolationType(actualValue));
+                default -> {
+                    // don't care
+                }
             }
         }
     }
@@ -824,10 +825,10 @@ public class TestCaseDetailArea {
             editField.getControl().addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    if (object instanceof ITestPolicyCmpt) {
-                        testCaseSection.selectInTreeByObject((ITestPolicyCmpt)object, false);
-                    } else if (object instanceof ITestPolicyCmptLink) {
-                        testCaseSection.selectInTreeByObject((ITestPolicyCmptLink)object, false);
+                    if (object instanceof ITestPolicyCmpt testPolicyCmpt) {
+                        testCaseSection.selectInTreeByObject(testPolicyCmpt, false);
+                    } else if (object instanceof ITestPolicyCmptLink testPolicyCmptLink) {
+                        testCaseSection.selectInTreeByObject(testPolicyCmptLink, false);
                     }
                 }
             });
@@ -900,12 +901,12 @@ public class TestCaseDetailArea {
         private ITestObject testObject;
 
         public SectionSelectMouseListener(IIpsObjectPart object) {
-            if (object instanceof ITestPolicyCmpt) {
-                testPolicyCmptType = (ITestPolicyCmpt)object;
-            } else if (object instanceof ITestPolicyCmptLink) {
-                testPolicyCmptTypeLink = (ITestPolicyCmptLink)object;
-            } else if (object instanceof ITestObject) {
-                testObject = (ITestObject)object;
+            if (object instanceof ITestPolicyCmpt testPolicyCmpt) {
+                testPolicyCmptType = testPolicyCmpt;
+            } else if (object instanceof ITestPolicyCmptLink testPolicyCmptLink) {
+                testPolicyCmptTypeLink = testPolicyCmptLink;
+            } else if (object instanceof ITestObject t) {
+                testObject = t;
             }
         }
 

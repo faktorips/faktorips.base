@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,15 +48,12 @@ public abstract class ProductClassBuilder<T extends XProductClass> extends Xtend
 
     @Override
     protected IIpsObject getSupportedIpsObject(IIpsObjectPartContainer ipsObjectPartContainer) {
-        IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-        if (ipsObject instanceof IProductCmptType) {
-            return ipsObject;
-        } else if (ipsObject instanceof IPolicyCmptType policyCmptType) {
-            if (policyCmptType.isConfigurableByProductCmptType()) {
-                return policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
-            }
-        }
-        return null;
+        return switch (ipsObjectPartContainer.getIpsObject()) {
+            case IProductCmptType productCmptType -> productCmptType;
+            case IPolicyCmptType policyCmptType when policyCmptType.isConfigurableByProductCmptType() -> policyCmptType
+                    .findProductCmptType(policyCmptType.getIpsProject());
+            default -> null;
+        };
     }
 
 }

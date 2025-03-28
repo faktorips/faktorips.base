@@ -4,7 +4,7 @@ Bundle-Name: Faktor-IPS Tests for devtools.abstraction.eclipse
 Bundle-SymbolicName: org.faktorips.devtools.abstraction.eclipse.test;singleton:=true
 Bundle-Version: 25.7.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Fragment-Host: org.faktorips.devtools.abstraction.eclipse
 Bundle-ClassPath: .
 Import-Package: org.apache.commons.io;version="2.11.0",

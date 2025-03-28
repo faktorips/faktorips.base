@@ -62,7 +62,7 @@ Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.wizards.tablecontents,
  org.faktorips.devtools.core.ui.wizards.tableexport,
  org.faktorips.devtools.core.ui.wizards.type
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Fragment-Host: org.faktorips.devtools.core.ui
 Import-Package: org.faktorips.abstracttest,
  org.faktorips.abstracttest.matcher,

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
  * product components (their structures) are consistent with differences in the text representation
  * displayed in the <code>ProductCmptCompareViewer</code>. Moreover the representation must be
  * consistent with the ProductCmptEditor.
- * 
+ *
  * @see org.faktorips.devtools.core.ui.team.compare.productcmpt.ProductCmptCompareItem
  */
 public class ProductCmptCompareItemComparator implements Comparator<AbstractCompareItem> {
@@ -51,11 +51,10 @@ public class ProductCmptCompareItemComparator implements Comparator<AbstractComp
         IIpsElement element2 = pci2.getIpsElement();
 
         // Sort generations by generation number (and thus chronologically)
-        if (element1 instanceof IProductCmptGeneration && element2 instanceof IProductCmptGeneration) {
-            return ((IProductCmptGeneration)element1).getGenerationNo()
-                    - ((IProductCmptGeneration)element2).getGenerationNo();
-        } else if ((element1 instanceof IPropertyValue) && (element2 instanceof IPropertyValue)) {
-            return comparePropertyValues((IPropertyValue)element1, (IPropertyValue)element2);
+        if (element1 instanceof IProductCmptGeneration gen1 && element2 instanceof IProductCmptGeneration gen2) {
+            return gen1.getGenerationNo() - gen2.getGenerationNo();
+        } else if ((element1 instanceof IPropertyValue value1) && (element2 instanceof IPropertyValue value2)) {
+            return comparePropertyValues(value1, value2);
         } else {
             return typeIndexOf(element1) - typeIndexOf(element2);
         }

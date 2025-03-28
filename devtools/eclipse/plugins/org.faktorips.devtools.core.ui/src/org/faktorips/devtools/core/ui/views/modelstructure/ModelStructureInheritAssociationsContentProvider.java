@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -52,30 +52,24 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
         // if input is an IType, alter it to the corresponding IIpsProject
-        IIpsProject inputProject = null;
-        if (inputElement instanceof IType) {
+        if (inputElement instanceof IType type) {
             monitor.beginTask(getWaitingLabel(), 2);
-            inputProject = ((IType)inputElement).getIpsProject();
-            List<IType> projectTypes = getProjectITypes(inputProject, ((IType)inputElement).getIpsObjectType());
+            IIpsProject inputProject = type.getIpsProject();
+            List<IType> projectTypes = getProjectITypes(inputProject, type.getIpsObjectType());
             monitor.worked(1);
-            Collection<IType> rootElementsForIType = getRootElementsForIType((IType)inputElement, projectTypes,
-                    ToChildAssociationType.SELF, new ArrayList<IType>(), new ArrayList<PathElement>());
+            Collection<IType> rootElementsForIType = getRootElementsForIType(type, projectTypes,
+                    ToChildAssociationType.SELF, new ArrayList<>(), new ArrayList<>());
             storedRootElements = ComponentNode.encapsulateComponentTypes(rootElementsForIType, null, inputProject);
             Object[] rootElements = storedRootElements.toArray();
             monitor.worked(1);
             monitor.done();
             return rootElements;
-        } else if (inputElement instanceof IIpsProject) {
-            inputProject = (IIpsProject)inputElement;
-            IIpsProject project = inputProject;
-
+        } else if (inputElement instanceof IIpsProject project) {
             monitor.beginTask(getWaitingLabel(), 3);
-            List<IType> projectComponents;
-            if (getShowTypeState() == ShowTypeState.SHOW_POLICIES) {
-                projectComponents = getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE);
-            } else {
-                projectComponents = getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE);
-            }
+            List<IType> projectComponents = switch (getShowTypeState()) {
+                case SHOW_POLICIES -> getProjectITypes(project, IpsObjectType.POLICY_CMPT_TYPE);
+                case SHOW_PRODUCTS -> getProjectITypes(project, IpsObjectType.PRODUCT_CMPT_TYPE);
+            };
             monitor.worked(1);
 
             List<IType> derivedRootElements = computeDerivedRootElements(
@@ -98,7 +92,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
      * A run of this method with an empty rootCandidates parameter will return a list of
      * root-candidates. A second run of this method with the previously obtained rootCandidates as
      * parameter, will remove false candidates from the list. The method calls itself recursively.
-     * 
+     *
      * @param element the starting point
      * @param componentList the list of all concerned elements
      * @param association the

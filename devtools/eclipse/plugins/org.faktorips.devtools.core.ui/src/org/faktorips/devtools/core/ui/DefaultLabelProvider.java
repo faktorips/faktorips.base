@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,7 @@ import org.faktorips.fl.FlFunction;
  * <p>
  * For {@link IIpsSrcFile}s you could specify whether to use icon and label from the source file
  * itself or to look for the {@link IIpsObject} enclosed in the source file.
- * 
+ *
  * @author Cornelius Dirmeier
  */
 public class DefaultLabelProvider extends LabelProvider {
@@ -47,41 +47,35 @@ public class DefaultLabelProvider extends LabelProvider {
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof IAdaptable adaptable) {
-            Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
-            if (result != null) {
-                return result;
+        return switch (element) {
+            case IAdaptable adaptable -> {
+                Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
+                if (result != null) {
+                    yield result;
+                }
+                // check adaptable to IIpsSrcFile
+                IIpsSrcFile adaptedIpsSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
+                if (adaptedIpsSrcFile != null) {
+                    yield IIpsDecorators.getImageHandling().getImage(adaptedIpsSrcFile);
+                }
+                yield super.getImage(element);
             }
-            // check adaptable to IIpsSrcFile
-            IIpsSrcFile adaptedIpsSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
-            if (adaptedIpsSrcFile != null) {
-                return IIpsDecorators.getImageHandling().getImage(adaptedIpsSrcFile);
-            }
-        }
-        if (element instanceof Datatype) {
-            return IIpsDecorators.getImageHandling().getSharedImage("Datatype.gif", true); //$NON-NLS-1$
-        } else if (element instanceof FlFunction) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true); //$NON-NLS-1$
-        } else if (element instanceof EnumTypeDatatypeAdapter) {
-            return getImage(((EnumTypeDatatypeAdapter)element).getEnumType());
-        }
-        return super.getImage(element);
+            case EnumTypeDatatypeAdapter enumTypeDatatypeAdapter -> getImage(enumTypeDatatypeAdapter.getEnumType());
+            case Datatype $ -> IIpsDecorators.getImageHandling().getSharedImage("Datatype.gif", true); //$NON-NLS-1$
+            case FlFunction<?> $ -> IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true); //$NON-NLS-1$
+            default -> super.getImage(element);
+        };
     }
 
     @Override
     public String getText(Object element) {
-        if (element == null) {
-            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        }
-        if (element instanceof IIpsElement ipsElement) {
-            return IpsUIPlugin.getLabel(ipsElement);
-        }
-        if (element instanceof IpsSrcFileViewItem) {
-            return getText(((IpsSrcFileViewItem)element).getIpsSrcFile());
-        } else if (element instanceof EnumTypeDatatypeAdapter) {
-            return getText(((EnumTypeDatatypeAdapter)element).getEnumType());
-        }
-        return element.toString();
+        return switch (element) {
+            case null -> IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            case IIpsElement ipsElement -> IpsUIPlugin.getLabel(ipsElement);
+            case IpsSrcFileViewItem viewItem -> getText(viewItem.getIpsSrcFile());
+            case EnumTypeDatatypeAdapter enumTypeDatatypeAdapter -> getText(enumTypeDatatypeAdapter.getEnumType());
+            default -> element.toString();
+        };
     }
 
     @Override

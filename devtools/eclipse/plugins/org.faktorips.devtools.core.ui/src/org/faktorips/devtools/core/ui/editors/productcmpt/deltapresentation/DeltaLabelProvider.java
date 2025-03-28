@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,11 +22,10 @@ import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIc
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
-import org.faktorips.devtools.model.productcmpt.DeltaType.Kind;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
 
 /**
- * 
+ *
  */
 public class DeltaLabelProvider extends LabelProvider {
     private WorkbenchLabelProvider workbenchLabelProvider;
@@ -81,20 +80,18 @@ public class DeltaLabelProvider extends LabelProvider {
     }
 
     private ImageDescriptor getOverlayedImageDescriptor(Image baseImage, DeltaType.Kind kind) {
-        if (kind == Kind.ADD) {
-            return DeltaCompositeIcon.createAddImage(baseImage);
-        } else if (kind == Kind.DELETE) {
-            return DeltaCompositeIcon.createDeleteImage(baseImage);
-        } else {
-            return DeltaCompositeIcon.createModifyImage(baseImage);
-        }
+        return switch (kind) {
+            case ADD -> DeltaCompositeIcon.createAddImage(baseImage);
+            case DELETE -> DeltaCompositeIcon.createDeleteImage(baseImage);
+            default -> DeltaCompositeIcon.createModifyImage(baseImage);
+        };
     }
 
     private Image getImageForDescriptor(Object element, ImageDescriptor descriptor) {
         if (descriptor == null) {
             return getFallbackImage(element);
         } else {
-            return (Image)resourceManager.get(descriptor);
+            return resourceManager.get(descriptor);
         }
     }
 

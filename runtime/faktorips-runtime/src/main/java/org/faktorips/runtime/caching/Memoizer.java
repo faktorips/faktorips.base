@@ -40,12 +40,11 @@ public class Memoizer<K, V> implements IComputable<K, V> {
     private final ReferenceQueue<V> queue = new ReferenceQueue<>();
 
     /**
-     * The constructor to create a {@link Memoizer} with default values for the internal
-     * {@link ConcurrentHashMap}
+     * The constructor to create a Memoizer with default values for the internal ConcurrentHashMap.
      *
-     * @param computable the {@link IComputable} to load new items
-     * @see #of(Class, Function) the static {@link #of(Class, Function)} factory method to avoid
-     *          creating the {@link IComputable} and instead using a {@link Function}.
+     * @param computable the IComputable to load new items.
+     * @see #of(Class, Function) the static factory method to avoid creating the IComputable and
+     *          instead using a Function.
      */
     public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;

@@ -218,7 +218,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         NodeList nodeList = prodCmptElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            if (node instanceof Element && ((Element)node).getNodeName().equals(tagName)) {
+            if (node instanceof Element && node.getNodeName().equals(tagName)) {
                 linkElements.add((Element)nodeList.item(i));
             }
         }

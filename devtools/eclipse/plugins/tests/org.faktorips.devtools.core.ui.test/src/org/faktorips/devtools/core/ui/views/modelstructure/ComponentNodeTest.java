@@ -79,7 +79,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     @Test
     public void testEncapsulateComponentTypes_EmptyListInput() {
         IIpsProject project = newIpsProject();
-        List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
+        List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<>(),
                 null, project);
 
         assertTrue(encapsulateComponentTypes.isEmpty());
@@ -116,7 +116,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testEncapsulateComponentTypes_NullProjectAndEmptyListInput() {
-        List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
+        List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<>(),
                 null, null);
         assertTrue(encapsulateComponentTypes.isEmpty());
     }

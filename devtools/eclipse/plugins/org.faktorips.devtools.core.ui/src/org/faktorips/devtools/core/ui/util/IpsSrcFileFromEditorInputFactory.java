@@ -61,15 +61,13 @@ public class IpsSrcFileFromEditorInputFactory {
      *             {@link IStorageEditorInput})
      */
     public IIpsSrcFile createIpsSrcFile(IEditorInput editorInput) throws PartInitException {
-        IIpsSrcFile ipsSrcFile = null;
-        if (editorInput instanceof IFileEditorInput) {
-            ipsSrcFile = createIpsSrcFileFromFileEditorInput((IFileEditorInput)editorInput);
-        } else if (editorInput instanceof IpsArchiveEditorInput) {
-            ipsSrcFile = ((IpsArchiveEditorInput)editorInput).getIpsSrcFile();
-        } else if (editorInput instanceof IStorageEditorInput) {
-            ipsSrcFile = createIpsSrcFileFromStorageEditorInput((IStorageEditorInput)editorInput);
-        }
-        return ipsSrcFile;
+        return switch (editorInput) {
+            case null -> null;
+            case IFileEditorInput fileEditorInput -> createIpsSrcFileFromFileEditorInput(fileEditorInput);
+            case IpsArchiveEditorInput archiveEditorInput -> archiveEditorInput.getIpsSrcFile();
+            case IStorageEditorInput storageEditorInput -> createIpsSrcFileFromStorageEditorInput(storageEditorInput);
+            default -> null;
+        };
     }
 
     /**
@@ -162,7 +160,8 @@ public class IpsSrcFileFromEditorInputFactory {
     }
 
     /**
-     * Searches and returns the root folder of the {@link IIpsProject project} by the indicated {@link IPath path}.<br>
+     * Searches and returns the root folder of the {@link IIpsProject project} by the indicated
+     * {@link IPath path}.<br>
      * Returns <code>null</code> if the root doesn't exist or an error occurs during search.
      */
     private static IIpsPackageFragmentRoot findIpsPackageFragmentRoot(IIpsProject ipsProject,
@@ -232,7 +231,7 @@ public class IpsSrcFileFromEditorInputFactory {
         if (root == null) {
             throw new IpsException(
                     "No mutable counterpart of the external file has been found, even if it should exist. " //$NON-NLS-1$
-                    + "Reason: the IPS package root does not exist."); //$NON-NLS-1$
+                            + "Reason: the IPS package root does not exist."); //$NON-NLS-1$
         }
         StringBuilder folderName = new StringBuilder();
         for (int i = 1; i < segments.length - 1; i++) {
@@ -245,14 +244,14 @@ public class IpsSrcFileFromEditorInputFactory {
         if (ipsFolder == null) {
             throw new IpsException(
                     "The mutable counterpart of the external file has not been found, even if it should exist. " //$NON-NLS-1$
-                    + "Reason: the IPS folder does not exist."); //$NON-NLS-1$
+                            + "Reason: the IPS folder does not exist."); //$NON-NLS-1$
         }
 
         IIpsSrcFile mutableSrcFile = ipsFolder.getIpsSrcFile(name);
         if (mutableSrcFile == null) {
             throw new IpsException(
                     "The mutable counterpart of the external file has not been found, even if it should exist. " //$NON-NLS-1$
-                    + "Reason: the IPS SrcFile does not exist."); //$NON-NLS-1$
+                            + "Reason: the IPS SrcFile does not exist."); //$NON-NLS-1$
         }
 
         externalSrcFile.setMutableIpsSrcFile(mutableSrcFile);

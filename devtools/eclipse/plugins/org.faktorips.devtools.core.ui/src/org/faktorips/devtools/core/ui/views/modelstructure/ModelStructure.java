@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -82,7 +82,7 @@ import org.faktorips.devtools.model.type.IType;
 
 /**
  * This is the main class for the model structure view.
- * 
+ *
  * @author noschinski2
  */
 public final class ModelStructure extends AbstractShowInSupportingViewPart implements PropertyChangeListener {
@@ -316,7 +316,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     /**
      * Configures the View to display the scope of a complete IpsProject.
-     * 
+     *
      * @param input the selected {@link IIpsProject}
      */
     public void showStructure(IIpsProject input) {
@@ -335,23 +335,21 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     /**
      * Configures the View to display the scope of a single IType.
-     * 
+     *
      * @param input the selected {@link IType}
      */
     public void showStructure(IType input) {
         toggleProductPolicyAction.setEnabled(true);
-        if (input instanceof IPolicyCmptType) {
+        if (input instanceof IPolicyCmptType policy) {
             setProductCmptTypeImage();
-            IPolicyCmptType policy = (IPolicyCmptType)input;
             toggledProductCmptInput = policy.findProductCmptType(policy.getIpsProject());
             if (toggledProductCmptInput == null) {
                 toggleProductPolicyAction.setEnabled(false);
             }
             toggledPolicyCmptInput = (IPolicyCmptType)input;
             provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
-        } else if (input instanceof IProductCmptType) {
+        } else if (input instanceof IProductCmptType product) {
             setPolicyCmptTypeImage();
-            IProductCmptType product = (IProductCmptType)input;
             toggledPolicyCmptInput = product.findPolicyCmptType(product.getIpsProject());
             if (toggledPolicyCmptInput == null) {
                 toggleProductPolicyAction.setEnabled(false);
@@ -369,7 +367,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         List<List<ComponentNode>> paths = new ArrayList<>();
 
         for (ComponentNode rootElement : rootElements) {
-            computePathForIType(typeToExpand, rootElement, new ArrayList<ComponentNode>(), paths);
+            computePathForIType(typeToExpand, rootElement, new ArrayList<>(), paths);
         }
 
         TreePath[] treePaths = new TreePath[paths.size()];
@@ -397,14 +395,13 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     private void updateView() {
         Object element = treeViewer.getInput();
-        if (element == null) {
-            return;
-        } else if (element instanceof IType) {
-            label.setText(((IType)element).getQualifiedName());
-        } else if (element instanceof IIpsProject) {
-            label.setText(((IIpsProject)element).getName());
-        } else {
-            label.setText(element.toString());
+        switch (element) {
+            case null -> {
+                // ignore
+            }
+            case IType type -> label.setText(type.getQualifiedName());
+            case IIpsProject ipsProject -> label.setText(ipsProject.getName());
+            default -> label.setText(element.toString());
         }
     }
 
@@ -636,8 +633,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     private void switchContentProvider(AbstractModelStructureContentProvider newProvider) {
         Object input = treeViewer.getInput();
-        ShowTypeState currentShowTypeState;
-        currentShowTypeState = provider.getShowTypeState();
+        ShowTypeState currentShowTypeState = provider.getShowTypeState();
 
         newProvider.removeCollectorFinishedListener(this);
 

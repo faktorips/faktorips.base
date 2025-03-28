@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -25,8 +24,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -41,7 +40,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Table format for Microsoft's Excel.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class ExcelTableFormat extends AbstractExternalTableFormat {
@@ -162,10 +161,10 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             String nullRepresentation) {
         Datatype[] datatypes;
         try {
-            if (structure instanceof ITableStructure) {
-                datatypes = getDatatypes((ITableStructure)structure);
-            } else if (structure instanceof IEnumType) {
-                datatypes = getDatatypes((IEnumType)structure);
+            if (structure instanceof ITableStructure tableStructure) {
+                datatypes = getDatatypes(tableStructure);
+            } else if (structure instanceof IEnumType enumType) {
+                datatypes = getDatatypes(enumType);
             } else {
                 return Collections.emptyList();
             }

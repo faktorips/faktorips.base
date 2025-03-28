@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import org.apache.commons.text.WordUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
@@ -415,16 +415,20 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         try {
             ml = namingConventions.validateUnqualifiedIpsObjectName(getIpsObjectType(), name);
             if (ml.size() > 0) {
-                String msgText = ml.getFirstMessage(ml.getSeverity()).getText();
-                if (ml.getSeverity() == Message.ERROR) {
-                    setErrorMessage(msgText);
-                    return;
-                } else if (ml.getSeverity() == Message.WARNING) {
-                    setMessage(msgText, IMessageProvider.WARNING);
-                } else if (ml.getSeverity() == Message.INFO) {
-                    setMessage(msgText, IMessageProvider.INFORMATION);
-                } else {
-                    setMessage(msgText, IMessageProvider.NONE);
+                Severity severity = ml.getSeverity();
+                String msgText = ml.getFirstMessage(severity).getText();
+                switch (severity) {
+                    case ERROR:
+                        setErrorMessage(msgText);
+                        return;
+                    case WARNING:
+                        setMessage(msgText, IMessageProvider.WARNING);
+                        break;
+                    case INFO:
+                        setMessage(msgText, IMessageProvider.INFORMATION);
+                        break;
+                    default:
+                        setMessage(msgText, IMessageProvider.NONE);
                 }
             }
         } catch (IpsException e) {

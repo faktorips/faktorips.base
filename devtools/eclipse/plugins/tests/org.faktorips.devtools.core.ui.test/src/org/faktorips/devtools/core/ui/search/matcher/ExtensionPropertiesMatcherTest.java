@@ -43,9 +43,9 @@ public class ExtensionPropertiesMatcherTest {
         IProductCmptType productCmptType = mock(IProductCmptType.class);
 
         when(policyCmptType.getExtensionPropertyDefinitions())
-                .thenReturn(new ArrayList<IExtensionPropertyDefinition>());
+                .thenReturn(new ArrayList<>());
         when(policyCmptType.getExtensionPropertyDefinitions())
-                .thenReturn(new ArrayList<IExtensionPropertyDefinition>());
+                .thenReturn(new ArrayList<>());
 
         assertFalse(matcher.isMatching(policyCmptType));
         assertFalse(matcher.isMatching(productCmptType));
@@ -61,7 +61,7 @@ public class ExtensionPropertiesMatcherTest {
         when(productCmptType.isExtPropertyDefinitionAvailable(PROPERTY_ID)).thenReturn(false);
 
         when(productCmptType.getExtensionPropertyDefinitions()).thenReturn(
-                new ArrayList<IExtensionPropertyDefinition>());
+                new ArrayList<>());
 
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
         when(extensionPropertyDefinition.getPropertyId()).thenReturn(PROPERTY_ID);
@@ -84,7 +84,7 @@ public class ExtensionPropertiesMatcherTest {
         when(productCmptType.isExtPropertyDefinitionAvailable(PROPERTY_ID)).thenReturn(false);
 
         when(productCmptType.getExtensionPropertyDefinitions()).thenReturn(
-                new ArrayList<IExtensionPropertyDefinition>());
+                new ArrayList<>());
 
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);
         when(extensionPropertyDefinition.getPropertyId()).thenReturn(PROPERTY_ID);

@@ -150,7 +150,7 @@ public class XDerivedUnionAssociationTest {
 
         assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
 
-        when(superSuperType.getAssociations()).thenReturn(new ArrayList<IAssociation>());
+        when(superSuperType.getAssociations()).thenReturn(new ArrayList<>());
         when(superSuperSuperType.getAssociations()).thenReturn(associations);
 
         assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
@@ -184,7 +184,7 @@ public class XDerivedUnionAssociationTest {
 
         assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
 
-        when(superSuperType.getAssociations()).thenReturn(new ArrayList<IAssociation>());
+        when(superSuperType.getAssociations()).thenReturn(new ArrayList<>());
         when(superSuperSuperType.getAssociations()).thenReturn(associations);
 
         assertTrue(xDerivedUnionAssociation.isImplementedInSuperclass(xType));

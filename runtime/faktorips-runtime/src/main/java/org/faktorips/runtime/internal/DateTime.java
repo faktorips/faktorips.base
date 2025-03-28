@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
@@ -86,13 +87,11 @@ public class DateTime implements Comparable<DateTime>, Serializable {
      * calendar is<code>null</code>.
      */
     public static final DateTime createDateOnly(GregorianCalendar calendar) {
-        if (calendar == null) {
-            return null;
-        }
-        int year = calendar.get(GregorianCalendar.YEAR);
-        int month = calendar.get(GregorianCalendar.MONTH) + 1;
-        int date = calendar.get(GregorianCalendar.DAY_OF_MONTH);
-        return new DateTime(year, month, date);
+        return Optional.ofNullable(calendar)
+                .map(cal -> new DateTime(cal.get(GregorianCalendar.YEAR),
+                        cal.get(GregorianCalendar.MONTH) + 1,
+                        cal.get(GregorianCalendar.DAY_OF_MONTH)))
+                .orElse(null);
     }
 
     public int getDay() {
@@ -135,7 +134,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
     }
 
     public String toIsoFormat() {
-        return year + "-" + (month < 10 ? "0" + month : "" + month) + "-" + (day < 10 ? "0" + day : "" + day);
+        return "%04d-%02d-%02d".formatted(year, month, day);
     }
 
     @Override
@@ -154,8 +153,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
 
     @Override
     public String toString() {
-        return toIsoFormat() + ' ' + (hour < 10 ? "0" + hour : hour) + ':' + (minute < 10 ? "0" + minute : minute)
-                + ':' + (second < 10 ? "0" + second : second);
+        return "%s %02d:%02d:%02d".formatted(toIsoFormat(), hour, minute, second);
     }
 
     @Override

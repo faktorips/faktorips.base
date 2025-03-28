@@ -257,7 +257,7 @@ public class EclipseProjectUtil {
      */
     public static IIpsProject createIpsProject(IJavaProject javaProject,
             IpsProjectCreationProperties creationProperties)
-                    throws CoreException {
+            throws CoreException {
 
         MessageList errorMessages = creationProperties.validate(wrap(javaProject).as(AJavaProject.class));
         if (errorMessages.containsErrorMsg()) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -243,7 +243,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * Allows subclasses to make additions to the context menu.
      * <p>
      * The default implementation does nothing.
-     * 
+     *
      * @param contextMenuManager The {@link MenuManager} for the context menu to add menu items to
      */
     protected void createContextMenuThis(MenuManager contextMenuManager) {
@@ -385,7 +385,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Create the table for the viewer in this component. If you want to create another Table for
      * example a table with a different style you could override this method
-     * 
+     *
      * @param parent the composite the table is nested in
      * @param toolkit the toolkit to create the table
      * @return the new table
@@ -419,7 +419,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     /**
      * Enable or disable the listener to start editing on double click.
-     * 
+     *
      * @param enabled <code>true</code> to enable editing on double click.
      */
     protected void setEditDoubleClickListenerEnabled(boolean enabled) {
@@ -686,7 +686,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 }
                 editPartCanceled();
             } else if (dialog.getReturnCode() == Window.OK) {
-                newPartConfirmed(newPart);   
+                newPartConfirmed(newPart);
                 tableViewer.setSelection(new StructuredSelection(newPart), true);
             }
         } catch (IpsException ex) {
@@ -712,26 +712,24 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
             }
         };
         int returnCode = dialogHelper.openDialogWithMemento(getSelectedPart());
-        if (returnCode == Window.OK) {
-            editPartConfirmed();
-        } else if (returnCode == Window.CANCEL) {
-            editPartCanceled();
+        switch (returnCode) {
+            case Window.OK -> editPartConfirmed();
+            case Window.CANCEL -> editPartCanceled();
         }
-
         refresh();
     }
 
     /**
      * Sets the newPart as active generation.The part was created by calling {@link #newIpsPart()}.
      * The method will be called if the OK button in new dialog was pressed.
-     * 
+     *
      * <p>
-     * 
+     *
      * By default this method delegates to {@link #editPartConfirmed()}. Otherwise only override
      * {@link #editPartConfirmed()}.
-     * 
+     *
      * @param newPart The part was created by calling {@link #newIpsPart()}.
-     * 
+     *
      * @since 3.7
      */
     protected void newPartConfirmed(IIpsObjectPart newPart) {
@@ -816,7 +814,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
     /**
      * Subclasses may overwrite this operation to perform additional tasks to be done when deleting
      * the given IPS part.
-     * 
+     *
      */
     protected void deleteIpsPart(IIpsObjectPart partToDelete) {
         partToDelete.delete();
@@ -829,7 +827,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * want to create different dialogs or settings depending on new button or edit button was
      * clicked, override this method. Otherwise only override
      * {@link #createEditDialog(IIpsObjectPart, Shell)}.
-     * 
+     *
      * @since 3.7
      */
     protected EditDialog createNewDialog(IIpsObjectPart part, Shell shell) {
@@ -843,10 +841,10 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     /**
      * Moves the parts identified by the indexes in the model object up or down.
-     * 
+     *
      * @param indexes Array of indexes identifying the parts to move
      * @param up Flag indicating whether to move up or down
-     * 
+     *
      * @return the new indices of the moved parts.
      */
     protected int[] moveParts(int[] indexes, boolean up) {

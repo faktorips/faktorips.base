@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,14 +49,12 @@ public class IpsProblemOverlayIcon {
      * Get the overly image descriptor for the specified severity @see {@link Message}
      */
     public static ImageDescriptor getOverlay(Severity ipsMessageSeverity) {
-        if (ipsMessageSeverity == Severity.ERROR) {
-            return getErrorOverlay();
-        } else if (ipsMessageSeverity == Severity.WARNING) {
-            return getWarningOverlay();
-        } else if (ipsMessageSeverity == Severity.INFO) {
-            return getInfoOverlay();
-        }
-        return null;
+        return switch (ipsMessageSeverity) {
+            case ERROR -> getErrorOverlay();
+            case WARNING -> getWarningOverlay();
+            case INFO -> getInfoOverlay();
+            default -> null;
+        };
     }
 
     /**

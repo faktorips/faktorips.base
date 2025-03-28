@@ -1029,7 +1029,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     public void testToXML_VersionToXml_ignoreVersionIfNotVersionControlled() {
         IVersion<?> version = mock(IVersion.class);
         when(version.asString()).thenReturn(ANY_ID);
-        ((IpsObjectPartContainer)container).setSinceVersionString(version.asString());
+        container.setSinceVersionString(version.asString());
         Element el = container.toXml(newDocument());
 
         String attribute = el.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_VERSION);

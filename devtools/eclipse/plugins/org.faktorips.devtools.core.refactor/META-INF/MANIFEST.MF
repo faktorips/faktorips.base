@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.jdt.core.manipulation,
  org.eclipse.jdt.core;bundle-version="3.17.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.core.refactor.java
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: org.eclipse.jdt.core.refactoring,
  org.eclipse.jdt.internal.ui.preferences,
  org.faktorips.devtools.abstraction,

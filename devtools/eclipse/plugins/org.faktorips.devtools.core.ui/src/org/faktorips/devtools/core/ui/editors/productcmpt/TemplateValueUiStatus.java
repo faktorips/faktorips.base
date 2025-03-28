@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,13 +42,11 @@ public enum TemplateValueUiStatus {
 
     public static <T extends ITemplatedValue> TemplateValueUiStatus mapStatus(T propertyValue) {
         TemplateValueStatus templateStatus = propertyValue.getTemplateValueStatus();
-        if (templateStatus == TemplateValueStatus.INHERITED) {
-            return INHERITED;
-        } else if (templateStatus == TemplateValueStatus.UNDEFINED) {
-            return UNDEFINED;
-        } else {
-            return mapDefinedStatus(propertyValue);
-        }
+        return switch (templateStatus) {
+            case INHERITED -> INHERITED;
+            case UNDEFINED -> UNDEFINED;
+            default -> mapDefinedStatus(propertyValue);
+        };
     }
 
     private static <T extends ITemplatedValue> TemplateValueUiStatus mapDefinedStatus(T propertyValue) {

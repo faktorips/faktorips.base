@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.faktorips.values.Decimal;
 
 /**
  * Converter for Decimal
- * 
+ *
  * @author Thorsten Guenther
  */
 public class DecimalValueConverter extends AbstractValueConverter {
@@ -30,16 +30,16 @@ public class DecimalValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof String) {
+        if (externalDataValue instanceof String stringValue) {
             try {
-                return Decimal.valueOf((String)externalDataValue).toString();
+                return Decimal.valueOf(stringValue).toString();
                 // CSOFF: IllegalCatch
             } catch (RuntimeException e) {
                 // fall through to error message
             }
             // CSON: IllegalCatch
-        } else if (externalDataValue instanceof Number) {
-            return Decimal.valueOf(new BigDecimal(((Number)externalDataValue).toString())).toString();
+        } else if (externalDataValue instanceof Number number) {
+            return Decimal.valueOf(new BigDecimal(number.toString())).toString();
         }
         messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
                 "" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$

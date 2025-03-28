@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -38,7 +38,6 @@ import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.values.LocalizedString;
 
@@ -46,9 +45,9 @@ import org.faktorips.values.LocalizedString;
  * Provides controls that allow the user to edit the an {@link IAttributeValue}.
  * <p>
  * For attributes that do not change over time, a decoration marker is attached to the edit control.
- * 
+ *
  * @since 3.6
- * 
+ *
  * @see IAttributeValue
  */
 public class AttributeValueEditComposite
@@ -105,14 +104,11 @@ public class AttributeValueEditComposite
 
     private EditField<?> createSingleValueField(ValueDatatype datatype, IValueHolder<?> valueHolder) {
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
-
-        if (valueHolder.getValueType() == ValueType.STRING) {
-            return createSimpleField(datatype, valueSet);
-        } else if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-            return createInternationalStringField();
-        } else {
-            throw new RuntimeException("Illegal value type in attribute " + getProperty().getName()); //$NON-NLS-1$
-        }
+        return switch (valueHolder.getValueType()) {
+            case STRING -> createSimpleField(datatype, valueSet);
+            case INTERNATIONAL_STRING -> createInternationalStringField();
+            default -> throw new RuntimeException("Illegal value type in attribute " + getProperty().getName()); //$NON-NLS-1$
+        };
     }
 
     private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet) {

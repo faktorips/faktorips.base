@@ -54,7 +54,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObject);
-        this.parent = ipsObject;
+        parent = ipsObject;
         ipsObject.addPartCollection(this);
     }
 
@@ -63,7 +63,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
 
         this(partsClazz, publishedInterface, xmlTag);
         ArgumentCheck.notNull(ipsObjectPart);
-        this.parent = ipsObjectPart;
+        parent = ipsObjectPart;
         ipsObjectPart.addPartCollection(this);
     }
 
@@ -71,8 +71,8 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         ArgumentCheck.notNull(partsClazz);
         ArgumentCheck.notNull(publishedInterface);
         ArgumentCheck.notNull(xmlTag);
-        this.partsBaseClass = partsClazz;
-        this.partsPublishedInterface = publishedInterface;
+        partsBaseClass = partsClazz;
+        partsPublishedInterface = publishedInterface;
         this.xmlTag = xmlTag;
     }
 
@@ -203,7 +203,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         parent.partWasAdded(newPart);
         return newPart;
     }
-    
+
     public T newPart(IIpsObjectPartContainer partToCopy) {
         T newPart = newPartInternal(parent.getNextPartId(), getConstructor(partsBaseClass));
         newPart.copyFrom(partToCopy);
@@ -243,7 +243,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
      */
     @SuppressWarnings("unchecked")
     public boolean addPart(IIpsObjectPart part) {
-        if (this.partsBaseClass.isAssignableFrom(part.getClass())) {
+        if (partsBaseClass.isAssignableFrom(part.getClass())) {
             parts.add((T)part);
             return true;
         }

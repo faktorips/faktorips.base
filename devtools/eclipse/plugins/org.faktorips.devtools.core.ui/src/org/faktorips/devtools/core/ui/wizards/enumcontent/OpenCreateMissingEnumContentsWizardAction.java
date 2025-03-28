@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,9 +25,9 @@ import org.faktorips.devtools.model.IIpsModel;
 
 /**
  * This action opens up a wizard that enables the user to create missing <code>IEnumContent</code>s.
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.4
  */
 public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionDelegate {
@@ -56,9 +56,9 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
 
         if (selection instanceof IStructuredSelection sel) {
             for (Object selected : sel) {
-                if (selected instanceof IJavaProject) {
+                if (selected instanceof IJavaProject javaProject) {
                     preselectedIpsElement = IIpsModel.get()
-                            .getIpsProject(Wrappers.wrap(((IJavaProject)selected).getProject()).as(AProject.class));
+                            .getIpsProject(Wrappers.wrap(javaProject.getProject()).as(AProject.class));
                     break;
                 } else if (selected instanceof IResource resource) {
                     preselectedIpsElement = IIpsModel.get()

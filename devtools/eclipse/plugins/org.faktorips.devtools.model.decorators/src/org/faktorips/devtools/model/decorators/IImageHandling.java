@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,11 +30,11 @@ public interface IImageHandling {
      * To get an image descriptor to a specified name. If the image descriptor is not already
      * registered in the plugin's image registry and the flag createIfAbsent is true, this method
      * does. Only use this method for images you want to share for the whole plugin.
-     * 
+     *
      * @see ImageHandling
-     * 
+     *
      * @param name the name of the image equal to the filename in the sub-folder icons
-     * 
+     *
      * @return the shared image descriptor
      */
     ImageDescriptor getSharedImageDescriptor(String name, boolean createIfAbsent);
@@ -56,7 +56,7 @@ public interface IImageHandling {
      * Getting an image descriptor by calling the {@link IIpsElementDecorator} of the IPS element If
      * there is no registered adapter this method returns null. If the registered adapter has no
      * image, this method returns the missing image
-     * 
+     *
      * @return the image descriptor or null if there is no image or no registered adapter
      */
     ImageDescriptor getImageDescriptor(IAdaptable adaptable);
@@ -73,7 +73,7 @@ public interface IImageHandling {
      * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
      * with the specified overlay image. If the given image is not found return the missing image
      * overlaid with the product relevant image.
-     * 
+     *
      * @param baseImageName The name of the image which will be overlaid with the overlay image.
      * @param overlayImageName The name of the overlay image
      * @param quadrant the quadrant where the overlay is painted, one of
@@ -86,7 +86,7 @@ public interface IImageHandling {
      * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
      * with the specified overlay image. If the given image is not found return the missing image
      * overlaid with the product relevant image.
-     * 
+     *
      * @param sharedImageDescriptor The ImageDescriptor of the image which will be overlaid with the
      *            overlay image
      * @param overlayImageName The name of the overlay image
@@ -102,7 +102,7 @@ public interface IImageHandling {
      * Returns the image with the indicated name from the <code>icons</code> folder and overlays it
      * with the specified overlay image. If the given image is not found return the missing image
      * overlaid with the product relevant image.
-     * 
+     *
      * @param baseImage The image which will be overlaid with the overlay image
      * @param overlayImageName The name of the overlay image
      * @param quadrant the quadrant where the overlay is painted, one of
@@ -116,8 +116,8 @@ public interface IImageHandling {
      * the specified overlay images. The array contains the names of the overlays, sorted in
      * following order: top-left, top-right, bottom-left, bottom-right. If the given image is not
      * found return the missing image overlaid with the product relevant image.
-     * 
-     * 
+     *
+     *
      * @param baseImageName The name of the image which will be overlaid with the overlay image.
      * @param overlayImageNames The names of the overlay images
      */
@@ -130,7 +130,7 @@ public interface IImageHandling {
      * <p>
      * Use this method when you only want to have an image descriptor for any eclipse object e.g. an
      * Action or a Wizard Normally eclipse does instantiate and dispose the image
-     * 
+     *
      * @return the new created image descriptor
      */
     ImageDescriptor createImageDescriptor(String name);
@@ -139,7 +139,7 @@ public interface IImageHandling {
      * ResourceManager handles correct allocation and disposal of resources. In general, you should
      * use a *Registry class to map IDs onto descriptors, and use a ResourceManager to convert the
      * descriptors into real Images/Fonts/etc.
-     * 
+     *
      * @return the {@link ResourceManager}
      */
     ResourceManager getResourceManager();
@@ -161,7 +161,7 @@ public interface IImageHandling {
      * lifetime of the plugin. If the image is not potentially needed by other classes use the
      * methods {@link #createImage(ImageDescriptor)} and {@link #disposeImage(ImageDescriptor)} or
      * even better use your own LocalResourceManager.
-     * 
+     *
      * @param returnMissingImage if true, the MissingImage is returned instead of null
      */
     Image getImage(ImageDescriptor descriptor, boolean returnMissingImage);
@@ -179,9 +179,9 @@ public interface IImageHandling {
     /**
      * To dispose a self registered image. Do not dispose shared images (in fact this method
      * wouldn't do).
-     * 
+     *
      * @param descriptor the descriptor of the image you want to dispose
-     * 
+     *
      */
     void disposeImage(ImageDescriptor descriptor);
 
@@ -202,8 +202,9 @@ public interface IImageHandling {
 
     /**
      * Get the enabled or disabled image for the given element.
-     * 
-     * @see #getImage(IAdaptable) and @see {@link #getDisabledImage(IAdaptable)}
+     *
+     * @see #getImage(IAdaptable)
+     * @see #getDisabledImage(IAdaptable)
      */
     Image getImage(IAdaptable adaptable, boolean enabled);
 
@@ -215,7 +216,7 @@ public interface IImageHandling {
     /**
      * Returns the image with the indicated name from the <code>icons</code> folder. If no image
      * with the indicated name is found and createIfAbsent is false null is returned.
-     * 
+     *
      * @param name The image name, e.g. <code>IpsProject.gif</code>
      * @param createIfAbsent true to create a new image if not already registered
      */

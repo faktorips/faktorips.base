@@ -19,9 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -171,11 +169,6 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     }
 
     void deleteProject(PlainJavaProject plainJavaProject) {
-        for (Iterator<Entry<String, AProject>> iterator = projectsByName.entrySet().iterator(); iterator.hasNext();) {
-            Map.Entry<String, AProject> entry = iterator.next();
-            if (Objects.equals(entry.getValue(), plainJavaProject)) {
-                iterator.remove();
-            }
-        }
+        projectsByName.entrySet().removeIf(entry -> Objects.equals(entry.getValue(), plainJavaProject));
     }
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -256,17 +256,18 @@ public class TemplatePropertyUsageView {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof ITemplatedValue) {
-                ITemplatedValueContainer container = ((ITemplatedValue)element).getTemplatedValueContainer();
-                if (container instanceof IProductCmptGeneration generation) {
-                    return super.getText(generation.getProductCmpt()) + " (" + super.getText(generation) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                } else {
-                    return super.getText(container);
+            return switch (element) {
+                case ITemplatedValue templatedValue -> {
+                    ITemplatedValueContainer container = templatedValue.getTemplatedValueContainer();
+                    if (container instanceof IProductCmptGeneration generation) {
+                        yield super.getText(generation.getProductCmpt()) + " (" + super.getText(generation) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                    } else {
+                        yield super.getText(container);
+                    }
                 }
-            } else if (element instanceof TemplateUsageViewItem viewItem) {
-                return viewItem.getText();
-            }
-            return super.getText(element);
+                case TemplateUsageViewItem viewItem -> viewItem.getText();
+                default -> super.getText(element);
+            };
         }
 
         @Override

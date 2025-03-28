@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 /**
  * A toc entry that refers to an ips object generation.
- * 
+ *
  * @author Jan Ortmann
  */
 public class GenerationTocEntry extends TocEntry {
@@ -49,11 +49,7 @@ public class GenerationTocEntry extends TocEntry {
 
     @Override
     public String getXmlResourceName() {
-        if (super.getXmlResourceName().equals("")) {
-            return parent.getXmlResourceName();
-        } else {
-            return super.getXmlResourceName();
-        }
+        return super.getXmlResourceName().isEmpty() ? parent.getXmlResourceName() : super.getXmlResourceName();
     }
 
     public ProductCmptTocEntry getParent() {
@@ -67,14 +63,11 @@ public class GenerationTocEntry extends TocEntry {
     /**
      * Returns the point in time this generation is valid from in the given time zone. This method
      * never returns <code>null</code>.
-     * 
+     *
      * @throws NullPointerException if zone is <code>null</code>.
      */
     public final long getValidFromInMillisec(TimeZone zone) {
-        if (zone.equals(DEFAULT_TIME_ZONE)) {
-            return validFromAsLongInDefaultTimeZone;
-        }
-        return validFrom.toDate(zone).getTime();
+        return zone.equals(DEFAULT_TIME_ZONE) ? validFromAsLongInDefaultTimeZone : validFrom.toDate(zone).getTime();
     }
 
     @Override

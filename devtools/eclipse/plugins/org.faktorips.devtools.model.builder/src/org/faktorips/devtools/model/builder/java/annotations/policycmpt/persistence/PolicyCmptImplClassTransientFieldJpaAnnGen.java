@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 
 /**
  * This class generates the @Transient JPA annotation for fields of policy component types.
- * 
+ *
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD
  */
 public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
@@ -56,8 +56,8 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnot
             // don't care about the target, because there is a validation
             // that checks that both sides are marked as transient or not transient
             return association.getPersistenceAssociatonInfo().isTransient();
-        } else if (ipsElement instanceof IPolicyCmptType) {
-            return ((IPolicyCmptType)ipsElement).isPersistentEnabled();
+        } else if (ipsElement instanceof IPolicyCmptType policyCmptType) {
+            return policyCmptType.isPersistentEnabled();
         }
         return false;
     }

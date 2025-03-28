@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,7 +47,7 @@ import org.faktorips.util.ArgumentCheck;
  * independent. However e.g. to correctly show formatted {@link GregorianCalendar} in the dialogs
  * that need user input not written down to the model, we could need other types here. The type of
  * the format is configured by subtypes.
- * 
+ *
  * @author Stefan Widmaier
  */
 public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFormat<T> {
@@ -59,7 +59,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
     public AbstractInputFormat(String defaultNullString, Locale datatypeLocale) {
         ArgumentCheck.notNull(datatypeLocale);
         ArgumentCheck.notNull(defaultNullString);
-        this.nullStringRepresentation = defaultNullString;
+        nullStringRepresentation = defaultNullString;
         this.datatypeLocale = datatypeLocale;
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
 
     @Override
     public void setNullString(String nullString) {
-        this.nullStringRepresentation = nullString;
+        nullStringRepresentation = nullString;
     }
 
     @Override
@@ -174,14 +174,11 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
     }
 
     private String getTextFromControl(VerifyEvent e) {
-        Object source = e.getSource();
-        if (source instanceof Text) {
-            return ((Text)source).getText();
-        } else if (source instanceof Combo) {
-            return ((Combo)source).getText();
-        } else {
-            return IpsStringUtils.EMPTY;
-        }
+        return switch (e.getSource()) {
+            case Text text -> text.getText();
+            case Combo combo -> combo.getText();
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     /**
@@ -192,7 +189,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * model.
      * <p>
      * Implementors must return a value object of the class that is expected by the model.
-     * 
+     *
      * @param stringToBeparsed the string that should be parsed to a value.
      * @return the parsed value or <code>null</code> if the given String is not parsable.
      */
@@ -202,7 +199,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * Formats a value object to a displayable string. The value is of type T, e.g. for attributes
      * in the model type T is String. Depending on this formatter, the String amy be converted to an
      * other datatype, e.g. Money and will be formatted to display with the current input locale.
-     * 
+     *
      * @param value the value to be represented as string in this format. value can be
      *            <code>null</code>.
      * @return the formatted string representing the given value
@@ -216,7 +213,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * text to be valid input string all the time. Prefixes of valid strings must be permitted if
      * they are invalid on their own, or else the user could never enter a valid string; e.g. "1.2."
      * for a date or "-1," for a float.
-     * 
+     *
      * @param e the {@link VerifyEvent}. set doit=false if the resulting text is invalid.
      * @param resultingText the text, that an edit field will contain if e.doit=true. Implementors
      *            should test whether this string is a valid input for this format.
@@ -229,7 +226,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * always called with the currently configured locale.
      * <p>
      * Subclasses can create helper objects for formating and parsing in this method.
-     * 
+     *
      * @param locale the currently configured locale.
      */
     protected abstract void initFormat(Locale locale);
@@ -237,7 +234,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
     /**
      * Returns <code>true</code> if the entire String could be parsed to a value using the given
      * {@link Format}, else <code>false</code> .
-     * 
+     *
      * @param resultingText the string to be parsed
      * @return <code>true</code> if the entire String could be parsed to a value, <code>false</code>
      *             else.
@@ -250,7 +247,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
 
     /**
      * Utility Method to test a given input string for allowed characters.
-     * 
+     *
      * @param template an example string that contains all allowed non digit characters.
      * @param inputString the string whose (non digit) characters should be verified
      * @return <code>true</code> if stringToBeVerified contains only allowed characters.
@@ -268,7 +265,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
 
     /**
      * Removes all non digit characters from a string.
-     * 
+     *
      * @param string the string to read the non digit characters from
      * @return a new filtered string containing only the input string's non digit characters.
      */

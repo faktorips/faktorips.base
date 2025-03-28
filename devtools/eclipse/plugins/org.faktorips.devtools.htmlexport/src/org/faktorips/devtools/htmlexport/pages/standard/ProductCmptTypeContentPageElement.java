@@ -109,7 +109,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
         }
 
         List<IPageElement> linkPageElements = new PageElementUtils(getContext()).createLinkPageElements(
-                allProductCmptSrcFiles, TargetType.CONTENT, new LinkedHashSet<Style>(), getContext());
+                allProductCmptSrcFiles, TargetType.CONTENT, new LinkedHashSet<>(), getContext());
         ListPageElement liste = new ListPageElement(linkPageElements, getContext());
 
         wrapper.addPageElements(liste);

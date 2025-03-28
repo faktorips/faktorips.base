@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.faktorips.util.StringUtil;
  * example if you add <code>java.util.ArrayList</code> and then <code>java.util.*</code> only the
  * latter statement is kept. Also import statements for classes residing in <code>java.lang</code>
  * and for primitive types are ignored.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ImportDeclaration {
@@ -147,7 +147,7 @@ public class ImportDeclaration {
     /**
      * Returns true if the class is covered by the import declaration. That is, if either an import
      * for that class exists or the package the class resides in is imported.
-     * 
+     *
      * @throws NullPointerException if clazz is null.
      */
     public boolean isCovered(Class<?> clazz) {
@@ -156,7 +156,7 @@ public class ImportDeclaration {
 
     /**
      * Returns true if the import specification is covered by this import declaration.
-     * 
+     *
      * @throws NullPointerException if importSpec is null.
      */
     public boolean isCovered(String importSpec) {

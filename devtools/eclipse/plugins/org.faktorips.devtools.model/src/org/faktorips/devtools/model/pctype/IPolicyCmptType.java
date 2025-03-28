@@ -252,13 +252,13 @@ public interface IPolicyCmptType extends IType {
      * @return The created validation rules.
      */
     List<IValidationRule> overrideValidationRules(List<? extends IValidationRule> rules);
-    
+
     /**
-     * Returns a list of all validation rules of all super types not yet overwritten by this component
-     * type.
+     * Returns a list of all validation rules of all super types not yet overwritten by this
+     * component type.
      */
     List<IValidationRule> findOverrideValidationRuleCandidates(IIpsProject ipsProject);
-    
+
     /**
      * Returns the number of attributes.
      */

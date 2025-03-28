@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Contribute the context menu for editing the package sort order.
- * 
+ *
  * @author Markus Blum
  */
 public class IpsEditSortOrderAction extends IpsAction {
@@ -66,21 +66,19 @@ public class IpsEditSortOrderAction extends IpsAction {
     }
 
     private static IIpsPackageFragment findPackageFragment(IIpsElement ipsElement) {
-        IIpsPackageFragment packageFragment = null;
-
-        if (ipsElement instanceof IIpsPackageFragment) {
-            packageFragment = (IIpsPackageFragment)ipsElement;
-        } else if (ipsElement instanceof IIpsPackageFragmentRoot) {
-            packageFragment = ((IIpsPackageFragmentRoot)ipsElement).getDefaultIpsPackageFragment();
-        } else {
-            IIpsElement parent = ipsElement.getParent();
-            while (parent != null && !(parent instanceof IIpsPackageFragment)) {
-                parent = parent.getParent();
+        return switch (ipsElement) {
+            case IIpsPackageFragment packageFragment -> packageFragment;
+            case IIpsPackageFragmentRoot packageFragmentRoot -> packageFragmentRoot.getDefaultIpsPackageFragment();
+            default -> {
+                IIpsElement parent = ipsElement.getParent();
+                while (parent != null && !(parent instanceof IIpsPackageFragment)) {
+                    parent = parent.getParent();
+                }
+                if (parent instanceof IIpsPackageFragment parentPackageFragment) {
+                    yield parentPackageFragment;
+                }
+                yield null;
             }
-            if (parent instanceof IIpsPackageFragment) {
-                packageFragment = (IIpsPackageFragment)parent;
-            }
-        }
-        return packageFragment;
+        };
     }
 }

@@ -537,12 +537,12 @@ class CategoryComposite extends ViewerButtonComposite {
         public boolean performDrop(Object data) {
             IProductCmptProperty droppedProperty = getDroppedProperty(data);
             try {
-                if (getCurrentLocation() == LOCATION_BEFORE) {
-                    getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), true);
-                } else if (getCurrentLocation() == LOCATION_AFTER) {
-                    getTargetCategory().insertProductCmptProperty(droppedProperty, getTargetProperty(), false);
-                } else if (getCurrentLocation() == LOCATION_NONE) {
-                    getTargetCategory().insertProductCmptProperty(droppedProperty, null, false);
+                switch (getCurrentLocation()) {
+                    case LOCATION_BEFORE -> getTargetCategory().insertProductCmptProperty(droppedProperty,
+                            getTargetProperty(), true);
+                    case LOCATION_AFTER -> getTargetCategory().insertProductCmptProperty(droppedProperty,
+                            getTargetProperty(), false);
+                    case LOCATION_NONE -> getTargetCategory().insertProductCmptProperty(droppedProperty, null, false);
                 }
             } catch (IpsException e) {
                 return false;

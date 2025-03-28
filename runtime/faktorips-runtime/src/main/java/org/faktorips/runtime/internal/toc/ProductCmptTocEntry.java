@@ -118,9 +118,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      */
     public void setGenerationEntries(List<GenerationTocEntry> entries) {
         generationEntries = createNewTreeMap();
-        for (GenerationTocEntry entry : entries) {
-            generationEntries.put(entry.getValidFromInMillisec(TimeZone.getDefault()), entry);
-        }
+        entries.forEach(entry -> generationEntries.put(entry.getValidFromInMillisec(TimeZone.getDefault()), entry));
     }
 
     /**
@@ -247,14 +245,11 @@ public class ProductCmptTocEntry extends TocEntryObject {
         super.addToXml(entryElement);
         entryElement.setAttribute(PROPERTY_KIND_ID, kindId);
         entryElement.setAttribute(PROPERTY_VERSION_ID, versionId);
-        if (validTo != null) {
-            entryElement.setAttribute(PROPERTY_VALID_TO, validTo.toIsoFormat());
-        }
+        Optional.ofNullable(validTo).ifPresent(v -> entryElement.setAttribute(PROPERTY_VALID_TO, v.toIsoFormat()));
         if (!getGenerationEntries().isEmpty()) {
             entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
-            for (GenerationTocEntry generationEntry : generationEntries.values()) {
-                entryElement.appendChild(generationEntry.toXml(entryElement.getOwnerDocument()));
-            }
+            generationEntries.values().forEach(generationEntry -> entryElement
+                    .appendChild(generationEntry.toXml(entryElement.getOwnerDocument())));
         }
     }
 

@@ -68,12 +68,12 @@ public class MenuCleanerTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructorFilteredPrefixesNull() {
-        new MenuCleaner(null, new HashSet<String>());
+        new MenuCleaner(null, new HashSet<>());
     }
 
     @Test(expected = NullPointerException.class)
     public void testConstructorFilteredMenuGroupsNull() {
-        new MenuCleaner(new HashSet<String>(), null);
+        new MenuCleaner(new HashSet<>(), null);
     }
 
     @Test(expected = NullPointerException.class)

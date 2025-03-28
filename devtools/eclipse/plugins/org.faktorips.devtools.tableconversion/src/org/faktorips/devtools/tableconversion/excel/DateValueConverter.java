@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,7 +22,7 @@ import org.faktorips.values.DateUtil;
 
 /**
  * Converter for the Date-Datatype.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class DateValueConverter extends AbstractValueConverter {
@@ -36,22 +36,26 @@ public class DateValueConverter extends AbstractValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         Date date = null;
         boolean error;
-        if (externalDataValue instanceof Date) {
-            date = (Date)externalDataValue;
-            error = false;
-        } else if (externalDataValue instanceof Number) {
-            date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(((Number)externalDataValue).doubleValue());
-            date = new Date();
-            error = false;
-        } else if (externalDataValue instanceof String) {
-            try {
-                date = DateUtil.parseIsoDateStringToDate((String)externalDataValue);
+        switch (externalDataValue) {
+            case Date d -> {
+                date = d;
                 error = false;
-            } catch (IllegalArgumentException e) {
+            }
+            case Number number -> {
+                date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(number.doubleValue());
+                error = false;
+            }
+            case String s -> {
+                try {
+                    date = DateUtil.parseIsoDateStringToDate(s);
+                    error = false;
+                } catch (IllegalArgumentException e) {
+                    error = true;
+                }
+            }
+            default -> {
                 error = true;
             }
-        } else {
-            error = true;
         }
 
         if (error) {

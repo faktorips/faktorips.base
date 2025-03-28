@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,8 +31,8 @@ import org.faktorips.values.LocalizedString;
  * This delta entry describes a mismatch of the value between an attribute and its attribute value.
  * For example the attribute is marked as multilingual attribute but the value holder value is an
  * StringValue.
- * 
- * 
+ *
+ *
  * @author frank
  * @since 3.9
  */
@@ -89,10 +89,9 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
 
     private void setNewValueInSingleValueHolder(ISingleValueHolder valueHolder) {
         ValueType valueType = valueHolder.getValueType();
-        if (ValueType.STRING.equals(valueType)) {
-            setNewInternationalStringValue(valueHolder);
-        } else if (ValueType.INTERNATIONAL_STRING.equals(valueType)) {
-            setNewStringValue(valueHolder);
+        switch (valueType) {
+            case STRING -> setNewInternationalStringValue(valueHolder);
+            case INTERNATIONAL_STRING -> setNewStringValue(valueHolder);
         }
     }
 

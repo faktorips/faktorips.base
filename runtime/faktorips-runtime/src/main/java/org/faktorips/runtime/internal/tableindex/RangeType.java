@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,14 +25,14 @@ import org.faktorips.values.ObjectUtil;
  * <code>put(10, value1)</code> and <code>put(25, value2)</code>, two ranges are defined: [10..24]
  * and [25..infinity]. When using {@link RangeType#UPPER_BOUND_EQUAL}, however, the same calls
  * define the ranges [-infinity..10] and [11..25].
- * 
+ *
  * @see RangeStructure
  */
 public enum RangeType {
 
     /**
      * Indicates that the keys are meant to be the lower bound of a range (not included).
-     * 
+     *
      * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
      *                 behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
      *                 {@link RangeStructure#get(Object)} methods. A value that was added by calling
@@ -80,7 +80,7 @@ public enum RangeType {
 
     /**
      * Indicates that the keys are meant to be the upper bound of a range (not included).
-     * 
+     *
      * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
      *                 behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
      *                 {@link RangeStructure#get(Object)} methods. A value that was added by calling
@@ -130,10 +130,10 @@ public enum RangeType {
      * Retrieves the matching value from the given map using the given key. The strategy used to
      * retrieve the value depends on the type of key. It differs in how the bounds of ranges are
      * processed.
-     * 
+     *
      * @return the matching value in the given {@link TreeMap} or <code>null</code> if no matching
      *             value could be found.
-     * 
+     *
      */
     // @see #findValue(TreeMap&lt;K,V&gt;,K) findValue(TreeMap&lt;K,V&gt;,K) for null-safe
     // processing
@@ -144,7 +144,7 @@ public enum RangeType {
      * Retrieves the matching value from the given map using the given key. The strategy used to
      * retrieve the value depends on the type of key. It differs in how the bounds of ranges are
      * processed.
-     * 
+     *
      * @return the matching value in the given {@link TreeMap} or an {@link Optional#empty() empty
      *             Optional} if no matching value could be found.
      */
@@ -153,29 +153,20 @@ public enum RangeType {
     private static <K extends Comparable<? super K>, V> Optional<V> getLowerValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> floorEntry) {
-        if (floorEntry.getKey().compareTo(key) < 0) {
-            return Optional.ofNullable(floorEntry.getValue());
-        } else {
-            Entry<K, V> lowerEntry = tree.lowerEntry(floorEntry.getKey());
-            return getOptionalValue(lowerEntry);
-        }
+        return (floorEntry.getKey().compareTo(key) < 0)
+                ? Optional.ofNullable(floorEntry.getValue())
+                : getOptionalValue(tree.lowerEntry(floorEntry.getKey()));
     }
 
     private static <K extends Comparable<? super K>, V> Optional<V> getHigherValueIfNeccessary(TreeMap<K, V> tree,
             K key,
             Entry<K, V> ceilingEntry) {
-        if (ceilingEntry.getKey().compareTo(key) > 0) {
-            return Optional.ofNullable(ceilingEntry.getValue());
-        } else {
-            Entry<K, V> higherEntry = tree.higherEntry(ceilingEntry.getKey());
-            return getOptionalValue(higherEntry);
-        }
+        return (ceilingEntry.getKey().compareTo(key) > 0)
+                ? Optional.ofNullable(ceilingEntry.getValue())
+                : getOptionalValue(tree.higherEntry(ceilingEntry.getKey()));
     }
 
     private static <K, V> Optional<V> getOptionalValue(Entry<K, V> entry) {
-        if (entry == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(entry.getValue());
+        return Optional.ofNullable(entry).map(Entry::getValue);
     }
 }

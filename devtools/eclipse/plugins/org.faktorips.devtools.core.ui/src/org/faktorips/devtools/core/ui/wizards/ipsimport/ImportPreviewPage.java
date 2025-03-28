@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,7 +47,7 @@ import org.faktorips.util.ArgumentCheck;
  * Wizard Page to show a preview of a file to be imported into an IPS object (e.g. an
  * {@link ITableContents} or an {@link IEnumType}). The page consists of a configuration area which
  * is specific to a certain {@link ITableFormat} and a preview area.
- * 
+ *
  * @author Roman Grutza
  */
 public class ImportPreviewPage extends WizardPage implements ValueChangeListener {
@@ -80,7 +80,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     /**
      * Displays a preview of the external file which optionally can be adjusted with custom
      * controls.
-     * 
+     *
      * @param filename The name of the file to show the preview for.
      * @param tableFormat An {@link ITableFormat} instance. If custom controls are available, they
      *            are created using this table format by looking up the {@code guiClass} extension
@@ -175,11 +175,11 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
         String nullRepresentation = ((IpsObjectImportWizard)getWizard()).getNullRepresentation();
         List<String[]> preview = Collections.emptyList();
-        if (structure instanceof ITableStructure) {
-            preview = tableFormat.getImportTablePreview((ITableStructure)structure, new Path(filename),
+        if (structure instanceof ITableStructure tableStructure) {
+            preview = tableFormat.getImportTablePreview(tableStructure, new Path(filename),
                     MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow, nullRepresentation);
-        } else if (structure instanceof IEnumType) {
-            preview = tableFormat.getImportEnumPreview((IEnumType)structure, new Path(filename),
+        } else if (structure instanceof IEnumType enumType) {
+            preview = tableFormat.getImportEnumPreview(enumType, new Path(filename),
                     MAX_NUMBER_PREVIEW_ROWS, ignoreColumnHeaderRow, nullRepresentation);
         }
 
@@ -188,13 +188,13 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
         // set column header text
         for (int i = 0; i < columnCount; i++) {
-            if (structure instanceof ITableStructure) {
-                String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
-                        ((ITableStructure)structure).getColumn(i));
+            if (structure instanceof ITableStructure tableStructure) {
+                String columnName = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedLabel(tableStructure.getColumn(i));
                 columns[i].setText(columnName);
             } else if (structure instanceof IEnumType type) {
-                String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
-                        type.getEnumAttributesIncludeSupertypeCopies(true).get(i));
+                String columnName = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedLabel(type.getEnumAttributesIncludeSupertypeCopies(true).get(i));
                 columns[i].setText(columnName);
             }
         }
@@ -222,10 +222,10 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
         int requestedColumns = 1;
 
-        if (structure instanceof ITableStructure) {
-            requestedColumns = ((ITableStructure)structure).getNumOfColumns();
-        } else if (structure instanceof IEnumType) {
-            requestedColumns = ((IEnumType)structure).getEnumAttributesCountIncludeSupertypeCopies(true);
+        if (structure instanceof ITableStructure tableStructure) {
+            requestedColumns = tableStructure.getNumOfColumns();
+        } else if (structure instanceof IEnumType enumType) {
+            requestedColumns = enumType.getEnumAttributesCountIncludeSupertypeCopies(true);
         }
         if (requestedColumns < previewTableColumnCount) {
             // delete unnecessary columns in preview table
@@ -296,7 +296,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     /**
      * Reinitializes the contents of this page.
-     * 
+     *
      * @param filename The name of the file to show the preview for.
      * @param tableFormat An {@link ITableFormat} instance. If custom controls are available, they
      *            are created using this table format by looking up the {@code guiClass} extension

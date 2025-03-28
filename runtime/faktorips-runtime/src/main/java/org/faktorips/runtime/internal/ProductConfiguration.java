@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import org.faktorips.runtime.IProductComponent;
@@ -27,14 +28,14 @@ import org.w3c.dom.Element;
 /**
  * Manages a product component and the corresponding generation for use with configurable model
  * objects. Used by all configurable policy component classes to manage their product configuration.
- * 
+ *
  * @serial This class is serialized using by writing/reading the product component runtime ID and
  *             the effective date of the current generation. To deserialize the product product
  *             component we also serialize the {@link IRuntimeRepositoryLookup} that is provided by
  *             the {@link IRuntimeRepository} of the current product component. The serialization
  *             would throw an {@link IllegalStateException} if the runtime repository of the current
  *             product component has no {@link IRuntimeRepositoryLookup} configured.
- * 
+ *
  */
 public class ProductConfiguration implements Serializable {
 
@@ -86,11 +87,9 @@ public class ProductConfiguration implements Serializable {
      * Returns the product component generation that configures a policy component.
      */
     public IProductComponentGeneration getProductCmptGeneration(Calendar effectiveFrom) {
-        if (productCmpt == null) {
-            return null;
-        } else {
-            return getProductCmptGenerationInternal(effectiveFrom);
-        }
+        return Optional.ofNullable(productCmpt)
+                .map(p -> getProductCmptGenerationInternal(effectiveFrom))
+                .orElse(null);
     }
 
     private IProductComponentGeneration getProductCmptGenerationInternal(Calendar effectiveFrom) {
@@ -136,7 +135,7 @@ public class ProductConfiguration implements Serializable {
     /**
      * Loads the product component this {@link ProductConfiguration} manages. Does nothing, if no
      * product component qualified name can be found in the XML element.
-     * 
+     *
      * @param objectEl the XML element containing the product component qualified name
      * @param productRepository the {@link IRuntimeRepository} to load the product component from
      */
@@ -150,14 +149,14 @@ public class ProductConfiguration implements Serializable {
 
     /**
      * Serialize this {@link ProductConfiguration} instance.
-     * 
+     *
      * @throws IllegalStateException if there is no {@link IRuntimeRepositoryLookup} configured in
      *             the product component's runtime repository.
-     * 
+     *
      * @serialData First the runtime ID of the product component followed by the effective date of
      *                 the current generation. At least the {@link IRuntimeRepositoryLookup} that is
      *                 retrieved by the {@link IRuntimeRepository} of the product component.
-     * 
+     *
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
@@ -201,11 +200,11 @@ public class ProductConfiguration implements Serializable {
 
     /**
      * Reads a serialized instance of {@link ProductConfiguration}.
-     * 
+     *
      * @serialData First the runtime ID of the product component followed by the effective date of
      *                 the current generation. At least the {@link IRuntimeRepositoryLookup} that is
      *                 retrieved by the {@link IRuntimeRepository} of the product component.
-     * 
+     *
      */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         s.defaultReadObject();

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,10 +33,10 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
     public IIpsPackageFragmentRoot getSelectedRoot() {
         if (getResult().length > 0) {
             Object result = getResult()[0];
-            if (result instanceof IIpsPackageFragmentRoot) {
-                return (IIpsPackageFragmentRoot)getResult()[0];
-            } else if (result instanceof IIpsProject) {
-                return ((IIpsProject)result).getIpsPackageFragmentRoots()[0];
+            if (result instanceof IIpsPackageFragmentRoot root) {
+                return root;
+            } else if (result instanceof IIpsProject ipsProject) {
+                return ipsProject.getIpsPackageFragmentRoots()[0];
             }
         }
         return null;

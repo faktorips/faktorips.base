@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,28 +17,30 @@ import org.junit.Test;
 public class StringUtilsTest {
     @Test
     public void testWrapText() {
-        String text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden \n" //$NON-NLS-1$
-                + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene \n" //$NON-NLS-1$
-                + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n" //$NON-NLS-1$
-                + "Bonus, Ansammlungsguthaben und Schlussüberschuss."; //$NON-NLS-1$
-
-        String expectedText = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden\n" //$NON-NLS-1$
-                + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene\n" //$NON-NLS-1$
-                + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \n" //$NON-NLS-1$
-                + "Bonus, Ansammlungsguthaben und Schlussüberschuss."; //$NON-NLS-1$
+        String text = """
+                Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden\s
+                Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene\s
+                geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung,\s
+                Bonus, Ansammlungsguthaben und Schlussüberschuss.""";//$NON-NLS-1$
+        String expectedText = """
+                Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden
+                Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene
+                geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung,\s
+                Bonus, Ansammlungsguthaben und Schlussüberschuss."""; //$NON-NLS-1$
 
         String wrappedText = StringUtils.wrapText(text, 73, "\n"); //$NON-NLS-1$
         assertEquals(expectedText, wrappedText);
 
-        text = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden " //$NON-NLS-1$
-                + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene " //$NON-NLS-1$
-                + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, " //$NON-NLS-1$
-                + "Bonus, Ansammlungsguthaben und Schlussüberschuss."; //$NON-NLS-1$
-
-        expectedText = "Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden\n" //$NON-NLS-1$
-                + "Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene\n" //$NON-NLS-1$
-                + "geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, Bonus,\n" //$NON-NLS-1$
-                + "Ansammlungsguthaben und Schlussüberschuss."; //$NON-NLS-1$
+        text = """
+                Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden \
+                Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene \
+                geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, \
+                Bonus, Ansammlungsguthaben und Schlussüberschuss."""; //$NON-NLS-1$
+        expectedText = """
+                Diese Klasse enthält die Kontostände, die für die Bestimmung der abzuführenden
+                Kapitalertragssteuer gegebenenfalls benötigt werden. Sie wird auf Deckungsebene
+                geführt. Dabei unterscheidet man zwischen den Komponenten Stammdeckung, Bonus,
+                Ansammlungsguthaben und Schlussüberschuss."""; //$NON-NLS-1$
 
         wrappedText = StringUtils.wrapText(text, 73, "\n"); //$NON-NLS-1$
         assertEquals(expectedText, wrappedText);

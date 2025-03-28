@@ -174,7 +174,6 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     @Override
     public ValueSet<?> getValueSet(IModelObject modelObject, IValidationContext context) {
         Method valueSetMethod = getValueSetMethod(getType());
-
         return getValueSet(valueSetMethod, modelObject, context);
     }
 

@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.ui.forms;bundle-version="3.7.500",
  org.eclipse.ui.ide
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.faktorips.devtools.htmlexport.ui.wizards
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-ClassPath: .

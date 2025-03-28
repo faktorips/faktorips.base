@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,7 +36,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * A wizard to guide the user trough a Faktor-IPS "Move" refactoring.
- * 
+ *
  * @author Alexander Weickmann
  */
 public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
@@ -200,8 +200,8 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             @Override
             public Object[] getChildren(Object parentElement) {
                 try {
-                    if (parentElement instanceof IIpsProject) {
-                        return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
+                    if (parentElement instanceof IIpsProject ipsProject) {
+                        return ipsProject.getSourceIpsPackageFragmentRoots();
                     } else if (parentElement instanceof IIpsPackageFragmentRoot root) {
                         return root.getIpsPackageFragments();
                     }
@@ -213,12 +213,11 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
 
             @Override
             public Object getParent(Object element) {
-                if (element instanceof IIpsPackageFragment) {
-                    return ((IIpsPackageFragment)element).getParent();
-                } else if (element instanceof IIpsPackageFragmentRoot) {
-                    return ((IIpsPackageFragmentRoot)element).getIpsProject();
-                }
-                return null;
+                return switch (element) {
+                    case IIpsPackageFragment packageFragment -> packageFragment.getParent();
+                    case IIpsPackageFragmentRoot root -> root.getIpsProject();
+                    default -> null;
+                };
             }
 
             @Override

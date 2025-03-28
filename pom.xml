@@ -74,32 +74,36 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <git.user>${user.name}</git.user>
+        <!-- java and compiler options -->
+        <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <!-- plugin versions -->
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
-        <maven-project-info-reports-plugin.version>3.8.0</maven-project-info-reports-plugin.version>
+        <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>4.0.0-M16</maven-site-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
         <maven-plugin-dependency-commons-collections.version>3.2.2</maven-plugin-dependency-commons-collections.version>
-        <maven-plugin-dependency-commons-pool2.version>2.12.0</maven-plugin-dependency-commons-pool2.version>
+        <maven-plugin-dependency-commons-pool2.version>2.12.1</maven-plugin-dependency-commons-pool2.version>
         <!-- Code quality -->
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-        <checkstyle.version>10.20.1</checkstyle.version>
+        <checkstyle.version>10.21.4</checkstyle.version>
         <jacoco.version>0.8.12</jacoco.version>
-        <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
-        <spotbugs.version>4.8.6</spotbugs.version>
+        <spotbugs-maven-plugin.version>4.9.2.0</spotbugs-maven-plugin.version>
+        <spotbugs.version>4.9.2</spotbugs.version>
         <!-- Tycho & Eclipse-->
         <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
         <tycho.version>3.0.5</tycho.version>
-        <xtend-maven-plugin.version>2.37.0.M2</xtend-maven-plugin.version>
+        <xtend-maven-plugin.version>2.38.0</xtend-maven-plugin.version>
         <!-- Others -->
         <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
-        <flatten-maven-plugin.version>1.6.0</flatten-maven-plugin.version>
+        <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
         <auto-service.version>1.1.1</auto-service.version>
         <dependency-check-plugin.version>9.1.0</dependency-check-plugin.version>
         <dependency-check-postgres.version>42.7.3</dependency-check-postgres.version>
@@ -308,6 +312,11 @@ license terms are available from Faktor Zehn GmbH.</comments>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-versions-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho.version}</version>
                 </plugin>
                 <plugin>

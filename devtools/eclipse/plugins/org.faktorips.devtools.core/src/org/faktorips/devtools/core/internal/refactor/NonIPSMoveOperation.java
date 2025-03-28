@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -56,9 +56,9 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * Creates a new operation to move or rename the given product. After the run-method has
      * returned, all references of other products to the moved/renamed one are updated to refer to
      * the new name.
-     * 
+     *
      * @param target The new location/name.
-     * 
+     *
      * @throws IpsException If the source does not exist or is modified or if the target already
      *             exists.
      */
@@ -73,7 +73,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     /**
      * Creates a new operation to move the given elements.
-     * 
+     *
      * @param targetProject The target project where the sources will be moved to
      * @param sources All sources which will be moved to the target
      * @param target The target absolute path
@@ -93,7 +93,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     /**
      * Converts any contained IIpsSrcFiles to the objects contained within.
-     * 
+     *
      * @param rawSources The IIpsElements to prepare.
      * @throws IpsException If an IIpsSrcFile is contained which can not return the IIpsObject
      *             stored within.
@@ -113,9 +113,9 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
     /**
      * Creates the new qualified names for the moved objects.
-     * 
+     *
      * @param sources The objects to move
-     * 
+     *
      * @param target The package fragment to move to.
      */
     private String[] getTargetNames(Object[] sources, IIpsPackageFragment target) {
@@ -125,7 +125,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
     /**
      * Creates the new qualified names for the moved objects or the target folder in case of none
      * IPS elements.
-     * 
+     *
      * @param sources The objects to move.
      * @param target The unqualified target name of the resource to move to.
      * @param targetFullPath The full location path (absolute) of the target.
@@ -159,15 +159,15 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      */
     public static IpsStatus checkSourcesForInvalidContent(Object[] sources) {
         for (Object currentSource : sources) {
-            if (currentSource instanceof IFile) {
-                if (!((IFile)currentSource).exists()) {
+            if (currentSource instanceof IFile f) {
+                if (!f.exists()) {
                     String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, ((IFile)currentSource)
                             .getLocation().toOSString());
                     return new IpsStatus(msg);
                 }
 
-            } else if (currentSource instanceof String) {
-                if (!(new File((String)currentSource).exists())) {
+            } else if (currentSource instanceof String s) {
+                if (!(new File(s).exists())) {
                     String msg = NLS.bind(Messages.MoveOperation_errorMessageSourceNotExists, currentSource);
                     return new IpsStatus(msg);
                 }

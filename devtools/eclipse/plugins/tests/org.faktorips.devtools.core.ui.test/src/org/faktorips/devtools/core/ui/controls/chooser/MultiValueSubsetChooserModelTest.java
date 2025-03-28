@@ -55,7 +55,7 @@ public class MultiValueSubsetChooserModelTest {
     public void setUp() {
         setUpMultiValueHolder();
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
+        model = new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue);
         List<ListChooserValue> values = model.getResultingValues();
         assertEquals(5, values.size());
         assertEquals("A", values.get(0).getValue());
@@ -199,7 +199,7 @@ public class MultiValueSubsetChooserModelTest {
     public void findSingleValueHolderFor() {
         setUpMultiValueHolder();
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
+        model = new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue);
         ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("C"));
         assertSame(multiValueHolder.getValue().get(2), holder);
     }
@@ -209,7 +209,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
         multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
+        model = new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue);
         ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
         assertSame(multiValueHolder.getValue().get(5), holder);
     }
@@ -219,7 +219,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
         multiValueHolder.getValue().add(new SingleValueHolder(null, "X"));
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
+        model = new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue);
         ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
         assertNull(holder);
     }
@@ -229,7 +229,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
         multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
+        model = new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue);
         ISingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("X"));
         assertNull(holder);
     }
@@ -242,7 +242,7 @@ public class MultiValueSubsetChooserModelTest {
         MessageList messageList = mock(MessageList.class);
         doReturn(messageList).when(multiValueHolder).validate(any(IIpsProject.class));
 
-        model = spy(new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue));
+        model = spy(new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue));
         doReturn(holderC).when(model).findSingleValueHolderFor(any(ListChooserValue.class));
 
         model.validateValue(new ListChooserValue("C"));

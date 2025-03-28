@@ -126,20 +126,23 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
 
     @SuppressWarnings("unchecked")
     private static <P extends IPropertyValue> Optional<DatatypeMismatch<P>> createMismatch(P propertyValue) {
-        if (propertyValue instanceof IAttributeValue) {
-            return Optional.of((DatatypeMismatch<P>)new AttributeValueDatatypeMismatch((IAttributeValue)propertyValue));
-        } else if (propertyValue instanceof IConfiguredDefault) {
-            return Optional
-                    .of((DatatypeMismatch<P>)new ConfiguredDefaultDatatypeMismatch((IConfiguredDefault)propertyValue));
-        } else if (propertyValue instanceof IConfiguredValueSet configuredValueSet) {
-            IValueSet valueSet = configuredValueSet.getValueSet();
-            if (valueSet.isEnum()) {
-                return Optional.of((DatatypeMismatch<P>)new EnumValueSetDatatypeMismatch(configuredValueSet));
-            } else if (valueSet.isRange()) {
-                return Optional.of((DatatypeMismatch<P>)new RangeValueSetDatatypeMismatch(configuredValueSet));
+        return switch (propertyValue) {
+            case IAttributeValue attributeValue -> Optional
+                    .of((DatatypeMismatch<P>)new AttributeValueDatatypeMismatch(attributeValue));
+            case IConfiguredDefault configuredDefault -> Optional
+                    .of((DatatypeMismatch<P>)new ConfiguredDefaultDatatypeMismatch(configuredDefault));
+            case IConfiguredValueSet configuredValueSet -> {
+                IValueSet valueSet = configuredValueSet.getValueSet();
+                if (valueSet.isEnum()) {
+                    yield Optional.of((DatatypeMismatch<P>)new EnumValueSetDatatypeMismatch(configuredValueSet));
+                } else if (valueSet.isRange()) {
+                    yield Optional.of((DatatypeMismatch<P>)new RangeValueSetDatatypeMismatch(configuredValueSet));
+                } else {
+                    yield Optional.empty();
+                }
             }
-        }
-        return Optional.empty();
+            default -> Optional.empty();
+        };
     }
 
     private abstract static class DatatypeMismatch<P extends IPropertyValue> {

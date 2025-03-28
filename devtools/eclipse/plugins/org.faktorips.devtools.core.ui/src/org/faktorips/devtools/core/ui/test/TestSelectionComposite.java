@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,7 +50,7 @@ import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestSelectionComposite extends Composite {
@@ -313,7 +313,7 @@ public class TestSelectionComposite extends Composite {
     /**
      * Calls <code>IIpsProject#findAllIpsObjects()</code> on all projects in the workspace and
      * returns the collective list of <code>IIpsObject</code>s.
-     * 
+     *
      * @throws IpsException if getting objects from a <code>IIpsProject</code> fails.
      */
     public IIpsObject[] getAllIpsTestObjects() {
@@ -372,10 +372,10 @@ public class TestSelectionComposite extends Composite {
         List<String> roots = new ArrayList<>();
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;
-            if (element instanceof IIpsPackageFragment) {
-                roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(((IIpsPackageFragment)element).getRoot()));
-            } else if (element instanceof IIpsObject) {
-                roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(((IIpsObject)element).getIpsPackageFragment()
+            if (element instanceof IIpsPackageFragment packageFragment) {
+                roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(packageFragment.getRoot()));
+            } else if (element instanceof IIpsObject ipsObject) {
+                roots.add(IpsTestRunner.getRepPckNameFromPckFrgmtRoot(ipsObject.getIpsPackageFragment()
                         .getRoot()));
             }
         }
@@ -393,9 +393,9 @@ public class TestSelectionComposite extends Composite {
         for (Object object : content) {
             IIpsElement element = (IIpsElement)object;
             if (element instanceof IIpsPackageFragment) {
-                testSuites.add(((IIpsPackageFragment)element).getName());
-            } else if (element instanceof IIpsObject) {
-                testSuites.add(((IIpsObject)element).getQualifiedName());
+                testSuites.add(element.getName());
+            } else if (element instanceof IIpsObject ipsObject) {
+                testSuites.add(ipsObject.getQualifiedName());
             }
         }
         return AbstractIpsTestRunner.toStringFromList(testSuites);

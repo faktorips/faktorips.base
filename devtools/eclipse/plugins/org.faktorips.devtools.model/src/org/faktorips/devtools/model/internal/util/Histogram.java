@@ -65,7 +65,7 @@ public class Histogram<V, E> {
      */
     @SafeVarargs
     public Histogram(Function<E, V> elementToValueFunction, E... elements) {
-        this(elementToValueFunction, new EqualToComparator<V>(), Arrays.asList(elements));
+        this(elementToValueFunction, new EqualToComparator<>(), Arrays.asList(elements));
     }
 
     /**
@@ -73,7 +73,7 @@ public class Histogram<V, E> {
      * using the values' equals method.
      */
     public Histogram(Function<E, V> elementToValueFunction, Collection<E> elements) {
-        this(elementToValueFunction, new EqualToComparator<V>(), elements);
+        this(elementToValueFunction, new EqualToComparator<>(), elements);
     }
 
     /**
@@ -93,9 +93,9 @@ public class Histogram<V, E> {
             Collection<E> elements) {
         super();
         this.valueComparator = valueComparator;
-        this.totalCount = elements.size();
+        totalCount = elements.size();
         this.elementToValueFunction = elementToValueFunction;
-        this.valueToElements = new SortedMultiMap<>(valueComparator, new SameInstanceComparator<E>());
+        valueToElements = new SortedMultiMap<>(valueComparator, new SameInstanceComparator<E>());
         initValueToElementsMap(elements);
     }
 
@@ -376,7 +376,7 @@ public class Histogram<V, E> {
         }
 
         public BestValue() {
-            this.value = null;
+            value = null;
             relativeFrequency = Decimal.NULL;
             isPresent = false;
         }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.tablecontents.ITableRows;
  * A CompareItem for building a structure that represents a <code>ITableContents</code> object. The
  * <code>IIpsSrcFile</code>, the <code>ITableContents</code>, its generations and all contained rows
  * are each represented by a <code>TableContentsCompareItem</code>.
- * 
+ *
  * @see org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem
  * @author Stefan Widmaier
  */
@@ -48,7 +48,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * <code>IIpsElement</code>. If the given parent is null, this
      * <code>TableContentsCompareItem</code> is marked as a root element, as indicated by the method
      * isRoot(). The given <code>IIpsElement</code> must not be <code>null</code>.
-     * 
+     *
      * @param parent The parent of this <code>AbstractCompareItem</code>, or null if it is the root
      *            of a tree/structure.
      * @param content The referenced content. Must not be null.
@@ -69,36 +69,41 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     @Override
     protected String initContentString() {
         StringBuilder sb = new StringBuilder();
-        if (getIpsElement() instanceof IRow) {
-            IRow row = (IRow)getIpsElement();
-            ITableContents table = (ITableContents)row.getIpsObject();
-            int[] columnWidths = getColumnWidths();
-            StringBuilder sbColSep = new StringBuilder();
+        switch (getIpsElement()) {
+            case IRow row -> {
+                ITableContents table = (ITableContents)row.getIpsObject();
+                int[] columnWidths = getColumnWidths();
+                StringBuilder sbColSep = new StringBuilder();
 
-            /*
-             * Do not display Rownumber at the start of the line since textcompare/RangeDifferencing
-             * needs to recognize rows of equal content, even if they have a different rownumber.
-             */
-            // String rowNumber= row.getRowNumber()+COLON_BLANK;
-            // sb.append(rowNumber);
-            // sb.append(getNeededTabs(columnWidths[0], rowNumber));
-            for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
-                String value = getRowValueAt(row, colCounter);
-                sb.append(value);
-                sb.append(getNeededTabs(columnWidths[colCounter + 1], value));
-                sb.append("\u007C "); //$NON-NLS-1$
-                sbColSep.append(value);
-                sbColSep.append('\u007C');
+                /*
+                 * Do not display Rownumber at the start of the line since
+                 * textcompare/RangeDifferencing needs to recognize rows of equal content, even if
+                 * they have a different rownumber.
+                 */
+                // String rowNumber= row.getRowNumber()+COLON_BLANK;
+                // sb.append(rowNumber);
+                // sb.append(getNeededTabs(columnWidths[0], rowNumber));
+                for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
+                    String value = getRowValueAt(row, colCounter);
+                    sb.append(value);
+                    sb.append(getNeededTabs(columnWidths[colCounter + 1], value));
+                    sb.append("\u007C "); //$NON-NLS-1$
+                    sbColSep.append(value);
+                    sbColSep.append('\u007C');
+                }
+                rowContentStringColumnSeparated = sbColSep.toString();
             }
-            rowContentStringColumnSeparated = sbColSep.toString();
-        } else if (getIpsElement() instanceof ITableContents) {
-            ITableContents table = (ITableContents)getIpsElement();
-            sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
-            sb.append(QUOTE).append(table.getName()).append(QUOTE).append(NEWLINE);
-            sb.append(TAB).append(Messages.TableContentsCompareItem_TableStructure).append(COLON_BLANK).append(QUOTE)
-                    .append(table.getTableStructure()).append(QUOTE);
-        } else if (getIpsElement() instanceof IIpsSrcFile) {
-            sb.append(Messages.TableContentsCompareItem_SrcFile);
+            case ITableContents table -> {
+                sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
+                sb.append(QUOTE).append(table.getName()).append(QUOTE).append(NEWLINE);
+                sb.append(TAB).append(Messages.TableContentsCompareItem_TableStructure).append(COLON_BLANK)
+                        .append(QUOTE)
+                        .append(table.getTableStructure()).append(QUOTE);
+            }
+            case IIpsSrcFile $ -> sb.append(Messages.TableContentsCompareItem_SrcFile);
+            default -> {
+                // nothing to add
+            }
         }
         return sb.toString();
     }
@@ -114,7 +119,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     /**
      * Calculates the number of tabs needed to fill the column up with tabs, or in other words to
      * align the next value with its column.
-     * 
+     *
      * @param widthInTabs The width of the column in tabs.
      * @param value The value of this table cell. Must not be null.
      * @return the number of tabs needed to reach the next column.
@@ -131,18 +136,19 @@ public class TableContentsCompareItem extends AbstractCompareItem {
     @Override
     protected String initName() {
         StringBuilder sb = new StringBuilder();
-        if (getIpsElement() instanceof IRow) {
-            IRow row = (IRow)getIpsElement();
+        switch (getIpsElement()) {
             // translate 0 based index to 1 based row number
-            sb.append(Messages.TableContentsCompareItem_Row).append(COLON_BLANK).append(row.getRowNumber() + 1);
-        } else if (getIpsElement() instanceof ITableRows) {
-            sb.append(Messages.TableContentsCompareItem_rows);
-        } else if (getIpsElement() instanceof ITableContents) {
-            ITableContents table = (ITableContents)getIpsElement();
-            sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
-            sb.append(QUOTE).append(table.getName()).append(QUOTE);
-        } else if (getIpsElement() instanceof IIpsSrcFile) {
-            sb.append(Messages.TableContentsCompareItem_SrcFile);
+            case IRow row -> sb.append(Messages.TableContentsCompareItem_Row).append(COLON_BLANK)
+                    .append(row.getRowNumber() + 1);
+            case ITableRows $ -> sb.append(Messages.TableContentsCompareItem_rows);
+            case ITableContents table -> {
+                sb.append(Messages.TableContentsCompareItem_TableContents).append(COLON_BLANK);
+                sb.append(QUOTE).append(table.getName()).append(QUOTE);
+            }
+            case IIpsSrcFile $ -> sb.append(Messages.TableContentsCompareItem_SrcFile);
+            default -> {
+                // nothing to add
+            }
         }
         return sb.toString();
     }
@@ -185,7 +191,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * <p>
      * If the compareitems do not contain rows, equals() returns the same value as the equals()
      * method in <code>AbstractCompareItem</code>.
-     * 
+     *
      * @see AbstractCompareItem#equals(Object)
      */
     @Override
@@ -250,9 +256,9 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * <li>length is 8 -> returns 3 (2 tabs to fit 8 characters exactly + 1 additional tab)</li>
      * <li>length is 9 -> returns 4 (3 tabs to fit 9 characters + 1 additional tab)</li>
      * </ul>
-     * 
+     *
      * @return Tabs needed to fit this string and create space between columns.
-     * 
+     *
      * @see TableContentsCompareViewer#TAB_WIDTH
      */
     private int getColumnTabWidthForLength(int stringLength) {
@@ -279,7 +285,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * Returns the value at the given column index in the given row. If the value retrieved from the
      * row is null the NULL-representation string (defined by the IpsPreferences) is returned. This
      * method thus never returns <code>null</code>.
-     * 
+     *
      * @param row The row a value should be retrieved from.
      * @param columnIndex The column index the value should be retrieved from inside the row.
      * @return The value at the given index in the given row or the NULL-representation string

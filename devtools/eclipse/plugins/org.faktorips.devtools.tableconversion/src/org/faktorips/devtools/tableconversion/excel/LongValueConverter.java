@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Converts from Long to String and vice versa.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class LongValueConverter extends AbstractValueConverter {
@@ -30,10 +30,10 @@ public class LongValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof Long) {
-            return ((Long)externalDataValue).toString();
-        } else if (externalDataValue instanceof BigDecimal) {
-            return convertBigDecimalToLongString((BigDecimal)externalDataValue, messageList);
+        if (externalDataValue instanceof Long l) {
+            return l.toString();
+        } else if (externalDataValue instanceof BigDecimal bigDecimal) {
+            return convertBigDecimalToLongString(bigDecimal, messageList);
         }
         if (StringUtils.isNumeric("" + externalDataValue)) { //$NON-NLS-1$
             // if the excel datatype isn't Long or Double but the value is numeric then convert

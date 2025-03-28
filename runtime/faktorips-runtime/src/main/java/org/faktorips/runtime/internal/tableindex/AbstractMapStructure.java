@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import java.util.Set;
  * This abstract implementation makes no assumption about the underlying map implementation. The map
  * instance is provided by subclasses via the constructor. Thus the {@link #get(Object)} method
  * implementation must also be provided by subclasses using the chosen data structure.
- * 
+ *
  * @param <K> The type of key in the underlying map - can be restricted in subclasses
  * @param <V> The type of values in the map. Values are nested {@link SearchStructure structures}
  *            which must:
@@ -39,7 +39,7 @@ import java.util.Set;
  *            </ul>
  * @param <R> The type of the result values. The result type must be the same in every nested
  *            structure.
- * 
+ *
  */
 public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & MergeAndCopyStructure<V>, R> extends
         SearchStructure<R> {
@@ -50,7 +50,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
 
     /**
      * Creates a new {@link AbstractMapStructure} with the specified map instance.
-     * 
+     *
      * @param map The map that should be used as underlying data structure.
      */
     protected AbstractMapStructure(Map<K, V> map) {
@@ -60,7 +60,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
     /**
      * Puts a new element in the map. If there is already a value for the given key, the two values
      * will be merged together. Thus existing values will never be overwritten.
-     * 
+     *
      * @param key key that maps to the specified value
      * @param value value to be associated with the specified key.
      * @see Map#put(Object, Object)
@@ -107,7 +107,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
     /**
      * Checks whether the given result is <code>null</code> and returns a fall-back result (an empty
      * {@link ResultStructure}) in that case.
-     * 
+     *
      * @param result a valid result or <code>null</code>.
      * @return the given result or an {@link EmptySearchStructure} if the given result is
      *             <code>null</code>. Never returns <code>null</code>.

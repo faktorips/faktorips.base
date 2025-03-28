@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,11 +21,11 @@ import org.faktorips.devtools.core.ui.controls.EditTableControl;
 
 /**
  * Replaces the {@link EditTableControl}.
- * 
+ *
  * @see EditTableControl
- * 
+ *
  * @since 3.7
- * 
+ *
  * @author Stefan Widmaier
  */
 public class EditTableControlViewer<T> {
@@ -36,7 +36,7 @@ public class EditTableControlViewer<T> {
 
     /**
      * Creates a {@link EditTableControlViewer} along with its UI.
-     * 
+     *
      * @param parent the parent composite to which the editable table and its buttons should be
      *            added
      */
@@ -63,11 +63,11 @@ public class EditTableControlViewer<T> {
     /**
      * Sets the model this viewer uses. The given table model will be used as input for the table
      * viewer.
-     * 
+     *
      * @param tabelModel the model containing the data to be displayed
      */
     public void setTabelModel(IEditTableModel<T> tabelModel) {
-        this.tableModel = tabelModel;
+        tableModel = tabelModel;
         getTableViewer().setInput(tabelModel);
         updateButtonsEnabledState();
     }
@@ -96,7 +96,7 @@ public class EditTableControlViewer<T> {
     /**
      * Returns the {@link TableViewer} for this viewer. Clients may add {@link EditingSupport} and
      * columns to the viewer.
-     * 
+     *
      */
     public TableViewer getTableViewer() {
         return tableViewer;
@@ -122,14 +122,15 @@ public class EditTableControlViewer<T> {
         tableViewer.refresh();
         tableViewer.getControl().setFocus();
         int itemCount = tableViewer.getTable().getItemCount();
+        int actualIndex = index;
         if (itemCount > 0) {
-            if (index < 0) {
-                index = 0;
+            if (actualIndex < 0) {
+                actualIndex = 0;
             }
-            if (index >= itemCount) {
-                index = itemCount - 1;
+            if (actualIndex >= itemCount) {
+                actualIndex = itemCount - 1;
             }
-            tableViewer.getTable().setSelection(index);
+            tableViewer.getTable().setSelection(actualIndex);
         }
         updateButtonsEnabledState();
     }

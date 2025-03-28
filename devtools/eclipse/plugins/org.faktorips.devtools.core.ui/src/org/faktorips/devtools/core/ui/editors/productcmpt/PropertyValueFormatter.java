@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -80,21 +80,17 @@ public class PropertyValueFormatter {
         if (propertyValue == null) {
             throw new NullPointerException("Cannot format null"); //$NON-NLS-1$
         }
-        if (propertyValue.getPropertyValueType() == PropertyValueType.ATTRIBUTE_VALUE) {
-            return ATTRIBUTE_VALUE.apply((IAttributeValue)propertyValue);
-        } else if (propertyValue.getPropertyValueType() == PropertyValueType.CONFIGURED_VALUESET) {
-            return CONFIGURED_VALUESET.apply((IConfiguredValueSet)propertyValue);
-        } else if (propertyValue.getPropertyValueType() == PropertyValueType.CONFIGURED_DEFAULT) {
-            return CONFIGURED_DEFAULT.apply((IConfiguredDefault)propertyValue);
-        } else if (propertyValue.getPropertyValueType() == PropertyValueType.TABLE_CONTENT_USAGE) {
-            return TABLE_CONTENT_USAGE.apply((ITableContentUsage)propertyValue);
-        } else if (propertyValue.getPropertyValueType() == PropertyValueType.FORMULA) {
-            return FORMULA.apply((IFormula)propertyValue);
-        } else if (propertyValue.getPropertyValueType() == PropertyValueType.VALIDATION_RULE_CONFIG) {
-            return VALIDATION_RULE_CONFIG.apply((IValidationRuleConfig)propertyValue);
-        }
-        throw new IllegalStateException(PropertyValueFormatter.class.getName() + ": Unknown property value type " //$NON-NLS-1$
-                + propertyValue.getPropertyValueType());
+        return switch (propertyValue.getPropertyValueType()) {
+            case ATTRIBUTE_VALUE -> ATTRIBUTE_VALUE.apply((IAttributeValue)propertyValue);
+            case CONFIGURED_VALUESET -> CONFIGURED_VALUESET.apply((IConfiguredValueSet)propertyValue);
+            case CONFIGURED_DEFAULT -> CONFIGURED_DEFAULT.apply((IConfiguredDefault)propertyValue);
+            case TABLE_CONTENT_USAGE -> TABLE_CONTENT_USAGE.apply((ITableContentUsage)propertyValue);
+            case FORMULA -> FORMULA.apply((IFormula)propertyValue);
+            case VALIDATION_RULE_CONFIG -> VALIDATION_RULE_CONFIG.apply((IValidationRuleConfig)propertyValue);
+            case null, default -> throw new IllegalStateException(
+                    PropertyValueFormatter.class.getName() + ": Unknown property value type " //$NON-NLS-1$
+                            + propertyValue.getPropertyValueType());
+        };
     }
 
     private static String getValueOrNullPresentation(String value) {

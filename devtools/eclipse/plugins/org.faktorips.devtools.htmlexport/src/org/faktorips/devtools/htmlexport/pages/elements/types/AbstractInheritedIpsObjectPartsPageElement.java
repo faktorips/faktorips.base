@@ -35,7 +35,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
 
     public AbstractInheritedIpsObjectPartsPageElement(DocumentationContext context, S element, List<S> superElements) {
         super(context);
-        this.parentIpsElement = element;
+        parentIpsElement = element;
         this.superElements = superElements;
     }
 

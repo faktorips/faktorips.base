@@ -49,7 +49,7 @@ public class SortAlphabetically extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
         if (selection instanceof IStructuredSelection structuredSelection) {
-            sortAlphabetically(event);
+            sortAlphabetically(event, structuredSelection);
         } else {
             throw new RuntimeException();
         }
@@ -60,11 +60,11 @@ public class SortAlphabetically extends AbstractHandler {
      * Helper method to apply the sorted list of links to the UI
      *
      * @param event event which triggers the sorting
+     * @param structuredSelection the selection from the event
      */
-    private void sortAlphabetically(ExecutionEvent event) {
-        ISelection selection = HandlerUtil.getCurrentSelection(event);
+    private void sortAlphabetically(ExecutionEvent event, IStructuredSelection structuredSelection) {
         TypedSelection<AbstractAssociationViewItem> typedSelection = new TypedSelection<>(
-                AbstractAssociationViewItem.class, selection);
+                AbstractAssociationViewItem.class, structuredSelection);
         if (!typedSelection.isValid()) {
             return;
         }

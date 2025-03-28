@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -57,7 +57,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * A dynamic menu contribution that consists of commands that allow the user to directly jump to the
  * Java source generated for the selected {@link IIpsObjectPartContainer}.
- * 
+ *
  * @author Alexander Weickmann
  */
 public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributionItem
@@ -220,17 +220,15 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap() {
         Map<IType, Set<IMember>> javaTypesToJavaElements = new LinkedHashMap<>(2);
         for (IJavaElement javaElement : builderSet.getGeneratedJavaElements(selectedIpsObjectPartContainer)) {
-            IType type = null;
-            if (javaElement instanceof IType) {
-                type = (IType)javaElement;
-                addTypeIfNotPresent(javaTypesToJavaElements, type);
-            } else if (javaElement instanceof IMember) {
-                type = (IType)javaElement.getParent();
-                addTypeIfNotPresent(javaTypesToJavaElements, type);
-                Set<IMember> members = javaTypesToJavaElements.get(type);
-                members.add((IMember)javaElement);
-            } else {
-                throw new RuntimeException("Unknown Java type."); //$NON-NLS-1$
+            switch (javaElement) {
+                case IType type -> addTypeIfNotPresent(javaTypesToJavaElements, type);
+                case IMember member -> {
+                    var type = (IType)member.getParent();
+                    addTypeIfNotPresent(javaTypesToJavaElements, type);
+                    Set<IMember> members = javaTypesToJavaElements.get(type);
+                    members.add(member);
+                }
+                default -> throw new RuntimeException("Unknown Java type."); //$NON-NLS-1$
             }
         }
         return javaTypesToJavaElements;
@@ -238,7 +236,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private void addTypeIfNotPresent(Map<IType, Set<IMember>> javaTypesToJavaElements, IType type) {
         if (!(javaTypesToJavaElements.containsKey(type))) {
-            javaTypesToJavaElements.put(type, new LinkedHashSet<IMember>());
+            javaTypesToJavaElements.put(type, new LinkedHashSet<>());
         }
     }
 
@@ -324,7 +322,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     /**
      * Returns the {@link IType} of the given {@link IJavaElement}. If no {@link IType type} can be
      * found, <code>null</code> is returned.
-     * 
+     *
      * @param javaElement The {@link IJavaElement} that is declared in the {@link IType}.
      */
     private IType getType(IJavaElement javaElement) {
@@ -346,7 +344,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private boolean isConstructor(IJavaElement javaElement) {
         String typeName = getTypeName(javaElement);
         if (javaElement instanceof IMember) {
-            return ((IMember)javaElement).getElementName().equalsIgnoreCase(typeName);
+            return javaElement.getElementName().equalsIgnoreCase(typeName);
         }
         return false;
     }
@@ -380,7 +378,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
      * <p>
      * Each member is represented by a command that allows the user to open that member in a Java
      * editor.
-     * 
+     *
      * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
      *            the jump to sourcecode context menu.
      * @param type The {@link IMember}s are part of this {@link IType}. The type represents an
@@ -402,7 +400,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     /**
      * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
      * sub-menu) to the list of contributionItems.
-     * 
+     *
      * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
      *            the jump to sourcecode context menu.
      * @param members A set of {@link IMember}s that contains java elements like fields,

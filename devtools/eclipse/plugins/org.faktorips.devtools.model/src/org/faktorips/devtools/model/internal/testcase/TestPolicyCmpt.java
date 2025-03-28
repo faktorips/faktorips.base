@@ -89,26 +89,20 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof TestAttributeValue) {
-            testAttributeValues.add((TestAttributeValue)part);
-            return true;
-        } else if (part instanceof TestPolicyCmptLink) {
-            testPolicyCmptLinks.add((TestPolicyCmptLink)part);
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case TestAttributeValue testAttributeValue -> testAttributeValues.add(testAttributeValue);
+            case TestPolicyCmptLink link -> testPolicyCmptLinks.add(link);
+            default -> false;
+        };
     }
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof TestAttributeValue) {
-            testAttributeValues.remove(part);
-            return true;
-        } else if (part instanceof TestPolicyCmptLink) {
-            testPolicyCmptLinks.remove(part);
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case TestAttributeValue testAttributeValue -> testAttributeValues.remove(testAttributeValue);
+            case TestPolicyCmptLink link -> testPolicyCmptLinks.remove(link);
+            default -> false;
+        };
     }
 
     @Override
@@ -118,13 +112,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-        String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(TestAttributeValue.TAG_NAME)) {
-            return newTestAttributeValueInternal(id);
-        } else if (xmlTagName.equals(TestPolicyCmptLink.TAG_NAME)) {
-            return newTestPcTypeLinkInternal(id);
-        }
-        return null;
+        return switch (xmlTag.getNodeName()) {
+            case TestAttributeValue.TAG_NAME -> newTestAttributeValueInternal(id);
+            case TestPolicyCmptLink.TAG_NAME -> newTestPcTypeLinkInternal(id);
+            default -> null;
+        };
     }
 
     @Override

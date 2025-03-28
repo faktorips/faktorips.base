@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -52,7 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class Expression extends BaseIpsObjectPart implements IExpression {
@@ -154,8 +154,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (method == null) {
             return compiler;
         }
-        IdentifierResolver<JavaCodeFragment> resolver;
-        resolver = builderSet.createFlIdentifierResolver(this, compiler);
+        IdentifierResolver<JavaCodeFragment> resolver = builderSet.createFlIdentifierResolver(this, compiler);
         if (resolver == null) {
             return compiler;
         }
@@ -166,7 +165,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     /**
      * Returns all {@link ITableContentUsage}s available for this expression.
-     * 
+     *
      * @return all {@link ITableContentUsage}s available for this expression
      */
     protected abstract ITableContentUsage[] getTableContentUsages();
@@ -277,13 +276,11 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         String caption = null;
         IBaseMethod signature = findFormulaSignature(getIpsProject());
         if (signature != null) {
-            if (signature instanceof IOverridableLabeledElement) {
-                caption = ((IOverridableLabeledElement)signature).getLabelValueFromThisOrSuper(locale);
-            } else if (signature instanceof ILabeledElement) {
-                caption = ((ILabeledElement)signature).getLabelValue(locale);
-            } else {
-                caption = signature.getSignatureString();
-            }
+            caption = switch (signature) {
+                case IOverridableLabeledElement overridable -> overridable.getLabelValueFromThisOrSuper(locale);
+                case ILabeledElement labeledElement -> labeledElement.getLabelValue(locale);
+                default -> signature.getSignatureString();
+            };
         }
         return caption;
     }

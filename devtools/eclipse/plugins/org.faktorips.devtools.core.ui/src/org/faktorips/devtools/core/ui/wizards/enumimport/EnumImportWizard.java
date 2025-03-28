@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,14 +37,13 @@ import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard to import tabular data into an <code>IEnumType</code> or <code>IEnumContent</code>.
- * 
+ *
  * @author Roman Grutza, Alexander Weickmann
  */
 public class EnumImportWizard extends IpsObjectImportWizard {
@@ -245,7 +244,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             return (IEnumValueContainer)selectContentsPage.getTargetForImport();
         }
         IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());
-        newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<IIpsObject>());
+        newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<>());
         return newEnumContentPage.getCreatedEnumContent();
     }
 

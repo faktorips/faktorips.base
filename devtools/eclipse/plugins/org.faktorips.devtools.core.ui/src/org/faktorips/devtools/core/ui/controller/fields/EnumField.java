@@ -35,7 +35,7 @@ public class EnumField<T extends Enum<T>> extends ComboField<T> {
 
     public EnumField(Combo combo, Class<T> javaEnum) {
         super(combo);
-        this.javaEnumClass = javaEnum;
+        javaEnumClass = javaEnum;
         initComboItems(combo, javaEnum);
     }
 

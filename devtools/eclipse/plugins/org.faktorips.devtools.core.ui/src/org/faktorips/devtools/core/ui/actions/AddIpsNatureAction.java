@@ -51,14 +51,14 @@ public class AddIpsNatureAction extends ActionDelegate {
         if (newSelection instanceof IStructuredSelection) {
             Object selected = ((IStructuredSelection)newSelection).getFirstElement();
             IProject prj = null;
-            if (selected instanceof IAdaptable) {
-                Object adapted = ((IAdaptable)selected).getAdapter(IProject.class);
+            if (selected instanceof IAdaptable adaptable) {
+                Object adapted = adaptable.getAdapter(IProject.class);
                 if (adapted == null) {
                     action.setEnabled(false);
                 }
                 prj = (IProject)adapted;
-            } else if (selected instanceof IProject) {
-                prj = (IProject)selected;
+            } else if (selected instanceof IProject p) {
+                prj = p;
             }
 
             if (prj == null || !prj.isOpen()) {

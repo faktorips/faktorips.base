@@ -190,20 +190,19 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
              * {@link IProductCmptProperty} from the supertype hierarchy.
              */
             private boolean isOverwriteProperty(IProductCmptProperty property) {
-                if (property instanceof IAttribute) {
-                    return ((IAttribute)property).isOverwrite();
-                } else if (property instanceof IProductCmptTypeMethod) {
-                    return ((IProductCmptTypeMethod)property).isOverloadsFormula();
-                }
-                return false;
+                return switch (property) {
+                    case IAttribute attribute -> attribute.isOverwrite();
+                    case IProductCmptTypeMethod method -> method.isOverloadsFormula();
+                    default -> false;
+                };
             }
 
             /**
              * Returns true if the given {@link IProductCmptProperty} is visible, false otherwise.
              */
             private boolean isVisible(IProductCmptProperty property) {
-                if (property instanceof IProductCmptTypeAttribute) {
-                    return ((IProductCmptTypeAttribute)property).isVisible();
+                if (property instanceof IProductCmptTypeAttribute attribute) {
+                    return attribute.isVisible();
                 }
                 return true;
             }

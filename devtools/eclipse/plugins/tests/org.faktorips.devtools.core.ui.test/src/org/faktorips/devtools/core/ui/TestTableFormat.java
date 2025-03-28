@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,6 +40,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
             boolean ignoreColumnHeaderRow,
             MessageList list,
             boolean importIntoExisting) {
+        // nothing to do
     }
 
     @Override
@@ -47,7 +48,8 @@ class TestTableFormat extends AbstractExternalTableFormat {
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
-            MessageList list,IProgressMonitor monitor) {
+            MessageList list,
+            IProgressMonitor monitor) {
         return false;
     }
 
@@ -59,6 +61,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
             boolean ignoreColumnHeaderRow,
             MessageList list,
             boolean importIntoExisting) {
+        // nothing to do
     }
 
     @Override
@@ -86,5 +89,5 @@ class TestTableFormat extends AbstractExternalTableFormat {
 }
 
 class TestTableFormatTwo extends TestTableFormat {
-
+    // empty
 }

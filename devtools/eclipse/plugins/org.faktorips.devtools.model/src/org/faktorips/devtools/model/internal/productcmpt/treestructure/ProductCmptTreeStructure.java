@@ -388,8 +388,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
     @Override
     public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent) {
-        if (parent instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptStructureReference[] children = ((ProductCmptTypeAssociationReference)parent).getChildren();
+        if (parent instanceof IProductCmptTypeAssociationReference associationReference) {
+            IProductCmptStructureReference[] children = associationReference.getChildren();
             IProductCmptReference[] result = new IProductCmptReference[children.length];
             System.arraycopy(children, 0, result, 0, children.length);
             return result;
@@ -420,9 +420,9 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             IProductCmptStructureReference parent,
             boolean includeEmptyAssociations) {
 
-        if (parent instanceof IProductCmptReference) {
+        if (parent instanceof IProductCmptReference productCmptReference) {
             List<IProductCmptTypeAssociationReference> associationReferences = new ArrayList<>();
-            IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
+            IProductCmptStructureReference[] children = productCmptReference.getChildren();
             for (IProductCmptStructureReference element : children) {
                 if (element instanceof IProductCmptTypeAssociationReference relationReference) {
                     if (includeEmptyAssociations || getChildProductCmptReferences(relationReference).length > 0) {
@@ -432,8 +432,8 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             }
             return associationReferences
                     .toArray(new IProductCmptTypeAssociationReference[associationReferences.size()]);
-        } else if (parent instanceof ProductCmptStructureReference) {
-            ProductCmptStructureReference[] children = ((ProductCmptStructureReference)parent).getChildren();
+        } else if (parent instanceof ProductCmptStructureReference structureReference) {
+            ProductCmptStructureReference[] children = structureReference.getChildren();
             List<IProductCmptTypeAssociationReference> result = new ArrayList<>();
             for (ProductCmptStructureReference element : children) {
                 if (element instanceof IProductCmptTypeAssociationReference) {

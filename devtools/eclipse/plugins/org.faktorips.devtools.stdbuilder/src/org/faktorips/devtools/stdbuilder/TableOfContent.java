@@ -1,14 +1,22 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.stdbuilder;
+
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_CONTENT;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.POLICY_CMPT_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TABLE_CONTENTS;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TEST_CASE;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -42,7 +50,7 @@ import org.w3c.dom.NodeList;
  * <em>The table of contents can be extended to read toc entries for new object types by
  * implementing and registering a {@link ITocEntryFactory}.</em>
  * </p>
- * 
+ *
  * @author dirmeier
  */
 public class TableOfContent {
@@ -89,7 +97,6 @@ public class TableOfContent {
                         tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
                     }
                 }
-
             }
         }
         return tocEntryFactoriesByXmlTag;
@@ -121,7 +128,7 @@ public class TableOfContent {
     /**
      * Adds the entry to the table of contents or replaces the existing entry with the same product
      * component id. If entry is <code>null</code> the table of contents remains unchanged.
-     * 
+     *
      * @return true if the table of content was changed
      */
     public boolean addOrReplaceTocEntry(TocEntryObject entry) {
@@ -167,7 +174,7 @@ public class TableOfContent {
 
     /**
      * Transforms the table of contents to xml.
-     * 
+     *
      * @param doc The xml document used to create new objects.
      * @throws NullPointerException if doc is <code>null</code>.
      */
@@ -204,25 +211,18 @@ public class TableOfContent {
     }
 
     private static IpsObjectType getIpsObjectType(TocEntryObject entry) {
-        if (entry instanceof ProductCmptTocEntry) {
-            return IpsObjectType.PRODUCT_CMPT;
-        } else if (entry instanceof EnumContentTocEntry) {
-            return IpsObjectType.ENUM_CONTENT;
-        } else if (entry instanceof TestCaseTocEntry) {
-            return IpsObjectType.TEST_CASE;
-        } else if (entry instanceof TableContentTocEntry) {
-            return IpsObjectType.TABLE_CONTENTS;
-        } else if (entry instanceof PolicyCmptTypeTocEntry) {
-            return IpsObjectType.POLICY_CMPT_TYPE;
-        } else if (entry instanceof ProductCmptTypeTocEntry) {
-            return IpsObjectType.PRODUCT_CMPT_TYPE;
-        } else if (entry instanceof EnumXmlAdapterTocEntry) {
-            return IpsObjectType.ENUM_TYPE;
-        } else if (entry instanceof CustomTocEntryObject<?>) {
-            return IpsObjectType.getTypeForName(((CustomTocEntryObject<?>)entry).getIpsObjectTypeId());
-        } else {
-            return null;
-        }
+        return switch (entry) {
+            case ProductCmptTocEntry $ -> PRODUCT_CMPT;
+            case EnumContentTocEntry $ -> ENUM_CONTENT;
+            case TestCaseTocEntry $ -> TEST_CASE;
+            case TableContentTocEntry $ -> TABLE_CONTENTS;
+            case PolicyCmptTypeTocEntry $ -> POLICY_CMPT_TYPE;
+            case ProductCmptTypeTocEntry $ -> PRODUCT_CMPT_TYPE;
+            case EnumXmlAdapterTocEntry $ -> ENUM_TYPE;
+            case CustomTocEntryObject<?> customTocEntryObject -> IpsObjectType
+                    .getTypeForName(customTocEntryObject.getIpsObjectTypeId());
+            case null, default -> null;
+        };
     }
 
     private static QualifiedNameType getQualifiedNameType(TocEntryObject entry) {

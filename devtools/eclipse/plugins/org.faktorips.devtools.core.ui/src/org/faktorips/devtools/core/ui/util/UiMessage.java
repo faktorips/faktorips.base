@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -85,13 +85,13 @@ public final class UiMessage implements IMessage {
 
     private String getObjectName(Object contextObject) {
         String objectName = IpsStringUtils.EMPTY;
-        if (contextObject instanceof ILabeledElement) {
-            objectName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
-        } else if (contextObject instanceof IIpsObjectPartContainer) {
-            objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
+        if (contextObject instanceof ILabeledElement labeledElement) {
+            objectName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(labeledElement);
+        } else if (contextObject instanceof IIpsObjectPartContainer container) {
+            objectName = getCaptionName(container);
         }
-        if (IpsStringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
-            objectName = ((IIpsElement)contextObject).getName();
+        if (IpsStringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement element) {
+            objectName = element.getName();
         }
         if (IpsStringUtils.isEmpty(objectName)) {
             return IpsStringUtils.EMPTY;

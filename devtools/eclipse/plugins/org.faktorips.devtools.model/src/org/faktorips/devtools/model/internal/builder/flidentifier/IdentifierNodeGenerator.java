@@ -31,7 +31,7 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
     private final IdentifierNodeGeneratorFactory<T> nodeBuilderFactory;
 
     public IdentifierNodeGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-        this.nodeBuilderFactory = factory;
+        nodeBuilderFactory = factory;
     }
 
     /**

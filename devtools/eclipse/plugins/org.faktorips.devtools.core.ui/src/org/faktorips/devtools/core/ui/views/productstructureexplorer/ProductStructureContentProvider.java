@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAs
 
 /**
  * Provides the elements of product structure
- * 
+ *
  * @author Thorsten Guenther
  */
 public class ProductStructureContentProvider implements ITreeContentProvider {
@@ -96,35 +96,34 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         // ENDE: Entwicklungsstand SMART-MODE
 
         // add product cmpt associations and product cmpts
-        if (!showAssociationNodes && parentElement instanceof IProductCmptReference) {
+        if (!showAssociationNodes && parentElement instanceof IProductCmptReference parentProductCmptReference) {
             for (IProductCmptReference productCmptReference : structure
-                    .getChildProductCmptReferences((IProductCmptReference)parentElement)) {
+                    .getChildProductCmptReferences(parentProductCmptReference)) {
                 IProductCmptTypeAssociationReference relationReference = productCmptReference.getParent();
                 if (showAssociatedCmpts || relationReference == null
                         || !relationReference.getAssociation().isAssoziation()) {
                     children.add(productCmptReference);
                 }
             }
-        } else if (parentElement instanceof IProductCmptReference) {
+        } else if (parentElement instanceof IProductCmptReference productCmptReference) {
             for (IProductCmptTypeAssociationReference relationReference : structure
-                    .getChildProductCmptTypeAssociationReferences((IProductCmptReference)parentElement)) {
+                    .getChildProductCmptTypeAssociationReferences(productCmptReference)) {
                 if (showAssociatedCmpts || !relationReference.getAssociation().isAssoziation()) {
                     children.add(relationReference);
                 }
             }
-        } else if (parentElement instanceof IProductCmptTypeAssociationReference) {
-            children.addAll(Arrays.asList(
-                    structure.getChildProductCmptReferences((IProductCmptTypeAssociationReference)parentElement)));
+        } else if (parentElement instanceof IProductCmptTypeAssociationReference associationReference) {
+            children.addAll(Arrays.asList(structure.getChildProductCmptReferences(associationReference)));
         }
 
-        if (showValidationRules && parentElement instanceof IProductCmptReference) {
+        if (showValidationRules && parentElement instanceof IProductCmptReference productCmptReference) {
             children.addAll(
-                    Arrays.asList(structure.getChildProductCmptVRuleReferences((IProductCmptReference)parentElement)));
+                    Arrays.asList(structure.getChildProductCmptVRuleReferences(productCmptReference)));
         }
         // add table content usages
-        if (showTableContents && parentElement instanceof IProductCmptReference) {
+        if (showTableContents && parentElement instanceof IProductCmptReference productCmptReference) {
             children.addAll(Arrays.asList(
-                    structure.getChildProductCmptStructureTblUsageReference((IProductCmptReference)parentElement)));
+                    structure.getChildProductCmptStructureTblUsageReference(productCmptReference)));
         }
 
         return children.toArray();
@@ -136,12 +135,12 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
             return null;
         }
 
-        if (!showAssociationNodes && element instanceof IProductCmptReference) {
-            return structure.getParentProductCmptReference((IProductCmptReference)element);
-        } else if (element instanceof IProductCmptReference) {
-            return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
-        } else if (element instanceof IProductCmptStructureReference) {
-            return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
+        if (!showAssociationNodes && element instanceof IProductCmptReference productCmptReference) {
+            return structure.getParentProductCmptReference(productCmptReference);
+        } else if (element instanceof IProductCmptReference productCmptReference) {
+            return structure.getParentProductCmptTypeRelationReference(productCmptReference);
+        } else if (element instanceof IProductCmptStructureReference structureReference) {
+            return structure.getParentProductCmptReference(structureReference);
         }
 
         return null;
@@ -180,7 +179,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
     /**
      * Returns <code>true</code> if the association type will be displayed besides the related
      * product cmpt.
-     * 
+     *
      * @return true if association type showing is on
      */
     public boolean isAssociationTypeShowing() {
@@ -189,7 +188,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Sets if the association type will be shown or hidden.
-     * 
+     *
      * @param showAssociationType set true for showing association type
      */
     public void setShowAssociationNodes(boolean showAssociationType) {
@@ -198,7 +197,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Returns <code>true</code> if the related table contents cmpts will be shown or hidden.
-     * 
+     *
      * @return true if show table contents components are shown
      */
     public boolean isShowTableContents() {
@@ -207,7 +206,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
     /**
      * Returns <code>true</code> if a product component's validation rules will be shown or hidden.
-     * 
+     *
      * @return true if show table contents components are shown
      */
     public boolean isShowValidationRules() {
@@ -236,7 +235,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * Searches the product component structure for references to the product component defined in
      * the given source file. Returns <code>false</code> if errors occur when reading from the given
      * {@link IIpsSrcFile} or if it does not contain an {@link IProductCmpt}.
-     * 
+     *
      * @param ipsSrcFile the source file containing the product component.
      * @return <code>true</code> if the given product component is referenced by the structure,
      *             <code>false</code> otherwise.

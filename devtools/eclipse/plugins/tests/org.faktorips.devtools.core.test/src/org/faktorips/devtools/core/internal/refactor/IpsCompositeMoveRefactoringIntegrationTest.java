@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
-import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -56,7 +55,7 @@ public class IpsCompositeMoveRefactoringIntegrationTest extends AbstractCoreIpsP
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
 
         // Execute the composite move refactoring
-        performCompositeMoveRefactoring(new LinkedHashSet<IIpsObject>(Arrays.asList(policyCmptType, productCmptType)),
+        performCompositeMoveRefactoring(new LinkedHashSet<>(Arrays.asList(policyCmptType, productCmptType)),
                 targetIpsPackageFragment);
 
         assertSourceFilesNonExistent(originalIpsPackageFragment);

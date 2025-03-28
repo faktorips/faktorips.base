@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 /**
  * ViewerFilter for <code>ProductExplorer</code> viewpart. It is used to filter out all projects
  * that are not productdefinition projects.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ProductExplorerFilter extends ViewerFilter {
@@ -43,8 +43,8 @@ public class ProductExplorerFilter extends ViewerFilter {
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         if (excludeNoIpsProductDefinitionProjects) {
-            if (element instanceof IIpsProject) {
-                if (!((IIpsProject)element).isProductDefinitionProject()) {
+            if (element instanceof IIpsProject ipsProject) {
+                if (!ipsProject.isProductDefinitionProject()) {
                     return false;
                 }
             } else if (element instanceof IProject) {
@@ -56,18 +56,18 @@ public class ProductExplorerFilter extends ViewerFilter {
             return false;
         }
 
-        if (element instanceof IFile) {
+        if (element instanceof IFile file) {
             // filter out rest of hidden files (e.g. ".ipsproject")
-            if (((IFile)element).getName().equals(IIpsPackageFragment.SORT_ORDER_FILE_NAME)) {
+            if (file.getName().equals(IIpsPackageFragment.SORT_ORDER_FILE_NAME)) {
                 return true;
             }
 
-            if (((IFile)element).getName().indexOf(".") == 0) { //$NON-NLS-1$
+            if (file.getName().indexOf(".") == 0) { //$NON-NLS-1$
                 return false;
             }
         }
-        if (element instanceof IIpsObject) {
-            return ((IIpsObject)element).getIpsObjectType().isProductDefinitionType();
+        if (element instanceof IIpsObject ipsObject) {
+            return ipsObject.getIpsObjectType().isProductDefinitionType();
         }
         return true;
     }

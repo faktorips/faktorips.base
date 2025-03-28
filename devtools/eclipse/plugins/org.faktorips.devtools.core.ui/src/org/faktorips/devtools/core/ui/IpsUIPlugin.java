@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -256,7 +256,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * This method is for test purposes only.
      * <p>
      * Note: Always reset the registry in test tear down!!!
-     * 
+     *
      * @return the previous used registry to reset after the test
      */
     protected IExtensionRegistry setExtensionRegistry(IExtensionRegistry registry) {
@@ -350,10 +350,10 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * configuration for the format (depending on the datatype), as for example the default currency
      * for money values. The project can be <code>null</code>. If it is null, the input format tries
      * to guess a default configuration.
-     * 
+     *
      * @param datatype The datatype for which you need the input format
      * @param ipsProject The IIps Project used to retrieve a default configuration
-     * 
+     *
      * @return The input format for formatting any values in the ui depending on the datatype and
      *             the current locale.
      */
@@ -470,9 +470,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * This method is in ui module although it only uses information from core module. We put it in
      * here because the ips preferences should be an ui aspect and may be moved to ui.
-     * 
+     *
      * @param generation The generation you want to check
-     * 
+     *
      * @return true if the generation is editable
      */
     public boolean isGenerationEditable(IProductCmptGeneration generation) {
@@ -486,7 +486,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Returns a control factory that can create controls (and edit fields) for the given datatype.
      * Returns a {@link DefaultControlFactory} if datatype is <code>null</code> or no factory was
      * found.
-     * 
+     *
      */
     public ValueDatatypeControlFactory getValueDatatypeControlFactory(ValueDatatype datatype) {
         ValueDatatypeControlFactory[] factories = getValueDatatypeControlFactories();
@@ -548,11 +548,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Returns a factory for creating table format controls/widgets.
-     * 
+     *
      * @param tableFormat ITableFormat to test whether it has custom properties.
      * @return A Factory class which can be used to create the controls for configuring the custom
      *             properties, or <code>null</code> if the table format has no custom properties.
-     * 
+     *
      * @throws IpsException if the factory class could not be created.
      */
     public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
@@ -597,7 +597,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Test if the given table format class has custom properties. This method returns true if the
      * optional <code>guiClass</code> property is defined for the externalTableFormat extension
      * belonging to the given table format and if the guiClass can be instantiated.
-     * 
+     *
      * @param tableFormat ITableFormat to test whether it has custom properties.
      * @return true if the given table format has custom properties, false otherwise.
      */
@@ -664,7 +664,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * Returns the editor part of the opened editor. Returns <code>null</code> if no editor was
      * opened.
-     * 
+     *
      * @see IDE#openEditor(org.eclipse.ui.IWorkbenchPage, org.eclipse.core.resources.IFile)
      */
     public IEditorPart openEditor(final IFile fileToEdit) {
@@ -726,7 +726,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * Note that this is different from the standard Eclipse behavior, where a new editor would be
      * opened for each different generation.
-     * 
+     *
      * @param productCmptGeneration the generation to open in an editor or to show in an already
      *            opened editor
      */
@@ -751,7 +751,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * Returns whether an {@link IEditorPart} for the provided {@link IIpsSrcFile} is currently
      * opened.
-     * 
+     *
      * @param ipsSrcFile the {@link IIpsSrcFile} to check whether an editor is opened for
      */
     public boolean isOpenEditor(IIpsSrcFile ipsSrcFile) {
@@ -784,7 +784,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * propertyId. If no factory is explicitly registered for the provided <code>propertyId</code> a
      * {@link DefaultExtensionPropertyEditFieldFactory} will be associated with the propertyId and
      * returned.
-     * 
+     *
      * @param propertyId the id that identifies an extension property. For it the edit field factory
      *            will be returned.
      */
@@ -821,7 +821,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Returns the registered {@link IExtensionPropertyEditFieldFactory} for the provided
      * propertyId. If no factory is explicitly registered for the provided {@code propertyId},
      * {@code null} will be associated with the propertyId and returned.
-     * 
+     *
      * @param propertyId the id that identifies an extension property for which the section factory
      *            will be returned.
      */
@@ -859,7 +859,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * {@link IWorkbenchAdapter} that have to be registered for {@link IIpsElement}. The provider is
      * necessary because it is not possible to register multiple {@link IWorkbenchAdapter} for
      * {@link IIpsElement}, but we do not want to register the adapters for every specific object.
-     * 
+     *
      * @return The list of registered {@link IWorkbenchAdapterProvider}
      */
     public static List<IWorkbenchAdapterProvider> getWorkbenchAdapterProviders() {
@@ -901,7 +901,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     /**
      * Adding an {@link IIpsSrcFile} to the object history. The history stores all used files to
      * give the user a hint which files he used recently.
-     * 
+     *
      * @param ipsSrcFile The new file for the history
      */
     public void addHistoryItem(IIpsSrcFile ipsSrcFile) {
@@ -911,7 +911,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Get the history of the recently used ips objects.
-     * 
+     *
      * @return the history containing all recenty used objects
      */
     public IpsObjectSelectionHistory getOpenIpsObjectHistory() {
@@ -946,7 +946,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Save the history containing the recently used {@link IIpsSrcFile}s. You could specify the
      * history you want to safe. Normally you should use the method
      * {@link #saveOpenIpsObjectHistory()} to save the history of this {@link IpsUIPlugin}.
-     * 
+     *
      * @param selectionHistory the history with the recently used objects, @see
      *            {@link #loadOpenIpsObjectHistory()}
      */
@@ -967,7 +967,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Save the history containing the recently used {@link IIpsSrcFile}s.
-     * 
+     *
      * @see #saveOpenIpsObjectHistory(IpsObjectSelectionHistory)
      */
     public void saveOpenIpsObjectHistory() {
@@ -985,7 +985,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * Creates a {@link DecoratingLabelProvider} for the specified {@link ILabelProvider}
-     * 
+     *
      * @param labelProvider the label provider you want to decorate
      * @return the decorated label provider
      */
@@ -998,7 +998,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * Returning the default label of an {@link IIpsElement}. The default label is the label
      * provided by the {@link IWorkbenchAdapter}. If there is no {@link IWorkbenchAdapter} for the
      * specified {@link IIpsElement} then the empty String "" is returned.
-     * 
+     *
      * @param ipsElement The {@link IIpsElement} you want to get the default label for
      * @return the default label of the {@link IIpsElement} returned by the
      *             {@link IWorkbenchAdapter}
@@ -1018,7 +1018,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * Opens a dialog to prompt the user. Returns true if successful or false if the user has
      * canceled the command.
-     * 
+     *
      * @return true if the command succeeded, false if the operation was canceled by the user or an
      *             error occurred while saving
      */
@@ -1054,7 +1054,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * Opens a dialog to prompt the user. Returns true if successful or false if the user has
      * canceled the command.
-     * 
+     *
      * @return true if the command succeeded, false if the operation was canceled by the user or an
      *             error occurred while saving
      */
@@ -1180,17 +1180,17 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * This method calls {@link IpsModel#runAndQueueChangeEvents(ICoreRunnable, IProgressMonitor)}
      * to perform multiple change operations and queue all change events. In addition it shows a
      * busy indicator and starts a progress dialog if the operation takes too long.
-     * 
+     *
      * The whole workspace is blocked while the operation runs.
-     * 
+     *
      * IMPORTANT NOTES:
-     * 
+     *
      * The action will NOT run in UI thread! If you need to run in display thread use
      * {@link BusyIndicator#showWhile(Display, Runnable)}
-     * 
+     *
      * You cannot call this method from another modal dialog like a wizard because the wizard has
      * its own progress and this one will wait until the dialog is finished.
-     * 
+     *
      * @param action The {@link ICoreRunnable} that should be startet-
      */
     public void runWorkspaceModification(final ICoreRunnable action) {
@@ -1243,7 +1243,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * <p>
      * Color instances retrieved/created via this method will be disposed when the corresponding
      * display is disposed.
-     * 
+     *
      * @param symbolicColorName a name that identifies the color
      * @param rgb the RGB information of the requested color, so that it can be created in case it
      *            hasn't been registered yet.
@@ -1267,7 +1267,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * {@link #PLUGIN_ID}.{@link IAdditionalDeepCopyWizardPage#EXTENSION_POINT_ID_DEEP_COPY_WIZARD}
      * extension point's {@link IDeepCopySmartModeBehavior#CONFIG_ELEMENT_ID_SMART_MODE_BEHAVIOR}
      * element. If none is configured, the {@link DefaultDeepCopySmartModeBehavior} will be used.
-     * 
+     *
      * @return the {@link IDeepCopySmartModeBehavior} to be used by the {@link DeepCopyWizard} in
      *             {@link IpsPreferences#isCopyWizardModeSmartmode() Smart Mode}.
      */
@@ -1324,7 +1324,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         public IEditorPart call() throws Exception {
             IIpsModel model = IIpsModel.get();
             IIpsElement ipsElement = model.getIpsElement(Wrappers.wrap(fileToEdit).as(AFile.class));
-            if (ipsElement instanceof IIpsSrcFile && !((IIpsSrcFile)ipsElement).exists()) {
+            if (ipsElement instanceof IIpsSrcFile ipsSrcFile && !ipsSrcFile.exists()) {
                 try {
                     return openWithDefaultIpsSrcTextEditor(fileToEdit);
                 } catch (IpsException e) {
@@ -1382,7 +1382,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * 
+     *
      * @see org.faktorips.devtools.model.decorators.internal.ImageHandling
      */
     public static class ImageHandling extends org.faktorips.devtools.model.decorators.internal.ImageHandling {
@@ -1406,7 +1406,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * If there is no registered adapter this implementation will check the
          * {@link IIpsDecorators} before returning {@code null}. If no image was found in either the
          * adapter or decorator, this method returns the missing image
-         * 
+         *
          * @return the image descriptor or null if there is no image or no registered adapter or
          *             decorator
          */

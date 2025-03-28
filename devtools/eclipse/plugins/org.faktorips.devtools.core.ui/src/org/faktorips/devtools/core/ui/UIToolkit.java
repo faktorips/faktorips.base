@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -172,7 +172,7 @@ public class UIToolkit {
      * {@link #setDataChangeable(Control, boolean)}. In contrast to
      * {@link #setDataChangeable(Control, boolean)} this method could only checks the given control
      * and do not check any child.
-     * 
+     *
      * @return <code>true</code> if the data seems to be changeable, that means it is not set to be
      *             read-only by {@link #setDataChangeable(Control, boolean)}. That does not
      *             necessarily means that the control is enabled. For example a {@link Text} control
@@ -182,18 +182,18 @@ public class UIToolkit {
     public boolean isDataChangeable(Control c) {
         if (c == null) {
             return false;
-        } else if (c instanceof IDataChangeableReadAccess) {
-            return ((IDataChangeableReadAccess)c).isDataChangeable();
+        } else if (c instanceof IDataChangeableReadAccess dataChangeableReadAccess) {
+            return dataChangeableReadAccess.isDataChangeable();
         }
         Object dataChangeable = c.getData(DATA_CHANGEABLE);
-        return dataChangeable instanceof Boolean ? Boolean.TRUE.equals(dataChangeable) : true;
+        return dataChangeable instanceof Boolean b ? Boolean.TRUE.equals(b) : true;
     }
 
     /**
      * Setting the enabled state of a control and all its child controls recursively. In contrast to
      * normal SWT enabled state, we do not set Text controls to enabled=false because we'd like to
      * select and copy text also in disabled text controls.
-     * 
+     *
      * @param c The control that should be set to enabled or disabled
      * @param enabled <code>true</code> to mark the control as enabled, <code>false</code> to
      *            disable.
@@ -413,7 +413,7 @@ public class UIToolkit {
 
     /**
      * Creates a new label with the given text.
-     * 
+     *
      * @param parent The parent composite.
      * @param text The text to display.
      * @param grab <code>true</code> to let the label grab more space then initial preferred, if
@@ -490,7 +490,7 @@ public class UIToolkit {
 
     /**
      * Creates a spacer-control.
-     * 
+     *
      * @param parent The parent composite.
      * @param height The preferred height.
      * @param grab <code>true</code> to let the spacer grab available space (horizontal and
@@ -613,13 +613,12 @@ public class UIToolkit {
 
     /**
      * Does not have an implementation for use with {@link FormToolkit}!
-     * 
+     *
      * @param parent Reference to the container widget.
      * @return New instance with default setup.
      */
     public StyledText createStyledMultilineText(Composite parent) {
-        StyledText newText;
-        newText = new StyledText(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
+        StyledText newText = new StyledText(parent, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.heightHint = DEFAULT_MULTILINE_HEIGHT;
         gridData.widthHint = DEFAULT_WIDTH;
@@ -637,10 +636,10 @@ public class UIToolkit {
 
     /**
      * Creates a new checkbox.
-     * 
+     *
      * Use {@link Button} and {@link ButtonField} instead. {@link ButtonField} also allows inverting
      * the checked state of a check box.
-     * 
+     *
      * @deprecated as of FIPS 3.11
      */
     @Deprecated
@@ -779,7 +778,7 @@ public class UIToolkit {
 
     /**
      * Creates and returns a new <code>EnumTypeRefControl</code>.
-     * 
+     *
      * @param ipsProject The ips project to search for enum types.
      * @param parent The parent ui composite.
      * @param chooseSuperEnumType Flag indicating whether the created control shall be used to
@@ -795,7 +794,7 @@ public class UIToolkit {
     /**
      * Creates and returns a new <code>EnumRefControl</code> which allows to select either an
      * <code>IEnumType</code> or an <code>IEnumContent</code>.
-     * 
+     *
      * @param ipsProject The ips project to search for enum types and contents.
      * @param parent The parent ui composite.
      * @param hideAbstract Flag indicating whether to hide abstract enum types.
@@ -882,7 +881,7 @@ public class UIToolkit {
     /**
      * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. The
      * formatting is done based on the user's preferences.
-     * 
+     *
      * @see org.faktorips.devtools.core.IpsPreferences#getNamedDataTypeDisplay()
      */
     public Combo createCombo(Composite parent, EnumDatatype datatype) {
@@ -938,7 +937,7 @@ public class UIToolkit {
     /**
      * Replaces all occurrences of <code>null</code> in the values by the defined null
      * representation. The result is set as items to the given combo.
-     * 
+     *
      * @param combo The combo to set the values.
      * @param comboValues The values to set.
      */
@@ -1005,7 +1004,7 @@ public class UIToolkit {
     /**
      * Creates and returns a new {@link RadioButtonGroup} with the provided group text, number of
      * columns and options.
-     * 
+     *
      * @param groupText the text that will be shown as title of the group
      * @param numberColumns the number of radio buttons that will be horizontally placed beside each
      *            other
@@ -1025,7 +1024,7 @@ public class UIToolkit {
      * are created directly in the parent composite. You have the choice if the parent composite
      * should be a group, a native composite or any other kind of composite. You also have to
      * specify the layout of the parent yourself.
-     * 
+     *
      * @param parent The parent composite for the radio buttons
      * @param options the options the user can choose from. The map associates each value with it's
      *            label. For each option, a radio button is created
@@ -1152,7 +1151,7 @@ public class UIToolkit {
     /**
      * Attaches a {@link ContentProposalAdapter} to the given control, thereby adding content
      * proposal support.
-     * 
+     *
      * @param control The control to add content proposal support to
      * @param contentAdapter Specifies how to set and retrieve data of the control
      * @param proposalProvider Provides content proposals as appropriate to the control's current
@@ -1171,7 +1170,7 @@ public class UIToolkit {
     /**
      * Attaches a {@link ContentProposalAdapter} to the given control, thereby adding content
      * proposal support.
-     * 
+     *
      * @param control The control to add content proposal support to
      * @param proposalProvider Provides content proposals as appropriate to the control's current
      *            content
@@ -1186,7 +1185,7 @@ public class UIToolkit {
     /**
      * Attaches a {@link ContentProposalAdapter} to the given control, thereby adding content
      * proposal support.
-     * 
+     *
      * @param control The control to add content proposal support to
      * @param proposalProvider Provides content proposals as appropriate to the control's current
      *            content
@@ -1238,7 +1237,7 @@ public class UIToolkit {
      * <p>
      * Note: The position of the marker is on the left-bottom side of the control. Use
      * {@link #createMessageDecoration(Control, int)} to specify another position.
-     * 
+     *
      * @param control the control on which to install the cue
      */
     public MessageDecoration createMessageDecoration(Control control) {
@@ -1248,7 +1247,7 @@ public class UIToolkit {
     /**
      * Create a new {@link MessageDecoration} for the given {@link Control}. Use the returned
      * {@link MessageDecoration} to show error markers next to the control.
-     * 
+     *
      * @param control the control on which to install the cue
      * @param position use {@link SWT#TOP}, {@link SWT#CENTER} or {@link SWT#BOTTOM} to trigger the
      *            position of the marker
@@ -1278,7 +1277,7 @@ public class UIToolkit {
      * Note that the composite requires at least one pixel of space to actually draw the border. The
      * border is drawn <em>around</em> the controls, not inside of them. Make sure the layout
      * ensures this, e.g. by using grid layout with a marginWidth and marginHeight of at least 1.
-     * 
+     *
      */
     public void paintBordersForComposite(Composite composite) {
         if (getFormToolkit() != null) {
@@ -1297,7 +1296,7 @@ public class UIToolkit {
      * the border. The border is drawn <em>around</em> the text control, not inside of it. Make sure
      * the layout ensures this, e.g. by using grid layout with a marginWidth and marginHeight of at
      * least 1.
-     * 
+     *
      */
     public void paintBorderFor(Text text) {
         if (getFormToolkit() != null) {

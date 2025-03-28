@@ -735,10 +735,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Decimal other)) {
-            return false;
-        }
-        if (other.isNull()) {
+        if (!(o instanceof Decimal other) || other.isNull()) {
             return false;
         }
         return value.compareTo(other.value) == 0;

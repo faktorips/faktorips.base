@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -289,14 +289,11 @@ class DropToLinkHelper {
 
             @Override
             public void run() {
-                ITestPolicyCmpt newTestPolicyCmpt;
-                if (getCurrentTarget() instanceof ITestPolicyCmpt) {
-                    newTestPolicyCmpt = dropOnTestPolicyCmpt((ITestPolicyCmpt)getCurrentTarget());
-                } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
-                    newTestPolicyCmpt = dropOnTestCaseTypeAssociation((TestCaseTypeAssociation)getCurrentTarget());
-                } else {
-                    throw new RuntimeException();
-                }
+                ITestPolicyCmpt newTestPolicyCmpt = switch (getCurrentTarget()) {
+                    case ITestPolicyCmpt testPolicyCmpt -> dropOnTestPolicyCmpt(testPolicyCmpt);
+                    case TestCaseTypeAssociation association -> dropOnTestCaseTypeAssociation(association);
+                    default -> throw new RuntimeException("Unknown target");
+                };
 
                 getTestCaseSection().refreshTreeAndDetailArea();
                 getTestCaseSection().expandTreeAfterAdd(getCurrentTarget(), newTestPolicyCmpt);

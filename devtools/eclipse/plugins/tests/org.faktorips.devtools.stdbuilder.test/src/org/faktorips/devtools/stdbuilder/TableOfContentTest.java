@@ -306,8 +306,8 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         // where added
         // to do so we have to make sure, we have to entries that are stored in the same bucket in
         // the map
-        String s1 = "" + (char)1 + (char)0;
-        String s2 = "" + (char)0 + (char)31;
+        String s1 = "FB";
+        String s2 = "Ea";
         assertEquals(s1.hashCode(), s2.hashCode()); // so they must habe the same hashcode
         toc = new TableOfContent();
         TocEntryObject entry0 = new ProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01",

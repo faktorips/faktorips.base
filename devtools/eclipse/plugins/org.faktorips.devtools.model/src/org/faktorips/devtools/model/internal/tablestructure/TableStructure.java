@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -428,53 +428,36 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IColumn) {
-            columns.add((IColumn)part);
-            return true;
-        } else if (part instanceof IColumnRange) {
-            ranges.add((IColumnRange)part);
-            return true;
-        } else if (part instanceof IIndex) {
-            indices.add((IIndex)part);
-            return true;
-        } else if (part instanceof IForeignKey) {
-            foreignKeys.add((IForeignKey)part);
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case IColumn column -> columns.add(column);
+            case IColumnRange columnRange -> ranges.add(columnRange);
+            case IIndex index -> indices.add(index);
+            case IForeignKey foreignKey -> foreignKeys.add(foreignKey);
+            default -> false;
+        };
     }
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof IColumn) {
-            columns.remove(part);
-            return true;
-        } else if (part instanceof IColumnRange) {
-            ranges.remove(part);
-            return true;
-        } else if (part instanceof IIndex) {
-            indices.remove(part);
-            return true;
-        } else if (part instanceof IForeignKey) {
-            foreignKeys.remove(part);
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case IColumn column -> columns.remove(column);
+            case IColumnRange columnRange -> ranges.remove(columnRange);
+            case IIndex index -> indices.remove(index);
+            case IForeignKey foreignKey -> foreignKeys.remove(foreignKey);
+            default -> false;
+        };
     }
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (Column.TAG_NAME.equals(xmlTagName)) {
-            return newColumnInternal(id);
-        } else if (ColumnRange.TAG_NAME.equals(xmlTagName)) {
-            return newColumnRangeInternal(id);
-        } else if (Index.TAG_NAME.equals(xmlTagName)) {
-            return newIndexInternal(id);
-        } else if (ForeignKey.TAG_NAME.equals(xmlTagName)) {
-            return newForeignKeyInternal(id);
-        }
-        return newPartForDeprecatedXml(xmlTagName, id);
+        return switch (xmlTagName) {
+            case Column.TAG_NAME -> newColumnInternal(id);
+            case ColumnRange.TAG_NAME -> newColumnRangeInternal(id);
+            case Index.TAG_NAME -> newIndexInternal(id);
+            case ForeignKey.TAG_NAME -> newForeignKeyInternal(id);
+            default -> newPartForDeprecatedXml(xmlTagName, id);
+        };
     }
 
     /**

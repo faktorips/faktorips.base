@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,7 +37,7 @@ public class EqualsObjectDatatype extends AbstractBinaryJavaOperation {
         super("=", type, type); //$NON-NLS-1$
     }
 
-    protected static String getErrorMessageCode() {
+    protected String getErrorMessageCode() {
         return ExprCompiler.PREFIX + "EQUALS-OPERATION"; //$NON-NLS-1$
     }
 

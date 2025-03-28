@@ -39,15 +39,11 @@ public class EclipseIpsBuilder extends IncrementalProjectBuilder {
         try {
             return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
         } catch (IpsException e) {
-            if (e.getCause() instanceof CoreException ce) {
-                if (ce.getCause() instanceof Error error) {
-                    throw error;
-                }
-                throw ce;
-            } else if (e.getCause() instanceof Error error) {
-                throw error;
-            } else {
-                throw new CoreException(new IpsStatus(e));
+            switch (e.getCause()) {
+                case CoreException ce when ce.getCause() instanceof Error error -> throw error;
+                case CoreException ce -> throw ce;
+                case Error error -> throw error;
+                default -> throw new CoreException(new IpsStatus(e));
             }
         }
     }

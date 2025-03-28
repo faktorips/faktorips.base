@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -56,16 +56,16 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     protected Image getImage(Object element) {
         if (element instanceof IProductCmptStructureReference reference) {
             boolean enabled = deepCopyPreview.getPresentationModel().getTreeStatus().isEnabled(reference);
-            if (element instanceof IProductCmptReference) {
-                return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt(),
-                        enabled);
-            } else if (element instanceof IProductCmptTypeAssociationReference) {
-                return IpsUIPlugin.getImageHandling().getImage(
-                        ((IProductCmptTypeAssociationReference)element).getAssociation(), enabled);
-            } else if (element instanceof IProductCmptStructureTblUsageReference) {
-                return IpsUIPlugin.getImageHandling().getImage(
-                        ((IProductCmptStructureTblUsageReference)element).getTableContentUsage(), enabled);
-            }
+            return switch (element) {
+                case IProductCmptReference productCmptReference -> IpsUIPlugin.getImageHandling()
+                        .getImage(productCmptReference.getProductCmpt(), enabled);
+                case IProductCmptTypeAssociationReference productCmptTypeAssociationReference -> IpsUIPlugin
+                        .getImageHandling().getImage(productCmptTypeAssociationReference.getAssociation(), enabled);
+                case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> IpsUIPlugin
+                        .getImageHandling()
+                        .getImage(productCmptStructureTblUsageReference.getTableContentUsage(), enabled);
+                default -> null;
+            };
         }
         return null;
     }
@@ -82,20 +82,21 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     }
 
     protected String getOldName(Object element) {
-        if (element instanceof IProductCmptReference productCmptReference) {
-            return productCmptReference.getProductCmpt().getName();
-        } else if (element instanceof IProductCmptTypeAssociationReference) {
-            IAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
-            if (association.is1ToMany()) {
-                return IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
-            } else {
-                return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
+        return switch (element) {
+            case IProductCmptReference productCmptReference -> productCmptReference.getProductCmpt().getName();
+            case IProductCmptTypeAssociationReference productCmptTypeAssociationReference -> {
+                IAssociation association = productCmptTypeAssociationReference.getAssociation();
+                if (association.is1ToMany()) {
+                    yield IIpsModel.get().getMultiLanguageSupport().getLocalizedPluralLabel(association);
+                } else {
+                    yield IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(association);
+                }
             }
-        } else if (element instanceof IProductCmptStructureTblUsageReference) {
-            return StringUtil.unqualifiedName(((IProductCmptStructureTblUsageReference)element).getTableContentUsage()
-                    .getTableContentName());
-        }
-        return Messages.DeepCopyLabelProvider_textUndefined;
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> StringUtil
+                    .unqualifiedName(
+                            productCmptStructureTblUsageReference.getTableContentUsage().getTableContentName());
+            default -> Messages.DeepCopyLabelProvider_textUndefined;
+        };
     }
 
     protected String getNewOrOldName(Object element) {
@@ -121,7 +122,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
         if ((element instanceof IProductCmptStructureReference)
                 && isLinkedElement((IProductCmptStructureReference)element)) {
             Image image = getImage(element);
-            return (Image)resourceManager.get(new DecorationOverlayIcon(image, overlay, IDecoration.BOTTOM_RIGHT));
+            return resourceManager.get(new DecorationOverlayIcon(image, overlay, IDecoration.BOTTOM_RIGHT));
         } else {
             return getImage(element);
         }
@@ -147,26 +148,30 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     }
 
     private String getSuffixFor(Object item) {
-        if (item instanceof IProductCmptReference productCmptReference) {
-            String packageName = ""; //$NON-NLS-1$
-            if (deepCopyPreview.getPresentationModel().getTreeStatus()
-                    .getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {
-                packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
-                        .getTargetPackage(), productCmptReference.getWrappedIpsObject(), segmentsToIgnore);
-            } else {
-                packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
+        return switch (item) {
+            case IProductCmptReference productCmptReference -> {
+                String packageName = ""; //$NON-NLS-1$
+                if (deepCopyPreview.getPresentationModel().getTreeStatus()
+                        .getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {
+                    packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
+                            .getTargetPackage(), productCmptReference.getWrappedIpsObject(), segmentsToIgnore);
+                } else {
+                    packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
+                }
+                if (IpsStringUtils.isEmpty(packageName)) {
+                    packageName = ""; //$NON-NLS-1$
+                }
+                yield " - " + packageName; //$NON-NLS-1$
             }
-            if (IpsStringUtils.isEmpty(packageName)) {
-                packageName = ""; //$NON-NLS-1$
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> {
+                String packageName = deepCopyPreview.buildTargetPackageName(
+                        deepCopyPreview.getPresentationModel().getTargetPackage(),
+                        productCmptStructureTblUsageReference.getWrappedIpsObject(),
+                        segmentsToIgnore);
+                yield " - " + packageName; //$NON-NLS-1$
             }
-            return " - " + packageName; //$NON-NLS-1$
-        } else if (item instanceof IProductCmptStructureTblUsageReference) {
-            String packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
-                    .getTargetPackage(), ((IProductCmptStructureTblUsageReference)item).getWrappedIpsObject(),
-                    segmentsToIgnore);
-            return " - " + packageName; //$NON-NLS-1$
-        }
-        return ""; //$NON-NLS-1$
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     @Override

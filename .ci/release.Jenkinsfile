@@ -33,8 +33,8 @@ pipeline {
     }
 
     tools {
-        jdk 'AdoptiumJDK17'
-        maven 'maven 3.8.6'
+        jdk 'JDK21'
+        maven 'maven 3.9'
     }
 
     options {

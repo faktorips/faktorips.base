@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,19 +22,18 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Label provider for the test case domain.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof ITestParameter) {
-            return IpsUIPlugin.getImageHandling().getImage((ITestParameter)element);
-        } else if (element instanceof TestCaseTypeTreeRootElement) {
-            return ((TestCaseTypeTreeRootElement)element).getImgage();
-        }
-        return null;
+        return switch (element) {
+            case ITestParameter testParameter -> IpsUIPlugin.getImageHandling().getImage(testParameter);
+            case TestCaseTypeTreeRootElement rootElement -> rootElement.getImgage();
+            default -> null;
+        };
     }
 
     /**
@@ -46,37 +45,41 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
      */
     @Override
     public String getText(Object element) {
-        if (element instanceof ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
-            String targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" //$NON-NLS-1$
-                    : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
+        return switch (element) {
+            case ITestPolicyCmptTypeParameter testPolicyCmptTypeParam -> getText(testPolicyCmptTypeParam);
+            case ITestParameter testParam -> testParam.getName() + getTypeExtension(testParam.getTestParameterType());
+            case ITestAttribute testAttribute -> getText(element, testAttribute);
+            case TestCaseTypeTreeRootElement rootElement -> rootElement.getText();
+            default -> Messages.TestCaseTypeLabelProvider_Undefined;
+        };
+    }
 
-            if (IpsStringUtils.isNotEmpty(targetExtension)
-                    && !targetExtension.equals(testPolicyCmptTypeParam.getName())) {
-                targetExtension = " : " + targetExtension; //$NON-NLS-1$
-            } else {
-                // no association or association is equal test param name
-                targetExtension = ""; //$NON-NLS-1$
-            }
-            String productExt = testPolicyCmptTypeParam.isRequiresProductCmpt() ? " (P)" : ""; //$NON-NLS-1$ //$NON-NLS-2$
-
-            return testPolicyCmptTypeParam.getName() + targetExtension
-                    + getTypeExtension(testPolicyCmptTypeParam.getTestParameterType()) + productExt;
-        } else if (element instanceof ITestParameter testParam) {
-            return testParam.getName() + getTypeExtension(testParam.getTestParameterType());
-        } else if (element instanceof ITestAttribute) {
-            String text = super.getText(element);
-            ITestAttribute testAttribute = (ITestAttribute)element;
-            String extension = ""; //$NON-NLS-1$
-            if (IpsStringUtils.isNotEmpty(testAttribute.getAttribute())
-                    && !testAttribute.getAttribute().equals(testAttribute.getName())) {
-                extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
-            }
-            return text + extension + getTypeExtension(testAttribute.getTestAttributeType());
-        } else if (element instanceof TestCaseTypeTreeRootElement) {
-            return ((TestCaseTypeTreeRootElement)element).getText();
+    private String getText(Object element, ITestAttribute testAttribute) {
+        String text = super.getText(element);
+        String extension = ""; //$NON-NLS-1$
+        if (IpsStringUtils.isNotEmpty(testAttribute.getAttribute())
+                && !testAttribute.getAttribute().equals(testAttribute.getName())) {
+            extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
         }
+        return text + extension + getTypeExtension(testAttribute.getTestAttributeType());
+    }
 
-        return Messages.TestCaseTypeLabelProvider_Undefined;
+    private String getText(ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
+        String targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null
+                ? "" //$NON-NLS-1$
+                : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
+
+        if (IpsStringUtils.isNotEmpty(targetExtension)
+                && !targetExtension.equals(testPolicyCmptTypeParam.getName())) {
+            targetExtension = " : " + targetExtension; //$NON-NLS-1$
+        } else {
+            // no association or association is equal test param name
+            targetExtension = ""; //$NON-NLS-1$
+        }
+        String productExt = testPolicyCmptTypeParam.isRequiresProductCmpt() ? " (P)" : ""; //$NON-NLS-1$ //$NON-NLS-2$
+
+        return testPolicyCmptTypeParam.getName() + targetExtension
+                + getTypeExtension(testPolicyCmptTypeParam.getTestParameterType()) + productExt;
     }
 
     /**

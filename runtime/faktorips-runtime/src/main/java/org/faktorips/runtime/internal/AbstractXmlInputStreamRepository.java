@@ -292,11 +292,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
 
     private EnumContent getEnumContentFromSaxHandler(EnumContentTocEntry tocEntry) {
         InputStream xmlAsStream = getXmlAsStream(tocEntry);
-        if (isAvailable(xmlAsStream)) {
-            return parseEnumValues(tocEntry, xmlAsStream);
-        } else {
-            return null;
-        }
+        return isAvailable(xmlAsStream) ? parseEnumValues(tocEntry, xmlAsStream) : null;
     }
 
     private static EnumContent parseEnumValues(EnumContentTocEntry tocEntry, InputStream xmlAsStream) {

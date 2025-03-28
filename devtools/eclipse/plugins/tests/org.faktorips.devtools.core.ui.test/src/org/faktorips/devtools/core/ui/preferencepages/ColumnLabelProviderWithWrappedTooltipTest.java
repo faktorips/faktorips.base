@@ -39,10 +39,11 @@ public class ColumnLabelProviderWithWrappedTooltipTest {
         ColumnLabelProviderWithWrappedTooltip labelProvider = new ColumnLabelProviderWithWrappedTooltip(
                 Objects::toString);
 
-        assertThat(labelProvider.getToolTipText(LONG_WRAPPED_TEXT), is("First line\n"
-                + "Second line\n"
-                + "A very long line that should be wrapped here when displayed in a tooltip -->\n"
-                + "<-- to start a new line here"));
+        assertThat(labelProvider.getToolTipText(LONG_WRAPPED_TEXT), is("""
+                First line
+                Second line
+                A very long line that should be wrapped here when displayed in a tooltip -->
+                <-- to start a new line here"""));
         assertThat(labelProvider.getToolTipText(SHORT_TEXT), is(SHORT_TEXT));
         assertThat(labelProvider.getToolTipText(LONG_TEXT),
                 is("A very long line that should be wrapped here when displayed in a tooltip -->\n"

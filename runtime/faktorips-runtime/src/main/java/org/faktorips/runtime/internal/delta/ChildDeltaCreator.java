@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -38,7 +38,7 @@ public class ChildDeltaCreator {
     /**
      * Instantiates the creator for the given association name, kind and
      * {@link IDeltaComputationOptions}.
-     * 
+     *
      * @param association The name of the association, will be provided to the created delta
      * @param options The {@link IDeltaComputationOptions} that configures some behavior of delta
      *            computation
@@ -54,7 +54,7 @@ public class ChildDeltaCreator {
     /**
      * Instantiates the creator for the given association name, kind and
      * {@link IDeltaComputationOptions}.
-     * 
+     *
      * @param association The name of the association, will be provided to the created delta
      * @param kind The kind of the association, needed to decide whether to follow an association
      *            recursively or not
@@ -72,7 +72,7 @@ public class ChildDeltaCreator {
      * <p>
      * The objects are compared according to the {@link IDeltaComputationOptions}. If one of the
      * objects no longer exists, {@code null} is given to the appropriate parameter.
-     * 
+     *
      * @param delta The delta to which the child deltas are added
      * @param original The associated object of the original model object or {@code null} if there
      *            is no object references
@@ -84,17 +84,13 @@ public class ChildDeltaCreator {
     }
 
     private static List<IModelObject> listOf(IModelObject item) {
-        if (item != null) {
-            return Collections.singletonList(item);
-        } else {
-            return List.of();
-        }
+        return (item != null) ? Collections.singletonList(item) : List.of();
     }
 
     /**
      * Create and add all child deltas for the list of associated objects. The objects are compared
      * according to the {@link IDeltaComputationOptions}.
-     * 
+     *
      * @param delta The delta to which the child deltas are added
      * @param originals The list of associated objects of the original model object
      * @param refObjects The list of associated objects of the reference model object

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -67,7 +67,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Wizard page to select projects and package fragment root element which will be exported as ips
  * archive.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class IpsArchivePackageWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
@@ -389,9 +389,9 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
             if (element instanceof IJavaModel) {
                 Object[] children = super.getChildren(element);
                 List<Object> result = new ArrayList<>(children.length);
-                for (Object element2 : children) {
-                    if (element2 instanceof IJavaProject) {
-                        IProject project = ((IJavaProject)element2).getProject();
+                for (Object child : children) {
+                    if (child instanceof IJavaProject javaProject) {
+                        IProject project = javaProject.getProject();
                         try {
                             if (project.hasNature(IIpsProject.NATURE_ID)) {
                                 IIpsProject ipsProject = IIpsModel.get()
@@ -405,11 +405,11 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                     }
                 }
                 return result.toArray();
-            } else if (element instanceof IIpsProject) {
+            } else if (element instanceof IIpsProject ipsProject) {
                 // store elements for product definition view
                 elementsInTree.put(element, element);
                 // store to be mapped objects
-                IIpsPackageFragmentRoot[] roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
+                IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots();
                 List<Object> rootResult = new ArrayList<>(roots.length);
                 for (IIpsPackageFragmentRoot root : roots) {
                     if (root.getIpsStorage() != null) {

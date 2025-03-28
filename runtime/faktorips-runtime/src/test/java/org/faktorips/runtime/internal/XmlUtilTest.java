@@ -396,6 +396,32 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testSanitizeTextContent() throws TransformerException {
+        Document doc = newDocument();
+        Element root = doc.createElement("root");
+        doc.appendChild(root);
+
+        root.appendChild(doc.createTextNode("test text"));
+        root.appendChild(doc.createTextNode("\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\u0008"));
+        root.appendChild(doc.createTextNode(
+                "\u000E\u000F\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C\u001D\u001E\u001F"));
+
+        Element child = doc.createElement("child");
+        child.appendChild(
+                doc.createTextNode("blabla \u000C Child \u0000 with \u000E \u0000 blabla \u000B blabla \u001F"));
+        root.appendChild(child);
+
+        String result = XmlUtil.nodeToString(doc, UTF8, LF);
+
+        assertThat(result, containsString("test text"));
+        assertThat(result, not(containsString("\u0000")));
+        assertThat(result, not(containsString("\u000B")));
+        assertThat(result, not(containsString("\u000C")));
+        assertThat(result, not(containsString("\u000E")));
+        assertThat(result, not(containsString("\u001F")));
+    }
+
+    @Test
     public void testConvertWindowsLinefeedsToLinuxLinefeeds() throws Exception {
         File xmlFile = createXmlFileAndSaveWithIdent();
         // simulate windows on build server

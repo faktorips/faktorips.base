@@ -247,7 +247,7 @@ public class XProductClassTest {
 
     @Test
     public void testIsContainsNotDerivedOrConstrainingAssociations_noAssociation() throws Exception {
-        doReturn(new HashSet<XProductAssociation>()).when(xProductClass).getAssociations();
+        doReturn(new HashSet<>()).when(xProductClass).getAssociations();
         assertFalse(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
     }
 

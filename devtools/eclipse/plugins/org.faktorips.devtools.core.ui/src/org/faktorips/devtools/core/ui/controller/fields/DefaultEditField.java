@@ -196,7 +196,7 @@ public abstract class DefaultEditField<T> implements EditField<T> {
      * and as far this is an valid state, the method {@link #isTextContentParsable()} return true.
      */
     public void setSupportsNullStringRepresentation(boolean supportsNull) {
-        this.supportNullStringRepresentation = supportsNull;
+        supportNullStringRepresentation = supportsNull;
     }
 
     /**

@@ -165,7 +165,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
         ITableContents contents = createValidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
-                exportColumnHeaderRow, new MessageList(),new NullProgressMonitor());
+                exportColumnHeaderRow, new MessageList(), new NullProgressMonitor());
     }
 
     /**
@@ -181,7 +181,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
         ITableContents contents = createInvalidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
-                exportColumnHeaderRow, new MessageList(),new NullProgressMonitor());
+                exportColumnHeaderRow, new MessageList(), new NullProgressMonitor());
     }
 
     private ITableRows createExportSource(IIpsProject ipsProject, ITableContents contents) {

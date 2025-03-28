@@ -72,7 +72,7 @@ import org.xml.sax.SAXException;
 /**
  * Builds the Faktor-IPS project.
  * <p>
- * By default, the latest Faktor-IPS is used with an Eclipse 2019-03 runtime, all installed from
+ * By default, the latest Faktor-IPS is used with an Eclipse 2023-12 runtime, all installed from
  * <a href="https://faktorzehn.org">faktorzehn.org</a> update sites.
  * <p>
  * To change from where the plugins are installed, see {@link #additionalRepositories},
@@ -96,7 +96,7 @@ public class IpsBuildMojo extends AbstractMojo {
 
     /**
      * Execution environment profile name used to resolve dependencies and run Faktor-IPS. Must be
-     * at least "JavaSE-11".
+     * at least "JavaSE-21".
      */
     @Parameter(property = "faktorips.executionEnvironment")
     private String executionEnvironment;
@@ -214,14 +214,14 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code
      * <repositories>
      *  <repository>
-     *   <id>faktor-ips-21-6</id>
+     *   <id>faktor-ips-25-1</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/v21_6/</url>
+     *   <url>https://update.faktorzehn.org/faktorips/v25_1/</url>
      *  </repository>
      *  <repository>
-     *   <id>eclipse-2020-12</id>
+     *   <id>eclipse-2023-12</id>
      *   <layout>p2</layout>
-     *   <url>http://download.eclipse.org/eclipse/updates/4.18/</url>
+     *   <url>http://download.eclipse.org/eclipse/updates/4.30/</url>
      *  </repository>
      * </repositories>
      * }
@@ -243,7 +243,7 @@ public class IpsBuildMojo extends AbstractMojo {
      *  <repository>
      *   <id>productvariants</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/productvariants/21.6</url>
+     *   <url>https://update.faktorzehn.org/faktorips/productvariants/25.1</url>
      *  </repository>
      * </additionalRepositories>
      * }
@@ -362,7 +362,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Path to the update site to install Eclipse.
      */
-    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.30/")
+    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/releases/2023-12/")
     private String eclipseRepository;
 
     /**

@@ -42,7 +42,6 @@ import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -320,7 +319,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         CLabel label = new CLabel(top, SWT.NONE);
         label.setText(Messages.IpsTestRunnerViewPart_TestRunPane_Text);
         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif"); //$NON-NLS-1$
-        label.setImage((Image)resourceManager.get(imageDescriptor));
+        label.setImage(resourceManager.get(imageDescriptor));
         top.setTopLeft(label);
         fTestRunPane = new TestRunPane(top, this);
         top.setContent(fTestRunPane.getComposite());
@@ -329,7 +328,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         label = new CLabel(bottom, SWT.NONE);
         label.setText(Messages.IpsTestRunnerViewPart_TestFailurePane_Text);
         ImageDescriptor failureImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
-        label.setImage((Image)resourceManager.get(failureImageDescriptor));
+        label.setImage(resourceManager.get(failureImageDescriptor));
         bottom.setTopLeft(label);
 
         ToolBar failureToolBar = new ToolBar(bottom, SWT.FLAT | SWT.WRAP);

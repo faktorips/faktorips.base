@@ -106,11 +106,11 @@ public class ExpressionXMLBuilderHelper {
         }
         return formulaCompilationErrors;
     }
-    
+
     protected String generateJavaCode(IFormula formula,
             IProductCmptTypeMethod method,
             MultiStatus buildStatus) {
-       return generateJavaCode(formula, method, buildStatus, new MessageList());
+        return generateJavaCode(formula, method, buildStatus, new MessageList());
     }
 
     protected String generateJavaCode(IFormula formula,
@@ -118,7 +118,8 @@ public class ExpressionXMLBuilderHelper {
             MultiStatus buildStatus,
             MessageList compilationMessages) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
-        JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus, compilationMessages);
+        JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus,
+                compilationMessages);
 
         generateFormulaMethodSignature(method, builder);
 

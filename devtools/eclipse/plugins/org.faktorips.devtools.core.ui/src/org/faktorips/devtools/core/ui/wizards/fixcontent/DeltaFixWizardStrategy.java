@@ -88,7 +88,7 @@ public interface DeltaFixWizardStrategy<T extends IIpsObject, E extends ILabeled
      * Gives back the correct description of the content type.
      */
     String getContentTypeString();
-    
+
     IpsObjectRefControl createContentTypeRefControl(UIToolkit uitoolkit, Composite workArea);
 
     void createControl(T contentType, IpsObjectRefControl contentTypeRefControl);

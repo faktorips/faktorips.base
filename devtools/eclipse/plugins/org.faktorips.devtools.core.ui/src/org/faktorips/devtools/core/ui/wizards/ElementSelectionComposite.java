@@ -83,7 +83,7 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         this.inputList = inputList;
         this.labelProvider = labelProvider;
         this.elementClass = elementClass;
-        this.resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
         this.bindingContext = bindingContext;
 
         setLayoutAndLayoutData();

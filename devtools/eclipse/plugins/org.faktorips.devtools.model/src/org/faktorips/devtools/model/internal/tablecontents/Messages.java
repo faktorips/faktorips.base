@@ -30,7 +30,7 @@ public class Messages extends NLS {
     public static String Row_NameMustBeValidJavaIdentifier;
     public static String Row_ValueNotParsable;
     public static String Row_NumberOfValuesIsInvalid;
-    
+
     public static String TableContents_msgMissingTablestructure;
     public static String TableContents_msgColumncountMismatch;
     public static String TableContents_msgNameStructureAndContentsNotSameWhenEnum;

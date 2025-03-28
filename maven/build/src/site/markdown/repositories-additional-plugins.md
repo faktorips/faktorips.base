@@ -7,7 +7,7 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
 
 ```
     <properties>
-        <faktorips.repository.version><!-- The desired Faktor-IPS Version e.g.: -->24.1</faktorips.repository.version>
+        <faktorips.repository.version><!-- The desired Faktor-IPS Version e.g.: -->v25_1</faktorips.repository.version>
     </properties>
 ...
         <plugins>
@@ -23,9 +23,9 @@ Per default the standard Faktor-IPS repositories are used by the plugin. These r
                            <url>https://update.faktorzehn.org/faktorips/${faktorips.repository.version}</url>
                         </repository>
                         <repository>
-                           <id>eclipse-2023-12</id>
+                           <id>eclipse-2025-03</id>
                            <layout>p2</layout>
-                           <url>https://download.eclipse.org/eclipse/updates/4.30/</url>
+                           <url>https://download.eclipse.org/releases/2025-03/</url>
                         </repository>
                     </repositories>
                     -->
@@ -48,7 +48,7 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
                 <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-maven-plugin</artifactId>
                 <configuration>
-                    <fipsRepository>https://myfipsmirror.firma.de/fips/24.1.1.release</fipsRepository>
+                    <fipsRepository>https://myfipsmirror.firma.de/fips/25.1.3.release</fipsRepository>
                     <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2023-12</eclipseRepository>
                 </configuration>
                 <executions>
@@ -88,7 +88,7 @@ Also it is possible to add `additionalRepositories` to the Eclipse-Runtime. Thes
                         <repository>
                             <id>productvariants</id>
                             <layout>p2</layout>
-                            <url>https://update.faktorzehn.org/faktorips/productvariants/24.1</url>
+                            <url>https://update.faktorzehn.org/faktorips/productvariants/25.1</url>
                         </repository>
                     </additionalRepositories>
                 </configuration>

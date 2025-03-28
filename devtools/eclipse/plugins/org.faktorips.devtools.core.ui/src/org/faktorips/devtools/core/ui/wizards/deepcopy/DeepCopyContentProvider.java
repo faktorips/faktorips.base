@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAs
 
 /**
  * Provides the elements of the FaktorIps-Model for the department.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class DeepCopyContentProvider implements ITreeContentProvider {
@@ -47,7 +47,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
 
     /**
      * Creates a new content provider.
-     * 
+     *
      * @param showRelationType <code>true</code> to show the relation types as nodes.
      */
     public DeepCopyContentProvider(boolean showRelationType, boolean showAssociationTargets) {
@@ -57,17 +57,16 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (!showRelationType && parentElement instanceof IProductCmptReference) {
+        return switch (parentElement) {
             // returns the product cmpt references without the type
-            return getChildrenFor((IProductCmptReference)parentElement);
-        } else if (parentElement instanceof IProductCmptReference) {
+            case IProductCmptReference productCmptReference when !showRelationType -> getChildrenFor(
+                    productCmptReference);
             // returns the relation type first
-            return getRefChildrenFor((IProductCmptReference)parentElement);
-        } else if (parentElement instanceof IProductCmptStructureReference) {
-            return getChildrenFor((IProductCmptStructureReference)parentElement);
-        } else {
-            return new IProductCmptStructureReference[0];
-        }
+            case IProductCmptReference productCmptReference -> getRefChildrenFor((IProductCmptReference)parentElement);
+            case IProductCmptStructureReference productCmptStructureReference -> getChildrenFor(
+                    productCmptStructureReference);
+            default -> new IProductCmptStructureReference[0];
+        };
     }
 
     private Object[] getChildrenFor(IProductCmptReference parentElement) {
@@ -118,14 +117,14 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
             return null;
         }
 
-        if (element instanceof IProductCmptReference) {
+        if (element instanceof IProductCmptReference productCmptReference) {
             if (!showRelationType) {
-                return structure.getParentProductCmptReference((IProductCmptReference)element);
+                return structure.getParentProductCmptReference(productCmptReference);
             } else {
-                return structure.getParentProductCmptTypeRelationReference((IProductCmptReference)element);
+                return structure.getParentProductCmptTypeRelationReference(productCmptReference);
             }
-        } else if (element instanceof IProductCmptStructureReference) {
-            return structure.getParentProductCmptReference((IProductCmptStructureReference)element);
+        } else if (element instanceof IProductCmptStructureReference productCmptStructureReference) {
+            return structure.getParentProductCmptReference(productCmptStructureReference);
         }
 
         return null;

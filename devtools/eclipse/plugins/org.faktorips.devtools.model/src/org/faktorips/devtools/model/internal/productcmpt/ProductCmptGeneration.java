@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -412,7 +412,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
      * Creates a link without a corresponding association name. The association thus remains
      * undefined. Moreover the association must not be set as this method is used for XML
      * initialization which in turn must not trigger value changes (and setAssociation() would).
-     * 
+     *
      * @param id the future part id of the new link
      */
     private IProductCmptLink createAndAddNewLinkInternal(String id) {
@@ -423,24 +423,20 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IProductCmptLink) {
-            return linkCollection.addLink((IProductCmptLink)part);
-        } else if (part instanceof IPropertyValue) {
-            return propertyValueCollection.addPropertyValue((IPropertyValue)part);
-        } else {
-            return false;
-        }
+        return switch (part) {
+            case IProductCmptLink productCmptLink -> linkCollection.addLink(productCmptLink);
+            case IPropertyValue propertyValue -> propertyValueCollection.addPropertyValue(propertyValue);
+            default -> false;
+        };
     }
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof IProductCmptLink) {
-            return linkCollection.remove((IProductCmptLink)part);
-        } else if (part instanceof IPropertyValue) {
-            return propertyValueCollection.removePropertyValue((IPropertyValue)part);
-        } else {
-            return false;
-        }
+        return switch (part) {
+            case IProductCmptLink productCmptLink -> linkCollection.remove(productCmptLink);
+            case IPropertyValue propertyValue -> propertyValueCollection.removePropertyValue(propertyValue);
+            default -> false;
+        };
     }
 
     @Override

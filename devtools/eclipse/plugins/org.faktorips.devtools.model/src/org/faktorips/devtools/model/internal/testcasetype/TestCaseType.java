@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
 
 /**
  * Test case type class. Definition of a test case type.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseType extends IpsObject implements ITestCaseType {
@@ -72,9 +72,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof ITestParameter) {
-            testParameters.add((ITestParameter)part);
-            return true;
+        if (part instanceof ITestParameter testParameter) {
+            return testParameters.add(testParameter);
         }
         return false;
     }
@@ -82,8 +81,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof ITestParameter) {
-            testParameters.remove(part);
-            return true;
+            return testParameters.remove(part);
         }
         return false;
     }
@@ -95,15 +93,12 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-        String xmlTagName = xmlTag.getNodeName();
-        if (TestPolicyCmptTypeParameter.TAG_NAME.equals(xmlTagName)) {
-            return newTestPolicyCmptTypeParameterInternal(id);
-        } else if (TestValueParameter.TAG_NAME.equals(xmlTagName)) {
-            return newTestValueParameterInternal(id);
-        } else if (TestRuleParameter.TAG_NAME.equals(xmlTagName)) {
-            return newTestRuleParameterInternal(id);
-        }
-        return null;
+        return switch (xmlTag.getNodeName()) {
+            case TestPolicyCmptTypeParameter.TAG_NAME -> newTestPolicyCmptTypeParameterInternal(id);
+            case TestValueParameter.TAG_NAME -> newTestValueParameterInternal(id);
+            case TestRuleParameter.TAG_NAME -> newTestRuleParameterInternal(id);
+            default -> null;
+        };
     }
 
     @Override

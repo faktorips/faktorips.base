@@ -463,27 +463,31 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IValueSet) {
-            valueSet = (IValueSet)part;
-            return true;
-
-        } else if (part instanceof IPersistentAttributeInfo) {
-            persistenceAttributeInfo = (IPersistentAttributeInfo)part;
-            return true;
-        }
-        return false;
+        return switch (part) {
+            case IValueSet v -> {
+                valueSet = v;
+                yield true;
+            }
+            case IPersistentAttributeInfo i -> {
+                persistenceAttributeInfo = i;
+                yield true;
+            }
+            default -> false;
+        };
     }
 
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-        if (xmlTag.getNodeName().equals(ValueSet.XML_TAG)) {
-            valueSet = ValueSetType.newValueSet(xmlTag, this, id);
-            return valueSet;
+        return switch (xmlTag.getNodeName()) {
+            case ValueSet.XML_TAG -> newValueSetInternal(xmlTag, id);
+            case IPersistentAttributeInfo.XML_TAG -> newPersistentAttributeInfoInternal(id);
+            default -> null;
+        };
+    }
 
-        } else if (xmlTag.getTagName().equals(IPersistentAttributeInfo.XML_TAG)) {
-            return newPersistentAttributeInfoInternal(id);
-        }
-        return null;
+    private IIpsObjectPart newValueSetInternal(Element xmlTag, String id) {
+        valueSet = ValueSetType.newValueSet(xmlTag, this, id);
+        return valueSet;
     }
 
     private IIpsObjectPart newPersistentAttributeInfoInternal(String id) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.faktorips.devtools.model.value.ValueTypeMismatch;
 
 /**
  * Shows the mismatches in {@link ValueType}
- * 
+ *
  * @author frank
  * @since 3.9
  */
@@ -80,12 +80,14 @@ public class FixValueTypePage extends WizardPage {
         List<String> list = new ArrayList<>();
         for (Entry<String, ValueTypeMismatch> columnEntry : mismatchMap.entrySet()) {
             ValueTypeMismatch valueTypeMismatch = columnEntry.getValue();
-            if (ValueTypeMismatch.INTERNATIONAL_STRING_TO_STRING.equals(valueTypeMismatch)) {
-                list.add(NLS.bind(Messages.FixContentWizard_messageNoMultilingual, columnEntry.getKey(),
-                        defaultlanguage));
-            } else if (ValueTypeMismatch.STRING_TO_INTERNATIONAL_STRING.equals(valueTypeMismatch)) {
-                list.add(
+            switch (valueTypeMismatch) {
+                case INTERNATIONAL_STRING_TO_STRING -> list.add(NLS
+                        .bind(Messages.FixContentWizard_messageNoMultilingual, columnEntry.getKey(), defaultlanguage));
+                case STRING_TO_INTERNATIONAL_STRING -> list.add(
                         NLS.bind(Messages.FixContentWizard_messageMultilingual, columnEntry.getKey(), defaultlanguage));
+                case NO_MISMATCH -> {
+                    // no message
+                }
             }
         }
         return list;

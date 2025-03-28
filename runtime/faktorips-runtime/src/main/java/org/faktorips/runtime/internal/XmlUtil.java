@@ -133,6 +133,9 @@ public class XmlUtil {
     private static final String NARROW_NO_BREAK = "\u202F"; //$NON-NLS-1$
     private static final String NO_BREAK_ESC = "&#160;"; //$NON-NLS-1$
     private static final String NO_BREAK = "\u00A0"; //$NON-NLS-1$
+    // do not remove Tab u0009 LF u000A and CR u000D
+    private static final String NONPRINTABLE_WITHOUT_LINE_CHARS = "[\u0000-\u0008\u000B\u000C\u000E-\u001F]"; //$NON-NLS-1$
+    private static final String EMPTY_STRING = IpsStringUtils.EMPTY;
 
     /**
      * This is a thread local variable because the {@link Transformer} is not thread safe.
@@ -380,7 +383,7 @@ public class XmlUtil {
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
         // workaround to avoid linebreak after xml declaration
-        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ""); //$NON-NLS-1$
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, EMPTY_STRING);
         if (encoding != null) {
             transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         }
@@ -439,6 +442,19 @@ public class XmlUtil {
         return removeOrEscapeUnwantedCharacters(xml, escapeBlanks, lineSeparator);
     }
 
+    private static void sanitizeTextContent(Node node) {
+        if (node instanceof Text) {
+            var content = node.getTextContent();
+            if (content != null) {
+                node.setTextContent(content.replaceAll(NONPRINTABLE_WITHOUT_LINE_CHARS, EMPTY_STRING));
+            }
+        }
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            sanitizeTextContent(children.item(i));
+        }
+    }
+
     /**
      * Transforms the given node to a string and writes in to the given writer.
      * <p>
@@ -452,11 +468,12 @@ public class XmlUtil {
      * encoding is not available from the writer).
      */
     public static final void nodeToWriter(Node node, Writer writer, String encoding) throws TransformerException {
+        sanitizeTextContent(node);
         Transformer transformer = getTransformer();
         transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
         transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
         // workaround to avoid linebreak after xml declaration
-        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ""); //$NON-NLS-1$
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, EMPTY_STRING);
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1"); //$NON-NLS-1$ //$NON-NLS-2$
         DOMSource source = new DOMSource(node);
         StreamResult result = new StreamResult(writer);
@@ -569,18 +586,25 @@ public class XmlUtil {
         searchList.add("\n");
         replacementList.add(lineSeparator);
 
-        for (int i = 0; i <= 31; i++) {
-            if (i != '\t' && i != '\n') {
-                String unicodeControlCharacter = "&#" + i + ";";
-                searchList.add(unicodeControlCharacter);
-                replacementList.add("");
-            }
-        }
+        removeHtmlEncodedNonPrintableCharacters(searchList, replacementList);
 
         String[] searchArray = searchList.toArray(new String[searchList.size()]);
         String[] replacementArray = replacementList.toArray(new String[replacementList.size()]);
 
         return IpsStringUtils.replaceEach(xml, searchArray, replacementArray);
+    }
+
+    /**
+     * Remove html encoded characters
+     */
+    private static void removeHtmlEncodedNonPrintableCharacters(ArrayList<String> searchList,
+            ArrayList<String> replacementList) {
+        for (int i = 0; i <= 31; i++) {
+            if (i != '\t' && i != '\n') {
+                searchList.add("&#" + i + ";");
+                replacementList.add(EMPTY_STRING);
+            }
+        }
     }
 
     /**

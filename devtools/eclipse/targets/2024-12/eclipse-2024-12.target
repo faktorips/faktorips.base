@@ -527,17 +527,6 @@
             <repository location="https://update.faktorzehn.org/p2repositories/2024-12/"/>
         </location>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="org.w3c.css.sac" version="0.0.0"/>
-            <unit id="org.w3c.dom.events" version="0.0.0"/>
-            <unit id="org.w3c.dom.smil" version="0.0.0"/>
-            <unit id="org.w3c.dom.svg" version="0.0.0"/>
-            <repository location="https://update.faktorzehn.org/p2repositories/2023-09/"/>
-        </location>
-        <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-            <unit id="jakarta.servlet-api" version="4.0.0"/>
-            <repository location="https://update.faktorzehn.org/p2repositories/2024-06/"/>
-        </location>
-        <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
             <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.babel.nls_modeling.emf_de.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.babel.nls_technology.egit_de.feature.group" version="0.0.0"/>
@@ -557,6 +546,11 @@
                     <artifactId>jakarta.servlet.jsp-api</artifactId>
                     <version>2.3.6</version>
                     <type>jar</type>
+                </dependency>
+                <dependency>
+                    <groupId>jakarta.servlet</groupId>
+                    <artifactId>jakarta.servlet-api</artifactId>
+                    <version>4.0.2</version>
                 </dependency>
             </dependencies>
         </location>

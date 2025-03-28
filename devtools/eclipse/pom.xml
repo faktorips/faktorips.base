@@ -9,7 +9,6 @@
     <artifactId>faktorips-devtools-eclipse</artifactId>
     <packaging>pom</packaging>
     <properties>
-        <java.version>17</java.version>
         <target-platform>eclipse-2023-12</target-platform>
         <version.kind>ci</version.kind>
         <maven.site.skip>true</maven.site.skip>
@@ -42,6 +41,20 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-versions-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-compiler-plugin</artifactId>
+                <configuration>
+                    <useJDK>BREE</useJDK>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jdt</groupId>
+                        <artifactId>ecj</artifactId>
+                        <version>3.37.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>

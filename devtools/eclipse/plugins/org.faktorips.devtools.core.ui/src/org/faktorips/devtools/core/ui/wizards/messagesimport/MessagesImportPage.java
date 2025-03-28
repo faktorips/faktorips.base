@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -58,7 +58,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Wizard page for translated messages for validation rules.
- * 
+ *
  */
 public class MessagesImportPage extends WizardDataTransferPage {
 
@@ -272,17 +272,19 @@ public class MessagesImportPage extends WizardDataTransferPage {
         Object firstElement = selection.getFirstElement();
         if (firstElement instanceof IAdaptable adaptableObject) {
             IIpsElement ipsElement = getIpsElement(adaptableObject);
-            if (ipsElement instanceof IIpsProject ipsProject) {
-                getMessagesImportPMO().setIpsPackageFragmentRoot(ipsProject.getIpsPackageFragmentRoots()[0]);
-            } else if (ipsElement instanceof IIpsPackageFragmentRoot pckFragRoot) {
-                getMessagesImportPMO().setIpsPackageFragmentRoot(pckFragRoot);
-            } else if (ipsElement instanceof IIpsPackageFragment pckFrag) {
-                getMessagesImportPMO().setIpsPackageFragmentRoot(pckFrag.getRoot());
-            } else if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
-                getMessagesImportPMO().setIpsPackageFragmentRoot(ipsSrcFile.getIpsPackageFragment().getRoot());
-            } else if (ipsElement instanceof IIpsObjectPartContainer partContainer) {
-                getMessagesImportPMO().setIpsPackageFragmentRoot(
+            switch (ipsElement) {
+                case IIpsProject ipsProject -> getMessagesImportPMO()
+                        .setIpsPackageFragmentRoot(ipsProject.getIpsPackageFragmentRoots()[0]);
+                case IIpsPackageFragmentRoot pckFragRoot -> getMessagesImportPMO()
+                        .setIpsPackageFragmentRoot(pckFragRoot);
+                case IIpsPackageFragment pckFrag -> getMessagesImportPMO().setIpsPackageFragmentRoot(pckFrag.getRoot());
+                case IIpsSrcFile ipsSrcFile -> getMessagesImportPMO()
+                        .setIpsPackageFragmentRoot(ipsSrcFile.getIpsPackageFragment().getRoot());
+                case IIpsObjectPartContainer partContainer -> getMessagesImportPMO().setIpsPackageFragmentRoot(
                         partContainer.getIpsSrcFile().getIpsPackageFragment().getRoot());
+                default -> {
+                    // ignore
+                }
             }
         }
     }

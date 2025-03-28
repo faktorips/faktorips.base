@@ -228,10 +228,6 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     @Override
     public String getDescription(Locale locale) {
         String string = description.get(locale);
-        if (string == null) {
-            return IpsStringUtils.EMPTY;
-        } else {
-            return string;
-        }
+        return string != null ? string : IpsStringUtils.EMPTY;
     }
 }

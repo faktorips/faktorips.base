@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,7 +40,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -48,7 +47,7 @@ import org.faktorips.values.LocalizedString;
 
 /**
  * Operation to import IPS enum types or contents from a CSV file.
- * 
+ *
  * @author Roman Grutza
  */
 public class CSVEnumImportOperation implements ICoreRunnable {
@@ -183,12 +182,13 @@ public class CSVEnumImportOperation implements ICoreRunnable {
             messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
 
         }
-        if (column.getValueType().equals(ValueType.STRING)) {
-            column.setValue(ValueFactory.createStringValue(ipsValue));
-        } else if (column.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
-            IValue<?> value = column.getValue();
-            IInternationalString content = (IInternationalString)value.getContent();
-            content.add(new LocalizedString(getDefaultLanguage(column.getIpsProject()), ipsValue));
+        switch (column.getValueType()) {
+            case STRING -> column.setValue(ValueFactory.createStringValue(ipsValue));
+            case INTERNATIONAL_STRING -> {
+                IValue<?> value = column.getValue();
+                IInternationalString content = (IInternationalString)value.getContent();
+                content.add(new LocalizedString(getDefaultLanguage(column.getIpsProject()), ipsValue));
+            }
         }
     }
 

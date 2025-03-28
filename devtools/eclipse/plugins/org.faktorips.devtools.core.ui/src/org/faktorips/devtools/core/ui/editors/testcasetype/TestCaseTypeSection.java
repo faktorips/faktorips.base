@@ -14,6 +14,9 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
+import static org.faktorips.devtools.model.testcasetype.TestParameterType.EXPECTED_RESULT;
+import static org.faktorips.devtools.model.testcasetype.TestParameterType.INPUT;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -633,14 +636,13 @@ public class TestCaseTypeSection extends IpsSection {
 
         @Override
         public Object getValue(Object element, String property) {
-            if (property.equals(ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE)) {
-                return getTestAttributeFromObject(element).getTestAttributeType().getIndex();
-            } else if (property.equals(IIpsElement.PROPERTY_NAME)) {
-                return getTestAttributeFromObject(element).getName();
-            } else if (property.equals(ITestAttribute.PROPERTY_DATATYPE)) {
-                return getTestAttributeFromObject(element).getDatatype();
-            }
-            return null;
+            return switch (property) {
+                case ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE -> getTestAttributeFromObject(element)
+                        .getTestAttributeType().getIndex();
+                case IIpsElement.PROPERTY_NAME -> getTestAttributeFromObject(element).getName();
+                case ITestAttribute.PROPERTY_DATATYPE -> getTestAttributeFromObject(element).getDatatype();
+                default -> null;
+            };
         }
 
         @Override
@@ -702,7 +704,7 @@ public class TestCaseTypeSection extends IpsSection {
                         return null;
                     case 1:
                         // type input or expected
-                        if (testAttribute.getTestAttributeType() == TestParameterType.EXPECTED_RESULT) {
+                        if (testAttribute.getTestAttributeType() == EXPECTED_RESULT) {
                             baseImage = resourceManager
                                     .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
                         } else {
@@ -1214,8 +1216,8 @@ public class TestCaseTypeSection extends IpsSection {
             toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
 
             createDetailComposite(testParam, structureLayout, details, testPolicyCmptTypeParam);
-        } else if (testParam instanceof ITestValueParameter) {
-            createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, bindingContext);
+        } else if (testParam instanceof ITestValueParameter testValueParameter) {
+            createTestValueParamDetails(editFieldsComposite, testValueParameter, bindingContext);
         } else if (testParam instanceof ITestRuleParameter) {
             createTestRuleParamDetails(editFieldsComposite, testParam);
         }
@@ -1414,15 +1416,12 @@ public class TestCaseTypeSection extends IpsSection {
      * Add attribute to test policy cmpt type param
      */
     private void addAttributeClicked(IIpsObjectPart object) {
-        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam;
-        if (object instanceof ITestAttribute) {
-            testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object.getParent();
-        } else if (object instanceof ITestPolicyCmptTypeParameter) {
-            testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)object;
-        } else {
-            throw new RuntimeException(
+        ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = switch (object) {
+            case ITestAttribute testAttribute -> (ITestPolicyCmptTypeParameter)testAttribute.getParent();
+            case ITestPolicyCmptTypeParameter p -> p;
+            default -> throw new RuntimeException(
                     NLS.bind(Messages.TestCaseTypeSection_Error_UnexpectedObjectClass, object.getClass().getName()));
-        }
+        };
 
         // open a wizard to select an attribute of the policy cmpt
         // wich is related by the given test policy cmpt type param
@@ -1495,14 +1494,11 @@ public class TestCaseTypeSection extends IpsSection {
 
         label = toolkit.createFormLabel(editFieldsComposite,
                 Messages.TestCaseTypeSection_EditFieldLabel_TestParameterType);
-        TestParameterType[] allowedValues;
-        if (testParam instanceof ITestValueParameter) {
-            allowedValues = new TestParameterType[] { TestParameterType.INPUT, TestParameterType.EXPECTED_RESULT };
-        } else if (testParam instanceof ITestRuleParameter) {
-            allowedValues = new TestParameterType[] { TestParameterType.EXPECTED_RESULT };
-        } else {
-            allowedValues = TestParameterType.values();
-        }
+        TestParameterType[] allowedValues = switch (testParam) {
+            case ITestValueParameter $ -> new TestParameterType[] { INPUT, EXPECTED_RESULT };
+            case ITestRuleParameter $ -> new TestParameterType[] { EXPECTED_RESULT };
+            default -> TestParameterType.values();
+        };
 
         EnumField<TestParameterType> editFieldType = new EnumField<>(
                 toolkit.createCombo(editFieldsComposite), allowedValues);

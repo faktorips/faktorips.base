@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
@@ -108,7 +107,7 @@ public class SwitchTemplatedValueOperationTest extends AbstractIpsPluginTest {
         assertEquals(templatePropertyValue, operation.getTemplateValue());
         assertEquals(selected, operation.getDefiningPropertyValues());
         assertEquals(Arrays.asList(inhValue1, inhValue2),
-                new ArrayList<ITemplatedValue>(operation.getInheritingPropertyValues()));
+                new ArrayList<>(operation.getInheritingPropertyValues()));
         assertEquals(VALUE1, operation.getNewValue());
     }
 

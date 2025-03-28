@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -55,7 +55,7 @@ import org.faktorips.util.IoUtil;
 
 /**
  * An operation to create an IPS archive.
- * 
+ *
  * @author Jan Ortmann
  */
 public class CreateIpsArchiveOperation implements ICoreRunnable {
@@ -110,11 +110,11 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
                  * Force the archive's file to have different time stamp than the cached IFile. This
                  * is necessary so we can call refreshLocal() after finishing the archive, as
                  * eclipse refreshes only if a file had its time stamp changed.
-                 * 
+                 *
                  * The reason for the 1010ms wait is that the windows file system does not track
                  * milliseconds but only full seconds with a file's last-modified date. Thus waiting
                  * for more than a second is necessary to guarantee that different time stamp.
-                 * 
+                 *
                  * This little hack needs to be done, as we have to use JarOutputStream and thereby
                  * bypass eclipse's file-tracking.
                  */
@@ -256,7 +256,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     /**
      * Creates a new {@link JarEntry} for the given {@link JarOutputStream} with the given entryName
      * and the content/data provided by the content {@link InputStream}.
-     * 
+     *
      * @param os the {@link JarOutputStream} to write the new {@link JarEntry} to.
      * @param content the content/data to be written to the new {@link JarEntry}.
      * @param entryName the name of the new {@link JarEntry}. Path segments will create
@@ -299,7 +299,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     /**
      * If the given {@link IIpsSrcFile} is an {@link IProductCmptType} its custom icon (if existent)
      * is added to the archive as well.
-     * 
+     *
      * @param file the {@link IIpsSrcFile} to process.
      * @param os the {@link JarOutputStream} to write the custom Icon to.
      * @throws IpsException if writing the {@link JarEntry} encounters problems.
@@ -366,10 +366,10 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
 
     private void addFiles(AFolder rootFolder, AFolder folder, JarOutputStream os, IProgressMonitor monitor) {
         for (AResource member : folder) {
-            if (member instanceof AFile) {
-                addFiles(rootFolder, (AFile)member, os);
-            } else if (member instanceof AFolder) {
-                addFiles(rootFolder, (AFolder)member, os, monitor);
+            if (member instanceof AFile file) {
+                addFiles(rootFolder, file, os);
+            } else if (member instanceof AFolder childFolder) {
+                addFiles(rootFolder, childFolder, os, monitor);
             }
         }
     }

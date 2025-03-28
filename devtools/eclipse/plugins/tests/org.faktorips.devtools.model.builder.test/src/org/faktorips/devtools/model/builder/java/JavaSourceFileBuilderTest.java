@@ -244,17 +244,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\n" +
-                        " * @generated\n" +
-                        " */\n" +
-                        "public class TestPolicy {\n" +
-                        "\n" +
-                        "    /**\n" +
-                        "     * @generated\n" +
-                        "     */\n" +
-                        "    public void foo(){\n" +
-                        "    }\n" +
-                        "}";
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+                    
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
                 //@formatter:on
             }
         };
@@ -287,17 +288,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\n" +
-                        " * @generated\n" +
-                        " */\n" +
-                        "public class TestPolicy {\n" +
-                        "\n" +
-                        "    /**\n" +
-                        "     * @generated\n" +
-                        "     */\n" +
-                        "    public void foo(){\n" +
-                        "    }\n" +
-                        "}";
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+                    
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
                 //@formatter:on
             }
         };
@@ -349,17 +351,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\n" +
-                        " * @generated\n" +
-                        " */\n" +
-                        "public class TestPolicy {\n" +
-                        "\n" +
-                        "    /**\n" +
-                        "     * @generated\n" +
-                        "     */\n" +
-                        "    public void foo(){\n" +
-                        "    }\n" +
-                        "}";
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+                    
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
                 //@formatter:on
             }
         };
@@ -411,17 +414,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\n" +
-                        " * @generated\n" +
-                        " */\n" +
-                        "public class TestPolicy {\n" +
-                        "\n" +
-                        "    /**\n" +
-                        "     * @generated\n" +
-                        "     */\n" +
-                        "    public void foo(){\n" +
-                        "    }\n" +
-                        "}";
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+                    
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
                 //@formatter:on
             }
         };
@@ -473,17 +477,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\n" +
-                        " * @generated\n" +
-                        " */\n" +
-                        "public class TestPolicy {\n" +
-                        "\n" +
-                        "    /**\n" +
-                        "     * @generated\n" +
-                        "     */\n" +
-                        "    public void foo(){\n" +
-                        "    }\n" +
-                        "}";
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+                    
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
                 //@formatter:on
             }
         };
@@ -530,17 +535,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\n" +
-                        " * @generated\n" +
-                        " */\n" +
-                        "public class TestPolicy {\n" +
-                        "\n" +
-                        "    /**\n" +
-                        "     * @generated\n" +
-                        "     */\n" +
-                        "    public void foo(){\n" +
-                        "    }\n" +
-                        "}";
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+                    
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
                 //@formatter:on
             }
         };
@@ -569,17 +575,18 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             @Override
             protected String generate() {
                 //@formatter:off
-                return "/**\r\n" +
-                        " * @generated\r\n" +
-                        " */\r\n" +
-                        "public class TestPolicy {\r\n" +
-                        "\r\n" +
-                        "    /**\r\n" +
-                        "     * @generated\r\n" +
-                        "     */\r\n" +
-                        "    public void foo(){\r\n" +
-                        "    }\r\n" +
-                        "}";
+                return """
+                    /**\r
+                     * @generated\r
+                     */\r
+                    public class TestPolicy {\r
+                    \r
+                        /**\r
+                         * @generated\r
+                         */\r
+                        public void foo(){\r
+                        }\r
+                    }""";
                 //@formatter:on
             }
         };

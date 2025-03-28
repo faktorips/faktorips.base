@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.ipsproject.cache;
 import java.util.Set;
 
 import org.faktorips.devtools.abstraction.AResourceDelta;
-import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -28,7 +27,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * {@link IIpsSrcFilesChangeListener} and is registered in the {@link IIpsModel} to get notified for
  * every changed {@link IIpsSrcFile}. It could also be used for the initialization of the table
  * structure map.
- * 
+ *
  */
 class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
 
@@ -131,13 +130,11 @@ class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
         };
 
         public static OperationKind getKind(AResourceDelta resourceDelta) {
-            if (resourceDelta.getKind() == AResourceDeltaKind.ADDED) {
-                return ADDED;
-            } else if (resourceDelta.getKind() == AResourceDeltaKind.REMOVED) {
-                return REMOVED;
-            } else {
-                return CHANGED;
-            }
+            return switch (resourceDelta.getKind()) {
+                case ADDED -> ADDED;
+                case REMOVED -> REMOVED;
+                case CHANGED -> CHANGED;
+            };
         }
 
         public abstract void performTableStructureUpdate(TableContentsStructureCache tableContentsStructureCache,

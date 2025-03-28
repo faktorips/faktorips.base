@@ -10,6 +10,7 @@
 
 package org.faktorips.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.faktorips.annotation.UtilityClass;
@@ -52,9 +53,8 @@ public class ArgumentCheck {
      */
     public static final void notNull(Object[] arg) {
         notNull((Object)arg);
-        for (Object element : arg) {
-            notNull(element);
-        }
+        Arrays.stream(arg).forEach(ArgumentCheck::notNull);
+
     }
 
     /**
@@ -66,9 +66,7 @@ public class ArgumentCheck {
      */
     public static final void notNull(Object[] arg, Object context) {
         notNull((Object)arg);
-        for (Object element : arg) {
-            notNull(element, context);
-        }
+        Arrays.stream(arg).forEach(element -> notNull(element, context));
     }
 
     /**

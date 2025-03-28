@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -115,7 +115,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
         try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions
                     .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, ipsObject -> {
-                        IDescription description = ((IPolicyCmptType)ipsObject).getDescription(Locale.GERMAN);
+                        IDescription description = ipsObject.getDescription(Locale.GERMAN);
                         description.setText(description.getText().toUpperCase());
                     });
             policyCmptType.getDescription(Locale.GERMAN).setText("foo");
@@ -214,10 +214,6 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     public void testGetElementName() {
         String expectedName = IpsObjectType.POLICY_CMPT_TYPE.getFileName("ParsableFile");
         assertEquals(expectedName, parsableFile.getName());
-    }
-
-    @Test
-    public void testGetParent() {
     }
 
     @Test

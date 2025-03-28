@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -212,7 +212,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 if (messages.size() > 0) {
                     ImageDescriptor descriptor = IpsProblemOverlayIcon.getOverlay(messages.getSeverity());
                     if (descriptor != null) {
-                        return (Image)getResourceManager().get(descriptor);
+                        return getResourceManager().get(descriptor);
                     }
                 }
                 return null;
@@ -225,47 +225,43 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String property = COLUMN_PROPERTIES.get(columnIndex).property;
-                if (IIpsElement.PROPERTY_NAME.equals(property)) {
-                    return attribute.getName();
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME.equals(property)) {
-                    return attributeInfo.getTableColumnName();
-                } else if (IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION.equals(property)) {
-                    return StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER.equals(property)) {
-                    return StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
-                } else if (IPersistentAttributeInfo.PROPERTY_INDEX_NAME.equals(property)) {
-                    return StringUtil.unqualifiedName(attributeInfo.getIndexName());
-                } else if (!isUseSqlDefinition(attributeInfo)) {
-                    return getColumnTextNoSqlDefinition(valueDatatype, attributeInfo, property);
-                }
-                return IpsStringUtils.EMPTY;
+                return switch (property) {
+                    case IIpsElement.PROPERTY_NAME -> attribute.getName();
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME -> attributeInfo.getTableColumnName();
+                    case IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION -> StringUtil
+                            .unqualifiedName(attributeInfo.getSqlColumnDefinition());
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER -> StringUtil
+                            .unqualifiedName(attributeInfo.getConverterQualifiedClassName());
+                    case IPersistentAttributeInfo.PROPERTY_INDEX_NAME -> StringUtil
+                            .unqualifiedName(attributeInfo.getIndexName());
+                    default -> isUseSqlDefinition(attributeInfo)
+                            ? IpsStringUtils.EMPTY
+                            : getColumnTextNoSqlDefinition(valueDatatype, attributeInfo, property);
+                };
             }
 
             private String getColumnTextNoSqlDefinition(ValueDatatype valueDatatype,
                     IPersistentAttributeInfo attributeInfo,
                     String property) {
-                if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE.equals(property)) {
-                    return String.valueOf(attributeInfo.getTableColumnUnique());
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE.equals(property)) {
-                    return String.valueOf(attributeInfo.getTableColumnNullable());
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE.equals(property)) {
-                    if (PersistenceUtil.isSupportingLenght(valueDatatype)) {
-                        return String.valueOf(attributeInfo.getTableColumnSize());
-                    } else {
-                        return IpsStringUtils.EMPTY;
-                    }
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION.equals(property)) {
-                    if (PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
-                        return String.valueOf(attributeInfo.getTableColumnPrecision());
-                    } else {
-                        return IpsStringUtils.EMPTY;
-                    }
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE.equals(property)
-                        && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
-                    return String.valueOf(attributeInfo.getTableColumnScale());
-                } else {
-                    return IpsStringUtils.EMPTY;
-                }
+                return switch (property) {
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE -> String
+                            .valueOf(attributeInfo.getTableColumnUnique());
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE -> String
+                            .valueOf(attributeInfo.getTableColumnNullable());
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE -> PersistenceUtil.isSupportingLenght(
+                            valueDatatype)
+                                    ? String.valueOf(attributeInfo.getTableColumnSize())
+                                    : IpsStringUtils.EMPTY;
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION -> PersistenceUtil
+                            .isSupportingDecimalPlaces(valueDatatype)
+                                    ? String.valueOf(attributeInfo.getTableColumnPrecision())
+                                    : IpsStringUtils.EMPTY;
+                    case IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE -> PersistenceUtil
+                            .isSupportingDecimalPlaces(valueDatatype)
+                                    ? String.valueOf(attributeInfo.getTableColumnScale())
+                                    : IpsStringUtils.EMPTY;
+                    default -> IpsStringUtils.EMPTY;
+                };
             }
 
             private boolean isUseSqlDefinition(IPersistentAttributeInfo attributeInfo) {

@@ -121,10 +121,7 @@ public abstract class MoveOperation {
                 if (representsFolder(target)) {
                     AFolder sourceFolder = (AFolder)((IIpsElement)source).getCorrespondingResource();
                     AResource targetResource = ((IIpsElement)target).getCorrespondingResource();
-                    if (!(targetResource instanceof AFolder targetFolder)) {
-                        return false;
-                    }
-                    if (targetFolder.getWorkspaceRelativePath().startsWith(sourceFolder.getWorkspaceRelativePath())) {
+                    if (!(targetResource instanceof AFolder targetFolder) || targetFolder.getWorkspaceRelativePath().startsWith(sourceFolder.getWorkspaceRelativePath())) {
                         return false;
                     }
                 }

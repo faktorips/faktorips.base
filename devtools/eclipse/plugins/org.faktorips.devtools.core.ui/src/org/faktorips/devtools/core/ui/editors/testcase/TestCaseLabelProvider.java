@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Label provider for the test case domain.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseLabelProvider extends StyledCellLabelProvider implements ILabelProvider {
@@ -102,18 +102,16 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
                 IpsPlugin.log(exception);
             }
         }
-        return (Image)resourceManager.get(getImageDescriptor(element));
+        return resourceManager.get(getImageDescriptor(element));
     }
 
     public ImageDescriptor getImageDescriptor(Object element) {
-        if (element instanceof TestCaseTypeAssociation) {
-            return getImageFromAssociationType((TestCaseTypeAssociation)element);
-        } else if (element instanceof IIpsObjectPart) {
-            return IpsUIPlugin.getImageHandling().getImageDescriptor((IIpsObjectPart)element);
-        } else if (element instanceof TestCaseTypeRule) {
-            return ((TestCaseTypeRule)element).getImageDescriptor();
-        }
-        return ImageDescriptor.getMissingImageDescriptor();
+        return switch (element) {
+            case TestCaseTypeAssociation association -> getImageFromAssociationType(association);
+            case IIpsObjectPart ipsObjectPart -> IpsUIPlugin.getImageHandling().getImageDescriptor(ipsObjectPart);
+            case TestCaseTypeRule testCaseTypeRule -> testCaseTypeRule.getImageDescriptor();
+            default -> ImageDescriptor.getMissingImageDescriptor();
+        };
     }
 
     /**
@@ -160,47 +158,39 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      * Returns the name of the object.
      */
     private String getName(Object object) {
-        if (object instanceof ITestPolicyCmpt) {
-            return ((ITestPolicyCmpt)object).getName();
-        } else if (object instanceof ITestRule) {
-            return ((ITestRule)object).getValidationRule();
-        }
-        // the default for unspecified objects is the label,
-        // because these objects didn't have a suffix, thus the label
-        // is always equal to the name
-        return getText(object);
+        return switch (object) {
+            case ITestPolicyCmpt testPolicyCmpt -> testPolicyCmpt.getName();
+            case ITestRule testRule -> testRule.getValidationRule();
+            // the default for unspecified objects is the label,
+            // because these objects didn't have a suffix, thus the label
+            // is always equal to the name
+            default -> getText(object);
+        };
     }
 
     @Override
     public String getText(Object element) {
-        if (element instanceof ITestPolicyCmpt tstPolicyCmpt) {
-            String name = tstPolicyCmpt.getName();
-            return name + getLabelExtensionForTestPolicyCmpt(tstPolicyCmpt);
-        } else if (element instanceof ITestPolicyCmptLink testPcTypeLink) {
-            return TestCaseHierarchyPath.unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
-        } else if (element instanceof ITestRule testRule) {
-            String extForPolicyCmptForValidationRule = getLabelExtensionForTestRule(testRule);
-            return testRule.getValidationRule() + extForPolicyCmptForValidationRule;
-        } else if (element instanceof ITestObject) {
-            return ((ITestObject)element).getTestParameterName();
-        } else if (element instanceof TestCaseTypeAssociation dummyAssociation) {
-            return dummyAssociation.getName();
-        } else if (element instanceof IIpsObjectPart) {
+        return switch (element) {
+            case ITestPolicyCmpt testPolicyCmpt -> testPolicyCmpt.getName()
+                    + getLabelExtensionForTestPolicyCmpt(testPolicyCmpt);
+            case ITestPolicyCmptLink testPcTypeLink -> TestCaseHierarchyPath
+                    .unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
+            case ITestRule testRule -> testRule.getValidationRule() + getLabelExtensionForTestRule(testRule);
+            case ITestObject testObject -> testObject.getTestParameterName();
+            case TestCaseTypeAssociation dummyAssociation -> dummyAssociation.getName();
             // e.g. tree node element for test rule parameters
-            return ((IIpsObjectPart)element).getName();
-        } else if (element instanceof TestCaseTypeRule) {
-            return ((TestCaseTypeRule)element).getName();
-        }
-        return Messages.TestCaseLabelProvider_undefined;
+            case IIpsObjectPart ipsObjectPart -> ipsObjectPart.getName();
+            case TestCaseTypeRule testCaseTypeRule -> testCaseTypeRule.getName();
+            default -> Messages.TestCaseLabelProvider_undefined;
+        };
     }
 
     private String getSuffixFor(Object object) {
-        if (object instanceof ITestPolicyCmpt) {
-            return getLabelExtensionForTestPolicyCmpt((ITestPolicyCmpt)object);
-        } else if (object instanceof ITestRule) {
-            return getLabelExtensionForTestRule((ITestRule)object);
-        }
-        return IpsStringUtils.EMPTY;
+        return switch (object) {
+            case ITestPolicyCmpt testPolicyCmpt -> getLabelExtensionForTestPolicyCmpt(testPolicyCmpt);
+            case ITestRule testRule -> getLabelExtensionForTestRule(testRule);
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     private String getLabelExtensionForTestPolicyCmpt(ITestPolicyCmpt object) {
