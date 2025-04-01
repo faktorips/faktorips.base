@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-parent</artifactId>
-        <version>24.7.7-SNAPSHOT</version>
+        <version>24.7.7.release</version>
     </parent>
     <artifactId>faktorips-model-plainjava</artifactId>
     <packaging>bundle</packaging>
