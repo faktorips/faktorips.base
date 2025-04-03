@@ -85,7 +85,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
         <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
-        <maven-site-plugin.version>4.0.0-M16</maven-site-plugin.version>
+        <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
