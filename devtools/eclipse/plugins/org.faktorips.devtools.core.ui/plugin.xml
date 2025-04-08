@@ -247,6 +247,11 @@
             id="org.faktorips.devtools.core.refactor.pullUp"
             name="%PullUpRefactoring_name">
       </command>
+       <command
+            name="%ModelExplorerRefactoringMenu_updateValidfrom"
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            id="org.faktorips.devtools.core.refactor.updateValidfrom">
+      </command>
       <command
             categoryId="org.eclipse.search.ui.category.search"
             id="org.faktorips.devtools.core.ui.search.model"
@@ -1637,6 +1642,36 @@
                </with>
          </enabledWhen>
       </handler>
+        <handler
+            class="org.faktorips.devtools.core.ui.refactor.IpsUpdateValidfromHandler"
+            commandId= "org.faktorips.devtools.core.refactor.updateValidfrom">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <adapt
+                        type="org.faktorips.devtools.model.IIpsElement">
+                  </adapt>
+               </iterate>
+            </with>
+         </activeWhen>
+         <enabledWhen>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false">
+                     <adapt
+                           type="org.faktorips.devtools.model.IIpsElement">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                        </test>
+                     </adapt>
+                  </iterate>
+               </with>
+         </enabledWhen>
+      </handler>
       <handler
             class="org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler"
             commandId="org.faktorips.devtools.core.refactor.pullUp">
@@ -2362,6 +2397,12 @@
                label="%ModelExplorerRefactoringMenu_labelMove"
                style="push">
          </command>
+         <command                
+               commandId="org.faktorips.devtools.core.refactor.updateValidfrom"                
+               id="UpdateValidfrom"               
+               label="%PackageExplorerRefactoringMenu_updateValidfrom"                
+               style="push">          
+               </command>
          <separator
                name="org.faktorips.devtools.core.ui.views.modelexplorer.refactoring.separator1"
                visible="true">
@@ -2397,6 +2438,12 @@
                commandId="org.eclipse.ui.edit.move"
                id="Move"
                label="%PackageExplorerRefactoringMenu_labelMove"
+               style="push">
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.refactor.updateValidfrom"
+               id="UpdateValidfrom"
+               label="%PackageExplorerRefactoringMenu_updateValidfrom"
                style="push">
          </command>
       </menuContribution>
@@ -2458,6 +2505,12 @@
                     commandId="org.eclipse.ui.edit.move"
                     id="Move"
                     label="%ModelExplorerRefactoringMenu_labelMove"
+                    style="push">
+              </command>
+              <command
+                    commandId="org.faktorips.devtools.core.refactor.updateValidfrom"
+                    id="UpdateValidfrom"
+                    label="%ModelExplorerRefactoringMenu_updateValidfrom"
                     style="push">
               </command>
               <visibleWhen
@@ -2772,6 +2825,15 @@
                      checkEnabled="true">
                </visibleWhen>
             </command>
+            <command
+                    commandId="org.faktorips.devtools.core.refactor.updateValidfrom"
+                    id="UpdateValidfrom"
+                    label="%ModelExplorerRefactoringMenu_updateValidfrom"
+                    style="push">
+                <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+              </command>
             <separator
                   name="refactoring.pullup"
                   visible="true">

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,11 +34,13 @@ import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.refactor.IpsMoveHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
+import org.faktorips.devtools.core.ui.refactor.IpsUpdateValidfromHandler;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMenuBuilder;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -47,7 +49,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
  * A <code>ModelExplorer</code> that displays product definition projects along with all contained
  * <code>ProductCmpt</code>s, <code>TableContents</code>, <code>TestCases</code> and
  * <code>TestCaseTypes</code>.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ProductExplorer extends ModelExplorer {
@@ -268,6 +270,7 @@ public class ProductExplorer extends ModelExplorer {
         @Override
         protected void createReorgActions(IMenuManager manager, Object selected) {
             super.createReorgActions(manager, selected);
+
             // TODO AW: IIpsProject and IIpsPackageFragmentRoot should be supported as well
             if (selected instanceof IIpsObject || selected instanceof IIpsPackageFragment) {
                 manager.add(IpsRefactoringHandler.getContributionItem(IpsRenameHandler.CONTRIBUTION_ID,
@@ -275,6 +278,12 @@ public class ProductExplorer extends ModelExplorer {
                 manager.add(IpsRefactoringHandler.getContributionItem(IpsMoveHandler.CONTRIBUTION_ID,
                         Messages.ProductExplorer_labelMoveRefactoring));
             }
+
+            if (selected instanceof IpsElement) {
+                manager.add(IpsRefactoringHandler.getContributionItem(IpsUpdateValidfromHandler.CONTRIBUTION_ID,
+                        Messages.ProductExplorer_labelUpdateValidfromRefactoring));
+            }
+
         }
 
         @Override
