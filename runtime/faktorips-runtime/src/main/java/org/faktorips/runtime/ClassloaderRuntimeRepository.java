@@ -248,6 +248,17 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         return false;
     }
 
+    /**
+     * Registers this {@link ClassloaderRuntimeRepository} with an {@link IRuntimeRepositoryLookup}
+     * that will always return this repository on this machine and recreate it if necessary when
+     * deserialized on other machines.
+     *
+     * @since 25.7
+     */
+    public void withLookup() {
+        setRuntimeRepositoryLookup(new IRuntimeRepositoryLookup.RuntimeRepositoryLookupByToC(tocResourcePath, this));
+    }
+
     private static final class EmptyInputStream extends InputStream {
         @Override
         public int read() throws IOException {

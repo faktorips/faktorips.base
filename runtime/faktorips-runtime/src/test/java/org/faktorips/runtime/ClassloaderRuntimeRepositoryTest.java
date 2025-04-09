@@ -10,11 +10,20 @@
 
 package org.faktorips.runtime;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -316,5 +325,45 @@ public class ClassloaderRuntimeRepositoryTest {
         }
         NoClass noClassObject = repository.getCustomRuntimeObject(NoClass.class, "dummy.DummyRuntimeObject");
         assertNull(noClassObject);
+    }
+
+    @Test
+    public void testWithLookup() throws IOException, ClassNotFoundException {
+        repository.withLookup();
+        repository.getDirectlyReferencedRepositories().stream()
+                .filter(ClassloaderRuntimeRepository.class::isInstance)
+                .map(ClassloaderRuntimeRepository.class::cast)
+                .forEach(ClassloaderRuntimeRepository::withLookup);
+        var productComponent = repository.getProductComponent("home.HomeBasic");
+        var policyComponent = productComponent.createPolicyComponent();
+
+        byte[] serialized = serialize(policyComponent);
+        var policyComponent2 = deserialize(serialized);
+
+        assertThat(policyComponent2.getProductComponent(), is(sameInstance(productComponent)));
+    }
+
+    @Test
+    public void testWithLookup_MissingOnReferencedRepository() {
+        repository.withLookup();
+        var productComponent = repository.getProductComponent("home.HomeBasic");
+        var policyComponent = productComponent.createPolicyComponent();
+
+        assertThrows(IllegalStateException.class, () -> serialize(policyComponent));
+    }
+
+    private byte[] serialize(IConfigurableModelObject obj) throws IOException {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(obj);
+            return baos.toByteArray();
+        }
+    }
+
+    private IConfigurableModelObject deserialize(byte[] data) throws IOException, ClassNotFoundException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                ObjectInputStream ois = new ObjectInputStream(bais)) {
+            return (IConfigurableModelObject)ois.readObject();
+        }
     }
 }
