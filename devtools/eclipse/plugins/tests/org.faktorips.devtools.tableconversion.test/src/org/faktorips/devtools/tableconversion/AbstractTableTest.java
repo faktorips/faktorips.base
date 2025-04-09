@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -38,7 +38,7 @@ import org.faktorips.runtime.MessageList;
 /**
  * Base class for all table / enumeration import and export test cases. Contains factory methods to
  * create valid and invalid table contents.
- * 
+ *
  * @author Roman Grutza
  */
 public abstract class AbstractTableTest extends AbstractIpsPluginTest {
@@ -130,7 +130,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates a test table structure based on the datatypes which are returned with a call to
      * {@link #getColumnDatatypes()}.
-     * 
+     *
      * @param ipsProject The IPS project to create the table structure for.
      * @return The generated table structure.
      * @throws IpsException If the ipsProject is invalid or if this method is called more than once
@@ -154,7 +154,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates a valid table in the given table format stored on the filesystem. The export
      * operation is used to create this file.
-     * 
+     *
      * @param ipsProject The IPS project.
      * @param format The external table format used for export.
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the
@@ -170,7 +170,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates an invalid table in the given table format stored on the filesystem. The export
      * operation is used to create this file.
-     * 
+     *
      * @param ipsProject The IPS project.
      * @param format The external table format used for export.
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the
@@ -257,6 +257,18 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumAttributeValues.get(6).setValue(ValueFactory.createStringValue(null));
         enumAttributeValues.get(7).setValue(ValueFactory.createStringValue(null));
         enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("_UniqueKey"));
+
+        IEnumValue enumValueRow4 = enumType.newEnumValue();
+        enumAttributeValues = enumValueRow4.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("KEY_WITH_TRAILING_BLANK_"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("KEY WITH TRAILING BLANK "));
 
         // enumType.getIpsSrcFile().save(true, null);
 
@@ -406,7 +418,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates a valid enumeration in the given table format stored on the file system. The export
      * operation is used to create this file.
-     * 
+     *
      * @param ipsProject The IPS project.
      * @param format The external table format used for export.
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the

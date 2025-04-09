@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -92,14 +92,14 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImportEnumType(ml, false);
-        assertEquals(4, enumType.getEnumValuesCount());
+        assertEquals(5, enumType.getEnumValuesCount());
     }
 
     @Test
     public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImportEnumType(ml, true);
-        assertEquals(3, enumType.getEnumValuesCount());
+        assertEquals(4, enumType.getEnumValuesCount());
     }
 
     @Test
