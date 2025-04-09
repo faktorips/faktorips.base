@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 /**
  * This is a container for the status of a product component link in the tree of a deep copy wizard.
  * The status consists of the checked status and the copy or link status.
- * 
+ *
  * @author dirmeier
  */
 public class LinkStatus {
@@ -33,8 +33,8 @@ public class LinkStatus {
     public LinkStatus(IIpsObjectPart ipsObjectPart, IIpsObject target, boolean checked, CopyOrLink copyOrLink) {
         this.ipsObjectPart = ipsObjectPart;
         this.target = target;
-        setChecked(checked);
-        setCopyOrLink(copyOrLink);
+        this.checked = checked;
+        this.copyOrLink = copyOrLink;
     }
 
     public void setChecked(boolean newValue) {
@@ -46,10 +46,6 @@ public class LinkStatus {
     }
 
     public void setCopyOrLink(CopyOrLink newValue) {
-        setCopyOrLinkInternal(newValue);
-    }
-
-    void setCopyOrLinkInternal(CopyOrLink newValue) {
         copyOrLink = newValue;
     }
 

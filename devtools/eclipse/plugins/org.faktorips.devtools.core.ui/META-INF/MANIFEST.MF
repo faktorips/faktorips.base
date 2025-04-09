@@ -85,7 +85,10 @@ Export-Package: org.faktorips.devtools.core.ui,
 Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn GmbH
-Import-Package: org.apache.commons.lang3;version="3.12.0",
+Import-Package: com.google.gson;version="[2.10.0,3.0.0)",
+ com.google.gson.reflect;version="[2.10.0,3.0.0)",
+ com.google.gson.stream;version="[2.10.0,3.0.0)",
+ org.apache.commons.lang3;version="3.12.0",
  org.apache.commons.text;version="1.10.0",
  org.faktorips.codegen,
  org.faktorips.datatype,

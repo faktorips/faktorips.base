@@ -420,4 +420,8 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         }
         return result;
     }
+
+    public Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> getTreeStatus() {
+        return treeStatus;
+    }
 }

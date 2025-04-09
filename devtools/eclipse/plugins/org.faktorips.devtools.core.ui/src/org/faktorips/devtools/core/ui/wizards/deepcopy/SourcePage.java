@@ -42,6 +42,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -64,6 +65,8 @@ import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateViewer;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyTreeSettingsOperation.DeepCopyTreeLoadSettingsOperation;
+import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyTreeSettingsOperation.DeepCopyTreeSaveSettingsOperation;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -276,10 +279,26 @@ public class SourcePage extends WizardPage {
 
         tree.setInput(getStructure());
 
+        createLoadAndSaveButtons(toolkit, root);
+
         refreshVersionId();
 
         initBindingsAndRefresh();
 
+    }
+
+    private void createLoadAndSaveButtons(UIToolkit toolkit, Composite root) {
+        Composite loadSaveComposite = toolkit.createComposite(root);
+        loadSaveComposite.setLayout(new GridLayout(2, true));
+        loadSaveComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false));
+
+        Button saveButton = toolkit.createButton(loadSaveComposite, Messages.SourcePage_save_button);
+        saveButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Export.gif", true)); //$NON-NLS-1$
+        saveButton.addSelectionListener(new DeepCopyTreeSaveSettingsOperation(getPresentationModel()));
+
+        Button loadButton = toolkit.createButton(loadSaveComposite, Messages.SourcePage_load_button);
+        loadButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Import.gif", true)); //$NON-NLS-1$
+        loadButton.addSelectionListener(new DeepCopyTreeLoadSettingsOperation(getPresentationModel()));
     }
 
     @Override
