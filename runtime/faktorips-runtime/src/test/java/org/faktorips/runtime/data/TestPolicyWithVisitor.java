@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.data;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,14 +44,15 @@ import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 @IpsPolicyCmptType(name = "TestPolicy")
-@IpsAttributes({ "intAttribute", "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute",
+@IpsAttributes({ "IntAttribute", "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute",
         "BooleanAttribute",
-        "EnumAttribute", "RangeAttribute", "onTheFly", "constant", "computed" })
+        "EnumAttribute", "RangeAttribute", "onTheFly", "constant", "computed", "BigDecimalAttribute", "ByteAttribute",
+        "ShortAttribute", "LongAttribute", "FloatAttribute", "DoubleAttribute" })
 @IpsAssociations({ "TestDeckung" })
 @IpsDocumented(bundleName = "org.faktorips.runtime.validation.TestPolicy", defaultLocale = "en")
 public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
 
-    public static final String PROPERTY_INT_ATTRIBUTE = "intAttribute";
+    public static final String PROPERTY_INT_ATTRIBUTE = "IntAttribute";
     public static final String PROPERTY_INTEGER_ATTRIBUTE = "IntegerAttribute";
     public static final String PROPERTY_DECIMAL_ATTRIBUTE = "DecimalAttribute";
     public static final String PROPERTY_MONEY_ATTRIBUTE = "MoneyAttribute";
@@ -63,6 +65,12 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     public static final String ASSOCIATION_TESTDECKUNGUNGEN = "testDeckungungen";
     public static final String PROPERTY_CONSTANT = "constant";
     public static final String PROPERTY_COMPUTED = "computed";
+    public static final String PROPERTY_BIGDECIMAL_ATTRIBUTE = "BigDecimalAttribute";
+    public static final String PROPERTY_BYTE_ATTRIBUTE = "ByteAttribute";
+    public static final String PROPERTY_SHORT_ATTRIBUTE = "ShortAttribute";
+    public static final String PROPERTY_LONG_ATTRIBUTE = "LongAttribute";
+    public static final String PROPERTY_FLOAT_ATTRIBUTE = "FloatAttribute";
+    public static final String PROPERTY_DOUBLE_ATTRIBUTE = "DoubleAttribute";
 
     @IpsAttribute(name = "constant", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, primitive = true)
     public static final int CONSTANT = 42;
@@ -77,10 +85,17 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     private Long rangeAttribute;
     private int computed;
     private final List<TestDeckungWithVisitor> testDeckungungen = new ArrayList<>();
+    private BigDecimal bigDecimalAttribute;
+    private Byte byteAttribute;
+    private Short shortAttribute;
+    private Long longAttribute;
+    private Float floatAttribute;
+    private Double doubleAttribute;
 
     private ValueSet<Integer> setOfAllowedValuesIntAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Integer> setOfAllowedValuesIntegerAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Decimal> setOfAllowedValuesDecimalAttribute = new UnrestrictedValueSet<>();
+    private ValueSet<BigDecimal> setOfAllowedValuesBigDecimalAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Money> setOfAllowedValuesMoneyAttribute = new UnrestrictedValueSet<>();
     private ValueSet<String> setOfAllowedValuesStringAttribute = new UnrestrictedValueSet<>();
     private ValueSet<Boolean> setOfAllowedValuesBooleanAttribute = new UnrestrictedValueSet<>();
@@ -88,25 +103,30 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
             TestEnum.values());
     private OrderedValueSet<String> setOfAllowedValuesOnTheFly = new OrderedValueSet<>(false,
             "SOMEVAL");
+    private ValueSet<Byte> setOfAllowedValuesByteAttribute = new UnrestrictedValueSet<>();
+    private ValueSet<Short> setOfAllowedValuesShortAttribute = new UnrestrictedValueSet<>();
+    private ValueSet<Long> setOfAllowedValuesLongAttribute = new UnrestrictedValueSet<>();
+    private ValueSet<Float> setOfAllowedValuesFloatAttribute = new UnrestrictedValueSet<>();
+    private ValueSet<Double> setOfAllowedValuesDoubleAttribute = new UnrestrictedValueSet<>();
     private LongRange rangeForRangeAttribute = LongRange.valueOf(2L, 5L, 1L, true);
 
-    @IpsAllowedValues("intAttribute")
+    @IpsAllowedValues("IntAttribute")
     public ValueSet<Integer> getSetOfAllowedValuesForIntAttribute() {
         return setOfAllowedValuesIntAttribute;
     }
 
-    @IpsAllowedValuesSetter("intAttribute")
+    @IpsAllowedValuesSetter("IntAttribute")
     public void setAllowedValuesForIntAttribute(ValueSet<Integer> setOfAllowedValuesIntAttribute) {
         this.setOfAllowedValuesIntAttribute = setOfAllowedValuesIntAttribute;
     }
 
-    @IpsAttribute(name = "intAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsAttribute(name = "IntAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
     @IpsConfiguredAttribute(changingOverTime = true)
     public int getIntAttribute() {
         return intAttribute;
     }
 
-    @IpsAttributeSetter("intAttribute")
+    @IpsAttributeSetter("IntAttribute")
     public void setIntAttribute(int newValue) {
         intAttribute = newValue;
     }
@@ -151,6 +171,132 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     @IpsAttributeSetter("DecimalAttribute")
     public void setDecimalAttribute(Decimal newValue) {
         decimalAttribute = newValue;
+    }
+
+    @IpsAllowedValues("ByteAttribute")
+    public ValueSet<Byte> getSetOfAllowedValuesForByteAttribute() {
+        return setOfAllowedValuesByteAttribute;
+    }
+
+    @IpsAllowedValuesSetter("ByteAttribute")
+    public void setAllowedValuesForByteAttribute(ValueSet<Byte> setOfAllowedValuesByteAttribute) {
+        this.setOfAllowedValuesByteAttribute = setOfAllowedValuesByteAttribute;
+    }
+
+    @IpsAttribute(name = "ByteAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Byte getByteAttribute() {
+        return byteAttribute;
+    }
+
+    @IpsAttributeSetter("ByteAttribute")
+    public void setByteAttribute(Byte newValue) {
+        byteAttribute = newValue;
+    }
+
+    @IpsAllowedValues("ShortAttribute")
+    public ValueSet<Short> getSetOfAllowedValuesForShortAttribute() {
+        return setOfAllowedValuesShortAttribute;
+    }
+
+    @IpsAllowedValuesSetter("ShortAttribute")
+    public void setAllowedValuesForShortAttribute(ValueSet<Short> setOfAllowedValuesShortAttribute) {
+        this.setOfAllowedValuesShortAttribute = setOfAllowedValuesShortAttribute;
+    }
+
+    @IpsAttribute(name = "ShortAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Short getShortAttribute() {
+        return shortAttribute;
+    }
+
+    @IpsAttributeSetter("ShortAttribute")
+    public void setShortAttribute(Short newValue) {
+        shortAttribute = newValue;
+    }
+
+    @IpsAllowedValues("LongAttribute")
+    public ValueSet<Long> getSetOfAllowedValuesForLongAttribute() {
+        return setOfAllowedValuesLongAttribute;
+    }
+
+    @IpsAllowedValuesSetter("LongAttribute")
+    public void setAllowedValuesForLongAttribute(ValueSet<Long> setOfAllowedValuesLongAttribute) {
+        this.setOfAllowedValuesLongAttribute = setOfAllowedValuesLongAttribute;
+    }
+
+    @IpsAttribute(name = "LongAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Long getLongAttribute() {
+        return longAttribute;
+    }
+
+    @IpsAttributeSetter("LongAttribute")
+    public void setLongAttribute(Long newValue) {
+        longAttribute = newValue;
+    }
+
+    @IpsAllowedValues("FloatAttribute")
+    public ValueSet<Float> getSetOfAllowedValuesForFloatAttribute() {
+        return setOfAllowedValuesFloatAttribute;
+    }
+
+    @IpsAllowedValuesSetter("FloatAttribute")
+    public void setAllowedValuesForFloatAttribute(ValueSet<Float> setOfAllowedValuesFloatAttribute) {
+        this.setOfAllowedValuesFloatAttribute = setOfAllowedValuesFloatAttribute;
+    }
+
+    @IpsAttribute(name = "FloatAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Float getFloatAttribute() {
+        return floatAttribute;
+    }
+
+    @IpsAttributeSetter("FloatAttribute")
+    public void setFloatAttribute(Float newValue) {
+        floatAttribute = newValue;
+    }
+
+    @IpsAllowedValues("DoubleAttribute")
+    public ValueSet<Double> getSetOfAllowedValuesForDoubleAttribute() {
+        return setOfAllowedValuesDoubleAttribute;
+    }
+
+    @IpsAllowedValuesSetter("DoubleAttribute")
+    public void setAllowedValuesForDoubleAttribute(ValueSet<Double> setOfAllowedValuesDoubleAttribute) {
+        this.setOfAllowedValuesDoubleAttribute = setOfAllowedValuesDoubleAttribute;
+    }
+
+    @IpsAttribute(name = "DoubleAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public Double getDoubleAttribute() {
+        return doubleAttribute;
+    }
+
+    @IpsAttributeSetter("DoubleAttribute")
+    public void setDoubleAttribute(Double newValue) {
+        doubleAttribute = newValue;
+    }
+
+    @IpsAllowedValues("BigDecimalAttribute")
+    public ValueSet<BigDecimal> getSetOfAllowedValuesForBigDecimalAttribute() {
+        return setOfAllowedValuesBigDecimalAttribute;
+    }
+
+    @IpsAllowedValuesSetter("DecimalAttribute")
+    public void setAllowedValuesForBigDecimalAttribute(ValueSet<BigDecimal> setOfAllowedValuesBigDecimalAttribute) {
+        this.setOfAllowedValuesBigDecimalAttribute = setOfAllowedValuesBigDecimalAttribute;
+    }
+
+    @IpsAttribute(name = "BigDecimalAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+    @IpsConfiguredAttribute(changingOverTime = true)
+    public BigDecimal getBigDecimalAttribute() {
+        return bigDecimalAttribute;
+    }
+
+    @IpsAttributeSetter("BigDecimalAttribute")
+    public void setBigDecimalAttribute(BigDecimal newValue) {
+        bigDecimalAttribute = newValue;
     }
 
     @IpsAllowedValues("MoneyAttribute")
