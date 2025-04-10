@@ -1,0 +1,34 @@
+{
+  "some.Product 2025-01": [
+    {
+      "linkType": "org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink",
+      "association": "ZusatzdeckungType",
+      "target": "some.Zusatzdeckung 2025-01",
+      "checked": false,
+      "copyOrLink": "COPY"
+    },
+    {
+      "linkType": "org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink",
+      "association": "GrundDeckungType",
+      "target": "some.GrundDeckung 2025-01",
+      "checked": true,
+      "copyOrLink": "COPY"
+    }
+  ],
+  "null": [
+    {
+      "target": "some.Product 2025-01",
+      "checked": true,
+      "copyOrLink": "COPY"
+    }
+  ],
+  "some.GrundDeckung 2025-01": [
+    {
+      "linkType": "org.faktorips.devtools.model.internal.productcmpt.TableContentUsage",
+      "association": "atable",
+      "target": "some.Table 2025-01",
+      "checked": true,
+      "copyOrLink": "LINK"
+    }
+  ]
+}

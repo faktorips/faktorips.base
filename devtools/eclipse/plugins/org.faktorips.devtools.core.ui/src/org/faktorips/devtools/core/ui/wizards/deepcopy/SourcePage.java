@@ -291,11 +291,9 @@ public class SourcePage extends WizardPage {
         Composite loadSaveComposite = toolkit.createComposite(root);
         loadSaveComposite.setLayout(new GridLayout(2, true));
         loadSaveComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false));
-
         Button saveButton = toolkit.createButton(loadSaveComposite, Messages.SourcePage_save_button);
         saveButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Export.gif", true)); //$NON-NLS-1$
         saveButton.addSelectionListener(new DeepCopyTreeSaveSettingsOperation(getPresentationModel()));
-
         Button loadButton = toolkit.createButton(loadSaveComposite, Messages.SourcePage_load_button);
         loadButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Import.gif", true)); //$NON-NLS-1$
         loadButton.addSelectionListener(new DeepCopyTreeLoadSettingsOperation(getPresentationModel()));
