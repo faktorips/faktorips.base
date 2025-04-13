@@ -268,8 +268,8 @@ public class ProductExplorer extends ModelExplorer {
         }
 
         @Override
-        protected void createReorgActions(IMenuManager manager, Object selected) {
-            super.createReorgActions(manager, selected);
+        protected void createReorgActions(IMenuManager manager, Object selected, int selectionSize) {
+            super.createReorgActions(manager, selected, selectionSize);
 
             // TODO AW: IIpsProject and IIpsPackageFragmentRoot should be supported as well
             if (selected instanceof IIpsObject || selected instanceof IIpsPackageFragment) {
@@ -279,7 +279,7 @@ public class ProductExplorer extends ModelExplorer {
                         Messages.ProductExplorer_labelMoveRefactoring));
             }
 
-            if (selected instanceof IpsElement) {
+            if (selected instanceof IpsElement && selectionSize == 1) {
                 manager.add(IpsRefactoringHandler.getContributionItem(IpsUpdateValidfromHandler.CONTRIBUTION_ID,
                         Messages.ProductExplorer_labelUpdateValidfromRefactoring));
             }

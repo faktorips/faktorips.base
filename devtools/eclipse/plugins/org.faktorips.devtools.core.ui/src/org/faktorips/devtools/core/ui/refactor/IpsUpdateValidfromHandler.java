@@ -10,32 +10,31 @@
 
 package org.faktorips.devtools.core.ui.refactor;
 
-import java.util.Set;
-
 import org.eclipse.core.commands.ExecutionEvent;
-import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
-import org.faktorips.devtools.model.IIpsElement;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.faktorips.devtools.core.ui.actions.IpsUpdateValidfromAction;
+import org.faktorips.devtools.core.ui.commands.IpsAbstractHandler;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
-public class IpsUpdateValidfromHandler extends IpsRefactoringHandler {
+public class IpsUpdateValidfromHandler extends IpsAbstractHandler {
 
     public static final String CONTRIBUTION_ID = "org.faktorips.devtools.core.refactor.updateValidfrom"; //$NON-NLS-1$
 
     @Override
-    protected IpsRefactoringWizard getRefactoringWizard(IIpsRefactoring refactoring) {
-        return null;
-    }
+    public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile)
+            throws ExecutionException {
+        Shell activeShell = HandlerUtil.getActiveShell(event);
+        ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
+        if (currentSelection instanceof IStructuredSelection) {
+            new IpsUpdateValidfromAction(activeShell, null)
+                    .run((IStructuredSelection)currentSelection);
+        }
 
-    @Override
-    public Object execute(ExecutionEvent event) {
-        System.out.println("start wizard");
-        return null;
-    }
-
-    @Override
-    protected IIpsRefactoring getRefactoring(Set<IIpsElement> selectedIpsElements) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

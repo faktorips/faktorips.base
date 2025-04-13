@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -46,5 +46,22 @@ public class Messages extends NLS {
 
     public static String PullUpUserInputPage_message;
     public static String PullUpUserInputPage_labelChooseDestination;
+
+    public static String UpdateValidFromSourcePage_pageTitle;
+    public static String UpdateValidFromSourcePage_description;
+    public static String UpdateValidFromSourcePage_generationID;
+    public static String UpdateValidFromSourcePage_validFrom;
+    public static String UpdateValidFromSourcePage_productComponent;
+    public static String UpdateValidFromSourcePage_targetGroup;
+    public static String UpdateValidFromSourcePage_sourceGroup;
+    public static String UpdateValidFromSourcePage_emptyValidFomDateError;
+    public static String UpdateValidFromSourcePage_emptyVersionIdError;
+    public static String UpdateValidFromSourcePage_missingStructureError;
+    public static String UpdateValidFromSourcePage_changeGenerationIDCheckbox;
+    public static String UpdateValidFromSourcePage_ChangeAttributesCheckbox;
+    public static String UpdateValidFromSourcePage_ValidFromDateFormatError;
+
+    public static String UpdateValidFromPreviewPage_description;
+    public static String UpdateValidFromPreviewPage_validFrom;
 
 }
