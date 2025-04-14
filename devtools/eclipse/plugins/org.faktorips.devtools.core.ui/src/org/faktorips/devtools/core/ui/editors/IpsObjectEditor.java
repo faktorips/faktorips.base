@@ -49,6 +49,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -1035,7 +1036,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     /**
      * The <code>IpsObjectEditorErrorMarkerUpdater</code> will register as a
-     * IIpsProblemChangedListener to listen on ips problem changes that correspond to the editor's
+     * IIpsProblemChangedListener to listen on IPS problem changes that correspond to the editor's
      * input. It updates the title images and refreshes the editor if it is active.
      *
      * @author Joerg Ortmann, Peter Erzberger
@@ -1053,11 +1054,17 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         @Override
         public void problemsChanged(IResource[] changedResources) {
-            if (ipsObjectEditor.getIpsSrcFile() == null) {
+            IIpsSrcFile srcFile = ipsObjectEditor.getIpsSrcFile();
+            if (srcFile == null) {
                 // can happen during editor init
                 return;
             }
-            IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource().unwrap();
+            AResource aCorrespondingResource = srcFile.getCorrespondingResource();
+            if (aCorrespondingResource == null) {
+                // can happen during editor init
+                return;
+            }
+            IResource correspondingResource = aCorrespondingResource.unwrap();
             if (correspondingResource != null) {
                 for (IResource changedResource : changedResources) {
                     if (changedResource.equals(correspondingResource)) {
