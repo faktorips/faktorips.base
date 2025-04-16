@@ -340,7 +340,33 @@ public class UpdateValidFromSourcePage extends WizardPage {
             }
         }
 
+        validateAdjustments();
+        if (getErrorMessage() != null) {
+            return;
+        }
+
         setPageComplete(true);
+    }
+
+    private void validateAdjustments() {
+        IProductCmpt productCmpt = getPresentationModel().getProductCmpt();
+        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+        if (productCmpt.allowGenerations()) {
+            GregorianCalendar firstGenValidFrom = productCmpt.getFirstGeneration().getValidFrom();
+            GregorianCalendar newValidFrom = getPresentationModel().getNewValidFrom();
+            if (firstGenValidFrom != null && productCmpt.getFirstGeneration().getValidFrom()
+                    .before(getPresentationModel().getNewValidFrom())) {
+                setErrorMessage(
+                        NLS.bind(Messages.UpdateValidFromSourcePage_ValidFromAfterFirstGenerationError,
+                                new Object[] {
+                                        format.format(newValidFrom.getTime()),
+                                        IpsPlugin.getDefault().getIpsPreferences()
+                                                .getChangesOverTimeNamingConvention()
+                                                .getGenerationConceptNameSingular(true),
+                                        format.format(firstGenValidFrom.getTime())
+                                }));
+            }
+        }
     }
 
     /** Validates format of the entered date. */
