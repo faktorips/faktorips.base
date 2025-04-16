@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.faktorips.devtools.core.IpsPlugin;
@@ -419,5 +420,25 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             }
         }
         return result;
+    }
+
+    public Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> getTreeStatus() {
+        return treeStatus;
+    }
+
+    void setTreeStatus(Map<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> treeStatus) {
+        this.treeStatus = treeStatus;
+    }
+
+    void updatedTreeStatus() {
+        for (Entry<IProductCmpt, Map<IIpsObjectPart, LinkStatus>> entry : treeStatus.entrySet()) {
+            for (Entry<IIpsObjectPart, LinkStatus> subEntry : entry.getValue().entrySet()) {
+                LinkStatus status = subEntry.getValue();
+                IIpsObjectPart key = subEntry.getKey();
+                if (key != null) {
+                    notifyListeners(new PropertyChangeEvent(key, LinkStatus.COPY_OR_LINK, null, status));
+                }
+            }
+        }
     }
 }
