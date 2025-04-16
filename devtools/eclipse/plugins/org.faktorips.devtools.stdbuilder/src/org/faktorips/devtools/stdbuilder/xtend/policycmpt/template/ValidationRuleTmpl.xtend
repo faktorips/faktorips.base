@@ -161,7 +161,7 @@ def private static createMessageFor (XValidationRule it, String modelObject, Str
              «ELSEIF validateAttributes»
                .invalidObjects(invalidObjectProperties)
           «ELSE»
-            .invalidObject(new «ObjectProperty()»(this))
+            .invalidObject(new «ObjectProperty()»(«that»))
           «ENDIF»
              «IF containsReplacementParameters»
                .replacements(replacementParameters)
