@@ -143,10 +143,11 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_LOCALE, (locale == null) ? "" : locale.getLanguage()); //$NON-NLS-1$
-        if (isWindows() && text != null) {
-            text = text.replace("\r\n", "\n");
+        String textForXml = text;
+        if (isWindows() && textForXml != null) {
+            textForXml = textForXml.replace("\r\n", "\n");
         }
-        element.setTextContent(text);
+        element.setTextContent(textForXml);
         element.removeAttribute(IpsObjectPart.PROPERTY_ID);
     }
 
