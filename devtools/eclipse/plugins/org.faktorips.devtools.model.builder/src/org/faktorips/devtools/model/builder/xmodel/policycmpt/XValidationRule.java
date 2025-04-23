@@ -118,7 +118,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return parameters.stream().collect(Collectors.joining(" ,", " ,", ""));
     }
 
-    private XValidationRule getOverwrittenRuleNode() {
+    public XValidationRule getOverwrittenRuleNode() {
         IValidationRule overwrittenRule = getValidationRule().findOverwrittenValidationRule(getIpsProject());
         return getModelNode(overwrittenRule, getClass());
     }
@@ -189,12 +189,16 @@ public class XValidationRule extends AbstractGeneratorModelNode {
 
     public String getQualifierForConstantNameMessageCodeIfNecessary() {
         if (isOverwrite() && getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject())) {
-            XPolicyCmptClass xPolicyCmptClass = getModelService()
-                    .getModelNode(getIpsObjectPartContainer().getIpsObject(), XPolicyCmptClass.class, getContext());
-            return xPolicyCmptClass.getInterfaceName() + '.';
+            return getQualifierForConstantNameMessageCode();
         } else {
             return "";
         }
+    }
+
+    public String getQualifierForConstantNameMessageCode() {
+        XPolicyCmptClass xPolicyCmptClass = getModelService()
+                .getModelNode(getIpsObjectPartContainer().getIpsObject(), XPolicyCmptClass.class, getContext());
+        return xPolicyCmptClass.getInterfaceName() + '.';
     }
 
     public String getMessageCode() {

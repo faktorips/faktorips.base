@@ -84,9 +84,10 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     «IF overwrite»
         // begin-user-code
         super.«methodNameExecRule»(ml, context);
-        Message message = ml.getMessageByCode(«qualifierForConstantNameMessageCodeIfNecessary»«constantNameMessageCode»);
+        Message message = ml.getMessageByCode(«overwrittenRuleNode.qualifierForConstantNameMessageCode»«constantNameMessageCode»);
         if (message != null) {
-            «methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»);
+            ml.remove(message);
+            ml.add(«methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));
         }
         return «CONTINUE_VALIDATION»;
         // end-user-code
