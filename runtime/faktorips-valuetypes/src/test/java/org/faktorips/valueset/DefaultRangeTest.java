@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
+import org.faktorips.values.Decimal;
 import org.junit.Test;
 
 public class DefaultRangeTest {
@@ -199,6 +200,76 @@ public class DefaultRangeTest {
     @Test
     public void testIsUnrestricted_RangeWithStep_excludesNull() {
         TestRange range = new TestRange(null, null, Integer.valueOf(10), true);
+
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_EmptyRangeWithNullObject_includesNull() {
+        DecimalRange emptyRangeWithoutNull = DecimalRange.empty();
+
+        assertThat(emptyRangeWithoutNull.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_EmptyRangeWithNullObject_excludesNull() {
+        DecimalRange emptyRangeWithoutNull = DecimalRange.empty();
+
+        assertThat(emptyRangeWithoutNull.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObject_includesNull() {
+        DecimalRange emptyWithNull = DecimalRange.valueOf(Decimal.NULL, Decimal.NULL, Decimal.NULL, true);
+
+        assertThat(emptyWithNull.isUnrestricted(false), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObject_excludesNull() {
+        DecimalRange emptyWithNull = DecimalRange.valueOf(Decimal.NULL, Decimal.NULL, Decimal.NULL, true);
+
+        assertThat(emptyWithNull.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObjectWithLower_includesNull() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(1), Decimal.NULL, Decimal.NULL, true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObjectWithLower_excludesNull() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(1), Decimal.NULL, Decimal.NULL, true);
+
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObjectWithUpper_excludesNull() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.NULL, Decimal.valueOf(10), Decimal.NULL, true);
+
+        assertThat(range.isUnrestricted(true), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObjectWithUpper_includesNull() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.NULL, Decimal.valueOf(10), Decimal.NULL, true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObjectWithStep_includesNull() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.NULL, Decimal.NULL, Decimal.valueOf(10), true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_RangeWithNullObjectWithStep_excludesNull() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.NULL, Decimal.NULL, Decimal.valueOf(10), true);
 
         assertThat(range.isUnrestricted(true), is(false));
     }
