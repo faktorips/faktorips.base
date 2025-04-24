@@ -15,9 +15,11 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constan
 class ValidationRuleTmpl {
 
 def package static validate (XValidationRule it) '''
+    «IF !overwrite»
         if (!«methodNameExecRule»(ml, context)) {
             return «STOP_VALIDATION»;
         }
+    «ENDIF»
 '''
 
 def package static constants (XValidationRule it) '''
@@ -67,8 +69,8 @@ def private static constantRuleName (XValidationRule it) '''
 def private static execRuleMethod (XValidationRule it, String modelObject) '''
     /**
      «IF description.length > 0»
-     * «description»
-     * <p>
+        * «description»
+        * <p>
      «ENDIF»
      *
      *«localizedJDoc("EXEC_RULE", name)»
@@ -79,51 +81,53 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_VALIDATION_RULE)»
     «overrideAnnotationIf(it, overwrite)»
     protected boolean «method(methodNameExecRule, MessageList, "ml", IValidationContext, "context")» {
-    	«IF overwrite»
-    		// begin-user-code
-    		super.«methodNameExecRule»(ml, context);
-    		Message message = ml.getMessageByCode(«qualifierForConstantNameMessageCodeIfNecessary»«constantNameMessageCode»);
-    		if (message != null) {
-    			«methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»);
-    		}
-    		return «CONTINUE_VALIDATION»;
-    		// end-user-code
-    	«ENDIF»
-    	«IF !overwrite»
-	        «IF configured»
-	        if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
-	        «ENDIF»
-	        «IF !checkValueAgainstValueSetRule»
-	             // begin-user-code
-	            «localizedComment("EXEC_RULE_IMPLEMENT_TODO", name)»
-	            if (true) {
-	                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));«IF needTodoCompleteCallCreateMsg»
-	                «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
-	                «ENDIF»
-	            }
-	            return «CONTINUE_VALIDATION»;
-	            // end-user-code
-	        «ELSE»
-	            «val attribute = checkedAttribute»
-	            «val valueSetMethods = generatorConfig.valueSetMethods»
-	            «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
-	            «IF !attribute.datatype.primitive && (attribute.valueSetType == ValueSetType.RANGE || attribute.valueSetType == ValueSetType.ENUM)»
-	                if («modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).isEmpty() && «modelObject»«attribute.methodNameGetter»() == «attribute.datatypeHelper.nullExpression.sourcecode») {
-	                    return «CONTINUE_VALIDATION»;
-	                }
-	            «ENDIF»
-	            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
-	                // begin-user-code
-	                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
-	                // end-user-code
-	            }
-	              return «CONTINUE_VALIDATION»;
-	        «ENDIF»
-	        «IF configured»
-	        }
-	        return «CONTINUE_VALIDATION»;
-	        «ENDIF»
+    «IF overwrite»
+        // begin-user-code
+        super.«methodNameExecRule»(ml, context);
+        Message message = ml.getMessageByCode(«overwrittenRuleNode.qualifierForConstantNameMessageCode»«constantNameMessageCode»);
+        if (message != null) {
+            ml.remove(message);
+            ml.add(«methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));
+        }
+        return «CONTINUE_VALIDATION»;
+        // end-user-code
+    «ENDIF»
+    «IF !overwrite»
+        «IF configured»
+            if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
         «ENDIF»
+        «IF !checkValueAgainstValueSetRule»
+            // begin-user-code
+            «localizedComment("EXEC_RULE_IMPLEMENT_TODO", name)»
+            if (true) {
+                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));
+                «IF needTodoCompleteCallCreateMsg»
+                    «localizedComment("EXEC_RULE_COMPLETE_CALL_CREATE_MSG_TODO",name)»
+                «ENDIF»
+            }
+            return «CONTINUE_VALIDATION»;
+            // end-user-code
+        «ELSE»
+            «val attribute = checkedAttribute»
+            «val valueSetMethods = generatorConfig.valueSetMethods»
+            «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
+            «IF !attribute.datatype.primitive && (attribute.valueSetType == ValueSetType.RANGE || attribute.valueSetType == ValueSetType.ENUM)»
+                if («modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).isEmpty() && «modelObject»«attribute.methodNameGetter»() == «attribute.datatypeHelper.nullExpression.sourcecode») {
+                    return «CONTINUE_VALIDATION»;
+                }
+            «ENDIF»
+            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
+                // begin-user-code
+                ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
+                // end-user-code
+            }
+            return «CONTINUE_VALIDATION»;
+        «ENDIF»
+        «IF configured»
+            }
+            return «CONTINUE_VALIDATION»;
+        «ENDIF»
+    «ENDIF»
     }
 '''
 
