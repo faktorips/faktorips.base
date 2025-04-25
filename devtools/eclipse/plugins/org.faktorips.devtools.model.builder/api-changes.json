@@ -1,0 +1,20 @@
+{
+    "25.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "ignore": true,
+                "differences": [
+                    {
+                        "code": "java.method.visibilityIncreased",
+                        "old": "method org.faktorips.devtools.model.builder.xmodel.policycmpt.XValidationRule org.faktorips.devtools.model.builder.xmodel.policycmpt.XValidationRule::getOverwrittenRuleNode()",
+                        "new": "method org.faktorips.devtools.model.builder.xmodel.policycmpt.XValidationRule org.faktorips.devtools.model.builder.xmodel.policycmpt.XValidationRule::getOverwrittenRuleNode()",
+                        "oldVisibility": "private",
+                        "newVisibility": "public",
+                        "justification": "FIPS-12818"
+                    }
+                ]
+            }
+        }
+    ]
+}

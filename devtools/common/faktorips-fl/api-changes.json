@@ -1,0 +1,24 @@
+{
+    "25.7.0" : [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                  "ignore": true,
+                  "differences": [
+                    {
+                      "code": "java.method.noLongerStatic",
+                      "old": "method java.lang.String org.faktorips.fl.operations.EqualsObjectDatatype::getErrorMessageCode()",
+                      "new": "method java.lang.String org.faktorips.fl.operations.EqualsObjectDatatype::getErrorMessageCode()",
+                      "justification": "PD-32"
+                    },
+                    {
+                      "code": "java.method.noLongerStatic",
+                      "old": "method java.lang.String org.faktorips.fl.operations.NotEqualsObjectDatatype::getErrorMessageCode()",
+                      "new": "method java.lang.String org.faktorips.fl.operations.NotEqualsObjectDatatype::getErrorMessageCode()",
+                      "justification": "PD-32"
+                    }
+                ]
+            }
+        }
+    ]
+}

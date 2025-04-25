@@ -107,6 +107,9 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <auto-service.version>1.1.1</auto-service.version>
         <dependency-check-plugin.version>9.1.0</dependency-check-plugin.version>
         <dependency-check-postgres.version>42.7.3</dependency-check-postgres.version>
+        <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
+        <revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
+        <revapi-java.version>0.28.1</revapi-java.version>
     </properties>
 
     <distributionManagement>
@@ -407,6 +410,77 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.revapi</groupId>
+                    <artifactId>revapi-maven-plugin</artifactId>
+                    <version>${revapi-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.revapi</groupId>
+                            <artifactId>revapi-java</artifactId>
+                            <version>${revapi-java.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <versionFormat>\d+\.\d+(?:\.\d+)?\.release</versionFormat>
+                        <analysisConfigurationFiles>
+                            <configurationFile>
+                                <path>${project.basedir}/api-changes.json</path>
+                                <roots>
+                                    <root>all-versions</root>
+                                    <root>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</root>
+                                </roots>
+                            </configurationFile>
+                        </analysisConfigurationFiles>
+                        <failOnMissingConfigurationFiles>false</failOnMissingConfigurationFiles>
+                        <analysisConfiguration>
+                            <revapi.java>
+                                <checks>
+                                    <nonPublicPartOfAPI>
+                                        <reportUnchanged>false</reportUnchanged>
+                                    </nonPublicPartOfAPI>
+                                </checks>
+                                <reportUsesFor>
+                                    <item>java.class.nonPublicPartOfAPI</item>
+                                </reportUsesFor>
+                                <missing-classes>
+                                    <behavior>ignore</behavior>
+                                </missing-classes>
+                            </revapi.java>
+                            <revapi.differences>
+                                <justification>we expose external classes</justification>
+                                <criticality>documented</criticality>
+                                <differences>
+                                    <item>
+                                        <code>java.class.externalClassExposedInAPI</code>
+                                    </item>
+                                </differences>
+                            </revapi.differences>
+                            <revapi.filter>
+                                <elements>
+                                    <exclude>
+                                        <item>
+                                            <matcher>java-package</matcher>
+                                            <match>/org\.eclipse(\..*)?/</match>
+                                        </item>
+                                    </exclude>
+                                </elements>
+                            </revapi.filter>
+                        </analysisConfiguration>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -450,6 +524,23 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

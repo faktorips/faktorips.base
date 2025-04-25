@@ -1,0 +1,26 @@
+{
+    "25.7.0" : [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                  "ignore": true,
+                  "differences": [
+                    {
+                      "code": "java.missing.oldSuperType",
+                      "old": "class org.faktorips.maven.plugin.mojo.IpsBuildMojo",
+                      "new": "class org.faktorips.maven.plugin.mojo.IpsBuildMojo",
+                      "superClass": "org.apache.maven.plugin.AbstractMojo",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                      "code": "java.missing.oldSuperType",
+                      "old": "class org.faktorips.maven.plugin.mojo.IpsCleanMojo",
+                      "new": "class org.faktorips.maven.plugin.mojo.IpsCleanMojo",
+                      "superClass": "org.apache.maven.plugin.AbstractMojo",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    }
+                ]
+            }
+        }
+    ]
+}

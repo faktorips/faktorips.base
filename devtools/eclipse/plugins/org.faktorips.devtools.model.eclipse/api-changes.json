@@ -1,0 +1,80 @@
+{
+    "25.7.0" : [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                  "ignore": true,
+                  "differences": [
+                    {
+                    
+                      "code": "java.field.removedWithConstant",
+                      "old": "field org.eclipse.jdt.core.ClasspathContainerInitializer.ATTRIBUTE_NOT_SUPPORTED @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.field.removedWithConstant",
+                      "old": "field org.eclipse.jdt.core.ClasspathContainerInitializer.ATTRIBUTE_READ_ONLY @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method boolean org.eclipse.jdt.core.ClasspathContainerInitializer::canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method org.eclipse.core.runtime.IStatus org.eclipse.jdt.core.ClasspathContainerInitializer::getAccessRulesStatus(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method org.eclipse.core.runtime.IStatus org.eclipse.jdt.core.ClasspathContainerInitializer::getAttributeStatus(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, java.lang.String) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method java.lang.Object org.eclipse.jdt.core.ClasspathContainerInitializer::getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method java.lang.String org.eclipse.jdt.core.ClasspathContainerInitializer::getDescription(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method org.eclipse.jdt.core.IClasspathContainer org.eclipse.jdt.core.ClasspathContainerInitializer::getFailureContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method org.eclipse.core.runtime.IStatus org.eclipse.jdt.core.ClasspathContainerInitializer::getSourceAttachmentStatus(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject) @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.method.removed",
+                      "old": "method void org.eclipse.jdt.core.ClasspathContainerInitializer::requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, org.eclipse.jdt.core.IClasspathContainer) throws org.eclipse.core.runtime.CoreException @ org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    },
+                    {
+                    
+                      "code": "java.missing.newSuperType",
+                      "old": "class org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "new": "class org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer",
+                      "superClass": "org.eclipse.jdt.core.ClasspathContainerInitializer",
+                      "justification": "False positive due to incorrect dependency resolution."
+                    }
+                ]
+            }
+        }
+    ]
+}
