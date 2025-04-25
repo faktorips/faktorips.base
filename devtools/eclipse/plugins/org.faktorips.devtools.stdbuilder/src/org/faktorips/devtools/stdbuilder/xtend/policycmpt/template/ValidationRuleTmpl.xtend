@@ -27,7 +27,7 @@ def package static constants (XValidationRule it) '''
         «IF differentMessageCodeInOverridingRule && !generatePublishedInterfaces(it)»@SuppressWarnings("hiding")«ENDIF»
         «constantMsgCode»
     «ENDIF»
-    «IF !overwrite»
+    «IF !overwrite || configuredButNotInOverridingRule»
         «constantRuleName»
     «ENDIF»
 '''
@@ -82,17 +82,24 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     «overrideAnnotationIf(it, overwrite)»
     protected boolean «method(methodNameExecRule, MessageList, "ml", IValidationContext, "context")» {
     «IF overwrite»
-        // begin-user-code
         super.«methodNameExecRule»(ml, context);
         Message message = ml.getMessageByCode(«overwrittenRuleNode.qualifierForConstantNameMessageCode»«constantNameMessageCode»);
         if (message != null) {
             ml.remove(message);
+        }
+        «IF configured»
+            if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
+        «ENDIF»
+        // begin-user-code
+        if (message != null) {
             ml.add(«methodNameCreateMessage»(context«getReplacementParametersForOverwrittingRule»«IF validatedAttrSpecifiedInSrc», new «ObjectProperty()»[0]«ENDIF»));
         }
-        return «CONTINUE_VALIDATION»;
         // end-user-code
-    «ENDIF»
-    «IF !overwrite»
+        «IF configured»
+        }
+        «ENDIF»
+        return «CONTINUE_VALIDATION»;
+    «ELSE»
         «IF configured»
             if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
         «ENDIF»

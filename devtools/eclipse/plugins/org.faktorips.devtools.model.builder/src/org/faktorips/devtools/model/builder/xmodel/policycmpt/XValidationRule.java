@@ -77,6 +77,10 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         return isOverwrite() && !Objects.equals(getOverwrittenRuleNode().getMessageCode(), getMessageCode());
     }
 
+    public boolean isConfiguredButNotInOverridingRule() {
+        return isConfigured() && !getOverwrittenRuleNode().isConfigured();
+    }
+
     public boolean isSignatureChanged() {
         if (!isOverwrite()) {
             return false;
