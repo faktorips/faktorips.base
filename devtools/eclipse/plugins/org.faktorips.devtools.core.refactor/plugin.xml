@@ -39,4 +39,13 @@
             class="org.faktorips.devtools.core.refactor.modules.ModuleIpsProjectConfigurator">
       </ipsProjectConfigurator>
    </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+      <deleteParticipant
+            class="org.faktorips.devtools.core.refactor.java.TemplateDeleteParticipant"
+            id="org.faktorips.devtools.core.refactor.templateDeleteParticipant"
+            name="TemplateDeleteParticipant">
+         <enablement></enablement>
+      </deleteParticipant>
+   </extension>
 </plugin>

@@ -36,6 +36,7 @@
         <module>org.faktorips.eclipse.emf.codegen</module>
         <module>org.faktorips.m2e</module>
         <module>org.faktorips.nls.devtools.core.nl1</module>
+        <module>org.faktorips.nls.devtools.core.refactor.nl1</module>
         <module>org.faktorips.nls.devtools.core.ui.nl1</module>
         <module>org.faktorips.nls.devtools.model.nl1</module>
         <module>org.faktorips.nls.devtools.model.builder.nl1</module>
