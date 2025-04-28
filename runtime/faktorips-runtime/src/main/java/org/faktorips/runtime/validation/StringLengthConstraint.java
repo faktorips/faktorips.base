@@ -10,17 +10,12 @@
 
 package org.faktorips.runtime.validation;
 
-/**
- * Represents constraints for numeric values.
- */
-public record NumericConstraint(int precision, int scale) {
+import java.nio.charset.Charset;
 
-    /**
-     * Creates a new numeric constraint with the specified precision.
-     *
-     * @param precision the maximum total number of digits allowed
-     */
-    public NumericConstraint(int precision) {
-        this(precision, 0);
-    }
+/**
+ * Configuration for string length validation. The encoding is used to transform a String to its
+ * Byte representation, which is then measured against the {@code maxStringByteLength}
+ */
+public record StringLengthConstraint(Charset stringEncoding, int maxStringByteLength) {
+
 }
