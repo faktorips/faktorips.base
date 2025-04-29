@@ -299,14 +299,14 @@ public class TypedSelection<T> {
     /**
      * Returns an {@link Optional} holding the single selected element of the given type in the
      * given selection. If the selection contains elements of the wrong type or is empty
-     * {@code Optional.absent()} is returned.
+     * {@code Optional.empty()} is returned.
      * <p>
      * This is a more lenient alternative to {@link #convertSingleElement(Class, ISelection)}
      *
      * @param <T> type of the selection
      * @param selection the selection
      * @return an {@link Optional} holding the selected element of the given type or
-     *             {@code Optional.absent()} if the selection contains elements of the wrong type or
+     *             {@code Optional.empty()} if the selection contains elements of the wrong type or
      *             is empty
      */
     public static <T> Optional<T> singleElement(final Class<T> type, final ISelection selection) {
@@ -390,4 +390,17 @@ public class TypedSelection<T> {
         return elements.size();
     }
 
+    /**
+     * {@return true if the selection is valid and contains only one element}
+     */
+    public final boolean hasSingleElement() {
+        return isValid() && getElementCount() == 1;
+    }
+
+    /**
+     * {@return true if the selection is valid and contains more than one element}
+     */
+    public final boolean hasMultipleElements() {
+        return isValid() && getElementCount() > 1;
+    }
 }

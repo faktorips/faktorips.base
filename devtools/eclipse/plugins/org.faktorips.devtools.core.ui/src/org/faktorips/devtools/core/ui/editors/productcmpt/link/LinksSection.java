@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPar
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.core.ui.views.producttemplate.InheritCardinalitiesFromTemplateAction;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -77,7 +78,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * A section to display a product component's relations in a tree.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class LinksSection extends IpsSection implements ICompositeWithSelectableViewer {
@@ -125,7 +126,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
-     * 
+     *
      * @param generation The base to get the relations from.
      * @param parent The composite whicht is the ui-parent for this section.
      * @param toolkit The ui-toolkit to support drawing.
@@ -253,10 +254,10 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void addTemplateActions(IMenuManager manager) {
-        TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<>(IProductCmptLink.class,
+        TypedSelection<IProductCmptLink> selection = TypedSelection.createAnyCount(IProductCmptLink.class,
                 treeViewer.getSelection());
-        if (typedSelection.isValid()) {
-            IProductCmptLink firstLink = typedSelection.getFirstElement();
+        if (selection.hasSingleElement()) {
+            IProductCmptLink firstLink = selection.getFirstElement();
             final IProductCmptLink templateLink = firstLink.findTemplateProperty(firstLink.getIpsProject());
             if (templateLink != null) {
                 String text = getOpenTemplateText(templateLink);
@@ -264,10 +265,13 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
                 manager.add(openTemplateAction);
                 manager.add(new ShowTemplatePropertyUsageViewAction(templateLink,
                         Messages.CardinalityPanel_MenuItem_showUsage));
+                manager.add(new InheritCardinalitiesFromTemplateAction(selection.getElements()));
             } else if (firstLink.isPartOfTemplateHierarchy()) {
                 manager.add(new ShowTemplatePropertyUsageViewAction(firstLink,
                         Messages.CardinalityPanel_MenuItem_showUsage));
             }
+        } else if (selection.hasMultipleElements()) {
+            manager.add(new InheritCardinalitiesFromTemplateAction(selection.getElements()));
         }
     }
 
@@ -369,7 +373,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     /**
      * Creates a new link of the given association.
-     * 
+     *
      * @deprecated As of 3.8
      */
     @Deprecated
@@ -406,7 +410,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     /**
      * Sets the selection to all links contained in the given list of {@link IProductCmptLink}s.It
      * expands all ancestors so that the given links become visible.
-     * 
+     *
      * @param links A list of {@link IProductCmptLink}s that will be selected.
      */
     public void setSelection(List<IProductCmptLink> links) {
