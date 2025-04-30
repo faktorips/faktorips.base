@@ -32,8 +32,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.part.FileEditorInput;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -50,6 +54,7 @@ import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -139,6 +144,8 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         Set<IProductCmptStructureReference> selectedItems = model.getTreeStatus().getAllEnabledElements(
                 CopyOrLink.COPY, getStructure(), false);
 
+        closeOpenEditors(selectedItems);
+
         boolean shouldChangeId = model.isChangeGenerationId();
 
         String newVersionId = model.getNewVersionId();
@@ -150,6 +157,16 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         }
 
         return true;
+    }
+
+    private void closeOpenEditors(Set<IProductCmptStructureReference> selectedItems) {
+        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        for (IProductCmptStructureReference reference : selectedItems) {
+            IIpsSrcFile ipsSrcFile = reference.getWrappedIpsSrcFile();
+            IEditorInput editorInput = new FileEditorInput(ipsSrcFile.getCorrespondingFile().unwrap());
+            IEditorPart editor = activePage.findEditor(editorInput);
+            activePage.closeEditor(editor, true);
+        }
     }
 
     private void runValidFromUpdateOperation(Set<IProductCmptStructureReference> selectedItems,
