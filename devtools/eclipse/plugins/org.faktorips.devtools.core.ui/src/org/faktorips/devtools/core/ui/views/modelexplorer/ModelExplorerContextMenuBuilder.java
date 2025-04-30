@@ -196,7 +196,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(new Separator("open")); //$NON-NLS-1$
         createOpenMenu(manager, selected, (IStructuredSelection)treeViewer.getSelection());
         manager.add(new Separator("reorg")); //$NON-NLS-1$
-        createReorgActions(manager, selected);
+        createReorgActions(manager, selected, structuredSelection.size());
         manager.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
         manager.add(new GroupMarker(IpsMenuId.GROUP_NAVIGATE.getId()));
         manager.add(new Separator("misc")); //$NON-NLS-1$
@@ -318,7 +318,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         }
     }
 
-    protected void createReorgActions(IMenuManager manager, Object selected) {
+    protected void createReorgActions(IMenuManager manager, Object selected, int selectionSize) {
         manager.add(copy);
         manager.add(paste);
         manager.add(delete);

@@ -2401,7 +2401,12 @@
                commandId="org.faktorips.devtools.core.refactor.updateValidfrom"                
                id="UpdateValidfrom"               
                label="%PackageExplorerRefactoringMenu_updateValidfrom"                
-               style="push">          
+               style="push"> 
+                  <visibleWhen>
+                       <with variable="selection">
+                           <count value="1"/>
+                       </with>
+                   </visibleWhen>         
                </command>
          <separator
                name="org.faktorips.devtools.core.ui.views.modelexplorer.refactoring.separator1"
@@ -2445,6 +2450,11 @@
                id="UpdateValidfrom"
                label="%PackageExplorerRefactoringMenu_updateValidfrom"
                style="push">
+               <visibleWhen>
+                       <with variable="selection">
+                           <count value="1"/>
+                       </with>
+                   </visibleWhen> 
          </command>
       </menuContribution>
       <!-- contribute package explorer faktor-ips menu -->
@@ -2511,10 +2521,15 @@
                     commandId="org.faktorips.devtools.core.refactor.updateValidfrom"
                     id="UpdateValidfrom"
                     label="%ModelExplorerRefactoringMenu_updateValidfrom"
-                    style="push">
+                    style="push">    
+                    <visibleWhen>
+                       <with variable="selection">
+                           <count value="1"/>
+                       </with>
+                   </visibleWhen>                                  
               </command>
               <visibleWhen
-                    checkEnabled="true">
+                    checkEnabled="true">                    
               </visibleWhen>
            </menu>
            <separator
