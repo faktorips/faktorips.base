@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.migration.CoreVersionManager;
@@ -63,8 +65,15 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
-        AVersion projectsVersion = AVersion.parse(projectToMigrate.getReadOnlyProperties()
-                .getMinRequiredVersionNumber(getFeatureId()));
+        String minRequiredVersionNumber = projectToMigrate.getReadOnlyProperties()
+                .getMinRequiredVersionNumber(getFeatureId());
+        if (minRequiredVersionNumber == null) {
+            IpsPlugin.log(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                    "Migration of \"%s\" failed because version \"null\" is not valid. See Problems View for errors." //$NON-NLS-1$
+                            .formatted(projectToMigrate.getName())));
+            return new AbstractIpsProjectMigrationOperation[0];
+        }
+        AVersion projectsVersion = AVersion.parse(minRequiredVersionNumber);
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);
         result.addAll(0, Arrays.asList(super.getMigrationOperations(projectToMigrate)));
         return result.toArray(new AbstractIpsProjectMigrationOperation[result.size()]);
