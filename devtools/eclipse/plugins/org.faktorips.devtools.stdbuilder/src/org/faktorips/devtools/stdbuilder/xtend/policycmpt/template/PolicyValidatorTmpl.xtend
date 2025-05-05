@@ -25,7 +25,7 @@ class PolicyValidatorTmpl {
     * @generated
     */
     «getAnnotations(POLICY_CMPT_SEPARATE_VALIDATOR_CLASS)»
-    public class «implClassName»Validator«IF hasSupertype» extends «superclassName»Validator«ENDIF» {
+    public class «implClassName»Validator«IF hasSupertype» extends «superclassValidatorName»«ENDIF» {
       «IF !hasSupertype»private final «implClassName» «nameForVariable»;«ENDIF»
       
       public «implClassName»Validator(«implClassName» «nameForVariable») { 
@@ -51,6 +51,12 @@ class PolicyValidatorTmpl {
       addStaticImport(qualifiedClassName, validationRule.constantNameMessageCode)
     }
   }
+  
+  def private static String getSuperclassValidatorName(XPolicyCmptClass it) {
+    var superQualifiedName = getSupertype().getQualifiedName(BuilderAspect.IMPLEMENTATION) + "Validator"
+    return addImport(superQualifiedName)
+  }
+
 
   def private static getterForPolicyCmpt(XPolicyCmptClass it) '''
     /**
