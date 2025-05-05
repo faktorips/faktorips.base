@@ -90,6 +90,9 @@
     <profiles>
         <profile>
             <id>release</id>
+            <properties>
+                <skip-publish>true</skip-publish>
+            </properties>
             <build>
                 <plugins>
                     <!-- deployment is done in the release pipeline -->

@@ -23,6 +23,7 @@
         <!-- Maven plugin versions -->
         <maven-archetype-plugin.version>3.3.1</maven-archetype-plugin.version>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <skip-publish>false</skip-publish>
     </properties>
 
     <build>
@@ -58,13 +59,6 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
                     <escapeString>\</escapeString>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
                 </configuration>
             </plugin>
         </plugins>

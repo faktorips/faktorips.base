@@ -87,6 +87,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
         <maven-plugin-dependency-commons-collections.version>3.2.2</maven-plugin-dependency-commons-collections.version>
         <maven-plugin-dependency-commons-pool2.version>2.12.0</maven-plugin-dependency-commons-pool2.version>
+        <central-publishing-maven-plugin.version>0.7.0</central-publishing-maven-plugin.version>
         <!-- Code quality -->
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <checkstyle.version>10.20.1</checkstyle.version>
@@ -172,7 +173,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${maven-deploy-plugin.version}</version>
                     <configuration>
-                        <skip>true</skip>
+                        <skip>${skip-publish}</skip>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -350,6 +351,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>flatten-maven-plugin</artifactId>
                     <version>${flatten-maven-plugin.version}</version>
                     <configuration>
+                        <updatePomFile>true</updatePomFile>
                         <flattenMode>ossrh</flattenMode>
                         <pomElements>
                             <build>remove</build>
@@ -398,6 +400,18 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>${central-publishing-maven-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
+                        <skipPublishing>${skip-publish}</skipPublishing>
+                        <deploymentName>Faktor-IPS ${project.version}</deploymentName>
+                        <excludeArtifacts>faktorips-abstraction-testsetup,faktorips-devtools-parent,faktorips-maven,faktorips-model-test,faktorips-runtime-parent,targets</excludeArtifacts>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -441,6 +455,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

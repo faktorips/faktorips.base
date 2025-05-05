@@ -13,7 +13,7 @@
 
     <name>Faktor-IPS Runtime Client Library</name>
     <description>Client Runtime library for Faktor-IPS</description>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
