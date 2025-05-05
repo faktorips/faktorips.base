@@ -19,6 +19,7 @@
         <!-- Spotbugs and Checkstyle are skipped because we don't want to change the forked code -->
         <spotbugs.skip>true</spotbugs.skip>
         <checkstyle.skip>true</checkstyle.skip>
+        <skip-publish>false</skip-publish>
     </properties>
 
     <build>
@@ -40,30 +41,20 @@
                     <detectJavaApiLink>false</detectJavaApiLink>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <profiles>
         <profile>
             <id>release</id>
-            <distributionManagement>
-                <repository>
-                    <id>ossrh</id>
-                    <name>Maven Central</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-                </repository>
-            </distributionManagement>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>

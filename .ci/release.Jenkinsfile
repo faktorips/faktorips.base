@@ -1,6 +1,7 @@
 library 'f10-jenkins-library@1.1_patches'
 library 'fips-jenkins-library@main'
 import java.text.MessageFormat
+import groovy.json.JsonOutput
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def mavenDocFolder = './maven/faktorips-maven-plugin'
@@ -14,6 +15,10 @@ def ps2DeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}'
 
 def docServer = 'doc@doc.faktorzehn.org'
 def p2Server = 'hudson@update.faktorzehn.org'
+
+def toolchainsFile = '82515eae-efcb-4811-8495-ceddc084409c'
+def settingsFile = 'a447dcf9-7a34-4521-834a-c2445838a7e4'
+def securityFile = 'dd6909da-2649-4604-9b32-74fc1f86d72f'
 
 def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
 
@@ -178,12 +183,13 @@ pipeline {
 
         stage('Deployment of Artifacts') {
             steps {
-                // deploys plain maven artifacts
-                osSpecificMaven commands: [
-                    // deployment must be singlethreaded - otherwise ther may be multiple staging repositories created
-                    "mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
-                ]
-                sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -f {} \\;"
+
+                deployToMavenCentral(configFiles:[
+                        configFile(fileId: "${toolchainsFile}", variable: 'TOOLCHAINS'),
+                        configFile(fileId: "${settingsFile}", variable: 'MAVEN_SETTINGS'),
+                        configFile(fileId: "${securityFile}", variable: 'MAVEN_SECURITY')], 
+                        commands: [ 'mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t "$TOOLCHAINS" -s "$MAVEN_SETTINGS" -Dsettings.security="$MAVEN_SECURITY"' ])
+
                 // deploy p2 repository
                 script {
                     def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, releaseVersion)
