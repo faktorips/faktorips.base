@@ -3,7 +3,7 @@
         {
             "extension": "revapi.differences",
             "configuration": {
-                  "ignore": true,
+                  "criticality": "documented",
                   "differences": [
                     {
                       "code": "java.method.noLongerStatic",

@@ -1,19 +1,18 @@
 {
-    "25.7.0" : [
-        {
-            "extension": "revapi.differences",
-            "configuration": {
-                  "ignore": true,
-                  "differences": [
-                    {
-                      "ignore": true,
-                      "code": "java.method.nowFinal",
-                      "old": "method void org.faktorips.runtime.internal.Table<R>::init()",
-                      "new": "method void org.faktorips.runtime.internal.Table<R>::init()",
-                      "justification": "FIPS-12772"
-                    }
-                ]
-            }
-        }
-    ]
+  "25.7.0": [
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "criticality": "documented",
+        "differences": [
+          {
+            "code": "java.method.nowFinal",
+            "old": "method void org.faktorips.runtime.internal.Table<R>::init()",
+            "new": "method void org.faktorips.runtime.internal.Table<R>::init()",
+            "justification": "FIPS-12772"
+          }
+        ]
+      }
+    }
+  ]
 }

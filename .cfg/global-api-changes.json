@@ -1,0 +1,48 @@
+{
+  "all-versions": [
+    {
+      "extension": "revapi.differences",
+      "id": "global all",
+      "configuration": {
+        "justification": "we expose external classes",
+        "criticality": "documented",
+        "differences": [
+          {
+            "code": "java.class.externalClassExposedInAPI"
+          }
+        ]
+      }
+    }
+  ],
+  "25.7.0": [
+    {
+      "extension": "revapi.differences",
+      "id": "global 25.7.0",
+      "configuration": {
+        "criticality": "documented",
+        "differences": [
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method void org.faktorips.runtime.IProductComponent::setDescription(java.util.Locale, java.lang.String)",
+            "justification": "FIPS-12218"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method void org.faktorips.runtime.IProductComponent::setDescription(org.faktorips.values.InternationalString)",
+            "justification": "FIPS-12218"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method void org.faktorips.runtime.ITable<R>::setDescription(java.util.Locale, java.lang.String, org.faktorips.runtime.IRuntimeRepository)",
+            "justification": "FIPS-12218"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method void org.faktorips.runtime.ITable<R>::setDescription(org.faktorips.values.InternationalString, org.faktorips.runtime.IRuntimeRepository)",
+            "justification": "FIPS-12218"
+          }
+        ]
+      }
+    }
+  ]
+}

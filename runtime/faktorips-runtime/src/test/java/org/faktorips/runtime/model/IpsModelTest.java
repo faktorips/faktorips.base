@@ -63,6 +63,7 @@ import org.faktorips.runtime.model.type.ProductCmptTypeTest.ConfiguringProduct;
 import org.faktorips.runtime.model.type.ProductCmptTypeTest.ConfiguringProductAdj;
 import org.faktorips.runtime.model.type.ProductCmptTypeTest.TargetProduct;
 import org.faktorips.runtime.model.type.Type;
+import org.faktorips.values.InternationalString;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.junit.Test;
 
@@ -339,6 +340,16 @@ public class IpsModelTest {
         @SuppressWarnings("unused")
         public int computeAFormula() throws FormulaExecutionException {
             return -1;
+        }
+
+        @Override
+        public void setDescription(Locale locale, String newDescription) {
+            // nothing to do
+        }
+
+        @Override
+        public void setDescription(InternationalString newDescription) {
+            // nothing to do
         }
 
     }

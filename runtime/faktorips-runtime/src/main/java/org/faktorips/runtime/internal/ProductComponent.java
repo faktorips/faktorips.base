@@ -38,11 +38,14 @@ import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.xml.IToXmlSupport;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * Base class for all product components.
@@ -200,9 +203,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      *             modifiable}.
      */
     public void setVariedBase(ProductComponent variedBase) {
-        if (getRepository() != null && !getRepository().isModifiable()) {
-            throw new IllegalRepositoryModificationException();
-        }
+        checkModifiable();
         this.variedBase = variedBase == null ? null : variedBase.id;
     }
 
@@ -230,9 +231,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * @see ProductComponentGeneration#setValidFrom(DateTime)
      */
     public void setValidFrom(DateTime validfrom) {
-        if (getRepository() != null && !getRepository().isModifiable()) {
-            throw new IllegalRepositoryModificationException();
-        }
+        checkModifiable();
         if (validfrom == null) {
             throw new NullPointerException();
         }
@@ -245,9 +244,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     public void setValidTo(DateTime validTo) {
-        if (getRepository() != null && !getRepository().isModifiable()) {
-            throw new IllegalRepositoryModificationException();
-        }
+        checkModifiable();
         this.validTo = validTo;
     }
 
@@ -284,6 +281,24 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
         String result = description.get(locale);
         return result != null ? result : IpsStringUtils.EMPTY;
+    }
+
+    @Override
+    public void setDescription(@NonNull Locale locale, @NonNull String newDescriptionText) {
+        checkModifiable();
+        description = DefaultInternationalString.updateWith(description, locale, newDescriptionText);
+    }
+
+    @Override
+    public void setDescription(@NonNull InternationalString newDescription) {
+        checkModifiable();
+        description = newDescription;
+    }
+
+    private void checkModifiable() {
+        if (getRepository() != null && !getRepository().isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
     }
 
     /**

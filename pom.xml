@@ -429,6 +429,15 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <configuration>
                         <versionFormat>\d+\.\d+(?:\.\d+)?\.release</versionFormat>
                         <analysisConfigurationFiles>
+                            <!-- global configuration -->
+                            <configurationFile>
+                                <path>${maven.multiModuleProjectDirectory}/.cfg/global-api-changes.json</path>
+                                <roots>
+                                    <root>all-versions</root>
+                                    <root>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}</root>
+                                </roots>
+                            </configurationFile>
+                            <!-- project configuration -->
                             <configurationFile>
                                 <path>${project.basedir}/api-changes.json</path>
                                 <roots>
@@ -452,15 +461,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
                                     <behavior>ignore</behavior>
                                 </missing-classes>
                             </revapi.java>
-                            <revapi.differences>
-                                <justification>we expose external classes</justification>
-                                <criticality>documented</criticality>
-                                <differences>
-                                    <item>
-                                        <code>java.class.externalClassExposedInAPI</code>
-                                    </item>
-                                </differences>
-                            </revapi.differences>
                             <revapi.filter>
                                 <elements>
                                     <exclude>

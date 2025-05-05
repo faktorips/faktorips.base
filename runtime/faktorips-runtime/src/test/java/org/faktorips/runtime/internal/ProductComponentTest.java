@@ -43,6 +43,8 @@ import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.xml.IToXmlSupport;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.LocalizedString;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -350,9 +352,47 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     @Test
     public void testDescription_nullDescription() {
         pc = new TestProductComponent(new InMemoryRuntimeRepository(), "", "", "");
-
         String description = pc.getDescription(Locale.ENGLISH);
         assertEquals(IpsStringUtils.EMPTY, description);
+
+    }
+
+    @Test
+    public void testSetDescription_withLocalAndText() {
+        pc = new TestProductComponent(new InMemoryRuntimeRepository(), "", "", "");
+        assertThat(pc.getDescription(Locale.ENGLISH), is(""));
+        pc.setDescription(Locale.ENGLISH, "new Description");
+        assertThat(pc.getDescription(Locale.ENGLISH), is("new Description"));
+    }
+
+    @Test
+    public void testSetDescription_InternationalString() {
+        pc = new TestProductComponent(new InMemoryRuntimeRepository(), "", "", "");
+
+        pc.setDescription(Locale.ENGLISH, "new Description");
+
+        DefaultInternationalString newDesc = new DefaultInternationalString(
+                List.of(new LocalizedString(Locale.GERMAN, "Beschreibung")), Locale.GERMAN);
+
+        pc.setDescription(newDesc);
+
+        assertThat(pc.getDescription(Locale.GERMAN), is("Beschreibung"));
+    }
+
+    @Test
+    public void testSetDescription_replacesExistingEntry() {
+        pc = new TestProductComponent(new InMemoryRuntimeRepository(), "id", "kind", "v1");
+
+        pc.setDescription(Locale.ENGLISH, "Old Description");
+        pc.setDescription(Locale.ENGLISH, "Updated Description");
+
+        assertThat(pc.getDescription(Locale.ENGLISH), is("Updated Description"));
+    }
+
+    @Test(expected = IllegalRepositoryModificationException.class)
+    public void testSetDescription_ThrowsIfReadOnlyRepository() {
+        pc = new TestProductComponent(repository, "id", "kind", "v1");
+        pc.setDescription(Locale.ENGLISH, "Should not be allowed");
     }
 
     @Test

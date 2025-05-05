@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.runtime.DefaultCacheFactory;
 import org.faktorips.runtime.IProductComponent;
@@ -30,6 +31,7 @@ import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.faktorips.values.InternationalString;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -106,6 +108,18 @@ public class AbstractTocBasedRuntimeRepositoryTest {
         @Override
         public Element toXml(Document document) {
             return null;
+        }
+
+        @Override
+        public void setDescription(Locale locale, String newDescriptionText, IRuntimeRepository repository) {
+            // do nothing
+
+        }
+
+        @Override
+        public void setDescription(InternationalString newDescription, IRuntimeRepository repository) {
+            // do nothing
+
         }
     }
 

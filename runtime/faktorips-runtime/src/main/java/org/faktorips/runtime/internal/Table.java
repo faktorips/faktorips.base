@@ -22,11 +22,15 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.xml.IToXmlSupport;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * The base class for all the generated table classes. The table content is read from a DOM element
@@ -155,8 +159,29 @@ public abstract class Table<R> implements ITable<R> {
     }
 
     public String getDescription(Locale locale) {
+        if (description == null || locale == null) {
+            return IpsStringUtils.EMPTY;
+        }
         String string = description.get(locale);
         return string != null ? string : IpsStringUtils.EMPTY;
+    }
+
+    @Override
+    public void setDescription(@NonNull Locale locale,
+            @NonNull String newDescriptionText,
+            @NonNull IRuntimeRepository repository) {
+        if (!repository.isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
+        description = DefaultInternationalString.updateWith(description, locale, newDescriptionText);
+    }
+
+    @Override
+    public void setDescription(@NonNull InternationalString newDescription, @NonNull IRuntimeRepository repository) {
+        if (!repository.isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
+        description = newDescription;
     }
 
     @Override

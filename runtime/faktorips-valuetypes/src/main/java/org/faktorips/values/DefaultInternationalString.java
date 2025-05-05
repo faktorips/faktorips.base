@@ -10,6 +10,7 @@
 
 package org.faktorips.values;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * An {@link DefaultInternationalString} could be used for string properties that could be
@@ -90,7 +93,8 @@ public class DefaultInternationalString implements InternationalString {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof DefaultInternationalString other) || !Objects.equals(defaultLocale, other.defaultLocale)) {
+        if ((obj == null) || !(obj instanceof DefaultInternationalString other)
+                || !Objects.equals(defaultLocale, other.defaultLocale)) {
             return false;
         }
         if (localizedStringMap == null) {
@@ -130,5 +134,52 @@ public class DefaultInternationalString implements InternationalString {
         }
         builder.append("]"); //$NON-NLS-1$
         return builder.toString();
+    }
+
+    /**
+     * Returns a new {@link DefaultInternationalString} with the given locale and value added or
+     * updated.
+     * 
+     * @param locale the new/updated locale
+     * @param value the new/updated value for the given locale
+     * @return the updated {@link DefaultInternationalString}
+     */
+    public DefaultInternationalString with(Locale locale, String value) {
+        List<LocalizedString> updated = new ArrayList<>(getLocalizedStrings());
+        updated.removeIf(ls -> ls.getLocale().equals(locale));
+        updated.add(new LocalizedString(locale, value));
+        return new DefaultInternationalString(updated, defaultLocale);
+    }
+
+    /**
+     * Returns an updated {@link DefaultInternationalString} that includes the given
+     * {@link LocalizedString}.
+     * <p>
+     * If {@code description} is {@code null}, a new {@link DefaultInternationalString} is created.
+     * If it's already a {@link DefaultInternationalString}, the entry for the same locale is
+     * replaced or added. If it's another type, an {@link UnsupportedOperationException} is thrown.
+     *
+     * @param description the original international string, may be {@code null}
+     * @param locale the new/updated locale
+     * @param value the new/updated value for the given locale
+     * @return the updated {@link DefaultInternationalString}
+     * @throws UnsupportedOperationException if the description is not a
+     *             {@link DefaultInternationalString}
+     */
+    public static DefaultInternationalString updateWith(@CheckForNull InternationalString description,
+            Locale locale,
+            String value) {
+
+        if (description == null) {
+            return new DefaultInternationalString(List.of(new LocalizedString(locale, value)), locale);
+        }
+
+        if (description instanceof DefaultInternationalString defaultInternationString) {
+            return defaultInternationString.with(locale, value);
+        }
+
+        throw new UnsupportedOperationException(
+                "Cannot modify description: current instance is not a modifiable DefaultInternationalString.");
+
     }
 }
