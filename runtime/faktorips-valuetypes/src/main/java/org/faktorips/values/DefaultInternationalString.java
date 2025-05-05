@@ -59,7 +59,7 @@ public class DefaultInternationalString implements InternationalString {
     public String get(Locale locale) {
         LocalizedString localizedString = localizedStringMap.get(locale);
         if (localizedString == null && !"".equals(locale.getCountry()) && !"".equals(locale.getLanguage())) {
-            localizedString = localizedStringMap.get(new Locale(locale.getLanguage()));
+            localizedString = localizedStringMap.get(Locale.of(locale.getLanguage()));
         }
         if (localizedString == null) {
             localizedString = localizedStringMap.get(defaultLocale);

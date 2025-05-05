@@ -64,16 +64,16 @@ public class EnumSaxHandler extends DefaultHandler {
             localizedStrings = new ArrayList<>();
             String language = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_DEFAULT_LOCALE);
             if (language != null) {
-                defaultLocale = new Locale(language);
+                defaultLocale = Locale.of(language);
             }
         } else if (InternationalStringXmlReaderWriter.XML_ELEMENT_LOCALIZED_STRING.equals(qName)) {
-            Locale locale = new Locale(attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_LOCALE));
+            Locale locale = Locale.of(attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_LOCALE));
             String text = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_TEXT);
             localizedStrings.add(new LocalizedString(locale, text));
         } else if (DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION.equals(qName)) {
             String language = attributes.getValue(DescriptionXmlHelper.XML_ATTRIBUTE_LOCALE);
             if (language != null) {
-                descriptionLocale = new Locale(language);
+                descriptionLocale = Locale.of(language);
             }
             stringBuilder = new StringBuilder();
         }

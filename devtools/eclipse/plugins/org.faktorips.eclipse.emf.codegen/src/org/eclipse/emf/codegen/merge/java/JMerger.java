@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -271,9 +273,9 @@ public class JMerger {
         try {
             URL url = null;
             try {
-                url = new URL(uri);
-            } catch (MalformedURLException exception) {
-                url = new URL("file:" + uri);
+                url = new URI(uri).toURL();
+            } catch (MalformedURLException | URISyntaxException exception) {
+                url = URI.create("file:" + uri).toURL();
             }
 
             BufferedInputStream bufferedInputStream = new BufferedInputStream(url.openStream());

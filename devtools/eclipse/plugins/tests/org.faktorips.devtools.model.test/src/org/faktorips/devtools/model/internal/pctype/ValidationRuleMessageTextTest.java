@@ -83,7 +83,7 @@ public class ValidationRuleMessageTextTest {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsProjectProperties projectProperties = mock(IIpsProjectProperties.class);
         ISupportedLanguage defaultLanguage = mock(ISupportedLanguage.class);
-        Locale defaultLocale = new Locale("testDefaultLocale");
+        Locale defaultLocale = Locale.of("testDefaultLocale");
 
         when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
         when(projectProperties.getDefaultLanguage()).thenReturn(defaultLanguage);
@@ -98,12 +98,12 @@ public class ValidationRuleMessageTextTest {
         validationRuleMessageText.validateReplacementParameters(ipsProject, list);
         assertTrue(list.isEmpty());
 
-        validationRuleMessageText.add(new LocalizedString(new Locale("otherLocale"), "abc 123 {123}"));
+        validationRuleMessageText.add(new LocalizedString(Locale.of("otherLocale"), "abc 123 {123}"));
         list = new MessageList();
         validationRuleMessageText.validateReplacementParameters(ipsProject, list);
         assertTrue(list.isEmpty());
 
-        validationRuleMessageText.add(new LocalizedString(new Locale("otherLocale2"), "abc 123 {xy123}"));
+        validationRuleMessageText.add(new LocalizedString(Locale.of("otherLocale2"), "abc 123 {xy123}"));
         list = new MessageList();
         validationRuleMessageText.validateReplacementParameters(ipsProject, list);
         assertFalse(list.isEmpty());

@@ -58,7 +58,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         ArgumentCheck.notNull(localizationLocale);
 
         this.localizationLocale = localizationLocale;
-        usedLanguagePackLocale = new Locale(Messages.IpsPlugin_languagePackLanguage,
+        usedLanguagePackLocale = Locale.of(Messages.IpsPlugin_languagePackLanguage,
                 Messages.IpsPlugin_languagePackCountry,
                 Messages.IpsPlugin_languagePackVariant);
     }

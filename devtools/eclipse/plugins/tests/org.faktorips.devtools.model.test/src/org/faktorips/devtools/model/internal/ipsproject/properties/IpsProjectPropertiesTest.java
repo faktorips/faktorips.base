@@ -168,7 +168,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(numOfMessages, list.size());
 
         // Test for one more additional error message if the locale is not OK.
-        props.addSupportedLanguage(new Locale("fooIsNotBarAndBarIsNotFoo"));
+        props.addSupportedLanguage(Locale.of("fooIsNotBarAndBarIsNotFoo"));
         list = props.validate(ipsProject);
         assertEquals(numOfMessages + 1, list.size());
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE));

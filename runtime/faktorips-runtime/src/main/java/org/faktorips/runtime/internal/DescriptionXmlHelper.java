@@ -73,7 +73,7 @@ public class DescriptionXmlHelper {
         List<LocalizedString> descriptions = new ArrayList<>(descriptionElements.size());
         for (Element descriptionElement : descriptionElements) {
             String localeCode = descriptionElement.getAttribute(XML_ATTRIBUTE_LOCALE);
-            Locale locale = "".equals(localeCode) ? null : new Locale(localeCode); //$NON-NLS-1$
+            Locale locale = "".equals(localeCode) ? null : Locale.of(localeCode); //$NON-NLS-1$
             String text = descriptionElement.getTextContent();
             descriptions.add(new LocalizedString(locale, text));
         }

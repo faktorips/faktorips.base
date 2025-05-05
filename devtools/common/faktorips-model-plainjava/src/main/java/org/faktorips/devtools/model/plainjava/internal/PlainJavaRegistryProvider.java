@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,13 +14,15 @@
  * https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors: Christoph Läubrich - initial API and implementation
  *******************************************************************************/
 package org.faktorips.devtools.model.plainjava.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -148,11 +150,18 @@ public class PlainJavaRegistryProvider implements IRegistryProvider {
 
         private Manifest readManifest(URL base) {
             try {
-                URL url = new URL(base, JarFile.MANIFEST_NAME);
+                String externalForm = base.toExternalForm();
+                URL url = externalForm.startsWith("jar:file:")
+                        ? URI.create(
+                                externalForm.substring(0, externalForm.lastIndexOf("!/") + 2)
+                                        + JarFile.MANIFEST_NAME)
+                                .toURL()
+                        : base.toURI().resolve(JarFile.MANIFEST_NAME).toURL();
+
                 try (InputStream stream = url.openStream()) {
                     return new Manifest(stream);
                 }
-            } catch (IOException e) {
+            } catch (IOException | URISyntaxException e) {
                 return null;
             }
         }

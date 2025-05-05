@@ -207,10 +207,10 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         DefaultInternationalString internationalString = ValueToXmlHelper.getInternationalStringFromElement(
                 attributeValueElement, "Value");
 
-        assertEquals("Wrong default locale", new Locale("hy"), internationalString.getDefaultLocale());
-        assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(new Locale("as")));
-        assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(new Locale("hy")));
-        assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(new Locale("ko")));
+        assertEquals("Wrong default locale", Locale.of("hy"), internationalString.getDefaultLocale());
+        assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(Locale.of("as")));
+        assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(Locale.of("hy")));
+        assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(Locale.of("ko")));
     }
 
     @Test

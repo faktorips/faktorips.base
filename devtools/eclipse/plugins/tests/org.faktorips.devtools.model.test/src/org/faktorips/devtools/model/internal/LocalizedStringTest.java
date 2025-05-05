@@ -37,7 +37,7 @@ public class LocalizedStringTest {
         assertEquals(stringGe1, stringGe1);
         assertEquals(stringGe1.hashCode(), stringGe1.hashCode());
 
-        LocalizedString stringGe2 = new LocalizedString(new Locale("de"), new String(value));
+        LocalizedString stringGe2 = new LocalizedString(Locale.of("de"), new String(value));
 
         assertEquals(stringGe1, stringGe2);
         assertEquals(stringGe2, stringGe1);
@@ -47,7 +47,7 @@ public class LocalizedStringTest {
         assertFalse(stringEn1.equals(stringGe1));
         assertFalse(stringGe1.equals(stringEn1));
 
-        LocalizedString stringGeOtherText = new LocalizedString(new Locale("de"), value + "x");
+        LocalizedString stringGeOtherText = new LocalizedString(Locale.of("de"), value + "x");
         assertFalse(stringGe1.equals(stringGeOtherText));
         assertFalse(stringGeOtherText.equals(stringGe1));
     }

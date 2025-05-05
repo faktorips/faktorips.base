@@ -395,7 +395,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
 
     private static void createIpsProjectCreationProperties() {
         projectCreationProperties = new IpsProjectCreationProperties();
-        projectCreationProperties.getLocales().add(new Locale("en"));
+        projectCreationProperties.getLocales().add(Locale.of("en"));
     }
 
     private void initIpsProject(IIpsProject ipsProject) throws Exception {

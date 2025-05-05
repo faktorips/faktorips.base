@@ -225,7 +225,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * return the Locale for "en".
      */
     public Locale getUsedLanguagePackLocale() {
-        return new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
+        return Locale.of(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
                 Messages.IpsPlugin_languagePackVariant);
     }
 

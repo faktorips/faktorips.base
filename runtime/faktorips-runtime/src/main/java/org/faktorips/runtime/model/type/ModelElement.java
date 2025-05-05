@@ -121,7 +121,7 @@ public abstract class ModelElement {
     protected MessagesHelper createMessageHelper(IpsDocumented documentedAnnotation, ClassLoader classLoader) {
         if (documentedAnnotation != null) {
             String documentationResourceBundle = documentedAnnotation.bundleName();
-            Locale defaultLocale = new Locale(documentedAnnotation.defaultLocale());
+            Locale defaultLocale = Locale.of(documentedAnnotation.defaultLocale());
             return new MessagesHelper(documentationResourceBundle, classLoader, defaultLocale);
         } else {
             return null;

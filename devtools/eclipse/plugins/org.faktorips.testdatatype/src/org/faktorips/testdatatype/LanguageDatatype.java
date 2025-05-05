@@ -46,7 +46,7 @@ public class LanguageDatatype implements EnumDatatype {
 
     @Override
     public String getValueName(String id) {
-        return new Locale(id, "").getDisplayLanguage();
+        return Locale.of(id, "").getDisplayLanguage();
     }
 
     @Override

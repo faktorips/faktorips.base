@@ -49,7 +49,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         properties = new IpsProjectCreationProperties();
-        properties.getLocales().add(new Locale("en"));
+        properties.getLocales().add(Locale.of("en"));
     }
 
     @Test
@@ -224,8 +224,8 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
         boolean isPersistenceProject = true;
         boolean isGroovySupport = false;
         List<Locale> locales = new ArrayList<>();
-        locales.add(new Locale("en"));
-        locales.add(new Locale("de"));
+        locales.add(Locale.of("en"));
+        locales.add(Locale.of("de"));
 
         properties.setBasePackageName(basePackageName);
         properties.setSourceFolderName(sourceFolderName);

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,11 +172,11 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     /**
      * Creates a new container entry path for the Faktor-IPS runtime and valuetypes libraries and
      * for additional optional libraries.
-     * 
+     *
      * @param includeJoda {@code true} if the support library for JODA should be included.
      * @param includeGroovy {@code true} if the support library for GROOVY should be included.
      * @param jaxbSupport the selected {@link JaxbSupportVariant}.
-     * 
+     *
      * @return A Path like
      *             "org.faktorips.devtools.model.eclipse.ipsClasspathContainer/org.faktorips.valuetypes.joda,org.faktorips.runtime.groovy"
      *             if both additional libraries are included.
@@ -201,7 +203,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     /**
      * Creates a new container entry path for the Faktor-IPS runtime and valuetypes libraries and
      * for additional optional libraries.
-     * 
+     *
      * @return A Path like
      *             "org.faktorips.devtools.model.eclipse.ipsClasspathContainer/bundleId1,bundleId2"
      */
@@ -317,8 +319,13 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             } else {
                 URL mavenBundle = bundle.getEntry("/"); //$NON-NLS-1$
                 URL local = FileLocator.toFileURL(mavenBundle);
+
                 if (sources) {
-                    local = new URL(local, "../../src/main/java"); //$NON-NLS-1$
+                    try {
+                        local = local.toURI().resolve("../../src/main/java").toURL(); //$NON-NLS-1$
+                    } catch (MalformedURLException | URISyntaxException e) {
+                        throw new IpsException("Can't convert " + local + " into an URI", e);
+                    }
                 }
                 return new File(local.getPath());
             }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class NetUtil {
      * Checks if a URL is reachable with a timeout of 500 ms.
      * <p>
      * Throws an {@link RuntimeException} if the URL String is not valid.
-     * 
+     *
      * @param url An String URL
      * @return true if a connection could be established
      */
@@ -45,7 +47,7 @@ public class NetUtil {
 
     /**
      * Checks if a URL is reachable with a timeout of 500 ms.
-     * 
+     *
      * @param url An URL
      * @return true if a connection could be established
      */
@@ -64,7 +66,7 @@ public class NetUtil {
     /**
      * Checks if a XSD schema file is reachable with a timeout of 500 ms. The URL is derived from
      * the {@link IpsObjectType}.
-     * 
+     *
      * @param ipsObjectType An ips-object-type
      * @return true if a connection could be established
      */
@@ -81,7 +83,7 @@ public class NetUtil {
      * <p>
      * Throws an {@link RuntimeException} if the URL String is not valid or an {@link IOException}
      * occurs while reading the content.
-     * 
+     *
      * @param url An String URL
      * @return The content as line separated list
      */
@@ -94,7 +96,7 @@ public class NetUtil {
      * <p>
      * Throws an {@link RuntimeException} if an {@link IOException} occurs while reading the
      * content.
-     * 
+     *
      * @param url An URL
      * @return The content as line separated list
      */
@@ -125,8 +127,8 @@ public class NetUtil {
 
     private static URL parseUrl(String url) {
         try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
+            return new URI(url).toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }

@@ -103,7 +103,7 @@ public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
             AProject platformProject = newPlatformProject("TestProject");
             javaProject = addJavaCapabilities(platformProject).unwrap();
             creationProperties = new IpsProjectCreationProperties();
-            creationProperties.getLocales().add(new Locale(supportedLanguage));
+            creationProperties.getLocales().add(Locale.of(supportedLanguage));
         }
     }
 

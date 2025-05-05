@@ -207,7 +207,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private void handleDescription() {
         if (!(IpsStringUtils.isEmpty(currentDescriptionLocale))) {
-            Locale locale = new Locale(currentDescriptionLocale);
+            Locale locale = Locale.of(currentDescriptionLocale);
             Description description = (Description)tableContents.getDescription(locale);
             if (description == null) {
                 description = (Description)tableContents.newDescription(currentId);

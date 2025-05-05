@@ -103,7 +103,7 @@ public class InternationalStringXmlReaderWriter {
             Element partEl = (Element)item;
             if (partEl.getNodeName().equals(XML_ELEMENT_LOCALIZED_STRING)) {
                 String localeString = partEl.getAttribute(XML_ATTR_LOCALE);
-                Locale locale = new Locale(localeString);
+                Locale locale = Locale.of(localeString);
                 String value = partEl.getAttribute(XML_ATTR_TEXT);
                 LocalizedString localizedString = new LocalizedString(locale, value);
                 localizedStrings.add(localizedString);
@@ -178,7 +178,7 @@ public class InternationalStringXmlReaderWriter {
         if (IpsStringUtils.isBlank(defaultLocale)) {
             return null;
         }
-        return new Locale(defaultLocale);
+        return Locale.of(defaultLocale);
     }
 
     /**

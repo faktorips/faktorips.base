@@ -79,7 +79,7 @@ public class ExportHtmlTask extends AbstractIpsTask {
 
     private Locale getValidLanguage(IIpsProject ipsProject) {
         if (locale.isEmpty()) {
-            return new Locale(DEFAULT_LANGUAGE);
+            return Locale.of(DEFAULT_LANGUAGE);
         }
 
         for (ISupportedLanguage supportedLanguage : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {

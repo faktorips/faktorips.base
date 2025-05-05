@@ -92,7 +92,7 @@ public class TableSaxHandler extends DefaultHandler {
 
     private void handleDescription() {
         if (!(IpsStringUtils.isEmpty(currentDescriptionLocale))) {
-            Locale locale = new Locale(currentDescriptionLocale);
+            Locale locale = Locale.of(currentDescriptionLocale);
             descriptions.add(new LocalizedString(locale, getText()));
         }
         textBuilder = null;

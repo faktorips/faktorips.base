@@ -201,7 +201,7 @@ public final class DescriptionEditComposite extends Composite {
         for (String languageName : languageCodes.keySet()) {
             String languageCode = languageCodes.get(languageName);
             IIpsProjectProperties properties = describedElement.getIpsProject().getReadOnlyProperties();
-            ISupportedLanguage language = properties.getSupportedLanguage(new Locale(languageCode));
+            ISupportedLanguage language = properties.getSupportedLanguage(Locale.of(languageCode));
             if (language != null) {
                 if (language.isDefaultLanguage()) {
                     defaultIndex = i;
@@ -249,7 +249,7 @@ public final class DescriptionEditComposite extends Composite {
         String currentLanguage = languageCombo.getItem(currentSelectionIndex);
         currentLanguage = currentLanguage.substring(0, currentLanguage.indexOf(" (")); //$NON-NLS-1$
         String currentLanguageCode = languageCodes.get(currentLanguage);
-        Locale currentLocale = new Locale(currentLanguageCode);
+        Locale currentLocale = Locale.of(currentLanguageCode);
 
         if (describedElement != null) {
             currentDescription = describedElement.getDescription(currentLocale);

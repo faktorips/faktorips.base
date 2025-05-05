@@ -46,7 +46,7 @@ public class CountryDatatype extends GenericValueDatatype implements EnumDatatyp
 
     @Override
     public String getValueName(String id) {
-        return new Locale("", id).getDisplayCountry();
+        return Locale.of("", id).getDisplayCountry();
     }
 
     @Override

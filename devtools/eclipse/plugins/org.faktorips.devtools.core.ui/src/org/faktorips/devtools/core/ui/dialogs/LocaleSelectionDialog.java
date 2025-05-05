@@ -35,7 +35,7 @@ public class LocaleSelectionDialog extends ElementListSelectionDialog {
         String[] isoLanguageCodes = Locale.getISOLanguages();
         List<Locale> localeList = new ArrayList<>(isoLanguageCodes.length);
         for (String code : isoLanguageCodes) {
-            Locale locale = new Locale(code);
+            Locale locale = Locale.of(code);
             if (!(excludedLocales.contains(locale))) {
                 localeList.add(locale);
             }

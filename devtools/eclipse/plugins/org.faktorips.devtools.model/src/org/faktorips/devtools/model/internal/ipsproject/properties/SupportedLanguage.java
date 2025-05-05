@@ -86,7 +86,7 @@ public class SupportedLanguage implements ISupportedLanguage {
 
     @Override
     public void initFromXml(Element element) {
-        locale = new Locale(element.getAttribute("locale")); //$NON-NLS-1$
+        locale = Locale.of(element.getAttribute("locale")); //$NON-NLS-1$
         defaultLanguage = Boolean.parseBoolean(element.getAttribute("defaultLanguage")); //$NON-NLS-1$
     }
 

@@ -144,14 +144,14 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
         }
         String language = tokenzier.nextToken();
         if (!tokenzier.hasMoreTokens()) {
-            return new Locale(language);
+            return Locale.of(language);
         }
         String country = tokenzier.nextToken();
         if (!tokenzier.hasMoreTokens()) {
-            return new Locale(language, country);
+            return Locale.of(language, country);
         }
         String variant = tokenzier.nextToken();
-        return new Locale(language, country, variant);
+        return Locale.of(language, country, variant);
     }
 
     /**

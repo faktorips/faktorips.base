@@ -61,7 +61,7 @@ public class DefaultInternationalStringTest {
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.GERMAN));
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.GERMANY));
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.CHINESE));
-        assertEquals(GERMAN_TEXT, internationalString.get(new Locale("")));
+        assertEquals(GERMAN_TEXT, internationalString.get(Locale.of("")));
         DefaultInternationalString internationalString2 = new DefaultInternationalString(List.of(
                 koreanLocalizedString, englishLocalizedString), Locale.KOREAN);
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.KOREAN));
@@ -72,7 +72,7 @@ public class DefaultInternationalStringTest {
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.GERMAN));
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.GERMANY));
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.CHINESE));
-        assertEquals(KOREAN_TEXT, internationalString2.get(new Locale("")));
+        assertEquals(KOREAN_TEXT, internationalString2.get(Locale.of("")));
     }
 
     @Test
@@ -92,8 +92,8 @@ public class DefaultInternationalStringTest {
         assertEquals(internationalString, internationalString);
         assertEquals(internationalString.hashCode(), internationalString.hashCode());
 
-        LocalizedString english2 = new LocalizedString(new Locale("en"), new String(ENGLISH_TEXT));
-        LocalizedString german2 = new LocalizedString(new Locale("de"), new String(GERMAN_TEXT));
+        LocalizedString english2 = new LocalizedString(Locale.of("en"), new String(ENGLISH_TEXT));
+        LocalizedString german2 = new LocalizedString(Locale.of("de"), new String(GERMAN_TEXT));
         List<LocalizedString> list = new ArrayList<>();
         list.add(english2);
         list.add(german2);

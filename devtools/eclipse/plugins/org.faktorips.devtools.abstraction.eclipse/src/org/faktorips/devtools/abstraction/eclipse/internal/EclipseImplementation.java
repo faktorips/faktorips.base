@@ -55,7 +55,7 @@ public class EclipseImplementation implements AImplementation {
         if (nl.length() > 2) {
             nl = nl.substring(0, 2);
         }
-        return new Locale(nl);
+        return Locale.of(nl);
     }
 
     @Override

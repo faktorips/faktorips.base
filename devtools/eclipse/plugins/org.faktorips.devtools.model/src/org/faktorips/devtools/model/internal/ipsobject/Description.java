@@ -119,7 +119,7 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         String localeCode = element.getAttribute(PROPERTY_LOCALE);
-        locale = IpsStringUtils.isBlank(localeCode) ? null : new Locale(localeCode);
+        locale = IpsStringUtils.isBlank(localeCode) ? null : Locale.of(localeCode);
         text = element.getTextContent();
 
         if (isWindows() && text != null) {
