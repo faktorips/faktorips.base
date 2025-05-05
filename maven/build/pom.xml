@@ -18,7 +18,8 @@
         <commons-codec.version>1.16.0</commons-codec.version>
         <commons-io.version>2.14.0</commons-io.version>
         <!-- plugins -->
-        <tycho-maven-plugin.version>3.0.5</tycho-maven-plugin.version>
+        <tycho-maven-plugin.version>${tycho.version}</tycho-maven-plugin.version>
+        <skip-publish>false</skip-publish>
     </properties>
 
     <dependencies>
@@ -77,15 +78,5 @@
                 </includes>
             </testResource>
         </testResources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 </project>

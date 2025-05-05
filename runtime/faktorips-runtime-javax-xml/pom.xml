@@ -15,6 +15,10 @@
     <name>Faktor-IPS Runtime JAXB Extension</name>
     <description>Faktor-IPS Runtime Extension for XML binding with classic JAXB as included in Java 8 and Java EE up to 8.</description>
 
+    <properties>
+        <skip-publish>false</skip-publish>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -91,13 +95,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -135,4 +132,24 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <configuration>
+                            <skipPublishing>false</skipPublishing>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -12,6 +12,10 @@
 
     <packaging>eclipse-plugin</packaging>
 
+    <properties>
+        <skip-publish>false</skip-publish>
+    </properties>
+
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -58,4 +62,21 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
