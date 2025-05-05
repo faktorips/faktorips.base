@@ -112,7 +112,7 @@ public abstract class Table<R> implements ITable<R> {
         init();
     }
 
-    protected void init() {
+    protected final void init() {
         initKeyMaps();
         performAdditionalInitializations();
     }

@@ -23,7 +23,7 @@ class TableTmpl {
          * @generated
          */
         «getAnnotations(TABLE_CLASS)»
-        public class «name» extends «Table_(tableRowName)»«IF generateToXmlSupport» implements «IToXmlSupport»«ENDIF»{
+        public final class «name» extends «Table_(tableRowName)»«IF generateToXmlSupport» implements «IToXmlSupport»«ENDIF»{
         
             «FOR it : indexModelNodes» «fields» «ENDFOR»
         
