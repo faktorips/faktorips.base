@@ -17,7 +17,7 @@
         <module>org.faktorips.p2repository</module>
         <module>org.faktorips.p2repository.test</module>
     </modules>
-
+    
     <distributionManagement>
         <snapshotRepository>
             <id>pdrone.faktor-ips_3_snapshots</id>
@@ -90,6 +90,9 @@
     <profiles>
         <profile>
             <id>release</id>
+            <properties>
+                <skip-publish>true</skip-publish>
+            </properties>
             <build>
                 <plugins>
                     <!-- deployment is done in the release pipeline -->

@@ -14,6 +14,10 @@
     <name>Faktor-IPS Model Builder</name>
     <description>Basic builder implementation for the Faktor-IPS model</description>
 
+    <properties>
+        <skip-publish>false</skip-publish>
+    </properties>
+    
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -57,13 +61,6 @@
                     </execution>
 
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.revapi</groupId>

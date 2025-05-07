@@ -15,6 +15,10 @@
     <name>Plain-Java implementation of Faktor-IPS Abstractions</name>
     <description>Plain-Java implementation of abstractions used in the Faktor-IPS design time tools</description>
 
+    <properties>
+        <skip-publish>false</skip-publish>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
@@ -98,13 +102,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
+            
         </plugins>
     </build>
 </project>

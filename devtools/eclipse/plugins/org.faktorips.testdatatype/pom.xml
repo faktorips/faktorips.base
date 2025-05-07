@@ -16,17 +16,6 @@
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
+        <skip-publish>false</skip-publish>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

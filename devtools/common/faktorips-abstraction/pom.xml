@@ -14,6 +14,10 @@
     <name>Faktor-IPS Abstractions</name>
     <description>Abstractions used in the Faktor-IPS design time tools</description>
 
+    <properties>
+        <skip-publish>false</skip-publish>
+    </properties>
+            
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
@@ -128,13 +132,6 @@
                         <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         <Bundle-SymbolicName>org.faktorips.devtools.abstraction</Bundle-SymbolicName>
                     </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
                 </configuration>
             </plugin>
         </plugins>

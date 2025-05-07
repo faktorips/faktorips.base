@@ -9,6 +9,11 @@
     <artifactId>faktorips-validation-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Validation Maven Plugin</name>
+    
+    <properties>
+        <skip-publish>false</skip-publish>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
@@ -69,13 +74,6 @@
             </testResource>
         </testResources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
