@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-features</artifactId>
-        <version>25.7.0.a20250507-01</version>
+        <version>25.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.license</artifactId>
