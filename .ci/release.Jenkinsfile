@@ -180,10 +180,9 @@ pipeline {
             steps {
                 // deploys plain maven artifacts
                 osSpecificMaven commands: [
-                    // deployment must be singlethreaded - otherwise ther may be multiple staging repositories created
+                    // deployment must be singlethreaded - otherwise there may be multiple staging repositories created
                     "mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
                 ]
-                sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -f {} \\;"
                 // deploy p2 repository
                 script {
                     def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, releaseVersion)
