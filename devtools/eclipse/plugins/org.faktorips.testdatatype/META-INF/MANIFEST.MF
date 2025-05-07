@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Plugin providing a Faktor-IPS datatype for testing purposes
 Bundle-SymbolicName: org.faktorips.testdatatype;singleton:=true
-Bundle-Version: 25.7.0.a20250507-02
+Bundle-Version: 25.7.0.qualifier
 Import-Package: org.faktorips.codegen.dthelpers,
  org.faktorips.datatype,
  org.faktorips.runtime
