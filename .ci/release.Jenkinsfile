@@ -181,8 +181,20 @@ pipeline {
                 // deploys plain maven artifacts
                 osSpecificMaven commands: [
                     // deployment must be singlethreaded - otherwise there may be multiple staging repositories created
-                    "mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
+                    "mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind | tee target/deploy.log"
                 ]
+                script {
+                   DeploymentId = sh (
+                        script: 'grep -P -o  -i "(?<=Deployment )[a-f0-9-]+(?= has been validated)" target/deploy.log',
+                        returnStdout: true
+                    ).trim()
+                }
+                rtp parserName: 'HTML', nullAction: '1', stableText: """
+                    <h2>Deployment</h2>
+                    Deployment-ID: ${DeploymentId}<br />
+                    <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/'>Release on Maven Central</a>
+                  """
+
                 // deploy p2 repository
                 script {
                     def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, releaseVersion)
