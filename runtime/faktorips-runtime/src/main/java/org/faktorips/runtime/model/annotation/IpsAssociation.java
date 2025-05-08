@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -60,8 +60,15 @@ public @interface IpsAssociation {
      * matching {@link ProductAssociation}, meaning that the {@link PolicyAssociation}'s
      * cardinalities are not defined for all targets but per target of the
      * {@link ProductAssociation}.
-     * 
+     *
      * @since 22.6
      */
     boolean qualified() default false;
+
+    /**
+     * Whether the association is hidden from viewing in the product component editor.
+     *
+     * @since 25.7
+     */
+    boolean hide() default false;
 }

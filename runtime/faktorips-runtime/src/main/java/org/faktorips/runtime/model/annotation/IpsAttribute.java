@@ -35,4 +35,10 @@ public @interface IpsAttribute {
 
     boolean primitive() default false;
 
+    /**
+     * Whether the attribute is hidden from viewing in the product component editor.
+     *
+     * @since 25.7
+     */
+    boolean hide() default false;
 }

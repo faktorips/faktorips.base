@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XType;
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,6 +107,24 @@ public class AbstractAssociationAnnGenTest {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         mockMatchingAssociation(association);
         assertEquals(annMatchingAssociation, annGen.createAnnMatchingAssociation(association).getSourcecode());
+    }
+
+    @Test
+    public void testCreateAnnAssociationNotRelevant() {
+        XProductAssociation association = mock(XProductAssociation.class);
+        when(association.getName(false)).thenReturn(ASSOCIATION);
+        when(association.getName(true)).thenReturn(ASSOCIATION_PLURAL);
+        when(association.getAssociationKind()).thenReturn(AssociationKind.Composition);
+        when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
+        when(association.getMinCardinality()).thenReturn(MIN_CARD);
+        when(association.getMaxCardinality()).thenReturn(MAX_CARD);
+        when(association.addImport(ASSOCIATION_TARGET)).thenReturn(ASSOCIATION_TARGET_UNQUALIFIED);
+        when(association.isVisible()).thenReturn(false);
+
+        assertEquals(
+                "@IpsAssociation(name = \"association\", pluralName = \"associations\", kind = AssociationKind.Composition, targetClass = AssociationTarget.class, min = 0, max = 10, hide = true)"
+                        + System.lineSeparator(),
+                annGen.createAnnAssociation(association).getSourcecode());
     }
 
     private void mockDerivedUnion(XAssociation association) {

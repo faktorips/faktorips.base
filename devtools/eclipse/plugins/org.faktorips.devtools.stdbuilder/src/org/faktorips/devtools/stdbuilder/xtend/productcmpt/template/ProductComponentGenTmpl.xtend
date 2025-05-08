@@ -90,8 +90,8 @@ class ProductComponentGenTmpl {
                     «ENDIF»
                 «ENDFOR»
 
-
                 «FOR it : attributes» «getterSetter» «ENDFOR»
+                «FOR it : overwritingAttributesThatChangeHidden» «getterWithSuper» «ENDFOR»
 
                 «FOR it : configuredAttributes» «getterAndSetter» «ENDFOR»
 

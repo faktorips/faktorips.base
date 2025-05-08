@@ -16,6 +16,7 @@ import org.faktorips.devtools.model.builder.java.annotations.IAnnotationGenerato
 import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.model.builder.xmodel.XAttribute;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
@@ -48,6 +49,9 @@ public class AttributeGetterAnnGen implements IAnnotationGenerator {
         attributeAnnArg.append(getValueSetKind(attribute).name());
         if (xAttribute.getDatatypeHelper(attribute.getDatatype()).getDatatype().isPrimitive()) {
             attributeAnnArg.append(", primitive = true");
+        }
+        if (xAttribute instanceof XProductAttribute pA && !pA.isVisible()) {
+            attributeAnnArg.append(", hide = true");
         }
 
         annotationCode.annotationLn(IpsAttribute.class, attributeAnnArg.getFragment());

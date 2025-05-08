@@ -56,6 +56,8 @@ class ProductComponentInterfaceTmpl{
                 «ENDIF»
              «ENDFOR»
 
+             «FOR it : overwritingAttributesThatChangeHidden»«getterWithSuper»«ENDFOR»
+
              «FOR it : configuredAttributes»
                 «IF published»
                     «getterAndSetter»

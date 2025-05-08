@@ -78,6 +78,15 @@ public class ProductAttribute extends Attribute {
         return true;
     }
 
+    /**
+     * {@return <code>true</code> if the attribute is marked as hidden}
+     *
+     * @since 25.7
+     */
+    public boolean isHidden() {
+        return getter.getAnnotation(IpsAttribute.class).hide();
+    }
+
     @Override
     public Attribute createOverwritingAttributeFor(Type subType) {
         return new ProductAttribute(subType, isChangingOverTime(), getter, setter);

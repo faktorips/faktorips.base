@@ -847,10 +847,50 @@ public class ProductAttributeTest {
         assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is(ProductWithDates.PROPERTY_MONTHDAY));
     }
 
+    @Test
+    public void testHide_OnProdukt() {
+        Produkt produkt = new Produkt(repository);
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(produkt);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+
+        assertThat(attribute.isHidden(), is(false));
+    }
+
+    @Test
+    public void testHide_OnSubProdukt() {
+        Produkt produkt = new SubProdukt(repository);
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(produkt);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+
+        assertThat(attribute.isHidden(), is(true));
+    }
+
+    @Test
+    public void testHide_OnProduktGen() {
+        Produkt produkt = new Produkt(repository);
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(produkt);
+        ProductAttribute attribute = cmptType.getAttribute("attrGenToHide");
+
+        assertThat(attribute.isHidden(), is(false));
+    }
+
+    @Test
+    public void testHide_OnSubProduktGen() {
+        Produkt produkt = new SubProdukt(repository);
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(produkt);
+        ProductAttribute attribute = cmptType.getAttribute("attrGenToHide");
+
+        assertThat(attribute.isHidden(), is(true));
+    }
+
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
     @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute",
-            "primitiveIntAttr", "multiPrimitiveIntAttr", "multiText" })
+            "primitiveIntAttr", "multiPrimitiveIntAttr", "multiText", "attrGenToHide", "attrToHide" })
     private static class Produkt extends ProductComponent {
 
         @IpsDefaultValue("attr1")
@@ -869,6 +909,7 @@ public class ProductAttributeTest {
         private final ProduktGen produktGen = new ProduktGen(this);
         private String attr1 = "foo";
         private Integer attr2 = 42;
+        private Integer attrToHide = 0;
         private List<String> multiString = List.of("hello", "world");
         private int primitiveIntAttr = 23;
         private List<Integer> multiPrimitiveIntAttr = List.of(1, 2, 3);
@@ -896,6 +937,16 @@ public class ProductAttributeTest {
         @IpsAttributeSetter("attr2")
         public void setAttr2(Integer newValue) {
             attr2 = newValue;
+        }
+
+        @IpsAttribute(name = "attrToHide", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public Integer getAttrToHide() {
+            return attrToHide;
+        }
+
+        @IpsAttributeSetter("attrToHide")
+        public void setAttrToHide(Integer newValue) {
+            attrToHide = newValue;
         }
 
         @IpsAttribute(name = "multiString", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -980,6 +1031,7 @@ public class ProductAttributeTest {
         public static final String DEFAULT_ATTRGEN = "foobar";
 
         private String attrGen = DEFAULT_ATTRGEN;
+        private String attrGenToHide = "";
 
         public ProduktGen(ProductComponent productCmpt) {
             super(productCmpt);
@@ -995,11 +1047,20 @@ public class ProductAttributeTest {
             attrGen = newValue;
         }
 
+        @IpsAttribute(name = "attrGenToHide", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public String getAttrGenToHide() {
+            return attrGenToHide;
+        }
+
+        @IpsAttributeSetter("attrGenToHide")
+        public void setAttrGenToHide(String newValue) {
+            attrGenToHide = newValue;
+        }
     }
 
     @IpsProductCmptType(name = "SubProductXYZ")
     @IpsChangingOverTime(SubProduktGen.class)
-    @IpsAttributes({ "attr2", "attrGen", "attr3", "multiEnum" })
+    @IpsAttributes({ "attr2", "attrGen", "attr3", "multiEnum", "attrToHide", "attrGenToHide" })
     private static class SubProdukt extends Produkt {
 
         private final SubProduktGen subProduktGen = new SubProduktGen(this);
@@ -1018,6 +1079,12 @@ public class ProductAttributeTest {
         @IpsAttribute(name = "attr3", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public String getAttr3() {
             return "foofoo";
+        }
+
+        @Override
+        @IpsAttribute(name = "attrToHide", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, hide = true)
+        public Integer getAttrToHide() {
+            return super.getAttrToHide();
         }
 
         @Override
@@ -1070,6 +1137,11 @@ public class ProductAttributeTest {
             return "foobaz";
         }
 
+        @Override
+        @IpsAttribute(name = "attrGenToHide", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, hide = true)
+        public String getAttrGenToHide() {
+            return super.getAttrGenToHide();
+        }
     }
 
     @IpsEnumType(name = "AbstractEnumType", attributeNames = { "" })

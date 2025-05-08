@@ -982,6 +982,42 @@ public class ProductAssociationTest {
         assertThat(generation2.getTargets().size(), is(0));
     }
 
+    @Test
+    public void testHide_OnProduct() {
+        Source source = new Source();
+        ProductCmptType cmptType = IpsModel.getProductCmptType(source);
+        ProductAssociation pa = cmptType.getAssociation("overriddenAsso");
+
+        assertThat(pa.isHidden(), is(false));
+    }
+
+    @Test
+    public void testHide_OnSubProduct() {
+        Source source = new SubSource();
+        ProductCmptType cmptType = IpsModel.getProductCmptType(source);
+        ProductAssociation pa = cmptType.getAssociation("asso2");
+
+        assertThat(pa.isHidden(), is(true));
+    }
+
+    @Test
+    public void testHide_OnProductGen() {
+        Source source = new Source();
+        ProductCmptType cmptType = IpsModel.getProductCmptType(source);
+        ProductAssociation pa = cmptType.getAssociation("asso2");
+
+        assertThat(pa.isHidden(), is(false));
+    }
+
+    @Test
+    public void testHide_OnSubProductGen() {
+        Source source = new SubSource();
+        ProductCmptType cmptType = IpsModel.getProductCmptType(source);
+        ProductAssociation pa = cmptType.getAssociation("overriddenAsso");
+
+        assertThat(pa.isHidden(), is(true));
+    }
+
     @IpsProductCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "asso3", "overriddenAsso", "asso4", "assoTest", "policyAsso" })
     @IpsChangingOverTime(ProductGen.class)
@@ -1115,7 +1151,7 @@ public class ProductAssociationTest {
 
     @IpsProductCmptType(name = "MySubSource")
     @IpsAssociations({ "SubAsso", "overriddenAsso", "asso", "asso2", "asso4" })
-    @IpsChangingOverTime(ProductGen.class)
+    @IpsChangingOverTime(SubProductGen.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private class SubSource extends Source {
 
@@ -1134,7 +1170,7 @@ public class ProductAssociationTest {
         }
 
         @Override
-        @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class, hide = true)
         public Target getOverriddenAsso() {
             return super.getOverriddenAsso();
         }
@@ -1240,6 +1276,20 @@ public class ProductAssociationTest {
                         cardinality2 != null ? cardinality2 : CardinalityRange.OPTIONAL));
             }
             return list;
+        }
+    }
+
+    private class SubProductGen extends ProductGen {
+
+        public SubProductGen(Source product) {
+            super(product);
+        }
+
+        @Override
+        @IpsAssociation(name = "asso2", pluralName = "assos2", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class, hide = true)
+        @IpsMatchingAssociation(source = Policy.class, name = "Matching")
+        public List<Target> getTargets() {
+            return super.getTargets();
         }
     }
 

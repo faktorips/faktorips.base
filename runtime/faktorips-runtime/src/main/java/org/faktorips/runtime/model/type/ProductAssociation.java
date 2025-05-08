@@ -31,6 +31,7 @@ import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
@@ -483,6 +484,15 @@ public class ProductAssociation extends Association {
     @Override
     public boolean isChangingOverTime() {
         return changingOverTime;
+    }
+
+    /**
+     * {@return <code>true</code> if the association is marked as hidden}
+     *
+     * @since 25.7
+     */
+    public boolean isHidden() {
+        return getGetterMethod().getAnnotation(IpsAssociation.class).hide();
     }
 
     /**

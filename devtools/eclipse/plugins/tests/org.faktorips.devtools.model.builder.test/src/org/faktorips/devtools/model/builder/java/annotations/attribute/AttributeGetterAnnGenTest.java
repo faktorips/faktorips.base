@@ -89,8 +89,21 @@ public class AttributeGetterAnnGenTest {
     }
 
     @Test
+    public void testCreateAnnotation_product_unrestricted_hidden() throws Exception {
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.UNRESTRICTED, false, false);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues, hide = true)"
+                                + System.lineSeparator())));
+    }
+
+    @Test
     public void testCreateAnnotation_product_MultiValuePrimitive() throws Exception {
-        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.UNRESTRICTED, true);
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.UNRESTRICTED, true, true);
 
         JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
 
@@ -291,10 +304,13 @@ public class AttributeGetterAnnGenTest {
     }
 
     private XProductAttribute xProductAttribute(String name, ValueSetType valueSetType) {
-        return xProductAttribute(name, valueSetType, false);
+        return xProductAttribute(name, valueSetType, false, true);
     }
 
-    private XProductAttribute xProductAttribute(String name, ValueSetType valueSetType, boolean primitive) {
+    private XProductAttribute xProductAttribute(String name,
+            ValueSetType valueSetType,
+            boolean primitive,
+            boolean visible) {
         IProductCmptTypeAttribute productCmptTypeAttribute = mock(IProductCmptTypeAttribute.class);
         when(productCmptTypeAttribute.getName()).thenReturn(name);
         IValueSet valueSet = mock(IValueSet.class);
@@ -306,6 +322,7 @@ public class AttributeGetterAnnGenTest {
         DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
         ValueDatatype datatype = mock(ValueDatatype.class);
         when(datatype.isPrimitive()).thenReturn(primitive);
+        when(productCmptTypeAttribute.isVisible()).thenReturn(visible);
         when(datatypeHelper.getDatatype()).thenReturn(datatype);
         when(ipsProject.findDatatypeHelper("fake")).thenReturn(datatypeHelper);
         return new XProductAttribute(productCmptTypeAttribute, modelContext, null);

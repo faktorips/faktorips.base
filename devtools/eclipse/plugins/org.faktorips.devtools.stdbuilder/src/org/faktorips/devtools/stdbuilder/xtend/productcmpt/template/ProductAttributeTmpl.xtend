@@ -107,6 +107,23 @@ class ProductAttributeTmpl {
             «ENDIF»
     '''
 
+    def package static getterWithSuper (XProductAttribute it) '''
+            /**
+             *«inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE", name, descriptionForJDoc)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *
+             * @generated
+             */
+            «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, genInterface)»
+            @Override
+            public «returnType» «method(methodNameGetter)»
+            «IF genInterface»;«ELSE»
+            {
+                return super.«method(methodNameGetter)»;
+            }
+            «ENDIF»
+    '''
+
     def private static multilingualGetter (XProductAttribute it) '''
         /**
          *«inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE_MULTILINGUAL", name, descriptionForJDoc)»

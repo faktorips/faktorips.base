@@ -101,8 +101,8 @@ class ProductComponentTmpl {
                 «ENDFOR»
 
                 «FOR it : attributes» «getterSetter» «ENDFOR»
+                «FOR it : overwritingAttributesThatChangeHidden» «getterWithSuper» «ENDFOR»
                 «FOR it : configuredAttributesIncludingAbstract» «getterAndSetter» «ENDFOR»
-                
 
                 «FOR superAttribute : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
                     «IF superAttribute.published»

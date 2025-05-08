@@ -195,6 +195,15 @@ public class XProductAttribute extends XAttribute {
         return getAttribute().isMultilingual();
     }
 
+    /**
+     * {@return whether this attribute is visible or not}
+     *
+     * @since 25.7
+     */
+    public boolean isVisible() {
+        return getAttribute().isVisible();
+    }
+
     public XSingleValueOfMultiValueAttribute getSingleValueOfMultiValueAttribute() {
         return getModelNode(getAttribute(), XSingleValueOfMultiValueAttribute.class);
     }

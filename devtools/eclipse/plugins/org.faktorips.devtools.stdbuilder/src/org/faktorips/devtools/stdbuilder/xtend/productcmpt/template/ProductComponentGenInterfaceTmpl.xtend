@@ -36,27 +36,29 @@ class ProductComponentGenInterfaceTmpl {
             «ENDIF»
              {
 
-                 «FOR it : attributes»
-                     «IF published »
-                         «constantForPropertyName»
-                         «IF !abstract»
+                «FOR it : attributes»
+                    «IF published »
+                        «constantForPropertyName»
+                        «IF !abstract»
                             «constantForValueSet»
                             «constantForDefaultValue»
-                         «ENDIF»
-                     «ENDIF»
-                 «ENDFOR»
+                        «ENDIF»
+                    «ENDIF»
+                «ENDFOR»
 
-                 «FOR it : attributesIncludingNoContentGeneration»
+                «FOR it : attributesIncludingNoContentGeneration»
 
     «««                  TODO the old code generator generated the getter always to the published interface
     «««                  !!! If you fix it you need to generate abstract getter for public-abstract attributes in ProductComponentGen
     «««                 «IF published »
     «««                 «ENDIF»
 
-                     «IF generateInterfaceGetter»
+                    «IF generateInterfaceGetter»
                         «getter»
                     «ENDIF»
-                 «ENDFOR»
+                «ENDFOR»
+
+                «FOR it : overwritingAttributesThatChangeHidden»«getterWithSuper»«ENDFOR»
 
                 «FOR it : configuredAttributes»
                     «IF published»

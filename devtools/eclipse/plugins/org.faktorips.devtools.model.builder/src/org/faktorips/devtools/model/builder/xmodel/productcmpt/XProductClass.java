@@ -99,6 +99,18 @@ public abstract class XProductClass extends XType {
         return onlyWithGenerateContentCode(getAttributesIncludingNoContentGeneration());
     }
 
+    public Set<XProductAttribute> getOverwritingAttributesThatChangeHidden() {
+        LinkedHashSet<XProductAttribute> hidden = new LinkedHashSet<>();
+        for (XProductAttribute pa : getOverwritingAttributes()) {
+            boolean superVisible = pa.getOverwrittenAttribute().isVisible();
+            boolean thisVisible = pa.isVisible();
+            if (superVisible != thisVisible) {
+                hidden.add(pa);
+            }
+        }
+        return hidden;
+    }
+
     public Set<XProductAttribute> getOverwritingAttributes() {
         return filter(getAttributesIncludingNoContentGeneration(),
                 not(XProductAttribute::isGenerateContentCode)

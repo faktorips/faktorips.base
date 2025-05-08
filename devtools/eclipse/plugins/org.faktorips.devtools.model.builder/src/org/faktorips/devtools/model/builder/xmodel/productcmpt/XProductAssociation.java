@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -68,8 +68,7 @@ public class XProductAssociation extends XAssociation {
     }
 
     public String getMethodNameGetCardinalityFor() {
-        String matchingSingularName;
-        matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
+        String matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
         return getJavaNamingConvention().getGetterMethodName("CardinalityFor" + matchingSingularName);
     }
 
@@ -96,7 +95,7 @@ public class XProductAssociation extends XAssociation {
      * Returns the key used to localize java doc. The parameter gives the prefix for the key
      * specifying the scope of generated code. This method adds "ONE" or "MANY" depending on the
      * kind of the association to differ between one to many and one to one associations.
-     * 
+     *
      * @param prefix The prefix defining the scope of the generated code, for example
      *            "METHOD_GET_CMPT"
      * @return The key used to localize the java doc for example "METHOD_GET_CMPT_ONE" or
@@ -127,7 +126,7 @@ public class XProductAssociation extends XAssociation {
 
     /**
      * This method checks if any association of the super class has the same name as the given one.
-     * 
+     *
      * @return true if '@Override is needed for the association, false is not.
      */
     public boolean isNeedOverrideForConstrainNewChildMethod() {
@@ -140,6 +139,16 @@ public class XProductAssociation extends XAssociation {
         } else {
             return false;
         }
+    }
+
+    /**
+     * {@return true if the association is marked as relevant and therefore visible, false
+     * otherwise}
+     *
+     * @since 25.7
+     */
+    public boolean isVisible() {
+        return getAssociation().isRelevant();
     }
 
     /**
