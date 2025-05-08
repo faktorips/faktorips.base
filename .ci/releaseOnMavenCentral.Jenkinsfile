@@ -1,0 +1,71 @@
+library 'f10-jenkins-library@1.1_patches'
+
+pipeline {
+    agent any
+
+    parameters {
+        string description: 'The UUID of the deployment request', name: 'DEPLOYMENT_ID'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '30'))
+        skipDefaultCheckout true
+    }
+
+    stages {
+        stage('Release on Maven Central') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'sonatype.central.token', variable: 'SONATYPE_CREDENTIALS')]) {
+                        // check status of deployment, with secure interpolation of sensitive variables
+                        responseStatus = sh (
+                            script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID} \
+                                        -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail-with-body',
+                            returnStdout: true
+                        ).trim()
+
+                        props = readJSON text: "${responseStatus}"
+
+                        try {
+                            // publish only works on VALIDATED
+                            assert props.deploymentState == 'VALIDATED'
+
+                        } catch(Throwable errStatus) {
+                            rtp parserName: 'HTML', nullAction: '1', stableText: """
+                                <h2>Status of ${DEPLOYMENT_ID}</h2>
+                                deploymentState is not VALIDATED but ${props.deploymentState}
+                            """
+                            error("deploymentState is not VALIDATED but ${props.deploymentState}")
+                        }
+
+                        try {
+                            // deploymentState is VALIDATED therefore publish, with secure interpolation of sensitive variables
+                            sh (
+                                script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/deployment/${DEPLOYMENT_ID} \
+                                            -H "accept: */*" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail-with-body'
+                            )
+
+                            // api returns 204 or 400+, so success if here
+                            rtp parserName: 'HTML', nullAction: '1', stableText: """
+                                <h2>Publishing of ${DEPLOYMENT_ID} SUCCESS</h2>
+                            """
+                        } catch (Throwable errPublish) {
+                            rtp parserName: 'HTML', nullAction: '1', stableText: """
+                                <h2>Publishing of ${DEPLOYMENT_ID} FAILED</h2>
+                                <p>${errPublish}</p>
+                                <small>Exit Code 22 == HTTP error code being 400 or above</small>
+                            """
+                            error ("Publishing failed")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        unsuccessful {
+            sendFailureEmail()
+        }
+    }
+}
