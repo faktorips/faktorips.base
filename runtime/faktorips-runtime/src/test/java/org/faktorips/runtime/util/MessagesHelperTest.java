@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.runtime.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Locale;
 
@@ -124,6 +125,17 @@ public class MessagesHelperTest {
         String message = messagesHelper.getMessageOr("n o t", Locale.CHINESE, "fallback");
 
         assertEquals("fallback", message);
+    }
+
+    @Test
+    public void testForI18n() throws Exception {
+        String qualifiedName = getClass().getName();
+        MessagesHelper messagesHelper = new MessagesHelper(qualifiedName, loader, defaultLocale);
+
+        MessagesHelper messagesHelperForI18n = messagesHelper.forI18n();
+
+        assertEquals("i18n", messagesHelperForI18n.getMessage("test", Locale.ITALIAN));
+        assertNull(messagesHelperForI18n.getMessage("test", Locale.KOREAN));
     }
 
 }

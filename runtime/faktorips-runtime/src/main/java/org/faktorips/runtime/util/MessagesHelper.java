@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -73,10 +73,12 @@ public class MessagesHelper {
 
     private final Locale defaultLocale;
 
+    private volatile MessagesHelper i18nMessagesHelper;
+
     /**
      * Creates a new StringsSet with the indicated qualified name. The property files are loaded
      * with the indicated classloader.
-     * 
+     *
      * @param qualifiedName The qualified name of your resource without suffix nor extension for
      *            ".properties" example org.sample.messages
      * @param loader The {@link ClassLoader} to load the {@link ResourceBundle}
@@ -91,8 +93,36 @@ public class MessagesHelper {
     }
 
     /**
+     * {@return a MessagesHelper using i18n.properties in the same package as this MessagesHelper,
+     * to be used for external internationalization of multi-language Strings}.
+     *
+     * @since 25.7
+     */
+    public MessagesHelper forI18n() {
+        MessagesHelper result = i18nMessagesHelper;
+        if (result == null) {
+            // CSOFF: InnerAssignment
+            // Efficient lazy initialization pattern from "Effective Java", 3rd edition, p.335
+            i18nMessagesHelper = result = new MessagesHelper(name.substring(0, name.lastIndexOf('.') + 1) + "i18n",
+                    loader,
+                    defaultLocale) {
+                @Override
+                public String getMessage(String key, Locale locale) {
+                    try {
+                        return super.getMessage(key, locale);
+                    } catch (MissingResourceException e) {
+                        return null;
+                    }
+                }
+            };
+            // CSON: InnerAssignment
+        }
+        return result;
+    }
+
+    /**
      * Getting the message for the given key in the specified locale.
-     * 
+     *
      * @param key the key of the message
      * @param locale the locale of the message you want to get
      * @return the translated message located in the property file
@@ -113,7 +143,7 @@ public class MessagesHelper {
      * Getting the message for the given key in the specified language. For every replacement
      * parameter there must be a replacement mark (e.g. {0}) in the message. @see
      * {@link MessageFormat}.
-     * 
+     *
      * @param key The key of the message
      * @param locale The locale of the message you want to get
      * @param replacements the replacements in the message text
@@ -130,11 +160,11 @@ public class MessagesHelper {
      * the specified language the message helper searches the key in the default language. If there
      * is not message for the specified key in the requested language nor the default language, this
      * message returns the specified fallback text.
-     * 
+     *
      * @param key The key to identify the message
      * @param locale the locale of the expected message
      * @param fallBack a fall back text if there is no message
-     * 
+     *
      * @return The message for the specified key
      */
     public String getMessageOr(String key, Locale locale, String fallBack) {

@@ -52,7 +52,7 @@ public abstract class Type extends ModelElement {
     }
 
     @Override
-    protected MessagesHelper getMessageHelper() {
+    public MessagesHelper getMessageHelper() {
         return messagesHelper;
     }
 

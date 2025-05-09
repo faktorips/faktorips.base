@@ -24,22 +24,30 @@
           {
             "code": "java.method.addedToInterface",
             "new": "method void org.faktorips.runtime.IProductComponent::setDescription(java.util.Locale, java.lang.String)",
-            "justification": "FIPS-12218"
+            "justification": "FIPS-12218 :: Description Setter for Product Designer"
           },
           {
             "code": "java.method.addedToInterface",
             "new": "method void org.faktorips.runtime.IProductComponent::setDescription(org.faktorips.values.InternationalString)",
-            "justification": "FIPS-12218"
+            "justification": "FIPS-12218 :: Description Setter for Product Designer"
           },
           {
             "code": "java.method.addedToInterface",
             "new": "method void org.faktorips.runtime.ITable<R>::setDescription(java.util.Locale, java.lang.String, org.faktorips.runtime.IRuntimeRepository)",
-            "justification": "FIPS-12218"
+            "justification": "FIPS-12218 :: Description Setter for Product Designer"
           },
           {
             "code": "java.method.addedToInterface",
             "new": "method void org.faktorips.runtime.ITable<R>::setDescription(org.faktorips.values.InternationalString, org.faktorips.runtime.IRuntimeRepository)",
-            "justification": "FIPS-12218"
+            "justification": "FIPS-12218 :: Description Setter for Product Designer"
+          },
+          {
+            "code": "java.method.visibilityIncreased",
+            "old": "method org.faktorips.runtime.util.MessagesHelper org.faktorips.runtime.model.type.Type::getMessageHelper()",
+            "new": "method org.faktorips.runtime.util.MessagesHelper org.faktorips.runtime.model.type.Type::getMessageHelper()",
+            "oldVisibility": "protected",
+            "newVisibility": "public",
+            "justification": "FIPS-11929 :: External internationalization of multilanguage Strings"
           }
         ]
       }

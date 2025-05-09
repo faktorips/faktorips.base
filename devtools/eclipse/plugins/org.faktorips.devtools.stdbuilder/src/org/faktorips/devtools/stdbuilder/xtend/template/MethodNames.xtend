@@ -1,5 +1,6 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
+import org.faktorips.runtime.IProductComponent
 
 class MethodNames {
 
@@ -144,7 +145,7 @@ class MethodNames {
 
     def static getValueFromElement(String paramConfigElement)  {     "getValueFromElement(" + paramConfigElement+ ")"    }
 
-    def static getInternationalStringFromElement(String paramConfigElement, String paramValue)  {     "getInternationalStringFromElement(" + paramConfigElement + ", " + paramValue + ")"    }
+    def static getInternationalStringFromElement(String paramConfigElement, String paramValue, String productComponent, String propertyName)  {     "getInternationalStringFromElement(" + paramConfigElement + ", " + paramValue + ", " + productComponent + ", " + propertyName + ")"    }
 
     def static getEnumValueSetFromElement(String paramConfigElement, String paramValueSet)  {     "getEnumValueSetFromElement(" + paramConfigElement + ", " + paramValueSet + ")"    }
 
@@ -178,7 +179,7 @@ class MethodNames {
 
     def static getValuesFromXML(String paramConfigElement)  {     "getValuesFromXML(" + paramConfigElement + ")"    }
 
-    def static getInternationalStringsFromXML(String paramConfigElement)  {     "getInternationalStringsFromXML(" + paramConfigElement + ")"    }
+    def static getInternationalStringsFromXML(String paramConfigElement, String productComponent, String propertyName)  {     "getInternationalStringsFromXML(" + paramConfigElement + ", " + productComponent + ", " + propertyName + ")"    }
 
     def static addValuesToElement(String attributeElementParam, String nameParam)  {     "addValuesToElement(" + attributeElementParam + ", " + nameParam + ")"    }
 

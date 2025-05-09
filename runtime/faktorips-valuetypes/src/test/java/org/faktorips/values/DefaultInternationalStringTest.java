@@ -62,6 +62,7 @@ public class DefaultInternationalStringTest {
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.GERMANY));
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.CHINESE));
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.of("")));
+
         DefaultInternationalString internationalString2 = new DefaultInternationalString(List.of(
                 koreanLocalizedString, englishLocalizedString), Locale.KOREAN);
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.KOREAN));
@@ -73,6 +74,19 @@ public class DefaultInternationalStringTest {
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.GERMANY));
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.CHINESE));
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.of("")));
+
+        DefaultInternationalString internationalStringWithFallback = new DefaultInternationalString(List.of(
+                koreanLocalizedString, englishLocalizedString), Locale.KOREAN,
+                locale -> locale == Locale.GERMAN ? "Fallback" : null);
+        assertEquals(KOREAN_TEXT, internationalStringWithFallback.get(Locale.KOREAN));
+        assertEquals(KOREAN_TEXT, internationalStringWithFallback.get(Locale.KOREA));
+        assertEquals(ENGLISH_TEXT, internationalStringWithFallback.get(Locale.ENGLISH));
+        assertEquals(ENGLISH_TEXT, internationalStringWithFallback.get(Locale.UK));
+        assertEquals(ENGLISH_TEXT, internationalStringWithFallback.get(Locale.US));
+        assertEquals("Fallback", internationalStringWithFallback.get(Locale.GERMAN));
+        assertEquals(KOREAN_TEXT, internationalStringWithFallback.get(Locale.GERMANY));
+        assertEquals(KOREAN_TEXT, internationalStringWithFallback.get(Locale.CHINESE));
+        assertEquals(KOREAN_TEXT, internationalStringWithFallback.get(Locale.of("")));
     }
 
     @Test

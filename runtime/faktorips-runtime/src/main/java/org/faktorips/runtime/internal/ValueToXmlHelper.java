@@ -14,7 +14,12 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.type.ProductCmptType;
+import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -251,11 +256,51 @@ public enum ValueToXmlHelper {
      *
      * @param el The xml element that is the parent of the element storing the international string.
      * @param tagName The name of the child
+     *
+     * @deprecated for removal since 25.7;
+     * @see #getInternationalStringFromElement(Element, String, IProductComponent, String)
      */
+    @Deprecated(forRemoval = true, since = "25.7")
     public static DefaultInternationalString getInternationalStringFromElement(Element el, String tagName) {
         Collection<LocalizedString> localizedStrings = InternationalStringXmlReaderWriter.fromXml(el, tagName);
         Locale defaultLocale = InternationalStringXmlReaderWriter.defaultLocaleFromXml(el, tagName);
         return new DefaultInternationalString(localizedStrings, defaultLocale);
+    }
+
+    /**
+     * Returns the {@link DefaultInternationalString} stored in the child element of the given
+     * element with the indicated name. Returns an empty DefaultInternationalString if the value is
+     * null or no such child element exists.
+     * <p>
+     * The given product component and the property name are used as a fallback to load
+     * internationalized Strings from i18n.properties files. The files must be in the same package
+     * as the {@code model-label-and-descriptions.properties} files used by the
+     * {@link ProductCmptType#getMessageHelper() ProductCmptType's MessageHelper}. The keys for the
+     * translations are {@code <the product component's runtime ID>.<the property name>}.
+     *
+     * @param el The xml element that is the parent of the element storing the international string.
+     * @param tagName The name of the child
+     * @param productComponent the product component being read
+     * @param propertyName the name of the internationalized attribute
+     *
+     * @since 25.7
+     */
+    public static DefaultInternationalString getInternationalStringFromElement(Element el,
+            String tagName,
+            IProductComponent productComponent,
+            String propertyName) {
+        Collection<LocalizedString> localizedStrings = InternationalStringXmlReaderWriter.fromXml(el, tagName);
+        Locale defaultLocale = InternationalStringXmlReaderWriter.defaultLocaleFromXml(el, tagName);
+        InternationalString fallback = createExternalI18nFallback(productComponent, propertyName);
+        return new DefaultInternationalString(localizedStrings, defaultLocale, fallback);
+    }
+
+    private static InternationalString createExternalI18nFallback(IProductComponent productComponent,
+            String propertyName) {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(productComponent);
+        MessagesHelper messagesHelper = productCmptType.getMessageHelper().forI18n();
+        String key = productComponent.getId().replace(' ', '_') + '.' + propertyName;
+        return l -> messagesHelper.getMessage(key, l);
     }
 
     /**
@@ -293,11 +338,40 @@ public enum ValueToXmlHelper {
      * DefaultInternationalString if the value is null.
      *
      * @param el The xml element storing the international string.
+     *
+     * @deprecated for removal since 25.7;
+     * @see #getInternationalStringFromElement(Element, IProductComponent, String)
      */
+    @Deprecated(forRemoval = true, since = "25.7")
     public static DefaultInternationalString getInternationalStringFromElement(Element el) {
         Collection<LocalizedString> localizedString = InternationalStringXmlReaderWriter.fromXml(el);
         Locale defaultLocale = InternationalStringXmlReaderWriter.defaultLocaleFromXml(el);
         return new DefaultInternationalString(localizedString, defaultLocale);
+    }
+
+    /**
+     * Returns the {@link DefaultInternationalString} stored in the given element. Returns an empty
+     * DefaultInternationalString if the value is null.
+     * <p>
+     * The given product component and the property name are used as a fallback to load
+     * internationalized Strings from i18n.properties files. The files must be in the same package
+     * as the {@code model-label-and-descriptions.properties} files used by the
+     * {@link ProductCmptType#getMessageHelper() ProductCmptType's MessageHelper}. The keys for the
+     * translations are {@code <the product component's runtime ID>.<the indexed property name>},
+     * where the indexed property name is {@code <the property name>.<0-based index>} to supply
+     * multiple values for multi-value multi-language Strings.
+     *
+     * @param el The xml element storing the international string.
+     * @param productComponent the product component being read
+     * @param propertyName the name of the internationalized attribute
+     */
+    public static DefaultInternationalString getInternationalStringFromElement(Element el,
+            IProductComponent productComponent,
+            String propertyName) {
+        Collection<LocalizedString> localizedString = InternationalStringXmlReaderWriter.fromXml(el);
+        Locale defaultLocale = InternationalStringXmlReaderWriter.defaultLocaleFromXml(el);
+        InternationalString fallback = createExternalI18nFallback(productComponent, propertyName);
+        return new DefaultInternationalString(localizedString, defaultLocale, fallback);
     }
 
     public static Range getRangeFromElement(Element el, String tagName) {

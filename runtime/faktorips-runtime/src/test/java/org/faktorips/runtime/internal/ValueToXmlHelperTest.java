@@ -20,11 +20,27 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
+import java.util.Map;
 
+import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.model.annotation.IpsAllowedValues;
+import org.faktorips.runtime.model.annotation.IpsAttribute;
+import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
+import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.model.annotation.IpsDefaultValue;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.type.AttributeKind;
+import org.faktorips.runtime.model.type.ValueSetKind;
+import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
+import org.faktorips.valueset.ValueSet;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -199,6 +215,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("tableContentNameValue", nodeValue);
     }
 
+    @SuppressWarnings("removal")
     @Test
     public void testGetInternationalStringFromElement() {
         Element attributeValueElement = (Element)getTestDocument().getDocumentElement()
@@ -210,6 +227,24 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("Wrong default locale", Locale.of("hy"), internationalString.getDefaultLocale());
         assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(Locale.of("as")));
         assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(Locale.of("hy")));
+        assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(Locale.of("ko")));
+    }
+
+    @Test
+    public void testGetInternationalStringFromElement_WithFallback() {
+        Element attributeValueElement = (Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName("AttributeValue").item(0);
+        MultiLingualProduct multiLingualProduct = new MultiLingualProduct(new InMemoryRuntimeRepository(), "ML 2025-07",
+                "ML", "2025-07");
+
+        DefaultInternationalString internationalString = ValueToXmlHelper.getInternationalStringFromElement(
+                attributeValueElement, "Value", multiLingualProduct, MultiLingualProduct.PROPERTY_MLATTRIBUTE);
+
+        assertEquals("Wrong default locale", Locale.of("hy"), internationalString.getDefaultLocale());
+        assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(Locale.of("as")));
+        assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(Locale.of("hy")));
+        assertEquals("Wrong value for i18n locale 'it'", "Attributo internazionalizzato",
+                internationalString.get(Locale.ITALIAN));
         assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(Locale.of("ko")));
     }
 
@@ -236,4 +271,86 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
 
         assertFalse(ValueToXmlHelper.isAttributeTrue(testElement, "foobar"));
     }
+
+    @IpsProductCmptType(name = "mlTest.MultiLingualProduct")
+    @IpsAttributes({ "mlAttribute" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.internal.model-label-and-descriptions", defaultLocale = "en")
+    public class MultiLingualProduct extends ProductComponent implements IToXmlSupport {
+
+        public static final String PROPERTY_MLATTRIBUTE = "mlAttribute";
+        @IpsAllowedValues("mlAttribute")
+        public static final ValueSet<DefaultInternationalString> MAX_ALLOWED_VALUES_FOR_MLATTRIBUTE = new UnrestrictedValueSet<>(
+                true);
+        @IpsDefaultValue("mlAttribute")
+        public static final DefaultInternationalString DEFAULT_VALUE_FOR_MLATTRIBUTE = DefaultInternationalString.EMPTY;
+        private DefaultInternationalString mlAttribute = DEFAULT_VALUE_FOR_MLATTRIBUTE;
+
+        public MultiLingualProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        @IpsAttribute(name = "mlAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        public DefaultInternationalString getStaticAttribute() {
+            return mlAttribute;
+        }
+
+        public String getStaticAttribute(Locale locale) {
+            return mlAttribute.get(locale);
+        }
+
+        @IpsAttributeSetter("mlAttribute")
+        public void setStaticAttribute(DefaultInternationalString newValue) {
+            if (getRepository() != null && !getRepository().isModifiable()) {
+                throw new IllegalRepositoryModificationException();
+            }
+            setStaticAttributeInternal(newValue);
+        }
+
+        protected final void setStaticAttributeInternal(DefaultInternationalString newValue) {
+            mlAttribute = newValue;
+        }
+
+        @Override
+        protected void doInitPropertiesFromXml(Map<String, Element> configMap) {
+            super.doInitPropertiesFromXml(configMap);
+            doInitStaticAttribute(configMap);
+        }
+
+        private void doInitStaticAttribute(Map<String, Element> configMap) {
+            Element configElement = configMap.get(PROPERTY_MLATTRIBUTE);
+            if (configElement != null) {
+                DefaultInternationalString value = ValueToXmlHelper.getInternationalStringFromElement(configElement,
+                        ValueToXmlHelper.XML_TAG_VALUE, this, PROPERTY_MLATTRIBUTE);
+                mlAttribute = value;
+            }
+        }
+
+        @Override
+        public void writePropertiesToXml(Element element) {
+            element.setAttribute("productCmptType", "productComponentTests.MultiLingualProduct");
+            element.setAttribute("runtimeId", getId());
+            writeStaticAttribute(element);
+        }
+
+        private void writeStaticAttribute(Element element) {
+            Element attributeElement = ValueToXmlHelper.deleteExistingElementAndCreateNewElement(element,
+                    ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE, PROPERTY_MLATTRIBUTE);
+            ValueToXmlHelper.addInternationalStringToElement(mlAttribute, attributeElement,
+                    ValueToXmlHelper.XML_TAG_VALUE);
+            element.appendChild(attributeElement);
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            throw new UnsupportedOperationException(
+                    "This product component type does not configure a policy component type.");
+        }
+
+    }
+
 }

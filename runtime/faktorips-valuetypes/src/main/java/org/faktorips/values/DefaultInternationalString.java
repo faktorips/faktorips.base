@@ -43,19 +43,40 @@ public class DefaultInternationalString implements InternationalString {
 
     private final Locale defaultLocale;
 
+    private final InternationalString fallback;
+
     /**
      * Creates a new {@link DefaultInternationalString} with the given {@link LocalizedString
      * localized strings}.
      * 
-     * @param localizedStrings the localized strings making up this DefaultInternationalString.
+     * @param localizedStrings the localized strings making up this DefaultInternationalString
+     * @param defaultLocale the locale to use when there is no value in the given localized Strings
+     *            for the local used to {@link #get(Locale)}
      */
     public DefaultInternationalString(Collection<LocalizedString> localizedStrings, Locale defaultLocale) {
+        this(localizedStrings, defaultLocale, EMPTY);
+    }
+
+    /**
+     * Creates a new {@link DefaultInternationalString} with the given {@link LocalizedString
+     * localized strings}, using the given {@link InternationalString} as a fallback for missing
+     * values.
+     * 
+     * @param localizedStrings the localized strings making up this DefaultInternationalString
+     * @param defaultLocale the locale to use when there is no value in the given localized Strings
+     *            for the local used to {@link #get(Locale)}
+     * @param fallback another {@link InternationalString} used as a fallback after trying to find a
+     *            String in the localized Strings
+     */
+    public DefaultInternationalString(Collection<LocalizedString> localizedStrings, Locale defaultLocale,
+            InternationalString fallback) {
         Map<Locale, LocalizedString> initialMap = new LinkedHashMap<>();
         for (LocalizedString localizedString : localizedStrings) {
             initialMap.put(localizedString.getLocale(), localizedString);
         }
         localizedStringMap = Collections.unmodifiableMap(initialMap);
         this.defaultLocale = defaultLocale;
+        this.fallback = fallback;
     }
 
     @Override
@@ -63,6 +84,12 @@ public class DefaultInternationalString implements InternationalString {
         LocalizedString localizedString = localizedStringMap.get(locale);
         if (localizedString == null && !"".equals(locale.getCountry()) && !"".equals(locale.getLanguage())) {
             localizedString = localizedStringMap.get(Locale.of(locale.getLanguage()));
+        }
+        if (localizedString == null && fallback != null) {
+            String fallbackValue = fallback.get(locale);
+            if (fallbackValue != null) {
+                return fallbackValue;
+            }
         }
         if (localizedString == null) {
             localizedString = localizedStringMap.get(defaultLocale);
@@ -78,6 +105,9 @@ public class DefaultInternationalString implements InternationalString {
      * Returning all values of this {@link DefaultInternationalString} ordered by insertion. Note
      * that a copy of the original values is returned. Modifying the returned collection will not
      * modify this DefaultInternationalString.
+     * <p>
+     * This does not include Strings from a fallback provided to the
+     * {@link #DefaultInternationalString(Collection, Locale, InternationalString)} constructor.
      */
     public Collection<LocalizedString> getLocalizedStrings() {
         return new LinkedHashSet<>(localizedStringMap.values());

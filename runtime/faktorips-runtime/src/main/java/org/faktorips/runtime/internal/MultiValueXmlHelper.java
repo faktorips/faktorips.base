@@ -13,6 +13,8 @@ package org.faktorips.runtime.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.model.type.ProductCmptType;
 import org.faktorips.values.DefaultInternationalString;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -74,7 +76,12 @@ public enum MultiValueXmlHelper {
      * @param attrValueElement the element to extract multiple values from
      * @return a list containing all values in the given element as international strings
      * @throws NullPointerException if the outer value-tag or the MultiValue-Tag cannot be found
+     *
+     * @deprecated for removal since 25.7;
+     * @see #getInternationalStringsFromXML(Element, IProductComponent, String)
      */
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "25.7")
     public static List<DefaultInternationalString> getInternationalStringsFromXML(Element attrValueElement) {
         Element value = XmlUtil.getFirstElement(attrValueElement, XML_TAG_VALUE);
         assertElementExists(value, XML_TAG_VALUE);
@@ -87,6 +94,41 @@ public enum MultiValueXmlHelper {
             Element valueElement = (Element)valueNodeList.item(i);
             list.add(ValueToXmlHelper.getInternationalStringFromElement(XmlUtil.getFirstElement(valueElement,
                     InternationalStringXmlReaderWriter.XML_TAG)));
+        }
+        return list;
+    }
+
+    /**
+     * Reads {@link DefaultInternationalString} values from the XML structure.
+     * <p>
+     * The given product component and the property name are used as a fallback to load
+     * internationalized Strings from i18n.properties files. The files must be in the same package
+     * as the {@code model-label-and-descriptions.properties} files used by the
+     * {@link ProductCmptType#getMessageHelper() ProductCmptType's MessageHelper}. The keys for the
+     * translations are {@code <the product component's runtime ID>.<the indexed property name>},
+     * where the indexed property name is {@code <the property name>.<0-based index>} to supply
+     * multiple values for multi-value multi-language Strings.
+     *
+     * @param attrValueElement the element to extract multiple values from
+     * @param productComponent the product component being read
+     * @param propertyName the name of the internationalized attribute
+     * @return a list containing all values in the given element as international strings
+     * @throws NullPointerException if the outer value-tag or the MultiValue-Tag cannot be found
+     */
+    public static List<DefaultInternationalString> getInternationalStringsFromXML(Element attrValueElement,
+            IProductComponent productComponent,
+            String propertyName) {
+        Element value = XmlUtil.getFirstElement(attrValueElement, XML_TAG_VALUE);
+        assertElementExists(value, XML_TAG_VALUE);
+        Element multiValueElement = XmlUtil.getFirstElement(value, XML_TAG_MULTIVALUE);
+        assertElementExists(multiValueElement, XML_TAG_MULTIVALUE);
+
+        ArrayList<DefaultInternationalString> list = new ArrayList<>();
+        NodeList valueNodeList = multiValueElement.getElementsByTagName(XML_TAG_VALUE);
+        for (int i = 0; i < valueNodeList.getLength(); i++) {
+            Element valueElement = (Element)valueNodeList.item(i);
+            list.add(ValueToXmlHelper.getInternationalStringFromElement(XmlUtil.getFirstElement(valueElement,
+                    InternationalStringXmlReaderWriter.XML_TAG), productComponent, propertyName + '.' + i));
         }
         return list;
     }
