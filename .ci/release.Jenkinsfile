@@ -1,6 +1,7 @@
 library 'f10-jenkins-library@1.1_patches'
 library 'fips-jenkins-library@main'
 import java.text.MessageFormat
+import groovy.json.JsonOutput
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def mavenDocFolder = './maven/faktorips-maven-plugin'
@@ -200,10 +201,40 @@ pipeline {
                 }
                 rtp parserName: 'HTML', nullAction: '1', stableText: """
                     <h2>Deployment</h2>
-                    Deployment-ID: ${DeploymentId}<br />
+                    <script>
+                    function copyToClipboard() {
+                      navigator.clipboard.writeText("${DeploymentId}");
+                    }
+                    </script>
+                    Deployment-ID: ${DeploymentId} <button onclick="copyToClipboard()">&#x1f4cb;</button><br />
                     <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/'>Release on Maven Central</a>
+                    <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/'>Drop on Maven Central</a>
                   """
+                responseStatus = sh (
+                    script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID} \
+                                -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail',
+                    returnStdout: true
+                ).trim()
 
+                props = readJSON text: "${responseStatus}"
+
+                try {
+                    // publish only works on VALIDATED
+                    assert props.deploymentState == 'VALIDATED'
+
+                } catch(Throwable errStatus) {
+                    rtp parserName: 'HTML', nullAction: '1', stableText: """
+                        <h2>Status of ${DEPLOYMENT_ID}</h2>
+                        <span style="background:#ff9999;padding: 1em;font-weight: bold;">deploymentState is not VALIDATED but ${props.deploymentState}</span>
+                    """
+                    error("deploymentState is not VALIDATED but ${props.deploymentState}")
+                }
+                formatted = JsonOutput.prettyPrint(responseStatus).replace(" ", "&nbsp;").replace("\n","<br />\n")
+                rtp parserName: 'HTML', nullAction: '1', stableText: """
+                        <h2>Deployment Status:</h2>
+                        <span style="font-family: monospace;">${formatted}</span>
+                    """
+                    
                 // deploy p2 repository
                 script {
                     def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, releaseVersion)
