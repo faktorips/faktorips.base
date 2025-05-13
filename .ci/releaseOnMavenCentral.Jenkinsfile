@@ -20,7 +20,7 @@ pipeline {
                         // check status of deployment, with secure interpolation of sensitive variables
                         responseStatus = sh (
                             script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID} \
-                                        -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail-with-body',
+                                        -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail',
                             returnStdout: true
                         ).trim()
 
@@ -42,7 +42,7 @@ pipeline {
                             // deploymentState is VALIDATED therefore publish, with secure interpolation of sensitive variables
                             sh (
                                 script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/deployment/${DEPLOYMENT_ID} \
-                                            -H "accept: */*" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail-with-body'
+                                            -H "accept: */*" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail'
                             )
 
                             // api returns 204 or 400+, so success if here
