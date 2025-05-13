@@ -15,6 +15,10 @@ def ps2DeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}'
 def docServer = 'doc@doc.faktorzehn.org'
 def p2Server = 'hudson@update.faktorzehn.org'
 
+def toolchainsFile = '82515eae-efcb-4811-8495-ceddc084409c'
+def settingsFile = 'a447dcf9-7a34-4521-834a-c2445838a7e4'
+def securityFile = 'dd6909da-2649-4604-9b32-74fc1f86d72f'
+
 def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
 
 pipeline {
@@ -179,10 +183,15 @@ pipeline {
         stage('Deployment of Artifacts') {
             steps {
                 // deploys plain maven artifacts
-                osSpecificMaven commands: [
-                    // deployment must be singlethreaded - otherwise there may be multiple staging repositories created
-                    "mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind | tee target/deploy.log"
-                ]
+                withMaven(publisherStrategy: 'EXPLICIT') {
+                    configFileProvider([
+                        configFile(fileId: "${toolchainsFile}", variable: 'TOOLCHAINS'),
+                        configFile(fileId: "${settingsFile}", variable: 'MAVEN_SETTINGS'),
+                        configFile(fileId: "${securityFile}", variable: 'MAVEN_SECURITY')]) {
+                        // deployment must be singlethreaded - otherwise there may be multiple staging repositories created
+                        sh 'mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t "$TOOLCHAINS" -s "$MAVEN_SETTINGS" -Dsettings.security="$MAVEN_SECURITY" | tee target/deploy.log'
+                    }
+                }
                 script {
                    DeploymentId = sh (
                         script: 'grep -P -o  -i "(?<=Deployment )[a-f0-9-]+(?= has been validated)" target/deploy.log',
