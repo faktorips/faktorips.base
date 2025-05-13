@@ -232,20 +232,27 @@ class ClassEnumTypeTmpl {
         private static class SerializationProxy implements «Serializable» {
           private static final long serialVersionUID = 1L;
         
+          /**
+           * @generated
+           */
           private final «identifierAttribute.datatypeNameForConstructor» «identifierAttribute.memberVarName»;
+          
+          /**
+           * @generated
+           */
           private final «IRuntimeRepositoryLookup» runtimeRepositoryLookup;
         
           /**
-         * @generated
-         */
+           * @generated
+           */
           SerializationProxy(«identifierAttribute.datatypeNameForConstructor» «identifierAttribute.memberVarName», «IRuntimeRepositoryLookup» runtimeRepositoryLookup) {
             this.«identifierAttribute.memberVarName» = «identifierAttribute.memberVarName»;
             this.runtimeRepositoryLookup = runtimeRepositoryLookup;
           }
         
           /**
-         * @generated
-         */
+           * @generated
+           */
           private Object readResolve() {
             «IF !enumValues.isEmpty»
                 return VALUES.stream().filter(aEnum -> «IF identifierAttribute.datatype.primitive»aEnum.«identifierAttribute.memberVarName» == this.«identifierAttribute.memberVarName»«ELSE»aEnum.«identifierAttribute.memberVarName».equals(this.«identifierAttribute.memberVarName»)«ENDIF»)
