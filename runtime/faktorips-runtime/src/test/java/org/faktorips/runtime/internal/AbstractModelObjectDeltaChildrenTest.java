@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -113,11 +113,6 @@ public abstract class AbstractModelObjectDeltaChildrenTest {
         public TestOptions withSubtreeDelta() {
             subtree = true;
             return this;
-        }
-
-        @Override
-        public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
-            return false;
         }
 
         @Override

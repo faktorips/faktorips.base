@@ -1,20 +1,23 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime;
 
+import java.util.Objects;
+
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.AssociationKind;
 
 /**
  * Callback interface for the delta computation.
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IDeltaComputationOptions {
@@ -109,7 +112,7 @@ public interface IDeltaComputationOptions {
      * Returns <code>true</code> if the given property should be ignored in the delta computation.
      * If you compare for example two versions of the same contract, you might want to ignore the
      * different in the creation time, as otherwise two versions would always be different.
-     * 
+     *
      * @param clazz The class the property belongs to.
      * @param property The name of the property.
      */
@@ -126,33 +129,58 @@ public interface IDeltaComputationOptions {
      * <p>
      * The creation of delta elements for subtree nodes is based on reflection and may cause a
      * performance issue if used in massive delta computation with many added or removed subtrees.
-     * 
+     *
      * @return <code>true</code> if a delta should be created for every element of an added or
      *             removed subtree.
-     * 
+     *
      * @since 3.15
      */
     boolean isCreateSubtreeDelta();
 
     /**
-     * Compares two values for equality by the given model class and property, where either one or
-     * both values may be <code>null</code>.
-     * 
+     * Compares two values for equality by the given model class and property.
+     *
+     * Two values are considered equal if:
+     * <ul>
+     * <li>They are the same reference (including both {@code null}).</li>
+     * <li>Both are {@link String Strings} and both are blank (either {@code null}, empty, or only
+     * whitespace).</li>
+     * <li>One is {@code null} and the other is a blank {@code String}.</li>
+     * <li>Otherwise, they are equal according to {@link Objects#equals(Object, Object)}.</li>
+     * </ul>
+     *
      * @param clazz The class the property belongs to.
      * @param property The name of the property.
      * @param value1 The first value to compare
      * @param value2 The second value to compare
      * @return <code>true</code> if the values are the same
+     *
      */
-    boolean areValuesEqual(Class<?> clazz, String property, Object value1, Object value2);
+    default boolean areValuesEqual(Class<?> clazz, String property, Object value1, Object value2) {
+        if (value1 == value2) {
+            return true;
+        }
+        if (value1 instanceof String s1 && value2 instanceof String s2) {
+            if (IpsStringUtils.isBlank(s1) && IpsStringUtils.isBlank(s2)) {
+                return true;
+            }
+        }
+        if (value1 == null && value2 instanceof String s2) {
+            return IpsStringUtils.isBlank(s2);
+        }
+        if (value2 == null && value1 instanceof String s1) {
+            return IpsStringUtils.isBlank(s1);
+        }
+        return Objects.equals(value1, value2);
+    }
 
     /**
      * Controls whether {@link AssociationKind#Association associations} should be ignored when
      * computing deltas. If set to <code>true</code>, only {@link AssociationKind#Composition
      * parent-to-child relations} will be included.
-     * 
+     *
      * @return whether {@link AssociationKind#Association associations} should be ignored.
-     * 
+     *
      * @since 19.12
      */
     boolean ignoreAssociations();
@@ -164,9 +192,9 @@ public interface IDeltaComputationOptions {
      * <p>
      * Associations are only considered moved when the {@link #getMethod(String) delta computation
      * method} is set to {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT BY_OBJECT}.
-     * 
+     *
      * @return whether {@link IModelObjectDelta#MOVED moved} associations should be ignored.
-     * 
+     *
      * @since 22.6
      */
     default boolean ignoreMoved() {

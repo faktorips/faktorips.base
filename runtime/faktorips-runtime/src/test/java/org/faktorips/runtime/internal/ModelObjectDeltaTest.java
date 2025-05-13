@@ -501,11 +501,6 @@ public class ModelObjectDeltaTest {
         }
 
         @Override
-        public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
-            return false;
-        }
-
-        @Override
         public boolean ignoreAssociations() {
             return false;
         }
