@@ -12,7 +12,7 @@ Bundle-Activator: org.eclipse.emf.codegen.CodeGenPlugin$Implementation
 Export-Package: org.eclipse.emf.codegen,org.eclipse.emf.codegen.merge.
  java,org.eclipse.emf.codegen.merge.java.facade,org.eclipse.emf.codege
  n.merge.java.facade.ast
-Bundle-Version: 25.7.0.qualifier
+Bundle-Version: 25.7.0.a20250514-04
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
