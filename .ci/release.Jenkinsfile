@@ -194,46 +194,46 @@ pipeline {
                     }
                 }
                 script {
-                   DeploymentId = sh (
+                    DeploymentId = sh (
                         script: 'grep -P -o  -i "(?<=Deployment )[a-f0-9-]+(?= has been validated)" target/deploy.log',
                         returnStdout: true
                     ).trim()
-                }
-                rtp parserName: 'HTML', nullAction: '1', stableText: """
-                    <h2>Deployment</h2>
-                    <script>
-                    function copyToClipboard() {
-                      navigator.clipboard.writeText("${DeploymentId}");
-                    }
-                    </script>
-                    Deployment-ID: ${DeploymentId} <button onclick="copyToClipboard()">&#x1f4cb;</button><br />
-                    <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/'>Release on Maven Central</a>
-                    <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/'>Drop on Maven Central</a>
-                  """
-                responseStatus = sh (
-                    script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID} \
-                                -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail',
-                    returnStdout: true
-                ).trim()
-
-                props = readJSON text: "${responseStatus}"
-
-                try {
-                    // publish only works on VALIDATED
-                    assert props.deploymentState == 'VALIDATED'
-
-                } catch(Throwable errStatus) {
                     rtp parserName: 'HTML', nullAction: '1', stableText: """
-                        <h2>Status of ${DEPLOYMENT_ID}</h2>
-                        <span style="background:#ff9999;padding: 1em;font-weight: bold;">deploymentState is not VALIDATED but ${props.deploymentState}</span>
-                    """
-                    error("deploymentState is not VALIDATED but ${props.deploymentState}")
+                        <h2>Deployment</h2>
+                        <script>
+                        function copyToClipboard() {
+                          navigator.clipboard.writeText("${DeploymentId}");
+                        }
+                        </script>
+                        Deployment-ID: ${DeploymentId} <button onclick="copyToClipboard()">&#x1f4cb;</button><br />
+                        <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/'>Release on Maven Central</a>
+                        <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/'>Drop on Maven Central</a>
+                      """
+                    responseStatus = sh (
+                        script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID} \
+                                    -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail',
+                        returnStdout: true
+                    ).trim()
+    
+                    props = readJSON text: "${responseStatus}"
+    
+                    try {
+                        // publish only works on VALIDATED
+                        assert props.deploymentState == 'VALIDATED'
+    
+                    } catch(Throwable errStatus) {
+                        rtp parserName: 'HTML', nullAction: '1', stableText: """
+                            <h2>Status of ${DEPLOYMENT_ID}</h2>
+                            <span style="background:#ff9999;padding: 1em;font-weight: bold;">deploymentState is not VALIDATED but ${props.deploymentState}</span>
+                        """
+                        error("deploymentState is not VALIDATED but ${props.deploymentState}")
+                    }
+                    formatted = JsonOutput.prettyPrint(responseStatus).replace(" ", "&nbsp;").replace("\n","<br />\n")
+                    rtp parserName: 'HTML', nullAction: '1', stableText: """
+                            <h2>Deployment Status:</h2>
+                            <span style="font-family: monospace;">${formatted}</span>
+                        """
                 }
-                formatted = JsonOutput.prettyPrint(responseStatus).replace(" ", "&nbsp;").replace("\n","<br />\n")
-                rtp parserName: 'HTML', nullAction: '1', stableText: """
-                        <h2>Deployment Status:</h2>
-                        <span style="font-family: monospace;">${formatted}</span>
-                    """
                     
                 // deploy p2 repository
                 script {
