@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -84,9 +84,9 @@ import org.osgi.framework.BundleException;
  * <p>
  * In contrast to the configuration via {@link IIpsProjectProperties} there is no ability to
  * configure different base packages for different output directories.
- * 
+ *
  * @see IpsObjectPathManifestReader
- * 
+ *
  * @author dirmeier
  */
 public class IpsBundleManifest {
@@ -104,6 +104,8 @@ public class IpsBundleManifest {
     public static final String HEADER_UNIQUE_QUALIFIER = "Fips-UniqueQualifier"; //$NON-NLS-1$
 
     public static final String HEADER_GENERATOR_CONFIG = "Fips-GeneratorConfig"; //$NON-NLS-1$
+
+    public static final String HEADER_RUNTIME_ID_PREFIX = "Fips-RuntimeIdPrefix"; //$NON-NLS-1$
 
     public static final String ATTRIBUTE_TOC = "toc"; //$NON-NLS-1$
 
@@ -131,9 +133,9 @@ public class IpsBundleManifest {
      * <p>
      * Note that there is no possibility to configure different base packages for the mergeable and
      * derived artifacts.
-     * 
+     *
      * @param objectDir The name of the model folder for which you want to know the base package
-     * 
+     *
      * @return The base package configured for the given objectDir.
      */
     public String getBasePackage(String objectDir) {
@@ -198,7 +200,7 @@ public class IpsBundleManifest {
     /**
      * Returns a list of all objectDirs (folders containing {@link IIpsElement IPS elements}). The
      * path is relative to the root folder (project or archive).
-     * 
+     *
      * @return A list of all configured objectDirs
      */
     public List<Path> getObjectDirs() {
@@ -222,7 +224,7 @@ public class IpsBundleManifest {
     /**
      * Checks if this {@link IpsBundleManifest} has objectDirs. If it has objectDirs it returns
      * <code>true</code> and if not <code>false</code> is returned.
-     * 
+     *
      * @see #getObjectDirs()
      */
     public boolean hasObjectDirs() {
@@ -277,6 +279,12 @@ public class IpsBundleManifest {
         return generatorConfig;
     }
 
+    /** {@return the runtime ID prefix used in the project} */
+    public String getRuntimeIdPrefix() {
+        Attributes attributes = manifest.getMainAttributes();
+        return getValue(attributes, HEADER_RUNTIME_ID_PREFIX);
+    }
+
     /**
      * Writes the given Faktor-IPS project's generator settings to this manifest, overwriting any
      * old values.
@@ -312,6 +320,7 @@ public class IpsBundleManifest {
             sb.append('"');
         });
         attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
+        attributes.put(new Name(HEADER_RUNTIME_ID_PREFIX), ipsProject.getRuntimeIdPrefix());
         File actualManifestFile = manifestFile.getLocation().toFile();
         try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);

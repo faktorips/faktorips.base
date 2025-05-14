@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,7 +20,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Implementation of the published interface.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ProductCmptKind implements IProductCmptKind {
@@ -39,17 +39,35 @@ public class ProductCmptKind implements IProductCmptKind {
     /**
      * Create a new ProductCmptKind by parsing the name using the {@link IProductCmptNamingStrategy}
      * from the given {@link IIpsProject}.
-     * 
+     *
      * @param name the name of the {@link IProductCmpt}
      * @param ipsProject the {@link IIpsProject} of the {@link IProductCmpt}
      * @return the {@link IProductCmptKind} derived from the name or <code>null</code> if the name
      *             could not be parsed.
      */
     public static IProductCmptKind createProductCmptKind(String name, IIpsProject ipsProject) {
-        IProductCmptNamingStrategy stratgey = ipsProject.getProductCmptNamingStrategy();
+        IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
+        String runtimeIdPrefix = ipsProject.getRuntimeIdPrefix();
+        return createProductCmptKind(name, strategy, runtimeIdPrefix);
+    }
+
+    /**
+     * Create a new ProductCmptKind by parsing the name using the given
+     * {@link IProductCmptNamingStrategy} and runtime ID prefix.
+     *
+     * @param name the name of the {@link IProductCmpt}
+     * @param strategy the {@link IProductCmptNamingStrategy} to be used to create the name for the
+     *            {@link IProductCmpt}
+     * @param runtimeIdPrefix the prefix for runtime IDs
+     * @return the {@link IProductCmptKind} derived from the name or <code>null</code> if the name
+     *             could not be parsed.
+     */
+    public static IProductCmptKind createProductCmptKind(String name,
+            IProductCmptNamingStrategy strategy,
+            String runtimeIdPrefix) {
         try {
-            String kindName = stratgey.getKindId(name);
-            return new ProductCmptKind(kindName, ipsProject.getRuntimeIdPrefix() + kindName);
+            String kindName = strategy.getKindId(name);
+            return new ProductCmptKind(kindName, runtimeIdPrefix + kindName);
         } catch (IllegalArgumentException e) {
             // error in parsing the name results in a "not found" for the client
             return null;

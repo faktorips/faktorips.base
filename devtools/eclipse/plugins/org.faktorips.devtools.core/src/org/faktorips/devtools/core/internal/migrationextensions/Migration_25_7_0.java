@@ -10,12 +10,16 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
+import org.faktorips.runtime.MessageList;
 
 public class Migration_25_7_0 extends MarkAsDirtyMigration {
 
@@ -37,6 +41,12 @@ public class Migration_25_7_0 extends MarkAsDirtyMigration {
                 Set.of(IIpsModel.get().getIpsObjectTypes()),
                 migrationVersion,
                 Messages.Migration_25_7_0_description);
+    }
+
+    @Override
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
+        updateManifest();
+        return super.migrate(monitor);
     }
 
     /**

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -74,6 +74,8 @@ public class IpsBundleManifestTest {
 
     private static final String MY_MESSAGES = "myMessages";
 
+    private static final String MY_PREFIX = "myPrefix.";
+
     @Mock
     private Manifest manifest;
 
@@ -101,6 +103,7 @@ public class IpsBundleManifestTest {
                 STANDARD_BUILDER_SET_ID + ";" + IpsProjectProperties.ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION + "=\""
                         + IChangesOverTimeNamingConvention.FAKTOR_IPS + "\";" + ATTRIBUTE_GENERATE_PUBLISHED_INTERFACES
                         + "=\"" + TRUE + "\"");
+        when(attributes.getValue(IpsBundleManifest.HEADER_RUNTIME_ID_PREFIX)).thenReturn(MY_PREFIX);
 
         Attributes attributesForObjectDir = mock(Attributes.class);
         when(manifest.getAttributes(MY_OBJECT_DIR)).thenReturn(attributesForObjectDir);
@@ -370,10 +373,18 @@ public class IpsBundleManifestTest {
     }
 
     @Test
+    public void testGetRuntimeIdPrefix() {
+        String runtimeIdPrefix = ipsBundleManifest.getRuntimeIdPrefix();
+
+        assertEquals(MY_PREFIX, runtimeIdPrefix);
+    }
+
+    @Test
     public void testWriteBuilderSettings() throws IOException {
         IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
         when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
         when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(ipsProject.getRuntimeIdPrefix()).thenReturn("pre.");
         IIpsArtefactBuilderSetConfig builderSetConfig = mock(IIpsArtefactBuilderSetConfig.class);
         when(builderSet.getConfig()).thenReturn(builderSetConfig);
         when(builderSetConfig.getPropertyNames())
@@ -393,6 +404,7 @@ public class IpsBundleManifestTest {
 
         verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_GENERATOR_CONFIG),
                 "org.faktorips.devtools.stdbuilder.StandardBuilderSet;booleanAttr=\"true\";intAttr=\"42\";stringAttr=\"Foo \\\"quoted\\\" Bar\"");
+        verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_RUNTIME_ID_PREFIX), "pre.");
         verify(manifest).write(any(OutputStream.class));
     }
 
