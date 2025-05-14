@@ -210,7 +210,7 @@ pipeline {
                         <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/'>Drop on Maven Central</a>
                       """
                     responseStatus = sh (
-                        script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DEPLOYMENT_ID} \
+                        script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=${DeploymentId} \
                                     -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail',
                         returnStdout: true
                     ).trim()
