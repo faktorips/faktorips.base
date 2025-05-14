@@ -207,8 +207,8 @@ pipeline {
                             }
                             </script>
                             Deployment-ID: ${DeploymentId}&nbsp;<button onclick="copyToClipboard()">&#x1f4cb;</button><br />
-                            &#x2705;: <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/'>Release on Maven Central</a><br />
-                            &#x274C;: <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/'>Drop on Maven Central</a> - ggf. Nexus und update.faktorzehn.org von Admin aufr&auml;en lassen
+                            &#x2705;: <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/build'>Release on Maven Central</a><br />
+                            &#x274C;: <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/build'>Drop on Maven Central</a> - ggf. Nexus und update.faktorzehn.org von Admin aufr&auml;umen lassen
                           """
                         responseStatus = sh (
                             script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=' + DeploymentId + ' \
