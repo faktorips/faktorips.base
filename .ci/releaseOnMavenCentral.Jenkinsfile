@@ -47,11 +47,11 @@ pipeline {
 
                             // api returns 204 or 400+, so success if here
                             rtp parserName: 'HTML', nullAction: '1', stableText: """
-                                <h2 style="background:#99ff99;padding: 1em;>Publishing of ${DEPLOYMENT_ID} SUCCESS</h2>
+                                <h2 style="background:#99ff99;padding: 1em;">Publishing of ${DEPLOYMENT_ID} SUCCESS</h2>
                             """
                         } catch (Throwable errPublish) {
                             rtp parserName: 'HTML', nullAction: '1', stableText: """
-                                <h2 style="background:#ff9999;padding: 1em;>Publishing of ${DEPLOYMENT_ID} FAILED</h2>
+                                <h2 style="background:#ff9999;padding: 1em;">Publishing of ${DEPLOYMENT_ID} FAILED</h2>
                                 <p>${errPublish}</p>
                                 <small>Exit Code 22 == HTTP error code being 400 or above</small>
                             """
