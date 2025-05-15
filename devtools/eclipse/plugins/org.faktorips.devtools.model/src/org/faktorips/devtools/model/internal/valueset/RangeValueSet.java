@@ -358,6 +358,18 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof IValueSet)) {
+            return false;
+        }
+        try {
+            return super.equals(obj) && compareTo((IValueSet)obj) == 0;
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
+
+    @Override
     public int compareTo(IValueSet o) {
         if (o.isRange()) {
             IRangeValueSet otherRangeValueSet = (IRangeValueSet)o;
@@ -375,7 +387,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         } else {
             return compareDifferentValueSets(o);
         }
-
     }
 
     /**
