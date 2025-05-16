@@ -183,60 +183,13 @@ pipeline {
 
         stage('Deployment of Artifacts') {
             steps {
-                // deploys plain maven artifacts
-                withMaven(publisherStrategy: 'EXPLICIT') {
-                    configFileProvider([
+
+                deployToMavenCentral(configFiles:[
                         configFile(fileId: "${toolchainsFile}", variable: 'TOOLCHAINS'),
                         configFile(fileId: "${settingsFile}", variable: 'MAVEN_SETTINGS'),
-                        configFile(fileId: "${securityFile}", variable: 'MAVEN_SECURITY')]) {
-                        // deployment must be singlethreaded - otherwise there may be multiple staging repositories created
-                        sh 'mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t "$TOOLCHAINS" -s "$MAVEN_SETTINGS" -Dsettings.security="$MAVEN_SECURITY" | tee target/deploy.log'
-                    }
-                }
-                script {
-                    withCredentials([string(credentialsId: 'sonatype.central.token', variable: 'SONATYPE_CREDENTIALS')]) {
-                        DeploymentId = sh (
-                            script: 'grep -P -o  -i "(?<=Deployment )[a-f0-9-]+(?= has been validated)" target/deploy.log',
-                            returnStdout: true
-                        ).trim()
-                        rtp parserName: 'HTML', nullAction: '1', stableText: """
-                            <h2>Deployment</h2>
-                            <script>
-                            function copyToClipboard() {
-                              navigator.clipboard.writeText("${DeploymentId}");
-                            }
-                            </script>
-                            Deployment-ID: ${DeploymentId}&nbsp;<button onclick="copyToClipboard()">&#x1f4cb;</button><br />
-                            &#x2705;: <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_ReleaseOnMavenCentral/build'>Release on Maven Central</a><br />
-                            &#x274C;: <a href='https://fips-ci.faktorzehn.de/view/Faktor-IPS/job/FaktorIPS_DropOnMavenCentral/build'>Drop on Maven Central</a> - ggf. Nexus und update.faktorzehn.org von Admin aufr&auml;umen lassen
-                          """
-                        responseStatus = sh (
-                            script: 'curl -X POST https://central.sonatype.com/api/v1/publisher/status?id=' + DeploymentId + ' \
-                                        -H "accept: application/json" -H "Authorization: Bearer $SONATYPE_CREDENTIALS" -d "" --fail',
-                            returnStdout: true
-                        ).trim()
-        
-                        props = readJSON text: "${responseStatus}"
-        
-                        try {
-                            // publish only works on VALIDATED
-                            assert props.deploymentState == 'VALIDATED'
-        
-                        } catch(Throwable errStatus) {
-                            rtp parserName: 'HTML', nullAction: '1', stableText: """
-                                <h2>Status of ${DEPLOYMENT_ID}</h2>
-                                <span style="background:#ff9999;padding: 1em;font-weight: bold;">deploymentState is not VALIDATED but ${props.deploymentState}</span>
-                            """
-                            error("deploymentState is not VALIDATED but ${props.deploymentState}")
-                        }
-                        formatted = JsonOutput.prettyPrint(responseStatus).replace(" ", "&nbsp;").replace("\n","<br />\n")
-                        rtp parserName: 'HTML', nullAction: '1', stableText: """
-                                <h2>Deployment Status:</h2>
-                                <span style="font-family: monospace;">${formatted}</span>
-                            """
-                    }
-                }
-                    
+                        configFile(fileId: "${securityFile}", variable: 'MAVEN_SECURITY')], 
+                        commands: [ 'mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t "$TOOLCHAINS" -s "$MAVEN_SETTINGS" -Dsettings.security="$MAVEN_SECURITY"' ])
+
                 // deploy p2 repository
                 script {
                     def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, releaseVersion)
