@@ -38,6 +38,8 @@ import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
+import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -207,6 +209,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         assertEquals(tocEntry.getIpsObjectId(), table.getName());
     }
 
+    @IpsEnumType(name = "", attributeNames = { "id", "name" })
     public static class TestEnum {
 
         public static final List<TestEnum> VALUES = List.of(new TestEnum(0, "A", "A", null),
@@ -229,10 +232,12 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
             return index;
         }
 
+        @IpsEnumAttribute(name = "id", identifier = true, unique = true, mandatory = true)
         public String getId() {
             return id;
         }
 
+        @IpsEnumAttribute(name = "name", unique = true, displayName = true, mandatory = true)
         public String getName() {
             return name;
         }

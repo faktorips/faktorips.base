@@ -189,22 +189,22 @@ public class DefaultInternationalString implements InternationalString {
      * If it's already a {@link DefaultInternationalString}, the entry for the same locale is
      * replaced or added. If it's another type, an {@link UnsupportedOperationException} is thrown.
      *
-     * @param description the original international string, may be {@code null}
+     * @param internationalString the original international string, may be {@code null}
      * @param locale the new/updated locale
      * @param value the new/updated value for the given locale
      * @return the updated {@link DefaultInternationalString}
      * @throws UnsupportedOperationException if the description is not a
      *             {@link DefaultInternationalString}
      */
-    public static DefaultInternationalString updateWith(@CheckForNull InternationalString description,
+    public static DefaultInternationalString updateWith(@CheckForNull InternationalString internationalString,
             Locale locale,
             String value) {
 
-        if (description == null) {
+        if (internationalString == null) {
             return new DefaultInternationalString(List.of(new LocalizedString(locale, value)), locale);
         }
 
-        if (description instanceof DefaultInternationalString defaultInternationString) {
+        if (internationalString instanceof DefaultInternationalString defaultInternationString) {
             return defaultInternationString.with(locale, value);
         }
 

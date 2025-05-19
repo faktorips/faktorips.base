@@ -300,7 +300,7 @@ public enum ValueToXmlHelper {
         ProductCmptType productCmptType = IpsModel.getProductCmptType(productComponent);
         MessagesHelper messagesHelper = productCmptType.getMessageHelper().forI18n();
         String key = productComponent.getId().replace(' ', '_') + '.' + propertyName;
-        return l -> messagesHelper.getMessage(key, l);
+        return new PropertiesReadingInternationalString(key, messagesHelper);
     }
 
     /**

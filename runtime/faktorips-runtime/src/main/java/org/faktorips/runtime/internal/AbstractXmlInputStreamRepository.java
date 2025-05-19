@@ -41,8 +41,13 @@ import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.enumtype.EnumAttribute;
+import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.faktorips.runtime.util.MessagesHelper;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -108,8 +113,9 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
         } else {
             Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
                     getParameterSize(enumContent.getEnumValues()));
-            return getCreatedEnumValueList(tocEntry, enumContent, constructor,
-                    getEnumValuesDefinedInType(enumClass).size());
+            EnumType enumType = IpsModel.getEnumType(enumClass);
+            return getCreatedEnumValueList(tocEntry, enumType, enumContent,
+                    constructor, getEnumValuesDefinedInType(enumClass).size());
         }
     }
 
@@ -337,22 +343,60 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
     }
 
     private <T> IpsEnum<T> getCreatedEnumValueList(EnumContentTocEntry tocEntry,
+            EnumType enumType,
             EnumContent enumContent,
             Constructor<T> constructor,
             int startIndex) {
+        EnumAttribute[] attributes = enumType.getAttributes().toArray(EnumAttribute[]::new);
+        int idIndex = findIdIndex(enumType, attributes);
         T enumValue = null;
         List<T> enumValues = new ArrayList<>();
         int valueCounterForIndexParameter = startIndex;
+        constructor.setAccessible(true);
         for (List<Object> enumValueAsStrings : enumContent.getEnumValues()) {
-            constructor.setAccessible(true);
             Object[] enumAttributeValues = enumValueAsStrings.toArray();
             Object[] parameters = new Object[enumAttributeValues.length + 2];
+            for (int i = 0; i < attributes.length; i++) {
+                if (attributes[i].isMultilingual()) {
+                    if (enumAttributeValues[i] instanceof DefaultInternationalString internationalString) {
+                        enumAttributeValues[i] = addExternalFallback(enumType, attributes[i], internationalString,
+                                enumAttributeValues[idIndex]);
+                    }
+                }
+            }
             setValuesForParamters(valueCounterForIndexParameter, enumAttributeValues, parameters);
             enumValue = createEnumValue(constructor, parameters, tocEntry);
             enumValues.add(enumValue);
             valueCounterForIndexParameter++;
         }
         return new IpsEnum<>(enumValues, enumContent.getDescription());
+    }
+
+    private int findIdIndex(EnumType enumType, EnumAttribute[] attributes) {
+        EnumAttribute idAttribute = enumType.getIdAttribute();
+        int idIndex = -1;
+        for (int i = 0; i < attributes.length; i++) {
+            if (attributes[i] == idAttribute) {
+                idIndex = i;
+            }
+        }
+        return idIndex;
+    }
+
+    private DefaultInternationalString addExternalFallback(EnumType enumType,
+            EnumAttribute attribute,
+            DefaultInternationalString internationalParam,
+            Object idParam) {
+        InternationalString fallback = createExternalI18nFallback(enumType, attribute.getName() + '.' + idParam);
+        return new DefaultInternationalString(internationalParam.getLocalizedStrings(),
+                internationalParam.getDefaultLocale(), fallback);
+    }
+
+    private static InternationalString createExternalI18nFallback(EnumType enumType,
+            String propertyName) {
+        MessagesHelper messagesHelper = enumType.getMessageHelper().forI18n();
+        String key = enumType.getEnumContentQualifiedName().replace(' ', '_') + '.' + propertyName;
+        return new PropertiesReadingInternationalString(key, messagesHelper);
     }
 
     private Constructor<?> getTestCaseConstructor(TestCaseTocEntry tocEntry) {

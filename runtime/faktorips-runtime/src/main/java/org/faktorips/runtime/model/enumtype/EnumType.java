@@ -168,7 +168,7 @@ public class EnumType extends ModelElement {
     }
 
     @Override
-    protected MessagesHelper getMessageHelper() {
+    public MessagesHelper getMessageHelper() {
         return messagesHelper;
     }
 

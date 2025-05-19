@@ -48,6 +48,14 @@
             "oldVisibility": "protected",
             "newVisibility": "public",
             "justification": "FIPS-11929 :: External internationalization of multilanguage Strings"
+          },
+          {
+            "code": "java.method.visibilityIncreased",
+            "old": "method org.faktorips.runtime.util.MessagesHelper org.faktorips.runtime.model.enumtype.EnumType::getMessageHelper()",
+            "new": "method org.faktorips.runtime.util.MessagesHelper org.faktorips.runtime.model.enumtype.EnumType::getMessageHelper()",
+            "oldVisibility": "protected",
+            "newVisibility": "public",
+            "justification": "FIPS-11929 :: External internationalization of multilanguage Strings"
           }
         ]
       }
