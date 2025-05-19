@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-parent</artifactId>
-        <version>25.7.0-SNAPSHOT</version>
+        <version>25.7.0.a20250519-01</version>
         <relativePath>../../../../../common/pom.xml</relativePath>
     </parent>
 
