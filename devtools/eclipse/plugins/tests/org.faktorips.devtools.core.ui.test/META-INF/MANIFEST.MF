@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.core.ui.test
-Bundle-Version: 25.7.0.a20250519-01
+Bundle-Version: 25.7.0.qualifier
 Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
  org.faktorips.devtools.core.ui.binding,
