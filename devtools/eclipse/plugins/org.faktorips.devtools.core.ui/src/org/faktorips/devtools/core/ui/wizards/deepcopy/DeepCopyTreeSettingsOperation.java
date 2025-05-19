@@ -47,6 +47,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public abstract class DeepCopyTreeSettingsOperation implements SelectionListener {
 
@@ -80,7 +81,9 @@ public abstract class DeepCopyTreeSettingsOperation implements SelectionListener
                 "*.json", "*.*" });
         String filePath = dialog.open();
 
-        performOperation(filePath, createGson());
+        if (IpsStringUtils.isNotBlank(filePath)) {
+            performOperation(filePath, createGson());
+        }
     }
 
     protected Gson createGson() {
