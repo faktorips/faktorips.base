@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-runtime-parent</artifactId>
-        <version>25.1.4-SNAPSHOT</version>
+        <version>25.1.0.a20250519-01</version>
     </parent>
 
     <artifactId>faktorips-valuetypes-joda</artifactId>
