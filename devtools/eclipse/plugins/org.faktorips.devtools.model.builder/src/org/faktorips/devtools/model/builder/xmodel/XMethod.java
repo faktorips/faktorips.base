@@ -159,16 +159,16 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public boolean isFormulaSignature() {
-        if (getMethod() instanceof IProductCmptTypeMethod) {
-            return ((IProductCmptTypeMethod)getMethod()).isFormulaSignatureDefinition();
+        if (getMethod() instanceof IProductCmptTypeMethod productCmptTypeMethod) {
+            return productCmptTypeMethod.isFormulaSignatureDefinition();
         } else {
             return false;
         }
     }
 
     public boolean isOverloadsFormula() {
-        if (getMethod() instanceof IProductCmptTypeMethod) {
-            return ((IProductCmptTypeMethod)getMethod()).isOverloadsFormula();
+        if (getMethod() instanceof IProductCmptTypeMethod productCmptTypeMethod) {
+            return productCmptTypeMethod.isOverloadsFormula();
         } else {
             return false;
         }

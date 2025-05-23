@@ -17,7 +17,11 @@ class MethodsTmpl {
             «IF description.length > 0»
                 *<p>
             «ENDIF»
-            *«localizedJDoc("METHOD_GETFORMULAR")»
+            «IF overrides»
+                «inheritDoc»
+            «ELSE»
+                *«localizedJDoc("METHOD_GETFORMULAR")»
+            «ENDIF»
             *@see #«methodNameIsFormulaAvailable»
         «ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
@@ -59,15 +63,11 @@ class MethodsTmpl {
                 }
 
         «ENDIF»
-
+        
         «IF formulaOptional && !overloadsFormula»
             /**
-            «IF published && !genInterface»
-             *«inheritDoc»
-            «ELSE»
-             *«localizedJDoc("METHOD_IS_FORMULAR_AVAILABLE")»
-            «ENDIF»
-           «getAnnotations(ELEMENT_JAVA_DOC)»
+            *«inheritDocOrJavaDocIf(genInterface || !published, "METHOD_IS_FORMULAR_AVAILABLE")»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
             *
             * @generated
             */
@@ -83,12 +83,12 @@ class MethodsTmpl {
 
     def package static method (XMethod it) '''
         /**
-        «IF published && !genInterface»
-         *«inheritDoc»
+        «IF generatePublishedInterfaces && !(genInterface || !published)»
+            * «inheritDoc»
         «ELSEIF description.length > 0»
-         *«description»
+            *«description»
         «ENDIF»
-        «getAnnotations(ELEMENT_JAVA_DOC)»
+         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
