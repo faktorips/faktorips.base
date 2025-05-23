@@ -610,10 +610,26 @@ public class JMerger {
 
                             targetPutMethod.invoke(targetNode, value);
                             targetCompilationChanged = true;
+                            String redirect = getControlModel().getRedirect();
+                            if (targetNode instanceof JMethod method
+                                    && isNotExistingAnnotation(method, "@Override")
+                                    && method.getName() != null
+                                    && method.getComment() != null
+                                    && redirect != null
+                                    && method.getName().endsWith(redirect)) {
+                                String comment = method.getComment();
+                                // Removes {@inheritDoc} in javadoc for target methods of
+                                // "@generated REDIRECT"
+                                String updatedComment = comment.replaceAll(
+                                        "(?m)^\\s*\\*\\s*\\{@inheritDoc\\}\\s*$(\\r?\\n)^\\s*\\*\\s*$\\1?", "");
+                                if (!updatedComment.equals(comment)) {
+                                    method.setComment(updatedComment.trim());
+                                }
+                            }
+
                             if (targetPutMethod.getName().equals("setBody")
                                     && sourceNode instanceof JMethod sourceMethod
                                     && targetNode instanceof JMethod targetMethod) {
-
                                 String[] sourceParameterTypes = sourceMethod.getParameterTypes();
                                 String[] targetParameterTypes = targetMethod.getParameterTypes();
                                 if (Arrays.equals(sourceParameterTypes, targetParameterTypes)) {
