@@ -60,6 +60,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     private String getNameMethodName = ""; //$NON-NLS-1$
     private String getValueByNameMethodName = ""; //$NON-NLS-1$
     private String className;
+    private String jaxbXmlJavaTypeAdapterClass = ""; //$NON-NLS-1$
     private Class<?> adaptedClass;
 
     public DynamicValueDatatype(IIpsProject ipsProject) {
@@ -150,8 +151,12 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         if (hasNullObject()) {
             ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId"); //$NON-NLS-1$
         }
+        if (IpsStringUtils.isNotBlank(getJaxbXmlJavaTypeAdapterClass())) {
+            element.setAttribute("jaxbXmlJavaTypeAdapterClass", getJaxbXmlJavaTypeAdapterClass()); //$NON-NLS-1$
+        }
     }
 
+    // CSOFF: CyclomaticComplexity
     public static final DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {
         DynamicValueDatatype datatype = createDynamicValueOrEnumDatatype(ipsProject, element);
         // note: up to version 2.1 it was valueClass, since then it is javaClass
@@ -203,8 +208,12 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
             datatype.setNullObjectDefined(true);
             datatype.setNullObjectId(ValueToXmlHelper.getValueFromElement(element, "NullObjectId")); //$NON-NLS-1$
         }
+        if (element.hasAttribute("jaxbXmlJavaTypeAdapterClass")) { //$NON-NLS-1$
+            datatype.setJaxbXmlJavaTypeAdapterClass(element.getAttribute("jaxbXmlJavaTypeAdapterClass"));
+        }
         return datatype;
     }
+    // CSON: CyclomaticComplexity
 
     private static DynamicValueDatatype createDynamicValueOrEnumDatatype(IIpsProject ipsProject, Element element) {
         DynamicValueDatatype datatype;
@@ -375,5 +384,13 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         return nameMethodWithLocale.exists()
                 ? nameMethodWithLocale.invoke(methodDescription, value, locale)
                 : getNameMethod().invoke(methodDescription, value);
+    }
+
+    public String getJaxbXmlJavaTypeAdapterClass() {
+        return jaxbXmlJavaTypeAdapterClass;
+    }
+
+    public void setJaxbXmlJavaTypeAdapterClass(String jaxbXmlJavaTypeAdapterClass) {
+        this.jaxbXmlJavaTypeAdapterClass = jaxbXmlJavaTypeAdapterClass;
     }
 }

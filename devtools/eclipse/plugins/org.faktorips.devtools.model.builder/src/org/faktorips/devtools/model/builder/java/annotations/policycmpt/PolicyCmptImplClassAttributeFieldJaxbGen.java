@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,13 +29,15 @@ import org.faktorips.devtools.model.builder.java.annotations.JaxbAnnGenFactory.I
 import org.faktorips.devtools.model.builder.java.annotations.JaxbAnnGenFactory.JaxbAnnotation;
 import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
 /**
  * Generates JAXB annotations for policy component type fields.
- * 
+ *
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD
  */
 public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractJaxbAnnotationGenerator {
@@ -69,8 +71,24 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractJaxbAnnota
             generateXmlAdaptersForJavaTimeDataTypes(generatorModelNode, builder, datatype);
 
             generateXmlAdaptersForIpsDataTypes(generatorModelNode, builder, datatype);
+
+            generateXmlAdaptersForCustomDatatypes(generatorModelNode, builder, datatype);
         }
         return builder.getFragment();
+    }
+
+    @SuppressWarnings("restriction")
+    private void generateXmlAdaptersForCustomDatatypes(AbstractGeneratorModelNode generatorModelNode,
+            JavaCodeFragmentBuilder builder,
+            ValueDatatype datatype) {
+        if (datatype instanceof DynamicValueDatatype customDatatype
+                && IpsStringUtils.isNotBlank(customDatatype.getJaxbXmlJavaTypeAdapterClass())) {
+            JavaCodeFragment adapterFragment = new JavaCodeFragment();
+            adapterFragment.appendClassName(customDatatype.getJaxbXmlJavaTypeAdapterClass());
+            adapterFragment.append(".class");
+            builder.annotationLn(getQualifiedName(JaxbAnnotation.XmlJavaTypeAdapter, generatorModelNode),
+                    adapterFragment);
+        }
     }
 
     /**

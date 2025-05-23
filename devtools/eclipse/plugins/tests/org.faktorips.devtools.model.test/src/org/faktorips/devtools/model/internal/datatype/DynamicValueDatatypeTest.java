@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,10 +12,7 @@ package org.faktorips.devtools.model.internal.datatype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.nullValue;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -45,10 +42,10 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 0);
         DynamicValueDatatype type = DynamicValueDatatype.createFromXml(ipsProject, el);
-        assertEquals("foo.bar.MyDate", type.getAdaptedClassName());
-        assertEquals("getMyDate", type.getValueOfMethodName());
-        assertEquals("isMyDate", type.getIsParsableMethodName());
-        assertFalse(type.hasNullObject());
+        assertThat(type.getAdaptedClassName(), is("foo.bar.MyDate"));
+        assertThat(type.getValueOfMethodName(), is("getMyDate"));
+        assertThat(type.getIsParsableMethodName(), is("isMyDate"));
+        assertThat(type.hasNullObject(), is(false));
     }
 
     @Test
@@ -56,14 +53,14 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 1);
         DynamicEnumDatatype type = (DynamicEnumDatatype)DynamicValueDatatype.createFromXml(ipsProject, el);
-        assertEquals("foo.bar.PaymentMode", type.getAdaptedClassName());
-        assertEquals("getPaymentMode", type.getValueOfMethodName());
-        assertEquals("isPaymentMode", type.getIsParsableMethodName());
-        assertEquals("getId", type.getToStringMethodName());
-        assertEquals("getName", type.getGetNameMethodName());
-        assertEquals("getPaymentModes", type.getAllValuesMethodName());
-        assertTrue(type.isSupportingNames());
-        assertFalse(type.hasNullObject());
+        assertThat(type.getAdaptedClassName(), is("foo.bar.PaymentMode"));
+        assertThat(type.getValueOfMethodName(), is("getPaymentMode"));
+        assertThat(type.getIsParsableMethodName(), is("isPaymentMode"));
+        assertThat(type.getToStringMethodName(), is("getId"));
+        assertThat(type.getGetNameMethodName(), is("getName"));
+        assertThat(type.getAllValuesMethodName(), is("getPaymentModes"));
+        assertThat(type.isSupportingNames(), is(true));
+        assertThat(type.hasNullObject(), is(false));
     }
 
     @Test
@@ -71,8 +68,8 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 2);
         DynamicEnumDatatype type = (DynamicEnumDatatype)DynamicValueDatatype.createFromXml(ipsProject, el);
-        assertTrue(type.hasNullObject());
-        assertEquals("n", type.getNullObjectId());
+        assertThat(type.hasNullObject(), is(true));
+        assertThat(type.getNullObjectId(), is("n"));
     }
 
     @Test
@@ -80,8 +77,8 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         Element el = XmlUtil.getElement(docEl, "Datatype", 3);
         DynamicEnumDatatype type = (DynamicEnumDatatype)DynamicValueDatatype.createFromXml(ipsProject, el);
-        assertTrue(type.hasNullObject());
-        assertNull(type.getNullObjectId());
+        assertThat(type.hasNullObject(), is(true));
+        assertThat(type.getNullObjectId(), is(nullValue()));
     }
 
     @Test
@@ -140,8 +137,7 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         dataType.setAllValuesMethodName("getAllValues");
 
         Object valueByName = dataType.getValueByName("third");
-        assertEquals(TestEnumType.THIRDVALUE, valueByName);
-
+        assertThat(valueByName, is(TestEnumType.THIRDVALUE));
     }
 
     @Test
@@ -158,20 +154,21 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         dataType.setToStringMethodName("toString");
         dataType.setGetValueByNameMethodName("parseName");
         dataType.setAllValuesMethodName("getAllValues");
+        dataType.setJaxbXmlJavaTypeAdapterClass("jaxbXmlJavaAdpater");
 
         Element documentElement = createXmlDocument("Datatype").getDocumentElement();
 
         dataType.writeToXml(documentElement);
 
         DynamicValueDatatype dataType2 = DynamicValueDatatype.createFromXml(ipsProject, documentElement);
-        assertEquals("getName", dataType2.getGetNameMethodName());
-        assertEquals("valueOf", dataType2.getValueOfMethodName());
-        assertEquals("isParsable", dataType2.getIsParsableMethodName());
-        assertEquals("toString", dataType2.getToStringMethodName());
-        assertEquals("parseName", dataType2.getGetValueByNameMethodName());
-        assertEquals("getAllValues", dataType2.getAllValuesMethodName());
-        assertTrue(dataType2.isSupportingNames());
-        assertFalse(dataType2.hasNullObject());
-
+        assertThat(dataType2.getGetNameMethodName(), is("getName"));
+        assertThat(dataType2.getValueOfMethodName(), is("valueOf"));
+        assertThat(dataType2.getIsParsableMethodName(), is("isParsable"));
+        assertThat(dataType2.getToStringMethodName(), is("toString"));
+        assertThat(dataType2.getGetValueByNameMethodName(), is("parseName"));
+        assertThat(dataType2.getAllValuesMethodName(), is("getAllValues"));
+        assertThat(dataType2.isSupportingNames(), is(true));
+        assertThat(dataType2.hasNullObject(), is(false));
+        assertThat(dataType2.getJaxbXmlJavaTypeAdapterClass(), is("jaxbXmlJavaAdpater"));
     }
 }

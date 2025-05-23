@@ -133,6 +133,7 @@
         <xsd:attribute name="isSupportingNames" type="boolean" />
         <xsd:attribute name="getNameMethod" type="string" />
         <xsd:attribute name="getValueByNameMethod" type="string" />
+        <xsd:attribute name="jaxbXmlJavaTypeAdapterClass" type="string" />
     </xsd:complexType>
 
     <xsd:complexType name="NullObjectIdType">
