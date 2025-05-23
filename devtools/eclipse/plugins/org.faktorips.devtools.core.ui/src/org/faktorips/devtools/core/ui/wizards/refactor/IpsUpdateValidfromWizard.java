@@ -87,6 +87,8 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
     private String oldValidFromDate;
     private DateFormat dateFormat;
 
+    private List<String> refactoredIds = new ArrayList<>();
+
     private AsyncExecutor asyncExecutor = runnable -> Display.getDefault().asyncExec(runnable);
 
     /**
@@ -654,7 +656,8 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         String kindId = namingStrategy.getKindId(currentName);
         String newName = namingStrategy.getProductCmptName(kindId, newVersionId);
 
-        if (!newName.equals(currentName)) {
+        if (!newName.equals(currentName) && !refactoredIds.contains(newName)) {
+            refactoredIds.add(newName);
             performRenameRefactoring(ipsObject, newName);
         }
     }

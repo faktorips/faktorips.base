@@ -55,6 +55,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private ProductCmpt productCmptTarget;
     private ProductCmpt productCmptTarget2;
+    private ProductCmpt productCmptSharedTarget;
 
     @Before
     public void setup() {
@@ -84,6 +85,10 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         IPolicyCmptType policyCmptTypeTarget = newPolicyAndProductCmptType(ipsProject, "TestTarget", "dummy2");
         IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(ipsProject);
 
+        IPolicyCmptType policyCmptTypeSharedTarget = newPolicyAndProductCmptType(ipsProject, "TestSharedTarget",
+                "dummy23");
+        IProductCmptType productCmptTypeSharedTarget = policyCmptTypeSharedTarget.findProductCmptType(ipsProject);
+
         association = productCmptType.newProductCmptTypeAssociation();
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTargetRoleSingular("TestRelation");
@@ -94,17 +99,34 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
         productCmptGen = productCmpt.getProductCmptGeneration(0);
 
+        IProductCmptTypeAssociation sharedTargetAssociation = productCmptTypeTarget.newProductCmptTypeAssociation();
+        sharedTargetAssociation.setAssociationType(AssociationType.AGGREGATION);
+        sharedTargetAssociation.setTargetRoleSingular("TestTargetRelation");
+        sharedTargetAssociation.setTarget(productCmptTypeSharedTarget.getQualifiedName());
+
         productCmptTarget = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget 2025-01");
         productCmptTarget2 = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget2 2025-01");
+        productCmptSharedTarget = newProductCmpt(productCmptTypeTarget, "products.TestProductSharedTarget 2025-01");
 
         productCmptTarget.setValidFrom(new GregorianCalendar(2025, 0, 1));
         productCmptTarget2.setValidFrom(new GregorianCalendar(2025, 0, 1));
+        productCmptSharedTarget.setValidFrom(new GregorianCalendar(2025, 0, 1));
 
         IProductCmptLink link = productCmptGen.newLink(association.getName());
         link.setTarget(productCmptTarget.getQualifiedName());
 
         link = productCmptGen.newLink(association.getName());
         link.setTarget(productCmptTarget2.getQualifiedName());
+
+        IProductCmptGeneration target1Gen = productCmptTarget.getProductCmptGeneration(0);
+
+        IProductCmptLink sharedlink = target1Gen.newLink(sharedTargetAssociation.getName());
+        sharedlink.setTarget(productCmptSharedTarget.getQualifiedName());
+
+        IProductCmptGeneration target2Gen = productCmptTarget2.getProductCmptGeneration(0);
+
+        IProductCmptLink sharedlink2 = target2Gen.newLink(sharedTargetAssociation.getName());
+        sharedlink2.setTarget(productCmptSharedTarget.getQualifiedName());
 
         String oldDate = "2025-01-01";
         String oldDateTime = "2025-01-01T12:00:00";
@@ -187,6 +209,9 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
         assertThat(productCmptTarget2.getValidFrom(), is(newValue));
         assertThat(productCmptTarget2.getRuntimeId(), is("TestProductTarget2 2028-01"));
+
+        assertThat(productCmptSharedTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptSharedTarget.getRuntimeId(), is("TestProductSharedTarget 2028-01"));
 
     }
 
