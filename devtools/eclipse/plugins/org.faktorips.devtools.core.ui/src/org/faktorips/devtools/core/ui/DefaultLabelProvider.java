@@ -63,7 +63,7 @@ public class DefaultLabelProvider extends LabelProvider {
             case EnumTypeDatatypeAdapter enumTypeDatatypeAdapter -> getImage(enumTypeDatatypeAdapter.getEnumType());
             case Datatype $ -> IIpsDecorators.getImageHandling().getSharedImage("Datatype.gif", true); //$NON-NLS-1$
             case FlFunction<?> $ -> IpsUIPlugin.getImageHandling().getSharedImage("Function.gif", true); //$NON-NLS-1$
-            default -> super.getImage(element);
+            case null, default -> super.getImage(element);
         };
     }
 
