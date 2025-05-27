@@ -8,7 +8,7 @@
 
     <requiredProperties>
         <requiredProperty key="JavaVersion">
-            <defaultValue>17</defaultValue>
+            <defaultValue>21</defaultValue>
             <validationRegex>\d\d?(?:\.\d\d?)*</validationRegex>
         </requiredProperty>
         <requiredProperty key="IPS-Language">
