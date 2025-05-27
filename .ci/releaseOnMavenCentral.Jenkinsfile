@@ -1,5 +1,5 @@
 library 'f10-jenkins-library@1.1_patches'
-library 'fips-jenkins-library@main'
+library 'maven-central-release-library@main'
 
 pipeline {
     agent any
