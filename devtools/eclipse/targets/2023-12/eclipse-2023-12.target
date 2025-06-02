@@ -89,7 +89,6 @@
             <unit id="org.apache.commons.cli" version="0.0.0"/>
             <unit id="org.apache.commons.codec" version="0.0.0"/>
             <unit id="org.apache.commons.collections" version="0.0.0"/>
-            <unit id="org.apache.commons.commons-beanutils" version="0.0.0"/>
             <unit id="org.apache.commons.commons-codec" version="0.0.0"/>
             <unit id="org.apache.commons.commons-io" version="0.0.0"/>
             <unit id="org.apache.commons.compress" version="0.0.0"/>
