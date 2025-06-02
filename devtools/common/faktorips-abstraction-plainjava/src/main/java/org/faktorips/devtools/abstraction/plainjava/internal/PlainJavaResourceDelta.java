@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 package org.faktorips.devtools.abstraction.plainjava.internal;
 
 import java.nio.file.Path;
+import java.util.Set;
 
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
@@ -44,8 +45,8 @@ public class PlainJavaResourceDelta extends AWrapper<PlainJavaResourceChange> im
     }
 
     @Override
-    public int getFlags() {
-        throw new UnsupportedOperationException();
+    public Set<AResourceDeltaFlag> getFlags() {
+        return Set.of(AResourceDeltaFlag.CONTENT);
     }
 
     @Override

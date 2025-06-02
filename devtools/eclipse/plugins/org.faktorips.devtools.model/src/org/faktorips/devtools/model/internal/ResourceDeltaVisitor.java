@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaFlag;
 import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.abstraction.util.PathUtil;
@@ -58,7 +59,9 @@ public class ResourceDeltaVisitor implements AResourceDeltaVisitor {
             return true;
         }
         if (isRelatedFile(resource)) {
-            if (ipsProjectPropertiesChanged(resource) || manifestChanged(resource)) {
+            // skip changes, not caused by content changes, to .ipsproject and manifest
+            if (!delta.getFlags().contains(AResourceDeltaFlag.MARKERS)
+                    && (ipsProjectPropertiesChanged(resource) || manifestChanged(resource))) {
                 handleUpdateProjectSettings(resource);
             } else if (delta.getKind() == AResourceDeltaKind.REMOVED) {
                 handleRemoved(resource);
@@ -102,7 +105,10 @@ public class ResourceDeltaVisitor implements AResourceDeltaVisitor {
 
     private boolean ipsProjectPropertiesChanged(AResource resource) {
         AProject project = resource.getProject();
-        IIpsProject ipsProject = project == null ? null : ipsModel.getIpsProject(project);
+        if (project == null || !project.isIpsProject()) {
+            return false;
+        }
+        IIpsProject ipsProject = ipsModel.getIpsProject(project);
         return ipsProject != null && resource.equals(ipsProject.getIpsProjectPropertiesFile());
     }
 

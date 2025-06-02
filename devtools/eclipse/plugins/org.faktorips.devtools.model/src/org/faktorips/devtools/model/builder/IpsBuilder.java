@@ -43,6 +43,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaFlag;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -965,10 +966,9 @@ public class IpsBuilder {
                     break;
                 case CHANGED:
                     // skip changes, not caused by content changes,
-                    if (delta.getFlags() != 0 && element.exists()) {
+                    if (delta.getFlags().contains(AResourceDeltaFlag.CONTENT) && element.exists()) {
                         changedAndAddedIpsSrcFiles.add(ipsSrcFile);
                         return true;
-
                     }
                     break;
             }

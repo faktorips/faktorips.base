@@ -34,7 +34,7 @@ public class EclipseIpsModel extends IpsModel implements IResourceChangeListener
      * Resource delta visitor used to generate IPS source file contents changed events and trigger a
      * build after changes to the IPS project properties file.
      */
-    private ResourceDeltaVisitor resourceDeltaVisitor;
+    private final ResourceDeltaVisitor resourceDeltaVisitor;
 
     public EclipseIpsModel() {
         super();
@@ -84,7 +84,7 @@ public class EclipseIpsModel extends IpsModel implements IResourceChangeListener
      * Forces to reload the the cached IPS source file contents of a single project or the whole
      * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in each
      * content object.
-     * 
+     *
      * @param project The project that should considered or <code>null</code> if the whole workspace
      *            should be considered.
      */

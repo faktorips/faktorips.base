@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -38,7 +38,7 @@ import org.faktorips.util.ArgumentCheck;
  * saved to files located at the eclipse save location of the org.faktorips.devtools.model plug-in.
  * Once a state of a dependency graph has been saved this state can be retrieved by this persistence
  * manager.
- * 
+ *
  * @author Peter Erzberger
  */
 public class DependencyGraphPersistenceManager implements ISaveParticipant, IDependencyGraphPersistenceManager {
@@ -50,12 +50,9 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant, IDep
         if (file == null || !file.exists()) {
             return null;
         }
-        ObjectInputStream ois = null;
-        try {
-            FileInputStream in = new FileInputStream(file);
-            ois = new ObjectInputStream(in);
+        try (FileInputStream in = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(in);) {
             DependencyGraph graph = (DependencyGraph)ois.readObject();
-            ois.close();
             graph.setIpsProject(project);
             return graph;
             // CSOFF: IllegalCatch
@@ -66,16 +63,6 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant, IDep
                     e));
             return new DependencyGraph(project);
             // CSON: IllegalCatch
-        } finally {
-            if (ois != null) {
-                try {
-                    ois.close();
-                } catch (IOException e1) {
-                    IpsLog.log(new IpsStatus("Unable to close the input stream while of the dependency graph file " //$NON-NLS-1$
-                            + file.getAbsolutePath(), e1));
-                    return new DependencyGraph(project);
-                }
-            }
         }
     }
 
@@ -115,26 +102,13 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant, IDep
     }
 
     private void save(IDependencyGraph graph) {
-        ObjectOutputStream os = null;
         File file = getDependencyGraphFile(graph.getIpsProject());
-        try {
-            FileOutputStream fileOs = new FileOutputStream(file);
-            os = new ObjectOutputStream(fileOs);
+        try (FileOutputStream fileOs = new FileOutputStream(file);
+                ObjectOutputStream os = new ObjectOutputStream(fileOs);) {
             os.writeObject(graph);
-            os.flush();
-            os.close();
         } catch (IOException e) {
             IpsLog.log(new IpsStatus(IStatus.WARNING,
                     "Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e1) {
-                    IpsLog.log(new IpsStatus("Unable to close outputstream for dependency graph file " //$NON-NLS-1$
-                            + file.getAbsolutePath()));
-                }
-            }
         }
     }
 

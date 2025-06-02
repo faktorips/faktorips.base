@@ -56,6 +56,12 @@
             "oldVisibility": "protected",
             "newVisibility": "public",
             "justification": "FIPS-11929 :: External internationalization of multilanguage Strings"
+          },
+          {
+            "code": "java.method.returnTypeChanged",
+            "old": "method int org.faktorips.devtools.abstraction.AResourceDelta::getFlags()",
+            "new": "method java.util.Set<org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaFlag> org.faktorips.devtools.abstraction.AResourceDelta::getFlags()",
+            "justification": "FIPS-9336 Eclipse refreshes while building"
           }
         ]
       }

@@ -62,6 +62,8 @@ class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
         if (ipsSrcFileProject == null || fragment == null) {
             return false;
         }
+        // TODO FIPS-13310: getIpsObjectPath reinits IpsProjectProperties, should use a cheaper
+        // method to read
         IIpsObjectPathEntry rootEntry = ipsSrcFileProject.getIpsObjectPath().getEntry(fragment.getRoot().getName());
         return ipsProject.isReferencing(ipsSrcFileProject) && rootEntry != null && rootEntry.isReexported();
     }

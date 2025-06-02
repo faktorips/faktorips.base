@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -62,11 +62,16 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
     }
 
     @Test
-    public void testIpsSrcFilesChanged() {
+    public void testIpsSrcFilesChanged() throws InterruptedException {
         if (Abstractions.isEclipseRunning()) {
             // TODO: Gibt es eine Möglichkeit zwei save-Event gleichzeitig zu testen (saveAll)
             pcType.getIpsSrcFile().save(null);
-            while (event == null) {
+
+            boolean status = false;
+            int counter = 1;
+            while (!(status || counter > 1000)) {
+                status = event != null;
+                Thread.sleep(counter *= 10);
             }
             Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
             for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {

@@ -464,7 +464,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             }
         }
         AProject project = resource.getProject();
-        if (project == null) {
+        if (project == null || !project.isIpsProject()) {
             return null;
         }
         IIpsProject ipsProject = getIpsProject(project.getName());

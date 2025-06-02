@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -268,7 +268,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Policy");
         AFile file = folderA.getFile(filename);
         file.create(new ByteArrayInputStream(new byte[0]), null);
-        assertNotNull(model.getIpsElement(file));
+        assertNull(model.getIpsElement(file));
 
         AFile textFile = folderA.getFile("Textfile.txt");
         textFile.create(new ByteArrayInputStream(new byte[0]), null);

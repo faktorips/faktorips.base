@@ -1,0 +1,18 @@
+{
+    "25.7.0" : [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                  "criticality": "documented",
+                  "differences": [
+                    {
+                      "code": "java.method.returnTypeChanged",
+                      "old": "method int org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceDelta::getFlags()",
+                      "new": "method java.util.Set<org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaFlag> org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceDelta::getFlags()",
+                      "justification": "FIPS-9336 Eclipse refreshes while building"
+                    }
+                ]
+            }
+        }
+    ]
+}

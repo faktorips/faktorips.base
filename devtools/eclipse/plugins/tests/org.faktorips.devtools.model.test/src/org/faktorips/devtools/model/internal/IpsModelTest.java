@@ -288,7 +288,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("Policy");
         AFile file = folderA.getFile(filename);
         file.create(new ByteArrayInputStream(new byte[0]), null);
-        assertNotNull(model.getIpsElement(file));
+        assertNull(model.getIpsElement(file));
 
         AFile textFile = folderA.getFile("Textfile.txt");
         textFile.create(new ByteArrayInputStream(new byte[0]), null);
