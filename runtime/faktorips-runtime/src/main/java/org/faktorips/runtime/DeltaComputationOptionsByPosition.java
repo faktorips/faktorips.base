@@ -1,22 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime;
 
-import java.util.Objects;
-
 /**
  * Delta computation options that create child deltas per position and don't ignore any property.
- * 
+ *
  * @see IDeltaComputationOptions.ComputationMethod#BY_POSITION
- * 
+ *
  * @author Jan Ortmann
  */
 public class DeltaComputationOptionsByPosition implements IDeltaComputationOptions {
@@ -45,11 +43,6 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
     @Override
     public boolean isCreateSubtreeDelta() {
         return false;
-    }
-
-    @Override
-    public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
-        return Objects.equals(value1, value2);
     }
 
     @Override
