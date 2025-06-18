@@ -50,7 +50,6 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
@@ -185,14 +184,33 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCreateIpsFile_IpsObjectType() throws IpsException, IOException {
+        suppressLoggingDuringExecutionOfThisTestCase();
+        String filename = IpsObjectType.POLICY_CMPT_TYPE.getFileName("TestType");
+        String xml = """
+                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                <PolicyCmptType xml:space="preserve">
+                 <Label locale="de"/>
+                 <Label locale="en"/>
+                 <Description locale="de"/>
+                 <Description locale="en"/>
+                </PolicyCmptType>
+                """;
+        IIpsSrcFile file = pack.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestType", true, null);
+        assertTrue(file.exists());
+        assertEquals(filename, file.getName());
+        InputStream is = file.getCorrespondingFile().getContents();
+        String contents = StringUtil.readFromInputStream(is, ipsProject.getXmlFileCharset());
+        assertEquals(xml, contents);
+    }
+
+    @Test
     public void testCreateProductComponent() throws Exception {
         IIpsSrcFile file = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
         IProductCmpt product = (IProductCmpt)file.getIpsObject();
         assertFalse(IpsStringUtils.isEmpty(product.getRuntimeId()));
     }
 
-    // TODO reactivate with FIPS-10628
-    @Ignore
     @Test
     public void testCreateProductComponentInitiallyWithoutSchema() throws Exception {
         setProjectProperty(ipsProject, p -> p.setValidateIpsSchema(true));

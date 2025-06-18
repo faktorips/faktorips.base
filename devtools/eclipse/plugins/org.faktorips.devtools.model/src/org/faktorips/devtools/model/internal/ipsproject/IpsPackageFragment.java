@@ -248,6 +248,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
         Document doc = XmlUtil.getDocumentBuilder().newDocument();
         Element element = ipsObject.toXml(doc);
+        org.faktorips.devtools.model.util.XmlUtil.removeIds(element);
         // Newly created objects may not yet be valid, so remove validation information. It will be
         // re-added when the finalized object is saved.
         element.removeAttribute(XMLConstants.XMLNS_ATTRIBUTE);
