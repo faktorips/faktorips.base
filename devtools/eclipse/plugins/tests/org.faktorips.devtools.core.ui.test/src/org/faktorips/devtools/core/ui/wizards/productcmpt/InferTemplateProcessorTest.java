@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -497,7 +497,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
         assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTemplateValueStatus(), is(UNDEFINED));
         assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTarget(), is("a"));
-        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getCardinality(), is(CARDINALITY_MANDATORY));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getCardinality(), is(Cardinality.UNDEFINED));
     }
 
     @Test

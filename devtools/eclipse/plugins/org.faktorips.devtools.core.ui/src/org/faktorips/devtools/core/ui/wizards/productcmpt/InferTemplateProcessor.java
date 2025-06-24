@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -248,7 +248,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
      * <p>
      * If the component/generation does not have a link for the identifier, a new link is created
      * and its template values status is set to {@link TemplateValueStatus#UNDEFINED}.
-     * 
+     *
      * @param linkIdentifier the link identifier to use
      * @param isLinkFromGeneration whether the link exists on the (latest) product component
      *            generation or on the component itself
@@ -265,7 +265,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
                 IProductCmptLink newLink = container.newLink(linkIdentifier.getAssociation());
                 newLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
                 newLink.setTarget(linkIdentifier.getTarget());
-                newLink.setCardinality(templateCardinality);
+                newLink.setCardinality(Cardinality.UNDEFINED);
             } else {
                 if (templateCardinality.equals(link.getCardinality())) {
                     link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
