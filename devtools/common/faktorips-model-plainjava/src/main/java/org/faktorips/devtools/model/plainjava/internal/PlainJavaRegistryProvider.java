@@ -19,6 +19,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.plainjava.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -29,7 +30,9 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.internal.registry.ExtensionRegistry;
 import org.eclipse.core.internal.registry.RegistryProviderFactory;
@@ -149,8 +152,11 @@ public class PlainJavaRegistryProvider implements IRegistryProvider {
         }
 
         private Manifest readManifest(URL base) {
+            String externalForm = base.toExternalForm();
             try {
-                String externalForm = base.toExternalForm();
+                if (externalForm.startsWith("jar:nested:")) {
+                    return readFromSpringBoot(externalForm);
+                }
                 URL url = externalForm.startsWith("jar:file:")
                         ? URI.create(
                                 externalForm.substring(0, externalForm.lastIndexOf("!/") + 2)
@@ -162,9 +168,28 @@ public class PlainJavaRegistryProvider implements IRegistryProvider {
                     return new Manifest(stream);
                 }
             } catch (IOException | URISyntaxException e) {
-                return null;
+                IpsLog.log(new IpsStatus(IStatus.ERROR, "Reading MANIFEST " + externalForm + " failed with: ", e));
             }
+            return null;
         }
 
+        /**
+         * Reads the MANIFEST from a jar file contained in an Spring-Boot JAR file.
+         * jar:nested:/path/to/application.jar/!BOOT-INF/lib/jar.file-1.1.jar!/META-INF/MANIFEST.MF
+         */
+        private Manifest readFromSpringBoot(String externalForm) throws IOException {
+            String[] paths = externalForm.split("!");
+            if (paths.length == 3) {
+                String springBootJar = paths[0].substring("jar:nested:".length(), paths[0].length() - 1);
+                try (JarFile jar = new JarFile(new File(springBootJar))) {
+                    ZipEntry entry = jar.getEntry(paths[1]);
+                    InputStream is = jar.getInputStream(entry);
+                    try (JarInputStream jis = new JarInputStream(is)) {
+                        return jis.getManifest();
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
