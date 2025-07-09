@@ -16,7 +16,7 @@
         <commons-codec.version>1.17.1</commons-codec.version>
         <commons-io.version>2.17.0</commons-io.version>
         <!-- plugins -->
-        <tycho-maven-plugin.version>${tycho.version}</tycho-maven-plugin.version>
+        <tycho-maven-plugin.version>3.0.0</tycho-maven-plugin.version>
         <skip-publish>false</skip-publish>
     </properties>
 
@@ -77,4 +77,13 @@
             </testResource>
         </testResources>
     </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.common</artifactId>
+                <version>3.20.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
