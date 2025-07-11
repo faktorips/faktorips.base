@@ -308,7 +308,8 @@ class DefaultAndAllowedValuesTmpl {
 
     def private static writeEnumValueSet(XPolicyAttribute it) '''
         «IF datatype instanceof EnumTypeDatatypeAdapter»
-            if («fieldNameValueSet».getValues(false).containsAll(«getAllEnumValuesCode("getRepository()")») && «fieldNameValueSet».«containsNull») {
+            if («IF valueSetEnum»«fieldNameValueSet».isVirtual()«ELSE»((«OrderedValueSet("?")»)«fieldNameValueSet»).isVirtual()«ENDIF»
+                || «fieldNameValueSet».getValues(false).containsAll(«getAllEnumValuesCode("getRepository()")») && «fieldNameValueSet».«containsNull») {
                Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES»);
                valueElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
                valueSetElement.appendChild(valueElement);
