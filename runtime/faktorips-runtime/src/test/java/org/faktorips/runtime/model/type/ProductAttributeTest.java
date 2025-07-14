@@ -450,6 +450,54 @@ public class ProductAttributeTest {
     }
 
     @Test
+    public void testValidate_MultiValue_withNull_English() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setMultiText(ListUtil.newList(null));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("multiText");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_NULL_IN_MULTIVALUE);
+        assertThat(message, is(not(nullValue())));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("multiText"));
+        assertThat(message.getText(), containsString("null"));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(productComponent));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("multiText"));
+    }
+
+    @Test
+    public void testValidate_MultiValue_withNull_German() {
+        Produkt productComponent = new Produkt(repository);
+        productComponent.setMultiText(ListUtil.newList(null));
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute1 = productCmptType.getAttribute("multiText");
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.GERMAN);
+
+        attribute1.validate(ml, context, productComponent, effectiveDate);
+
+        assertThat(ml.isEmpty(), is(false));
+        Message message = ml.getMessageByCode(ProductAttribute.MSGCODE_NULL_IN_MULTIVALUE);
+        assertThat(message, is(not(nullValue())));
+        assertThat(message.getSeverity(), is(Severity.ERROR));
+        assertThat(message.getText(), containsString("multiText"));
+        assertThat(message.getText(), containsString("Nullwert"));
+        assertThat(message.getInvalidObjectProperties().size(), is(2));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(attribute1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(), is(ProductAttribute.PROPERTY_VALUE));
+        assertThat(message.getInvalidObjectProperties().get(1).getObject(), is(productComponent));
+        assertThat(message.getInvalidObjectProperties().get(1).getProperty(), is("multiText"));
+    }
+
+    @Test
     public void testValidate_GenerationWithInterface_publishedWithoutAdj() {
         IProductWithUnAndPublishedAttributes product = new ProductWithUnAndPublishedAttributes(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(IProductWithUnAndPublishedAttributes.class);
