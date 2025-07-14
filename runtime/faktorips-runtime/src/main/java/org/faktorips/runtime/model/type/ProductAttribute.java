@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.model.type;
 
+import static java.util.function.Predicate.not;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.WildcardType;
@@ -26,6 +28,7 @@ import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.ValueSet;
 
 /**
@@ -40,6 +43,10 @@ public class ProductAttribute extends Attribute {
     public static final String MSGCODE_DUPLICATE_VALUE = "PRODUCT_ATTRIBUTE-DUPLICATE_VALUE";
 
     public static final String MSGKEY_DUPLICATE_VALUE = "Validation.DuplicateValue";
+
+    public static final String MSGCODE_NULL_IN_MULTIVALUE = "PRODUCT_ATTRIBUTE-NULL_IN_MULTIVALUE";
+
+    public static final String MSGKEY_NULL_IN_MULTIVALUE = "Validation.NullInMultiValue";
 
     public static final String PROPERTY_VALUE = "value";
 
@@ -178,6 +185,14 @@ public class ProductAttribute extends Attribute {
                 (value, multiValue) -> !multiValue || new HashSet<>((List<T>)value).size() == ((List<T>)value).size(),
                 MSGCODE_DUPLICATE_VALUE,
                 MSGKEY_DUPLICATE_VALUE,
+                PROPERTY_VALUE,
+                new ObjectProperty(product, getName()));
+        validate(list, context,
+                () -> (T)getValue(product, effectiveDate),
+                this::isMultiValue,
+                (value, multiValue) -> !multiValue || ((List<T>)value).stream().allMatch(not(ObjectUtil::isNull)),
+                MSGCODE_NULL_IN_MULTIVALUE,
+                MSGKEY_NULL_IN_MULTIVALUE,
                 PROPERTY_VALUE,
                 new ObjectProperty(product, getName()));
     }
