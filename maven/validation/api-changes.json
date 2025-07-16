@@ -1,5 +1,5 @@
 {
-    "26.1.0" : [
+    "all-versions" : [
         {
             "extension": "revapi.differences",
             "configuration": {

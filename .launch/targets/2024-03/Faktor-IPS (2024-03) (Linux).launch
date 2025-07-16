@@ -54,7 +54,7 @@
         <setEntry value="jakarta.activation-api@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api@default:default"/>
-        <setEntry value="jakarta.servlet-api@default:default"/>
+        <setEntry value="jakarta.servlet-api*6.0.0@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="jakarta.xml.bind@default:default"/>
         <setEntry value="javax.activation@default:default"/>
@@ -95,7 +95,7 @@
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-io*2.18.0@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
-        <setEntry value="org.apache.commons.lang3*3.17.0@default:default"/>
+        <setEntry value="org.apache.commons.lang3*3.18.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.commons.text@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
