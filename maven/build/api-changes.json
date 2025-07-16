@@ -1,5 +1,5 @@
 {
-    "25.7.1" : [
+    "all-versions" : [
         {
             "extension": "revapi.differences",
             "configuration": {

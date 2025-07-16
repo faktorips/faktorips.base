@@ -83,7 +83,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
                     case IIpsObject ipsObject -> initDefaults(ipsObject.getIpsPackageFragment(), ipsObject);
                     case IIpsSrcFile ipsSrcFile -> initDefaults(ipsSrcFile.getIpsPackageFragment(),
                             ipsSrcFile.getIpsObject());
-                    default -> initFallback(adaptableObject);
+                    case null, default -> initFallback(adaptableObject);
                 }
             }
         }

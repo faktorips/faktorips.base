@@ -1,5 +1,5 @@
 {
-  "25.7.0" : [
+  "all-versions" : [
     {
       "extension": "revapi.differences",
       "configuration": {
@@ -16,17 +16,7 @@
             "old": "class org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption<E extends java.lang.Enum<E>>",
             "new": "class org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption<E extends java.lang.Enum<E>>",
             "justification": "FIPS-12949"
-          }
-        ]
-      }
-    }
-  ],
-  "25.7.1" : [
-    {
-      "extension": "revapi.differences",
-      "configuration": {
-        "criticality": "documented",
-        "differences": [
+          },
           {
             "code": "java.missing.newSuperType",
             "old": "class org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer",
