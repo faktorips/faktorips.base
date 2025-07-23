@@ -17,8 +17,7 @@ Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="4.7.1";resolutio
  org.faktorips.devtools.abstraction.exception,
  org.faktorips.runtime,
  org.faktorips.runtime.internal,
- org.faktorips.util,
- org.osgi.service.component.annotations;version="1.3.0"
+ org.faktorips.util
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime;bundle-version="3.17.100",

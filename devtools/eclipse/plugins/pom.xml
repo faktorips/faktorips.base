@@ -85,7 +85,7 @@
             <artifactId>faktorips-abstraction-plainjava</artifactId>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>

@@ -51,12 +51,10 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.model</artifactId>
-            <version>${faktorips.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.model.builder</artifactId>
-            <version>${faktorips.version}</version>
         </dependency>
     </dependencies>
 

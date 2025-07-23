@@ -23,11 +23,11 @@
         <module>2025-06</module>
         <module>2025-09</module>
     </modules>
-    
+
     <properties>
         <skip-publish>false</skip-publish>
     </properties>
-    
+
     <profiles>
         <profile>
             <id>release</id>

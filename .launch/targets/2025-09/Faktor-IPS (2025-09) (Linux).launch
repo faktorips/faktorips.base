@@ -57,8 +57,7 @@
         <setEntry value="jakarta.annotation-api*2.1.1@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api*1.0.5@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api*2.0.1@default:default"/>
-        <setEntry value="jakarta.servlet-api*4.0.0@default:default"/>
-        <setEntry value="jakarta.servlet-api*6.1.0@default:default"/>
+        <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="javax.servlet.jsp-api@default:default"/>
         <setEntry value="jaxb-api@default:default"/>
@@ -76,8 +75,8 @@
         <setEntry value="junit-platform-suite-commons@default:default"/>
         <setEntry value="junit-platform-suite-engine@default:default"/>
         <setEntry value="junit-vintage-engine@default:default"/>
-        <setEntry value="net.bytebuddy.byte-buddy*1.17.6@default:default"/>
-        <setEntry value="net.bytebuddy.byte-buddy-agent@default:default"/>
+        <setEntry value="net.bytebuddy.byte-buddy-agent*1.17.6@default:default"/>
+        <setEntry value="net.bytebuddy.byte-buddy@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
         <setEntry value="org.apache.aries.spifly.dynamic.bundle@default:default"/>
         <setEntry value="org.apache.batik.constants@default:default"/>
@@ -85,18 +84,16 @@
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
         <setEntry value="org.apache.commons.cli@default:default"/>
-        <setEntry value="org.apache.commons.codec@default:default"/>
         <setEntry value="org.apache.commons.collections@default:default"/>
         <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
-        <setEntry value="org.apache.commons.commons-collections4@default:default"/>
+        <setEntry value="org.apache.commons.commons-collections4*4.5.0@default:default"/>
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-io*2.18.0@default:default"/>
-        <setEntry value="org.apache.commons.io*1.4.0@default:default"/>
-        <setEntry value="org.apache.commons.io*2.8.0.v20210415-0900@default:default"/>
+        <setEntry value="org.apache.commons.io@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
-        <setEntry value="org.apache.commons.text@default:default"/>
+        <setEntry value="org.apache.commons.text*1.14.0@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
@@ -118,7 +115,7 @@
         <setEntry value="org.apache.xmlbeans.xmlbeans@default:default"/>
         <setEntry value="org.apache.xmlgraphics@default:default"/>
         <setEntry value="org.apiguardian.api@default:default"/>
-        <setEntry value="org.commonmark-gfm-tables@default:default"/>
+        <setEntry value="org.commonmark.ext-gfm-tables@default:default"/>
         <setEntry value="org.commonmark@default:default"/>
         <setEntry value="org.eclipse.ant.core@default:default"/>
         <setEntry value="org.eclipse.ant.launching@default:default"/>
@@ -363,12 +360,10 @@
         <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
-        <setEntry value="org.glassfish.hk2.osgi-resource-locator@default:default"/>
-        <setEntry value="org.hamcrest.core*2.2.0.v20230809-1000@default:default"/>
-        <setEntry value="org.hamcrest@default:default"/>
+        <setEntry value="org.hamcrest*3.0.0@default:default"/>
+        <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.jcodings@default:default"/>
         <setEntry value="org.jdom2@default:default"/>
-        <setEntry value="org.jdom@default:default"/>
         <setEntry value="org.joni@default:default"/>
         <setEntry value="org.jsoup@default:default"/>
         <setEntry value="org.junit@default:default"/>
@@ -381,7 +376,6 @@
         <setEntry value="org.objenesis@default:default"/>
         <setEntry value="org.opentest4j@default:default"/>
         <setEntry value="org.osgi.service.cm@default:default"/>
-        <setEntry value="org.osgi.service.component.annotations@default:default"/>
         <setEntry value="org.osgi.service.component@default:default"/>
         <setEntry value="org.osgi.service.device@default:default"/>
         <setEntry value="org.osgi.service.event@default:default"/>
@@ -407,7 +401,6 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
         <setEntry value="slf4j.api*2.0.17@default:default"/>
         <setEntry value="slf4j.nop*2.0.17@default:default"/>
-        <setEntry value="slf4j.simple@default:default"/>
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">

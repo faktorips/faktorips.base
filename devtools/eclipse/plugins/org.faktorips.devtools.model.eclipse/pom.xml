@@ -16,7 +16,14 @@
     <properties>
         <skip-publish>false</skip-publish>
     </properties>
-    
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
