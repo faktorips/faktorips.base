@@ -132,7 +132,6 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.eclipse.jdt.core.manipulation"/>
       <import plugin="org.eclipse.text" version="3.8.100" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.common" version="3.11.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi.services" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.objenesis"/>
       <import plugin="org.apache.commons.text"/>
       <import plugin="org.apache.commons.lang3"/>

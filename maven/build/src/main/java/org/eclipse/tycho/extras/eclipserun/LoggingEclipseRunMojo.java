@@ -26,13 +26,15 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
-import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallation;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.sisu.equinox.launching.LaunchConfiguration;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
-import org.eclipse.tycho.plugins.p2.extras.Repository;
+import org.eclipse.tycho.core.resolver.P2ResolverFactory;
+import org.eclipse.tycho.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.eclipserun.Repository;
+import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
 import org.faktorips.maven.plugin.mojo.internal.BuildLogPrintStream;
 
 public class LoggingEclipseRunMojo extends EclipseRunMojo {
@@ -53,8 +55,9 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
             List<Repository> repositories, MavenSession session, List<String> jvmArgs, boolean skip,
             List<String> applicationsArgs, int forkedProcessTimeoutInSeconds, Map<String, String> environmentVariables,
             EquinoxInstallationFactory installationFactory, EquinoxLauncher launcher,
-            ToolchainProvider toolchainProvider, EquinoxServiceFactory equinox, Logger logger,
-            ToolchainManager toolchainManager, String projectName, Log mavenLog, List<String> filter) {
+            ToolchainProvider toolchainProvider, P2ResolverFactory resolverFactory, Logger logger,
+            ToolchainManager toolchainManager, String projectName, Log mavenLog, List<String> filter,
+            TargetPlatformFactory platformFactory, File installation) {
         // CSON: ParameterNumber
         super(work,
                 clearWorkspaceBeforeLaunch,
@@ -72,9 +75,11 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
                 installationFactory,
                 launcher,
                 toolchainProvider,
-                equinox,
+                resolverFactory,
                 logger,
-                toolchainManager);
+                toolchainManager,
+                platformFactory,
+                installation);
         this.work = work;
         this.clearWorkspaceBeforeLaunch = clearWorkspaceBeforeLaunch;
         this.forkedProcessTimeoutInSeconds = forkedProcessTimeoutInSeconds;
@@ -85,6 +90,7 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
     }
 
     @Override
+    public
     void runEclipse(EquinoxInstallation runtime) throws MojoExecutionException {
         BuildLogPrintStream logStream = null;
         PrintStream stdStream = null;
