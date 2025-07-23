@@ -38,7 +38,7 @@ jobs:
     - name: Run Integration Tests
       uses: coactions/setup-xvfb@v1.0.1
       with:
-       run: mvn -B clean verify --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -Dmaven.test.failure.ignore=true -Dtycho.p2.transport.min-cache-minutes=1440 --global-toolchains ${{ github.workspace }}/.github/toolchains.xml
+       run: mvn -B -Dmaven.site.skip=true clean verify --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -Dmaven.test.failure.ignore=true -Dtycho.p2.transport.min-cache-minutes=1440 --global-toolchains ${{ github.workspace }}/.github/toolchains.xml
       if: ${{ matrix.eclipse-release == env.integration-test-release }}
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
