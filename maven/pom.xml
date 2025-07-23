@@ -99,6 +99,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-report-plugin</artifactId>
                     <version>${maven-plugin-report-plugin.version}</version>
+                    <configuration>
+                    	<!-- Version 21 has a bad dependency and therefore fails the ececution of this goal -->
+                    	<requirementsHistoryDetectionRange>[22,)</requirementsHistoryDetectionRange>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
