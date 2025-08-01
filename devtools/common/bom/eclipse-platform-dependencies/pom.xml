@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>26.1.0-SNAPSHOT</version>
+        <version>26.1.0.a20250801-01</version>
         <relativePath>../../../../pom.xml</relativePath>
     </parent>
     <artifactId>eclipse-platform-dependencies</artifactId>
