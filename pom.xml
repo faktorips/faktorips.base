@@ -100,8 +100,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <spotbugs-maven-plugin.version>4.9.2.0</spotbugs-maven-plugin.version>
         <spotbugs.version>4.9.2</spotbugs.version>
         <!-- Tycho & Eclipse-->
-        <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
-        <tycho.version>3.0.5</tycho.version>
         <xtend-maven-plugin.version>2.38.0</xtend-maven-plugin.version>
         <!-- Others -->
         <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
@@ -510,6 +508,9 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                	<legacyMode>true</legacyMode>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

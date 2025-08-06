@@ -54,15 +54,15 @@ import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.ReactorProject;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
-import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.core.resolver.P2ResolverFactory;
+import org.eclipse.tycho.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.eclipserun.Repository;
 import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
-import org.eclipse.tycho.osgi.TychoServiceFactory;
-import org.eclipse.tycho.plugins.p2.extras.Repository;
+import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
 import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
@@ -471,8 +471,8 @@ public class IpsBuildMojo extends AbstractMojo {
     @Component
     private ToolchainProvider toolchainProvider;
 
-    @Component(hint = TychoServiceFactory.HINT)
-    private EquinoxServiceFactory equinox;
+    @Component
+    private P2ResolverFactory equinox;
 
     @Component
     private Logger logger;
@@ -482,6 +482,12 @@ public class IpsBuildMojo extends AbstractMojo {
 
     @Component
     private PluginDescriptor pluginDescriptor;
+
+    @Parameter
+    private File installation;
+
+    @Component
+    private TargetPlatformFactory platformFactory;
 
     /**
      * Returns the name of the project in a way that it can be used in the ant script. It should be
@@ -940,7 +946,9 @@ public class IpsBuildMojo extends AbstractMojo {
                 toolchainManager,
                 getProjectName(),
                 getLog(),
-                exceptionTexts);
+                exceptionTexts,
+                platformFactory,
+                installation);
     }
 
     private EclipseRunMojo createOriginalEclipseRunMojo(boolean clearWorkspaceBeforeLaunch) {
@@ -963,7 +971,9 @@ public class IpsBuildMojo extends AbstractMojo {
                 toolchainProvider,
                 equinox,
                 logger,
-                toolchainManager);
+                toolchainManager,
+                platformFactory,
+                installation);
     }
 
     private boolean isGitStatusPorcelain() {
