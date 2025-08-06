@@ -230,7 +230,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
     private void createDownButton() {
         downButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         downButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.gif", true)); //$NON-NLS-1$
+        downButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown.svg", true)); //$NON-NLS-1$
         downButton.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -248,7 +248,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
     private void createUpButton() {
         upButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         upButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.gif", true)); //$NON-NLS-1$
+        upButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowUp.svg", true)); //$NON-NLS-1$
         upButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -265,7 +265,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
     private void createRemoveButton() {
         removeButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         removeButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        removeButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.svg", true)); //$NON-NLS-1$
         removeButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -282,7 +282,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
     private void createAddButton() {
         addButton = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         addButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        addButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.svg", true)); //$NON-NLS-1$
         addButton.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {

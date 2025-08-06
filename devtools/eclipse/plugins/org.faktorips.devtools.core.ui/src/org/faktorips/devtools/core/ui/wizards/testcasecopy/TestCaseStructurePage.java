@@ -380,7 +380,7 @@ public class TestCaseStructurePage extends WizardPage {
                 return defaultLabelProvider.getImage(element);
             } else {
                 return element.equals(checkedProductCmpt) ? IpsUIPlugin.getImageHandling().getSharedImage(
-                        "ArrowRight.gif", true) : null; //$NON-NLS-1$
+                        "ArrowRight.svg", true) : null; //$NON-NLS-1$
             }
         }
 

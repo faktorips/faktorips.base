@@ -21,8 +21,8 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class IpsPackageFragmentDecorator implements IIpsElementDecorator {
 
-    public static final String IPS_PACKAGE_FRAGMENT_ICON = "IpsPackageFragment.gif"; //$NON-NLS-1$
-    public static final String IPS_PACKAGE_FRAGMENT_EMPTY_ICON = "IpsPackageFragmentEmpty.gif"; //$NON-NLS-1$
+    public static final String IPS_PACKAGE_FRAGMENT_ICON = "IpsPackageFragment.svg"; //$NON-NLS-1$
+    public static final String IPS_PACKAGE_FRAGMENT_EMPTY_ICON = "IpsPackageFragmentEmpty.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {

@@ -73,9 +73,9 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
     protected Control createSecondControl(UIToolkit toolkit) {
         buttonComposite = toolkit.createGridComposite(this, 2, false, false);
         browseButton = toolkit.createButton(buttonComposite, IpsStringUtils.EMPTY);
-        browseButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("browse.gif", true)); //$NON-NLS-1$
+        browseButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("browse.svg", true)); //$NON-NLS-1$
         newButton = toolkit.createButton(buttonComposite, IpsStringUtils.EMPTY);
-        newButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("NewTableContentsWizard.gif", true)); //$NON-NLS-1$
+        newButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("NewTableContentsWizard.svg", true)); //$NON-NLS-1$
         return buttonComposite;
     }
 

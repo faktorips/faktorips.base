@@ -22,7 +22,7 @@
       <perspective
             class="org.faktorips.devtools.core.ui.perspective.IpsProductDefinitionPerspectiveFactory"
             fixed="false"
-            icon="icons/IpsPerspective.gif"
+            icon="icons/IpsPerspective.svg"
             id="org.faktorips.devtools.core.productDefinitionPerspective"
             name="%org.faktorips.devtools.core.productDefinitionPerspective">
       </perspective>
@@ -45,14 +45,14 @@
             visible="false">
          <action
                class="org.faktorips.devtools.core.ui.wizards.testcasetype.OpenNewTestCaseTypeWizardAction"
-               icon="icons/NewTestCaseType.gif"
+               icon="icons/NewTestCaseTypeWizard.svg"
                id="org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.label"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseTypeWizardAction.tooltip"/>
          <action
                label="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.label"
-               icon="icons/NewTableStructureWizard.gif"
+               icon="icons/NewTableStructureWizard.svg"
                tooltip="%org.faktorips.devtools.actions.OpenNewTableStructureWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.tablestructure.OpenNewTableStructureWizardAction"
                toolbarPath="org.faktorips.devtools"
@@ -60,7 +60,7 @@
          </action>
          <action
                class="org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction"
-               icon="icons/NewEnumType.gif"
+               icon="icons/NewEnumTypeWizard.svg"
                id="org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction"
                label="%org.faktorips.devtools.core.ui.wizards.enumtype.OpenNewEnumTypeWizardAction.label"
                toolbarPath="org.faktorips.devtools"
@@ -68,7 +68,7 @@
          </action>
          <action
                label="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction.label"
-               icon="icons/NewProductCmptTypeWizard.gif"
+               icon="icons/NewProductCmptTypeWizard.svg"
                tooltip="%org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.productcmpttype.OpenNewProductCmptTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
@@ -76,7 +76,7 @@
          </action>
          <action
                label="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.label"
-               icon="icons/NewPolicyCmptTypeWizard.gif"
+               icon="icons/NewPolicyCmptTypeWizard.svg"
                tooltip="%org.faktorips.devtools.actions.OpenNewPcTypeWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.policycmpttype.OpenNewPcTypeWizardAction"
                toolbarPath="org.faktorips.devtools"
@@ -89,7 +89,7 @@
             visible="false">
          <action
                class="org.faktorips.devtools.core.ui.wizards.productrelease.ShowReleaserBuilderWizardAction"
-               icon="icons/DeploymentAction.gif"
+               icon="icons/DeploymentAction.svg"
                id="org.faktorips.devtools.core.ui.wizards.productrelease.ShowReleaserBuilderWizardAction"
                label="Build Release"
                style="push"
@@ -97,14 +97,14 @@
          </action>
          <action
                class="org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardAction"
-               icon="icons/NewTestCase.gif"
+               icon="icons/NewTestCaseWizard.svg"
                id="org.faktorips.devtools.actions.OpenNewTestCaseWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.label"
                toolbarPath="org.faktorips.devtools"
                tooltip="%org.faktorips.devtools.actions.OpenNewTestCaseWizardAction.tooltip"/>
          <action
                label="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.label"
-               icon="icons/NewTableContentsWizard.gif"
+               icon="icons/NewTableContentsWizard.svg"
                tooltip="%org.faktorips.devtools.actions.OpenNewTableContentsWizardAction.tooltip"
                class="org.faktorips.devtools.core.ui.wizards.tablecontents.OpenNewTableContentsWizardAction"
                toolbarPath="org.faktorips.devtools"
@@ -112,7 +112,7 @@
          </action>
          <action
                class="org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction"
-               icon="icons/NewEnumContent.gif"
+               icon="icons/NewEnumContentWizard.svg"
                id="org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction"
                label="%org.faktorips.devtools.core.ui.wizards.enumcontent.OpenNewEnumContentWizardAction.label"
                toolbarPath="org.faktorips.devtools"
@@ -120,7 +120,7 @@
          </action>
          <action
                class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
-               icon="icons/NewProductCmptWizard.gif"
+               icon="icons/NewProductCmptWizard.svg"
                id="org.faktorips.devtools.actions.OpenNewProductCmptWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.label"
                toolbarPath="org.faktorips.devtools"
@@ -128,7 +128,7 @@
          </action>
          <action
                class="org.faktorips.devtools.core.ui.wizards.productcmpt.OpenNewProductCmptWizardAction"
-               icon="icons/NewProductTemplateWizard.gif"
+               icon="icons/NewProductTemplateWizard.svg"
                id="org.faktorips.devtools.actions.OpenNewProductTemplateWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewProductTemplateWizardAction.label"
                toolbarPath="org.faktorips.devtools"
@@ -142,7 +142,7 @@
          <action
                class="org.faktorips.devtools.core.ui.actions.OpenIpsObjectAction"
                definitionId="org.faktorips.devtools.core.openIpsObject"
-               icon="icons/OpenIpsObject.gif"
+               icon="icons/OpenIpsObject.svg"
                id="org.faktorips.devtools.core.openIpsObject"
                label="%org.faktorips.devtools.core.openIpsObject.label"
                menubarPath="navigate/open.ext2"
@@ -156,7 +156,7 @@
             visible="false">
          <action
                class="org.faktorips.devtools.core.ui.wizards.ipspackage.OpenNewIpsPackageWizardAction"
-               icon="icons/NewIpsPackageFragment.gif"
+               icon="icons/NewIpsPackageFragment.svg"
                id="org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction"
                label="%org.faktorips.devtools.actions.OpenNewIpsPackageWizardAction.label"
                toolbarPath="org.faktorips.devtools"
@@ -811,7 +811,7 @@
            <action
                  class="org.faktorips.devtools.core.ui.wizards.enumcontent.OpenCreateMissingEnumContentsWizardAction"
                  enablesFor="*"
-                 icon="icons/CreateMissingEnumContents.gif"
+                 icon="icons/CreateMissingEnumContents.svg"
                  id="createMissingEnumContentsAction"
                  label="%createMissingEnumContentsAction"
                  menubarPath="faktorIPSMenu/cleanUpMenu/main"
@@ -833,7 +833,7 @@
             <action
             class="org.faktorips.devtools.core.ui.wizards.fixdifferences.OpenFixDifferencesToModelWizardAction"
             enablesFor="*"
-            icon="icons/FixDifferencesToModel.gif"
+            icon="icons/FixDifferencesToModel.svg"
             id="fixDifferencesAction"
             label="%fixDifferencesAction"
             menubarPath="faktorIPSMenu/cleanUpMenu/main">
@@ -860,7 +860,7 @@
             <action
             class="org.faktorips.devtools.core.ui.actions.AddIpsNatureAction"
             enablesFor="*"
-            icon="icons/AddIpsNature.gif"
+            icon="icons/AddIpsNature.svg"
             id="addIpsNatureAction"
             label="%addIpsNatureAction"
             menubarPath="faktorIPSMenu/faktorIpsGroup"/>
@@ -884,7 +884,7 @@
             <action
             class="org.faktorips.devtools.core.ui.wizards.migration.OpenMigrationWizardAction"
             enablesFor="*"
-            icon="icons/MigrationWizard.gif"
+            icon="icons/MigrationWizard.svg"
             id="migrateIpsProject"
             label="%org.faktorips.devtools.core.Migrate.label"
             menubarPath="faktorIPSMenu/faktorIpsGroup"
@@ -913,7 +913,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipspolicycmpttype"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/PolicyCmptType.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/PolicyCmptType.svg"
             id="policyCmptTypeEditor"
             name="%policyCmptTypeEditor">
           </editor>
@@ -922,7 +922,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipsproductcmpttype"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductCmptType.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductCmptType.svg"
             id="productCmptTypeEditor"
             name="%productCmptTypeEditor">
           </editor>
@@ -931,7 +931,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsenumtype"
-             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/EnumType.gif"
+             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/EnumType.svg"
              id="enumTypeEditor"
              name="%enumTypeEditor">
        </editor>
@@ -940,7 +940,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstablestructure"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TableStructure.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TableStructure.svg"
             id="tableStructureEditor"
             name="%tableStructureEditor">
           </editor>
@@ -949,7 +949,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcasetype"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCaseType.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCaseType.svg"
             id="testCaseTypeEditor"
             name="%testCaseTypeEditor"/>
           <editor
@@ -957,7 +957,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsproduct"
-             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductCmpt.gif"
+             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductCmpt.svg"
              id="productCmptEditor"
              name="%productCmptEditor">
           </editor>
@@ -966,7 +966,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipstemplate"
-             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductTemplate.gif"
+             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/ProductTemplate.svg"
              id="productTemplateEditor"
              name="%productTemplateEditor">
           </editor>
@@ -975,7 +975,7 @@
              contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
              default="true"
              extensions="ipsenumcontent"
-             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/EnumContent.gif"
+             icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/EnumContent.svg"
              id="enumContentEditor"
              name="%enumContentEditor">
        </editor>
@@ -984,7 +984,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstablecontents"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TableContents.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TableContents.svg"
             id="tableContentsEditor"
             name="%tableContentsEditor">
           </editor>
@@ -993,7 +993,7 @@
             contributorClass="org.faktorips.devtools.core.ui.editors.IpsObjectEditorActionContributor"
             default="true"
             extensions="ipstestcase"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCase.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCase.svg"
             id="testCaseEditor"
             name="%testCaseEditor">
         </editor>
@@ -1012,7 +1012,7 @@
            name = "%NewPcTypeWizard.name"
            class="org.faktorips.devtools.core.ui.wizards.policycmpttype.NewPcTypeWizard"
            category="org.faktorips.devtools"
-           icon="icons/NewPolicyCmptTypeWizard.gif">
+           icon="icons/NewPolicyCmptTypeWizard.svg">
            <description>%NewPcTypeWizard.description</description>
            <selection class="org.eclipse.core.resources.IResource"/>
         </wizard>
@@ -1021,14 +1021,14 @@
            name = "%NewProductCmptTypeWizard.name"
            class="org.faktorips.devtools.core.ui.wizards.productcmpttype.NewProductCmptTypeWizard"
            category="org.faktorips.devtools"
-           icon="icons/NewProductCmptTypeWizard.gif">
+           icon="icons/NewProductCmptTypeWizard.svg">
            <description>%NewProductCmptTypeWizard.description</description>
            <selection class="org.eclipse.core.resources.IResource"/>
         </wizard>
   <wizard
         category="org.faktorips.devtools"
         class="org.faktorips.devtools.core.ui.wizards.enumtype.NewEnumTypeWizard"
-        icon="icons/NewEnumType.gif"
+        icon="icons/NewEnumTypeWizard.svg"
         id="newEnumTypeWizard"
         name="%NewEnumTypeWizard.name">
      <description>
@@ -1041,7 +1041,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard"
-            icon="icons/NewProductCmptWizard.gif"
+            icon="icons/NewProductCmptWizard.svg"
             id="newProductCmptWizard"
             name="%NewProductCmptWizard.name">
             <description>%NewProductCmptWizard.description</description>
@@ -1050,7 +1050,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductTemplateWizard"
-            icon="icons/NewProductTemplateWizard.gif"
+            icon="icons/NewProductTemplateWizard.svg"
             id="newProductTemplateWizard"
             name="%NewProductTemplateWizard.name">
             <description>%NewProductTemplateWizard.description</description>
@@ -1059,7 +1059,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.enumcontent.NewEnumContentWizard"
-            icon="icons/NewEnumContent.gif"
+            icon="icons/NewEnumContentWizard.svg"
             id="newEnumContentWizard"
             name="%NewEnumContentWizard.name">
          <description>
@@ -1072,7 +1072,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tablestructure.NewTableStructureWizard"
-            icon="icons/NewTableStructureWizard.gif"
+            icon="icons/NewTableStructureWizard.svg"
             id="newTableStructureWizard"
             name="%NewTableStructureWizard.name">
            <description>%NewTableStructureWizard.description</description>
@@ -1081,7 +1081,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.testcasetype.NewTestCaseTypeWizard"
-            icon="icons/NewTestCaseType.gif"
+            icon="icons/NewTestCaseTypeWizard.svg"
             id="newTestCaseTypeWizard"
             name="%NewTestCaseTypeWizard.name">
            <description>%NewTestCaseTypeWizard.description</description>
@@ -1090,7 +1090,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tablecontents.NewTableContentsWizard"
-            icon="icons/NewTableContentsWizard.gif"
+            icon="icons/NewTableContentsWizard.svg"
             id="newTableContentsWizard"
             name="%NewTableContentsWizard.name">
            <description>%NewTableContentsWizard.description</description>
@@ -1099,7 +1099,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.testcase.NewTestCaseWizard"
-            icon="icons/NewTestCase.gif"
+            icon="icons/NewTestCaseWizard.svg"
             id="newTestCaseWizard"
             name="%NewTestCaseWizard.name">
            <description>%NewTestCaseWizard.description</description>
@@ -1108,7 +1108,7 @@
         <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard"
-            icon="icons/NewIpsPackageFragment.gif"
+            icon="icons/NewIpsPackageFragment.svg"
             id="newIpsPackageWizard"
             name="%NewIpsPackageWizard.name">
             <description>%NewIpsPackageWizard.description</description>
@@ -1124,7 +1124,7 @@
          <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tableexport.TableExportWizard"
-            icon="icons/ExportTableContents.gif"
+            icon="icons/ExportTableContents.svg"
             id="tableExportWizard"
             name="%TableExportWizard.name">
            <description>%TableExportWizard.description</description>
@@ -1133,7 +1133,7 @@
          <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.ipsarchiveexport.IpsArchiveExportWizard"
-            icon="icons/ExportIpsArchive.gif"
+            icon="icons/ExportIpsArchive.svg"
             id="ipsArchiveExportWizard"
             name="%IpsArchiveExportWizard.name">
            <description>%IpsArchiveExportWizard.description</description>
@@ -1142,7 +1142,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard"
-            icon="icons/ExportEnum.gif"
+            icon="icons/ExportEnum.svg"
             id="enumExportWizard"
             name="%EnumExportWizard.name">
          <description>
@@ -1162,7 +1162,7 @@
                 <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"
-            icon="icons/ImportTableContents.gif"
+            icon="icons/ImportTableContents.svg"
             id="tableImportWizard"
             name="%TableImportWizard.name">
            <description>%TableImportWizard.description</description>
@@ -1171,7 +1171,7 @@
   <wizard
         category="org.faktorips.devtools"
         class="org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"
-        icon="icons/ImportEnum.gif"
+        icon="icons/ImportEnum.svg"
         id="enumImportWizard"
         name="%EnumImportWizard.name">
      <description>
@@ -1184,7 +1184,7 @@
       <wizard
             category="org.faktorips.devtools"
             class="org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportWizard"
-            icon="icons/importpref_obj.gif"
+            icon="icons/importpref_obj.svg"
             id="org.faktorips.devtools.stdbuilder.ui.messagesImportWizard"
             name="%MessagesImportWizard">
       </wizard>
@@ -1260,14 +1260,14 @@
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.productdefinitionexplorer.ProductExplorer"
-            icon="icons/ProductDefinitionExplorer.gif"
+            icon="icons/ProductDefinitionExplorer.svg"
             id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer"
             name="%org.faktorips.devtools.core.ui.views.productDefinitionExplorer"/>
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureExplorer"
-            icon="icons/ProductStructureExplorer.gif"
+            icon="icons/ProductStructureExplorer.svg"
             id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
             name="%org.faktorips.devtools.core.ui.views.productStructureExplorer"/>
       <category
@@ -1277,28 +1277,28 @@
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer"
-            icon="icons/ModelExplorer.gif"
+            icon="icons/ModelExplorer.svg"
             id="org.faktorips.devtools.core.ui.views.modelExplorer"
             name="%org.faktorips.devtools.core.ui.views.modelExplorer"/>
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.testrunner.IpsTestRunnerViewPart"
-            icon="icons/TestCaseRun.gif"
+            icon="icons/TestCaseRun.svg"
             id="org.faktorips.devtools.core.ui.views.testRunner"
             name="%org.faktorips.devtools.core.ui.views.testRunner"/>
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView"
-            icon="icons/ModelDescription.gif"
+            icon="icons/ModelDescription.svg"
             id="org.faktorips.devtools.core.ui.views.modelDescription"
             name="%org.faktorips.devtools.core.ui.views.modelDescription"/>
       <view
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.instanceexplorer.InstanceExplorer"
-            icon="icons/InstanceExplorer.gif"
+            icon="icons/InstanceExplorer.svg"
             id="org.faktorips.devtools.core.ui.views.instanceexplorer"
             name="%InstanceExplorerTitle">
       </view>
@@ -1306,7 +1306,7 @@
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchyView"
-            icon="icons/IpsHierarchyView.gif"
+            icon="icons/IpsHierarchyView.svg"
             id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
             name="%IpsHierarchyTitle"
             restorable="true">
@@ -1315,7 +1315,7 @@
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
-            icon="icons/ModelStructure.gif"
+            icon="icons/ModelStructure.svg"
             id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
             name="%IpsModelStructureTitle"
             restorable="true">
@@ -1324,7 +1324,7 @@
             allowMultiple="false"
             category="org.faktorips.devtools.productDefinitionCategory"
             class="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageViewPart"
-            icon="icons/TemplateUsage.gif"
+            icon="icons/TemplateUsage.svg"
             id="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"
             name="%TemplatePropertyUsageViewTitle"
             restorable="true">
@@ -1344,7 +1344,7 @@
       <decorator
             adaptable="true"
             class="org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator"
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/overlays/error_ovr.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/overlays/error_ovr.svg"
             id="org.faktorips.devtools.core.ipsproblemsdecorator"
             label="Faktor-IPS Problems Decorator"
             lightweight="true"
@@ -1433,7 +1433,7 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             label="%org.faktorips.devtools.core.launchIpsTest"
-            icon="icons/TestCaseRun.gif"
+            icon="icons/TestCaseRun.svg"
             helpContextId=""
             class="org.faktorips.devtools.core.ui.IpsTestLaunchShortcut"
             modes="run, debug"
@@ -1467,7 +1467,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
         <launchConfigurationTypeImage
-            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCase.gif"
+            icon="platform:/plugin/org.faktorips.devtools.model.decorators/icons/TestCase.svg"
             configTypeID="org.faktorips.devtools.core.ipsTestLaunchConfigurationType"
             id="org.faktorips.devtools.core.ipsTestLaunchImage">
         </launchConfigurationTypeImage>
@@ -2431,7 +2431,7 @@
             locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.leftTree?after=open">
          <command
                commandId="org.faktorips.devtools.core.ui.openEditor"
-               icon="icons/OpenIpsObject.gif"
+               icon="icons/OpenIpsObject.svg"
                label="%openInNewEditor"
                style="push">
             <visibleWhen
@@ -2453,7 +2453,7 @@
             locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.rightTree?after=open">
          <command
                commandId="org.faktorips.devtools.core.ui.openEditor"
-               icon="icons/OpenIpsObject.gif"
+               icon="icons/OpenIpsObject.svg"
                label="%openInNewEditor"
                style="push">
             <visibleWhen
@@ -2481,7 +2481,7 @@
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
          <command
                commandId="org.faktorips.devtools.core.ui.search.model"
-               icon="icons/ModelSearch.gif"
+               icon="icons/ModelSearch.svg"
                id="org.faktorips.devtools.core.ui.search.ModelSearchID"
                label="%org.faktorips.devtools.actions.OpenModelSearchPageAction.label"
                style="push">
@@ -2600,7 +2600,7 @@
                  </separator>
                  <command
                  commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
-                 icon="icons/Reference.gif"
+                 icon="icons/Reference.svg"
                  style="push">
               <visibleWhen
                     checkEnabled="true">
@@ -2669,7 +2669,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=navigate">
          <command
                commandId="org.faktorips.devtools.core.ui.commands.showHierarchy"
-               icon="icons/IpsHierarchyView.gif"
+               icon="icons/IpsHierarchyView.svg"
                label="%ShowHierarchyHandler.name"
                style="push"
                tooltip="%ShowHierarchyHandler.tooltip">
@@ -2690,7 +2690,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.showInstanceAction"
-               icon="icons/InstanceExplorer.gif"
+               icon="icons/InstanceExplorer.svg"
                label="%ShowInstanceAction_nameForTypes"
                style="push"
                tooltip="%ShowInstanceAction_descriptionForTypes">
@@ -2711,7 +2711,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.showStructureAction"
-               icon="icons/ProductStructureExplorer.gif"
+               icon="icons/ProductStructureExplorer.svg"
                label="%ShowStructureAction_name"
                style="push"
                tooltip="%ShowStructureAction_description">
@@ -2732,7 +2732,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
-               icon="icons/Reference.gif"
+               icon="icons/Reference.svg"
                label="%SearchReferencesAction_name"
                style="push"
                tooltip="%SearchReferencesAction_description">
@@ -2752,7 +2752,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.showInstanceAction.instances"
-               icon="icons/InstanceExplorer.gif"
+               icon="icons/InstanceExplorer.svg"
                label="%ShowInstanceAction_nameForInstances"
                style="push"
                tooltip="%ShowInstanceAction_descriptionForInstances">
@@ -2773,7 +2773,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.showModelStructure"
-               icon="icons/ModelStructure.gif"
+               icon="icons/ModelStructure.svg"
                label="%ShowModelStructureHandler.name"
                style="push"
                tooltip="%ShowModelStructureHandler.tooltip">
@@ -2803,7 +2803,7 @@
             locationURI="popup:org.faktorips.devtools.core.ui.editors.productcmpt.LinksSection">
          <command
                commandId="org.faktorips.devtools.core.ui.openEditor"
-               icon="icons/OpenIpsObject.gif"
+               icon="icons/OpenIpsObject.svg"
                label="%openInNewEditor"
                style="push">
             <visibleWhen
@@ -2816,7 +2816,7 @@
          </separator>
          <command
                commandId="org.faktorips.devtools.core.ui.wizards.productcmpt.newProductCmpt"
-               icon="icons/Add_new.gif"
+               icon="icons/Add_new.svg"
                label="%newProductCmpt_label"
                style="push"
                tooltip="%newProductCmpt_description">
@@ -2841,7 +2841,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.AddProductCmptLink"
-               icon="icons/Add.gif"
+               icon="icons/Add.svg"
                label="%NewProductCmptLinkCommand_name"
                style="push">
             <visibleWhen
@@ -2905,7 +2905,7 @@
             locationURI="popup:org.eclipse.ui.popup.any?after=fips.new">
          <command
                commandId="org.faktorips.devtools.core.ui.command.newProductCmpt"
-               icon="icons/NewProductCmptWizard.gif"
+               icon="icons/NewProductCmptWizard.svg"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -2996,7 +2996,7 @@
                mnemonic="c">
             <command
                   commandId="org.faktorips.devtools.core.ui.command.FixDifferences"
-                  icon="icons/FixDifferencesToModel.gif"
+                  icon="icons/FixDifferencesToModel.svg"
                   label="%fixDifferencesAction"
                   style="push">
                <visibleWhen
@@ -3005,7 +3005,7 @@
             </command>
             <command
                   commandId="org.faktorips.devtools.core.ui.command.CreateMissingEnumContents"
-                  icon="icons/CreateMissingEnumContents.gif"
+                  icon="icons/CreateMissingEnumContents.svg"
                   label="%createMissingEnumContentsAction"
                   style="push"
                   tooltip="%createMissingEnumContentsAction.tooltip">
@@ -3133,7 +3133,7 @@
           canSearchEnclosingProjects="true"
           class="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
           enabled="true"
-          icon="icons/ModelSearch.gif"
+          icon="icons/ModelSearch.svg"
           id="org.faktorips.devtools.core.ui.search.model.ModelSearchPage"
           label="%org.faktorips.devtools.core.ui.search.model.ModelSearchPage.label"
           showScopeSection="true"
@@ -3144,7 +3144,7 @@
        <page
           canSearchEnclosingProjects="true"
           class="org.faktorips.devtools.core.ui.search.product.ProductSearchPage"
-          icon="icons/ModelSearch.gif"
+          icon="icons/ModelSearch.svg"
           id="org.faktorips.devtools.core.ui.search.product.ProductSearchPage"
           label="%org.faktorips.devtools.core.ui.search.product.ProductSearchPage.label"
           showScopeSection="true"

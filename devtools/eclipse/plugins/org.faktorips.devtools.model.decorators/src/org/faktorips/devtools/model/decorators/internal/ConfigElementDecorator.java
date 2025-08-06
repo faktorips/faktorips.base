@@ -23,9 +23,9 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 
 public class ConfigElementDecorator implements IIpsObjectPartDecorator {
 
-    public static final String CONFIG_ELEMENT_ICON = "ConfigElement.gif"; //$NON-NLS-1$
-    public static final String CONFIGURED_DEFAULT_ICON = "ConfiguredDefault.gif"; //$NON-NLS-1$
-    public static final String CONFIGURED_VALUE_SET_ICON = "ConfiguredValueSet.gif"; //$NON-NLS-1$
+    public static final String CONFIG_ELEMENT_ICON = "ConfigElement.svg"; //$NON-NLS-1$
+    public static final String CONFIGURED_DEFAULT_ICON = "ConfiguredDefault.svg"; //$NON-NLS-1$
+    public static final String CONFIGURED_VALUE_SET_ICON = "ConfiguredValueSet.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

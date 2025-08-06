@@ -25,7 +25,7 @@ import org.faktorips.util.ArgumentCheck;
 public class OpenFixTableContentWizardAction extends Action {
 
     /** The name of the image for the action. */
-    private static final String IMAGE_NAME = "BrokenTable.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME = "BrokenTable.svg"; //$NON-NLS-1$
 
     /** The <code>IEnumContent</code> to fix. */
     private ITableContents tableContents;

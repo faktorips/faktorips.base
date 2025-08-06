@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.descriptorOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -47,7 +47,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        prodCmptDefaultIcon = IIpsDecorators.getImageHandling().createImageDescriptor("ProductCmpt.gif");
+        prodCmptDefaultIcon = IIpsDecorators.getImageHandling().createImageDescriptor("ProductCmpt.svg");
         ipsProject = newIpsProject("AdapterTestProject");
         root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
@@ -61,7 +61,7 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         bNormalType.setSupertype(aSuperType.getQualifiedName());
         cSubType.setSupertype(bNormalType.getQualifiedName());
         // Define Icon
-        bNormalType.setInstancesIcon("normalTypeImage.gif");
+        bNormalType.setInstancesIcon("normalTypeImage.svg");
         // create components
         IProductCmpt aSuperCmpt = newProductCmpt(aSuperType, "SuperProductCmpt");
         IProductCmpt cSubCmpt = newProductCmpt(cSubType, "SubProductCmpt");
@@ -80,24 +80,24 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         // B: Custom Icon
         var iconDescB = cmptDecorator.getProductCmptIconDesc(bNormalType);
         assertTrue(iconDescB instanceof PathIconDesc);
-        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDescB).getPathToImage());
+        assertEquals("normalTypeImage.svg", ((PathIconDesc)iconDescB).getPathToImage());
         // C inherits B's Custom Icon
         var iconDescC = cmptDecorator.getProductCmptIconDesc(cSubType);
         assertTrue(iconDescC instanceof PathIconDesc);
-        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDescC).getPathToImage());
+        assertEquals("normalTypeImage.svg", ((PathIconDesc)iconDescC).getPathToImage());
         assertSame(iconDescB, iconDescC);
 
-        cSubType.setInstancesIcon("subTypeImage.gif");
+        cSubType.setInstancesIcon("subTypeImage.svg");
         // C: custom Icon overwrites inherited Icon
         iconDesc = cmptDecorator.getProductCmptIconDesc(cSubType);
         assertTrue(iconDesc instanceof PathIconDesc);
-        assertEquals("subTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
+        assertEquals("subTypeImage.svg", ((PathIconDesc)iconDesc).getPathToImage());
 
         cSubType.setInstancesIcon("");
         // C inherits B's Custom Icons again
         iconDesc = cmptDecorator.getProductCmptIconDesc(cSubType);
         assertTrue(iconDesc instanceof PathIconDesc);
-        assertEquals("normalTypeImage.gif", ((PathIconDesc)iconDesc).getPathToImage());
+        assertEquals("normalTypeImage.svg", ((PathIconDesc)iconDesc).getPathToImage());
 
         bNormalType.setInstancesIcon("");
         // C inherits A's standard Icon

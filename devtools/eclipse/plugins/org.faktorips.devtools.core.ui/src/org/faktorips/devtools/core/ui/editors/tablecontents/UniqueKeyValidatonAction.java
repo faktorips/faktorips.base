@@ -30,7 +30,7 @@ public class UniqueKeyValidatonAction extends Action {
 
     public UniqueKeyValidatonAction(TableViewer tableViewer) {
         this.tableViewer = tableViewer;
-        setImageDescriptor(IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Ok.png", true)); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Ok.svg", true)); //$NON-NLS-1$
         setToolTipText(Messages.UniqueKeyValidatonAction_Tooltip);
     }
 

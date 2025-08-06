@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 
 public class IpsSrcFileDecorator implements IIpsSrcFileDecorator {
 
-    public static final String IPS_SRC_FILE_IMAGE = "IpsSrcFile.gif"; //$NON-NLS-1$
+    public static final String IPS_SRC_FILE_IMAGE = "IpsSrcFile.svg"; //$NON-NLS-1$
 
     private final ImageDescriptor defaultImageDescriptor = IIpsDecorators.getImageHandling()
             .getSharedImageDescriptor(IPS_SRC_FILE_IMAGE, true);

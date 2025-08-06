@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
  */
 public class TableStructureUsageDecorator extends SimpleIpsElementDecorator implements IIpsObjectPartDecorator {
 
-    public static final String BASE_IMAGE = "TableStructure.gif"; //$NON-NLS-1$
+    public static final String BASE_IMAGE = "TableStructure.svg"; //$NON-NLS-1$
 
     public TableStructureUsageDecorator() {
         super(BASE_IMAGE);

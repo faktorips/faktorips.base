@@ -355,13 +355,13 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             @Override
             public Image getImage(Object element) {
                 if (element instanceof IEnumType) {
-                    return IpsUIPlugin.getImageHandling().getSharedImage("NewEnumContent.gif", true); //$NON-NLS-1$
+                    return IpsUIPlugin.getImageHandling().getSharedImage("NewEnumContentWizard.svg", true); //$NON-NLS-1$
                 }
                 IIpsPackageFragment pack = (IIpsPackageFragment)element;
                 if (pack == null || !(pack.exists())) {
-                    return IpsUIPlugin.getImageHandling().getSharedImage("NewIpsPackageFragment.gif", true); //$NON-NLS-1$
+                    return IpsUIPlugin.getImageHandling().getSharedImage("NewIpsPackageFragment.svg", true); //$NON-NLS-1$
                 }
-                return IIpsDecorators.getImageHandling().getSharedImage("IpsPackageFragment.gif", true); //$NON-NLS-1$
+                return IIpsDecorators.getImageHandling().getSharedImage("IpsPackageFragment.svg", true); //$NON-NLS-1$
             }
 
         }

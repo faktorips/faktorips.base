@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.model.decorators.IImageHandling;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 /**
  * Images in eclipse is not so easy as it looks like. If you are not familiar with the basics of
@@ -86,6 +88,15 @@ public class ImageHandling implements IImageHandling {
         return descriptor;
     }
 
+    public static boolean isSvgSupported() {
+        Bundle platformBundle = Platform.getBundle("org.eclipse.platform");
+        if (platformBundle != null) {
+            Version version = platformBundle.getVersion();
+            return version.compareTo(new Version(4, 36, 0)) >= 0;
+        }
+        return false;
+    }
+
     @Override
     public void registerSharedImageDescriptor(String name, ImageDescriptor descriptor) {
         if (descriptor != null && descriptor != ImageDescriptor.getMissingImageDescriptor()) {
@@ -120,7 +131,7 @@ public class ImageHandling implements IImageHandling {
     @Override
     public ImageDescriptor getImageDescriptor(IAdaptable adaptable) {
         if (adaptable == null) {
-            return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
+            return getSharedImageDescriptor("IpsElement_broken.svg", true); //$NON-NLS-1$
         }
         if (adaptable instanceof IIpsElement ipsElement) {
             ImageDescriptor descriptor = IIpsDecorators.getImageDescriptor(ipsElement);
@@ -240,6 +251,7 @@ public class ImageHandling implements IImageHandling {
         ImageDescriptor descriptor = getDefaultImageDescriptor(ipsElementClass);
         if (descriptor != null) {
             return getImage(descriptor);
+            // return IImageHandling.scaleImage(getImage(descriptor), 16, 16);
         } else {
             return null;
         }
@@ -248,12 +260,14 @@ public class ImageHandling implements IImageHandling {
     @Override
     public Image getImage(IAdaptable adaptable) {
         return getImage(getImageDescriptor(adaptable), false);
+        // return IImageHandling.scaleImage(getImage(getImageDescriptor(adaptable), false), 16, 16);
     }
 
     @Override
     public Image getImage(IAdaptable adaptable, boolean enabled) {
         if (enabled) {
             return getImage(adaptable);
+            // return IImageHandling.scaleImage(getImage(adaptable), 16, 16);
         } else {
             return getDisabledImage(adaptable);
         }

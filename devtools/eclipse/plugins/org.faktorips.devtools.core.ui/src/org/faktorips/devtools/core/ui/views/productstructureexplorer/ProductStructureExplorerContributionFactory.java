@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -45,7 +45,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * This contribution factory creates menu contributions for adding new and existing product
  * components.
- * 
+ *
  * @author dirmeier
  */
 public class ProductStructureExplorerContributionFactory extends ExtensionContributionFactory {
@@ -153,7 +153,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     /**
      * Returns the label for the add existing command if there is only one kind of product component
      * that could be added. Would return null if there are multiple kinds to get the default label.
-     * 
+     *
      * @param reference the selected reference
      * @return the label or null for default label
      */
@@ -273,21 +273,21 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     }
 
     private ImageDescriptor getAddNewProductCmptImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add_new.gif", true);
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add_new.svg", true);
     }
 
     private ImageDescriptor getAddProductCmptImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add.gif", true);
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add.svg", true);
     }
 
     private ImageDescriptor getNewTableContentsImageDescriptor() {
         return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
-                "NewTableContentsWizard.gif", true);
+                "NewTableContentsWizard.svg", true);
     }
 
     private ImageDescriptor getExistingTableContentsImageDescriptor() {
         return IIpsDecorators.getImageHandling().getSharedImageDescriptor(
-                "TableContents.gif", true);
+                "TableContents.svg", true);
     }
 
 }

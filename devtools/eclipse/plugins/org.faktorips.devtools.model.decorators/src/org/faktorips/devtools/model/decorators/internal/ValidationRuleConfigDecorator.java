@@ -20,7 +20,7 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 
 public class ValidationRuleConfigDecorator implements IIpsObjectPartDecorator {
 
-    public static final String VALIDATION_RULE_DEF_BASE_IMAGE = "ValidationRuleDef.gif"; //$NON-NLS-1$
+    public static final String VALIDATION_RULE_DEF_BASE_IMAGE = "ValidationRuleDef.svg"; //$NON-NLS-1$
 
     /**
      * {@inheritDoc}

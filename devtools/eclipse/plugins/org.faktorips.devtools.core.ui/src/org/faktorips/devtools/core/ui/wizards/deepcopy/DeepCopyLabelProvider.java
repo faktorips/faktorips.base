@@ -38,7 +38,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
 
     private final ResourceManager resourceManager;
     private ImageDescriptor overlay = IIpsDecorators.getImageHandling().getSharedImageDescriptor(
-            "overlays/LinkOverlay.gif", //$NON-NLS-1$
+            "overlays/LinkOverlay.svg", //$NON-NLS-1$
             true);
     private final DeepCopyPreview deepCopyPreview;
     private final int segmentsToIgnore;
@@ -112,7 +112,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
 
     protected Image getErrorImage(Object element) {
         if (getErrorText(element) != null) {
-            return IpsUIPlugin.getImageHandling().getSharedImage("error_tsk.gif", true); //$NON-NLS-1$
+            return IpsUIPlugin.getImageHandling().getSharedImage("error_tsk.svg", true); //$NON-NLS-1$
         } else {
             return null;
         }

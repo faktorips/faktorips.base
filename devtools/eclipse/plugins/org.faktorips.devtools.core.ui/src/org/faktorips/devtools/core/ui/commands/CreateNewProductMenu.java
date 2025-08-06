@@ -59,7 +59,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
                 serviceLocator, null, COMMAND_CREATE_NEW_VERSION, SWT.PUSH);
         createNewVersionParameter.label = NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion,
                 changesOverTimeNamingConvention.getVersionConceptNameSingular());
-        createNewVersionParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.gif"); //$NON-NLS-1$
+        createNewVersionParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.svg"); //$NON-NLS-1$
         CommandContributionItem createNewVersionItem = new CommandContributionItem(createNewVersionParameter);
         createNewVersionItem.setVisible(createNewVersionItem.isEnabled());
         contributionItems.add(createNewVersionItem);
@@ -69,7 +69,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
         createNewGenerationParameter.label = NLS.bind(Messages.CreateNewGenerationAction_title,
                 changesOverTimeNamingConvention.getGenerationConceptNameSingular());
         createNewGenerationParameter.icon = IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("NewProductCmptGeneration.gif"); //$NON-NLS-1$
+                .createImageDescriptor("NewProductCmptGeneration.svg"); //$NON-NLS-1$
         CommandContributionItem createNewGenerationItem = new CommandContributionItem(createNewGenerationParameter);
         createNewGenerationItem.setVisible(createNewGenerationItem.isEnabled());
         contributionItems.add(createNewGenerationItem);
@@ -77,7 +77,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
         CommandContributionItemParameter copyProductParameter = new CommandContributionItemParameter(serviceLocator,
                 null, COMMAND_DEEP_COPY_PRODUCT, SWT.PUSH);
         copyProductParameter.label = Messages.IpsDeepCopyAction_name;
-        copyProductParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("DeepCopyWizard.gif"); //$NON-NLS-1$
+        copyProductParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("DeepCopyWizard.svg"); //$NON-NLS-1$
         CommandContributionItem copyProductItem = new CommandContributionItem(copyProductParameter);
         copyProductItem.setVisible(copyProductItem.isEnabled());
         contributionItems.add(copyProductItem);
@@ -85,7 +85,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
         CommandContributionItemParameter copyRuntimeIdParameter = new CommandContributionItemParameter(serviceLocator,
                 null, COMMAND_COPY_RUNTIMEID, SWT.PUSH);
         copyRuntimeIdParameter.label = Messages.CopyRuntimeId_name;
-        copyRuntimeIdParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("CopyRuntimeId.gif"); //$NON-NLS-1$
+        copyRuntimeIdParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("CopyRuntimeId.svg"); //$NON-NLS-1$
         CommandContributionItem copyRuntimeIdItem = new CommandContributionItem(copyRuntimeIdParameter);
         copyRuntimeIdItem.setVisible(copyRuntimeIdItem.isEnabled());
         contributionItems.add(copyRuntimeIdItem);

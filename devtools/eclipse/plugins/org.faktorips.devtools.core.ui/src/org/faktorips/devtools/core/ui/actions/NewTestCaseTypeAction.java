@@ -29,7 +29,7 @@ public class NewTestCaseTypeAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewTestCaseTypeAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCaseType.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCaseTypeWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

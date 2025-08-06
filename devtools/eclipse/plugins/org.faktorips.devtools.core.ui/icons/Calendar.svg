@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #005387;
+      }
+
+      .cls-2 {
+        fill: #009fe3;
+      }
+
+      .cls-3 {
+        fill: #102c58;
+      }
+
+      .cls-4 {
+        fill: #868686;
+      }
+
+      .cls-5 {
+        fill: #ececec;
+      }
+
+      .cls-6 {
+        fill: #d9d9d9;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="cls-6" x="1" y="5" width="7" height="9"/>
+    <rect class="cls-3" x="1" y="2" width="7" height="3"/>
+    <rect class="cls-5" x="8" y="5" width="7" height="9"/>
+    <rect class="cls-1" x="8" y="2" width="7" height="3"/>
+  </g>
+  <rect class="cls-2" x="9.75" y="8.25" width="2.5" height="2.5"/>
+  <g>
+    <rect class="cls-4" x="2.5" y="7" width="1" height="1"/>
+    <rect class="cls-4" x="4.5" y="7" width="1" height="1"/>
+    <rect class="cls-4" x="6.5" y="7" width="1" height="1"/>
+    <rect class="cls-4" x="8.5" y="7" width="1" height="1"/>
+    <rect class="cls-4" x="10.5" y="7" width="1" height="1"/>
+    <rect class="cls-4" x="2.5" y="9" width="1" height="1"/>
+    <rect class="cls-4" x="4.5" y="9" width="1" height="1"/>
+    <rect class="cls-4" x="6.5" y="9" width="1" height="1"/>
+    <rect class="cls-4" x="8.5" y="9" width="1" height="1"/>
+    <rect class="cls-6" x="10.5" y="9" width="1" height="1"/>
+    <rect class="cls-4" x="2.5" y="11" width="1" height="1"/>
+    <rect class="cls-4" x="4.5" y="11" width="1" height="1"/>
+    <rect class="cls-4" x="6.5" y="11" width="1" height="1"/>
+    <rect class="cls-4" x="8.5" y="11" width="1" height="1"/>
+    <rect class="cls-4" x="10.5" y="11" width="1" height="1"/>
+    <rect class="cls-4" x="12.5" y="7" width="1" height="1"/>
+    <rect class="cls-4" x="12.5" y="9" width="1" height="1"/>
+    <rect class="cls-4" x="12.5" y="11" width="1" height="1"/>
+  </g>
+</svg>

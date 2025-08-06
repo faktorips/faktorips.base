@@ -18,8 +18,8 @@ import org.faktorips.devtools.model.ipsproject.ILibraryIpsPackageFragmentRoot;
 
 public class LibraryIpsPackageFragmentRootDecorator implements IIpsElementDecorator {
 
-    public static final String IPS_ARCHIVE_IMAGE = "IpsAr.gif"; //$NON-NLS-1$
-    public static final String IPS_FOLDER_IMAGE = "IpsFolder.gif"; //$NON-NLS-1$
+    public static final String IPS_ARCHIVE_IMAGE = "IpsAr.svg"; //$NON-NLS-1$
+    public static final String IPS_FOLDER_IMAGE = "IpsFolder.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {

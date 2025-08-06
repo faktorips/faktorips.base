@@ -29,7 +29,7 @@ public class FixDifferencesAction extends Action {
         this.window = window;
         this.selection = selection;
         setText(Messages.FixDifferencesAction_text);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("FixDifferencesToModel.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("FixDifferencesToModel.svg")); //$NON-NLS-1$
         setEnabled(true);
     }
 

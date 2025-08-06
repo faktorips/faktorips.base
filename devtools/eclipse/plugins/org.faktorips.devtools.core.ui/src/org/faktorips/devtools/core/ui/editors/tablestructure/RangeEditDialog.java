@@ -157,7 +157,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private void createTopRightArrow(Composite middle) {
         topRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         topRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        topRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        topRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.svg", true)); //$NON-NLS-1$
         topRight.addSelectionListener(new SelectionListener() {
 
             @Override
@@ -175,7 +175,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private void createTopLeftArrow(Composite middle) {
         topLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         topLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        topLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        topLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.svg", true)); //$NON-NLS-1$
         topLeft.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -192,7 +192,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private void createBottomRightArrow(Composite middle) {
         bottomRight = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         bottomRight.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        bottomRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.gif", true)); //$NON-NLS-1$
+        bottomRight.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowRight.svg", true)); //$NON-NLS-1$
         bottomRight.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -209,7 +209,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
     private void createBottomLeftArrow(Composite middle) {
         bottomLeft = getToolkit().createButton(middle, ""); //$NON-NLS-1$
         bottomLeft.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        bottomLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.gif", true)); //$NON-NLS-1$
+        bottomLeft.setImage(IpsUIPlugin.getImageHandling().getSharedImage("ArrowLeft.svg", true)); //$NON-NLS-1$
         bottomLeft.addSelectionListener(new SelectionListener() {
 
             @Override

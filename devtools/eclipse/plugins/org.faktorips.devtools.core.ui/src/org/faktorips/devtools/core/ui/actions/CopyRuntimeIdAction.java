@@ -26,7 +26,7 @@ public class CopyRuntimeIdAction extends IpsAction {
         super(selectionProvider);
         setText(Messages.CopyRuntimeId_name);
         setDescription(Messages.CopyRuntimeId_description);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("CopyRuntimeId.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("CopyRuntimeId.svg")); //$NON-NLS-1$
         clipboard = new Clipboard(shell.getDisplay());
     }
 

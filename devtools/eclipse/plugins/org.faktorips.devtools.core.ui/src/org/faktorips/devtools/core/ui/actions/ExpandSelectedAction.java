@@ -20,7 +20,7 @@ import org.faktorips.util.ArgumentCheck;
  * Expands the selected elements in a tree viewer.
  */
 public class ExpandSelectedAction extends Action {
-    private static final String EXPAND_ALL_ICON = "ExpandAll.gif"; //$NON-NLS-1$
+    private static final String EXPAND_ALL_ICON = "ExpandAll.svg"; //$NON-NLS-1$
 
     private final AbstractTreeViewer treeViewer;
 

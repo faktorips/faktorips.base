@@ -41,7 +41,7 @@ public class NewRowAction extends IpsAction {
         setControlWithDataChangeableSupport(page);
         setText(Messages.NewRowAction_Label);
         setToolTipText(Messages.NewRowAction_Tooltip);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("InsertRowAfter.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("InsertRowAfter.svg")); //$NON-NLS-1$
     }
 
     /**

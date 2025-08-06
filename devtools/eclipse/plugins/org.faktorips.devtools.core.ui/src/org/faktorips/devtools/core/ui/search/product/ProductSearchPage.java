@@ -118,7 +118,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         btnAddCondition.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
         btnAddCondition.setToolTipText(Messages.ProductSearchPage_labelAddConditionButton);
-        btnAddCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Add.gif", true)); //$NON-NLS-1$
+        btnAddCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Add.svg", true)); //$NON-NLS-1$
 
         btnAddCondition.addSelectionListener(new SelectionAdapter() {
             @Override

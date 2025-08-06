@@ -271,7 +271,7 @@ public class CategorySection extends IpsSection {
      */
     private static class MoveCategoryUpAction extends MoveCategoryAction {
 
-        private static final String IMAGE_FILENAME = "ArrowUp.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "ArrowUp.svg"; //$NON-NLS-1$
 
         private MoveCategoryUpAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {
@@ -295,7 +295,7 @@ public class CategorySection extends IpsSection {
      */
     private static class MoveCategoryDownAction extends MoveCategoryAction {
 
-        private static final String IMAGE_FILENAME = "ArrowDown.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "ArrowDown.svg"; //$NON-NLS-1$
 
         private MoveCategoryDownAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {
@@ -319,7 +319,7 @@ public class CategorySection extends IpsSection {
      */
     private static class MoveCategoryLeftAction extends MoveCategoryAction {
 
-        private static final String IMAGE_FILENAME = "ArrowLeft.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "ArrowLeft.svg"; //$NON-NLS-1$
 
         private MoveCategoryLeftAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {
@@ -347,7 +347,7 @@ public class CategorySection extends IpsSection {
      */
     private static class MoveCategoryRightAction extends MoveCategoryAction {
 
-        private static final String IMAGE_FILENAME = "ArrowRight.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "ArrowRight.svg"; //$NON-NLS-1$
 
         private MoveCategoryRightAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {
@@ -403,7 +403,7 @@ public class CategorySection extends IpsSection {
      */
     private static class EditCategoryAction extends CategoryAction {
 
-        private static final String IMAGE_FILENAME = "Edit.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "Edit.svg"; //$NON-NLS-1$
 
         private EditCategoryAction(IProductCmptType productCmptType, IProductCmptCategory category,
                 CategoryCompositionSection categoryCompositionSection) {

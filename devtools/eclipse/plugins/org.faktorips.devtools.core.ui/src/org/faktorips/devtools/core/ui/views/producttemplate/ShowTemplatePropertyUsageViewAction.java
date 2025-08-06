@@ -31,7 +31,7 @@ public class ShowTemplatePropertyUsageViewAction extends Action {
      * @param text The caption of this action
      */
     public ShowTemplatePropertyUsageViewAction(ITemplatedValue templateValue, String text) {
-        super(text, IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TemplateUsage.gif", true)); //$NON-NLS-1$
+        super(text, IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TemplateUsage.svg", true)); //$NON-NLS-1$
         this.templateValue = templateValue;
     }
 

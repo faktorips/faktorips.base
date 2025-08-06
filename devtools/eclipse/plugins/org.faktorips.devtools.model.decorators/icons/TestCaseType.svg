@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Ebene_1"
+   data-name="Ebene 1"
+   viewBox="0 0 16 16"
+   version="1.1"
+   sodipodi:docname="TestCaseType.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7045"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="64.1875"
+     inkscape:cx="7.8987342"
+     inkscape:cy="8"
+     inkscape:window-width="2510"
+     inkscape:window-height="1371"
+     inkscape:window-x="1970"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Ebene_1" />
+  <defs
+     id="defs7018">
+    <style
+       id="style7016">
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #9cb108;
+      }
+
+      .cls-3 {
+        fill: #b8c445;
+      }
+    </style>
+    <radialGradient
+       id="Unbenannter_Verlauf_174"
+       data-name="Unbenannter Verlauf 174"
+       cx="73.599998"
+       cy="22.27"
+       fx="73.599998"
+       fy="22.27"
+       r="4.6300001"
+       gradientTransform="matrix(1.25,0,0,1.88,-76.19,-19.5)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#7cccf0"
+         id="stop428" />
+      <stop
+         offset=".15"
+         stop-color="#76caef"
+         id="stop430" />
+      <stop
+         offset=".34"
+         stop-color="#67c4ed"
+         id="stop432" />
+      <stop
+         offset=".55"
+         stop-color="#4dbaea"
+         id="stop434" />
+      <stop
+         offset=".78"
+         stop-color="#2aade6"
+         id="stop436" />
+      <stop
+         offset="1"
+         stop-color="#009ee2"
+         id="stop438" />
+    </radialGradient>
+    <radialGradient
+       id="Unbenannter_Verlauf_174-2"
+       data-name="Unbenannter Verlauf 174"
+       cy="17.49"
+       fy="17.49"
+       gradientTransform="matrix(1.25,0,0,1.88,-76.19,-15.31)"
+       xlink:href="#Unbenannter_Verlauf_174" />
+    <radialGradient
+       id="radialGradient7191"
+       data-name="Unbenannter Verlauf 174"
+       cx="73.599998"
+       cy="22.27"
+       fx="73.599998"
+       fy="22.27"
+       r="4.6300001"
+       gradientTransform="matrix(1.25,0,0,1.88,-76.19,-19.5)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#7cccf0"
+         id="stop7179" />
+      <stop
+         offset=".15"
+         stop-color="#76caef"
+         id="stop7181" />
+      <stop
+         offset=".34"
+         stop-color="#67c4ed"
+         id="stop7183" />
+      <stop
+         offset=".55"
+         stop-color="#4dbaea"
+         id="stop7185" />
+      <stop
+         offset=".78"
+         stop-color="#2aade6"
+         id="stop7187" />
+      <stop
+         offset="1"
+         stop-color="#009ee2"
+         id="stop7189" />
+    </radialGradient>
+    <radialGradient
+       id="Unbenannter_Verlauf_174-3"
+       data-name="Unbenannter Verlauf 174"
+       cx="170.95"
+       cy="12.7"
+       fx="170.95"
+       fy="12.7"
+       r="4.6300001"
+       gradientTransform="matrix(0.67,0,0,1,-94.31,0)"
+       xlink:href="#Unbenannter_Verlauf_174" />
+    <radialGradient
+       id="radialGradient7206"
+       data-name="Unbenannter Verlauf 174"
+       cx="73.599998"
+       cy="22.27"
+       fx="73.599998"
+       fy="22.27"
+       r="4.6300001"
+       gradientTransform="matrix(1.25,0,0,1.88,-76.19,-19.5)"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#7cccf0"
+         id="stop7194" />
+      <stop
+         offset=".15"
+         stop-color="#76caef"
+         id="stop7196" />
+      <stop
+         offset=".34"
+         stop-color="#67c4ed"
+         id="stop7198" />
+      <stop
+         offset=".55"
+         stop-color="#4dbaea"
+         id="stop7200" />
+      <stop
+         offset=".78"
+         stop-color="#2aade6"
+         id="stop7202" />
+      <stop
+         offset="1"
+         stop-color="#009ee2"
+         id="stop7204" />
+    </radialGradient>
+  </defs>
+  <g
+     id="g7026">
+    <rect
+       class="cls-3"
+       x="2.19"
+       y="1"
+       width="11.63"
+       height="15"
+       id="rect7020"
+       style="fill:#009fe3;fill-opacity:1" />
+    <rect
+       class="cls-2"
+       x="2.19"
+       y="1"
+       width="5.81"
+       height="15"
+       id="rect7022"
+       style="fill:#0080bf;fill-opacity:1" />
+    <path
+       class="cls-1"
+       d="M7.46,3.87h-1.29v3.37h-.81v-3.37h-1.29v-.73h3.4v.73Z"
+       id="path7024" />
+  </g>
+  <g
+     id="g7038">
+    <rect
+       class="cls-1"
+       x="5.62"
+       y="8.48"
+       width="6.19"
+       height=".56"
+       id="rect7028" />
+    <rect
+       class="cls-1"
+       x="5.62"
+       y="10.73"
+       width="6.19"
+       height=".56"
+       id="rect7030" />
+    <rect
+       class="cls-1"
+       x="8.57"
+       y="6.08"
+       width="3.3"
+       height=".56"
+       id="rect7032" />
+    <rect
+       class="cls-1"
+       x="4.13"
+       y="10.73"
+       width=".73"
+       height=".56"
+       id="rect7034" />
+    <rect
+       class="cls-1"
+       x="4.13"
+       y="8.48"
+       width=".73"
+       height=".56"
+       id="rect7036" />
+  </g>
+  <rect
+     class="cls-1"
+     x="5.62"
+     y="13.04"
+     width="6.19"
+     height=".56"
+     id="rect7040" />
+  <rect
+     class="cls-1"
+     x="4.13"
+     y="13.04"
+     width=".73"
+     height=".56"
+     id="rect7042" />
+</svg>

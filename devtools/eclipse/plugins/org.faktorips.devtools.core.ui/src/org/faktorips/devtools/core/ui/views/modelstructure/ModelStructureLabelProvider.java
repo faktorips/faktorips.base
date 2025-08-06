@@ -24,15 +24,16 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public final class ModelStructureLabelProvider extends LabelProvider implements IStyledLabelProvider {
 
+    // TODO FIPS-13600/FIPS-15258
     private static final String PRODUCT_SUBTYPE_IMAGE = "product_subtype.gif"; //$NON-NLS-1$
     private static final String POLICY_SUBTYPE_IMAGE = "policy_subtype.gif"; //$NON-NLS-1$
     private static final String POLICY_ASSOCIATION_IMAGE = "policy_AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String PRODUCT_ASSOCIATION_IMAGE = "product_AssociationType-Aggregation.gif"; //$NON-NLS-1$
-    private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator_orange.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator.svg"; //$NON-NLS-1$
     private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType_width30.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType_width30.gif"; //$NON-NLS-1$
-    private static final String OVERLAY_ABSTRACT_IMAGE = "AbstractIndicator.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_ABSTRACT_IMAGE = "AbstractIndicator.svg"; //$NON-NLS-1$
 
     private boolean showCardinalities = true;
     private boolean showRolenames = true;
@@ -45,6 +46,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public Image getImage(Object element) {
         if (element instanceof ComponentNode node) {
@@ -87,7 +89,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
             if (overlayed) {
                 return resourceManager
-                        .createImage(IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(imageName,
+                        .create(IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(imageName,
                                 overlayImages));
             } else {
                 return IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);
@@ -95,6 +97,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
         }
         return null;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public String getText(Object element) {

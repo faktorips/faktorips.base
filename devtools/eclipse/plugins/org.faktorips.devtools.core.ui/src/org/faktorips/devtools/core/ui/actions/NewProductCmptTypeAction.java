@@ -28,7 +28,7 @@ public class NewProductCmptTypeAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewProductCmptTypeAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptTypeWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptTypeWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

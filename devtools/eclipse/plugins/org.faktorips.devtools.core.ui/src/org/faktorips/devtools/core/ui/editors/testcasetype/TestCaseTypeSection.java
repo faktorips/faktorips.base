@@ -706,10 +706,10 @@ public class TestCaseTypeSection extends IpsSection {
                         // type input or expected
                         if (testAttribute.getTestAttributeType() == EXPECTED_RESULT) {
                             baseImage = resourceManager
-                                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.svg")); //$NON-NLS-1$
                         } else {
                             baseImage = resourceManager
-                                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.svg")); //$NON-NLS-1$
                         }
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_TEST_ATTRIBUTE_TYPE);
                         break;
@@ -724,7 +724,7 @@ public class TestCaseTypeSection extends IpsSection {
                     case 3:
                         // datatype
                         baseImage = resourceManager
-                                .get(IIpsDecorators.getImageHandling().createImageDescriptor("Datatype.gif")); //$NON-NLS-1$
+                                .get(IIpsDecorators.getImageHandling().createImageDescriptor("Datatype.svg")); //$NON-NLS-1$
                         msgList = msgList.getMessagesFor(element, ITestAttribute.PROPERTY_DATATYPE);
                         break;
                     default:
@@ -867,7 +867,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         @Override
-        public void runWith(IStructuredSelection selection) {
+        protected void runWith(IStructuredSelection selection) {
             addParameterClicked();
         }
     }
@@ -889,7 +889,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         @Override
-        public void runWith(IStructuredSelection selection) {
+        protected void runWith(IStructuredSelection selection) {
             removeClicked();
         }
     }
@@ -911,7 +911,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         @Override
-        public void runWith(IStructuredSelection selection) {
+        protected void runWith(IStructuredSelection selection) {
             moveUpClicked(selection);
         }
     }
@@ -933,7 +933,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         @Override
-        public void runWith(IStructuredSelection selection) {
+        protected void runWith(IStructuredSelection selection) {
             moveDownClicked(selection);
         }
     }
@@ -1096,7 +1096,7 @@ public class TestCaseTypeSection extends IpsSection {
         };
         actionAll.setChecked(showAll);
         actionAll.setToolTipText(Messages.TestCaseTypeSection_Action_ShowAll_ToolTip);
-        actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
+        actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.svg")); //$NON-NLS-1$
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(detailsSection);
         toolBarManager.add(actionAll);
@@ -1307,7 +1307,7 @@ public class TestCaseTypeSection extends IpsSection {
                 formText.setImage("imagepccmpttype", resourceManager.get(overlayedImage)); //$NON-NLS-1$
             }
             Image baseImage = resourceManager
-                    .get(IpsUIPlugin.getImageHandling().createImageDescriptor("Association.gif")); //$NON-NLS-1$
+                    .get(IIpsDecorators.getImageHandling().createImageDescriptor("AssociationType-Association.svg")); //$NON-NLS-1$
             ImageDescriptor imageassociationDescriptor = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
                     msgList.getSeverity());
             formText.setImage("imageassociation", resourceManager.get(imageassociationDescriptor)); //$NON-NLS-1$

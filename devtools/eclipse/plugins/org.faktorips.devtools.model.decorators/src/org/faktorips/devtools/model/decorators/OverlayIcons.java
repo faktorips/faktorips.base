@@ -21,22 +21,22 @@ public final class OverlayIcons {
 
     public static final String OVERLAYS_FOLDER = "overlays/"; //$NON-NLS-1$
 
-    public static final String ABSTRACT = OVERLAYS_FOLDER + "AbstractIndicator.gif"; //$NON-NLS-1$
-    public static final String ADDED = OVERLAYS_FOLDER + "AddOverlay.gif"; //$NON-NLS-1$
-    public static final String DELETED = OVERLAYS_FOLDER + "DeleteOverlay.gif"; //$NON-NLS-1$
-    public static final String ERROR = OVERLAYS_FOLDER + "error_ovr.gif"; //$NON-NLS-1$
-    public static final String FAILURE = OVERLAYS_FOLDER + "failed_ovr.gif"; //$NON-NLS-1$
-    public static final String INFO = OVERLAYS_FOLDER + "info_ovr.gif"; //$NON-NLS-1$
-    public static final String KEY = OVERLAYS_FOLDER + "KeyOverlay.gif"; //$NON-NLS-1$
-    public static final String LINK = OVERLAYS_FOLDER + "LinkOverlay.gif"; //$NON-NLS-1$
-    public static final String MODIFIED = OVERLAYS_FOLDER + "ModifyOverlay.gif"; //$NON-NLS-1$
-    public static final String OVERRIDE = OVERLAYS_FOLDER + "OverrideIndicator.gif"; //$NON-NLS-1$
-    public static final String PRODUCT_RELEVANT = OVERLAYS_FOLDER + "ProductRelevantOverlay.gif"; //$NON-NLS-1$
-    public static final String STATIC = OVERLAYS_FOLDER + "not_changingovertime_ovr.gif"; //$NON-NLS-1$
-    public static final String SUCCESS = OVERLAYS_FOLDER + "success_ovr.gif"; //$NON-NLS-1$
-    public static final String TEMPLATE = OVERLAYS_FOLDER + "ProductTemplateOverlay.gif"; //$NON-NLS-1$
-    public static final String WARNING = OVERLAYS_FOLDER + "warning_co.gif"; //$NON-NLS-1$
-    public static final String DEPRECATED = OVERLAYS_FOLDER + "deprecated.png"; //$NON-NLS-1$
+    public static final String ABSTRACT = OVERLAYS_FOLDER + "AbstractIndicator.svg"; //$NON-NLS-1$
+    public static final String ADDED = OVERLAYS_FOLDER + "AddOverlay.svg"; //$NON-NLS-1$
+    public static final String DELETED = OVERLAYS_FOLDER + "DeleteOverlay.svg"; //$NON-NLS-1$
+    public static final String ERROR = OVERLAYS_FOLDER + "error_ovr.svg"; //$NON-NLS-1$
+    public static final String FAILURE = OVERLAYS_FOLDER + "failed_ovr.svg"; //$NON-NLS-1$
+    public static final String INFO = OVERLAYS_FOLDER + "info_ovr.svg"; //$NON-NLS-1$
+    public static final String KEY = OVERLAYS_FOLDER + "KeyOverlay.svg"; //$NON-NLS-1$
+    public static final String LINK = OVERLAYS_FOLDER + "LinkOverlay.svg"; //$NON-NLS-1$
+    public static final String MODIFIED = OVERLAYS_FOLDER + "ModifyOverlay.svg"; //$NON-NLS-1$
+    public static final String OVERRIDE = OVERLAYS_FOLDER + "OverrideIndicator.svg"; //$NON-NLS-1$
+    public static final String PRODUCT_RELEVANT = OVERLAYS_FOLDER + "ProductRelevantOverlay.svg"; //$NON-NLS-1$
+    public static final String STATIC = OVERLAYS_FOLDER + "not_changingovertime_ovr.svg"; //$NON-NLS-1$
+    public static final String SUCCESS = OVERLAYS_FOLDER + "success_ovr.svg"; //$NON-NLS-1$
+    public static final String TEMPLATE = OVERLAYS_FOLDER + "ProductTemplateOverlay.svg"; //$NON-NLS-1$
+    public static final String WARNING = OVERLAYS_FOLDER + "warning_co.svg"; //$NON-NLS-1$
+    public static final String DEPRECATED = OVERLAYS_FOLDER + "deprecated.svg"; //$NON-NLS-1$
 
     public static final ImageDescriptor ERROR_OVR_DESC = IIpsDecorators.getImageHandling().createImageDescriptor(ERROR);
     public static final ImageDescriptor WARNING_OVR_DESC = IIpsDecorators.getImageHandling()

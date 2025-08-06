@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.pctype.IValidationRule;
 
 public class ValidationRuleDecorator implements IIpsElementDecorator {
 
-    public static final String VALIDATION_RULE_DEF_BASE_IMAGE = "ValidationRuleDef.gif"; //$NON-NLS-1$
+    public static final String VALIDATION_RULE_DEF_BASE_IMAGE = "ValidationRuleDef.svg"; //$NON-NLS-1$
 
     /**
      * If the given {@link IIpsElement} is an {@link IValidationRule}, this method returns the

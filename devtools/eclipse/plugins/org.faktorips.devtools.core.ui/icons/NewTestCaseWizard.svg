@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #a8dcf7;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #a17d18;
+      }
+
+      .cls-4 {
+        fill: url(#Unbenannter_Verlauf_10);
+      }
+
+      .cls-5 {
+        fill: #9cb108;
+      }
+
+      .cls-6 {
+        fill: #d6db88;
+      }
+
+      .cls-7 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-8 {
+        fill: #b8c445;
+      }
+
+      .cls-9 {
+        fill: url(#Unbenannter_Verlauf_13);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_10" data-name="Unbenannter Verlauf 10" x1="13.61" y1="-936.02" x2="13.61" y2="-937.79" gradientTransform="translate(0 -932.22) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_13" data-name="Unbenannter Verlauf 13" cx="-1588.66" cy="1159.1" fx="-1588.66" fy="1159.1" r="3.1" gradientTransform="translate(2069.3799 -2936.2293) rotate(-90.0003) scale(1.8508 -1.7751)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dfc476"/>
+      <stop offset="1" stop-color="#9d7916"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="-283.3" y1="309.55" x2="-283.3" y2="307.14" gradientTransform="translate(669.7433 719.4219) scale(2.32 -2.32)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6f8fa"/>
+      <stop offset="1" stop-color="#ffd580"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <g>
+      <polygon class="cls-5" points="9.5 16 2.19 16 2.19 1 13.81 1 13.81 11.65 9.5 16"/>
+      <g>
+        <polygon class="cls-8" points="9.5 16 8 16 8 1 13.81 1 13.81 11.65 9.5 16"/>
+        <polygon class="cls-1" points="13.81 11.69 9.5 11.69 9.5 16 13.81 11.69"/>
+        <polygon class="cls-1" points="9.5 11.69 13.81 11.69 13.81 10.44 9.5 11.69"/>
+      </g>
+      <polygon class="cls-6" points="13.81 11.69 9.5 11.69 9.5 16 13.81 11.69"/>
+      <polygon class="cls-5" points="9.5 11.69 13.81 11.69 13.81 10.44 9.5 11.69"/>
+    </g>
+    <g>
+      <rect class="cls-2" x="5.75" y="4.19" width="6.19" height=".56"/>
+      <rect class="cls-2" x="5.75" y="6.44" width="6.19" height=".56"/>
+      <rect class="cls-2" x="5.75" y="8.69" width="3.3" height=".56"/>
+      <rect class="cls-2" x="4.26" y="6.44" width=".73" height=".56"/>
+      <rect class="cls-2" x="4.26" y="8.69" width=".73" height=".56"/>
+      <rect class="cls-2" x="4.26" y="4.19" width=".73" height=".56"/>
+    </g>
+  </g>
+  <g id="g6432">
+    <path id="path5581-1-1-79" class="cls-4" d="M13.82,4.25h-.42l.42.43h0v-.43Z"/>
+    <g id="g4514">
+      <g id="g4522">
+        <g>
+          <rect id="rect3910" class="cls-9" x="10.51" y="1.46" width="3.97" height="4.09" transform="translate(1.19 9.86) rotate(-45)"/>
+          <path class="cls-3" d="M12.54,7l-3.54-3.54,3.46-3.46,3.54,3.54-3.46,3.46ZM10.3,3.46l2.24,2.24,2.16-2.16-2.24-2.24-2.16,2.16Z"/>
+        </g>
+        <path id="path5581-5-5" class="cls-7" d="M12.05,1.17h.89v1.74h1.77v.91h-1.77v1.82h-.89v-1.82h-1.77v-.91h1.77v-1.74Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

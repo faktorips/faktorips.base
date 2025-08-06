@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -154,6 +154,11 @@ public class CustomIconSection extends IpsSection {
         if (decorator instanceof ProductCmptDecorator adapter) {
             iconPreview.setImage(IpsUIPlugin.getImageHandling()
                     .getImage(adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
+            /*
+             * iconPreview.setImage(IImageHandling.scaleImage(IpsUIPlugin.getImageHandling()
+             * .getImage(adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)), 16,
+             * 16));
+             */
         }
     }
 

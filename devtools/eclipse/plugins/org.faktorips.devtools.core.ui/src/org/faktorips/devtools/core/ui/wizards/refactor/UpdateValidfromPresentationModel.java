@@ -460,7 +460,7 @@ public class UpdateValidfromPresentationModel extends PresentationModelObject {
 
         Image baseImage = getImage(element, forceImageEnabled);
         ImageDescriptor overlay = IIpsDecorators.getImageHandling()
-                .getSharedImageDescriptor("overlays/LinkOverlay.gif", true); //$NON-NLS-1$
+                .getSharedImageDescriptor("overlays/LinkOverlay.svg", true); //$NON-NLS-1$
 
         return resourceManager.get(new DecorationOverlayIcon(baseImage, overlay, IDecoration.BOTTOM_RIGHT));
     }

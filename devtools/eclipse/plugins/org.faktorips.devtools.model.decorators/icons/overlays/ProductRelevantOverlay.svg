@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 8">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        fill: #9db208;
+      }
+
+      .cls-4 {
+        fill: #b9c545;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M3.77.96H.85v6.08h1.81v-1.58h1.11c1.45,0,2.38-.88,2.38-2.25S5.22.96,3.77.96ZM2.65,2.62h1.06c.41,0,.65.23.65.6s-.24.6-.65.6h-1.06v-1.21Z"/>
+  <g>
+    <rect class="cls-2" x="2.41" y="2.39" width="1.1" height="1.71"/>
+    <polygon class="cls-3" points="2.39 4.07 2.39 2.37 3.49 2.37 3.49 1.21 1.09 1.21 1.09 6.79 2.4 6.79 2.4 5.21 3.49 5.21 3.49 4.07 2.39 4.07"/>
+    <path class="cls-4" d="M5.9,3.21c0-1.23-.83-2-2.14-2h-.27v1.16h.2c.55,0,.9.33.9.85s-.35.85-.9.85h-.2v1.14h.27c1.31,0,2.14-.77,2.14-2Z"/>
+  </g>
+</svg>

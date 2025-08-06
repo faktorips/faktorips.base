@@ -1413,7 +1413,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         @Override
         public ImageDescriptor getImageDescriptor(IAdaptable adaptable) {
             if (adaptable == null) {
-                return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
+                return getSharedImageDescriptor("IpsElement_broken.svg", true); //$NON-NLS-1$
             }
             IWorkbenchAdapter adapter = adaptable.getAdapter(IWorkbenchAdapter.class);
             if (adapter != null) {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg data-name="Ebene 1" version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <style>.cls-1 {
+        fill: #0080bf;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #009fe3;
+      }
+
+      .cls-4 {
+        fill: url(#Unbenannter_Verlauf_10);
+      }
+
+      .cls-5 {
+        fill: #a27d18;
+      }
+
+      .cls-6 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-7 {
+        fill: url(#Unbenannter_Verlauf_13);
+      }</style>
+  <linearGradient id="Unbenannter_Verlauf_10" x1="13.61" x2="13.61" y1="-936.02" y2="-937.79" data-name="Unbenannter Verlauf 10" gradientTransform="translate(0 -932.22) scale(1 -1)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#fff" offset="0"/>
+   <stop stop-color="#fff" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <radialGradient id="Unbenannter_Verlauf_13" cx="-1281.8" cy="1247.5" r="3.1" data-name="Unbenannter Verlauf 13" gradientTransform="translate(2226.4 -2368.4) rotate(270) scale(1.8508 -1.7751)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#e0c576" offset="0"/>
+   <stop stop-color="#9e7916" offset="1"/>
+  </radialGradient>
+  <linearGradient id="Unbenannter_Verlauf_14" x1="-156.99" x2="-156.99" y1="309.55" y2="307.14" data-name="Unbenannter Verlauf 14" gradientTransform="translate(376.71 719.42) scale(2.32 -2.32)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#f7f9fb" offset="0"/>
+   <stop stop-color="#ffd680" offset="1"/>
+  </linearGradient>
+ </defs>
+ <path class="cls-4" d="M13.82,4.25h-.42l.42.43h0v-.43Z"/>
+ <rect class="cls-7" transform="translate(1.19 9.86) rotate(-45)" x="10.51" y="1.46" width="3.97" height="4.09"/>
+ <path class="cls-5" d="m12.54 7-3.54-3.54 3.46-3.46 3.54 3.54-3.46 3.46zm-2.24-3.54 2.24 2.24 2.16-2.16-2.24-2.24-2.16 2.16z"/>
+ <path class="cls-6" d="M12.05,1.17h.89v1.74h1.77v.91h-1.77v1.82h-.89v-1.82h-1.77v-.91h1.77v-1.74Z"/>
+</svg>

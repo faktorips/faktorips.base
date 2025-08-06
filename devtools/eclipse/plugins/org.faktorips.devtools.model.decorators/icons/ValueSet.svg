@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #9d9d9c;
+      }
+
+      .cls-2 {
+        fill: #b2b2b2;
+      }
+
+      .cls-3 {
+        fill: #102c58;
+      }
+
+      .cls-4 {
+        fill: #03578b;
+      }
+
+      .cls-5 {
+        fill: #f4f4f4;
+      }
+
+      .cls-6 {
+        fill: #dadada;
+      }
+
+      .cls-7 {
+        fill: #006ea9;
+      }
+    </style>
+  </defs>
+  <polygon class="cls-3" points="4.4 14.97 1.05 14.97 1 1.03 3.42 1.03 3.42 1.78 1.75 1.78 1.79 14.22 4.4 14.22 4.4 14.97"/>
+  <polygon class="cls-3" points="11.6 14.97 14.95 14.97 15 1.03 12.58 1.03 12.58 1.78 14.25 1.78 14.21 14.22 11.6 14.22 11.6 14.97"/>
+  <g>
+    <g>
+      <rect class="cls-7" x="7.48" y="3.86" width="4.71" height="2.38"/>
+      <g>
+        <g>
+          <rect class="cls-5" x="7.68" y="6.24" width="4.31" height="3.17"/>
+          <path class="cls-2" d="M12.2,9.58h-4.71v-3.52h4.71v3.52ZM7.88,9.23h3.91v-2.82h-3.91v2.82Z"/>
+        </g>
+        <g>
+          <rect class="cls-5" x="7.68" y="9.41" width="4.31" height="3.17"/>
+          <path class="cls-2" d="M12.2,12.76h-4.71v-3.52h4.71v3.52ZM7.88,12.41h3.91v-2.82h-3.91v2.82Z"/>
+        </g>
+        <g>
+          <rect class="cls-5" x="7.68" y="12.59" width="4.31" height="2.41"/>
+          <path class="cls-2" d="M7.48,12.41v2.59h.4v-2.25h3.92v2.25h.4v-2.59h-4.72Z"/>
+        </g>
+      </g>
+      <g>
+        <rect class="cls-4" x="7.48" y="3.86" width="2.35" height="2.2"/>
+        <rect class="cls-6" x="7.88" y="6.41" width="1.96" height="2.82"/>
+        <polygon class="cls-1" points="7.88 9.23 7.88 6.41 9.84 6.41 9.84 6.06 7.48 6.06 7.48 6.06 7.48 9.23 7.88 9.23"/>
+        <rect class="cls-6" x="7.88" y="9.58" width="1.96" height="2.82"/>
+        <polygon class="cls-1" points="7.88 12.41 7.88 9.58 9.84 9.58 9.84 9.23 7.88 9.23 7.48 9.23 7.48 9.58 7.48 12.41 7.88 12.41"/>
+        <rect class="cls-6" x="7.88" y="12.75" width="1.96" height="2.25"/>
+        <polygon class="cls-1" points="9.84 12.41 9.84 12.75 7.88 12.75 7.88 15 7.48 15 7.48 12.41 9.84 12.41"/>
+      </g>
+    </g>
+    <g>
+      <rect class="cls-7" x="3.81" y="2" width="4.71" height="2.73"/>
+      <g>
+        <g>
+          <rect class="cls-5" x="4" y="4.73" width="4.31" height="3.64"/>
+          <path class="cls-2" d="M8.52,8.58H3.8v-4.04h4.71v4.04ZM4.2,8.17h3.91v-3.24h-3.91v3.24Z"/>
+        </g>
+        <g>
+          <rect class="cls-5" x="4" y="8.37" width="4.31" height="3.64"/>
+          <path class="cls-2" d="M8.52,12.22H3.8v-4.04h4.71v4.04ZM4.2,11.82h3.91v-3.24h-3.91v3.24Z"/>
+        </g>
+        <g>
+          <rect class="cls-5" x="4.01" y="12.02" width="4.31" height="2.98"/>
+          <path class="cls-2" d="M3.8,11.82v3.18h.4v-2.79h3.92v2.79h.4v-3.18H3.8Z"/>
+        </g>
+      </g>
+      <g>
+        <rect class="cls-4" x="3.81" y="2" width="2.35" height="2.53"/>
+        <rect class="cls-6" x="4.2" y="4.93" width="1.96" height="3.24"/>
+        <polygon class="cls-1" points="4.2 8.17 4.2 4.93 6.16 4.93 6.16 4.53 3.81 4.53 3.8 4.53 3.8 8.17 4.2 8.17"/>
+        <rect class="cls-6" x="4.2" y="8.58" width="1.96" height="3.24"/>
+        <polygon class="cls-1" points="4.2 11.82 4.2 8.58 6.16 8.58 6.16 8.17 4.2 8.17 3.8 8.17 3.8 8.58 3.8 11.82 4.2 11.82"/>
+        <rect class="cls-6" x="4.2" y="12.21" width="1.96" height="2.79"/>
+        <polygon class="cls-1" points="6.16 11.82 6.16 12.21 4.2 12.21 4.2 15 3.8 15 3.8 11.82 6.16 11.82"/>
+      </g>
+    </g>
+  </g>
+</svg>

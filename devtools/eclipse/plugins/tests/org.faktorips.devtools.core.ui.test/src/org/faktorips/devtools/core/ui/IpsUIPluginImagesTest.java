@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,7 +50,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRegisterAndDisposeImage() {
-        String name = "TestImage.gif";
+        String name = "TestImage.svg";
         ImageDescriptor expDescriptor = ImageDescriptor.createFromFile(this.getClass(), name);
         Image expImage = IpsUIPlugin.getImageHandling().createImage(expDescriptor);
         assertEquals(expImage, IpsUIPlugin.getImageHandling().getImage(expDescriptor));
@@ -102,7 +102,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
     public void testIpsElementgetImage() throws Exception {
         IIpsProject testElement = newIpsProject();
 
-        String elementImageName = "IpsProject.gif";
+        String elementImageName = "IpsProject.svg";
         ImageDescriptor elementImageDecriptor = IIpsDecorators.getImageHandling().getSharedImageDescriptor(
                 elementImageName, true);
         Image elementImage = IIpsDecorators.getImageHandling().getSharedImage(elementImageName, true);
@@ -119,7 +119,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testResourceHandling() {
-        String name = "TestImage.gif";
+        String name = "TestImage.svg";
         ImageDescriptor descriptor = ImageDescriptor.createFromFile(this.getClass(), name);
         ResourceManager rmA = new LocalResourceManager(JFaceResources.getResources());
         Image imageA = rmA.get(descriptor);
@@ -163,7 +163,7 @@ public class IpsUIPluginImagesTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testImageLoadingStress() throws Exception {
-        String imageName = "New.gif";
+        String imageName = "New.svg";
         Image expected = IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);
 
         // Test getSharedImage(String)

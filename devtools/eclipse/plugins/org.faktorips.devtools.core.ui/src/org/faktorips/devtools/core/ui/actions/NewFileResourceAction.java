@@ -28,7 +28,7 @@ public class NewFileResourceAction extends IpsAction {
         setDescription(Messages.NewFileResourceAction_description);
         setText(Messages.NewFileResourceAction_name);
         setToolTipText(getDescription());
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewFileWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewFileWizard.svg")); //$NON-NLS-1$
     }
 
     /**

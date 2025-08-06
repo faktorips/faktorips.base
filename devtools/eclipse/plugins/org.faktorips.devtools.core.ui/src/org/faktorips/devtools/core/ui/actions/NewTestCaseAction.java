@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.ui.wizards.testcase.OpenNewTestCaseWizardActi
 
 /**
  * Opens the wizard for creating a new TestCase.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class NewTestCaseAction extends Action {
@@ -28,7 +28,7 @@ public class NewTestCaseAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewTestCaseAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCase.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCaseWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

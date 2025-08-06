@@ -51,7 +51,7 @@ public class NewFolderAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.NewFolderAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewFolder.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewFolder.svg")); //$NON-NLS-1$
     }
 
     @Override

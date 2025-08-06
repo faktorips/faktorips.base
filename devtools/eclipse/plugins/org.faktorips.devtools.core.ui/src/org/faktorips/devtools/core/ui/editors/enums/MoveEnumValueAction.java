@@ -34,10 +34,10 @@ import org.faktorips.util.ArgumentCheck;
 public class MoveEnumValueAction extends Action {
 
     /** The name of the image for the move up action. */
-    private static final String IMAGE_NAME_UP = "ArrowUp.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME_UP = "ArrowUp.svg"; //$NON-NLS-1$
 
     /** The name of the image for the move down action. */
-    private static final String IMAGE_NAME_DOWN = "ArrowDown.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME_DOWN = "ArrowDown.svg"; //$NON-NLS-1$
 
     /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;

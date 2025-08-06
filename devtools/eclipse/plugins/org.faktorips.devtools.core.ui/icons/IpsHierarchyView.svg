@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #005387;
+      }
+
+      .cls-2 {
+        fill: #102c58;
+      }
+
+      .cls-3 {
+        fill: #a1a19f;
+      }
+    </style>
+  </defs>
+  <rect class="cls-3" x="-2" y="10" width="11" height="1" transform="translate(-7 14) rotate(-90)"/>
+  <g>
+    <path class="cls-2" d="M1,3.5c0,1.38,1.12,2.5,2.5,2.5V1c-1.38,0-2.5,1.12-2.5,2.5Z"/>
+    <path class="cls-1" d="M6,3.5c0-1.38-1.12-2.5-2.5-2.5v5c1.38,0,2.5-1.12,2.5-2.5Z"/>
+  </g>
+  <rect class="cls-3" x="3" y="7" width="4" height="1"/>
+  <g>
+    <path class="cls-2" d="M6,7.5c0,1.38,1.12,2.5,2.5,2.5v-5c-1.38,0-2.5,1.12-2.5,2.5Z"/>
+    <path class="cls-1" d="M11,7.5c0-1.38-1.12-2.5-2.5-2.5v5c1.38,0,2.5-1.12,2.5-2.5Z"/>
+  </g>
+  <g>
+    <rect class="cls-3" x="3" y="13" width="4" height="1"/>
+    <g>
+      <path class="cls-2" d="M6,13.5c0,1.38,1.12,2.5,2.5,2.5v-5c-1.38,0-2.5,1.12-2.5,2.5Z"/>
+      <path class="cls-1" d="M11,13.5c0-1.38-1.12-2.5-2.5-2.5v5c1.38,0,2.5-1.12,2.5-2.5Z"/>
+    </g>
+  </g>
+</svg>

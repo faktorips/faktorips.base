@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,12 +20,12 @@ import org.faktorips.devtools.model.tablestructure.IKey;
 /**
  * WorkbenchAdapterProvider for ForeignKeys and Indices in TableStructure. It is the responsibility
  * of the user to register this adapter adequately.
- * 
+ *
  */
 public class KeyDecorator implements IIpsObjectPartDecorator {
 
-    public static final String TABLE_KEY = "TableKey.gif"; //$NON-NLS-1$
-    public static final String TABLE_KEY_NON_UNIQUE = "TableKeyNonUnique.gif"; //$NON-NLS-1$
+    public static final String TABLE_KEY = "TableKey.svg"; //$NON-NLS-1$
+    public static final String TABLE_KEY_NON_UNIQUE = "TableKeyNonUnique.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

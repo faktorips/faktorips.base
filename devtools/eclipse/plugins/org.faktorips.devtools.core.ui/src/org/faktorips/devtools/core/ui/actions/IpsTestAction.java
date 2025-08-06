@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,7 +50,7 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 
 /**
  * Action to run ips test depending on the selecion.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class IpsTestAction extends IpsAction {
@@ -66,7 +66,7 @@ public class IpsTestAction extends IpsAction {
         super.setText(Messages.IpsTestCaseAction_name);
         super.setDescription(Messages.IpsTestCaseAction_description);
         super.setToolTipText(Messages.IpsTestCaseAction_tooltip);
-        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.svg")); //$NON-NLS-1$
     }
 
     public IpsTestAction(ISelectionProvider selectionProvider, String mode) {

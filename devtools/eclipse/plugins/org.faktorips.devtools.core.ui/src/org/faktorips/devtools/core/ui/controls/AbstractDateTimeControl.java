@@ -42,7 +42,7 @@ public abstract class AbstractDateTimeControl extends TextButtonControl {
 
     public AbstractDateTimeControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, "", true, 24, SWT.RIGHT); //$NON-NLS-1$
-        setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
+        setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.svg", true)); //$NON-NLS-1$
         dateFormat = createDateFormat();
         addDisposeListener($ -> {
             if (dateTimeDialog != null) {

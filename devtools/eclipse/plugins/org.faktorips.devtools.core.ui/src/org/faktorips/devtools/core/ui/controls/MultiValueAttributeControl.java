@@ -34,7 +34,7 @@ public class MultiValueAttributeControl extends TextButtonControl {
             ValueDatatype datatype) {
         super(parent, toolkit, ""); //$NON-NLS-1$
         handler = new MultiValueAttributeHandler(parent.getShell(), productCmptTypeAttribute, attributeValue, datatype);
-        setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("MultiValueAttribute.gif", true)); //$NON-NLS-1$
+        setButtonImage(IpsUIPlugin.getImageHandling().getSharedImage("MultiValueAttribute.svg", true)); //$NON-NLS-1$
         getTextControl().setEditable(false);
     }
 

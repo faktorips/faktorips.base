@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #005387;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #a17d18;
+      }
+
+      .cls-4 {
+        fill: #102c58;
+      }
+
+      .cls-5 {
+        fill: url(#Unbenannter_Verlauf_10);
+      }
+
+      .cls-6 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-7 {
+        fill: url(#Unbenannter_Verlauf_13);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_10" data-name="Unbenannter Verlauf 10" x1="13.61" y1="-1024.02" x2="13.61" y2="-1025.79" gradientTransform="translate(.0077 -1020.2206) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_13" data-name="Unbenannter Verlauf 13" cx="-1298.65" cy="1221.07" fx="-1298.65" fy="1221.07" r="3.1" gradientTransform="translate(2179.3697 -2399.4823) rotate(-90.0003) scale(1.8508 -1.7751)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dfc476"/>
+      <stop offset="1" stop-color="#9d7916"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="-156.99" y1="246.58" x2="-156.99" y2="244.17" gradientTransform="translate(376.7058 573.3424) scale(2.32 -2.32)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6f8fa"/>
+      <stop offset="1" stop-color="#ffd580"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect class="cls-1" x="1.19" y="1" width="11.62" height="15"/>
+    <rect class="cls-4" x="1.19" y="1" width="5.81" height="15"/>
+    <path class="cls-2" d="M10.96,7.31c0,1.85-1.25,3.01-3.22,3.01h-2.05v2.38h-1.97V4.3h4.02c1.97,0,3.22,1.16,3.22,3.01ZM9.01,7.32c0-.78-.53-1.28-1.36-1.28h-1.97v2.57h1.97c.83,0,1.36-.5,1.36-1.28Z"/>
+  </g>
+  <g id="g6432">
+    <path id="path5581-1-1-79" class="cls-5" d="M13.82,4.25h-.42l.42.43h0v-.43Z"/>
+    <g id="g4514">
+      <g id="g4522">
+        <g>
+          <rect id="rect3910" class="cls-7" x="10.51" y="1.46" width="3.97" height="4.09" transform="translate(1.19 9.86) rotate(-45)"/>
+          <path class="cls-3" d="M12.54,7l-3.54-3.54,3.46-3.46,3.54,3.54-3.46,3.46ZM10.3,3.46l2.24,2.24,2.16-2.16-2.24-2.24-2.16,2.16Z"/>
+        </g>
+        <path id="path5581-5-5" class="cls-6" d="M12.05,1.17h.89v1.74h1.77v.91h-1.77v1.82h-.89v-1.82h-1.77v-.91h1.77v-1.74Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

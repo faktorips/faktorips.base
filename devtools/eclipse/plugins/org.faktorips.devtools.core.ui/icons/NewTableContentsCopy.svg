@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #cacaca;
+      }
+
+      .cls-2 {
+        fill: #b1b1b1;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        fill: #a17d18;
+      }
+
+      .cls-5 {
+        fill: url(#Unbenannter_Verlauf_10);
+      }
+
+      .cls-6 {
+        fill: #9cb108;
+      }
+
+      .cls-7 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-8 {
+        fill: #e4e4e4;
+      }
+
+      .cls-9 {
+        fill: #b8c445;
+      }
+
+      .cls-10 {
+        fill: url(#Unbenannter_Verlauf_13);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_10" data-name="Unbenannter Verlauf 10" x1="14.37" y1="-940.97" x2="14.37" y2="-942.17" gradientTransform="translate(0 -932.22) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_13" data-name="Unbenannter Verlauf 13" cx="-1682.13" cy="1134.27" fx="-1682.13" fy="1134.27" r="2.11" gradientTransform="translate(2026.6061 -3104.3679) rotate(-90.0003) scale(1.8508 -1.7751)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dfc476"/>
+      <stop offset="1" stop-color="#9d7916"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="-320.37" y1="307.07" x2="-320.37" y2="305.43" gradientTransform="translate(756.8626 719.4219) scale(2.32 -2.32)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6f8fa"/>
+      <stop offset="1" stop-color="#ffd580"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <rect class="cls-3" x="6.1" y="5.39" width="5.1" height="6.12"/>
+    <rect class="cls-8" x="1" y="5.39" width="5.1" height="6.12"/>
+    <rect class="cls-9" x="1" y="2.73" width="10.2" height="2.75"/>
+    <rect class="cls-6" x="1" y="2.73" width="5.1" height="2.75"/>
+    <path class="cls-1" d="M1.01,5.47v6.05h10.17v-6.05H1.01ZM1.4,5.86h9.41v1.51H1.4v-1.51ZM10.8,11.14H1.4v-1.5h9.41v1.5ZM10.8,9.25H1.4v-1.51h9.41v1.51Z"/>
+    <rect class="cls-1" x="7.54" y="5.67" width=".51" height="5.65"/>
+    <rect class="cls-2" x="4.26" y="5.67" width=".51" height="5.65"/>
+    <polygon class="cls-2" points="6.1 11.51 6.1 11.14 1.4 11.14 1.4 9.64 6.1 9.64 6.1 9.25 1.4 9.25 1.4 7.74 6.1 7.74 6.1 7.37 1.4 7.37 1.4 5.86 6.1 5.86 6.1 5.47 1.01 5.47 1.01 11.52 11.19 11.52 11.19 11.51 6.1 11.51"/>
+  </g>
+  <g>
+    <rect class="cls-3" x="9.9" y="9.87" width="5.1" height="6.12"/>
+    <rect class="cls-8" x="4.8" y="9.86" width="5.1" height="6.12"/>
+    <rect class="cls-9" x="4.8" y="7.21" width="10.2" height="2.75"/>
+    <rect class="cls-6" x="4.8" y="7.21" width="5.1" height="2.75"/>
+    <path class="cls-1" d="M4.81,9.95v6.05h10.17v-6.05H4.81ZM5.2,10.33h9.41v1.51H5.2v-1.51ZM14.6,15.62H5.2v-1.5h9.41v1.5ZM14.6,13.73H5.2v-1.51h9.41v1.51Z"/>
+    <rect class="cls-1" x="11.34" y="10.14" width=".51" height="5.65"/>
+    <rect class="cls-2" x="8.06" y="10.14" width=".51" height="5.65"/>
+    <polygon class="cls-2" points="9.9 15.98 9.9 15.62 5.2 15.62 5.2 14.11 9.9 14.11 9.9 13.73 5.2 13.73 5.2 12.22 9.9 12.22 9.9 11.84 5.2 11.84 5.2 10.33 9.9 10.33 9.9 9.95 4.81 9.95 4.81 16 14.99 16 14.99 15.98 9.9 15.98"/>
+  </g>
+  <g id="g6432">
+    <path id="path5581-1-1-79" class="cls-5" d="M14.52,9.05h-.29l.29.29h0v-.29Z"/>
+    <g id="g4514">
+      <g id="g4522">
+        <g>
+          <rect id="rect3910" class="cls-10" x="12.27" y="7.16" width="2.7" height="2.78" transform="translate(-2.05 12.13) rotate(-45)"/>
+          <path class="cls-4" d="M13.65,10.93l-2.41-2.41,2.35-2.35,2.41,2.41-2.35,2.35ZM12.12,8.52l1.52,1.52,1.47-1.47-1.52-1.52-1.47,1.47Z"/>
+        </g>
+        <path id="path5581-5-5" class="cls-7" d="M13.31,6.96h.61v1.18h1.2v.62h-1.2v1.24h-.61v-1.24h-1.2v-.62h1.2v-1.18Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -275,7 +275,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         return new Action(Messages.ProductStructureExplorer_menuShowAssociationNodes_name, IAction.AS_CHECK_BOX) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.svg"); //$NON-NLS-1$
             }
 
             @Override
@@ -333,7 +333,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
     }
 
     private void initToolBar(IToolBarManager toolBarManager) {
-        final ImageDescriptor refreshDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+        final ImageDescriptor refreshDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.svg"); //$NON-NLS-1$
         refreshAction = new Action() {
             @Override
             public ImageDescriptor getImageDescriptor() {
@@ -361,7 +361,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         toolBarManager.add(collapseAllAction);
 
         // clear action
-        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$//$NON-NLS-2$
+        clearAction = new Action("", IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.svg")) { //$NON-NLS-1$//$NON-NLS-2$
             @Override
             public void run() {
                 productComponent = null;

@@ -39,7 +39,7 @@ import org.faktorips.util.ArgumentCheck;
 public class ResetLiteralNamesAction extends Action {
 
     /** The name of the image for the action. */
-    private static final String IMAGE_NAME = "Refresh.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME = "Refresh.svg"; //$NON-NLS-1$
 
     /** The table viewer linking the enumeration values UI table widget with the model data. */
     private TableViewer enumValuesTableViewer;
