@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
@@ -73,7 +74,7 @@ import org.faktorips.util.ArgumentCheck;
  * The view uses a <code>TreeViewer</code> to represent the hierarchical data structure. It can be
  * configured to show the tree of package fragments in a hierarchical (default) or a flat layout
  * style.
- * 
+ *
  * @author Stefan Widmaier
  */
 
@@ -148,7 +149,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     /**
      * Creates and returns a <code>ModelExplorerConfiguration</code> with the all ips object types
      * defined in the IpsModel.
-     * 
+     *
      * @see IIpsModel#getIpsObjectTypes()
      * @see ModelExplorerConfiguration
      */
@@ -191,6 +192,15 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
         getSite().setSelectionProvider(getTreeViewer());
 
+        getSite().getWorkbenchWindow().getSelectionService().addSelectionListener((part, selection) -> {
+            if (selection instanceof IStructuredSelection structured) {
+                int count = structured.size();
+                getViewSite().getActionBars()
+                        .getStatusLineManager()
+                        .setMessage(NLS.bind(Messages.ModelExlporer_selectedElements, count));
+            }
+        });
+
         resourceListener = new IpsResourceChangeListener(getTreeViewer());
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
 
@@ -223,7 +233,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     /**
      * Show an ips file or a normal file in the navigator view corresponding to the active editor if
      * "link with editor" is enabled.
-     * 
+     *
      * @param editorPart The editor that has been activated.
      */
     private void editorActivated(IEditorPart editorPart) {
@@ -256,7 +266,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     /**
      * This operation is empty by default. Subclasses may overwrite to create filters for filtering
      * out specific content from the model explorer.
-     * 
+     *
      * @param tree The tree viewer of the model explorer.
      */
     protected void createFilters(TreeViewer tree) {
@@ -397,7 +407,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     /**
      * Save the state and link editor with navigator if linkingEnabled is <code>true</code>.
-     * 
+     *
      * @param linkingEnabled Flag indicating whether linking should be enabled.
      */
     public void setLinkingEnabled(boolean linkingEnabled) {
@@ -565,10 +575,10 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     }
 
     /**
-     * 
+     *
      * Activate a context that this view uses. It will be tied to this * view activation events and
      * will be removed when the view is
-     * 
+     *
      * disposed.
      */
 
