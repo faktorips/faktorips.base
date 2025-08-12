@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -56,7 +56,7 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
         /*
          * SW 26.7.2011: Workaround for several layout/resize problems with TextButtonControls (see
          * FIPS-617).
-         * 
+         *
          * In the ProdCmptEditor especially the formula edit fields caused problems as they
          * potentially contain long texts. Collapsing or expanding the formula section then caused
          * the whole section to be drawn as large as it needed to be to display the whole formula at
@@ -98,7 +98,7 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
     @Override
     public void setEnabled(boolean value) {
         super.setEnabled(value);
-        ((Control)text).setEnabled(value);
+        text.setEnabled(value);
         secondControl.setEnabled(value);
     }
 
@@ -143,7 +143,10 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
 
     @Override
     public boolean setFocus() {
-        return ((Control)text).setFocus();
+        if (text.isDisposed()) {
+            return false;
+        }
+        return text.setFocus();
     }
 
     @Override
@@ -157,11 +160,11 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
     /**
      * When we set the background of a text composite control we only want the text field to get the
      * color. We use the background color e.g. in test cases to highlight the expected results.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
     public void setBackground(Color color) {
-        ((Control)text).setBackground(color);
+        text.setBackground(color);
     }
 }

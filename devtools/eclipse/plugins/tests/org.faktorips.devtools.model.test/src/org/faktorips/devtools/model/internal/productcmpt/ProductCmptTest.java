@@ -21,6 +21,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -103,6 +104,8 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
@@ -827,10 +830,46 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(1, gen.getNumOfConfigElements());
         IConfiguredDefault ce = gen.getConfiguredDefaults()[0];
         assertEquals("1.5", ce.getValue());
+        IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue("myAttribute", IConfiguredValueSet.class);
+        IValueSet valueSet = configuredValueSet.getValueSet();
+        assertThat(valueSet, is(instanceOf(IRangeValueSet.class)));
+        assertThat(((IRangeValueSet)valueSet).getLowerBound(), is("22"));
+        assertThat(((IRangeValueSet)valueSet).getUpperBound(), is("33"));
+        assertThat(((IRangeValueSet)valueSet).getStep(), is("4"));
 
         assertEquals(2, productCmpt.getNumOfLinks());
         assertEquals("staticCoverage", productCmpt.getLinksAsList().get(0).getAssociation());
         assertEquals("staticIDontKnow", productCmpt.getLinksAsList().get(1).getAssociation());
+    }
+
+    @Test
+    public void testReInitFromXml() {
+        productCmpt.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals("MotorProduct", productCmpt.getProductCmptType());
+        assertEquals("MotorProductId", productCmpt.getRuntimeId());
+        assertEquals("MyLittleTemplate", productCmpt.getTemplate());
+        assertEquals(2, productCmpt.getNumOfGenerations());
+        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
+        assertEquals(1, gen.getNumOfConfigElements());
+        IConfiguredDefault ce = gen.getConfiguredDefaults()[0];
+        assertEquals("1.5", ce.getValue());
+        IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue("myAttribute", IConfiguredValueSet.class);
+        IValueSet valueSet = configuredValueSet.getValueSet();
+        assertThat(valueSet, is(instanceOf(IRangeValueSet.class)));
+        assertThat(((IRangeValueSet)valueSet).getLowerBound(), is("22"));
+        assertThat(((IRangeValueSet)valueSet).getUpperBound(), is("33"));
+        assertThat(((IRangeValueSet)valueSet).getStep(), is("4"));
+
+        assertEquals(2, productCmpt.getNumOfLinks());
+        assertEquals("staticCoverage", productCmpt.getLinksAsList().get(0).getAssociation());
+        assertEquals("staticIDontKnow", productCmpt.getLinksAsList().get(1).getAssociation());
+
+        productCmpt.initFromXml(getTestDocument().getDocumentElement());
+        assertThat(productCmpt.getPropertyValue("myAttribute", IConfiguredValueSet.class),
+                is(sameInstance(configuredValueSet)));
+        var newGen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
+        assertThat(newGen, is(sameInstance(gen)));
+        assertThat(newGen.getConfiguredDefaults()[0], is(sameInstance(ce)));
     }
 
     @Test
