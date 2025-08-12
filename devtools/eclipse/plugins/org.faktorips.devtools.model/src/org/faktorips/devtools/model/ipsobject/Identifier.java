@@ -65,6 +65,7 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -470,7 +471,7 @@ public interface Identifier {
         }
 
         static ConfiguredDefaultIdentifier of(Element partEl) {
-            String attributeName = getAttribute(partEl, IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE);
+            String attributeName = getAttribute(partEl, ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
             return new ConfiguredDefaultIdentifier(attributeName);
         }
     }
@@ -486,7 +487,7 @@ public interface Identifier {
         }
 
         static ConfiguredValueSetIdentifier of(Element partEl) {
-            String attributeName = getAttribute(partEl, IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE);
+            String attributeName = getAttribute(partEl, ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
             return new ConfiguredValueSetIdentifier(attributeName);
         }
     }

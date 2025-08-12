@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,11 +27,11 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 public abstract class TextButtonControl extends TextAndSecondControlComposite {
 
     /**
-     * Creates a textfield and a button. The given buttonHeightHint is used to set the heightHint
+     * Creates a text field and a button. The given buttonHeightHint is used to set the heightHint
      * for the layout-data for the button.
-     * 
+     *
      * @param parent The parent composite.
-     * @param toolkit The UIToolkit to use for the creation of the controlls.
+     * @param toolkit The UIToolkit to use for the creation of the controls.
      * @param buttonText The label for the button.
      * @param smallMargins <code>true</code> to get the smallest margin possible.
      * @param buttonHeightHint The preferred height or -1.
@@ -42,11 +42,11 @@ public abstract class TextButtonControl extends TextAndSecondControlComposite {
     }
 
     /**
-     * Creates a textfield and a button. The height of the button is not modified, margins are not
+     * Creates a text field and a button. The height of the button is not modified, margins are not
      * minimized.
-     * 
+     *
      * @param parent The parent composite.
-     * @param toolkit The UIToolkit to use for the creation of the controlls.
+     * @param toolkit The UIToolkit to use for the creation of the controls.
      * @param buttonText The label for the button.
      */
     public TextButtonControl(Composite parent, UIToolkit toolkit, String buttonText) {

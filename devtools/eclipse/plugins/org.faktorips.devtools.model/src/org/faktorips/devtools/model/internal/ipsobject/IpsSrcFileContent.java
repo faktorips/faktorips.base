@@ -220,7 +220,7 @@ public class IpsSrcFileContent {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out.println(
                         "IpsSrcFileContent.initContentFromFile(): About to read content from disk, file=" + file //$NON-NLS-1$
-                                + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                                + ", Thread: " + Thread.currentThread().getName()); //$NON-NLS-1$
                 startTime = System.currentTimeMillis();
             }
             if (ipsObject instanceof XmlSaxSupport) {
@@ -242,9 +242,9 @@ public class IpsSrcFileContent {
             parsable = true;
             initializedFinished();
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
-                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, durration: " //$NON-NLS-1$
+                System.out.println("IpsSrcFileContent.initContentFromFile: Content read from disk, duration: " //$NON-NLS-1$
                         + (System.currentTimeMillis() - startTime) + ", file=" + file //$NON-NLS-1$
-                        + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                        + ", Thread: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
             // CSOFF: IllegalCatch
         } catch (Exception e) {
@@ -255,7 +255,7 @@ public class IpsSrcFileContent {
             if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                 System.out
                         .println("IpsSrcFileContent.initContentFromFile: Error reading content from disk, file=" + file //$NON-NLS-1$
-                                + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                                + ", Thread: " + Thread.currentThread().getName()); //$NON-NLS-1$
             }
         } finally {
             IoUtil.close(is);
