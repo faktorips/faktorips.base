@@ -3,14 +3,21 @@
 <!-- Test data for ProductCmptTest.java -->
 <ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId" template="MyLittleTemplate">
     <Generation validFrom="2004-01-01">
-        <ConfigElement attribute="rate" id="c1">
-            <Value isNull="false">1.5</Value>
-        </ConfigElement>
+        <ConfiguredDefault attribute="rate">1.5</ConfiguredDefault>
     </Generation>
     <Generation validFrom="2005-01-01" />
     <AttributeValue id="abc123" attribute="bezeichnung">
         <Value>testtesttest</Value>
     </AttributeValue>
+    <ConfiguredValueSet attribute="myAttribute">
+        <ValueSet><Description />
+            <Range containsNull="false">
+                <LowerBound isNull="false">22</LowerBound>
+                <UpperBound isNull="false">33</UpperBound>
+                <Step isNull="false">4</Step>
+            </Range>
+        </ValueSet>
+    </ConfiguredValueSet>
     <Link id="3" association="staticCoverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3" />
     <Link id="4" association="staticIDontKnow" target="IDK" minCardinality="2" maxCardinality="3" />
     <TableContentUsage id="10" structureUsage="staticTable">
