@@ -10,11 +10,11 @@
     <booleanAttribute key="clearConfig" value="false"/>
     <booleanAttribute key="clearws" value="false"/>
     <booleanAttribute key="clearwslog" value="false"/>
-    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2025-06) (MacOS)"/>
+    <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (2025-09) (MacOS)"/>
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles"/>
     <booleanAttribute key="includeOptional" value="false"/>
-    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2025-06"/>
+    <stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest-2025-09"/>
     <booleanAttribute key="org.eclipse.debug.core.ATTR_FORCE_SYSTEM_CONSOLE_ENCODING" value="false"/>
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
@@ -73,7 +73,7 @@
         <setEntry value="junit-platform-suite-commons@default:default"/>
         <setEntry value="junit-platform-suite-engine@default:default"/>
         <setEntry value="junit-vintage-engine@default:default"/>
-        <setEntry value="net.bytebuddy.byte-buddy*1.17.5@default:default"/>
+        <setEntry value="net.bytebuddy.byte-buddy*1.17.6@default:default"/>
         <setEntry value="net.bytebuddy.byte-buddy-agent@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
         <setEntry value="org.apache.aries.spifly.dynamic.bundle@default:default"/>
@@ -89,8 +89,9 @@
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-io*2.18.0@default:default"/>
-        <setEntry value="org.apache.commons.io@default:default"/>
-        <setEntry value="org.apache.commons.lang3*3.18.0@default:default"/>
+        <setEntry value="org.apache.commons.io*1.4.0@default:default"/>
+        <setEntry value="org.apache.commons.io*2.8.0.v20210415-0900@default:default"/>
+        <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.commons.text@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
@@ -161,7 +162,6 @@
         <setEntry value="org.eclipse.e4.ui.services@default:default"/>
         <setEntry value="org.eclipse.e4.ui.widgets@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench.addons.swt@default:default"/>
-        <setEntry value="org.eclipse.e4.ui.workbench.renderers.swt.cocoa@default:false"/>
         <setEntry value="org.eclipse.e4.ui.workbench.renderers.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench3@default:default"/>
@@ -326,7 +326,7 @@
         <setEntry value="org.eclipse.tm4e.ui@default:default"/>
         <setEntry value="org.eclipse.ui.browser@default:default"/>
         <setEntry value="org.eclipse.ui.cheatsheets@default:default"/>
-        <setEntry value="org.eclipse.ui.cocoa@default:false"/>
+        <setEntry value="org.eclipse.ui.cocoa@default:default"/>
         <setEntry value="org.eclipse.ui.console@default:default"/>
         <setEntry value="org.eclipse.ui.editors@default:default"/>
         <setEntry value="org.eclipse.ui.externaltools@default:default"/>
