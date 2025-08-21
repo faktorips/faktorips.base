@@ -626,6 +626,9 @@
                standalone="false"
                visible="false">
          </view>
+         <actionSet
+               id="org.eclipse.debug.ui.launchActionSet">
+         </actionSet>
       </perspectiveExtension>
    </extension>
    <extension point="org.eclipse.ui.popupMenus">

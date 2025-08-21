@@ -308,12 +308,12 @@ public class ProductExplorer extends ModelExplorer {
             additionsCleaner.addFilteredPrefix(TEAM_MENU);
             additionsCleaner.addFilteredPrefix(COMPARE_WITH_MENU);
             additionsCleaner.addFilteredPrefix(REPLACE_WITH_MENU);
+            additionsCleaner.addFilteredPrefix("org.eclipse.debug.ui.contextualLaunch.run.submenu");
         }
 
         private void configureTeamCleaner(IStructuredSelection structuredSelection) {
             teamCleaner.setWhiteListMode(true);
             teamCleaner.clearFilteredPrefixes();
-
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
                     .isAvancedTeamFunctionsForProductDefExplorerEnabled();
             if (advancedTeamFunctionsEnabled || getConfig().representsProject(structuredSelection.getFirstElement())) {
