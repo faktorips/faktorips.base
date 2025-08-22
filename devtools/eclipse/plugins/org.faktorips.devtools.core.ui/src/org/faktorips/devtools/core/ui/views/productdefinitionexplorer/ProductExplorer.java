@@ -12,7 +12,11 @@ package org.faktorips.devtools.core.ui.views.productdefinitionexplorer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -29,6 +33,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.actions.OpenWithMenu;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.refactor.IpsMoveHandler;
@@ -194,6 +199,9 @@ public class ProductExplorer extends ModelExplorer {
         private static final String COMPARE_WITH_MENU                   = "compareWithMenu"; //$NON-NLS-1$
         private static final String REPLACE_WITH_MENU                   = "replaceWithMenu"; //$NON-NLS-1$
 
+        private static final String GROUP_OPEN                          = "group.open"; //$NON-NLS-1$
+        private static final String OPEN_ID                             = "open"; //$NON-NLS-1$
+
         private static final String TEAM_GROUP_1                        = "group1"; //$NON-NLS-1$
         private static final String TEAM_GROUP_2                        = "group2"; //$NON-NLS-1$
         private static final String TEAM_GROUP_3                        = "group3"; //$NON-NLS-1$
@@ -288,6 +296,7 @@ public class ProductExplorer extends ModelExplorer {
 
         @Override
         protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
+            addOpenWith(manager, structuredSelection);
             manager.add(new Separator("additions")); //$NON-NLS-1$
             configureAdditionsCleaner();
             configureTeamCleaner(structuredSelection);
@@ -386,6 +395,30 @@ public class ProductExplorer extends ModelExplorer {
             teamCleaner.addFilteredPrefix(SUBCLIPSE_REVERT);
         }
 
+        private void addOpenWith(IMenuManager manager, IStructuredSelection selection) {
+            if (selection == null || selection.size() != 1) {
+                return;
+            }
+
+            Object element = selection.getFirstElement();
+            IFile file = Optional.ofNullable(Adapters.adapt(element, IFile.class))
+                    .or(() -> Optional.ofNullable(Adapters.adapt(element, IResource.class))
+                            .filter(IFile.class::isInstance)
+                            .map(IFile.class::cast))
+                    .orElse(null);
+            if (file == null) {
+                return;
+            }
+
+            var openWith = new MenuManager("Open With");
+            openWith.add(new OpenWithMenu(ProductExplorer.this.getSite().getPage(), file));
+
+            if (manager.find(OPEN_ID) != null) {
+                manager.insertAfter(OPEN_ID, openWith);
+            } else {
+                manager.appendToGroup(GROUP_OPEN, openWith);
+            }
+        }
     }
 
 }
