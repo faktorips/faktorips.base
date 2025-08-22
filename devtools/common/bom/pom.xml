@@ -2,26 +2,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.faktorips</groupId>
-        <artifactId>faktorips-runtime-bom</artifactId>
-        <version>26.1.0-SNAPSHOT</version>
-        <relativePath>../../../runtime/bom/pom.xml</relativePath>
-    </parent>
-
+    <groupId>org.faktorips</groupId>
     <artifactId>faktorips-devtools-bom</artifactId>
+    <version>26.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Faktor-IPS Devtools Bill of Materials</name>
     <description>Defines versions for all Faktor-IPS development tools and for the dependencies they use.</description>
 
     <properties>
-        <bsh.version>2.0b4</bsh.version>
-        <apache-extras-bsh.version>2.0b6</apache-extras-bsh.version>
-        <commons-io.version>2.17.0</commons-io.version>
-        <osgi-framework.version>1.9.0</osgi-framework.version>
-        <osgi-util-tracker.version>1.5.4</osgi-util-tracker.version>
+        <faktorips.version>${project.version}</faktorips.version>
+        <!-- Encoding settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <organization>
+        <name>Faktor Zehn GmbH</name>
+        <url>http://faktorzehn.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>fips</id>
+            <name>Faktor-IPS-Team</name>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Faktor-IPS Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Faktor-IPS Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>doc</id>
+            <name>Faktor-IPS Documentation</name>
+            <url>https://doc.faktorzehn.org/faktorips/${project.version}/</url>
+        </site>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -59,31 +83,6 @@
                 <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-util</artifactId>
                 <version>${faktorips.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.beanshell</groupId>
-                <artifactId>bsh</artifactId>
-                <version>${bsh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache-extras.beanshell</groupId>
-                <artifactId>bsh</artifactId>
-                <version>${apache-extras-bsh.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.framework</artifactId>
-                <version>${osgi-framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.util.tracker</artifactId>
-                <version>${osgi-util-tracker.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

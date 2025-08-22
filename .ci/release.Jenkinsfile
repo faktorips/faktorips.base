@@ -79,7 +79,7 @@ pipeline {
         stage('Set versions') {
             steps {
                 osSpecificMaven commands: [
-                    "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas"
+                    "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
                 ]
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${releaseVersion}/' {} \\;"
@@ -90,7 +90,7 @@ pipeline {
                     "mvn -V install -f codequality-config",
                     // install targets, as they are resolved by tycho when setting the versions back, which won't work if they are missing
                     "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas"
+                    "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
                 ]
                  // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${releaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"

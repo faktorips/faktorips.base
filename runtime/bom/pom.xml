@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.faktorips</groupId>
-        <artifactId>base</artifactId>
-        <version>26.1.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
 
+    <groupId>org.faktorips</groupId>
     <artifactId>faktorips-runtime-bom</artifactId>
+    <version>26.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Faktor-IPS Runtime Bill of Materials</name>
     <description>Defines versions for all Faktor-IPS libraries useable as runtime dependencies and for the dependencies they use.</description>
 
     <properties>
-        <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
-        <commons-text.version>1.13.0</commons-text.version>
-        <groovy.version>4.0.26</groovy.version>
-        <javax.activation.version>1.2.0</javax.activation.version>
-        <jaxb-api.version>2.3.1</jaxb-api.version>
-        <jakarta-xml-api.version>4.0.2</jakarta-xml-api.version>
-        <joda.version>2.13.1</joda.version>
-        <opencsv.version>5.10</opencsv.version>
-        <spotbugs-annotations.version>4.9.2</spotbugs-annotations.version>
-        <!-- Test dependencies -->
-        <mockito-core.version>5.16.0</mockito-core.version>
-        <hamcrest.version>2.2</hamcrest.version>
-        <junit.version>4.13.2</junit.version>
-        <junit-jupiter.version>5.12.0</junit-jupiter.version>
+        <faktorips.version>${project.version}</faktorips.version>
         <!-- Encoding settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <organization>
+        <name>Faktor Zehn GmbH</name>
+        <url>http://faktorzehn.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>fips</id>
+            <name>Faktor-IPS-Team</name>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Faktor-IPS Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Faktor-IPS Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>doc</id>
+            <name>Faktor-IPS Documentation</name>
+            <url>https://doc.faktorzehn.org/faktorips/${project.version}/</url>
+        </site>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -86,107 +98,6 @@
                 <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-valuetypes-joda</artifactId>
                 <version>${faktorips.version}</version>
-            </dependency>
-            <!-- Used to document null handling -->
-            <dependency>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-annotations</artifactId>
-                <version>${spotbugs-annotations.version}</version>
-                <type>jar</type>
-                <scope>provided</scope>
-            </dependency>
-            <!-- For traditional JAXB-support with javax.xml packages in value-converters / runtime base classes -->
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb-api.version}</version>
-                <type>jar</type>
-            </dependency>
-            <!-- For traditional JAXB-support in value-converters / runtime base classes -->
-            <dependency>
-                <groupId>com.sun.activation</groupId>
-                <artifactId>javax.activation</artifactId>
-                <version>${javax.activation.version}</version>
-                <type>jar</type>
-            </dependency>
-            <!-- For modern JAXB-support with jakarta.xml packages in value-converters / runtime base classes -->
-            <dependency>
-                <groupId>jakarta.xml.bind</groupId>
-                <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>${jakarta-xml-api.version}</version>
-                <type>jar</type>
-            </dependency>
-            <!-- for IPS-Test-Suites with JUnit 4 -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-            <!-- for IPS-Test-Suites with JUnit 5 -->
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- For table contents saved in CSV format -->
-            <dependency>
-                <groupId>com.opencsv</groupId>
-                <artifactId>opencsv</artifactId>
-                <version>${opencsv.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-text</artifactId>
-                <version>${commons-text.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>${commons-beanutils.version}</version>
-            </dependency>
-            <!-- For formulas interpreted at runtime -->
-            <dependency>
-                <groupId>org.apache.groovy</groupId>
-                <artifactId>groovy</artifactId>
-                <version>${groovy.version}</version>
-            </dependency>
-            <!-- For Joda Time datatypes -->
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda.version}</version>
-            </dependency>
-            <!-- To find service implementations -->
-            <dependency>
-                <groupId>com.google.auto.service</groupId>
-                <artifactId>auto-service-annotations</artifactId>
-                <version>${auto-service.version}</version>
-            </dependency>
-            <!-- For matchers in Testsupport -->
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest</artifactId>
-                <version>${hamcrest.version}</version>
-            </dependency>
-            <!-- Test dependencies -->
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito-core.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>${jakarta-xml-api.version}</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

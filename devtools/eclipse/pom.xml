@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools</artifactId>
         <version>26.1.0-SNAPSHOT</version>
     </parent>
+
     <artifactId>faktorips-devtools-eclipse</artifactId>
     <packaging>pom</packaging>
+
     <properties>
         <target-platform>eclipse-2023-12</target-platform>
         <version.kind>ci</version.kind>
         <maven.site.skip>true</maven.site.skip>
     </properties>
+
     <modules>
         <module>targets</module>
         <module>plugins</module>
@@ -20,6 +24,7 @@
         <module>features</module>
         <module>sites</module>
     </modules>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -29,8 +34,16 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-runtime-bom</artifactId>
+                <version>${faktorips.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
