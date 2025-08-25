@@ -199,6 +199,8 @@ public class ProductExplorer extends ModelExplorer {
         private static final String COMPARE_WITH_MENU                   = "compareWithMenu"; //$NON-NLS-1$
         private static final String REPLACE_WITH_MENU                   = "replaceWithMenu"; //$NON-NLS-1$
 
+        private static final String LAUNCH_RUN_SUBMENU                  = "org.eclipse.debug.ui.contextualLaunch.run.submenu"; //$NON-NLS-1$
+
         private static final String GROUP_OPEN                          = "group.open"; //$NON-NLS-1$
         private static final String OPEN_ID                             = "open"; //$NON-NLS-1$
 
@@ -207,6 +209,8 @@ public class ProductExplorer extends ModelExplorer {
         private static final String TEAM_GROUP_3                        = "group3"; //$NON-NLS-1$
         private static final String TEAM_GROUP_4                        = "group4"; //$NON-NLS-1$
         private static final String TEAM_GROUP_6                        = "group6"; //$NON-NLS-1$
+
+        private static final String EGIT_SUBMENU                        = "org.eclipse.egit"; //$NON-NLS-1$
 
         private static final String CVS_SYNC                            = "org.eclipse.team.cvs.ui.sync"; //$NON-NLS-1$
         private static final String CVS_COMMIT                          = "org.eclipse.team.ccvs.ui.commit"; //$NON-NLS-1$
@@ -317,12 +321,14 @@ public class ProductExplorer extends ModelExplorer {
             additionsCleaner.addFilteredPrefix(TEAM_MENU);
             additionsCleaner.addFilteredPrefix(COMPARE_WITH_MENU);
             additionsCleaner.addFilteredPrefix(REPLACE_WITH_MENU);
-            additionsCleaner.addFilteredPrefix("org.eclipse.debug.ui.contextualLaunch.run.submenu");
+            additionsCleaner.addFilteredPrefix(LAUNCH_RUN_SUBMENU);
         }
 
         private void configureTeamCleaner(IStructuredSelection structuredSelection) {
             teamCleaner.setWhiteListMode(true);
             teamCleaner.clearFilteredPrefixes();
+            teamCleaner.addFilteredPrefix(EGIT_SUBMENU);
+
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
                     .isAvancedTeamFunctionsForProductDefExplorerEnabled();
             if (advancedTeamFunctionsEnabled || getConfig().representsProject(structuredSelection.getFirstElement())) {
@@ -411,7 +417,7 @@ public class ProductExplorer extends ModelExplorer {
             }
 
             var openWith = new MenuManager("Open With");
-            openWith.add(new OpenWithMenu(ProductExplorer.this.getSite().getPage(), file));
+            openWith.add(new OpenWithMenu(getSite().getPage(), file));
 
             if (manager.find(OPEN_ID) != null) {
                 manager.insertAfter(OPEN_ID, openWith);
