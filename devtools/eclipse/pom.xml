@@ -68,13 +68,6 @@
                 <configuration>
                     <useJDK>BREE</useJDK>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.eclipse.jdt</groupId>
-                        <artifactId>ecj</artifactId>
-                        <version>3.37.0</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
@@ -128,6 +121,25 @@
                             <artifactId>jsr305</artifactId>
                         </exclusion>
                     </exclusions>
+                    <filters>
+                        <!-- filter versions that are included from eclipse target (as p2 artifact) as well as from thirdparty target (as maven artifact)
+                        Unfortunately, the versions of the p2-Artifacts don't exactly match those of the Maven artifacts, so we exclude the (longer) p2-version.
+                        Otherwise, they would show up as warnings in /org.faktorips.devtools.model/target/skippedP2Dependencies.txt -->
+                        <filter>
+                            <type>eclipse-plugin</type>
+                            <id>org.apache.commons.collections</id>
+                            <restrictTo>
+                                <versionRange>[3,3.2.2.v201511171945)</versionRange>
+                            </restrictTo>
+                        </filter>
+                        <filter>
+                            <type>eclipse-plugin</type>
+                            <id>org.apache.commons.collections4</id>
+                            <restrictTo>
+                                <versionRange>[4,4.4.0.v20221112-0806)</versionRange>
+                            </restrictTo>
+                        </filter>
+                    </filters>
                 </configuration>
             </plugin>
             <!-- 
@@ -138,9 +150,14 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-packaging-plugin</artifactId>
                 <configuration>
+                    <archive>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                    </archive>
                     <format>'${version.kind}_'yyyyMMdd-HHmm</format>
                     <mapP2Dependencies>true</mapP2Dependencies>
                     <replacePackagingType>true</replacePackagingType>
+                    <deleteOnExit>false</deleteOnExit>
+                    <updatePomFile>true</updatePomFile>
                 </configuration>
             </plugin>
             <plugin>
