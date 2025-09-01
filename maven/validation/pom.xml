@@ -9,11 +9,23 @@
     <artifactId>faktorips-validation-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Validation Maven Plugin</name>
-    
+
     <properties>
         <skip-publish>false</skip-publish>
     </properties>
-    
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>eclipse-platform-dependencies</artifactId>
+                <version>${faktorips.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
@@ -32,13 +44,6 @@
             <artifactId>auto-service-annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>eclipse-platform-dependencies</artifactId>
-            <version>${faktorips.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
             <version>3.5.1</version>
@@ -46,9 +51,9 @@
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
             <artifactId>org.eclipse.jdt.core</artifactId>
-            <version>3.36.0</version>
         </dependency>
     </dependencies>
+
     <build>
         <resources>
             <resource>

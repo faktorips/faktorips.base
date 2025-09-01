@@ -21,6 +21,18 @@
       "configuration": {
         "criticality": "documented",
         "differences": [
+          {
+            "code": "java.method.removed",
+            "old": "method <A> A org.osgi.framework.ServiceReference<S>::adapt(java.lang.Class<A>)",
+            "justification": "Eclipse API update"
+          },
+          {
+            "code": "java.class.noLongerImplementsInterface",
+            "old": "interface org.osgi.framework.ServiceReference<S>",
+            "new": "interface org.osgi.framework.ServiceReference<S>",
+            "interface": "org.osgi.framework.BundleReference",
+            "justification": "Eclipse API update"
+          }
         ]
       }
     }
