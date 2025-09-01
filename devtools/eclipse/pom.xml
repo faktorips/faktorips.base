@@ -158,6 +158,7 @@
                     <replacePackagingType>true</replacePackagingType>
                     <deleteOnExit>false</deleteOnExit>
                     <updatePomFile>true</updatePomFile>
+                    <removeParent>false</removeParent>
                 </configuration>
             </plugin>
             <plugin>

@@ -15,5 +15,27 @@
                 ]
             }
         }
+    ],
+    "26.1.0": [
+      {
+        "extension": "revapi.differences",
+        "configuration": {
+          "ignore": true,
+          "differences": [
+            {
+              "ignore": true,
+              "code": "java.method.addedToInterface",
+              "new": "method boolean org.apache.maven.execution.MavenExecutionRequest::isIgnoreTransitiveRepositories()",
+              "justification": "Update to Maven 3.9.9"
+            },
+            {
+              "ignore": true,
+              "code": "java.method.addedToInterface",
+              "new": "method org.apache.maven.execution.MavenExecutionRequest org.apache.maven.execution.MavenExecutionRequest::setIgnoreTransitiveRepositories(boolean)",
+              "justification": "Update to Maven 3.9.9"
+            }
+          ]
+        }
+      }
     ]
 }
