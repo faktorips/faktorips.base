@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,12 +13,13 @@ package org.faktorips.devtools.core.ui.preferencepages;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
 /**
  * Implementation of IIpsObjectPathEntryAttribute
- * 
+ *
  * @author Roman Grutza
  */
 public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute {
@@ -42,7 +43,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     private Object value;
 
     /**
-     * 
+     *
      * @param type of the attribute, can be one of the defined String constants as defined in
      *            IIpsObjectPathEntryAttribute
      * @param value object to be set
@@ -136,18 +137,10 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     public MessageList validate() {
         MessageList result = new MessageList();
 
-        if (isFolderForDerivedSources() || isFolderForMergableSources()) {
-            IFolder sourceFolder = (IFolder)value;
-
-            // FIXME: workaround for NPE, find root cause!!
-            if (sourceFolder == null) {
-                result.add(new Message("Folder invalid", "Folder invalid", Message.ERROR, this)); //$NON-NLS-1$ //$NON-NLS-2$
-                return result;
-            }
-
+        if ((isFolderForDerivedSources() || isFolderForMergableSources()) && value instanceof AFolder folder) {
+            IFolder sourceFolder = folder.unwrap();
             result.add(validateIfFolderExists(sourceFolder));
         }
-
         return result;
     }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,7 +63,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 
 /**
  * Composite for modifying IPS source folders
- * 
+ *
  * @author Roman Grutza
  */
 public class SrcFolderComposite extends DataChangeableComposite {
@@ -211,10 +211,10 @@ public class SrcFolderComposite extends DataChangeableComposite {
         treeViewer.setInput(ipsObjectPath);
 
         derivedSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject().unwrap());
-        derivedSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForDerivedSources().unwrap());
+        derivedSrcFolderControl.setFolder(Wrappers.unwrap(ipsObjectPath.getOutputFolderForDerivedSources()));
 
         mergableSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject().unwrap());
-        mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources().unwrap());
+        mergableSrcFolderControl.setFolder(Wrappers.unwrap(ipsObjectPath.getOutputFolderForMergableSources()));
 
         IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject().getIpsPackageFragmentRoots();
         if (ipsPackageFragmentRoots.length > 0) {
@@ -246,7 +246,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
     /**
      * IPS source path entries have been modified
-     * 
+     *
      * @return true if source path entries have been modified, false otherwise
      */
     public final boolean isDataChanged() {
@@ -453,7 +453,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
     /**
      * Sets the default output folder for mergable/derived sources
-     * 
+     *
      * @param mergable if true the mergable folder is changed, derived folder otherwise
      */
     private void handleDefaultOutputFolderChanged(boolean mergable) {
@@ -491,7 +491,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
     /**
      * Sets the default package name for mergable/derived sources
-     * 
+     *
      * @param mergable if true the mergable package name is changed, otherwise the derived package
      *            name
      */
