@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.views.productstructureexplorer.messages"; //$NON-NLS-1$
-
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
@@ -65,10 +64,14 @@ public class Messages extends NLS {
     public static String ProductStructureExplorer_ShowRulesActionLabel;
     public static String ProductStructureExplorer_ShowRulesActionTooltip;
     public static String ProductStructureExplorer_tooltipToggleAssociatedCmptsNodes;
+    public static String ProductStructureExplorer_relation;
+    public static String ProductStructureExplorer_relations;
+    public static String ProductStructureExplorer_component;
+    public static String ProductStructureExplorer_components;
+    public static String ProductStructureExplorer_productAndRelationCountInfo;
     public static String SelectExistingTableContentsHandler_selectionDialogTitle;
     public static String ToggleRuleAction_Label_activate;
     public static String ToggleRuleAction_Label_deactivate;
     public static String ToggleRuleAction_TooltipActivate;
     public static String ToggleRuleAction_TooltipDeactivate;
-
 }

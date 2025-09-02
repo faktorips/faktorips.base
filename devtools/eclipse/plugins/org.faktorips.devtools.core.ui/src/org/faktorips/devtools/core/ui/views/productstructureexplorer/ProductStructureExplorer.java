@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.dnd.DND;
@@ -92,9 +93,9 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 
 /**
  * Navigate all Products defined in the active Project.
- * 
+ *
  * @author guenther
- * 
+ *
  */
 public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         implements ContentsChangeListener, IIpsSrcFilesChangeListener {
@@ -149,6 +150,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
     private CollapseAllAction collapseAllAction;
 
     private IWorkbenchAction deleteAction;
+
+    private Label productAndRelationCountLabel;
 
     public ProductStructureExplorer() {
         IIpsModel.get().addChangeListener(this);
@@ -437,6 +440,8 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
         treeViewer.addDoubleClickListener(new ProdStructExplTreeDoubleClickListener(treeViewer));
 
+        productAndRelationCountLabel = new Label(parent, SWT.WRAP);
+
         hookGlobalActions();
         initContextMenue();
 
@@ -649,7 +654,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
     /**
      * Displays the structure of the product component defined by the given file.
-     * 
+     *
      * @param file The selection to display
      */
     public void showStructure(IIpsSrcFile file) {
@@ -664,7 +669,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
     /**
      * Displays the structure of the given product component.
-     * 
+     *
      * @param product The product to show the structure from
      */
     public void showStructure(final IProductCmpt product) {
@@ -724,6 +729,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
                     } else {
                         showEmptyMessage();
                     }
+                    updateProductAndRelationCount();
                 }
             };
 
@@ -877,6 +883,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
                 showMessgeOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
                 treeViewer.refresh();
+                updateProductAndRelationCount();
             }
         }
     }
@@ -903,6 +910,31 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         if (messageWasVisible) {
             setFocus();
         }
+    }
+
+    private void updateProductAndRelationCount() {
+        if (productAndRelationCountLabel == null || productAndRelationCountLabel.isDisposed()) {
+            return;
+        }
+
+        Object input = treeViewer.getInput();
+        if (!(input instanceof IProductCmptTreeStructure structure)) {
+            productAndRelationCountLabel.setText("");
+            return;
+        }
+
+        ProductStructureCounts counts = ProductStructureCounter.countProductsAndReferences(structure);
+
+        String componentText = counts.productCount() == 1 ? Messages.ProductStructureExplorer_component
+                : Messages.ProductStructureExplorer_components;
+        String relationText = counts.relationCount() == 1 ? Messages.ProductStructureExplorer_relation
+                : Messages.ProductStructureExplorer_relations;
+
+        Object[] bindings = { counts.productCount(), componentText, counts.relationCount(),
+                relationText };
+        productAndRelationCountLabel.setText(
+                NLS.bind(Messages.ProductStructureExplorer_productAndRelationCountInfo,
+                        bindings));
     }
 
     private void enableButtons(boolean status) {
@@ -1122,5 +1154,4 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
             return equals(MESSAGE);
         }
     }
-
 }
