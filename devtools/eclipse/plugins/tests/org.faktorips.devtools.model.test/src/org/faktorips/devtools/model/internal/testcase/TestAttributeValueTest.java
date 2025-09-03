@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,13 +40,14 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestAttributeValueTest extends AbstractIpsPluginTest {
 
-    private ITestAttributeValue testAttributeValue;
     private IIpsProject ipsProject;
+    private ITestPolicyCmpt testPolicyCmpt;
+    private ITestAttributeValue testAttributeValue;
 
     @Override
     @Before
@@ -63,9 +64,9 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
 
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "PremiumCalculation");
         testCase.setTestCaseType(testCaseType.getName());
-        ITestPolicyCmpt tpc = testCase.newTestPolicyCmpt();
-        tpc.setTestPolicyCmptTypeParameter("inputTestPcCmptParam1");
-        testAttributeValue = tpc.newTestAttributeValue();
+        testPolicyCmpt = testCase.newTestPolicyCmpt();
+        testPolicyCmpt.setTestPolicyCmptTypeParameter("inputTestPcCmptParam1");
+        testAttributeValue = testPolicyCmpt.newTestAttributeValue();
         testAttributeValue.setTestAttribute("inputAttribute1");
     }
 
@@ -88,6 +89,28 @@ public class TestAttributeValueTest extends AbstractIpsPluginTest {
         testAttributeValue.initFromXml(el);
         assertEquals("attribute2", testAttributeValue.getTestAttribute());
         assertEquals("500", testAttributeValue.getValue());
+    }
+
+    @Test
+    public void testXmlRoundtrip() {
+        testAttributeValue.setTestAttribute("attribute1");
+        testAttributeValue.setValue("1");
+        var testAttributeValue2 = testPolicyCmpt.newTestAttributeValue();
+        testAttributeValue2.setTestAttribute("attribute2");
+        testAttributeValue2.setValue("2");
+
+        Element el = testPolicyCmpt.toXml(newDocument());
+        XmlUtil.removeIds(el);
+        testAttributeValue.setValue("3");
+        testAttributeValue2.setValue("4");
+        testPolicyCmpt.initFromXml(el);
+
+        assertEquals(testAttributeValue, testPolicyCmpt.getTestAttributeValue("attribute1"));
+        assertEquals("attribute1", testAttributeValue.getTestAttribute());
+        assertEquals("1", testAttributeValue.getValue());
+        assertEquals(testAttributeValue2, testPolicyCmpt.getTestAttributeValue("attribute2"));
+        assertEquals("attribute2", testAttributeValue2.getTestAttribute());
+        assertEquals("2", testAttributeValue2.getValue());
     }
 
     @Test

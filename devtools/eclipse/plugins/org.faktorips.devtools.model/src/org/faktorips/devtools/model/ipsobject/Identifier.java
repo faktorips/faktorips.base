@@ -46,7 +46,6 @@ import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.method.IBaseMethod;
 import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IExpression;
@@ -57,6 +56,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IKey;
+import org.faktorips.devtools.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestValue;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
@@ -87,6 +87,7 @@ public interface Identifier {
             case IDescription description -> new DescriptionIdentifier(description.getLocale());
             case IColumnRange columnRange -> ColumnRangeIdentifier.of(columnRange);
             case ITestValue testValue -> TestValueIdentifier.of(testValue);
+            case ITestAttributeValue testAttributeValue -> TestAttributeValueIdentifier.of(testAttributeValue);
             case IAttributeValue attributeValue -> AttributeValueIdentifier.of(attributeValue);
             case IConfiguredDefault configuredDefault -> ConfiguredDefaultIdentifier.of(configuredDefault);
             case IConfiguredValueSet configuredValueSet -> ConfiguredValueSetIdentifier.of(configuredValueSet);
@@ -142,7 +143,6 @@ public interface Identifier {
             case IDescription.XML_TAG_NAME -> DescriptionIdentifier.of(partEl);
             case IColumnRange.PROPERTY_NAME -> ColumnRangeIdentifier.of(partEl);
             case TestValue.TAG_NAME -> TestValueIdentifier.of(partEl);
-            case IAttributeValue.TAG_NAME -> AttributeValueIdentifier.of(partEl);
             case IConfiguredDefault.TAG_NAME -> ConfiguredDefaultIdentifier.of(partEl);
             case IConfiguredValueSet.TAG_NAME -> ConfiguredValueSetIdentifier.of(partEl);
             case Association.TAG_NAME -> AssociationIdentifier.of(partEl);
@@ -152,12 +152,12 @@ public interface Identifier {
             case ForeignKey.TAG_NAME, Index.TAG_NAME, "UniqueKey" -> KeyIdentifier.of(partEl);
             case IIpsObjectGeneration.TAG_NAME -> GenerationIdentifier.of(partEl);
             case IExpression.TAG_NAME -> FormulaIdentifier.of(partEl);
-            case IProductCmptLink.TAG_NAME -> {
-                if (TestPolicyCmpt.TAG_NAME.equals(partEl.getParentNode().getNodeName())) {
-                    yield TestPolicyCmptLinkIdentifier.of(partEl);
-                }
-                yield LinkIdentifier.of(partEl);
-            }
+            case IAttributeValue.TAG_NAME -> partEl.hasAttribute(ITestAttributeValue.PROPERTY_ATTRIBUTE)
+                    ? TestAttributeValueIdentifier.of(partEl)
+                    : AttributeValueIdentifier.of(partEl);
+            case IProductCmptLink.TAG_NAME -> TestPolicyCmpt.TAG_NAME.equals(partEl.getParentNode().getNodeName())
+                    ? TestPolicyCmptLinkIdentifier.of(partEl)
+                    : LinkIdentifier.of(partEl);
             case BaseMethod.XML_ELEMENT_NAME -> MethodIdentifier.of(partEl);
             case TestPolicyCmpt.TAG_NAME -> TestPolicyCmptIdentifier.of(partEl);
             case TestPolicyCmptTypeParameter.TAG_NAME, TestRuleParameter.TAG_NAME, TestValueParameter.TAG_NAME -> TestParameterIdentifier
@@ -516,7 +516,8 @@ public interface Identifier {
 
         static LabelIdentifier of(Element partEl) {
             String localeCode = getAttribute(partEl, ILabel.PROPERTY_LOCALE);
-            return new LabelIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
+            return new LabelIdentifier(
+                    IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
         }
     }
 
@@ -528,7 +529,8 @@ public interface Identifier {
 
         static DescriptionIdentifier of(Element partEl) {
             String localeCode = getAttribute(partEl, IDescription.PROPERTY_LOCALE);
-            return new DescriptionIdentifier(IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
+            return new DescriptionIdentifier(
+                    IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
         }
     }
 
@@ -566,6 +568,25 @@ public interface Identifier {
             String associationName = getAttribute(partEl, IProductCmptLink.PROPERTY_ASSOCIATION);
             String targetRuntimeId = getAttribute(partEl, IProductCmptLink.PROPERTY_TARGET_RUNTIME_ID);
             return new LinkIdentifier(associationName, targetRuntimeId);
+        }
+    }
+
+    record TestAttributeValueIdentifier(String testAttributeName) implements Identifier {
+
+        public TestAttributeValueIdentifier(String testAttributeName) {
+            this.testAttributeName = IpsStringUtils.isBlank(testAttributeName) ? "" : testAttributeName;
+        }
+
+        static TestAttributeValueIdentifier of(ITestAttributeValue testAttributeValue) {
+            String name = testAttributeValue.getTestAttribute();
+            if (IpsStringUtils.isNotBlank(name)) {
+                return new TestAttributeValueIdentifier(name);
+            }
+            return new TestAttributeValueIdentifier(testAttributeValue.getId());
+        }
+
+        static TestAttributeValueIdentifier of(Element partEl) {
+            return new TestAttributeValueIdentifier(getAttribute(partEl, ITestAttributeValue.PROPERTY_ATTRIBUTE));
         }
     }
 

@@ -162,7 +162,7 @@ public class TestPolicyCmptTypeParameterTest extends AbstractIpsPluginTest {
         assertEquals(1, policyCmptTypeParameterInput.getTestAttributes().length);
         assertTargetTestPolicyCmptTypeParameter(policyCmptTypeParameterInput, "Name1", "base.Test2", "association1", 7,
                 8, true, false, false);
-        // child type not specified therfor combinned is the default type
+        // child type not specified, so combined is the default type
         assertTargetTestPolicyCmptTypeParameter(
                 policyCmptTypeParameterInput.getTestPolicyCmptTypeParamChild("childpolicyCmptType1"),
                 "childpolicyCmptType1", "base.Test4", "association1", 7, 8, true, true, true);
