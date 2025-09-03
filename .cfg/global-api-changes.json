@@ -27,6 +27,12 @@
             "justification": "Eclipse API update"
           },
           {
+            "ignore": true,
+            "code": "java.method.addedToInterface",
+            "new": "method <A> A org.osgi.framework.ServiceReference<S>::adapt(java.lang.Class<A>)",
+            "justification": "Eclipse API update confusion"
+          },
+          {
             "code": "java.class.noLongerImplementsInterface",
             "old": "interface org.osgi.framework.ServiceReference<S>",
             "new": "interface org.osgi.framework.ServiceReference<S>",
