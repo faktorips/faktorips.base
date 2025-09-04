@@ -13,17 +13,17 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Yet another version pattern implementation.
  */
-public class AVersion implements Comparable<AVersion> {
+public final class AVersion implements Comparable<AVersion> {
 
     public static final AVersion VERSION_ZERO = new AVersion(new long[] { 0L }, IpsStringUtils.EMPTY);
 
@@ -31,27 +31,31 @@ public class AVersion implements Comparable<AVersion> {
     private static final Pattern NUMERIC = Pattern.compile("\\d+"); //$NON-NLS-1$
     private static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
     // 24.1.0.ci_20230711-1341
-    private static final Pattern QUALIFIER_SNAPSHOT = Pattern.compile("ci_\\d{8}-\\d{4}");
+    private static final Pattern QUALIFIER_SNAPSHOT = Pattern.compile("ci_(\\d{8})-\\d{4}"); //$NON-NLS-1$
     // 24.1.0.a20221117-02
-    private static final Pattern QUALIFIER_ALPHA = Pattern.compile("a\\d{8}-\\d{2}");
+    private static final Pattern QUALIFIER_ALPHA = Pattern.compile("a(\\d{8})-\\d{2}"); //$NON-NLS-1$
     // 24.1.0.m01
-    private static final Pattern QUALIFIER_MILESTONE = Pattern.compile("m\\d{2}");
+    private static final Pattern QUALIFIER_MILESTONE = Pattern.compile("m\\d{2}"); //$NON-NLS-1$
     // 24.1.0.rc01
-    private static final Pattern QUALIFIER_RELEASE_CANDIDATE = Pattern.compile("rc\\d{2}");
+    private static final Pattern QUALIFIER_RELEASE_CANDIDATE = Pattern.compile("rc\\d{2}"); //$NON-NLS-1$
     // 24.1.0.release
-    private static final String QUALIFIER_RELEASE = "release";
+    private static final String QUALIFIER_RELEASE = "release"; //$NON-NLS-1$
 
     private final String versionString;
     private final long[] numericParts;
     private final String qualifier;
+    // cached
+    private final int hashCode;
 
     private AVersion(long[] numericParts, String qualifier) {
         this.numericParts = numericParts;
         this.qualifier = qualifier;
         versionString = toString(numericParts, qualifier);
+        // cache since immutable
+        hashCode = computeHashCode();
     }
 
-    private static final String toString(long[] numericParts, String qualifier) {
+    private static String toString(long[] numericParts, String qualifier) {
         Stream<String> parts = Arrays.stream(numericParts).mapToObj(Long::toString);
         if (IpsStringUtils.isNotBlank(qualifier)) {
             parts = Stream.concat(parts, Stream.of(qualifier));
@@ -61,7 +65,7 @@ public class AVersion implements Comparable<AVersion> {
 
     /**
      * Parses the given version string to {@link AVersion}, dropping {@value #QUALIFIER} and
-     * trailing '.0' parts.
+     * trailing {@code .0} parts.
      */
     public static AVersion parse(String versionString) {
         requireNonNull(versionString, "versionString must not be null"); //$NON-NLS-1$
@@ -105,30 +109,40 @@ public class AVersion implements Comparable<AVersion> {
     @Override
     public int compareTo(AVersion o) {
         for (int i = 0; i < Math.min(numericParts.length, o.numericParts.length); i++) {
-            long diff = numericParts[i] - o.numericParts[i];
-            if (diff != 0) {
-                return diff > Integer.MAX_VALUE ? Integer.MAX_VALUE
-                        : diff < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int)diff;
+            int cmp = Long.compare(numericParts[i], o.numericParts[i]);
+            if (cmp != 0) {
+                return cmp;
             }
         }
-        if (numericParts.length == o.numericParts.length) {
-            return compareQualifiers(o);
+        if (numericParts.length != o.numericParts.length) {
+            return Integer.compare(numericParts.length, o.numericParts.length);
         }
-        return numericParts.length - o.numericParts.length;
+        return compareQualifiers(o);
     }
 
     private int compareQualifiers(AVersion o) {
-        VersionType thisVersionType = VersionType.from(qualifier);
-        VersionType otherVersionType = VersionType.from(o.qualifier);
-        if (thisVersionType == otherVersionType) {
-            // rc02 is higher than rc01
+        VersionType thisType = VersionType.from(qualifier);
+        VersionType otherType = VersionType.from(o.qualifier);
+
+        // Timestamp-based qualifiers are always compared chronologically first
+        if (thisType.isTimestampBased() && otherType.isTimestampBased()) {
+            int cmp = thisType.extractTimestamp(qualifier)
+                    .compareTo(otherType.extractTimestamp(o.qualifier));
+            if (cmp != 0) {
+                return cmp;
+            }
+            // same date -> fall through
+        }
+
+        if (thisType == otherType) {
+            // For same type, lexical qualifier comparison (e.g. rc02 > rc01)
             return qualifier.compareTo(o.qualifier);
         }
-        return thisVersionType.getPriority() - otherVersionType.getPriority();
+
+        return Integer.compare(thisType.getPriority(), otherType.getPriority());
     }
 
-    @Override
-    public int hashCode() {
+    private int computeHashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.hashCode(numericParts);
@@ -136,18 +150,20 @@ public class AVersion implements Comparable<AVersion> {
     }
 
     @Override
+    public int hashCode() {
+        return hashCode;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || (getClass() != obj.getClass())) {
+        if (!(obj instanceof AVersion other)) {
             return false;
         }
-        AVersion other = (AVersion)obj;
-        if (!Arrays.equals(numericParts, other.numericParts)) {
-            return false;
-        }
-        return qualifier.equals(other.qualifier);
+        return Arrays.equals(numericParts, other.numericParts)
+                && qualifier.equals(other.qualifier);
     }
 
     @Override
@@ -252,18 +268,20 @@ public class AVersion implements Comparable<AVersion> {
      */
     private enum VersionType {
 
-        NONE(0),
-        OTHER(10),
-        SNAPSHOT(20),
-        ALPHA(30),
-        MILESTONE(40),
-        RELEASE_CANDIDATE(50),
-        RELEASE(60);
+        NONE(0, false),
+        OTHER(10, false),
+        SNAPSHOT(20, true),
+        ALPHA(30, true),
+        MILESTONE(40, false),
+        RELEASE_CANDIDATE(50, false),
+        RELEASE(60, false);
 
         private final int priority;
+        private final boolean timestampBased;
 
-        VersionType(int priority) {
+        VersionType(int priority, boolean timestampBased) {
             this.priority = priority;
+            this.timestampBased = timestampBased;
         }
 
         /**
@@ -274,6 +292,46 @@ public class AVersion implements Comparable<AVersion> {
          */
         public int getPriority() {
             return priority;
+        }
+
+        /**
+         * {@return {@code true} if this {@link VersionType} uses a qualifier that encodes a
+         * timestamp (e.g. {@code a20251024-01} or {@code ci_20251024-1359}). {@code false}
+         * otherwise.}
+         */
+        public boolean isTimestampBased() {
+            return timestampBased;
+        }
+
+        /**
+         * Extracts the timestamp portion of the given qualifier for this {@link VersionType}.
+         *
+         * <p>
+         * This method is only valid for timestamp-based types:
+         * <ul>
+         * <li>{@link #ALPHA} with qualifiers like {@code a20250424-01}</li>
+         * <li>{@link #SNAPSHOT} (CI builds) with qualifiers like {@code ci_20250424-1359}</li>
+         * </ul>
+         *
+         * @param qualifier the qualifier string part of an {@link AVersion}
+         * @return the extracted timestamp as a string in {@code yyyyMMdd} format
+         * @throws IllegalArgumentException if the qualifier does not match the expected pattern or
+         *             this version type is not timestamp-based
+         */
+        public String extractTimestamp(String qualifier) {
+            if (this == ALPHA) {
+                Matcher m = QUALIFIER_ALPHA.matcher(qualifier);
+                if (m.matches()) {
+                    return m.group(1);
+                }
+            } else if (this == SNAPSHOT) {
+                Matcher m = QUALIFIER_SNAPSHOT.matcher(qualifier);
+                if (m.matches()) {
+                    return m.group(1);
+                }
+            }
+            throw new IllegalArgumentException(
+                    "Invalid qualifier for timestamp-based type " + this + ": " + qualifier);
         }
 
         /**
@@ -293,7 +351,7 @@ public class AVersion implements Comparable<AVersion> {
                 return RELEASE_CANDIDATE;
             } else if (QUALIFIER_RELEASE.equals(qualifier)) {
                 return RELEASE;
-            } else if (StringUtils.isNotBlank(qualifier)) {
+            } else if (IpsStringUtils.isNotBlank(qualifier)) {
                 // some qualifier is higher than no qualifier
                 return OTHER;
             } else {

@@ -38,6 +38,12 @@
             "new": "interface org.osgi.framework.ServiceReference<S>",
             "interface": "org.osgi.framework.BundleReference",
             "justification": "Eclipse API update"
+          },
+          {
+            "code": "java.class.nowFinal",
+            "old": "class org.faktorips.devtools.abstraction.AVersion",
+            "new": "class org.faktorips.devtools.abstraction.AVersion",
+            "justification": "FIPS-13046"
           }
         ]
       }

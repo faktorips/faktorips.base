@@ -100,24 +100,50 @@ public class AVersionTest {
 
         assertThat(AVersion.parse("24.1.0.rc01").compareTo(AVersion.parse("24.1.0.rc02")), is(lowerVersion())); //$NON-NLS-1$ //$NON-NLS-2$
         assertThat(AVersion.parse("24.1.0.rc02").compareTo(AVersion.parse("24.1.0.rc01")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThat(AVersion.parse("24.1.0.rc1").compareTo(AVersion.parse("24.1.0.rc10")), is(lowerVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThat(AVersion.parse("24.1.0.rc10").compareTo(AVersion.parse("24.1.0.rc2")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThat(AVersion.parse("24.1.0.rc10").compareTo(AVersion.parse("24.1.0.rc02")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    // from 24.1.0 to 24.1.1
     @Test
     public void testCompareTo_ReleaseCycle() {
-        // from 24.1.0 to 24.1.1
+        // unqualified next Version is higher than release
         assertThat(AVersion.parse("24.1.0").compareTo(AVersion.parse("23.12.5.release")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        // version without qualifier is lowest
         assertThat(AVersion.parse("24.1.0.ci_20240117-1341").compareTo(AVersion.parse("24.1.0")), is(higherVersion()));//$NON-NLS-1$ //$NON-NLS-2$
+        // ci later today is higher than earlier
+        assertThat(AVersion.parse("24.1.0.ci_20240117-1641").compareTo(AVersion.parse("24.1.0.ci_20240117-1621")), //$NON-NLS-1$ //$NON-NLS-2$
+                is(higherVersion()));
+        // ci today is higher than ci yesterday
+        assertThat(AVersion.parse("24.1.0.ci_20240117-0841").compareTo(AVersion.parse("24.1.0.ci_20240116-1621")), //$NON-NLS-1$ //$NON-NLS-2$
+                is(higherVersion()));
+        // alpha on same day is higher as ci
         assertThat(AVersion.parse("24.1.0.a20240117-01").compareTo(AVersion.parse("24.1.0.ci_20240117-1341")), //$NON-NLS-1$ //$NON-NLS-2$
                 is(higherVersion()));
+        // alpha today is higher as ci from yesterday
+        assertThat(AVersion.parse("24.1.0.a20240117-01").compareTo(AVersion.parse("24.1.0.ci_20240116-1341")), //$NON-NLS-1$ //$NON-NLS-2$
+                is(higherVersion()));
+        // ci today is higher as alpha from yesterday
+        assertThat(AVersion.parse("24.1.0.ci_20240118-1341").compareTo(AVersion.parse("24.1.0.a20240117-01")), //$NON-NLS-1$ //$NON-NLS-2$
+                is(higherVersion()));
+        // alpha 2 on same day is higher as alpha 1
         assertThat(AVersion.parse("24.1.0.a20240117-02").compareTo(AVersion.parse("24.1.0.a20240117-01")), //$NON-NLS-1$ //$NON-NLS-2$
                 is(higherVersion()));
+        // alpha 1 today is higher as alpha 2 from yesterday
         assertThat(AVersion.parse("24.1.0.a20240217-01").compareTo(AVersion.parse("24.1.0.a20240117-02")), //$NON-NLS-1$ //$NON-NLS-2$
                 is(higherVersion()));
+        // milestone is higher than alpha
         assertThat(AVersion.parse("24.1.0.m01").compareTo(AVersion.parse("24.1.0.a20220217-01")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        // milestone 2 is higher than milestone 1
         assertThat(AVersion.parse("24.1.0.m02").compareTo(AVersion.parse("24.1.0.m01")), is(higherVersion()));//$NON-NLS-1$ //$NON-NLS-2$
+        // rc is higher than milestone
         assertThat(AVersion.parse("24.1.0.rc01").compareTo(AVersion.parse("24.1.0.m02")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        // rc 2 is higher than rc 1
         assertThat(AVersion.parse("24.1.0.rc02").compareTo(AVersion.parse("24.1.0.rc01")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        // release is higher than rc
         assertThat(AVersion.parse("24.1.0.release").compareTo(AVersion.parse("24.1.0.rc02")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
+        // unqualified next Version is higher than release
         assertThat(AVersion.parse("24.1.1").compareTo(AVersion.parse("24.1.0.release")), is(higherVersion())); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
