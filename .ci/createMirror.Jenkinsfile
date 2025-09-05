@@ -56,7 +56,7 @@ pipeline {
     agent any
 
     parameters {
-        string description: 'Eclipse Version z.B: 2023-12', name: 'eclipseVersion'
+        string description: 'Eclipse Version z.B: 2024-09', name: 'eclipseVersion'
     }
 
     tools {

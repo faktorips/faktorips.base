@@ -16,10 +16,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-       eclipse-release: ['2023-12', '2024-03', '2024-06', '2024-09', '2024-12', '2025-03', '2025-06', '2025-09']
+       eclipse-release: ['2024-09', '2024-12', '2025-03', '2025-06', '2025-09']
 
     env:
-       integration-test-release: '2023-12'
+       integration-test-release: '2024-09'
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDKs

@@ -61,9 +61,9 @@ import org.eclipse.tycho.core.maven.ToolchainProvider;
 import org.eclipse.tycho.core.resolver.P2ResolverFactory;
 import org.eclipse.tycho.eclipserun.EclipseRunMojo;
 import org.eclipse.tycho.eclipserun.Repository;
-import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
 import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
+import org.faktorips.maven.plugin.mojo.internal.LoggingEclipseRunMojo;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
 import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
 import org.w3c.dom.Document;
@@ -72,7 +72,7 @@ import org.xml.sax.SAXException;
 /**
  * Builds the Faktor-IPS project.
  * <p>
- * By default, the latest Faktor-IPS is used with an Eclipse 2023-12 runtime, all installed from
+ * By default, the latest Faktor-IPS is used with an Eclipse 2024-09 runtime, all installed from
  * <a href="https://faktorzehn.org">faktorzehn.org</a> update sites.
  * <p>
  * To change from where the plugins are installed, see {@link #additionalRepositories},
@@ -214,14 +214,14 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code
      * <repositories>
      *  <repository>
-     *   <id>faktor-ips-25-1</id>
+     *   <id>faktor-ips-26-1</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/v25_1/</url>
+     *   <url>https://update.faktorzehn.org/faktorips/v26_1/</url>
      *  </repository>
      *  <repository>
-     *   <id>eclipse-2023-12</id>
+     *   <id>eclipse-2024-09</id>
      *   <layout>p2</layout>
-     *   <url>http://download.eclipse.org/eclipse/updates/4.30/</url>
+     *   <url>https://download.eclipse.org/releases/2024-09/</url>
      *  </repository>
      * </repositories>
      * }
@@ -243,7 +243,7 @@ public class IpsBuildMojo extends AbstractMojo {
      *  <repository>
      *   <id>productvariants</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/productvariants/25.1</url>
+     *   <url>https://update.faktorzehn.org/faktorips/productvariants/26.1</url>
      *  </repository>
      * </additionalRepositories>
      * }
@@ -362,7 +362,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Path to the update site to install Eclipse.
      */
-    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/releases/2023-12/")
+    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/releases/2024-09/")
     private String eclipseRepository;
 
     /**

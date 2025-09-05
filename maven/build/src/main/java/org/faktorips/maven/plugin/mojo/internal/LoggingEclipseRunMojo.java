@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.eclipse.tycho.extras.eclipserun;
+package org.faktorips.maven.plugin.mojo.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,6 @@ import org.eclipse.tycho.core.resolver.P2ResolverFactory;
 import org.eclipse.tycho.eclipserun.EclipseRunMojo;
 import org.eclipse.tycho.eclipserun.Repository;
 import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
-import org.faktorips.maven.plugin.mojo.internal.BuildLogPrintStream;
 
 public class LoggingEclipseRunMojo extends EclipseRunMojo {
 

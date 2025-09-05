@@ -49,7 +49,7 @@ Also the parameters `fipsRepository` and `eclipseRepository` can be used to over
                 <artifactId>faktorips-maven-plugin</artifactId>
                 <configuration>
                     <fipsRepository>https://myfipsmirror.firma.de/fips/25.1.3.release</fipsRepository>
-                    <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2023-12</eclipseRepository>
+                    <eclipseRepository>https://myeclipsemirror.firma.de/eclipse/2024-09</eclipseRepository>
                 </configuration>
                 <executions>
                     <execution>

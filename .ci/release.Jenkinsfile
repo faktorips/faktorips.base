@@ -29,10 +29,10 @@ pipeline {
     parameters {
         string description: '''Die zu veröffentlichte Version. Sollte nach dem <a href="https://wiki.faktorzehn.at/display/PRODEV/Benennung+von+Versionen">im Wiki</a> beschriebenen Schema aufgebaut sein.
                                 <ul>
-                                  <li>22.12.0.a20220601-01</li>
-                                  <li>22.12.0.m01</li>
-                                  <li>22.12.0.rc01</li>
-                                  <li>22.12.0.release</li>
+                                  <li>26.1.0.a20250901-01</li>
+                                  <li>26.1.0.m01</li>
+                                  <li>26.1.0.rc01</li>
+                                  <li>26.1.0.release</li>
                                 </ul>''', name: 'RELEASE_VERSION'
         string description: 'Die nächste Version; wird nach einem erfolgreichen Release mit einem eigenen Commit gesetzt. (SNAPSHOT wird automatisch hinzugefügt)', name: 'DEVELOPMENT_VERSION'
         string defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH'
