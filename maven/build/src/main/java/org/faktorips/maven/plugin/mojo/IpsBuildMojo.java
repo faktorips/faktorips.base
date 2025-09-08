@@ -10,6 +10,8 @@
 
 package org.faktorips.maven.plugin.mojo;
 
+import static org.apache.commons.io.FilenameUtils.separatorsToSystem;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,7 +37,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.execution.MavenSession;
@@ -714,7 +715,7 @@ public class IpsBuildMojo extends AbstractMojo {
             applicationsArgs.add("-application");
             applicationsArgs.add("org.eclipse.ant.core.antRunner");
             applicationsArgs.add("-buildfile");
-            applicationsArgs.add(getPathToAntScript());
+            applicationsArgs.add(separatorsToSystem(getPathToAntScript()));
             applicationsArgs.add(antTarget);
 
             addDefaultJvmArgs();
@@ -986,25 +987,26 @@ public class IpsBuildMojo extends AbstractMojo {
         // add path to localRepository to user settings if maven.repo.local is set
         if (localRepository != null) {
             if (!Paths.get(localRepository).isAbsolute()) {
-                localRepository = FilenameUtils
-                        .separatorsToSystem(session.getSystemProperties().get("user.dir") + "\\" + localRepository)
-                        .replace("\\", "\\\\");
+                localRepository = separatorsToSystem(
+                        session.getSystemProperties().get("user.dir") + "\\" + localRepository)
+                                .replace("\\", "\\\\");
             }
-            String copyUserSettingsDir = FilenameUtils
-                    .separatorsToSystem(work.getAbsolutePath() + "\\data\\.metadata\\.plugins");
-            String copyUserSettingsPath = copyUserSettingsDir + FilenameUtils
-                    .separatorsToSystem("\\settings.xml");
+            String copyUserSettingsDir = separatorsToSystem(work.getAbsolutePath() + "\\data\\.metadata\\.plugins");
+            String copyUserSettingsPath = copyUserSettingsDir + separatorsToSystem("\\settings.xml");
             try {
                 FileUtils.forceMkdir(new File(copyUserSettingsDir));
 
                 String userSettings = FileUtils.fileRead(session.getRequest().getUserSettingsFile(), "UTF-8");
+                String escapedLocalRepo = separatorsToSystem(localRepository).replace("\\", "\\\\");
                 if (userSettings.contains("<localRepository>")) {
                     userSettings = userSettings.replaceAll("<localRepository>.+<\\/localRepository>",
-                            "<localRepository>" + localRepository + "<\\/localRepository>");
+                            "<localRepository>" + escapedLocalRepo
+                                    + "<\\/localRepository>");
                 } else {
                     userSettings = userSettings.replaceAll("<settings>", "<settings>"
                             + System.lineSeparator()
-                            + "<localRepository>" + localRepository + "<\\/localRepository>");
+                            + "<localRepository>" + escapedLocalRepo
+                            + "<\\/localRepository>");
                 }
 
                 Files.writeString(Paths.get(copyUserSettingsPath), userSettings, StandardOpenOption.CREATE,
@@ -1044,10 +1046,8 @@ public class IpsBuildMojo extends AbstractMojo {
             toolchainsFile = session.getRequest().getGlobalToolchainsFile();
         }
         if (toolchainsFile != null && toolchainsFile.exists()) {
-            String copyUserSettingsDirPath = work.getAbsolutePath() + FilenameUtils
-                    .separatorsToSystem("\\data\\.metadata\\.plugins");
-            String copyUserToolchainsPath = copyUserSettingsDirPath + FilenameUtils
-                    .separatorsToSystem("\\toolchains.xml");
+            String copyUserSettingsDirPath = work.getAbsolutePath() + separatorsToSystem("\\data\\.metadata\\.plugins");
+            String copyUserToolchainsPath = copyUserSettingsDirPath + separatorsToSystem("\\toolchains.xml");
             try {
                 FileUtils.forceMkdir(new File(copyUserSettingsDirPath));
                 FileUtils.copyFile(toolchainsFile, new File(copyUserToolchainsPath));
