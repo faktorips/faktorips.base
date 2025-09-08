@@ -27,6 +27,7 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -37,6 +38,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -60,6 +62,7 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.faktorips.devtools.model.internal.tablecontents.Row;
 import org.faktorips.devtools.model.internal.tablecontents.TableContents;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.tablecontents.IRow;
@@ -124,6 +127,34 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         super.refresh();
         bindingContext.updateUI();
         updateToolbarActionsEnabledStates();
+    }
+
+    private void refresh(IRow rowToUpade) {
+        if (tableViewer == null) {
+            return;
+        }
+        Control ctrl = tableViewer.getControl();
+        if (ctrl == null || ctrl.isDisposed()) {
+            return;
+        }
+
+        TableRows tableRows = (TableRows)getTableContents().getTableRows();
+
+        Row newRow = null;
+        if (rowToUpade != null) {
+            newRow = (Row)tableRows.getRow(rowToUpade.getRowNumber());
+            for (int i = 0; i < newRow.getNoOfColumns(); i++) {
+                newRow.setValue(i, rowToUpade.getValue(i));
+            }
+        }
+
+        if (newRow != null) {
+            tableViewer.update(newRow, null);
+            tableViewer.setSelection(new StructuredSelection(newRow), true);
+        } else {
+            tableViewer.refresh();
+        }
+
     }
 
     /**
@@ -270,10 +301,14 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
                 columnName = findColumnName(column, referenceName);
                 dataType = findValueDatatype(column);
             }
+
             ValueDatatypeControlFactory factory = getValueDatatypeControlFactory(dataType);
             tableContentsLabelProvider.setValueDatatype(i, dataType);
+
             createTableColumn(columnSizes, numReadSizes, i, columnName, factory);
+
             columnProperties[i] = columnName;
+
             editors[i] = createCellEditor(i, dataType, factory);
         }
         tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
@@ -533,7 +568,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     public void refreshTable(final IRow row) {
-        tableViewer.refresh(row);
+        refresh(row);
         if (wasUniqueKeyErrorStateChanged()) {
             // either the index error is solved or there is a new index error
             // refresh the rest of the table because an index error concerns more than one
@@ -543,7 +578,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     public void refreshTable() {
-        tableViewer.refresh();
+        refresh(null);
     }
 
     IRow getRow(int rowIndex) {
