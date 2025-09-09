@@ -75,9 +75,9 @@ pipeline {
                 script {
                     sh "mkdir -p /tmp/mirror/${eclipseVersion}"
                     writeFile encoding: 'UTF-8', file: "/tmp/mirror/${eclipseVersion}/mirror.pom.xml", text: "${pomString}"
-                    osSpecificMaven commands: [
-                        "mvn -U -V tycho-p2-extras:mirror -f /tmp/mirror/${eclipseVersion}/mirror.pom.xml -Dmirror.destination=/tmp/mirror/${eclipseVersion}"
-                    ]
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        sh "mvn -U -V tycho-p2-extras:mirror -f /tmp/mirror/${eclipseVersion}/mirror.pom.xml -Dmirror.destination=/tmp/mirror/${eclipseVersion}"
+                    }
                 }
             }
         }
@@ -99,7 +99,7 @@ pipeline {
             }
         }
         unsuccessful {
-            failedEmail to: 'fips@faktorzehn.de'
+            sendFailureEmail()
         }
     }
 }

@@ -1,14 +1,13 @@
-library 'f10-jenkins-library@1.1_patches'
-library 'release-library@1.0'
-library 'fips-jenkins-library@main'
+@Library('f10-jenkins-library@1.1_patches')
+@Library('fips-jenkins-library@main')
+
 import java.text.MessageFormat
+import org.faktorips.jenkins.MavenProjectVersion
 
 def mavenDocFolder = './maven/faktorips-maven-plugin'
 def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
-
-def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
 
 pipeline {
     agent any
@@ -27,6 +26,7 @@ pipeline {
 
             environment {
                 MAVEN_OPTS = '-Xmx4g'
+                DISPLAY = ':0'
             }
 
             steps {
@@ -36,23 +36,23 @@ pipeline {
                     sh 'rm -rf $HOME/.m2/repository/.cache'
                     sh 'rm -rf $HOME/.m2/repository/p2'
                 }
-                
-                osSpecificMaven commands: [
-                    "mvn -U -V -fae -e clean install -f codequality-config",
-                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -fae -e clean deploy site -Dtycho.localArtifacts=ignore",
-                    "mvn -V -T 8 -fae -e site:stage -f maven"
-                ]
+
+                withMaven(publisherStrategy: 'EXPLICIT') {
+                    sh "mvn -U -V -fae -e clean install -f codequality-config"
+                    sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
+                    sh "mvn -U -V -T 8 -fae -e clean deploy site -Dtycho.localArtifacts=ignore"
+                    sh "mvn -V -T 8 -fae -e site:stage -f maven"
+                }
             }
         }
         stage('Dependency-Check') {
             steps {
-                dir('runtime'){
+                dir('runtime') {
                     withMaven(publisherStrategy: 'EXPLICIT') {
                         dependencyCheck outputFile: 'dependency-check-runtime-report.html'
                     }
                 }
-                dir('devtools/common'){
+                dir('devtools/common') {
                     withMaven(publisherStrategy: 'EXPLICIT') {
                         dependencyCheck outputFile: 'dependency-check-devtools-report.html'
                     }
@@ -69,14 +69,14 @@ pipeline {
             steps {
                 script {
                     def xmlfile = readFile 'pom.xml'
-                    def fipsVersion = lib.MavenProjectVersion.fromPom(xmlfile)
-                    def (_,major,minor,patch,kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
+                    def fipsVersion = MavenProjectVersion.fromPom(xmlfile)
+                    def (_, major, minor, patch, kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         // deploy maven plugin doc
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer server:'doc@doc.faktorzehn.org', port:'2004', localFolder:mavenDocFolder, remoteFolder:"${mavenDocDeployFolder}/${fipsVersion}"
+                        replaceOnServer server: 'doc@doc.faktorzehn.org', port: '2004', localFolder: mavenDocFolder, remoteFolder: "${mavenDocDeployFolder}/${fipsVersion}"
                         // deploy xsd
-                        replaceOnServer server:'doc@doc.faktorzehn.org', port:'2004', localFolder:xsdFolder, remoteFolder:xsdDeployFolder
+                        replaceOnServer server: 'doc@doc.faktorzehn.org', port: '2004', localFolder: xsdFolder, remoteFolder: xsdDeployFolder
                     }
                 }
             }
@@ -85,43 +85,15 @@ pipeline {
 
     post {
         always {
-            postPublisher targetBranch: 'main',  tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()], coverageSourceDirectories: [
-                    [path: 'devtools/common/faktorips-abstraction/src/main/java'],
-                    [path: 'devtools/common/faktorips-abstraction-plainjava/src/main/java'],
-                    [path: 'devtools/common/faktorips-abstraction-testsetup/src/main/java'],
-                    [path: 'devtools/common/faktorips-dtfl-common/src/main/java'],
-                    [path: 'devtools/common/faktorips-fl/src/main/java'],
-                    [path: 'devtools/common/faktorips-model-plainjava/src/main/java'],
-                    [path: 'devtools/common/faktorips-util/src/main/java'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.abstraction.eclipse/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.ant/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.refactor/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.ui/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.ui/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.builder/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.decorators/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.eclipse/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder.ui/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.tableconversion/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.eclipse.emf.codegen/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.m2e/src'],
-                    [path: 'faktorips-maven-plugin/src/main/java'],
-                    [path: 'runtime/faktorips-runtime/src/main/java'],
-                    [path: 'runtime/faktorips-runtime-groovy/src/main/java'],
-                    [path: 'runtime/faktorips-runtime-jakarta-xml/src/main/java'],
-                    [path: 'runtime/faktorips-runtime-javax-xml/src/main/java'],
-                    [path: 'runtime/faktorips-testsupport/src/main/java'],
-                    [path: 'runtime/faktorips-valuetypes/src/main/java'],
-                    [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
-                ], artifactsToArchive: '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip, **/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.runtime*.jar'
+            junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+            recordIssues enabledForFailure: true,
+                    qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
+                    tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+            jacoco sourceInclusionPattern: '**/*.java'
         }
 
         regression {
-            failedEmail to: 'fips@faktorzehn.de'
+            sendFailureEmail()
         }
     }
 }

@@ -65,15 +65,11 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-compiler-plugin</artifactId>
-                <configuration>
-                    <useJDK>BREE</useJDK>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-surefire-plugin</artifactId>
                 <configuration>
-                    <useJDK>BREE</useJDK>
                     <reactorConcurrencyLevel>8</reactorConcurrencyLevel>
                 </configuration>
             </plugin>

@@ -10,6 +10,10 @@ pipeline {
         maven 'maven 3.9'
     }
 
+    environment {
+        DISPLAY = ':0'
+    }
+
     options {
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
     }
@@ -35,9 +39,9 @@ pipeline {
                                 sh 'rm -rf $HOME/.m2/repository/p2'
                             }
 
-                            osSpecificMaven commands: [
-                                "mvn -U -V -T 8 clean verify"
-                            ]
+                            withMaven(publisherStrategy: 'EXPLICIT') {
+                                sh "mvn -U -V -T 8 clean verify"
+                            }
                         }
                         post {
                             always {
@@ -45,7 +49,7 @@ pipeline {
                             }
 
                             unstable {
-                                failedEmail to: 'fips@faktorzehn.de'
+                                sendFailureEmail()
                             }
                         }
                     }

@@ -1,9 +1,9 @@
-library 'f10-jenkins-library@1.1_patches'
-library 'release-library@1.0'
-library 'fips-jenkins-library@main'
-library 'maven-central-release-library@main'
+@Library('f10-jenkins-library@1.1_patches')
+@Library('maven-central-release-library@main')
+@Library('fips-jenkins-library@main')
+
 import java.text.MessageFormat
-import groovy.json.JsonOutput
+import org.faktorips.jenkins.MavenProjectVersion
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def mavenDocFolder = './maven/faktorips-maven-plugin'
@@ -17,12 +17,6 @@ def ps2DeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}'
 
 def docServer = 'doc@doc.faktorzehn.org'
 def p2Server = 'hudson@update.faktorzehn.org'
-
-def toolchainsFile = '82515eae-efcb-4811-8495-ceddc084409c'
-def settingsFile = 'a447dcf9-7a34-4521-834a-c2445838a7e4'
-def securityFile = 'dd6909da-2649-4604-9b32-74fc1f86d72f'
-
-def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
 
 pipeline {
     agent any
@@ -59,41 +53,41 @@ pipeline {
                     assert params.DEVELOPMENT_VERSION ==~ /(\d+\.)+\d+/
 
                     def scmVars = checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: "${params.BRANCH}"]],
-                        extensions: [[$class: 'WipeWorkspace'], [$class: 'LocalBranch']],
-                        userRemoteConfigs: scm.userRemoteConfigs
+                            $class           : 'GitSCM',
+                            branches         : [[name: "${params.BRANCH}"]],
+                            extensions       : [[$class: 'WipeWorkspace'], [$class: 'LocalBranch']],
+                            userRemoteConfigs: scm.userRemoteConfigs
                     ])
 
                     LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
 
                     // parse the version
-                    (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /^(\d+)\.(\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/)[0]
+                    (_, major, minor, patch, kind) = (params.RELEASE_VERSION =~ /^(\d+)\.(\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/)[0]
                     releaseVersion = params.RELEASE_VERSION
-                    
+
                     def xmlfile = readFile 'pom.xml'
-                    oldVersion = lib.MavenProjectVersion.fromPom(xmlfile)
+                    oldVersion = MavenProjectVersion.fromPom(xmlfile)
                 }
             }
         }
 
         stage('Set versions') {
             steps {
-                osSpecificMaven commands: [
-                    "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
-                ]
+                withMaven(publisherStrategy: 'EXPLICIT') {
+                    sh "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${releaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
+                }
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${releaseVersion}/' {} \\;"
                 sh "git add . && git commit -m '[release] prepare release ${params.RELEASE_VERSION}' && git tag -a -m ${params.RELEASE_VERSION} v${params.RELEASE_VERSION}"
 
-                osSpecificMaven commands: [
+                withMaven(publisherStrategy: 'EXPLICIT') {
                     // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
-                    "mvn -V install -f codequality-config",
+                    sh "mvn -V install -f codequality-config"
                     // install targets, as they are resolved by tycho when setting the versions back, which won't work if they are missing
-                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
-                ]
-                 // see https://github.com/eclipse-tycho/tycho/issues/1677
+                    sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
+                    sh "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
+                }
+                // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${releaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
                 sh "git add . && git commit -m '[release] prepare for next development iteration'"
 
@@ -113,45 +107,18 @@ pipeline {
                     sh 'rm -rf $HOME/.m2/repository/.cache'
                     sh 'rm -rf $HOME/.m2/repository/p2'
                 }
-                osSpecificMaven commands: [
-                    "mvn -U -V -fae -e clean install -f codequality-config",
-                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -P release clean install site -Dtycho.localArtifacts=ignore",
-                    "mvn -V -T 8 -fae -e site:stage -f maven"
-                ]
-                postPublisher targetBranch: '$BRANCH',  tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()], coverageSourceDirectories: [
-                        [path: 'devtools/common/faktorips-abstraction/src/main/java'],
-                        [path: 'devtools/common/faktorips-abstraction-plainjava/src/main/java'],
-                        [path: 'devtools/common/faktorips-abstraction-testsetup/src/main/java'],
-                        [path: 'devtools/common/faktorips-dtfl-common/src/main/java'],
-                        [path: 'devtools/common/faktorips-fl/src/main/java'],
-                        [path: 'devtools/common/faktorips-model-plainjava/src/main/java'],
-                        [path: 'devtools/common/faktorips-util/src/main/java'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.abstraction.eclipse/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.ant/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.refactor/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.ui/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.ui/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.builder/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.decorators/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.eclipse/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder.ui/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.devtools.tableconversion/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.eclipse.emf.codegen/src'],
-                        [path: 'devtools/eclipse/plugins/org.faktorips.m2e/src'],
-                        [path: 'faktorips-maven-plugin/src/main/java'],
-                        [path: 'runtime/faktorips-runtime/src/main/java'],
-                        [path: 'runtime/faktorips-runtime-groovy/src/main/java'],
-                        [path: 'runtime/faktorips-runtime-jakarta-xml/src/main/java'],
-                        [path: 'runtime/faktorips-runtime-javax-xml/src/main/java'],
-                        [path: 'runtime/faktorips-testsupport/src/main/java'],
-                        [path: 'runtime/faktorips-valuetypes/src/main/java'],
-                        [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
-                    ], artifactsToArchive: '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip, **/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.runtime*.jar'
+                withMaven(publisherStrategy: 'EXPLICIT') {
+                    sh "mvn -U -V -fae -e clean install -f codequality-config"
+                    sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
+                    sh "mvn -U -V -T 8 -P release clean install site -Dtycho.localArtifacts=ignore"
+                    sh "mvn -V -T 8 -fae -e site:stage -f maven"
+                }
+
+                junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+                recordIssues enabledForFailure: true,
+                        qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
+                        tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+                jacoco sourceInclusionPattern: '**/*.java'
             }
 
             /*post {
@@ -165,12 +132,12 @@ pipeline {
         }
         stage('Dependency-Check') {
             steps {
-                dir('runtime'){
+                dir('runtime') {
                     withMaven(publisherStrategy: 'EXPLICIT') {
                         dependencyCheck outputFile: 'dependency-check-runtime-report.html'
                     }
                 }
-                dir('devtools/common'){
+                dir('devtools/common') {
                     withMaven(publisherStrategy: 'EXPLICIT') {
                         dependencyCheck outputFile: 'dependency-check-devtools-report.html'
                     }
@@ -186,11 +153,8 @@ pipeline {
         stage('Deployment of Artifacts') {
             steps {
 
-                deployToMavenCentral(configFiles:[
-                        configFile(fileId: "${toolchainsFile}", variable: 'TOOLCHAINS'),
-                        configFile(fileId: "${settingsFile}", variable: 'MAVEN_SETTINGS'),
-                        configFile(fileId: "${securityFile}", variable: 'MAVEN_SECURITY')], 
-                        commands: [ 'mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t "$TOOLCHAINS" -s "$MAVEN_SETTINGS" -Dsettings.security="$MAVEN_SECURITY"' ])
+                deployToMavenCentral(
+                        commands: ['mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind'])
 
                 // deploy p2 repository
                 script {
@@ -229,13 +193,13 @@ pipeline {
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         def mavenDocDeployFolder = MessageFormat.format(mavenDocDeployFolderTmpl, major, minor)
-                        replaceOnServer server:docServer, port:'2004', localFolder:mavenDocFolder, remoteFolder:mavenDocDeployFolder
+                        replaceOnServer server: docServer, port: '2004', localFolder: mavenDocFolder, remoteFolder: mavenDocDeployFolder
                         // set latest symlink
                         sh "ssh doc@doc.faktorzehn.org -p 2004 \'cd /var/www/doc.faktorzehn.org/faktorips-maven-plugin/; rm latest; ls -I \"*[a-zA-Z]*\" -1v | tail -1 | xargs -i ln -s {} latest\'"
 
                         // deploy xsd schemas
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer server:docServer, port:'2004', localFolder:xsdFolder, remoteFolder:xsdDeployFolder
+                        replaceOnServer server: docServer, port: '2004', localFolder: xsdFolder, remoteFolder: xsdDeployFolder
                     }
                 }
             }
@@ -250,7 +214,7 @@ pipeline {
 
     post {
         unsuccessful {
-            failedEmail to: 'fips@faktorzehn.de'
+            sendFailureEmail()
         }
     }
 }

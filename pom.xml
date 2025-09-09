@@ -223,9 +223,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <configuration>
-                        <jdkToolchain>
-                            <version>${java.version}</version>
-                        </jdkToolchain>
                         <argLine>-Duser.language=${user.language} -Dfile.encoding=${file.encoding} -Duser.country=${user.country} ${argLine}</argLine>
                     </configuration>
                 </plugin>
