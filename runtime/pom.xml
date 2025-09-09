@@ -33,6 +33,9 @@
         <!-- plugin versions -->
         <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
         <skip-publish>true</skip-publish>
+
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+        <bundle.version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.ci_${maven.build.timestamp}</bundle.version>
     </properties>
 
     <modules>
@@ -184,6 +187,7 @@
                         <instructions>
                             <Bundle-Vendor>Faktor Zehn GmbH</Bundle-Vendor>
                             <Export-Package>org.faktorips.*</Export-Package>
+                            <Bundle-Version>${bundle.version}</Bundle-Version>
                         </instructions>
                     </configuration>
                 </plugin>
@@ -204,6 +208,9 @@
     <profiles>
         <profile>
             <id>release</id>
+            <properties>
+                <bundle.version>${project.version}</bundle.version>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
