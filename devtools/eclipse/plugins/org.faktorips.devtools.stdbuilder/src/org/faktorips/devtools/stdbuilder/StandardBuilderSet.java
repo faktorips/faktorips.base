@@ -152,6 +152,9 @@ public class StandardBuilderSet extends ModelBuilderSet {
         // toc file builder
         builders.put(BuilderKindIds.TOC_FILE, new TocFileBuilder(this));
 
+        // manifest file builder
+        builders.put(BuilderKindIds.MANIFEST_FILE, new ManifestBuilder(this));
+
         // New enum type builder
         builders.put(BuilderKindIds.ENUM_TYPE, new EnumTypeBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));
