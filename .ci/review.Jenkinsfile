@@ -1,4 +1,5 @@
 library 'f10-jenkins-library@1.1_patches'
+library 'release-library@1.0'
 library 'fips-jenkins-library@main'
 
 pipeline {
