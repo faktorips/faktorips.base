@@ -10,11 +10,11 @@ The preferable way to use different JDKs in Maven is to use the toolchains mecha
 
 ### ExecutionEnvironment
 
-The `executionEnvironment` profile is used to resolve dependencies and run Faktor-IPS. It must be at least JavaSE-21 which is pre-configured. It must match the Eclipse version being used. See [Repositories and additional plugins](repositories-additional-plugins.html) for how to configure another Eclipse version.
+The `executionEnvironment` profile is used to resolve dependencies and run Faktor-IPS. It must be at least JavaSE-21 which is pre-configured. Therefore Maven must be startet with an jdk21 and an java21 compatible Eclipse version must be used. See [Repositories and additional plugins](repositories-additional-plugins.html) for how to configure another Eclipse version.
 
 ### JDK for compiling a Faktor-IPS project
 
-Although a JDK 11 or newer is used to start the builder, a Faktor-IPS project might use an older Java version (at least Java 8) as its compile target and dependency. To compile such a project, that JDK must be passed to the build. If neither `jdkId` or `jdkDir` is configured, the ExecutionEnvironment is used as the default compile target and dependency for the Faktor-IPS projects.
+Although a JDK 21 or newer is used to start the builder, a Faktor-IPS project might use an older Java version (e.g.: The runtime of Faktor-IPS 25.1 could be Java 17 or 21) as its compile target and dependency. To compile such a project, that JDK must be passed to the build. If neither `jdkId` or `jdkDir` is configured, the ExecutionEnvironment is used as the default compile target and dependency for the Faktor-IPS projects.
 
 For example, use the JDK with the Id `JavaSE-24` in your toolchains.xml.
 
