@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -671,17 +672,11 @@ public class IpsBuildMojo extends AbstractMojo {
             if (jdkId != null) {
                 Toolchain tc = toolchainProvider.findMatchingJavaToolChain(session, jdkId);
                 if (tc != null) {
-                    getLog().info("Toolchain in faktorips-maven-plugin: " + tc);
                     return new File(tc.findTool("java")).getParentFile().getParent();
-                } else if (Objects.equals(jdkId, "JavaSE-" + Runtime.version().feature())) {
-                    getLog().debug("Using current Java runtime to build project as it matches the configured JDK ID.");
-                } else {
-                    getLog().warn("No toolchain was found in faktorips-maven-plugin for " + jdkId
-                            + ". Current Java runtime will be used to build the project.");
                 }
             }
         }
-        return null;
+        throw new MojoExecutionException("Could not determine jdkDir");
     }
 
     @Override
@@ -690,6 +685,7 @@ public class IpsBuildMojo extends AbstractMojo {
             getLog().info("skipping mojo execution");
             return;
         }
+        validate();
 
         if (work == null) {
             work = WorkingDirectory.createFor(project);
@@ -699,6 +695,7 @@ public class IpsBuildMojo extends AbstractMojo {
         boolean alreadyBuilt = getPluginContext().put("BUILT" + getProjectName(), Boolean.TRUE) != null;
 
         if (!alreadyBuilt) {
+
             addRepositories();
 
             addDependencies();
@@ -744,6 +741,56 @@ public class IpsBuildMojo extends AbstractMojo {
             executePlatform();
 
             failBuildForAntStatusError(statusFile);
+        }
+    }
+
+    private void validate() throws MojoExecutionException {
+        validateJDKId();
+        validateJDKDir();
+        if (jdkDir == null && jdkId == null) {
+            getLog().info(
+                    MessageFormat.format(
+                            "No JDK ID or JDK dir given, the execution environment of JavaSE-{0} will be used.",
+                            Runtime.version().feature()));
+        }
+    }
+
+    private void validateJDKId() throws MojoExecutionException {
+        final int execEnvVersion = Runtime.version().feature();
+        if (jdkDir == null && jdkId != null) {
+            Toolchain tc = toolchainProvider.findMatchingJavaToolChain(session, jdkId);
+
+            if (tc != null && tc.findTool("java") != null) {
+                // toolchains is validated by maven
+                getLog().info("Using tool from  toolchains: " + tc);
+            } else {
+                if (tc == null && Objects.equals(jdkId, "JavaSE-" + execEnvVersion)) {
+                    getLog().warn(MessageFormat.format(
+                            "No toolchain was found for {0}. Using current Java runtime JavaSE-{1} to build project as it matches the configured JDK ID.",
+                            jdkId, execEnvVersion));
+                    jdkId = null;
+                } else {
+                    String message = "No toolchain was found for {0} and the current Java runtime JavaSE-{1} does not match configured JDK ID";
+                    getLog().error(message);
+                    throw new MojoExecutionException(MessageFormat.format(message, jdkId, execEnvVersion));
+                }
+            }
+        }
+    }
+
+    private void validateJDKDir() throws MojoExecutionException {
+        if (jdkDir != null) {
+            if (!Files.isDirectory(Path.of(jdkDir)) || !Files.isDirectory(Path.of(jdkDir, "bin"))
+                    || (!Files.exists(Path.of(jdkDir, "bin", "java"))
+                            && !Files.exists(Path.of(jdkDir, "bin", "java.exe")))) {
+                String message = MessageFormat.format(
+                        "The configured JDK dir {0} does not exist, is not a directory or does not include a java executable in a bin folder",
+                        jdkDir);
+                getLog().error(message);
+                throw new MojoExecutionException(message);
+            } else {
+                getLog().info(MessageFormat.format("Using the configured JDK dir {0} to find the JDK.", jdkDir));
+            }
         }
     }
 

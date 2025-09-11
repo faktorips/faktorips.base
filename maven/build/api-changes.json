@@ -22,5 +22,32 @@
                 ]
             }
         }
+    ],
+    "26.1.0" : [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                  "criticality": "documented",
+                  "differences": [
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.apache.maven.execution.MavenExecutionRequest::isIgnoreTransitiveRepositories()",
+                      "justification": "FIPS-13620"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method org.apache.maven.execution.MavenExecutionRequest org.apache.maven.execution.MavenExecutionRequest::setIgnoreTransitiveRepositories(boolean)",
+                      "justification": "FIPS-13620"
+                    },
+                    {
+                      "code": "java.method.exception.checkedAdded",
+                      "old": "method java.lang.String org.faktorips.maven.plugin.mojo.IpsBuildMojo::getPathToAntScript()",
+                      "new": "method java.lang.String org.faktorips.maven.plugin.mojo.IpsBuildMojo::getPathToAntScript() throws org.apache.maven.plugin.MojoExecutionException",
+                      "exception": "org.apache.maven.plugin.MojoExecutionException",
+                      "justification": "FIPS-13725"
+                    }
+                ]
+            }
+        }
     ]
 }
