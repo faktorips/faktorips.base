@@ -26,6 +26,7 @@ public class Messages extends NLS {
     }
 
     public static String DeepCopyLabelProvider_textUndefined;
+    public static String DeepCopyPresentationModel_labelCircleRelation;
     public static String DeepCopyWizard_title;
     public static String SameOperationValidator_errorMsgInvalidSelectionOfProductCmpt;
     public static String SameOperationValidator_SameOperationValidator_errorMsgParentChildOperationMismatch;

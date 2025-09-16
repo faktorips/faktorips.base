@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,10 +12,13 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -23,6 +26,7 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDateContentProvider;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -109,13 +113,27 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
             IProductCmptTreeStructure newStructure = productCmpt.getStructure(getOldValidFrom().getValidFrom(),
                     productCmpt.getIpsProject());
             initialize(newStructure);
+
         } catch (CycleInProductStructureException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            Exception exp = new Exception(handleCycles(e));
+            IpsPlugin.logAndShowErrorDialog(exp);
             setOldValidFrom(oldValue);
             return;
         }
 
         notifyListeners(new PropertyChangeEvent(this, OLD_VALID_FROM, oldValue, newValue));
+    }
+
+    private String handleCycles(CycleInProductStructureException e) {
+        IIpsElement[] cyclePath = e.getCyclePath();
+        String errorMsg = Messages.DeepCopyPresentationModel_labelCircleRelation;
+
+        String path = Arrays.stream(cyclePath).toList().reversed().stream()
+                .filter(Objects::nonNull)
+                .map(IIpsElement::getName)
+                .collect(Collectors.joining(" -> "));
+
+        return errorMsg + path;
     }
 
     public GregorianCalendar getNewValidFrom() {
@@ -224,10 +242,10 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
 
     /**
      * Get all enabled elements, that are marked to copy.
-     * 
+     *
      * @param includingAssociations true to include associations, false to collect only
      *            compositions/aggregations
-     * 
+     *
      * @see DeepCopyTreeStatus#isEnabled(IProductCmptStructureReference)
      */
     public Set<IProductCmptStructureReference> getAllCopyElements(boolean includingAssociations) {
@@ -236,7 +254,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
 
     /**
      * Get all enabled elements, that are marked to link.
-     * 
+     *
      * @see DeepCopyTreeStatus#isEnabled(IProductCmptStructureReference)
      */
     public Set<IProductCmptStructureReference> getLinkedElements() {
