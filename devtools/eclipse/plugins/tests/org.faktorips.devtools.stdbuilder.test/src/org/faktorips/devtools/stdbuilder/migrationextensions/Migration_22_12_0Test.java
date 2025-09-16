@@ -62,7 +62,7 @@ public class Migration_22_12_0Test extends AbstractIpsPluginTest {
 
             assertTrue(messageList.isEmpty());
             assertTrue(EclipseProjectUtil.hasIpsNature(project));
-            IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+            IIpsProjectProperties ipsProjectProperties = ipsProject.getReadOnlyProperties();
             assertThat(ipsProjectProperties.getProductCmptNamingStrategy(),
                     is(instanceOf(DateBasedProductCmptNamingStrategy.class)));
             assertThat(ipsProjectProperties.getPersistenceOptions().getTableColumnNamingStrategy(),

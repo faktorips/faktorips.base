@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -52,7 +52,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Dialog for configuring IPS builder sets of an IPS project.
- * 
+ *
  * @author Roman Grutza
  */
 public class BuilderSetContainer {
@@ -91,7 +91,7 @@ public class BuilderSetContainer {
         ArgumentCheck.notNull(ipsProject);
 
         this.ipsProject = ipsProject;
-        ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties = ipsProject.getReadOnlyProperties();
         builderSetId = ipsProjectProperties.getBuilderSetId();
         builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
         builderSetModels = new HashMap<>();
@@ -101,7 +101,7 @@ public class BuilderSetContainer {
     /**
      * Returns a Control with the purpose to provide a GUI for configuring an IPS project's builder
      * set.
-     * 
+     *
      * @param parent The parent Composite
      * @return The created Control for configuring an IPS builder set
      */
@@ -230,7 +230,7 @@ public class BuilderSetContainer {
     /**
      * Initializes this dialog with the given IPS project. Throws a NullPointerException if
      * ipsProject is null.
-     * 
+     *
      * @param ipsProject An IPS project
      */
     public void init(IIpsProject ipsProject) {
@@ -238,7 +238,7 @@ public class BuilderSetContainer {
 
         this.ipsProject = ipsProject;
         builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
-        ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties = ipsProject.getReadOnlyProperties();
         builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
 
         updateBuilderSet();
@@ -327,7 +327,7 @@ public class BuilderSetContainer {
     /**
      * Saves the current settings made in this dialog to an IPS project's configuration file
      * (.ipsproject).
-     * 
+     *
      * @return True if save was successful, false otherwise.
      */
     public boolean saveToIpsProjectFile() {
@@ -470,7 +470,7 @@ public class BuilderSetContainer {
     /**
      * Content provider for Builder Set Property Definitions. Returns property definitions using a
      * builder set id.
-     * 
+     *
      * @author Roman Grutza
      */
     public static class BuilderSetContentProvider implements IStructuredContentProvider {

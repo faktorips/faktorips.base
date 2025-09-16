@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -588,7 +588,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         properties = ipsProject.getProperties();
         properties.getPersistenceOptions().setAllowLazyFetchForSingleValuedAssociations(true);
         ipsProject.setProperties(properties);
-        assertTrue(ipsProject.getProperties().getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations());
+        assertTrue(ipsProject.getReadOnlyProperties().getPersistenceOptions()
+                .isAllowLazyFetchForSingleValuedAssociations());
 
         persistenceAssociatonInfo.setFetchType(FetchType.LAZY);
         msgList = persistenceAssociatonInfo.validate(ipsProject);
@@ -709,7 +710,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         // test max join column name
         // note that the join column is only necessary on the inverse association side and therefore
         // only validated on the inverse side
-        int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        int maxColumnNameLenght = ipsProject.getReadOnlyProperties().getPersistenceOptions().getMaxColumnNameLenght();
 
         String columnName = StringUtils.repeat("a", maxColumnNameLenght);
         inversePersistenceAssociatonInfo.setJoinColumnName(columnName);
@@ -728,7 +729,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         // note that the join table is only required on the owner n:n relationship side
         // and therefore only validated on this side
         inversePersistenceAssociatonInfo.setJoinColumnName("");
-        int maxTableNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxTableNameLength();
+        int maxTableNameLenght = ipsProject.getReadOnlyProperties().getPersistenceOptions().getMaxTableNameLength();
         String joinTableName = StringUtils.repeat("a", maxTableNameLenght);
         String sourceColumnName = StringUtils.repeat("c", maxColumnNameLenght);
         String targetColumnName = StringUtils.repeat("d", maxColumnNameLenght);

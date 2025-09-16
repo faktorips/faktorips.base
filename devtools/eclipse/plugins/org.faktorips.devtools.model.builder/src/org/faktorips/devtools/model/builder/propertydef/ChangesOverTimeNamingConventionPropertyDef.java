@@ -48,7 +48,7 @@ public class ChangesOverTimeNamingConventionPropertyDef extends IpsBuilderSetPro
     }
 
     private String getValueFromIpsProject(IIpsProject ipsProject) {
-        return ipsProject.getProperties().getChangesOverTimeNamingConventionIdForGeneratedCode();
+        return ipsProject.getReadOnlyProperties().getChangesOverTimeNamingConventionIdForGeneratedCode();
     }
 
     @Override

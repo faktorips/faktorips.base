@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -55,7 +55,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     @Test
     public void testTransient() {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
-        int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        int maxColumnNameLenght = ipsProject.getReadOnlyProperties().getPersistenceOptions().getMaxColumnNameLenght();
         String invalidColumnName = StringUtils.repeat("a", maxColumnNameLenght + 1);
         pAttInfo.setTableColumnName(invalidColumnName);
 
@@ -175,7 +175,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     @Test
     public void testValidateMaxColumnNameLength() {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
-        int maxColumnNameLenght = ipsProject.getProperties().getPersistenceOptions().getMaxColumnNameLenght();
+        int maxColumnNameLenght = ipsProject.getReadOnlyProperties().getPersistenceOptions().getMaxColumnNameLenght();
         String columnName = StringUtils.repeat("a", maxColumnNameLenght);
         pAttInfo.setTableColumnName(columnName);
 

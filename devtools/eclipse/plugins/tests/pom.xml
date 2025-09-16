@@ -13,12 +13,12 @@
 
     <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
     <packaging>pom</packaging>
-    
+
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
-    
+
     <modules>
         <module>org.faktorips.abstracttest</module>
         <module>org.faktorips.abstracttest.core</module>
@@ -82,6 +82,13 @@
                     </tags>
                 </configuration>
             </plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <configuration>
+                    <resolver>p2</resolver>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

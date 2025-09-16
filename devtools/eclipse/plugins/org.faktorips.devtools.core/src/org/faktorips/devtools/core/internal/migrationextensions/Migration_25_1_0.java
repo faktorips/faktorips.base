@@ -61,7 +61,7 @@ public class Migration_25_1_0 extends MarkAsDirtyMigration {
 
     @Override
     public MessageList canMigrate() {
-        String minRequiredVersionNumber = getIpsProject().getProperties()
+        String minRequiredVersionNumber = getIpsProject().getReadOnlyProperties()
                 .getMinRequiredVersionNumber(EmptyIpsFeatureVersionManager.INSTANCE.getFeatureId());
 
         String[] versionParts = minRequiredVersionNumber.split("\\.");

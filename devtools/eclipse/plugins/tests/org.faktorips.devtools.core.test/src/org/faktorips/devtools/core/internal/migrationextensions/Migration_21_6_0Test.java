@@ -80,7 +80,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
 
             assertTrue(messageList.isEmpty());
             assertTrue(project.getDescription().hasNature(IpsProject.OLD_NATURE_ID));
-            IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+            IIpsProjectProperties ipsProjectProperties = ipsProject.getReadOnlyProperties();
             assertThat(ipsProjectProperties.getProductCmptNamingStrategy(),
                     is(instanceOf(DateBasedProductCmptNamingStrategy.class)));
             assertThat(ipsProjectProperties.getPersistenceOptions().getTableColumnNamingStrategy(),

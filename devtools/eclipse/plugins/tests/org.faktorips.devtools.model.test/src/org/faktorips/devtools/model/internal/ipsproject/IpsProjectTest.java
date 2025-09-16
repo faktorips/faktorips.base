@@ -22,6 +22,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -627,7 +628,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetProperties() {
-        assertNotNull(ipsProject.getProperties());
+        assertNotNull(ipsProject.getReadOnlyProperties());
     }
 
     /**
@@ -650,18 +651,18 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         props.setBuilderSetId("myBuilder");
 
         // test if a copy was returned
-        assertEquals(builderSetId, ipsProject.getProperties().getBuilderSetId());
+        assertThat(ipsProject.getReadOnlyProperties().getBuilderSetId(), is(builderSetId));
 
         // test if prop file is updated
         AFile propFile = ipsProject.getIpsProjectPropertiesFile();
         long stamp = propFile.getModificationStamp();
         ipsProject.setProperties(props);
-        assertTrue(propFile.getModificationStamp() != stamp);
-        assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
+        assertThat(propFile.getModificationStamp(), is(not(stamp)));
+        assertThat(ipsProject.getReadOnlyProperties().getBuilderSetId(), is("myBuilder"));
 
         // test if a copy was created during set
         props.setBuilderSetId("newBuilder");
-        assertEquals("myBuilder", ipsProject.getProperties().getBuilderSetId());
+        assertThat(ipsProject.getReadOnlyProperties().getBuilderSetId(), is("myBuilder"));
     }
 
     @Test

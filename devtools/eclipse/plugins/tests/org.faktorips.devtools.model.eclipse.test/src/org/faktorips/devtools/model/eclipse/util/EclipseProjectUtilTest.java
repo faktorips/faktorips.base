@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -122,7 +122,7 @@ public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
             IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
 
             createIpsProjectCheckRequiredFolders(ipsProject);
-            createIpsProjectCheckIpsProjectProperties(ipsProject.getProperties());
+            createIpsProjectCheckIpsProjectProperties(ipsProject.getReadOnlyProperties());
             createIpsProjectCheckIpsObjectPath(ipsProject.getIpsObjectPath());
 
             // Proves that the classpath entries has been set using the
@@ -171,7 +171,7 @@ public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
             creationProperties.setModelProject(false);
             creationProperties.setProductDefinitionProject(true);
             IIpsProject ipsProject = EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
-            assertNull(ipsProject.getProperties().getBuilderSetConfig()
+            assertNull(ipsProject.getReadOnlyProperties().getBuilderSetConfig()
                     .getPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED));
             assertThat(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources().getName(), is("derived"));
         }

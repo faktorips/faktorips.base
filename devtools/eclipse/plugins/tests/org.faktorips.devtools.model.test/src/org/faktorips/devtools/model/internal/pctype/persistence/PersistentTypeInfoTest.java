@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -148,7 +148,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
 
         // test max length
-        int maxTableNameLength = ipsProject.getProperties().getPersistenceOptions().getMaxTableNameLength();
+        int maxTableNameLength = ipsProject.getReadOnlyProperties().getPersistenceOptions().getMaxTableNameLength();
         String tableName = StringUtils.repeat("a", maxTableNameLength);
         persTypeInfo.setTableName(tableName);
         msgList = persTypeInfo.validate(ipsProject);

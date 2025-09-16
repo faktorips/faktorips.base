@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.junit.Before;
 
 /**
  * Abstract base class that can be used by tests for the standard builder.
- * 
+ *
  * @author Alexander Weickmann
  */
 public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
@@ -109,7 +109,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
 
     /**
      * Expects a specific {@link IType} to be added to the list of generated Java elements.
-     * 
+     *
      * @param type The {@link IType} that is expected to be contained in the generated Java elements
      */
     protected final void expectType(IType type) {
@@ -118,7 +118,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
 
     /**
      * Expects a specific {@link IField} to be added to the list of generated Java elements.
-     * 
+     *
      * @param index The position at which the field is expected in the list of generated Java
      *            elements
      * @param javaType The Java type the expected field belongs to
@@ -131,7 +131,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
 
     /**
      * Expects a specific {@link IMethod} to be added to the list of generated Java elements.
-     * 
+     *
      * @param javaType The Java type the expected method belongs to
      * @param methodName The name of the expected method
      * @param parameterTypeSignatures The parameter type signatures of the expected method (use the
@@ -147,7 +147,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
     }
 
     protected void setGeneratorProperty(IIpsProject ipsProject, String key, String value) {
-        IIpsProjectProperties properties = ipsProject.getProperties();
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         IIpsArtefactBuilderSetConfigModel builderConfig = properties.getBuilderSetConfig();
         builderConfig.setPropertyValue(key, value, null);
         ipsProject.setProperties(properties);

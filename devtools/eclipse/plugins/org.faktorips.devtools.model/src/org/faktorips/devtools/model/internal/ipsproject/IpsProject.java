@@ -483,7 +483,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsObjectPath getIpsObjectPath() {
-        return getProperties().getIpsObjectPath();
+        return getReadOnlyProperties().getIpsObjectPath();
     }
 
     /**
@@ -1490,7 +1490,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 && !IIpsModelExtensions.get().getVersionProviderFactories().containsKey(versionProviderId)) {
             String text = MessageFormat.format(Messages.VersionProviderExtensionPoint_error_invalidVersionProvider,
                     getReadOnlyProperties().getVersionProviderId());
-            result.newError(IIpsProjectProperties.MSGCODE_INVALID_VERSION_SETTING, text, getProperties(),
+            result.newError(IIpsProjectProperties.MSGCODE_INVALID_VERSION_SETTING, text, getReadOnlyProperties(),
                     IIpsProjectProperties.PROPERTY_VERSION_PROVIDER_ID);
         }
     }

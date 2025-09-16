@@ -420,7 +420,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
     ////////////////
 
     private void checkIpsProjectProperties() {
-        IIpsProjectProperties props = ipsProject.getProperties();
+        IIpsProjectProperties props = ipsProject.getReadOnlyProperties();
         assertThat(props.getVersionProviderId(), is("org.faktorips.maven.mavenVersionProvider"));
         String mavenContainerId = "JDTClasspathContainer";
         String optionalPath = "org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER";

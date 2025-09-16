@@ -358,7 +358,7 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
         private void initialize(IIpsProject ipsProject) {
             helperMap.putAll(IIpsModelExtensions.get().getDatatypeHelperRegistry().get());
 
-            List<Datatype> definedDatatypes = ipsProject.getProperties().getDefinedDatatypes();
+            List<Datatype> definedDatatypes = ipsProject.getReadOnlyProperties().getDefinedDatatypes();
             for (Datatype datatype : definedDatatypes) {
                 if (datatype instanceof GenericValueDatatype valueDatatype) {
                     registerHelper(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));

@@ -186,7 +186,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
     }
 
     private IIpsProjectProperties getIpsProjectProperties() {
-        return templateGeneration.getIpsProject().getProperties();
+        return templateGeneration.getIpsProject().getReadOnlyProperties();
     }
 
     private void updateOriginPropertyValues(ITemplatedValueIdentifier identifier, Object value) {

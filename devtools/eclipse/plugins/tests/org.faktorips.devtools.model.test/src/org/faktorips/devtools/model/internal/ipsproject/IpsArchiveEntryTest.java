@@ -148,7 +148,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         MessageList ml = entry.validate();
         assertEquals(0, ml.size());
 
-        IIpsProjectProperties props = project.getProperties();
+        IIpsProjectProperties props = project.getReadOnlyProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
         IIpsArchiveEntry[] archiveEntries = path.getArchiveEntries();
         assertEquals(1, archiveEntries.length);

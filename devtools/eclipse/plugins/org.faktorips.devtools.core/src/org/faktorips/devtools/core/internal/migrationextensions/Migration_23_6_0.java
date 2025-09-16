@@ -57,7 +57,7 @@ public class Migration_23_6_0 extends MarkAsDirtyMigration {
                 Set.of(IIpsModel.get().getIpsObjectTypes()),
                 VERSION_23_6_0,
                 Messages.Migration_23_6_0_description);
-        String oldValue = projectToMigrate.getProperties().getBuilderSetConfig()
+        String oldValue = projectToMigrate.getReadOnlyProperties().getBuilderSetConfig()
                 .getPropertyValue(MIGRATION_OPTION_JAXB_VARIANT);
         oldValue = IpsStringUtils.isBlank(oldValue) ? "false" : oldValue.toLowerCase();
         JaxbSupportVariant defaultVariant = switch (oldValue) {
@@ -78,7 +78,7 @@ public class Migration_23_6_0 extends MarkAsDirtyMigration {
 
     @Override
     public MessageList canMigrate() {
-        String minRequiredVersionNumber = getIpsProject().getProperties()
+        String minRequiredVersionNumber = getIpsProject().getReadOnlyProperties()
                 .getMinRequiredVersionNumber(EmptyIpsFeatureVersionManager.INSTANCE.getFeatureId());
         int majorVersion = Integer
                 .parseInt(minRequiredVersionNumber.substring(0, minRequiredVersionNumber.indexOf('.')));

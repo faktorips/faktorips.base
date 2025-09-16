@@ -126,7 +126,7 @@ public class GeneratorModelContext {
     private GeneratorConfig createConfigWithOverrides(IIpsPackageFragmentRoot packageFragmentRoot,
             IIpsStorage ipsStorage) {
         IIpsProject ipsProject = packageFragmentRoot.getIpsProject();
-        IIpsProjectProperties properties = ipsProject.getProperties();
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         IpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel = clone(properties.getBuilderSetConfig());
         String builderSetId = ipsProject.getIpsModel().getBuilderSetId(properties);
         overwriteProperties(ipsArtefactBuilderSetConfigModel, ipsStorage, builderSetId);
