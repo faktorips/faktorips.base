@@ -1,17 +1,18 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
@@ -78,28 +80,28 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     public void testImportValid_EnumType() throws Exception {
         MessageList ml = new MessageList();
         executeImportEnumType(ml, true);
-        assertTrue(ml.toString(), ml.isEmpty());
+        assertThat(ml.toString(), ml.isEmpty());
     }
 
     @Test
     public void testImportValid_EnumContent() throws Exception {
         MessageList ml = new MessageList();
         executeImportEnumContent(ml, true);
-        assertTrue(ml.toString(), ml.isEmpty());
+        assertThat(ml.toString(), ml.isEmpty());
     }
 
     @Test
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImportEnumType(ml, false);
-        assertEquals(4, enumType.getEnumValuesCount());
+        assertThat(enumType.getEnumValuesCount(), is(4));
     }
 
     @Test
     public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImportEnumType(ml, true);
-        assertEquals(3, enumType.getEnumValuesCount());
+        assertThat(enumType.getEnumValuesCount(), is(3));
     }
 
     @Test
@@ -113,7 +115,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
                 true);
         op.run(new NullProgressMonitor());
-        assertEquals(8, ml.size());
+        assertThat(ml.size(), is(8));
     }
 
     private IEnumType createExternalEnumType() throws Exception {
@@ -210,7 +212,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
 
     private void assertEnumAttributeValues(String[] stringRow, List<IEnumAttributeValue> enumAttributeValues) {
         for (int i = 0; i < stringRow.length; i++) {
-            assertEquals(stringRow[i], enumAttributeValues.get(i).getValue().getContentAsString());
+            assertThat(stringRow[i], is(enumAttributeValues.get(i).getValue().getContentAsString()));
         }
 
     }
@@ -226,4 +228,26 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         }
     }
 
+    @Test
+    public void testImportWithLiteralName() throws Exception {
+        MessageList ml = new MessageList();
+        IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
+
+        ExcelEnumExportOperation excelEnumExportOperation = new ExcelEnumExportOperation(enumType, file.getName(),
+                format, "NULL", true, new MessageList());
+        excelEnumExportOperation.run(null);
+
+        enumType.clear();
+
+        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml,
+                true);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml.isEmpty(), is(true));
+        assertThat(enumType.getEnumValuesCount(), is(3));
+
+        IEnumValue firstValue = enumType.getEnumValues().get(0);
+        List<IEnumAttributeValue> attributeValues = firstValue.getEnumAttributeValues();
+        assertThat((attributeValues.get(0).isEnumLiteralNameAttributeValue()), is(true));
+    }
 }
