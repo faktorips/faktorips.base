@@ -65,17 +65,13 @@ public class ListUtil {
      * @throws ClassCastException in case of there is any element in the list that is not of the
      *             given subclass (R).
      */
+    @SuppressWarnings("unchecked")
     public static final <T, R extends T> List<? extends R> convert(List<? extends T> list, Class<R> newType) {
         for (T member : list) {
             if (!(newType.isAssignableFrom(member.getClass()))) {
                 throw new ClassCastException(member + " not instance of " + newType);
             }
         }
-        return castConvertedList(list);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <R extends T, T> List<? extends R> castConvertedList(List<? extends T> list) {
         return (List<? extends R>)list;
     }
 

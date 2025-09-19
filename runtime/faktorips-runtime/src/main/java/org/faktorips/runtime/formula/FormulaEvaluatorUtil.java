@@ -44,20 +44,16 @@ public enum FormulaEvaluatorUtil {
      *             {@link IProductComponent} with the given ID, {@code null} if no such object is
      *             found in the list
      */
+    @SuppressWarnings("unchecked")
     public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects,
             String id) {
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject configurableModelObject
                     && configurableModelObject.getProductComponent().getId().equals(id)) {
-                return castModelObject(modelObject);
+                return (R)modelObject;
             }
         }
         return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends IModelObject, R extends T> R castModelObject(T modelObject) {
-        return (R)modelObject;
     }
 
     /**
@@ -99,10 +95,11 @@ public enum FormulaEvaluatorUtil {
      * @return the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
      *             {@link IProductComponent} with the given ID, {@code null} otherwise
      */
+    @SuppressWarnings("unchecked")
     public static <T extends IModelObject, R extends T> R getModelObjectById(T modelObject, String id) {
         if (modelObject instanceof IConfigurableModelObject configurableModelObject
                 && configurableModelObject.getProductComponent().getId().equals(id)) {
-            return castModelObject(modelObject);
+            return (R)modelObject;
         }
         return null;
     }
