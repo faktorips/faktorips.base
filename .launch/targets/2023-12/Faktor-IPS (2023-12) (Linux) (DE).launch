@@ -103,6 +103,7 @@
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.logging.log4j.api@default:default"/>
+        <setEntry value="org.apache.logging.log4j.to.slf4j@default:default"/>
         <setEntry value="org.apache.lucene.analysis-common@default:default"/>
         <setEntry value="org.apache.lucene.analysis-smartcn@default:default"/>
         <setEntry value="org.apache.lucene.core@default:default"/>
@@ -410,7 +411,6 @@
         <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.model@1:true"/>
-        <setEntry value="org.faktorips.devtools.multiediting.nl1@default:false"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
@@ -425,8 +425,6 @@
         <setEntry value="org.faktorips.nls.devtools.model.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:false"/>
-        <setEntry value="org.faktorips.productvariant.core.nl1@default:false"/>
-        <setEntry value="org.faktorips.productvariant.ui.nl1@default:false"/>
         <setEntry value="org.faktorips.runtime.groovy@default:default"/>
         <setEntry value="org.faktorips.runtime.xml.jakarta@default:default"/>
         <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
