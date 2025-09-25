@@ -28,7 +28,9 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,6 +44,7 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         super.setUp();
         manifestBuilder = builderSet.getBuilderById(BuilderKindIds.MANIFEST_FILE, ManifestBuilder.class);
         createManifestFileInTestProject();
+        configureOutputFolders();
     }
 
     @Test
@@ -61,20 +64,29 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         assertThat(aManifestFile.exists(), is(true));
 
         String initialContent = readManifestContent(aManifestFile);
+        assertThat(initialContent, not(containsString("Fips-BasePackage")));
+        assertThat(initialContent, not(containsString("Fips-SourcecodeOutput")));
+        assertThat(initialContent, not(containsString("Fips-ResourceOutput")));
         assertThat(initialContent, not(containsString("Fips-GeneratorConfig")));
-        assertThat(initialContent, not(containsString("Fips-RuntimeIdPrefix")));
-        assertThat(initialContent, not(containsString("org.faktorips.devtools.stdbuilder.ipsstdbuilderset")));
+        assertThat(initialContent, not(containsString("Fips-ObjectDir")));
+        assertThat(initialContent, not(containsString("toc=")));
         assertThat(initialContent, not(containsString("generateJaxbSupport")));
         assertThat(initialContent, not(containsString("generatePublishedInterfaces")));
+        assertThat(initialContent, not(containsString("Fips-RuntimeIdPrefix")));
 
         ipsProject.getProject().build(ABuildKind.FULL, null);
         String afterBuild = readManifestContent(aManifestFile);
 
-        assertThat(afterBuild, containsString("Fips-GeneratorConfig"));
-        assertThat(afterBuild, containsString("Fips-RuntimeIdPrefix"));
-        assertThat(afterBuild, containsString("org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
+        assertThat(afterBuild, containsString("Fips-BasePackage: org.fipsi"));
+        assertThat(afterBuild, containsString("Fips-SourcecodeOutput: src"));
+        assertThat(afterBuild, containsString("Fips-ResourceOutput: resources"));
+        assertThat(afterBuild,
+                containsString("Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
+        assertThat(afterBuild, containsString("Fips-ObjectDir: productdef"));
+        assertThat(afterBuild, containsString("toc=\"faktorips-repository-toc.xml\""));
         assertThat(afterBuild, containsString("generateJaxbSupport"));
         assertThat(afterBuild, containsString("generatePublishedInterfaces"));
+        assertThat(afterBuild, containsString("Fips-RuntimeIdPrefix"));
     }
 
     private void createManifestFileInTestProject() throws Exception {
@@ -95,6 +107,25 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
 
             manifestFile.create(new ByteArrayInputStream(manifestContent.getBytes()), true, null);
         }
+    }
+
+    private void configureOutputFolders() throws Exception {
+        AFolder srcFolder = ipsProject.getProject().getFolder("src");
+        if (!srcFolder.exists()) {
+            srcFolder.create(null);
+        }
+
+        AFolder resourcesFolder = ipsProject.getProject().getFolder("resources");
+        if (!resourcesFolder.exists()) {
+            resourcesFolder.create(null);
+        }
+
+        IIpsObjectPath objectPath = ipsProject.getIpsObjectPath();
+        objectPath.setOutputFolderForMergableSources(srcFolder);
+        objectPath.setOutputFolderForDerivedSources(resourcesFolder);
+        objectPath.setBasePackageNameForMergableJavaClasses("org.fipsi");
+        objectPath.setBasePackageNameForDerivedJavaClasses("org.fipsi");
+        objectPath.setOutputDefinedPerSrcFolder(false);
     }
 
     private String readManifestContent(AFile manifestFile) throws IOException {

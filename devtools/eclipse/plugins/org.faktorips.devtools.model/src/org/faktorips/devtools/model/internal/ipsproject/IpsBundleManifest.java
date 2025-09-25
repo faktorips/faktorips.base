@@ -31,12 +31,16 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
@@ -109,7 +113,7 @@ public class IpsBundleManifest {
 
     public static final String ATTRIBUTE_TOC = "toc"; //$NON-NLS-1$
 
-    public static final String ATTRIBUTE_VALIDATION_MESSAGES = "messages"; //$NON-NLS-1$
+    public static final String ATTRIBUTE_VALIDATION_MESSAGES = "validation-messages"; //$NON-NLS-1$
 
     private final Manifest manifest;
 
@@ -293,14 +297,37 @@ public class IpsBundleManifest {
      * @param manifestFile the location of the manifest
      */
     public void writeBuilderSettings(IIpsProject ipsProject, AFile manifestFile) {
-        String builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
         Attributes attributes = manifest.getMainAttributes();
+
+        writeBasicManifestHeaders(attributes);
+        writeIpsProjectSettings(ipsProject, attributes);
+        writeGeneratorConfiguration(ipsProject, attributes);
+        saveManifestToFile(manifestFile);
+    }
+
+    private void writeBasicManifestHeaders(Attributes attributes) {
         if (!attributes.containsKey(Name.MANIFEST_VERSION)) {
             attributes.put(Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
         }
+    }
+
+    private void writeIpsProjectSettings(IIpsProject ipsProject, Attributes attributes) {
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        if (ipsObjectPath == null) {
+            return;
+        }
+
+        writeBasePackageSettings(ipsObjectPath, attributes);
+        writeOutputFolderSettings(ipsObjectPath, attributes);
+        writeObjectDirectorySettings(ipsObjectPath, attributes);
+    }
+
+    private void writeGeneratorConfiguration(IIpsProject ipsProject, Attributes attributes) {
+        String builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
         String delimiter = ";"; //$NON-NLS-1$
         StringBuilder sb = new StringBuilder(builderSetId);
         sb.append(delimiter);
+
         IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
         Map<String, Object> properties = new TreeMap<>(
                 Arrays.stream(config.getPropertyNames())
@@ -319,8 +346,132 @@ public class IpsBundleManifest {
             sb.append(value.replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
             sb.append('"');
         });
+
         attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
         attributes.put(new Name(HEADER_RUNTIME_ID_PREFIX), ipsProject.getRuntimeIdPrefix());
+    }
+
+    private void writeBasePackageSettings(IIpsObjectPath ipsObjectPath, Attributes attributes) {
+        String basePackage = ipsObjectPath.getBasePackageNameForMergableJavaClasses();
+        if (basePackage != null) {
+            attributes.putValue(HEADER_BASE_PACKAGE, basePackage);
+        }
+    }
+
+    private void writeBasePackageSettings(IIpsSrcFolderEntry entry, Attributes attributes) {
+        String basePackage = entry.getBasePackageNameForMergableJavaClasses();
+        if (basePackage != null) {
+            attributes.putValue(HEADER_BASE_PACKAGE, basePackage);
+        }
+    }
+
+    private void writeOutputFolderSettings(IIpsObjectPath ipsObjectPath, Attributes attributes) {
+
+        if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+            outputDefinedPerSourceFolder(ipsObjectPath, attributes);
+        } else {
+            writeOutputFolder(ipsObjectPath, attributes);
+        }
+    }
+
+    private void outputDefinedPerSourceFolder(IIpsObjectPath ipsObjectPath, Attributes attributes) {
+
+        IIpsSrcFolderEntry[] sourceFolderEntries = ipsObjectPath.getSourceFolderEntries();
+        if (sourceFolderEntries != null && sourceFolderEntries.length > 0) {
+            IIpsSrcFolderEntry firstEntry = sourceFolderEntries[0];
+            if (firstEntry != null) {
+                AFolder mergableFolder = firstEntry.getOutputFolderForMergableJavaFiles();
+                if (mergableFolder != null && mergableFolder.getProjectRelativePath() != null) {
+                    attributes.putValue(HEADER_SRC_OUT,
+                            PathUtil.toPortableString(mergableFolder.getProjectRelativePath()));
+                }
+
+                AFolder derivedFolder = firstEntry.getOutputFolderForDerivedJavaFiles();
+                if (derivedFolder != null && derivedFolder.getProjectRelativePath() != null) {
+                    attributes.putValue(HEADER_RESOURCE_OUT,
+                            PathUtil.toPortableString(derivedFolder.getProjectRelativePath()));
+                }
+            }
+        }
+    }
+
+    private void writeSourceFolderSpecificSettings(IIpsSrcFolderEntry[] srcFolderEntries) {
+        for (IIpsSrcFolderEntry entry : srcFolderEntries) {
+            if (entry != null && entry.getSourceFolder() != null) {
+                String folderName = entry.getSourceFolder().getName();
+                Attributes folderAttributes = new Attributes();
+
+                manifest.getEntries().put(folderName, folderAttributes);
+                writeBasePackageSettings(entry, folderAttributes);
+                writeOutputFolder(entry, folderAttributes);
+
+            }
+        }
+    }
+
+    private void writeOutputFolder(IIpsSrcFolderEntry entry, Attributes attributes) {
+        writeOutputFoldersToAttributes(
+                entry.getOutputFolderForMergableJavaFiles(),
+                entry.getOutputFolderForDerivedJavaFiles(),
+                attributes);
+    }
+
+    private void writeOutputFolder(IIpsObjectPath ipsObjectPath, Attributes attributes) {
+        writeOutputFoldersToAttributes(
+                ipsObjectPath.getOutputFolderForMergableSources(),
+                ipsObjectPath.getOutputFolderForDerivedSources(),
+                attributes);
+    }
+
+    private void writeOutputFoldersToAttributes(AFolder mergableFolder, AFolder derivedFolder, Attributes attributes) {
+
+        if (mergableFolder != null && mergableFolder.getProjectRelativePath() != null) {
+            attributes.putValue(HEADER_SRC_OUT,
+                    PathUtil.toPortableString(mergableFolder.getProjectRelativePath()));
+        }
+
+        if (derivedFolder != null && derivedFolder.getProjectRelativePath() != null) {
+            attributes.putValue(HEADER_RESOURCE_OUT,
+                    PathUtil.toPortableString(derivedFolder.getProjectRelativePath()));
+        }
+    }
+
+    private void writeObjectDirectorySettings(IIpsObjectPath ipsObjectPath, Attributes attributes) {
+        IIpsSrcFolderEntry[] sourceFolderEntries = ipsObjectPath.getSourceFolderEntries();
+        if (sourceFolderEntries == null || sourceFolderEntries.length == 0) {
+            return;
+        }
+
+        StringBuilder objectDirAttributeBuilder = new StringBuilder();
+        for (int i = 0; i < sourceFolderEntries.length; i++) {
+            IIpsSrcFolderEntry entry = sourceFolderEntries[i];
+            if (entry != null && entry.getSourceFolder() != null) {
+                if (i > 0) {
+                    objectDirAttributeBuilder.append(",");
+                }
+                appendObjectDirEntry(objectDirAttributeBuilder, entry);
+            }
+        }
+
+        if (objectDirAttributeBuilder.length() > 0) {
+            attributes.putValue(HEADER_OBJECT_DIR, objectDirAttributeBuilder.toString());
+        }
+
+        if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
+            writeSourceFolderSpecificSettings(sourceFolderEntries);
+        }
+    }
+
+    private void appendObjectDirEntry(StringBuilder builder, IIpsSrcFolderEntry entry) {
+        String tocPath = entry.getBasePackageRelativeTocPath();
+        tocPath = tocPath != null ? tocPath : "faktorips-repository-toc.xml";
+
+        builder.append(entry.getSourceFolder().getName());
+        builder.append(";toc=\"").append(tocPath).append("\"");
+        builder.append(";validation-messages=\"").append(entry.getValidationMessagesBundle()).append("\"");
+    }
+
+    private void saveManifestToFile(AFile manifestFile) {
         File actualManifestFile = manifestFile.getLocation().toFile();
         try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);

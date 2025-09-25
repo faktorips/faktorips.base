@@ -83,8 +83,8 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
                 Fips-BasePackage: org.test.basepackage
                 Fips-SourcecodeOutput: src
                 Fips-ResourceOutput: resource
-                Fips-ObjectDir: model;toc="fips-toc.xml";messages="validation-messages.properties",
-                 test;toc="fips-toc-test.xml";messages="validation-messages-test.properties"
+                Fips-ObjectDir: model;toc="fips-toc.xml";validation-messages="validation-messages.properties",
+                 test;toc="fips-toc-test.xml";validation-messages="validation-messages-test.properties"
 
                 Name: test
                 Fips-SourcecodeOutput: test

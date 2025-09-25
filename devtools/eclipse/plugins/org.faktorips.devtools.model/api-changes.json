@@ -15,5 +15,21 @@
                 ]
             }
         }
+    ],
+    "26.1.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.field.constantValueChanged",
+                        "old": "field org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest.ATTRIBUTE_VALIDATION_MESSAGES",
+                        "new": "field org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest.ATTRIBUTE_VALIDATION_MESSAGES",
+                        "justification": "Align manifest attribute name to 'validation-messages'"
+                    }
+                ]
+            }
+        }
     ]
 }
