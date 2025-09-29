@@ -18,7 +18,7 @@
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
-        <groovy.version>4.0.26</groovy.version>
+        <groovy.version>5.0.1</groovy.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jakarta-xml-api.version>4.0.2</jakarta-xml-api.version>
