@@ -10,9 +10,12 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IIpsElement;
@@ -44,6 +48,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 import org.osgi.framework.BundleException;
 
 /**
@@ -475,8 +480,27 @@ public class IpsBundleManifest {
         File actualManifestFile = manifestFile.getLocation().toFile();
         try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);
+            AProject project = manifestFile.getProject();
+            if (project != null) {
+                String lineSeparator = project.getDefaultLineSeparator();
+                String content = getContentAsString(manifestFile.getContents());
+                String contentWithLineSeparator = content.replaceAll("\\r?\\n", lineSeparator);
+                if (!content.equals(contentWithLineSeparator)) {
+                    manifestFile.setContents(
+                            new ByteArrayInputStream(contentWithLineSeparator.getBytes(StandardCharsets.UTF_8)), true,
+                            null);
+                }
+            }
         } catch (IOException e) {
             throw new IpsException(new IpsStatus("Can't write " + actualManifestFile, e)); //$NON-NLS-1$
+        }
+    }
+
+    private String getContentAsString(InputStream is) {
+        try {
+            return StringUtil.readFromInputStream(is, StandardCharsets.UTF_8.name());
+        } catch (IOException e) {
+            throw new IpsException(new IpsStatus(e));
         }
     }
 

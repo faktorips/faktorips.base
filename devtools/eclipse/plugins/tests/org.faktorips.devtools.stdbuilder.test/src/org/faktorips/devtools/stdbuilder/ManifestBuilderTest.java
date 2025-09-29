@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,13 +27,19 @@ import java.nio.file.Paths;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
+import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.service.prefs.Preferences;
 
 public class ManifestBuilderTest extends AbstractStdBuilderTest {
 
@@ -87,6 +94,45 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         assertThat(afterBuild, containsString("generateJaxbSupport"));
         assertThat(afterBuild, containsString("generatePublishedInterfaces"));
         assertThat(afterBuild, containsString("Fips-RuntimeIdPrefix"));
+    }
+
+    @Test
+    public void testLineBreaks_Linux() {
+        IProject project = ipsProject.getProject().unwrap();
+        Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
+                .node(project.getName());
+        preferences.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR,
+                "\n");
+        AFile aManifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+
+        ipsProject.getProject().build(ABuildKind.FULL, null);
+
+        String content = getContentAsString(aManifestFile.getContents(), StandardCharsets.UTF_8.name());
+        assertThat(content, containsString("\n"));
+        assertThat(content, not(containsString("\r\n")));
+    }
+
+    @Test
+    public void testLineBreaks_Windows() {
+        IProject project = ipsProject.getProject().unwrap();
+        Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
+                .node(project.getName());
+        preferences.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR,
+                "\r\n");
+        AFile aManifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+
+        ipsProject.getProject().build(ABuildKind.FULL, null);
+
+        String content = getContentAsString(aManifestFile.getContents(), StandardCharsets.UTF_8.name());
+        assertThat(content, containsString("\r\n"));
+    }
+
+    private String getContentAsString(InputStream is, String charSet) {
+        try {
+            return StringUtil.readFromInputStream(is, charSet);
+        } catch (IOException e) {
+            throw new IpsException(new IpsStatus(e));
+        }
     }
 
     private void createManifestFileInTestProject() throws Exception {
