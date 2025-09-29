@@ -19,6 +19,7 @@
         <module>2025-03</module>
         <module>2025-06</module>
         <module>2025-09</module>
+        <module>2025-09-Java25</module>
     </modules>
 
     <properties>
