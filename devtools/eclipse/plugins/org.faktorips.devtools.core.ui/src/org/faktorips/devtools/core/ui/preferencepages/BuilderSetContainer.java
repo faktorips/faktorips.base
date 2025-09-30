@@ -91,7 +91,7 @@ public class BuilderSetContainer {
         ArgumentCheck.notNull(ipsProject);
 
         this.ipsProject = ipsProject;
-        ipsProjectProperties = ipsProject.getReadOnlyProperties();
+        ipsProjectProperties = ipsProject.getProperties();
         builderSetId = ipsProjectProperties.getBuilderSetId();
         builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
         builderSetModels = new HashMap<>();
