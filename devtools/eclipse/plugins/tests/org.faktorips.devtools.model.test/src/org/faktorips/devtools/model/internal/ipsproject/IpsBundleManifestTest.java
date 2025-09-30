@@ -11,8 +11,10 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -24,10 +26,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFile;
@@ -38,6 +43,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -441,7 +449,7 @@ public class IpsBundleManifestTest {
 
         AFolder sourceFolder = mock(AFolder.class);
         when(sourceFolderEntry.getSourceFolder()).thenReturn(sourceFolder);
-        when(sourceFolder.getName()).thenReturn("model");
+        when(sourceFolder.getProjectRelativePath()).thenReturn(Path.of("model"));
         when(sourceFolderEntry.getValidationMessagesBundle()).thenReturn("validation-messages");
 
         AFile eclipseManifestFile = mock(AFile.class);
@@ -487,12 +495,12 @@ public class IpsBundleManifestTest {
 
         AFolder sourceFolder1 = mock(AFolder.class);
         when(sourceFolderEntry1.getSourceFolder()).thenReturn(sourceFolder1);
-        when(sourceFolder1.getName()).thenReturn("model");
+        when(sourceFolder1.getProjectRelativePath()).thenReturn(Path.of("model"));
         when(sourceFolderEntry1.getValidationMessagesBundle()).thenReturn("validation-messages");
 
         AFolder sourceFolder2 = mock(AFolder.class);
         when(sourceFolderEntry2.getSourceFolder()).thenReturn(sourceFolder2);
-        when(sourceFolder2.getName()).thenReturn("test");
+        when(sourceFolder2.getProjectRelativePath()).thenReturn(Path.of("test"));
         when(sourceFolderEntry2.getValidationMessagesBundle()).thenReturn("test-validation-messages");
         AFile eclipseManifestFile = mock(AFile.class);
         Path eclipseManifestPath = mock(Path.class);
@@ -512,6 +520,8 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testWriteBuilderSettingsWithSourceFolderSpecificConfigurations() throws IOException {
+        Map<String, Attributes> entries = new LinkedHashMap<>();
+        when(manifest.getEntries()).thenReturn(entries);
         IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
         when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
         when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
@@ -532,7 +542,7 @@ public class IpsBundleManifestTest {
 
         AFolder sourceFolder = mock(AFolder.class);
         when(sourceFolderEntry.getSourceFolder()).thenReturn(sourceFolder);
-        when(sourceFolder.getName()).thenReturn("test");
+        when(sourceFolder.getProjectRelativePath()).thenReturn(Path.of("src", "main", "ips", "test"));
         when(sourceFolderEntry.getValidationMessagesBundle()).thenReturn("test-validation-messages");
 
         AFolder specificMergableFolder = mock(AFolder.class);
@@ -550,10 +560,10 @@ public class IpsBundleManifestTest {
         when(sourceFolderEntry.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.abc");
 
         AFile manifestAFile = mock(AFile.class);
-        Path mnifestPath = mock(Path.class);
-        when(manifestAFile.getLocation()).thenReturn(mnifestPath);
+        Path manifestPath = mock(Path.class);
+        when(manifestAFile.getLocation()).thenReturn(manifestPath);
         File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
-        when(mnifestPath.toFile()).thenReturn(manifestFile);
+        when(manifestPath.toFile()).thenReturn(manifestFile);
         Attributes mainAttributes = manifest.getMainAttributes();
 
         ipsBundleManifest.writeBuilderSettings(ipsProject, manifestAFile);
@@ -565,7 +575,116 @@ public class IpsBundleManifestTest {
         verify(mainAttributes).putValue(IpsBundleManifest.HEADER_SRC_OUT, "test-src");
         verify(mainAttributes).putValue(IpsBundleManifest.HEADER_RESOURCE_OUT, "test-resources");
         verify(mainAttributes).putValue(IpsBundleManifest.HEADER_OBJECT_DIR,
-                "test;toc=\"faktorips-repository-toc.xml\";validation-messages=\"test-validation-messages\"");
+                "src/main/ips/test;toc=\"faktorips-repository-toc.xml\";validation-messages=\"test-validation-messages\"");
 
+        assertThat(entries, hasKey("src/main/ips/test"));
+        Attributes entry = entries.get("src/main/ips/test");
+        assertThat(entry, hasAttribute(IpsBundleManifest.HEADER_BASE_PACKAGE, "org.test.abc"));
+        assertThat(entry, hasAttribute(IpsBundleManifest.HEADER_SRC_OUT, "test-src"));
+        assertThat(entry, hasAttribute(IpsBundleManifest.HEADER_RESOURCE_OUT, "test-resources"));
+    }
+
+    @Test
+    public void testWriteBuilderSettingsWithSourceFolderSpecificConfigurations_CleansUpEntries() throws IOException {
+        Map<String, Attributes> entries = new LinkedHashMap<>();
+        Attributes oldIpsAttributes = new Attributes();
+        entries.put("oldIpsEntry", oldIpsAttributes);
+        oldIpsAttributes.putValue(IpsBundleManifest.HEADER_BASE_PACKAGE, "base");
+        oldIpsAttributes.putValue(IpsBundleManifest.HEADER_SRC_OUT, "src");
+        oldIpsAttributes.putValue(IpsBundleManifest.HEADER_RESOURCE_OUT, "derived");
+        Attributes oldNonIpsAttributes = new Attributes();
+        entries.put("oldNonIpsEntry", oldNonIpsAttributes);
+        oldNonIpsAttributes.putValue("foo", "bar");
+        when(manifest.getEntries()).thenReturn(entries);
+        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
+        when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(ipsProject.getRuntimeIdPrefix()).thenReturn("pre.");
+        IIpsArtefactBuilderSetConfig builderSetConfig = mock(IIpsArtefactBuilderSetConfig.class);
+        when(builderSet.getConfig()).thenReturn(builderSetConfig);
+        when(builderSetConfig.getPropertyNames()).thenReturn(new String[] { "testAttr" });
+        when(builderSetConfig.getPropertyValue("testAttr")).thenReturn("testValue");
+        when(builderSetConfig.getPropertyValue("testAttr")).thenReturn("testValue");
+
+        IIpsObjectPath ipsObjectPath = mock(IIpsObjectPath.class);
+        when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
+        when(ipsObjectPath.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.package");
+        when(ipsObjectPath.isOutputDefinedPerSrcFolder()).thenReturn(true);
+
+        IIpsSrcFolderEntry sourceFolderEntry = mock(IIpsSrcFolderEntry.class);
+        when(ipsObjectPath.getSourceFolderEntries()).thenReturn(new IIpsSrcFolderEntry[] { sourceFolderEntry });
+
+        AFolder sourceFolder = mock(AFolder.class);
+        when(sourceFolderEntry.getSourceFolder()).thenReturn(sourceFolder);
+        when(sourceFolder.getProjectRelativePath()).thenReturn(Path.of("src", "main", "ips", "test"));
+        when(sourceFolderEntry.getValidationMessagesBundle()).thenReturn("test-validation-messages");
+
+        AFolder specificMergableFolder = mock(AFolder.class);
+        AFolder specificDerivedFolder = mock(AFolder.class);
+        when(sourceFolderEntry.getOutputFolderForMergableJavaFiles()).thenReturn(specificMergableFolder);
+        when(sourceFolderEntry.getOutputFolderForDerivedJavaFiles()).thenReturn(specificDerivedFolder);
+
+        Path specificMergablePath = mock(Path.class);
+        Path specificDerivedPath = mock(Path.class);
+        when(specificMergableFolder.getProjectRelativePath()).thenReturn(specificMergablePath);
+        when(specificDerivedFolder.getProjectRelativePath()).thenReturn(specificDerivedPath);
+        when(specificMergablePath.toString()).thenReturn("test-src");
+        when(specificDerivedPath.toString()).thenReturn("test-resources");
+
+        when(sourceFolderEntry.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.abc");
+
+        AFile manifestAFile = mock(AFile.class);
+        Path manifestPath = mock(Path.class);
+        when(manifestAFile.getLocation()).thenReturn(manifestPath);
+        File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
+        when(manifestPath.toFile()).thenReturn(manifestFile);
+        Attributes mainAttributes = manifest.getMainAttributes();
+
+        ipsBundleManifest.writeBuilderSettings(ipsProject, manifestAFile);
+
+        verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_GENERATOR_CONFIG),
+                "org.faktorips.devtools.stdbuilder.StandardBuilderSet;testAttr=\"testValue\"");
+        verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_RUNTIME_ID_PREFIX), "pre.");
+        verify(mainAttributes).putValue(IpsBundleManifest.HEADER_BASE_PACKAGE, "org.test.package");
+        verify(mainAttributes).putValue(IpsBundleManifest.HEADER_SRC_OUT, "test-src");
+        verify(mainAttributes).putValue(IpsBundleManifest.HEADER_RESOURCE_OUT, "test-resources");
+        verify(mainAttributes).putValue(IpsBundleManifest.HEADER_OBJECT_DIR,
+                "src/main/ips/test;toc=\"faktorips-repository-toc.xml\";validation-messages=\"test-validation-messages\"");
+
+        assertThat(entries, not(hasKey("oldIpsEntry")));
+        assertThat(entries, hasKey("oldNonIpsEntry"));
+        Attributes entry = entries.get("oldNonIpsEntry");
+        assertThat(entry, hasAttribute("foo", "bar"));
+
+        assertThat(entries, hasKey("src/main/ips/test"));
+        entry = entries.get("src/main/ips/test");
+        assertThat(entry, hasAttribute(IpsBundleManifest.HEADER_BASE_PACKAGE, "org.test.abc"));
+        assertThat(entry, hasAttribute(IpsBundleManifest.HEADER_SRC_OUT, "test-src"));
+        assertThat(entry, hasAttribute(IpsBundleManifest.HEADER_RESOURCE_OUT, "test-resources"));
+    }
+
+    private Matcher<Attributes> hasAttribute(String key, String value) {
+        return new TypeSafeMatcher<>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has an attribute '");
+                description.appendValue(key);
+                description.appendText("' with the value '");
+                description.appendValue(value);
+                description.appendText("'");
+            }
+
+            protected void describeMismatchSafely(Attributes attributes, Description mismatchDescription) {
+                mismatchDescription
+                        .appendText(attributes.entrySet().stream().map(e -> "<" + e.getKey() + ":" + e.getValue() + ">")
+                                .collect(Collectors.joining(", ", "[", "]")));
+            }
+
+            @Override
+            protected boolean matchesSafely(Attributes attributes) {
+                return Objects.equals(attributes.getValue(key), value);
+            }
+        };
     }
 }

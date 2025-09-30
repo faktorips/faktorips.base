@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.jar.Attributes;
@@ -401,9 +402,14 @@ public class IpsBundleManifest {
     }
 
     private void writeSourceFolderSpecificSettings(IIpsSrcFolderEntry[] srcFolderEntries) {
+        List<String> oldKeys = manifest.getEntries().entrySet().stream()
+                .filter(e -> e.getValue().containsKey(new Name(HEADER_BASE_PACKAGE))).map(Entry::getKey).toList();
+        for (String oldKey : oldKeys) {
+            manifest.getEntries().remove(oldKey);
+        }
         for (IIpsSrcFolderEntry entry : srcFolderEntries) {
             if (entry != null && entry.getSourceFolder() != null) {
-                String folderName = entry.getSourceFolder().getName();
+                String folderName = entry.getSourceFolder().getProjectRelativePath().toString();
                 Attributes folderAttributes = new Attributes();
 
                 manifest.getEntries().put(folderName, folderAttributes);
@@ -471,7 +477,7 @@ public class IpsBundleManifest {
         String tocPath = entry.getBasePackageRelativeTocPath();
         tocPath = tocPath != null ? tocPath : "faktorips-repository-toc.xml";
 
-        builder.append(entry.getSourceFolder().getName());
+        builder.append(entry.getSourceFolder().getProjectRelativePath().toString());
         builder.append(";toc=\"").append(tocPath).append("\"");
         builder.append(";validation-messages=\"").append(entry.getValidationMessagesBundle()).append("\"");
     }
