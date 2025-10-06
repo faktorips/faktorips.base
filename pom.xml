@@ -10,7 +10,9 @@
 <!-- restrictions as well as the possibility of alternative license terms. -->
 <!-- -->
 <!-- ########################################################################### -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" child.project.url.inherit.append.path="false">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         child.project.url.inherit.append.path="false">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
@@ -40,32 +42,34 @@
             <name>GNU Affero General Public License Version 3 with additional permissions</name>
             <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
             <distribution>repo</distribution>
-            <comments>The following additional permissions and restrictions are 
-stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL: 
+            <comments>The following additional permissions and restrictions are
+                stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL:
 
-If you modify the Program or any covered work, by linking or 
-combining it with libraries of the namespace org.eclipse.* and 
-org.junit (including dependencies or a modified version of
-these libraries), thus containing parts covered by the terms of 
-Eclipse Public License Version 1.0 (EPL), the licensors of this 
-Program grant you the additional permission to convey the 
-resulting work.
+                If you modify the Program or any covered work, by linking or
+                combining it with libraries of the namespace org.eclipse.* and
+                org.junit (including dependencies or a modified version of
+                these libraries), thus containing parts covered by the terms of
+                Eclipse Public License Version 1.0 (EPL), the licensors of this
+                Program grant you the additional permission to convey the
+                resulting work.
 
-If you modify the Program or any covered work, without changing 
-its source code, only by linking or combining some or all 
-bundles of the Program with separate works covered by AGPL-
-incompatible license terms, the licensors of this Program grant
-you the additional permission to convey the resulting work.
+                If you modify the Program or any covered work, without changing
+                its source code, only by linking or combining some or all
+                bundles of the Program with separate works covered by AGPL-
+                incompatible license terms, the licensors of this Program grant
+                you the additional permission to convey the resulting work.
 
-You are not allowed to remove or alter any legal notices in the
-covered work or in the Appropriate Legal Notices.</comments>
+                You are not allowed to remove or alter any legal notices in the
+                covered work or in the Appropriate Legal Notices.
+            </comments>
         </license>
         <license>
             <name>Alternative Faktor-IPS License</name>
             <distribution>repo</distribution>
-            <comments>If AGPL licensing 
-is incompatible with your use of Faktor-IPS, alternative 
-license terms are available from Faktor Zehn GmbH.</comments>
+            <comments>If AGPL licensing
+                is incompatible with your use of Faktor-IPS, alternative
+                license terms are available from Faktor Zehn GmbH.
+            </comments>
         </license>
     </licenses>
 
@@ -140,7 +144,8 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <module>faktorips-coverage</module>
     </modules>
 
-    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false"
+         child.scm.url.inherit.append.path="false">
         <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
         <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
         <url>https://github.com/faktorips/faktorips.base</url>
@@ -161,6 +166,16 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${maven-checkstyle-plugin.version}</version>
+                    <configuration>
+                        <configLocation>checkstyle/fips_checks.xml</configLocation>
+                        <suppressionsLocation>checkstyle/fips_suppressions.xml</suppressionsLocation>
+                        <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                        <headerLocation>checkstyle/fips.java.header</headerLocation>
+                        <propertyExpansion>config_loc=/checkstyle/</propertyExpansion>
+                    </configuration>
+                    <executions>
+
+                    </executions>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
@@ -291,6 +306,18 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>spotbugs</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>spotbugs</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
+                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>com.github.spotbugs</groupId>
@@ -489,7 +516,9 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         <publishingServerId>central</publishingServerId>
                         <skipPublishing>${skip-publish}</skipPublishing>
                         <deploymentName>Faktor-IPS ${project.version}</deploymentName>
-                        <excludeArtifacts>faktorips-abstraction-testsetup,faktorips-devtools-parent,faktorips-maven,faktorips-model-test,faktorips-runtime-parent,targets</excludeArtifacts>
+                        <excludeArtifacts>
+                            faktorips-abstraction-testsetup,faktorips-devtools-parent,faktorips-maven,faktorips-model-test,faktorips-runtime-parent,targets
+                        </excludeArtifacts>
                     </configuration>
                 </plugin>
             </plugins>
@@ -560,6 +589,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -578,20 +611,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>checkstyle/fips_checks.xml</configLocation>
-                    <suppressionsLocation>checkstyle/fips_suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                    <headerLocation>checkstyle/fips.java.header</headerLocation>
-                    <propertyExpansion>config_loc=/checkstyle/</propertyExpansion>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <configuration>
-                    <excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
-                </configuration>
             </plugin>
         </plugins>
     </reporting>
@@ -601,10 +624,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
             <build>
                 <plugins>
                     <plugin>
-                      <groupId>org.owasp</groupId>
-                      <artifactId>dependency-check-maven</artifactId>
-                      <version>${dependency-check-plugin.version}</version>
-                      <dependencies>
+                        <groupId>org.owasp</groupId>
+                        <artifactId>dependency-check-maven</artifactId>
+                        <version>${dependency-check-plugin.version}</version>
+                        <dependencies>
                             <dependency>
                                 <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
@@ -628,7 +651,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                             <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
                             <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
                             <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
-                      </configuration>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
