@@ -261,10 +261,23 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         attribute.changeValueSetType(ValueSetType.ENUM);
         attribute.getValueSet().setContainsNull(false);
         attribute.getValueSet().setAbstract(true);
+        IEnumValueSet modelValueSet = (IEnumValueSet)attribute.getValueSet();
+        modelValueSet.addValue("1");
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, isEmpty());
+    }
+
+    @Test
+    public void testValidate_MandatoryValueSetIsEmptyInModel_PrimitiveAttribute() {
+        attribute.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        attribute.getValueSet().setContainsNull(false);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_MANDATORY_VALUESET_IS_EMPTY));
     }
 
     @Test
