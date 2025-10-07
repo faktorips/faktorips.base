@@ -1,4 +1,5 @@
 library 'f10-jenkins-library@1.1_patches'
+library 'release-library@1.0'
 library 'fips-jenkins-library@main'
 
 pipeline {
@@ -7,6 +8,10 @@ pipeline {
     tools {
         jdk 'JDK21'
         maven 'maven 3.9'
+    }
+
+    environment {
+        DISPLAY = ':0'
     }
 
     options {
@@ -34,9 +39,9 @@ pipeline {
                                 sh 'rm -rf $HOME/.m2/repository/p2'
                             }
 
-                            osSpecificMaven commands: [
-                                "mvn -U -V -T 8 clean verify"
-                            ]
+                            withMaven(publisherStrategy: 'EXPLICIT') {
+                                sh "mvn -U -V -T 8 clean verify"
+                            }
                         }
                         post {
                             always {
@@ -44,7 +49,7 @@ pipeline {
                             }
 
                             unstable {
-                                failedEmail to: 'fips@faktorzehn.de'
+                                sendFailureEmail()
                             }
                         }
                     }

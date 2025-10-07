@@ -54,12 +54,14 @@
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
         <setEntry value="com.sun.activation.javax.activation@default:default"/>
+        <setEntry value="com.sun.el.javax.el@default:default"/>
         <setEntry value="com.sun.jna.platform@default:default"/>
         <setEntry value="com.sun.jna@default:default"/>
         <setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
         <setEntry value="jakarta.activation-api@default:default"/>
         <setEntry value="jakarta.annotation-api@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api@default:default"/>
+        <setEntry value="jakarta.servlet-api@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.inject@default:default"/>
         <setEntry value="javax.xml@default:default"/>
@@ -204,6 +206,7 @@
         <setEntry value="org.eclipse.jdt.launching@default:default"/>
         <setEntry value="org.eclipse.jdt.ui@default:default"/>
         <setEntry value="org.eclipse.jface.databinding@default:default"/>
+        <setEntry value="org.eclipse.jface.notifications@default:default"/>
         <setEntry value="org.eclipse.jface.text@default:default"/>
         <setEntry value="org.eclipse.jface@default:default"/>
         <setEntry value="org.eclipse.jgit.gpg.bc@default:false"/>

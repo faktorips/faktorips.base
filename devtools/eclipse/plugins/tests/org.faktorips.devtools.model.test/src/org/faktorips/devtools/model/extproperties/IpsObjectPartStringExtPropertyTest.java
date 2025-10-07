@@ -1,21 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.extproperties;
 
+import static org.faktorips.runtime.internal.XmlUtil.getDocumentBuilder;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.directory.Attribute;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.junit.Before;
@@ -24,7 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsObjectPartStringExtPropertyTest {
@@ -40,8 +39,8 @@ public class IpsObjectPartStringExtPropertyTest {
     }
 
     @Test
-    public void testValueToXml() throws ParserConfigurationException, FactoryConfigurationError {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+    public void testValueToXml() throws FactoryConfigurationError {
+        Document doc = getDocumentBuilder().newDocument();
         Element el = doc.createElement("Value");
 
         // not null
@@ -57,8 +56,8 @@ public class IpsObjectPartStringExtPropertyTest {
     }
 
     @Test
-    public void testGetValueFromXml() throws ParserConfigurationException, FactoryConfigurationError {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+    public void testGetValueFromXml() throws FactoryConfigurationError {
+        Document doc = getDocumentBuilder().newDocument();
         Element el = doc.createElement("Value");
 
         // not null

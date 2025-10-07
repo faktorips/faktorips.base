@@ -18,7 +18,6 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-surefire-plugin</artifactId>
                 <configuration>
-                    <useJDK>BREE</useJDK>
                     <reactorConcurrencyLevel>1</reactorConcurrencyLevel>
                     <useUIHarness>true</useUIHarness>
                 </configuration>

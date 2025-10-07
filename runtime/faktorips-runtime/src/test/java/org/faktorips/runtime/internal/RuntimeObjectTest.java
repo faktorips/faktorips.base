@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,20 +15,17 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Stefan Widmaier, FaktorZehn AG
  */
 public class RuntimeObjectTest {
     @Test
-    public void writeExtensionPropertiesToXML() throws ParserConfigurationException {
+    public void writeExtensionPropertiesToXML() {
         Element productCmpt = createProdCmptElement();
         Map<String, String> extPropertyMap = createExtPropertyMap();
 
@@ -59,8 +56,8 @@ public class RuntimeObjectTest {
         return map;
     }
 
-    protected Element createProdCmptElement() throws ParserConfigurationException {
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+    protected Element createProdCmptElement() {
+        Document document = XmlUtil.getDocumentBuilder().newDocument();
         return document.createElement("ProductComponent");
     }
 

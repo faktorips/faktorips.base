@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,14 +14,13 @@ import java.io.FileWriter;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
@@ -36,12 +35,12 @@ public class TocModifyUtil {
     private final DocumentBuilder docBuilder;
     private final URL tocResource;
 
-    public TocModifyUtil(String tocResourcePath) throws ParserConfigurationException {
+    public TocModifyUtil(String tocResourcePath) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         tocResource = cl.getResource(tocResourcePath);
         productDataProvider = (AbstractProductDataProvider)new ClassLoaderProductDataProviderFactory(tocResourcePath)
                 .newInstance();
-        docBuilder = createDocumentBuilder();
+        docBuilder = XmlUtil.getDocumentBuilder();
     }
 
     public void setLastModified(long time) throws Exception {
@@ -73,12 +72,6 @@ public class TocModifyUtil {
         StreamResult result = new StreamResult(writer);
         transformer.transform(source, result);
         writer.close();
-    }
-
-    protected static final DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        return factory.newDocumentBuilder();
     }
 
 }

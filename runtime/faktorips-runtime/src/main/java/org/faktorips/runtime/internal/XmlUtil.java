@@ -399,7 +399,8 @@ public class XmlUtil {
     }
 
     /**
-     * @return a {@link DocumentBuilder} in a thread safe manner ({@link ThreadLocal}).
+     * @return a {@link DocumentBuilder} in a thread-safe manner ({@link ThreadLocal}). It is
+     *             configured to not resolve external entities.
      */
     public static final DocumentBuilder getDocumentBuilder() {
         return docBuilderHolder.get();
@@ -646,31 +647,42 @@ public class XmlUtil {
     }
 
     private static final DocumentBuilder createDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setExpandEntityReferences(false);
-        DocumentBuilder builder;
         try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creating document builder.", e1);
+            var factory = createDocumentBuilderFactory();
+            var builder = factory.newDocumentBuilder();
+            builder.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void error(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                @Override
+                public void fatalError(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+
+                @Override
+                public void warning(SAXParseException e) throws SAXException {
+                    throw e;
+                }
+            });
+            return builder;
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("Error creating document builder.", e);
         }
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
+    }
 
-            @Override
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
+    private static DocumentBuilderFactory createDocumentBuilderFactory() throws ParserConfigurationException {
+        var factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        return factory;
     }
 }

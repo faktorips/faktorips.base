@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,15 +13,11 @@ package org.faktorips.abstracttest.test;
 import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * A test case that makes it easier to write test cases that read data from an xml file.
@@ -43,7 +39,7 @@ public abstract class XmlAbstractTestCase {
     /**
      * Returns the xml document that is associated with the test case. This document has the same
      * name as the test case class concatenated with suffix and the ending "+.xml".
-     * 
+     *
      * @param suffix the suffix that should be set after the class name
      */
     public Document getTestDocument(String suffix) {
@@ -80,35 +76,11 @@ public abstract class XmlAbstractTestCase {
     }
 
     public final Document newDocument() {
-        try {
-            return getDocumentBuilder().newDocument();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return getDocumentBuilder().newDocument();
     }
 
-    public static final DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
+    public static final DocumentBuilder getDocumentBuilder() {
+        return XmlUtil.getDocumentBuilder();
     }
 
 }

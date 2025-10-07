@@ -53,10 +53,10 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     /**
      * Creates a new repository that loads its contents from the given classloader and the given
      * package. Uses the default ToC resource name. Uses the default document builder available via
-     * <code>DocumentBuilderFactory.newInstance()</code> to parse the XML files.
+     * {@link XmlUtil#getDocumentBuilder()} to parse the XML files.
      *
-     * @throws NullPointerException if cl or basePackage are <code>null</code>.
-     * @throws IllegalArgumentException if the basePackage does not contain the table of contents
+     * @throws NullPointerException if {@code cl} or {@code basePackage} are {@code null}.
+     * @throws IllegalArgumentException if the base package does not contain the table of contents
      *             file.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      *

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 
@@ -44,10 +43,7 @@ public class IpsEnumToXmlWriterTest {
 
     @BeforeEach
     public void setup() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        factory.setExpandEntityReferences(false);
-        builder = factory.newDocumentBuilder();
+        builder = XmlUtil.getDocumentBuilder();
 
         repository = ClassloaderRuntimeRepository
                 .create("org/faktorips/runtime/testrepository/testenum/internal/faktorips-repository-toc.xml");

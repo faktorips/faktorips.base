@@ -34,8 +34,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -67,6 +65,7 @@ import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
 import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -496,10 +495,10 @@ public class IpsBuildMojo extends AbstractMojo {
         File eclipseProjectFile = new File(project.getBasedir().getAbsolutePath(), ".project");
         if (eclipseProjectFile.exists() && !importAsMavenProject) {
             try {
-                DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                DocumentBuilder documentBuilder = XmlUtil.getDocumentBuilder();
                 Document doc = documentBuilder.parse(eclipseProjectFile);
                 return doc.getElementsByTagName("name").item(0).getTextContent();
-            } catch (SAXException | IOException | ParserConfigurationException e) {
+            } catch (SAXException | IOException e) {
                 getLog().error("Can't read Eclipse .project file to find project name", e);
             }
         }
