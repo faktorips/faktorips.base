@@ -10,10 +10,11 @@ pom.tycho
 
 # Eclipse
 bin
-.project
 /.settings
 .classpath
+.fbExcludeFilterFile
 .project
+edu.umd.cs.findbugs.core.prefs
 org.eclipse.core.resources.prefs
 org.eclipse.m2e.core.prefs
 org.eclipse.pde.core.prefs

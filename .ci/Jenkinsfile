@@ -40,7 +40,7 @@ pipeline {
                 withMaven(publisherStrategy: 'EXPLICIT') {
                     sh "mvn -U -V -fae -e clean install -f codequality-config"
                     sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
-                    sh "mvn -U -V -T 8 -fae -e clean deploy site -Dtycho.localArtifacts=ignore"
+                    sh "mvn -U -V -T 8 -fae -e clean deploy site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
                     sh "mvn -V -T 8 -fae -e site:stage -f maven"
                 }
             }
