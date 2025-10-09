@@ -490,12 +490,11 @@ public class IpsBundleManifest {
             if (project != null) {
                 String lineSeparator = project.getDefaultLineSeparator();
                 String content = getContentAsString(manifestFile.getContents());
-                String contentWithLineSeparator = content.replaceAll("\\r?\\n", lineSeparator);
-                if (!content.equals(contentWithLineSeparator)) {
-                    manifestFile.setContents(
-                            new ByteArrayInputStream(contentWithLineSeparator.getBytes(StandardCharsets.UTF_8)), true,
-                            null);
-                }
+                content = content.replaceAll("\\r?\\n", lineSeparator);
+                content = content.replace('\\', '/');
+                manifestFile.setContents(
+                        new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), true,
+                        null);
             }
         } catch (IOException e) {
             throw new IpsException(new IpsStatus("Can't write " + actualManifestFile, e)); //$NON-NLS-1$

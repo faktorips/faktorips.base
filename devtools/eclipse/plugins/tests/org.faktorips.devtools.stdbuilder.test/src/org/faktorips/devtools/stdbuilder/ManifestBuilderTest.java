@@ -50,7 +50,14 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
     public void setUp() throws Exception {
         super.setUp();
         manifestBuilder = builderSet.getBuilderById(BuilderKindIds.MANIFEST_FILE, ManifestBuilder.class);
-        createManifestFileInTestProject();
+        String manifestContent = """
+                Manifest-Version: 1.0
+                Bundle-ManifestVersion: 2
+                Bundle-Name: Test Bundle
+                Bundle-SymbolicName: %s
+                Bundle-Version: 26.1.0.qualifier
+                """.formatted(ipsProject.getName());
+        createManifestFileInTestProject(manifestContent);
         configureOutputFolders();
     }
 
@@ -85,8 +92,8 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         String afterBuild = readManifestContent(aManifestFile);
 
         assertThat(afterBuild, containsString("Fips-BasePackage: org.fipsi"));
-        assertThat(afterBuild, containsString("Fips-SourcecodeOutput: src"));
-        assertThat(afterBuild, containsString("Fips-ResourceOutput: resources"));
+        assertThat(afterBuild, containsString("Fips-SourcecodeOutput: src/main/java"));
+        assertThat(afterBuild, containsString("Fips-ResourceOutput: src/main/resources"));
         assertThat(afterBuild,
                 containsString("Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
         assertThat(afterBuild, containsString("Fips-ObjectDir: productdef"));
@@ -127,6 +134,25 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         assertThat(content, containsString("\r\n"));
     }
 
+    @Test
+    public void testNoBackslashes_Windows() throws Exception {
+        IProject project = ipsProject.getProject().unwrap();
+        Preferences preferences = Platform.getPreferencesService().getRootNode().node(ProjectScope.SCOPE)
+                .node(project.getName());
+        preferences.node(Platform.PI_RUNTIME).put(Platform.PREF_LINE_SEPARATOR, "\n");
+        AFile aManifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        String content = getContentAsString(aManifestFile.getContents(), StandardCharsets.UTF_8.name());
+        content = content + "Fips-SourcecodeOutput: src\\main\\java\n" + "Fips-ResourceOutput: src\\main\\resources";
+        createManifestFileInTestProject(content);
+
+        ipsProject.getProject().build(ABuildKind.FULL, null);
+
+        content = getContentAsString(aManifestFile.getContents(), StandardCharsets.UTF_8.name());
+        assertThat(content, containsString("Fips-SourcecodeOutput"));
+        assertThat(content, containsString("Fips-ResourceOutput"));
+        assertThat(content, not(containsString("\\")));
+    }
+
     private String getContentAsString(InputStream is, String charSet) {
         try {
             return StringUtil.readFromInputStream(is, charSet);
@@ -135,7 +161,7 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         }
     }
 
-    private void createManifestFileInTestProject() throws Exception {
+    private void createManifestFileInTestProject(String manifestContent) throws Exception {
         IProject project = (IProject)ipsProject.getProject().unwrap();
 
         IFolder metaInfFolder = project.getFolder("META-INF");
@@ -145,12 +171,6 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
 
         IFile manifestFile = metaInfFolder.getFile("MANIFEST.MF");
         if (!manifestFile.exists()) {
-            String manifestContent = "Manifest-Version: 1.0\n" +
-                    "Bundle-ManifestVersion: 2\n" +
-                    "Bundle-Name: Test Bundle\n" +
-                    "Bundle-SymbolicName: " + project.getName() + "\n" +
-                    "Bundle-Version: 26.1.0.qualifier\n";
-
             manifestFile.create(new ByteArrayInputStream(manifestContent.getBytes()), true, null);
         }
     }
@@ -160,14 +180,21 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         if (!srcFolder.exists()) {
             srcFolder.create(null);
         }
-
-        AFolder resourcesFolder = ipsProject.getProject().getFolder("resources");
+        AFolder mainFolder = srcFolder.getFolder("main");
+        if (!mainFolder.exists()) {
+            mainFolder.create(null);
+        }
+        AFolder javaFolder = mainFolder.getFolder("java");
+        if (!javaFolder.exists()) {
+            javaFolder.create(null);
+        }
+        AFolder resourcesFolder = mainFolder.getFolder("resources");
         if (!resourcesFolder.exists()) {
             resourcesFolder.create(null);
         }
 
         IIpsObjectPath objectPath = ipsProject.getIpsObjectPath();
-        objectPath.setOutputFolderForMergableSources(srcFolder);
+        objectPath.setOutputFolderForMergableSources(javaFolder);
         objectPath.setOutputFolderForDerivedSources(resourcesFolder);
         objectPath.setBasePackageNameForMergableJavaClasses("org.fipsi");
         objectPath.setBasePackageNameForDerivedJavaClasses("org.fipsi");
