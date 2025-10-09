@@ -1399,7 +1399,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    <Datatype id=\"PaymentMode\"                             The datatype's id used in the model to refer to it." + System.lineSeparator() //$NON-NLS-1$
         + "        javaClass=\"org.faktorips.sample.PaymentMode\"       The Java class the datatype represents" + System.lineSeparator() //$NON-NLS-1$
         + "        jaxbXmlJavaTypeAdapterClass=\"org.faktorips.sample.PaymentModeAdapter\"  (optional) an adapter class to be used when converting values of this datatype to/from XML" + System.lineSeparator() //$NON-NLS-1$
-        + "        valueObject=\"true|false\"                           True indicates this is a value object (according to the value object pattern.) " + System.lineSeparator() //$NON-NLS-1$
+        + "        valueObject=\"true|false\"                           Optional (default: false). True indicates this is a value object (according to the value object pattern.) " + System.lineSeparator() //$NON-NLS-1$
         + "        --- the following attributes are only needed for value objects ---" + System.lineSeparator() //$NON-NLS-1$
         + "        isEnumType=\"true|false\"                            True if this is an enumeration of values." + System.lineSeparator() //$NON-NLS-1$
         + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String and returns an" + System.lineSeparator() //$NON-NLS-1$

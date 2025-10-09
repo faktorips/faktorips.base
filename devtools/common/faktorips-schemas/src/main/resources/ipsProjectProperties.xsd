@@ -124,7 +124,7 @@
         </xsd:sequence>
         <xsd:attribute name="id" type="string" use="required" />
         <xsd:attribute name="javaClass" type="string" use="required" />
-        <xsd:attribute name="valueObject" type="boolean" use="required" />
+        <xsd:attribute name="valueObject" type="boolean" default="false" />
         <xsd:attribute name="isEnumType" type="boolean" />
         <xsd:attribute name="valueOfMethod" type="string" />
         <xsd:attribute name="isParsableMethod" type="string" />
