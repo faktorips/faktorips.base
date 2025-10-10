@@ -18,4 +18,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
 Bundle-Name: %pluginName
 Bundle-ManifestVersion: 2
+Import-Package: org.faktorips.runtime.internal;version="[26.1.0,27.0.0)"
 

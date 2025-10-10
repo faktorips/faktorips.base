@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
@@ -105,27 +103,18 @@ public class InternationalStringXmlReaderWriterTest {
     }
 
     private static Element asElement(String xmlSnippet) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
         try {
-            builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = XmlUtil.getDocumentBuilder();
             Document document = builder.parse(new ByteArrayInputStream(xmlSnippet.getBytes()));
             return document.getDocumentElement();
-        } catch (ParserConfigurationException | SAXException | IOException e) {
+        } catch (SAXException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static final Document newDocument() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            return builder.newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        DocumentBuilder builder = XmlUtil.getDocumentBuilder();
+        return builder.newDocument();
     }
 
 }

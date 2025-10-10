@@ -3,7 +3,7 @@
  * accompanying materials are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors: IBM - Initial API and implementation
  */
 package org.eclipse.emf.codegen.merge.java;
@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.common.EMFPlugin;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -202,11 +202,8 @@ public class JControlModel extends PrefixHandler {
     }
 
     protected void initialize(String uri) {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setValidating(false);
         try {
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            DocumentBuilder documentBuilder = XmlUtil.getDocumentBuilder();
             Document document = documentBuilder.parse(new InputSource(uri));
             initialize(document.getDocumentElement());
         } catch (Exception exception) {
@@ -523,13 +520,13 @@ public class JControlModel extends PrefixHandler {
      * there are no push rules for the specific element type (element is not an instance of selector
      * class of any rules), then the element is pushed.
      * </p>
-     * 
+     *
      * <p>
      * If element is an instance of selector class of at least one push rule, then the element is
      * pushed only if the element is marked up by at least one push rule with matching selector
      * class.
      * </p>
-     * 
+     *
      * <p>
      * If none of mark-up and targetParentMarkup is set in the push rule with matching selector
      * class, then node is marked up. If both mark-up and targetParentMarkup is set, then the node
@@ -606,7 +603,7 @@ public class JControlModel extends PrefixHandler {
      * the source. It can work on available Dictionary Patterns or be used to filter out import
      * statements as follows:
      * </p>
-     * 
+     *
      * <pre>
      *   &lt;merge:sweep markup=&quot;^gen$&quot; select=&quot;Member&quot;/&gt;
      *   &lt;merge:sweep markup=&quot;^org.eclipse.emf.ecore.EMetaObject$&quot; select=&quot;Import&quot;/&gt;
@@ -723,7 +720,7 @@ public class JControlModel extends PrefixHandler {
      * respected As usual you need to specify a Dictionary Pattern to identify the attributes that
      * should be treated. Here's an example:
      * </p>
-     * 
+     *
      * <pre>
      *   &lt;merge:sort markup=&quot;^ordered$&quot; select=&quot;Member&quot;/&gt;
      * </pre>
@@ -781,24 +778,24 @@ public class JControlModel extends PrefixHandler {
      * During the merge, the current state of the nodes of a tree is applied to the nodes of another
      * tree. Pairing the nodes of each tree is one of the main activities of the process.
      * </p>
-     * 
+     *
      * <p>
      * A Match Rule allows a developer to replace the default matching algorithm, based on qualified
      * names, to better suite the needs of an specific application. Some examples:
      * </p>
-     * 
+     *
      * <pre>
      *   &lt;merge:match markup=&quot;^gen$&quot; get=&quot;Member/getName&quot;/&gt;
      *   &lt;merge:match get=&quot;Method/getComment&quot; signature=&quot;\s*@\s*uuid\s*(\S*)\s*\n&quot;/&gt;
      * </pre>
-     * 
+     *
      * <p>
      * The first match rule is applicable to any Member marked with the expression defined by the
      * &quot;^gen$&quot; Dictionary Pattern. It defines that these members are matched by their
      * names. The second rule is applicable to any method that has <code>@uuid xyz</code> on its
      * comment. In this case, the string <code>xyz</code> is be used to match the nodes.
      * </p>
-     * 
+     *
      * <p>
      * An important remark is that if there is a type conversion during the merge process, the match
      * rules should <strong>not</strong> be used to pair different &quot;kinds&quot; of elements

@@ -20,6 +20,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-shared-utils</artifactId>
             <version>${maven-shared-utils.version}</version>

@@ -1,0 +1,19 @@
+{
+    "26.1.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.method.exception.checkedRemoved",
+                        "old": "method javax.xml.parsers.DocumentBuilder org.faktorips.runtime.IpsTestCase::getDocumentBuilder() throws javax.xml.parsers.ParserConfigurationException",
+                        "new": "method javax.xml.parsers.DocumentBuilder org.faktorips.runtime.IpsTestCase::getDocumentBuilder()",
+                        "exception": "javax.xml.parsers.ParserConfigurationException",
+                        "justification": "Exception is wrapped in RuntimeException"
+                    }
+                ]
+            }
+        }
+    ]
+}

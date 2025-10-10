@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,22 +16,18 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import junit.framework.TestCase;
 
 /**
  * Base class for IPS test cases.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class IpsTestCase extends TestCase {
@@ -60,7 +56,7 @@ public abstract class IpsTestCase extends TestCase {
         run(doc);
     }
 
-    private Document getXmlDocument(String name) throws SAXException, IOException, ParserConfigurationException {
+    private Document getXmlDocument(String name) throws SAXException, IOException {
         InputStream is = getClass().getResourceAsStream(name + ".xml");
         if (is == null) {
             is = getClass().getResourceAsStream(name + ".ipstestcase");
@@ -94,7 +90,7 @@ public abstract class IpsTestCase extends TestCase {
 
     /**
      * Executes the business function(s) to test.
-     * 
+     *
      * @throws Exception Any exception thrown by the business function is considered as an error.
      */
     protected abstract void execBusinessFcts() throws Exception;
@@ -104,28 +100,8 @@ public abstract class IpsTestCase extends TestCase {
      */
     protected abstract void execAsserts() throws Exception;
 
-    protected DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
+    protected DocumentBuilder getDocumentBuilder() {
+        return XmlUtil.getDocumentBuilder();
     }
 
 }

@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.IClRepositoryObject;
@@ -38,6 +37,7 @@ import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IXmlPersistenceSupport;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.testrepository.home.HomeProduct;
@@ -143,7 +143,7 @@ public class ProductVariantRuntimeHelperTest {
 
         ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
         HomeProductGen objectToInitialize = new HomeProductGen(product);
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Document doc = XmlUtil.getDocumentBuilder().newDocument();
         helper.loadAndVary(productGen, variantGen.toXml(doc), objectToInitialize);
 
         assertThat(objectToInitialize.getValidFrom(), is(new DateTime(2023, 1, 1)));
