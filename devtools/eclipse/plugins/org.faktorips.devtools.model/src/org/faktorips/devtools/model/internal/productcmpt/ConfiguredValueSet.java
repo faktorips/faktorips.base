@@ -128,7 +128,9 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                 }
 
             }
-            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()) {
+            ValueDatatype valueDatatype = attribute.findValueDatatype(ipsProject);
+            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                    && (!modelValueSet.isAbstract() || valueDatatype.isPrimitive())) {
                 String text = MessageFormat.format(Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
                         getPolicyCmptTypeAttribute());
                 list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this,
