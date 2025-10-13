@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,16 +36,23 @@ import org.faktorips.devtools.core.ui.table.InternationalStringTraversalStrategy
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.LocalizedStringCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.values.LocalizedString;
 
 /**
  * A dialog to edit different locales of an attribute.
- * 
+ *
  * @author Bouillon
  */
 public class InternationalStringDialog extends IpsPartEditDialog2 {
@@ -63,8 +70,22 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
 
+    @SuppressWarnings("restriction")
     private IInternationalString getInternationalString() {
-        return internationalString;
+        // directly return the internationalString from its parent, saving may change the parent
+        // but not the cached internationalString see concept of
+        // org.faktorips.devtools.model.ipsobject.Identifier
+        return switch (ipsObjectPart) {
+            case IEnumAttributeValue eav -> (IInternationalString)eav.getValue().getContent();
+            case IAttributeValue av -> {
+                IValueHolder<?> valueHolder = av.getValueHolder();
+                if (valueHolder instanceof SingleValueHolder) {
+                    yield ((InternationalStringValue)valueHolder.getValue()).getContent();
+                }
+                yield internationalString;
+            }
+            case null, default -> internationalString;
+        };
     }
 
     private IIpsProject getIpsProject() {
@@ -135,6 +156,10 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
                     @Override
                     public void setValue(LocalizedString element, LocalizedString value) {
                         getInternationalString().add(value);
+                        ContentChangeEvent event = ContentChangeEvent.newWholeContentChangedEvent(
+                                ipsObjectPart.getIpsSrcFile());
+                        ((IpsModel)ipsObjectPart.getIpsModel())
+                                .ipsSrcFileContentHasChanged(event);
                     }
                 });
 
@@ -167,9 +192,8 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
 
         @Override
         public Object[] getElements(Object input) {
-            if (input instanceof IInternationalString) {
+            if (input instanceof IInternationalString inputString) {
                 ArrayList<LocalizedString> localizedStringInput = new ArrayList<>();
-                IInternationalString inputString = (IInternationalString)input;
                 for (ISupportedLanguage language : ipsProject.getReadOnlyProperties().getSupportedLanguages()) {
                     LocalizedString localizedString = inputString.get(language.getLocale());
                     localizedStringInput.add(localizedString);
