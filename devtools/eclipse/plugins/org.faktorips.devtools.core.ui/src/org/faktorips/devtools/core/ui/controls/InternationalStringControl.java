@@ -1,14 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controls;
+
+import java.util.Locale;
 
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -17,7 +19,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.InternationalStringDialog;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.values.LocalizedString;
 
 /**
  * {@link TextButtonControl} for international value attributes. The text control can be edited to
@@ -45,7 +49,7 @@ public class InternationalStringControl extends TextButtonControl {
     /**
      * Sets the height hint for the text control. Thereby, it is possible to put the control into a
      * cell editor and not needing to resize the table rows.
-     * 
+     *
      * @param heightHint the height hint to set.
      */
     public void setHeightHint(int heightHint) {
@@ -65,6 +69,16 @@ public class InternationalStringControl extends TextButtonControl {
 
     @Override
     protected void buttonClicked() {
+        if (!getTextControl().isDisposed()) {
+            String currentText = getTextControl().getText();
+            IInternationalString intString = handler.getInternationalString();
+            if (intString != null) {
+                String language = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizationLocaleOrDefault(handler.getIpsProject()).getLanguage();
+                intString.add(new LocalizedString(Locale.of(language), currentText));
+            }
+        }
+
         handler.run();
     }
 
