@@ -164,6 +164,13 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     public abstract ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
 
     /**
+     * Returns the toc entry representing a product component for the given qualified name or null
+     * if no entry exists.
+     */
+    @Override
+    public abstract ProductCmptTocEntry getProductCmptTocEntryByQualifiedName(String qualifiedName);
+
+    /**
      * Returns all toc's entries representing product components.
      */
     @Override
@@ -217,6 +224,13 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      */
     @Override
     public abstract EnumContentTocEntry getEnumContentTocEntry(String className);
+
+    /**
+     * Returns the toc entry representing enum contents for the specified qualified name or null if
+     * no entry exists.
+     */
+    @Override
+    public abstract EnumContentTocEntry getEnumContentTocEntryByQualifiedName(String qualifiedName);
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.

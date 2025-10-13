@@ -196,11 +196,16 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
                 removed |= tableContentNameTocEntryMap.remove(tableEntry.getIpsObjectQualifiedName()) != null;
                 yield removed;
             }
-            case FormulaTestTocEntry formulaCaseEntry -> testCaseNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
-            case TestCaseTocEntry testCaseEntry -> testCaseNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
-            case ModelTypeTocEntry modelTypeEntry -> modelTypeNameTocEntryMap.remove(entry.getIpsObjectQualifiedName()) != null;
-            case EnumContentTocEntry enumTypeEntry -> enumContentImplClassTocEntryMap.remove(entry.getImplementationClassName()) != null;
-            case EnumXmlAdapterTocEntry enumXmlAdapterEntry -> enumXmlAdapterTocEntryMap.remove(entry.getIpsObjectId()) != null;
+            case FormulaTestTocEntry formulaCaseEntry -> testCaseNameTocEntryMap
+                    .remove(entry.getIpsObjectQualifiedName()) != null;
+            case TestCaseTocEntry testCaseEntry -> testCaseNameTocEntryMap
+                    .remove(entry.getIpsObjectQualifiedName()) != null;
+            case ModelTypeTocEntry modelTypeEntry -> modelTypeNameTocEntryMap
+                    .remove(entry.getIpsObjectQualifiedName()) != null;
+            case EnumContentTocEntry enumTypeEntry -> enumContentImplClassTocEntryMap
+                    .remove(entry.getImplementationClassName()) != null;
+            case EnumXmlAdapterTocEntry enumXmlAdapterEntry -> enumXmlAdapterTocEntryMap
+                    .remove(entry.getIpsObjectId()) != null;
             case CustomTocEntryObject<?> tocEntry -> {
                 Map<String, CustomTocEntryObject<?>> map = otherTocEntryMaps.get(tocEntry.getRuntimeObjectClass());
                 yield map != null && map.remove(tocEntry.getIpsObjectQualifiedName()) != null;
@@ -261,6 +266,11 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     @Override
+    public ProductCmptTocEntry getProductCmptTocEntryByQualifiedName(String qualifiedName) {
+        return pcNameTocEntryMap.get(qualifiedName);
+    }
+
+    @Override
     public List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId) {
         return new ArrayList<>(getVersions(kindId).values());
     }
@@ -307,6 +317,13 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     @Override
     public EnumContentTocEntry getEnumContentTocEntry(String className) {
         return enumContentImplClassTocEntryMap.get(className);
+    }
+
+    @Override
+    public EnumContentTocEntry getEnumContentTocEntryByQualifiedName(String qualifiedName) {
+        return enumContentImplClassTocEntryMap.values().stream()
+                .filter(m -> m.getIpsObjectQualifiedName().equals(qualifiedName)).findFirst()
+                .orElse(null);
     }
 
     @Override
@@ -361,4 +378,5 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         }
         return list;
     }
+
 }

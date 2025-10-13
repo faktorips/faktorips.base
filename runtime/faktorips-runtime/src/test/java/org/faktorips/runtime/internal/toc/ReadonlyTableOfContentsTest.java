@@ -13,6 +13,8 @@ package org.faktorips.runtime.internal.toc;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -183,6 +185,96 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
 
     private <T extends TocEntryObject> Map<String, T> asMap(Set<T> tocEntries) {
         return tocEntries.stream().collect(Collectors.toMap(TocEntryObject::getIpsObjectId, Function.identity()));
+    }
+
+    @Test
+    public void testGetProductCmptTocEntryByQualifiedName_Hit_Product() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_wrongOrder.xml").getDocumentElement());
+
+        ProductCmptTocEntry entry = toc.getProductCmptTocEntryByQualifiedName("Product");
+
+        assertThat(entry, notNullValue());
+        assertThat(entry.getIpsObjectQualifiedName(), is("Product"));
+    }
+
+    @Test
+    public void testGetProductCmptTocEntryByQualifiedName_Hit_ProductWithGen() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_wrongOrder.xml").getDocumentElement());
+
+        ProductCmptTocEntry entry = toc.getProductCmptTocEntryByQualifiedName("ProductWithGen");
+
+        assertThat(entry, notNullValue());
+        assertThat(entry.getIpsObjectQualifiedName(), is("ProductWithGen"));
+    }
+
+    @Test
+    public void testGetProductCmptTocEntryByQualifiedName_Hit_bProduct() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_wrongOrder.xml").getDocumentElement());
+
+        ProductCmptTocEntry entry = toc.getProductCmptTocEntryByQualifiedName("b.Product");
+
+        assertThat(entry, notNullValue());
+        assertThat(entry.getIpsObjectQualifiedName(), is("b.Product"));
+    }
+
+    @Test
+    public void testGetProductCmptTocEntryByQualifiedName_Miss() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_wrongOrder.xml").getDocumentElement());
+
+        assertThat(toc.getProductCmptTocEntryByQualifiedName("does.not.Exist"), nullValue());
+    }
+
+    @Test
+    public void testGetProductCmptTocEntryByQualifiedName_NullArg() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument("ReadonlyTableOfContentsTest_wrongOrder.xml").getDocumentElement());
+
+        assertThat(toc.getProductCmptTocEntryByQualifiedName(null), nullValue());
+    }
+
+    @Test
+    public void testGetEnumContentTocEntryByQualifiedName_Hit() {
+        ReadonlyTableOfContents toc2 = new ReadonlyTableOfContents();
+        toc2.initFromXml(getTestDocument().getDocumentElement());
+
+        String qn2 = "OptionContent2";
+
+        EnumContentTocEntry entry2 = toc2.getEnumContentTocEntryByQualifiedName(qn2);
+
+        assertThat(entry2, notNullValue());
+        assertThat(entry2.getIpsObjectQualifiedName(), is(qn2));
+        assertThat(entry2.getXmlResourceName(), is("org/faktorips/sample/OptionContent2.xml"));
+
+        ReadonlyTableOfContents toc3 = new ReadonlyTableOfContents();
+        toc3.initFromXml(getTestDocument().getDocumentElement());
+
+        String qn3 = "OptionContent3";
+
+        EnumContentTocEntry entry3 = toc3.getEnumContentTocEntryByQualifiedName(qn3);
+
+        assertThat(entry3, notNullValue());
+        assertThat(entry3.getIpsObjectQualifiedName(), is(qn3));
+        assertThat(entry3.getXmlResourceName(), is("org/faktorips/sample/OptionContent3.xml"));
+    }
+
+    @Test
+    public void testGetEnumContentTocEntryByQualifiedName_Miss() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument().getDocumentElement());
+
+        assertThat(toc.getEnumContentTocEntryByQualifiedName("DoesNotExist"), nullValue());
+    }
+
+    @Test
+    public void testGetEnumContentTocEntryByQualifiedName_NullArg() {
+        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+        toc.initFromXml(getTestDocument().getDocumentElement());
+
+        assertThat(toc.getEnumContentTocEntryByQualifiedName(null), nullValue());
     }
 
 }

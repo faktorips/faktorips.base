@@ -44,6 +44,62 @@
             "old": "class org.faktorips.devtools.abstraction.AVersion",
             "new": "class org.faktorips.devtools.abstraction.AVersion",
             "justification": "FIPS-13046"
+          },
+          {
+            "code": "java.method.abstractMethodAdded",
+            "new": "method org.faktorips.runtime.internal.toc.EnumContentTocEntry org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents::getEnumContentTocEntryByQualifiedName(java.lang.String)",
+            "justification": "FIPS-13773"
+            /*  "package": "org.faktorips.runtime.internal.toc",
+            "classQualifiedName": "org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents",
+            "classSimpleName": "AbstractReadonlyTableOfContents",
+            "methodName": "getEnumContentTocEntryByQualifiedName",
+            "elementKind": "method",
+            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
+            "newArchiveRole": "primary",
+            */
+
+          },
+          {
+            "code": "java.method.abstractMethodAdded",
+            "new": "method org.faktorips.runtime.internal.toc.ProductCmptTocEntry org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents::getProductCmptTocEntryByQualifiedName(java.lang.String)",
+            "justification": "FIPS-13773"
+            /*  "package": "org.faktorips.runtime.internal.toc",
+            "classQualifiedName": "org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents",
+            "classSimpleName": "AbstractReadonlyTableOfContents",
+            "methodName": "getProductCmptTocEntryByQualifiedName",
+            "elementKind": "method",
+            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
+            "newArchiveRole": "primary",
+            */
+
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method org.faktorips.runtime.internal.toc.EnumContentTocEntry org.faktorips.runtime.internal.toc.IReadonlyTableOfContents::getEnumContentTocEntryByQualifiedName(java.lang.String)",
+            "justification": "FIPS-13773"
+            /*  "package": "org.faktorips.runtime.internal.toc",
+            "classQualifiedName": "org.faktorips.runtime.internal.toc.IReadonlyTableOfContents",
+            "classSimpleName": "IReadonlyTableOfContents",
+            "methodName": "getEnumContentTocEntryByQualifiedName",
+            "elementKind": "method",
+            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
+            "newArchiveRole": "primary",
+            */
+
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method org.faktorips.runtime.internal.toc.ProductCmptTocEntry org.faktorips.runtime.internal.toc.IReadonlyTableOfContents::getProductCmptTocEntryByQualifiedName(java.lang.String)",
+            "justification": "FIPS-13773"
+            /*  "package": "org.faktorips.runtime.internal.toc",
+            "classQualifiedName": "org.faktorips.runtime.internal.toc.IReadonlyTableOfContents",
+            "classSimpleName": "IReadonlyTableOfContents",
+            "methodName": "getProductCmptTocEntryByQualifiedName",
+            "elementKind": "method",
+            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
+            "newArchiveRole": "primary",
+            */
+
           }
         ]
       }

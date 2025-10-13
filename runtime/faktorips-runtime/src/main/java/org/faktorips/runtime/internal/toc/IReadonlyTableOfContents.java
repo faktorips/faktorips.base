@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,7 @@ import java.util.Set;
  * This is the interface for readonly table of contents used by the runtime repositories. With the
  * methods in this interface you could find a single entry in the table of contents or the list of
  * entries of a special type
- * 
+ *
  * @author dirmeier
  */
 public interface IReadonlyTableOfContents {
@@ -33,6 +33,12 @@ public interface IReadonlyTableOfContents {
      * id and versionId or null if no such entry exists.
      */
     ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
+
+    /**
+     * Returns the toc entry representing a product component for the given qualified name or null
+     * if no entry exists.
+     */
+    ProductCmptTocEntry getProductCmptTocEntryByQualifiedName(String qualifiedName);
 
     /**
      * Returns all toc's entries representing product components.
@@ -86,6 +92,12 @@ public interface IReadonlyTableOfContents {
     EnumContentTocEntry getEnumContentTocEntry(String className);
 
     /**
+     * Returns the toc entry representing enum contents for the specified qualified name or null if
+     * no entry exists.
+     */
+    EnumContentTocEntry getEnumContentTocEntryByQualifiedName(String qualifiedName);
+
+    /**
      * Returns all toc entries that link to an enumeration xml adapter.
      */
     Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
@@ -93,7 +105,7 @@ public interface IReadonlyTableOfContents {
     /**
      * Return the version of the product data in this table of content. This may be a version numbe
      * or a timestamp
-     * 
+     *
      * @return The version of the table of content
      */
     String getProductDataVersion();
