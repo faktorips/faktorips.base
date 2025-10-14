@@ -241,14 +241,15 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             MessageList msgList) {
 
         for (IProductCmptLink link : links) {
-            // associations of type association will be excluded from this constraint. If the type
-            // of the association
-            // cannot be determined then the link will not be evaluated
+            // Associations may also point to products that have a different validity date, for
+            // example: to successor products.
+            // For that reason associations of type association will be excluded from this
+            // constraint. If the type of the association
+            // cannot be determined then the link will not be evaluated.
             if (association == null || association.isAssoziation()) {
                 continue;
             }
-            IProductCmpt productCmpt;
-            productCmpt = link.findTarget(linkContainer.getIpsProject());
+            IProductCmpt productCmpt = link.findTarget(linkContainer.getIpsProject());
             if (productCmpt != null) {
                 if (linkContainer.getValidFrom() != null
                         && productCmpt.getGenerationEffectiveOn(linkContainer.getValidFrom()) == null) {

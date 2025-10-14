@@ -704,19 +704,21 @@ public class ProductAssociation extends Association {
             IProductComponent source,
             List<IProductComponent> targetObjects,
             Calendar effectiveDate) {
-        for (IProductComponent target : targetObjects) {
+        if (!getAssociationKind().equals(AssociationKind.Association)) {
 
-            validate(list,
-                    () -> target.getValidFrom(),
-                    () -> isChangingOverTime() ? source.getGenerationBase(effectiveDate).getValidFrom()
-                            : source.getValidFrom(),
-                    (targetDate, sourceDate) -> targetDate.compareTo(sourceDate) > 0,
-                    (targetDate, sourceDate) -> generateValidationMessage(context.getLocale(),
-                            getResourceBundleName(), MSGKEY_DATE_FROM_NOT_VALID,
-                            targetDate, target, sourceDate, source),
-                    MSGCODE_DATE_FROM_NOT_VALID,
-                    new ObjectProperty(target, IProductComponent.PROPERTY_VALID_FROM),
-                    new ObjectProperty(source, getName()));
+            for (IProductComponent target : targetObjects) {
+                validate(list,
+                        () -> target.getValidFrom(),
+                        () -> isChangingOverTime() ? source.getGenerationBase(effectiveDate).getValidFrom()
+                                : source.getValidFrom(),
+                        (targetDate, sourceDate) -> targetDate.compareTo(sourceDate) > 0,
+                        (targetDate, sourceDate) -> generateValidationMessage(context.getLocale(),
+                                getResourceBundleName(), MSGKEY_DATE_FROM_NOT_VALID,
+                                targetDate, target, sourceDate, source),
+                        MSGCODE_DATE_FROM_NOT_VALID,
+                        new ObjectProperty(target, IProductComponent.PROPERTY_VALID_FROM),
+                        new ObjectProperty(source, getName()));
+            }
         }
 
     }

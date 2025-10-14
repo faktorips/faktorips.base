@@ -79,6 +79,7 @@ public class ProductAssociationTest {
     private final ProductAssociation association = productCmptType.getAssociation("asso");
     private final ProductAssociation association2 = productCmptType.getAssociation("asso2");
     private final ProductAssociation association3 = productCmptType.getAssociation("asso3");
+    private final ProductAssociation association4 = productCmptType.getAssociation("asso4");
     private final ProductAssociation associationTest = productCmptType.getAssociation("assoTest");
     private final ProductAssociation associationPolicy = productCmptType.getAssociation("policyAsso");
     private final ProductAssociation overriddenAsso = productCmptType.getAssociation("overriddenAsso");
@@ -128,7 +129,7 @@ public class ProductAssociationTest {
         MessageList ml = new MessageList();
         IValidationContext context = new ValidationContext(Locale.ENGLISH);
 
-        association.validate(ml, context, source, null);
+        association4.validate(ml, context, source, null);
 
         assertThat(ml.isEmpty(), is(false));
         Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_DATE_FROM_NOT_VALID);
@@ -225,7 +226,7 @@ public class ProductAssociationTest {
         MessageList ml = new MessageList();
         IValidationContext context = new ValidationContext(Locale.ENGLISH);
 
-        association.validate(ml, context, source, null);
+        association4.validate(ml, context, source, null);
 
         assertThat(ml.isEmpty(), is(false));
         Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_DATE_TO_NOT_VALID);
@@ -1053,7 +1054,7 @@ public class ProductAssociationTest {
             }
         }
 
-        @IpsAssociation(name = "assoTest", pluralName = "assoTests", min = 1, max = 2, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "assoTest", pluralName = "assoTests", min = 1, max = 2, kind = AssociationKind.Composition, targetClass = Target.class)
         @IpsDerivedUnion
         @IpsSubsetOfDerivedUnion("derivedUnion")
         public List<TargetInvalid> getTargetInvalid() {
@@ -1065,7 +1066,7 @@ public class ProductAssociationTest {
             targetInvalid.add(target);
         }
 
-        @IpsAssociation(name = "policyAsso", pluralName = "policyAssos", min = 1, max = 4, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "policyAsso", pluralName = "policyAssos", min = 1, max = 4, kind = AssociationKind.Composition, targetClass = Target.class)
         @IpsMatchingAssociation(source = Policy.class, name = "MatchingPolicyAsso")
         public List<Target> getPolicyAsso() {
             return targets;
@@ -1101,7 +1102,7 @@ public class ProductAssociationTest {
             return new ProductComponentLink<>(this, target);
         }
 
-        @IpsAssociation(name = "overriddenAsso", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "overriddenAsso", pluralName = "assos", min = 0, max = 1, kind = AssociationKind.Composition, targetClass = Target.class)
         @IpsMatchingAssociation(source = Policy.class, name = "Matching")
         public Target getOverriddenAsso() {
             return target;
@@ -1112,12 +1113,12 @@ public class ProductAssociationTest {
             return null;
         }
 
-        @IpsAssociation(name = "asso3", pluralName = "assos3", min = 1, max = 10, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "asso3", pluralName = "assos3", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class)
         public List<Target> getTargets() {
             return List.of(target);
         }
 
-        @IpsAssociation(name = "asso4", pluralName = "assos4", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "asso4", pluralName = "assos4", min = 0, max = 1, kind = AssociationKind.Composition, targetClass = Target.class)
         @IpsDerivedUnion
         public Target getTarget4() {
             return target;
@@ -1158,7 +1159,7 @@ public class ProductAssociationTest {
         private Target subAssoTarget;
         private CardinalityRange cardinality;
 
-        @IpsAssociation(name = "SubAsso", pluralName = "SubAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class)
+        @IpsAssociation(name = "SubAsso", pluralName = "SubAssos", min = 0, max = 1, kind = AssociationKind.Composition, targetClass = Target.class)
         @IpsDerivedUnion
         public Target getSubAsso() {
             return subAssoTarget;
@@ -1170,7 +1171,7 @@ public class ProductAssociationTest {
         }
 
         @Override
-        @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Association, targetClass = Target.class, hide = true)
+        @IpsAssociation(name = "overriddenAsso", pluralName = "overriddenAssos", min = 0, max = 1, kind = AssociationKind.Composition, targetClass = Target.class, hide = true)
         public Target getOverriddenAsso() {
             return super.getOverriddenAsso();
         }
