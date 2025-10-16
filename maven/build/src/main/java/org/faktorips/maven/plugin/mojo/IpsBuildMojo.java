@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
@@ -43,7 +44,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -459,34 +459,31 @@ public class IpsBuildMojo extends AbstractMojo {
      */
     private List<String> exceptionTexts;
 
-    @Component
+    @Inject
     private MavenProject project;
 
-    @Component
+    @Inject
     private EquinoxInstallationFactory installationFactory;
 
-    @Component
+    @Inject
     private EquinoxLauncher launcher;
 
-    @Component
+    @Inject
     private ToolchainProvider toolchainProvider;
 
-    @Component
+    @Inject
     private P2ResolverFactory equinox;
 
-    @Component
+    @Inject
     private Logger logger;
 
-    @Component
+    @Inject
     private ToolchainManager toolchainManager;
-
-    @Component
-    private PluginDescriptor pluginDescriptor;
 
     @Parameter
     private File installation;
 
-    @Component
+    @Inject
     private TargetPlatformFactory platformFactory;
 
     /**

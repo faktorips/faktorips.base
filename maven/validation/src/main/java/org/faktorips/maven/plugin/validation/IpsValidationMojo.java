@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -24,6 +25,8 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.inject.Inject;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
@@ -31,12 +34,17 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
+import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;
+import org.apache.maven.shared.dependency.graph.DependencyNode;
+import org.apache.maven.shared.dependency.graph.traversal.CollectingDependencyNodeVisitor;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
@@ -56,7 +64,7 @@ import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFa
 /**
  * Creates a Faktor-IPS project for the current Maven project and validates it.
  */
-@Mojo(name = "faktorips-validate", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
+@Mojo(name = "faktorips-validate", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST, requiresDependencyCollection = ResolutionScope.TEST)
 public class IpsValidationMojo extends AbstractMojo {
 
     /* private */ static final String BUILD_FAILURE_MESSAGE = "The Faktor-IPS Validation ended with Errors.";
@@ -73,11 +81,20 @@ public class IpsValidationMojo extends AbstractMojo {
     @Parameter(property = "faktorips.ignoreValidationErrors", defaultValue = "false")
     private boolean ignoreValidationErrors;
 
-    @Parameter(property = "session", readonly = true, required = true)
-    private MavenSession session;
+    private final MavenProject project;
 
-    @Component
-    private MavenProject project;
+    private final MavenSession session;
+
+    private final DependencyGraphBuilder dependencyGraphBuilder;
+
+    @Inject
+    public IpsValidationMojo(MavenProject project,
+            MavenSession session,
+            DependencyGraphBuilder dependencyGraphBuilder) {
+        this.project = project;
+        this.session = session;
+        this.dependencyGraphBuilder = dependencyGraphBuilder;
+    }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -190,16 +207,18 @@ public class IpsValidationMojo extends AbstractMojo {
         ArtifactRepository repository = session.getLocalRepository();
         // don't let multiple runs of the validation plugin do this concurrently
         synchronized (repository) {
-            for (Artifact artifact : project.getArtifacts()) {
-                File originalFile = null;
+            List<DependencyNode> children = getChildrenFromDependencyGraphBuilder(project);
+            for (DependencyNode node : children) {
+                Artifact artifact = node.getArtifact();
+                if (isItself(artifact, project)) {
+                    continue;
+                }
+                File originalFile = artifact.getFile();
                 try {
-                    originalFile = artifact.getFile();
                     // find sets the artifact's file to the one expected in the repository,
                     // even if it does not exist, so we have to reset this afterwards
                     File fileFromRepository = repository.find(artifact).getFile();
-                    if (upstreamProjects.stream().anyMatch(d -> d.artifactId().equals(artifact.getArtifactId())
-                            && d.groupId().equals(artifact.getGroupId())
-                            && d.version().equals(artifact.getVersion()))) {
+                    if (upstreamProjects.stream().anyMatch(ipsDependency -> isItself(artifact, ipsDependency))) {
                         // already a local dependency
                         getLog().info("Using upstream project for " + artifact);
                     } else if (fileFromRepository.exists() && isFipsProjectFromManifest(fileFromRepository)) {
@@ -210,7 +229,35 @@ public class IpsValidationMojo extends AbstractMojo {
                 }
             }
         }
+
         return dependencies;
+    }
+
+    private List<DependencyNode> getChildrenFromDependencyGraphBuilder(MavenProject project) {
+        ProjectBuildingRequest buildingRequest = new DefaultProjectBuildingRequest(session.getProjectBuildingRequest());
+        buildingRequest.setProject(project);
+        DependencyNode depenGraphRootNode;
+        try {
+            depenGraphRootNode = dependencyGraphBuilder.buildDependencyGraph(buildingRequest, null);
+
+            CollectingDependencyNodeVisitor visitor = new CollectingDependencyNodeVisitor();
+            depenGraphRootNode.accept(visitor);
+            return visitor.getNodes();
+        } catch (DependencyGraphBuilderException e) {
+            throw new RuntimeException("Failed to collect dependencies in Maven project" + project.getName(), e);
+        }
+    }
+
+    private boolean isItself(Artifact artifact, IpsDependency ipsDependency) {
+        return Objects.equals(ipsDependency.artifactId(), artifact.getArtifactId())
+                && Objects.equals(ipsDependency.groupId(), artifact.getGroupId())
+                && Objects.equals(ipsDependency.version(), artifact.getVersion());
+    }
+
+    private boolean isItself(Artifact artifact, MavenProject mproject) {
+        return Objects.equals(mproject.getArtifactId(), artifact.getArtifactId())
+                && Objects.equals(mproject.getGroupId(), artifact.getGroupId())
+                && Objects.equals(mproject.getVersion(), artifact.getVersion());
     }
 
     private boolean isFipsProjectFromManifest(File file) {

@@ -23,16 +23,35 @@
           "ignore": true,
           "differences": [
             {
-              "ignore": true,
               "code": "java.method.addedToInterface",
               "new": "method boolean org.apache.maven.execution.MavenExecutionRequest::isIgnoreTransitiveRepositories()",
               "justification": "Update to Maven 3.9.9"
             },
             {
-              "ignore": true,
               "code": "java.method.addedToInterface",
               "new": "method org.apache.maven.execution.MavenExecutionRequest org.apache.maven.execution.MavenExecutionRequest::setIgnoreTransitiveRepositories(boolean)",
               "justification": "Update to Maven 3.9.9"
+            },
+            {
+              "code": "java.method.numberOfParametersChanged",
+              "old": "method void org.faktorips.maven.plugin.validation.IpsValidationMojo::<init>()",
+              "new": "method void org.faktorips.maven.plugin.validation.IpsValidationMojo::<init>(org.apache.maven.project.MavenProject, org.apache.maven.execution.MavenSession, org.apache.maven.shared.dependency.graph.DependencyGraphBuilder)",
+              "justification": "FIPS-13657"
+            },
+            {
+              "code": "java.annotation.added",
+              "old": "method void org.faktorips.maven.plugin.validation.IpsValidationMojo::<init>()",
+              "new": "method void org.faktorips.maven.plugin.validation.IpsValidationMojo::<init>(org.apache.maven.project.MavenProject, org.apache.maven.execution.MavenSession, org.apache.maven.shared.dependency.graph.DependencyGraphBuilder)",
+              "annotation": "@javax.inject.Inject",
+              "justification": "FIPS-13657"
+            },
+            {
+              "code": "java.annotation.attributeAdded",
+              "old": "class org.faktorips.maven.plugin.validation.IpsValidationMojo",
+              "new": "class org.faktorips.maven.plugin.validation.IpsValidationMojo",
+              "annotation": "@org.apache.maven.plugins.annotations.Mojo(name = \"faktorips-validate\", defaultPhase = org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE, threadSafe = true, requiresDependencyResolution = org.apache.maven.plugins.annotations.ResolutionScope.TEST, requiresDependencyCollection = org.apache.maven.plugins.annotations.ResolutionScope.TEST)",
+              "attribute": "requiresDependencyCollection",
+              "justification": "FIPS-13657"
             }
           ]
         }

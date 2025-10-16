@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,7 +11,7 @@ package org.faktorips.maven.plugin.validation;
 
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
@@ -59,7 +59,7 @@ record IpsValidationMessageMapper(Log log, MavenProject project) {
                     StringBuilder pathToDatatypeClass = new StringBuilder()
                             .append(compileSourceRoot)
                             .append(File.separatorChar)
-                            .append(StringUtils.replace(datatypeClassName, ".", String.valueOf(File.separatorChar)))
+                            .append(Strings.CS.replace(datatypeClassName, ".", String.valueOf(File.separatorChar)))
                             .append(".java");
 
                     if (FileUtils.fileExists(pathToDatatypeClass.toString())) {
