@@ -1,5 +1,5 @@
-@Library('f10-jenkins-library@1.1_patches')
-@Library('fips-jenkins-library@main')
+library 'f10-jenkins-library@1.1_patches'
+library 'fips-jenkins-library@main'
 
 pipeline {
     agent any
