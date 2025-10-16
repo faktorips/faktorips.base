@@ -1,14 +1,6 @@
 @Library('f10-jenkins-library@1.1_patches')
 @Library('fips-jenkins-library@main')
 
-import java.text.MessageFormat
-import org.faktorips.jenkins.MavenProjectVersion
-
-def mavenDocFolder = './maven/faktorips-maven-plugin'
-def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
-def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
-def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
-
 pipeline {
     agent any
 
@@ -67,17 +59,10 @@ pipeline {
 
         stage('Deploy Additional Artifacts') {
             steps {
-                script {
-                    def xmlfile = readFile 'pom.xml'
-                    def fipsVersion = MavenProjectVersion.fromPom(xmlfile)
-                    def (_, major, minor, patch, kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
-                    sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
-                        // deploy maven plugin doc
-                        def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer server: 'doc@doc.faktorzehn.org', port: '2004', localFolder: mavenDocFolder, remoteFolder: "${mavenDocDeployFolder}/${fipsVersion}"
-                        // deploy xsd
-                        replaceOnServer server: 'doc@doc.faktorzehn.org', port: '2004', localFolder: xsdFolder, remoteFolder: xsdDeployFolder
-                    }
+                withMaven(publisherStrategy: 'EXPLICIT') {
+                    uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', legacyMode: true, legacyUser: 'jenkins-fips-legacy'
+                    // SNAPSHOT versions should also publish to major.minor
+                    uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', releasePattern: /(?<major>\d+)\.(?<minor>\d+)\.(\d+)(-SNAPSHOT)?/, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                 }
             }
         }
