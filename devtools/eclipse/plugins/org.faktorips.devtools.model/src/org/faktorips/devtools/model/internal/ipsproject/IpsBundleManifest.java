@@ -409,7 +409,7 @@ public class IpsBundleManifest {
         }
         for (IIpsSrcFolderEntry entry : srcFolderEntries) {
             if (entry != null && entry.getSourceFolder() != null) {
-                String folderName = entry.getSourceFolder().getProjectRelativePath().toString();
+                String folderName = getSourceFolderString(entry);
                 Attributes folderAttributes = new Attributes();
 
                 manifest.getEntries().put(folderName, folderAttributes);
@@ -477,9 +477,13 @@ public class IpsBundleManifest {
         String tocPath = entry.getBasePackageRelativeTocPath();
         tocPath = tocPath != null ? tocPath : "faktorips-repository-toc.xml";
 
-        builder.append(entry.getSourceFolder().getProjectRelativePath().toString());
+        builder.append(getSourceFolderString(entry));
         builder.append(";toc=\"").append(tocPath).append("\"");
         builder.append(";validation-messages=\"").append(entry.getValidationMessagesBundle()).append("\"");
+    }
+
+    private String getSourceFolderString(IIpsSrcFolderEntry entry) {
+        return entry.getSourceFolder().getProjectRelativePath().toString().replace('\\', '/');
     }
 
     private void saveManifestToFile(AFile manifestFile) {
@@ -491,7 +495,6 @@ public class IpsBundleManifest {
                 String lineSeparator = project.getDefaultLineSeparator();
                 String content = getContentAsString(manifestFile.getContents());
                 content = content.replaceAll("\\r?\\n", lineSeparator);
-                content = content.replace('\\', '/');
                 manifestFile.setContents(
                         new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), true,
                         null);
