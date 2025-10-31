@@ -125,6 +125,9 @@ public class IpsBundleManifestTest {
     public void createIpsBundleManifest() throws IOException {
         mockManifest();
         ipsBundleManifest = new IpsBundleManifest(manifest);
+        AProject project = mock(AProject.class);
+        when(project.getDefaultLineSeparator()).thenReturn("\n");
+        when(ipsProject.getProject()).thenReturn(project);
     }
 
     public void mockManifest() throws IOException {
@@ -436,10 +439,8 @@ public class IpsBundleManifestTest {
         Path eclipseManifestPath = mock(Path.class);
         when(eclipseManifestFile.getLocation()).thenReturn(eclipseManifestPath);
         when(eclipseManifestPath.toFile()).thenReturn(manifestFile);
-        AProject project = mock(AProject.class);
-        when(project.getDefaultLineSeparator()).thenReturn("\n");
-        when(eclipseManifestFile.getProject()).thenReturn(project);
         when(eclipseManifestFile.getContents()).thenReturn(new FileInputStream(manifestFile));
+
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             try {
@@ -538,11 +539,8 @@ public class IpsBundleManifestTest {
         when(sourceFolderEntry2.getSourceFolder()).thenReturn(sourceFolder2);
         when(sourceFolder2.getProjectRelativePath()).thenReturn(Path.of("test"));
         when(sourceFolderEntry2.getValidationMessagesBundle()).thenReturn("test-validation-messages");
-        AFile eclipseManifestFile = mock(AFile.class);
-        Path eclipseManifestPath = mock(Path.class);
-        when(eclipseManifestFile.getLocation()).thenReturn(eclipseManifestPath);
         File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
-        when(eclipseManifestPath.toFile()).thenReturn(manifestFile);
+        AFile eclipseManifestFile = mockEclipseManifestFile(manifestFile);
 
         ipsBundleManifest.writeBuilderSettings(ipsProject, eclipseManifestFile);
 
@@ -597,11 +595,8 @@ public class IpsBundleManifestTest {
 
         when(sourceFolderEntry.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.abc");
 
-        AFile manifestAFile = mock(AFile.class);
-        Path manifestPath = mock(Path.class);
-        when(manifestAFile.getLocation()).thenReturn(manifestPath);
         File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
-        when(manifestPath.toFile()).thenReturn(manifestFile);
+        AFile manifestAFile = mockEclipseManifestFile(manifestFile);
 
         ipsBundleManifest.writeBuilderSettings(ipsProject, manifestAFile);
 
@@ -676,12 +671,8 @@ public class IpsBundleManifestTest {
 
         when(sourceFolderEntry.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.abc");
 
-        AFile manifestAFile = mock(AFile.class);
-        Path manifestPath = mock(Path.class);
-        when(manifestAFile.getLocation()).thenReturn(manifestPath);
         File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
-        when(manifestPath.toFile()).thenReturn(manifestFile);
-
+        AFile manifestAFile = mockEclipseManifestFile(manifestFile);
         ipsBundleManifest.writeBuilderSettings(ipsProject, manifestAFile);
 
         manifest = new Manifest(new FileInputStream(manifestFile));
@@ -734,5 +725,158 @@ public class IpsBundleManifestTest {
                 return Objects.equals(attributes.getValue(key), value);
             }
         };
+    }
+
+    @Test
+    public void testSortBySourceFolder_maintainsSourceFolderOrder() throws IOException {
+        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
+        when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(ipsProject.getRuntimeIdPrefix()).thenReturn("pre.");
+        IIpsArtefactBuilderSetConfig builderSetConfig = mock(IIpsArtefactBuilderSetConfig.class);
+        when(builderSet.getConfig()).thenReturn(builderSetConfig);
+        when(builderSetConfig.getPropertyNames()).thenReturn(new String[] {});
+
+        IIpsObjectPath ipsObjectPath = mock(IIpsObjectPath.class);
+        when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
+        when(ipsObjectPath.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.package");
+        when(ipsObjectPath.isOutputDefinedPerSrcFolder()).thenReturn(true);
+
+        // Create three source folders in specific order: model, test, integration
+        IIpsSrcFolderEntry sourceFolderEntry1 = mock(IIpsSrcFolderEntry.class);
+        IIpsSrcFolderEntry sourceFolderEntry2 = mock(IIpsSrcFolderEntry.class);
+        IIpsSrcFolderEntry sourceFolderEntry3 = mock(IIpsSrcFolderEntry.class);
+        when(ipsObjectPath.getSourceFolderEntries())
+                .thenReturn(new IIpsSrcFolderEntry[] { sourceFolderEntry1, sourceFolderEntry2, sourceFolderEntry3 });
+
+        AFolder sourceFolder1 = mock(AFolder.class);
+        when(sourceFolderEntry1.getSourceFolder()).thenReturn(sourceFolder1);
+        when(sourceFolder1.getProjectRelativePath()).thenReturn(Path.of("model"));
+        when(sourceFolderEntry1.getValidationMessagesBundle()).thenReturn("validation-messages");
+
+        AFolder sourceFolder2 = mock(AFolder.class);
+        when(sourceFolderEntry2.getSourceFolder()).thenReturn(sourceFolder2);
+        when(sourceFolder2.getProjectRelativePath()).thenReturn(Path.of("test"));
+        when(sourceFolderEntry2.getValidationMessagesBundle()).thenReturn("test-validation-messages");
+
+        AFolder sourceFolder3 = mock(AFolder.class);
+        when(sourceFolderEntry3.getSourceFolder()).thenReturn(sourceFolder3);
+        when(sourceFolder3.getProjectRelativePath()).thenReturn(Path.of("integration"));
+        when(sourceFolderEntry3.getValidationMessagesBundle()).thenReturn("integration-validation-messages");
+
+        File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
+        AFile eclipseManifestFile = mockEclipseManifestFile(manifestFile);
+
+        ipsBundleManifest.writeBuilderSettings(ipsProject, eclipseManifestFile);
+
+        String manifestContent = Files.readString(manifestFile.toPath());
+
+        // Verify that Name: sections appear in the order they were added: model, test, integration
+        int modelIndex = manifestContent.indexOf("Name: model");
+        int testIndex = manifestContent.indexOf("Name: test");
+        int integrationIndex = manifestContent.indexOf("Name: integration");
+
+        assertThat(modelIndex, is(not(-1)));
+        assertThat(testIndex, is(not(-1)));
+        assertThat(integrationIndex, is(not(-1)));
+
+        // Verify the order: model < test < integration
+        assertThat("model should come before test", modelIndex < testIndex, is(true));
+        assertThat("test should come before integration", testIndex < integrationIndex, is(true));
+    }
+
+    @Test
+    public void testSortBySourceFolder_withAlphabeticallyReversedOrder() throws IOException {
+        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
+        when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(ipsProject.getRuntimeIdPrefix()).thenReturn("pre.");
+        IIpsArtefactBuilderSetConfig builderSetConfig = mock(IIpsArtefactBuilderSetConfig.class);
+        when(builderSet.getConfig()).thenReturn(builderSetConfig);
+        when(builderSetConfig.getPropertyNames()).thenReturn(new String[] {});
+
+        IIpsObjectPath ipsObjectPath = mock(IIpsObjectPath.class);
+        when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
+        when(ipsObjectPath.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.package");
+        when(ipsObjectPath.isOutputDefinedPerSrcFolder()).thenReturn(true);
+
+        // Create folders in reverse alphabetical order: zebra, yankee, xray
+        IIpsSrcFolderEntry sourceFolderEntry1 = mock(IIpsSrcFolderEntry.class);
+        IIpsSrcFolderEntry sourceFolderEntry2 = mock(IIpsSrcFolderEntry.class);
+        IIpsSrcFolderEntry sourceFolderEntry3 = mock(IIpsSrcFolderEntry.class);
+        when(ipsObjectPath.getSourceFolderEntries())
+                .thenReturn(new IIpsSrcFolderEntry[] { sourceFolderEntry1, sourceFolderEntry2, sourceFolderEntry3 });
+
+        AFolder sourceFolder1 = mock(AFolder.class);
+        when(sourceFolderEntry1.getSourceFolder()).thenReturn(sourceFolder1);
+        when(sourceFolder1.getProjectRelativePath()).thenReturn(Path.of("zebra"));
+        when(sourceFolderEntry1.getValidationMessagesBundle()).thenReturn("validation-messages");
+
+        AFolder sourceFolder2 = mock(AFolder.class);
+        when(sourceFolderEntry2.getSourceFolder()).thenReturn(sourceFolder2);
+        when(sourceFolder2.getProjectRelativePath()).thenReturn(Path.of("yankee"));
+        when(sourceFolderEntry2.getValidationMessagesBundle()).thenReturn("validation-messages");
+
+        AFolder sourceFolder3 = mock(AFolder.class);
+        when(sourceFolderEntry3.getSourceFolder()).thenReturn(sourceFolder3);
+        when(sourceFolder3.getProjectRelativePath()).thenReturn(Path.of("xray"));
+        when(sourceFolderEntry3.getValidationMessagesBundle()).thenReturn("validation-messages");
+
+        File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
+        AFile eclipseManifestFile = mockEclipseManifestFile(manifestFile);
+
+        ipsBundleManifest.writeBuilderSettings(ipsProject, eclipseManifestFile);
+
+        String manifestContent = Files.readString(manifestFile.toPath());
+
+        // Verify that Name: sections appear in array order (zebra, yankee, xray), NOT alphabetical order
+        int zebraIndex = manifestContent.indexOf("Name: zebra");
+        int yankeeIndex = manifestContent.indexOf("Name: yankee");
+        int xrayIndex = manifestContent.indexOf("Name: xray");
+
+        assertThat(zebraIndex, is(not(-1)));
+        assertThat(yankeeIndex, is(not(-1)));
+        assertThat(xrayIndex, is(not(-1)));
+
+        // Verify the order matches array order, not alphabetical
+        assertThat("zebra should come before yankee", zebraIndex < yankeeIndex, is(true));
+        assertThat("yankee should come before xray", yankeeIndex < xrayIndex, is(true));
+    }
+
+    @Test
+    public void testSortBySourceFolder_singleSourceFolder() throws IOException {
+        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
+        when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(ipsProject.getRuntimeIdPrefix()).thenReturn("pre.");
+        IIpsArtefactBuilderSetConfig builderSetConfig = mock(IIpsArtefactBuilderSetConfig.class);
+        when(builderSet.getConfig()).thenReturn(builderSetConfig);
+        when(builderSetConfig.getPropertyNames()).thenReturn(new String[] {});
+
+        IIpsObjectPath ipsObjectPath = mock(IIpsObjectPath.class);
+        when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
+        when(ipsObjectPath.getBasePackageNameForMergableJavaClasses()).thenReturn("org.test.package");
+        when(ipsObjectPath.isOutputDefinedPerSrcFolder()).thenReturn(true);
+
+        IIpsSrcFolderEntry sourceFolderEntry = mock(IIpsSrcFolderEntry.class);
+        when(ipsObjectPath.getSourceFolderEntries()).thenReturn(new IIpsSrcFolderEntry[] { sourceFolderEntry });
+
+        AFolder sourceFolder = mock(AFolder.class);
+        when(sourceFolderEntry.getSourceFolder()).thenReturn(sourceFolder);
+        when(sourceFolder.getProjectRelativePath()).thenReturn(Path.of("model"));
+        when(sourceFolderEntry.getValidationMessagesBundle()).thenReturn("validation-messages");
+
+        File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
+        AFile eclipseManifestFile = mockEclipseManifestFile(manifestFile);
+
+        ipsBundleManifest.writeBuilderSettings(ipsProject, eclipseManifestFile);
+
+        String manifestContent = Files.readString(manifestFile.toPath());
+
+        // Should contain the single Name: section
+        assertThat(manifestContent, containsString("Name: model"));
+
+        // Should end with a newline
+        assertThat(manifestContent.endsWith("\n"), is(true));
     }
 }

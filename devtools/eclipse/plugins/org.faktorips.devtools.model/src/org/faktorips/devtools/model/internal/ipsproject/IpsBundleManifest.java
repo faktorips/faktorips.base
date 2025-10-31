@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,6 @@ import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.util.StringBuilderJoiner;
@@ -91,9 +91,6 @@ import org.osgi.framework.BundleException;
  * In this example there are two model folders: 'model' and 'test'. The second one has its output
  * folders configured to 'testSrc' and 'testResource' while the first one uses the default
  * configuration 'src' and 'resource'
- * <p>
- * In contrast to the configuration via {@link IIpsProjectProperties} there is no ability to
- * configure different base packages for different output directories.
  *
  * @see IpsObjectPathManifestReader
  *
@@ -274,7 +271,8 @@ public class IpsBundleManifest {
             ManifestElement[] manifestElements = getManifestElements(generatorConfigString);
             if (manifestElements != null) {
                 for (ManifestElement manifestElement : manifestElements) {
-                    if (manifestElement.getValue().toLowerCase().contains(builderSetId.toLowerCase())) {
+                    // Use exact match (case-insensitive) to avoid false positives from substring matching
+                    if (manifestElement.getValue().equalsIgnoreCase(builderSetId)) {
                         Enumeration<String> keys = manifestElement.getKeys();
                         while (keys.hasMoreElements()) {
                             String key = keys.nextElement();
@@ -308,7 +306,7 @@ public class IpsBundleManifest {
         writeBasicManifestHeaders(attributes);
         writeIpsProjectSettings(ipsProject, attributes);
         writeGeneratorConfiguration(ipsProject, attributes);
-        saveManifestToFile(manifestFile);
+        saveManifestToFile(ipsProject, manifestFile);
     }
 
     private void writeBasicManifestHeaders(Attributes attributes) {
@@ -349,7 +347,8 @@ public class IpsBundleManifest {
             sb.append('=');
             sb.append('"');
             String value = Objects.toString(p.getValue());
-            sb.append(value.replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
+            // Escape backslashes first, then quotes to prevent invalid escape sequences
+            sb.append(value.replace("\\", "\\\\").replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
             sb.append('"');
         });
 
@@ -486,19 +485,22 @@ public class IpsBundleManifest {
         return entry.getSourceFolder().getProjectRelativePath().toString().replace('\\', '/');
     }
 
-    private void saveManifestToFile(AFile manifestFile) {
+    private void saveManifestToFile(IIpsProject ipsProject, AFile manifestFile) {
         File actualManifestFile = manifestFile.getLocation().toFile();
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath != null ? ipsObjectPath.getSourceFolderEntries()
+                : new IIpsSrcFolderEntry[0];
         try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);
-            AProject project = manifestFile.getProject();
-            if (project != null) {
-                String lineSeparator = project.getDefaultLineSeparator();
-                String content = getContentAsString(manifestFile.getContents());
-                content = content.replaceAll("\\r?\\n", lineSeparator);
-                manifestFile.setContents(
-                        new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), true,
-                        null);
+            AProject project = ipsProject.getProject();
+            String lineSeparator = project.getDefaultLineSeparator();
+            String content = getContentAsString(manifestFile.getContents());
+            content = content.replaceAll("\\r?\\n", "\n");
+            content = sortBySourceFolder(srcFolderEntries, content);
+            if (!"\n".equals(lineSeparator)) {
+                content = content.replaceAll("\\n", lineSeparator);
             }
+            manifestFile.setContents(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)), true, null);
         } catch (IOException e) {
             throw new IpsException(new IpsStatus("Can't write " + actualManifestFile, e)); //$NON-NLS-1$
         }
@@ -509,6 +511,95 @@ public class IpsBundleManifest {
             return StringUtil.readFromInputStream(is, StandardCharsets.UTF_8.name());
         } catch (IOException e) {
             throw new IpsException(new IpsStatus(e));
+        }
+    }
+
+    /**
+     * Sorts the "Name:" sections (object paths) in the manifest content according to the order in
+     * the source folder entries array, while preserving the main attributes section at the top.
+     *
+     * @param srcFolderEntries the array defining the desired order
+     * @param manifestContent The manifest content as a string
+     * @return The manifest content with sorted Name: sections
+     */
+    private String sortBySourceFolder(IIpsSrcFolderEntry[] srcFolderEntries, String manifestContent) {
+        String namePattern = "\nName: ";
+        int firstNameIndex = manifestContent.indexOf(namePattern);
+
+        if (firstNameIndex == -1) {
+            return manifestContent;
+        }
+
+        String mainSection = manifestContent.substring(0, firstNameIndex + 1);
+        String namedSectionsContent = manifestContent.substring(firstNameIndex + 1);
+
+        String[] sections = namedSectionsContent.split("\n(?=Name: )");
+
+        Map<String, String> namedSections = new TreeMap<>(new SourceFolderOrderComparator(srcFolderEntries));
+        for (String section : sections) {
+            if (section.trim().isEmpty()) {
+                continue;
+            }
+            int nameEnd = section.indexOf('\n');
+            if (nameEnd == -1) {
+                nameEnd = section.length();
+            }
+            String nameLine = section.substring(0, nameEnd);
+            String name = nameLine.substring("Name: ".length()).trim();
+            namedSections.put(name, section);
+        }
+        StringBuilder result = new StringBuilder(mainSection);
+        for (String section : namedSections.values()) {
+            result.append(section);
+            // needed for non IPS entries
+            if (!section.endsWith("\n\n")) {
+                if (section.endsWith("\n")) {
+                    result.append('\n');
+                } else {
+                    result.append("\n\n");
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Comparator that sorts source folder paths according to their order in a given array of source
+     * folder entries.
+     */
+    private class SourceFolderOrderComparator implements Comparator<String> {
+
+        private final Map<String, Integer> orderMap = new HashMap<>();
+
+        /**
+         * Creates a new comparator for the given source folder entries.
+         *
+         * @param srcFolderEntries to get the array defining the desired order
+         */
+        SourceFolderOrderComparator(IIpsSrcFolderEntry[] srcFolderEntries) {
+            for (int i = 0; i < srcFolderEntries.length; i++) {
+                IIpsSrcFolderEntry entry = srcFolderEntries[i];
+                if (entry != null && entry.getSourceFolder() != null) {
+                    String folderPath = getSourceFolderString(entry);
+                    orderMap.put(folderPath, i);
+                }
+            }
+        }
+
+        @Override
+        public int compare(String path1, String path2) {
+            Integer index1 = orderMap.get(path1);
+            Integer index2 = orderMap.get(path2);
+            if (index1 != null && index2 != null) {
+                return Integer.compare(index1, index2);
+            }
+            if (index1 == null && index2 != null) {
+                return 1;
+            }
+            if (index1 != null && index2 == null) {
+                return -1;
+            }
+            return path1.compareTo(path2);
         }
     }
 
