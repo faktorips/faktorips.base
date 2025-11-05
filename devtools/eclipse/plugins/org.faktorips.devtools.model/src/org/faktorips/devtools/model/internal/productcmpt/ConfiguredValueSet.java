@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
@@ -54,6 +55,8 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     public static final String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE_SET;
 
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+
+    private static final String PROPERTY_RELEVANCE = "relevance"; //$NON-NLS-1$ ;
 
     private IValueSet valueSet;
 
@@ -120,40 +123,9 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             return;
         }
 
+        // TODO: FIPS-13827 works but FIPS-12831 is still open, careful when fixing
         if (valueSetToValidate.isEnum() || valueSetToValidate.isRange()) {
-            if (modelValueSet.isStringLength()) {
-                MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
-                        (IEnumValueSet)valueSetToValidate,
-                        (IStringLengthValueSet)modelValueSet);
-                if (!valueValidationResult.isEmpty()) {
-                    list.add(valueValidationResult);
-                    return;
-                }
-            }
-            // TODO: FIPS-13827 works but FIPS-12831 is still open, careful when fixing
-            if (attribute.isValueSetConfiguredByProduct() && !modelValueSet.isEmpty()) {
-                ValueDatatype valueDatatype = attribute.findValueDatatype(ipsProject);
-                if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
-                        && (!modelValueSet.isAbstract() || valueDatatype.isPrimitive())) {
-
-                    String textForAtLeastOneValueRequired = MessageFormat.format(
-                            Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
-                            getPolicyCmptTypeAttribute());
-                    list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
-                            Message.ERROR, this, PROPERTY_VALUE_SET));
-
-                    if (attribute.isRelevanceConfiguredByProduct()) {
-                        String textForMandatoryMustRemainMandatory = MessageFormat.format(
-                                Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
-                                getPolicyCmptTypeAttribute());
-                        list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
-                                textForMandatoryMustRemainMandatory, Message.ERROR, this, PROPERTY_VALUE_SET));
-                    }
-
-                    return;
-                }
-            }
-
+            validateProductAgainstModel(list, ipsProject, attribute, valueSetToValidate, modelValueSet);
         }
 
         if (valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
@@ -190,6 +162,59 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         ObjectProperty[] invalidOP = invalidObjectProperties
                 .toArray(new ObjectProperty[invalidObjectProperties.size()]);
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
+    }
+
+    private void validateProductAgainstModel(MessageList list,
+            IIpsProject ipsProject,
+            IPolicyCmptTypeAttribute attribute,
+            IValueSet valueSetToValidate,
+            IValueSet modelValueSet) {
+        if (modelValueSet.isStringLength()) {
+            MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
+                    (IEnumValueSet)valueSetToValidate,
+                    (IStringLengthValueSet)modelValueSet);
+            if (!valueValidationResult.isEmpty()) {
+                list.add(valueValidationResult);
+                return;
+            }
+        }
+        if (isValueSetOrRelevanceConfiguredByProduct(attribute) && !modelValueSet.isEmpty()) {
+            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                    && isConcreteOrForPrimitives(attribute)) {
+                if (attribute.isValueSetConfiguredByProduct()) {
+                    String textForAtLeastOneValueRequired = MessageFormat.format(
+                            Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                            getPolicyCmptTypeAttribute());
+                    list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
+                            Message.ERROR, this, PROPERTY_VALUE_SET));
+                }
+                if (attribute.isRelevanceConfiguredByProduct()) {
+                    String textForMandatoryMustRemainMandatory = MessageFormat.format(
+                            Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
+                            getPolicyCmptTypeAttribute());
+                    list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
+                            textForMandatoryMustRemainMandatory, Message.ERROR, attribute, PROPERTY_RELEVANCE,
+                            PROPERTY_VALUE_SET));
+                }
+                return;
+            }
+        }
+    }
+
+    /**
+     * {@return {@code true} if the {@link IValueSet} is not abstract or the {@link ValueDatatype}
+     * of the attribute is a primitive}
+     */
+    private boolean isConcreteOrForPrimitives(IPolicyCmptTypeAttribute attribute) {
+        return !attribute.getValueSet().isAbstract() || attribute.findValueDatatype(getIpsProject()).isPrimitive();
+    }
+
+    /**
+     * {@return {@code true} if either the relevance or/and the value set of the attribute is
+     * configured by a {@link IProductCmpt}}
+     */
+    private boolean isValueSetOrRelevanceConfiguredByProduct(IPolicyCmptTypeAttribute attribute) {
+        return attribute.isRelevanceConfiguredByProduct() || attribute.isValueSetConfiguredByProduct();
     }
 
     private void validateEnumAgainstRange(MessageList list,
