@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2024-12)" sequenceNumber="42">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2024-12)" sequenceNumber="41">
     <locations>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
             <unit id="org.eclipse.buildship.feature.group" version="0.0.0"/>
@@ -538,7 +538,7 @@
             <repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-legacy/release/4.34.0"/>
             <unit id="org.eclipse.orbit.legacy.feature.group" version="0.0.0"/>
         </location>
-        <location type="Target" uri="mvn:org.faktorips:thirdparty:26.1.0.a20251106-01:target"/>
+        <location type="Target" uri="mvn:org.faktorips:thirdparty:26.1.0-SNAPSHOT:target"/>
         <location includeDependencyDepth="none" includeDependencyScopes="compile" includeSource="true" label="Maven Library Bundles" missingManifest="error" type="Maven">
             <dependencies>
                 <dependency>
