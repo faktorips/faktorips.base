@@ -209,8 +209,9 @@ public class IpsBundleManifest {
      * path is relative to the root folder (project or archive).
      *
      * @return A list of all configured objectDirs
+     * @throws BundleException
      */
-    public List<Path> getObjectDirs() {
+    public List<Path> getObjectDirs() throws BundleException {
         ArrayList<Path> result = new ArrayList<>();
         ManifestElement[] objectDirElements = getObjectDirElements();
         for (ManifestElement manifestElement : objectDirElements) {
@@ -219,35 +220,34 @@ public class IpsBundleManifest {
         return result;
     }
 
-    public ManifestElement[] getObjectDirElements() {
+    public ManifestElement[] getObjectDirElements() throws BundleException {
         Attributes attributes = manifest.getMainAttributes();
         if (attributes == null) {
             return new ManifestElement[0];
         }
         String value = getValue(attributes, HEADER_OBJECT_DIR);
-        return getManifestElements(value);
+        return getManifestElements(value, HEADER_OBJECT_DIR);
     }
 
     /**
      * Checks if this {@link IpsBundleManifest} has objectDirs. If it has objectDirs it returns
      * <code>true</code> and if not <code>false</code> is returned.
      *
+     * @throws BundleException
+     *
      * @see #getObjectDirs()
      */
-    public boolean hasObjectDirs() {
+    public boolean hasObjectDirs() throws BundleException {
         return !getObjectDirs().isEmpty();
     }
 
-    private ManifestElement[] getManifestElements(String value) {
-        try {
-            ManifestElement[] result = ManifestElement.parseHeader(HEADER_OBJECT_DIR, value);
-            if (result == null) {
-                return new ManifestElement[0];
-            } else {
-                return result;
-            }
-        } catch (BundleException e) {
-            throw new RuntimeException(e);
+    private ManifestElement[] getManifestElements(String value, String header) throws BundleException {
+        // header is only for error messages while parsing
+        ManifestElement[] result = ManifestElement.parseHeader(header, value);
+        if (result == null) {
+            return new ManifestElement[0];
+        } else {
+            return result;
         }
     }
 
@@ -263,15 +263,14 @@ public class IpsBundleManifest {
         return StringUtils.trim(attributes.getValue(name));
     }
 
-    public Map<String, String> getGeneratorConfig(String builderSetId) {
+    public Map<String, String> getGeneratorConfig(String builderSetId) throws BundleException {
         Map<String, String> generatorConfig = new HashMap<>();
         Attributes attributes = manifest.getMainAttributes();
         if (attributes != null) {
             String generatorConfigString = getValue(attributes, HEADER_GENERATOR_CONFIG);
-            ManifestElement[] manifestElements = getManifestElements(generatorConfigString);
+            ManifestElement[] manifestElements = getManifestElements(generatorConfigString, HEADER_GENERATOR_CONFIG);
             if (manifestElements != null) {
                 for (ManifestElement manifestElement : manifestElements) {
-                    // Use exact match (case-insensitive) to avoid false positives from substring matching
                     if (manifestElement.getValue().equalsIgnoreCase(builderSetId)) {
                         Enumeration<String> keys = manifestElement.getKeys();
                         while (keys.hasMoreElements()) {

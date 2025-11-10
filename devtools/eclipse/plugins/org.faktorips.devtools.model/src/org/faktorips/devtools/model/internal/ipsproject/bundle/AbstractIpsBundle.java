@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Set;
 
 import org.faktorips.devtools.abstraction.AResource;
@@ -21,6 +22,7 @@ import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.osgi.framework.BundleException;
 
 /**
  * This AbstractIpsBundle is an abstract implementation of a storage, which is included vi this
@@ -45,7 +47,12 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
 
     @Override
     public boolean isValid() {
-        return bundleManifest != null && bundleManifest.hasObjectDirs();
+        try {
+            return bundleManifest != null && bundleManifest.hasObjectDirs();
+        } catch (BundleException e) {
+            String message = MessageFormat.format(Messages.AbstractIpsBundle_msg_error_while_parsing, getLocation());
+            throw new RuntimeException(message, e);
+        }
     }
 
     @Override

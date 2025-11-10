@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.m2e.toctree;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsJarBundle;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.QNameUtil;
+import org.osgi.framework.BundleException;
 
 @SuppressWarnings("restriction")
 public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
@@ -102,7 +104,14 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
                     File jarBundleFile = getJarBundleFile(ipsJarBundle);
                     if (artifactFile.equals(jarBundleFile)) {
 
-                        String tocFileFromManifest = getTocFileFromManifest(ipsJarBundle);
+                        String tocFileFromManifest;
+                        try {
+                            tocFileFromManifest = getTocFileFromManifest(ipsJarBundle);
+                        } catch (BundleException e) {
+                            String message = MessageFormat.format("Error while parsing MANIFEST.MF from {0}.",
+                                    jarBundleFile.getAbsolutePath());
+                            throw new RuntimeException(message, e);
+                        }
 
                         if (parent != null && ipsDependencies.get(parent) != null) {
                             ipsDependencies.get(parent).addDependencies(new IpsMavenDependency(tocFileFromManifest));
@@ -115,7 +124,8 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
                 findIpsMavenDependenciesAndTocs(childNode, child, jarBundles, ipsDependencies, mp);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            String message = MessageFormat.format("Error while loading Dependency for {0}", mp.getName());
+            throw new RuntimeException(message, e);
         }
     }
 
@@ -130,7 +140,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
                 mavenProject.getRemoteArtifactRepositories(), new NullProgressMonitor());
     }
 
-    private String getTocFileFromManifest(IpsJarBundle jarBundle) {
+    private String getTocFileFromManifest(IpsJarBundle jarBundle) throws BundleException {
         IpsBundleManifest bundleManifest = jarBundle.getBundleManifest();
         for (ManifestElement manifestElement : bundleManifest.getObjectDirElements()) {
             String objectDir = manifestElement.getValue();

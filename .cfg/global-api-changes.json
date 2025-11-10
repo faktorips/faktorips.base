@@ -49,57 +49,49 @@
             "code": "java.method.abstractMethodAdded",
             "new": "method org.faktorips.runtime.internal.toc.EnumContentTocEntry org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents::getEnumContentTocEntryByQualifiedName(java.lang.String)",
             "justification": "FIPS-13773"
-            /*  "package": "org.faktorips.runtime.internal.toc",
-            "classQualifiedName": "org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents",
-            "classSimpleName": "AbstractReadonlyTableOfContents",
-            "methodName": "getEnumContentTocEntryByQualifiedName",
-            "elementKind": "method",
-            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
-            "newArchiveRole": "primary",
-            */
-
           },
           {
             "code": "java.method.abstractMethodAdded",
             "new": "method org.faktorips.runtime.internal.toc.ProductCmptTocEntry org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents::getProductCmptTocEntryByQualifiedName(java.lang.String)",
             "justification": "FIPS-13773"
-            /*  "package": "org.faktorips.runtime.internal.toc",
-            "classQualifiedName": "org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents",
-            "classSimpleName": "AbstractReadonlyTableOfContents",
-            "methodName": "getProductCmptTocEntryByQualifiedName",
-            "elementKind": "method",
-            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
-            "newArchiveRole": "primary",
-            */
-
           },
           {
             "code": "java.method.addedToInterface",
             "new": "method org.faktorips.runtime.internal.toc.EnumContentTocEntry org.faktorips.runtime.internal.toc.IReadonlyTableOfContents::getEnumContentTocEntryByQualifiedName(java.lang.String)",
             "justification": "FIPS-13773"
-            /*  "package": "org.faktorips.runtime.internal.toc",
-            "classQualifiedName": "org.faktorips.runtime.internal.toc.IReadonlyTableOfContents",
-            "classSimpleName": "IReadonlyTableOfContents",
-            "methodName": "getEnumContentTocEntryByQualifiedName",
-            "elementKind": "method",
-            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
-            "newArchiveRole": "primary",
-            */
-
           },
           {
             "code": "java.method.addedToInterface",
             "new": "method org.faktorips.runtime.internal.toc.ProductCmptTocEntry org.faktorips.runtime.internal.toc.IReadonlyTableOfContents::getProductCmptTocEntryByQualifiedName(java.lang.String)",
             "justification": "FIPS-13773"
-            /*  "package": "org.faktorips.runtime.internal.toc",
-            "classQualifiedName": "org.faktorips.runtime.internal.toc.IReadonlyTableOfContents",
-            "classSimpleName": "IReadonlyTableOfContents",
-            "methodName": "getProductCmptTocEntryByQualifiedName",
-            "elementKind": "method",
-            "newArchive": "org.faktorips:faktorips-runtime:jar:26.1.0-SNAPSHOT",
-            "newArchiveRole": "primary",
-            */
-
+          },
+          {
+            "code": "java.method.exception.checkedAdded",
+            "old": "method java.util.Map<java.lang.String, java.lang.String> org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::getGeneratorConfig(java.lang.String)",
+            "new": "method java.util.Map<java.lang.String, java.lang.String> org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::getGeneratorConfig(java.lang.String) throws org.osgi.framework.BundleException",
+            "exception": "org.osgi.framework.BundleException",
+            "justification": "FIPS-13842"
+          },
+          {
+            "code": "java.method.exception.checkedAdded",
+            "old": "method org.eclipse.osgi.util.ManifestElement[] org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::getObjectDirElements()",
+            "new": "method org.eclipse.osgi.util.ManifestElement[] org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::getObjectDirElements() throws org.osgi.framework.BundleException",
+            "exception": "org.osgi.framework.BundleException",
+            "justification": "FIPS-13842"
+          },
+          {
+            "code": "java.method.exception.checkedAdded",
+            "old": "method java.util.List<java.nio.file.Path> org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::getObjectDirs()",
+            "new": "method java.util.List<java.nio.file.Path> org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::getObjectDirs() throws org.osgi.framework.BundleException",
+            "exception": "org.osgi.framework.BundleException",
+            "justification": "FIPS-13842"
+          },
+          {
+            "code": "java.method.exception.checkedAdded",
+            "old": "method boolean org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::hasObjectDirs()",
+            "new": "method boolean org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::hasObjectDirs() throws org.osgi.framework.BundleException",
+            "exception": "org.osgi.framework.BundleException",
+            "justification": "FIPS-13842"
           }
         ]
       }

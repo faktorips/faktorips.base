@@ -1,25 +1,28 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions;
+import org.faktorips.devtools.model.internal.ipsproject.bundle.Messages;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.osgi.framework.BundleException;
 
 /**
  * This reader is used to create an {@link IIpsObjectPath} in when the option 'useManifest' in the
@@ -33,9 +36,9 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * If it is available, the container consists of all dependencies configured as OSGi dependencies in
  * the MANIFEST.MF. Hence all necessary information about the {@link IpsObjectPath} is located in
  * the MANIFEST file.
- * 
+ *
  * @see IpsProjectProperties
- * 
+ *
  * @author dirmeier
  */
 public class IpsObjectPathManifestReader {
@@ -56,7 +59,7 @@ public class IpsObjectPathManifestReader {
      * {@link IpsBundleManifest} and returns it. The object path consists of all
      * {@link IpsSrcFolderEntry source folder entries} and one {@link IpsContainerEntry} for the
      * required plugins (OSGi dependencies).
-     * 
+     *
      * @return A new {@link IIpsObjectPath} read from the manifest.
      */
     public IIpsObjectPath readIpsObjectPath() {
@@ -64,7 +67,14 @@ public class IpsObjectPathManifestReader {
         ipsObjectPath.setUsingManifest(true);
         ipsObjectPath.setOutputDefinedPerSrcFolder(true);
         ArrayList<IIpsObjectPathEntry> entries = new ArrayList<>();
-        ManifestElement[] objectDirElements = bundleManifest.getObjectDirElements();
+        ManifestElement[] objectDirElements = {};
+        try {
+            objectDirElements = bundleManifest.getObjectDirElements();
+        } catch (BundleException e) {
+            String message = MessageFormat.format(Messages.AbstractIpsBundle_msg_error_while_parsing,
+                    ipsProject.getName());
+            throw new RuntimeException(message, e);
+        }
         for (ManifestElement manifestElement : objectDirElements) {
             entries.add(readEntry(manifestElement, bundleManifest));
         }

@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.osgi.framework.BundleException;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsJarBundleTest {
@@ -115,7 +116,7 @@ public class IpsJarBundleTest {
         assertThat(result, is(rootFolder.resolve(element)));
     }
 
-    private void mockObjectDirs() {
+    private void mockObjectDirs() throws BundleException {
         IpsBundleManifest bundleManifest = spy(new IpsBundleManifest(mock(Manifest.class)));
         ipsJarBundle.setBundleManifest(bundleManifest);
         List<Path> pathList = new ArrayList<>();

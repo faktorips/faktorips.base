@@ -16,10 +16,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.jar.Manifest;
 
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.osgi.framework.BundleException;
 
 /**
  * This subclass of {@link AbstractIpsBundle} represents a folder version of an IPS bundle. The
@@ -52,8 +54,14 @@ public class IpsFolderBundle extends AbstractIpsBundle {
     public void initBundle() throws IOException {
         Manifest manifest = getManifest();
         if (manifest != null) {
-            setBundleManifest(new IpsBundleManifest(manifest));
-            setBundleContentIndex(new IpsFolderBundleContentIndex(folder, getBundleManifest().getObjectDirs()));
+            try {
+                setBundleManifest(new IpsBundleManifest(manifest));
+                setBundleContentIndex(new IpsFolderBundleContentIndex(folder, getBundleManifest().getObjectDirs()));
+            } catch (BundleException e) {
+                String message = MessageFormat.format(Messages.AbstractIpsBundle_msg_error_while_parsing,
+                        getLocation());
+                throw new RuntimeException(message, e);
+            }
         }
     }
 

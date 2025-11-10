@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.osgi.framework.BundleException;
 import org.w3c.dom.Element;
 
 /**
@@ -147,7 +149,14 @@ public class GeneratorModelContext {
             IIpsStorage ipsStorage,
             String builderSetId) {
         IpsBundleManifest bundleManifest = ((AbstractIpsBundle)ipsStorage).getBundleManifest();
-        Map<String, String> generatorConfig = bundleManifest.getGeneratorConfig(builderSetId);
+        Map<String, String> generatorConfig = new HashMap<>();
+        try {
+            generatorConfig = bundleManifest.getGeneratorConfig(builderSetId);
+        } catch (BundleException e) {
+            String message = MessageFormat.format(Messages.GeneratorModelContext_msg_error_while_parsing,
+                    ipsStorage.getLocation());
+            throw new RuntimeException(message, e);
+        }
         for (Entry<String, String> entry : generatorConfig.entrySet()) {
             ipsArtefactBuilderSetConfigModel.setPropertyValue(entry.getKey(), entry.getValue(), null);
         }
@@ -367,7 +376,7 @@ public class GeneratorModelContext {
     }
 
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
-        return entry.getUniqueBasePackageNameForDerivedArtifacts() + "."
+        return entry.getUniqueBasePackageNameForDerivedArtifacts() + "." //$NON-NLS-1$
                 + entry.getValidationMessagesBundle();
     }
 

@@ -59,6 +59,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.osgi.framework.BundleException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IpsBundleManifestTest {
@@ -297,7 +298,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirs() {
+    public void testGetObjectDirs() throws BundleException {
         List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
@@ -305,7 +306,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirElements_empty() {
+    public void testGetObjectDirElements_empty() throws BundleException {
         ipsBundleManifest = new IpsBundleManifest(mock(Manifest.class));
         ManifestElement[] objectDir = ipsBundleManifest.getObjectDirElements();
 
@@ -313,7 +314,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirElements_noValue() throws IOException {
+    public void testGetObjectDirElements_noValue() throws IOException, BundleException {
         manifest = new Manifest(new ByteArrayInputStream("""
                 Manifest-Version: 1.0
                 """.getBytes()));
@@ -325,7 +326,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetObjectDirElements() {
+    public void testGetObjectDirElements() throws BundleException {
         ManifestElement[] objectDir = ipsBundleManifest.getObjectDirElements();
 
         assertEquals(1, objectDir.length);
@@ -334,7 +335,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testHasObjectDirs() {
+    public void testHasObjectDirs() throws BundleException {
         List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
@@ -343,7 +344,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testHasObjectDirs_NoObjectDirs() {
+    public void testHasObjectDirs_NoObjectDirs() throws BundleException {
         ipsBundleManifest = new IpsBundleManifest(mock(Manifest.class));
         List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
@@ -352,7 +353,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetTocPath() {
+    public void testGetTocPath() throws BundleException {
         ManifestElement objectDirElement = ipsBundleManifest.getObjectDirElements()[0];
 
         String toc = ipsBundleManifest.getTocPath(objectDirElement);
@@ -361,14 +362,14 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetValidationMessagesBundle() {
+    public void testGetValidationMessagesBundle() throws BundleException {
         ManifestElement objectDirElement = ipsBundleManifest.getObjectDirElements()[0];
         String messages = ipsBundleManifest.getValidationMessagesBundle(objectDirElement);
         assertEquals(MY_MESSAGES, messages);
     }
 
     @Test
-    public void testGetGeneratorConfig_ConfiguredBuilderSet() {
+    public void testGetGeneratorConfig_ConfiguredBuilderSet() throws BundleException {
         Map<String, String> generatorConfig = ipsBundleManifest.getGeneratorConfig(STANDARD_BUILDER_SET_ID);
 
         assertThat(generatorConfig, is(notNullValue()));
@@ -378,7 +379,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetGeneratorConfig_ConfiguredBuilderSet_caseInsensitive() {
+    public void testGetGeneratorConfig_ConfiguredBuilderSet_caseInsensitive() throws BundleException {
         Map<String, String> generatorConfig = ipsBundleManifest
                 .getGeneratorConfig(STANDARD_BUILDER_SET_ID.toLowerCase());
 
@@ -389,7 +390,7 @@ public class IpsBundleManifestTest {
     }
 
     @Test
-    public void testGetGeneratorConfig_UnknownBuilderSet() {
+    public void testGetGeneratorConfig_UnknownBuilderSet() throws BundleException {
         Map<String, String> generatorConfig = ipsBundleManifest.getGeneratorConfig("FooBar");
 
         assertThat(generatorConfig, is(notNullValue()));
@@ -829,7 +830,8 @@ public class IpsBundleManifestTest {
 
         String manifestContent = Files.readString(manifestFile.toPath());
 
-        // Verify that Name: sections appear in array order (zebra, yankee, xray), NOT alphabetical order
+        // Verify that Name: sections appear in array order (zebra, yankee, xray), NOT alphabetical
+        // order
         int zebraIndex = manifestContent.indexOf("Name: zebra");
         int yankeeIndex = manifestContent.indexOf("Name: yankee");
         int xrayIndex = manifestContent.indexOf("Name: xray");

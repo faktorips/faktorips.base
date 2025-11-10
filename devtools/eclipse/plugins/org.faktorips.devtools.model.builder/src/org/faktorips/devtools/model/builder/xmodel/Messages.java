@@ -8,16 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.model.internal.ipsproject.bundle;
+package org.faktorips.devtools.model.builder.xmodel;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.model.internal.ipsproject.bundle.messages"; //$NON-NLS-1$
-
-    public static String IpsBundleEntry_msg_invalid;
-    public static String AbstractIpsBundle_msg_error_while_parsing;
-
+    private static final String BUNDLE_NAME = Messages.class.getPackageName() + ".messages"; //$NON-NLS-1$
+    public static String GeneratorModelContext_msg_error_while_parsing;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

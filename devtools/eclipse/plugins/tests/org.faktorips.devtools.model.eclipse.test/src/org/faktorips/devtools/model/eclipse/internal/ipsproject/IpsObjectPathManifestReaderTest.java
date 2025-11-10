@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.osgi.framework.BundleException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IpsObjectPathManifestReaderTest {
@@ -62,7 +63,11 @@ public class IpsObjectPathManifestReaderTest {
             when(objectDirElement.getValue()).thenReturn(objectDir);
             manifestElements[i++] = objectDirElement;
         }
-        when(bundleManifest.getObjectDirElements()).thenReturn(manifestElements);
+        try {
+            when(bundleManifest.getObjectDirElements()).thenReturn(manifestElements);
+        } catch (BundleException e) {
+            // ignore
+        }
         return manifestElements;
     }
 

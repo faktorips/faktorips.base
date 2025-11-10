@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -22,6 +23,7 @@ import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.StreamUtil;
+import org.osgi.framework.BundleException;
 
 /**
  * This subclass of {@link AbstractIpsBundle} represents a packed version of an IPS bundle. The
@@ -71,8 +73,14 @@ public class IpsJarBundle extends AbstractIpsBundle {
         JarFile jarFile = getJarFile();
         Manifest manifest = jarFile.getManifest();
         if (manifest != null) {
-            setBundleManifest(new IpsBundleManifest(manifest));
-            setBundleContentIndex(new IpsJarBundleContentIndex(jarFile, getBundleManifest().getObjectDirs()));
+            try {
+                setBundleManifest(new IpsBundleManifest(manifest));
+                setBundleContentIndex(new IpsJarBundleContentIndex(jarFile, getBundleManifest().getObjectDirs()));
+            } catch (BundleException e) {
+                String message = MessageFormat.format(Messages.AbstractIpsBundle_msg_error_while_parsing,
+                        getLocation());
+                throw new RuntimeException(message, e);
+            }
         }
     }
 

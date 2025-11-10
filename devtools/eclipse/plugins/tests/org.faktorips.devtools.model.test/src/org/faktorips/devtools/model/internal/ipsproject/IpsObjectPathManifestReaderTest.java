@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.osgi.framework.BundleException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IpsObjectPathManifestReaderTest {
@@ -165,7 +166,11 @@ public class IpsObjectPathManifestReaderTest {
             when(objectDirElement.getValue()).thenReturn(objectDir);
             manifestElements[i++] = objectDirElement;
         }
-        when(bundleManifest.getObjectDirElements()).thenReturn(manifestElements);
+        try {
+            when(bundleManifest.getObjectDirElements()).thenReturn(manifestElements);
+        } catch (BundleException e) {
+            // ignore
+        }
         return manifestElements;
     }
 
