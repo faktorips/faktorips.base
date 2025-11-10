@@ -48,7 +48,7 @@ class MethodsTmpl {
             «ENDIF»
         }
         «ENDIF»
-        «IF overloadsFormula && !genInterface»
+        «IF overloadsAndFormulaSignatureChanges && !genInterface»
             «val overloaded = overloadedFormulaMethod»
                 /**
                  *«inheritDoc»

@@ -174,6 +174,10 @@ public class XMethod extends AbstractGeneratorModelNode {
         }
     }
 
+    public boolean isOverloadsAndFormulaSignatureChanges() {
+        return isOverloadsFormula() && getMethod().findOverriddenMethod(getIpsProject()) == null;
+    }
+
     public XMethod getOverloadedFormulaMethod() {
         if (getMethod() instanceof IProductCmptTypeMethod) {
             IProductCmptTypeMethod overloadedFormulaMethod = ((IProductCmptTypeMethod)getMethod())
