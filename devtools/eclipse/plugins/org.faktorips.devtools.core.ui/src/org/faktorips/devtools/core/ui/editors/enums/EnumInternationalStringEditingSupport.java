@@ -48,7 +48,25 @@ public class EnumInternationalStringEditingSupport extends FormattedCellEditingS
                 element);
         InternationalStringControl control = new InternationalStringControl(getViewer().getTable(), toolkit, handler);
         control.setHeightHint(getViewer().getTable().getItemHeight());
+        bindTableRefresh(element);
         return new InternationalStringCellEditor(control);
+    }
+
+    private void bindTableRefresh(final IEnumValue enumValue) {
+        final org.faktorips.devtools.model.IIpsModel ipsModel = org.faktorips.devtools.model.IIpsModel.get();
+        final org.faktorips.devtools.model.ContentsChangeListener contentChangeListener = event -> {
+            if (event.isAffected(enumValue)) {
+                getViewer().refresh();
+            }
+        };
+        ipsModel.addChangeListener(contentChangeListener);
+        getViewer().getTable().addDisposeListener($ -> ipsModel.removeChangeListener(contentChangeListener));
+    }
+
+    @Override
+    protected void setValue(Object element, Object value) {
+        super.setValue(element, value);
+        getViewer().refresh(element, true);
     }
 
 }

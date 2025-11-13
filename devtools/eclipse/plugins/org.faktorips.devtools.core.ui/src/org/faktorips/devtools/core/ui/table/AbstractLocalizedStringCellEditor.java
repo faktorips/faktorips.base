@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.faktorips.values.LocalizedString;
  * the used control may not always be a single {@link Text} control (for example in
  * {@link InternationalStringCellEditor}. But every implementation of this cell editor have to
  * provide a {@link Text} control to get the input text from.
- * 
+ *
  * @author dirmeier
  */
 public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
@@ -68,6 +68,12 @@ public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
     protected void doSetFocus() {
         getTextControl().selectAll();
         getControl().setFocus();
+    }
+
+    @Override
+    protected void focusLost() {
+        super.focusLost();
+        doGetValue();
     }
 
     /**

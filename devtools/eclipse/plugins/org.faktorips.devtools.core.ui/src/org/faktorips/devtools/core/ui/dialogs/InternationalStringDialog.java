@@ -24,7 +24,9 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -105,6 +107,16 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
          * opened in browse mode, the Multi-Value button next to the attribute value's field is
          * disabled in that case.
          */
+    }
+
+    @Override
+    protected void okPressed() {
+        // make sure to trigger the focusLost Event before closing the dialog
+        if (tableViewer != null && tableViewer.isCellEditorActive()) {
+            tableViewer.getControl().forceFocus();
+            tableViewer.getControl().getDisplay().readAndDispatch();
+        }
+        super.okPressed();
     }
 
     @Override

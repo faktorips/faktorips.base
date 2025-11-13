@@ -12,11 +12,14 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.Locale;
 
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.dialogs.InternationalStringDialog;
 import org.faktorips.devtools.model.IInternationalString;
@@ -69,15 +72,7 @@ public class InternationalStringControl extends TextButtonControl {
 
     @Override
     protected void buttonClicked() {
-        if (!getTextControl().isDisposed()) {
-            String currentText = getTextControl().getText();
-            IInternationalString intString = handler.getInternationalString();
-            if (intString != null) {
-                String language = IIpsModel.get().getMultiLanguageSupport()
-                        .getLocalizationLocaleOrDefault(handler.getIpsProject()).getLanguage();
-                intString.add(new LocalizedString(Locale.of(language), currentText));
-            }
-        }
+        setInternationalString(getTextControl());
 
         handler.run();
     }
@@ -97,5 +92,23 @@ public class InternationalStringControl extends TextButtonControl {
                 buttonClicked();
             }
         });
+        getTextControl().addFocusListener(FocusListener.focusLostAdapter(
+                this::setInternationalString));
+    }
+
+    private void setInternationalString(FocusEvent e) {
+        setInternationalString((Text)e.getSource());
+    }
+
+    private void setInternationalString(Text text) {
+        if (!text.isDisposed()) {
+            String currentText = text.getText();
+            IInternationalString intString = handler.getInternationalString();
+            if (intString != null) {
+                String language = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizationLocaleOrDefault(handler.getIpsProject()).getLanguage();
+                intString.add(new LocalizedString(Locale.of(language), currentText));
+            }
+        }
     }
 }

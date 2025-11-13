@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.table;
 
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
+import org.faktorips.devtools.model.internal.InternationalString;
 
 /**
  * A cell editor using the {@link InternationalStringControl} to enter values in different
@@ -33,4 +34,31 @@ public class InternationalStringCellEditor extends AbstractLocalizedStringCellEd
         return getControl().getTextControl();
     }
 
+    @Override
+    protected void addStrategyAsListener(TraversalStrategy strategy) {
+        if (strategy != null) {
+            getTextControl().addKeyListener(strategy);
+            getTextControl().addTraverseListener(strategy);
+            getTextControl().addFocusListener(strategy);
+        }
+    }
+
+    /**
+     * Removes the given {@link TraversalStrategy} as listener from the text control.
+     * Overrides the behavior of the superclass to register on the text control instead of the
+     * composite control to allow proper "tab" use on {@link InternationalString} cells. 
+     */
+    private void removeStrategyAsListener(TraversalStrategy strategy) {
+        if (strategy != null && !getTextControl().isDisposed()) {
+            getTextControl().removeKeyListener(strategy);
+            getTextControl().removeTraverseListener(strategy);
+            getTextControl().removeFocusListener(strategy);
+        }
+    }
+
+    @Override
+    public void setTraversalStrategy(TraversalStrategy strategy) {
+        removeStrategyAsListener(getTraversalStrategy());
+        super.setTraversalStrategy(strategy);
+    }
 }
