@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ public abstract class AbstractCheckbox extends ControlComposite {
     /**
      * Use {@link Button} and {@link ButtonField} instead. {@link ButtonField} also allows inverting
      * the checked state of a check box.
-     * 
+     *
      * @deprecated as of FIPS 3.11
      */
     @Deprecated
@@ -98,7 +98,7 @@ public abstract class AbstractCheckbox extends ControlComposite {
     @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
-        if (eventType != SWT.Paint && eventType != SWT.Dispose) {
+        if (eventType != SWT.Paint && eventType != SWT.Dispose && eventType != SWT.ZoomChanged) {
             listenToControl(button, eventType);
         }
     }

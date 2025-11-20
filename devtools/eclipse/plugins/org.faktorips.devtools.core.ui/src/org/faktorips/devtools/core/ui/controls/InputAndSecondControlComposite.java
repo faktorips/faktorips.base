@@ -152,7 +152,7 @@ public abstract class InputAndSecondControlComposite<T extends Control> extends 
     @Override
     public void addListener(int eventType, Listener listener) {
         super.addListener(eventType, listener);
-        if (eventType != SWT.Paint && eventType != SWT.Dispose) {
+        if (eventType != SWT.Paint && eventType != SWT.Dispose && eventType != SWT.ZoomChanged) {
             listenToControl((text), eventType);
         }
     }
