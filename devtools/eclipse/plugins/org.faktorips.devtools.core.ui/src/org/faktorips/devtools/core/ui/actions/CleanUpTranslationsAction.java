@@ -41,8 +41,11 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -54,6 +57,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.value.ValueType;
+import org.faktorips.values.LocalizedString;
 
 /**
  * This action goes over all {@link IIpsObjectPartContainer}s of an {@link IIpsProject} and ensures
@@ -215,6 +221,48 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                 if (ipsObjectPartContainer instanceof ILabeledElement labeledElement) {
                     deleteObsoleteLabels(labeledElement, supportedLocales);
                     addMissingLabels(labeledElement, supportedLocales);
+                }
+
+                if (ipsObjectPartContainer instanceof IEnumValue enumValue) {
+                    cleanUpEnumAttributeValues(enumValue, supportedLocales);
+                }
+            }
+
+            private void cleanUpEnumAttributeValues(IEnumValue enumValue, Set<Locale> supportedLocales) {
+                List<IEnumAttributeValue> enumAttributeValues = enumValue.getEnumAttributeValues();
+                for (IEnumAttributeValue enumAttributeValue : enumAttributeValues) {
+                    if (enumAttributeValue.getValueType() == ValueType.INTERNATIONAL_STRING) {
+
+                        IValue<?> value = enumAttributeValue.getValue();
+
+                        if (value != null && value.getContent() instanceof IInternationalString internationalString) {
+                            deleteObsoleteLocalizedStrings(internationalString, supportedLocales);
+                            addMissingLocalizedStrings(internationalString, supportedLocales);
+                        }
+                    }
+                }
+            }
+
+            private void deleteObsoleteLocalizedStrings(IInternationalString internationalString,
+                    Set<Locale> supportedLocales) {
+                List<Locale> localesToRemove = new ArrayList<>();
+                for (LocalizedString localizedString : internationalString.values()) {
+                    Locale locale = localizedString.getLocale();
+                    if (locale != null && !(supportedLocales.contains(locale))) {
+                        localesToRemove.add(locale);
+                    }
+                }
+                for (Locale locale : localesToRemove) {
+                    internationalString.remove(locale);
+                }
+            }
+
+            private void addMissingLocalizedStrings(IInternationalString internationalString,
+                    Set<Locale> supportedLocales) {
+                for (Locale locale : supportedLocales) {
+                    if (!internationalString.hasValueFor(locale)) {
+                        internationalString.add(new LocalizedString(locale, ""));
+                    }
                 }
             }
 

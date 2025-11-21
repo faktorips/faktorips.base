@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
  * written by this class and the {@code DefaultInternationalString} class needs a default locale.
  * {@code org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder} is used to add the
  * default locale to a product component's XML.
- * 
+ *
  * @author dirmeier
  */
 public class InternationalString implements IInternationalString {
@@ -66,7 +66,7 @@ public class InternationalString implements IInternationalString {
 
     /**
      * Construct the object and register the given observer.
-     * 
+     *
      * @param listener The {@link PropertyChangeListener} you want to register to get notified about
      *            changes
      */
@@ -86,6 +86,16 @@ public class InternationalString implements IInternationalString {
     }
 
     @Override
+    public LocalizedString remove(Locale locale) {
+        Assert.isNotNull(locale);
+        LocalizedString oldText = localizedStringMap.remove(locale);
+        if (oldText != null) {
+            changes.firePropertyChange("localizedString", oldText, null);
+        }
+        return oldText;
+    }
+
+    @Override
     public void add(LocalizedString localizedString) {
         Assert.isNotNull(localizedString);
         LocalizedString localizedStringToSet = localizedString;
@@ -98,7 +108,7 @@ public class InternationalString implements IInternationalString {
 
     /**
      * Returning all values of this {@link InternationalString} ordered by insertion.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override

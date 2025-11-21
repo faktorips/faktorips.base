@@ -92,6 +92,11 @@
             "new": "method boolean org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest::hasObjectDirs() throws org.osgi.framework.BundleException",
             "exception": "org.osgi.framework.BundleException",
             "justification": "FIPS-13842"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method org.faktorips.values.LocalizedString org.faktorips.devtools.model.IInternationalString::remove(java.util.Locale)",
+            "justification": "FIPS-13495 New method to support removal of localized strings."
           }
         ]
       }

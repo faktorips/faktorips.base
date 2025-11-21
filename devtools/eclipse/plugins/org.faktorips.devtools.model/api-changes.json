@@ -26,7 +26,12 @@
                         "code": "java.field.constantValueChanged",
                         "old": "field org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest.ATTRIBUTE_VALIDATION_MESSAGES",
                         "new": "field org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest.ATTRIBUTE_VALIDATION_MESSAGES",
-                        "justification": "Align manifest attribute name to 'validation-messages'"
+                        "justification": "FIPS-12360 Align manifest attribute name to 'validation-messages'"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method org.faktorips.values.LocalizedString org.faktorips.devtools.model.IInternationalString::remove(java.util.Locale)",
+                      "justification": "FIPS-13495 New method to support removal of localized strings."
                     }
                 ]
             }
