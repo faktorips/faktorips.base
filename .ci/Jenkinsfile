@@ -60,9 +60,9 @@ pipeline {
         stage('Deploy Additional Artifacts') {
             steps {
                 withMaven(publisherStrategy: 'EXPLICIT') {
-                    uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', legacyMode: true, legacyUser: 'jenkins-fips-legacy'
+                    uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: false, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                     // SNAPSHOT versions should also publish to major.minor
-                    uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', releasePattern: /(?<major>\d+)\.(?<minor>\d+)\.(\d+)(-SNAPSHOT)?/, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
+                    uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', updateLatest: false, releasePattern: /(?<major>\d+)\.(?<minor>\d+)\.(\d+)(-SNAPSHOT)?/, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                 }
             }
         }

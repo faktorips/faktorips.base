@@ -146,9 +146,9 @@ pipeline {
 
                         // deploy maven plugin doc
                         withMaven(publisherStrategy: 'EXPLICIT') {
-                            uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', legacyMode: true, legacyUser: 'jenkins-fips-legacy'
-                            // SNAPSHOT versions should also publish to major.minor
-                            uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', releasePattern: releasePattern, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
+                            def isMainBranch = env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main'
+                            uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: isMainBranch, legacyMode: true, legacyUser: 'jenkins-fips-legacy'                            // SNAPSHOT versions should also publish to major.minor
+                            uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', updateLatest: false, releasePattern: releasePattern, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                         }
                     }
                 }
