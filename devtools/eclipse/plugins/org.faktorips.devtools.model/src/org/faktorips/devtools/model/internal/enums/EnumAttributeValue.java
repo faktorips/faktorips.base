@@ -107,7 +107,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(IS_NULL, Boolean.toString(isNullValue()));
+        if (isNullValue()) {
+            element.setAttribute(IS_NULL, Boolean.TRUE.toString());
+        }
         element.removeAttribute(IpsObjectPart.PROPERTY_ID);
         if (getValue() != null) {
             Node valueNode = getValue().toXml(element.getOwnerDocument());

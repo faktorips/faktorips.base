@@ -45,6 +45,6 @@
             <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
             <xsd:element ref="InternationalString" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
-        <xsd:attribute name="isNull" type="boolean" use="required" />
+        <xsd:attribute name="isNull" type="boolean" use="optional" />
     </xsd:complexType>
 </xsd:schema>

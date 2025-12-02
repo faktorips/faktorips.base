@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  * @generated
  */
 @IpsDocumented(bundleName = "org.faktorips.runtime.testrepository.testenum.testEnum-label-and-descriptions", defaultLocale = "en")
-@IpsEnumType(name = "produkt.ExtensibleEnumWithModell", attributeNames = { "id", "name" })
+@IpsEnumType(name = "model.ExtensibleEnumWithModell", attributeNames = { "id", "name" })
 @IpsExtensibleEnum(enumContentName = "produkt.ExtensibleEnumWithModell")
 public final class ExtensibleEnumWithModell
         implements Serializable, Comparable<ExtensibleEnumWithModell>, IToXmlSupport {

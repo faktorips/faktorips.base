@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  * @generated
  */
 @IpsDocumented(bundleName = "org.faktorips.runtime.testrepository.testenum.testEnum-label-and-descriptions", defaultLocale = "en")
-@IpsEnumType(name = "produkt.SuperExtensibleEnum", attributeNames = { "id", "name" })
+@IpsEnumType(name = "model.SuperExtensibleEnum", attributeNames = { "id", "name" })
 @IpsExtensibleEnum(enumContentName = "produkt.SuperExtensibleEnum")
 public final class SuperExtensibleEnum
         implements AbstractExtensibleEnum, Serializable, Comparable<SuperExtensibleEnum>, IToXmlSupport {

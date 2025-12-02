@@ -114,7 +114,7 @@ public class IpsEnumToXmlWriter {
 
     private void writeHeaderToXml(Element element) {
         EnumType enumType = IpsModel.getEnumType(enumClass);
-        element.setAttribute(XML_ATTRIBUTE_ENUM_TYPE, enumType.getEnumContentQualifiedName());
+        element.setAttribute(XML_ATTRIBUTE_ENUM_TYPE, enumType.getName());
         for (String name : enumType.getAttributenames()) {
             Element refElement = element.getOwnerDocument().createElement(XML_ELEMENT_ENUMATTRIBUTEREFERENCE);
             refElement.setAttribute(XML_ATTRIBUTE_NAME, name);

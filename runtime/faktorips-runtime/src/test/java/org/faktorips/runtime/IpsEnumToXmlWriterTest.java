@@ -31,8 +31,8 @@ import org.faktorips.runtime.testrepository.testenum.produkt.ExtensibleEnum;
 import org.faktorips.runtime.testrepository.testenum.produkt.ExtensibleEnumWithModell;
 import org.faktorips.runtime.testrepository.testenum.produkt.SuperExtensibleEnum;
 import org.faktorips.runtime.testrepository.testenum.produkt.SuperExtensibleEnumWithModell;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,7 +41,7 @@ public class IpsEnumToXmlWriterTest {
     private DocumentBuilder builder;
     private ClassloaderRuntimeRepository repository;
 
-    @BeforeEach
+    @Before
     public void setup() throws Exception {
         builder = XmlUtil.getDocumentBuilder();
 
@@ -76,7 +76,7 @@ public class IpsEnumToXmlWriterTest {
 
         doc.appendChild(enumXml);
         String xml = xmlToString(doc);
-        assertThat(xml, containsString("enumType=\"produkt.ExtensibleEnum\""));
+        assertThat(xml, containsString("enumType=\"model.ExtensibleEnum\""));
         assertThat(xml, containsString("<Description locale=\"en\">The Description</Description>"));
         assertThat(xml, containsString("<Description locale=\"de\">Die Beschreibung</Description>"));
         assertThat(xml, containsString("<EnumAttributeValue>1</EnumAttributeValue>"));
@@ -95,7 +95,7 @@ public class IpsEnumToXmlWriterTest {
 
         doc.appendChild(enumXml);
         String xml = xmlToString(doc);
-        assertThat(xml, containsString("enumType=\"produkt.ExtensibleEnumWithModell\""));
+        assertThat(xml, containsString("enumType=\"model.ExtensibleEnumWithModell\""));
         assertThat(xml, containsString("<Description locale=\"en\">The Description</Description>"));
         assertThat(xml, containsString("<Description locale=\"de\">Die Beschreibung</Description>"));
         assertThat(xml, not(containsString("<EnumAttributeValue>1</EnumAttributeValue>")));
@@ -114,7 +114,7 @@ public class IpsEnumToXmlWriterTest {
 
         doc.appendChild(enumXml);
         String xml = xmlToString(doc);
-        assertThat(xml, containsString("enumType=\"produkt.SuperExtensibleEnum\""));
+        assertThat(xml, containsString("enumType=\"model.SuperExtensibleEnum\""));
         assertThat(xml, containsString("<Description locale=\"en\">The Description</Description>"));
         assertThat(xml, containsString("<Description locale=\"de\">Die Beschreibung</Description>"));
         assertThat(xml, containsString("<EnumAttributeValue>1</EnumAttributeValue>"));
@@ -133,7 +133,7 @@ public class IpsEnumToXmlWriterTest {
 
         doc.appendChild(enumXml);
         String xml = xmlToString(doc);
-        assertThat(xml, containsString("enumType=\"produkt.SuperExtensibleEnumWithModell\""));
+        assertThat(xml, containsString("enumType=\"model.SuperExtensibleEnumWithModell\""));
         assertThat(xml, containsString("<Description locale=\"en\">The Description</Description>"));
         assertThat(xml, containsString("<Description locale=\"de\">Die Beschreibung</Description>"));
         assertThat(xml, not(containsString("<EnumAttributeValue>1</EnumAttributeValue>")));

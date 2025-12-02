@@ -11,7 +11,7 @@ import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
  * @generated
  */
 @IpsDocumented(bundleName = "org.faktorips.runtime.testrepository.testenum.testEnum-label-and-descriptions", defaultLocale = "en")
-@IpsEnumType(name = "produkt.AbstractExtensibleEnum", attributeNames = { "id", "name" })
+@IpsEnumType(name = "model.AbstractExtensibleEnum", attributeNames = { "id", "name" })
 @IpsExtensibleEnum(enumContentName = "produkt.AbstractExtensibleEnum")
 public interface AbstractExtensibleEnum {
     /**
