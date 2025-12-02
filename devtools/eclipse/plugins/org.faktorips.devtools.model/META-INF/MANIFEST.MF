@@ -233,7 +233,11 @@ Export-Package: org.faktorips.devtools.model,
    org.faktorips.devtools.core.ui.test,
    org.faktorips.devtools.core.test",
  org.faktorips.devtools.model.internal.util;x-friends:="org.faktorips.devtools.core.ui,org.faktorips.devtools.core.ui.test",
- org.faktorips.devtools.model.internal.value;x-friends:="org.faktorips.devtools.multiediting,org.faktorips.devtools.multiediting.test",
+ org.faktorips.devtools.model.internal.value;
+  x-friends:="org.faktorips.devtools.multiediting,
+   org.faktorips.devtools.multiediting.test,
+   org.faktorips.devtools.core.ui.test,
+   org.faktorips.devtools.core.ui",
  org.faktorips.devtools.model.internal.valueset;
   x-friends:="org.faktorips.devtools.core.ui,
    org.faktorips.devtools.core.ui.test,

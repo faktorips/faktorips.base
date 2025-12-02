@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of {@link ILabel}.
- * 
+ *
  * @author Alexander Weickmann
  */
 public class Label extends AtomicIpsObjectPart implements ILabel {
@@ -46,6 +46,11 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
         super(ipsObjectPartContainer, id);
         value = ""; //$NON-NLS-1$
         pluralValue = ""; //$NON-NLS-1$
+    }
+
+    @Override
+    public String getName() {
+        return locale == null ? "" : locale.getLanguage();
     }
 
     @Override

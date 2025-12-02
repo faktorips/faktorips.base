@@ -46,6 +46,11 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
     }
 
     @Override
+    public String getName() {
+        return locale == null ? "" : locale.getLanguage();
+    }
+
+    @Override
     public Locale getLocale() {
         return locale;
     }

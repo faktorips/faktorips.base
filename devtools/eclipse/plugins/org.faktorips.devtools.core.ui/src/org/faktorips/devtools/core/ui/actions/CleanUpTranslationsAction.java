@@ -112,6 +112,18 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
          * Collect the potential different IPS projects of the selected elements as we want to
          * batch-execute the action on all projects.
          */
+        Set<IIpsProject> ipsProjects = collectIpsProjects(typedSelection);
+
+        Shell shell = delegateActivePart == null ? workbenchWindow.getShell() : delegateActivePart.getSite().getShell();
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+        try {
+            dialog.run(true, true, new CleanUpTranslationsRunnableWithProgress(ipsProjects));
+        } catch (InvocationTargetException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Set<IIpsProject> collectIpsProjects(TypedSelection<IAdaptable> typedSelection) {
         Set<IIpsProject> ipsProjects = new HashSet<>();
         for (IAdaptable adaptable : typedSelection.getElements()) {
             IIpsProject ipsProject = null;
@@ -129,14 +141,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                 ipsProjects.add(ipsProject);
             }
         }
-
-        Shell shell = delegateActivePart == null ? workbenchWindow.getShell() : delegateActivePart.getSite().getShell();
-        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-        try {
-            dialog.run(true, true, new CleanUpTranslationsRunnableWithProgress(ipsProjects));
-        } catch (InvocationTargetException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return ipsProjects;
     }
 
     @Override
@@ -154,7 +159,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
         delegateSelection = selection;
     }
 
-    private static class CleanUpTranslationsRunnableWithProgress implements IRunnableWithProgress {
+    static class CleanUpTranslationsRunnableWithProgress implements IRunnableWithProgress {
 
         private final Collection<IIpsProject> ipsProjects;
 
