@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,10 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
+import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabel;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChangeListener {
 
@@ -69,11 +72,15 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
         @Override
         public Object[] getChildren(Object element) {
             ArrayList<Object> result = new ArrayList<>(Arrays.asList(super.getChildren(element)));
+
             for (Iterator<Object> iter = result.iterator(); iter.hasNext();) {
                 Object o = iter.next();
                 if (o instanceof IIpsElement ipsElement) {
-                    if (ipsElement.getName().isEmpty()) {
+                    if (IpsStringUtils.isBlank(ipsElement.getName())
+                            || ipsElement instanceof IDescription
+                            || ipsElement instanceof ILabel) {
                         iter.remove();
+                        continue;
                     }
                 } else {
                     iter.remove();
@@ -81,7 +88,5 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
             }
             return result.toArray();
         }
-
     }
-
 }
