@@ -57,7 +57,7 @@
 
     <xsd:element name="EnumLiteralNameAttributeValue">
         <xsd:complexType mixed="true">
-            <xsd:attribute type="boolean" name="isNull" use="required" />
+            <xsd:attribute type="boolean" name="isNull" use="optional" />
         </xsd:complexType>
     </xsd:element>
 
@@ -66,7 +66,7 @@
             <xsd:sequence>
                 <xsd:element ref="InternationalString" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
-            <xsd:attribute name="isNull" type="boolean" use="required" />
+            <xsd:attribute name="isNull" type="boolean" use="optional" />
         </xsd:complexType>
     </xsd:element>
 
