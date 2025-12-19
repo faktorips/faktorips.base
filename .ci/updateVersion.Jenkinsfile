@@ -1,7 +1,4 @@
-@Library('f10-jenkins-library@1.1_patches')
-@Library('fips-jenkins-library@main')
-
-import org.faktorips.jenkins.MavenProjectVersion
+library 'f10-jenkins-library@1.1_patches'
 
 pipeline {
     agent any
@@ -36,9 +33,10 @@ pipeline {
                     ])
 
                     LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
-                    
-                    def xmlfile = readFile 'pom.xml'
-                    oldVersion = MavenProjectVersion.fromPom(xmlfile)
+
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        oldVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                    }
                     newVersion = params.NEW_VERSION+'-SNAPSHOT'
                 }
             }
