@@ -1,14 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
+
+import static org.faktorips.runtime.internal.ProductComponentLink.XML_ELEMENT_LINK;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +25,8 @@ import org.w3c.dom.NodeList;
 /**
  * Utility methods for initFromXml methods used by {@link ProductComponent} and
  * {@link ProductComponentGeneration}.
- * 
- * 
+ *
+ *
  * @author dirmeier
  */
 enum ProductComponentXmlUtil {
@@ -42,7 +44,7 @@ enum ProductComponentXmlUtil {
      * generation's xml element. For each policy component type relation (pcTypeRelation) the map
      * contains an entry with the pcTypeRelation as key. The value is an array list containing all
      * relation elements for the pcTypeRelation.
-     * 
+     *
      * @param genElement An xml element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
@@ -51,7 +53,7 @@ enum ProductComponentXmlUtil {
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE && "Link".equals(node.getNodeName())) {
+            if (node.getNodeType() == Node.ELEMENT_NODE && XML_ELEMENT_LINK.equals(node.getNodeName())) {
                 Element childElement = (Element)nl.item(i);
                 String association = childElement.getAttribute("association");
                 List<Element> associationElements = elementMap.computeIfAbsent(association,
@@ -68,7 +70,7 @@ enum ProductComponentXmlUtil {
      * generation's xml element. For each config element the map contains an entry with the
      * pcTypeAttribute's name as key and the xml element containing the config element data as
      * value.
-     * 
+     *
      * @param element An xml element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
@@ -104,7 +106,7 @@ enum ProductComponentXmlUtil {
     /**
      * Returns a set containing the formulaSignatures and expression of all available formulas (with
      * a not empty expression) found in the indicated xml element.
-     * 
+     *
      * @param element An xml element containing the data.
      * @throws NullPointerException if element is <code>null</code>.
      */

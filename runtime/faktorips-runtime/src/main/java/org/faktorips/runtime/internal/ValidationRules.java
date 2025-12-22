@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
  */
 class ValidationRules {
 
-    private static final String XML_ELEMENT_VALIDATION_RULE_CONFIG = "ValidationRuleConfig";
+    static final String XML_ELEMENT_VALIDATION_RULE_CONFIG = "ValidationRuleConfig";
 
     private final Map<String, ValidationRuleConfiguration> validationRulesConfigsByName = new LinkedHashMap<>();
     private final IProductObject productObject;

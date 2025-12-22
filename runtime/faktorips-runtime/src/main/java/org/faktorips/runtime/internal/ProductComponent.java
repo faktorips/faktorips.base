@@ -11,12 +11,18 @@
 package org.faktorips.runtime.internal;
 
 import static java.util.Comparator.comparing;
+import static java.util.Map.entry;
+import static org.faktorips.runtime.internal.DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION;
+import static org.faktorips.runtime.internal.ProductComponentLink.XML_ELEMENT_LINK;
+import static org.faktorips.runtime.internal.ProductComponentXmlUtil.XML_TAG_FORMULA;
+import static org.faktorips.runtime.internal.ValidationRules.XML_ELEMENT_VALIDATION_RULE_CONFIG;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_STRUCTURE_USAGE;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE;
+import static org.faktorips.runtime.internal.XmlUtil.XML_EXT_PROPERTIES_ELEMENT;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,7 +77,20 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     private static final Comparator<Element> BY_TABLE_STRUCTURE_USAGE_NAME = comparing(
             e -> e.getAttribute(XML_ATTRIBUTE_STRUCTURE_USAGE));
     private static final Comparator<Element> VALUE_SET_BEFORE_DEFAULT = comparing(Element::getNodeName).reversed();
-
+    private static final Map<String, Integer> ORDER = Map.ofEntries(
+            entry(XML_ATTRIBUTE_VALID_TO, 1),
+            entry(XML_EXT_PROPERTIES_ELEMENT, 2),
+            entry(XML_ELEMENT_DESCRIPTION, 3),
+            entry(XML_ELEMENT_GENERATION, 4),
+            entry(XML_TAG_ATTRIBUTE_VALUE, 5),
+            entry(XML_TAG_CONFIGURED_VALUE_SET, 6),
+            entry(XML_TAG_CONFIGURED_DEFAULT, 6),
+            entry(XML_TAG_FORMULA, 7),
+            entry(XML_TAG_TABLE_CONTENT_USAGE, 8),
+            entry(XML_ELEMENT_VALIDATION_RULE_CONFIG, 9),
+            entry(XML_ELEMENT_LINK, 10));
+    private static final Comparator<Element> BY_TAG_IN_SCHEMA_ORDER = comparing(e -> ORDER.get(e.getNodeName()));
+    private static final String[] ALL_SORTED_TAGS = ORDER.keySet().toArray(String[]::new);
     /**
      * The component's id that identifies it in the repository
      */
@@ -473,8 +492,11 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             if (node.getNodeName().equals(XML_ELEMENT_GENERATION)) {
                 sortAttributeValues((Element)node);
                 sortConfiguredValues((Element)node);
+                sortTableUsageValues((Element)node);
+                sortElements((Element)node, BY_TAG_IN_SCHEMA_ORDER, ALL_SORTED_TAGS);
             }
         }
+        sortElements(prodCmptElement, BY_TAG_IN_SCHEMA_ORDER, ALL_SORTED_TAGS);
         return prodCmptElement;
     }
 

@@ -148,13 +148,13 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         ProductComponentTestClass cmpt = new ProductComponentTestClass(repository) {
             @Override
             public void writePropertiesToXml(Element parent) {
-                addElement(parent, "f", XML_TAG_ATTRIBUTE_VALUE);
                 addElement(parent, "b", XML_TAG_CONFIGURED_VALUE_SET);
                 addElement(parent, "b", XML_TAG_CONFIGURED_DEFAULT);
                 // the order of default values and value sets might be different when written with
                 // older versions of Faktor-IPS
                 addElement(parent, "d", XML_TAG_CONFIGURED_DEFAULT);
                 addElement(parent, "d", XML_TAG_CONFIGURED_VALUE_SET);
+                addElement(parent, "f", XML_TAG_ATTRIBUTE_VALUE);
                 addElement(parent, "a", XML_TAG_CONFIGURED_DEFAULT);
                 addElement(parent, "c", XML_TAG_ATTRIBUTE_VALUE);
                 addElement(parent, "a", XML_TAG_CONFIGURED_VALUE_SET);

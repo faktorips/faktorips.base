@@ -32,6 +32,7 @@ import org.w3c.dom.Element;
 public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject
         implements IProductComponentLink<T>, IXmlPersistenceSupport {
 
+    static final String XML_ELEMENT_LINK = "Link";
     private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
     private String targetName;
@@ -173,7 +174,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     @Override
     public Element toXml(Document document) {
         Integer upperBound = getCardinality().getUpperBound();
-        Element linkElement = document.createElement("Link");
+        Element linkElement = document.createElement(XML_ELEMENT_LINK);
         linkElement.setAttribute("association", getAssociationName());
         linkElement.setAttribute("defaultCardinality", Integer.toString(getCardinality().getDefaultCardinality()));
         linkElement.setAttribute("maxCardinality",
