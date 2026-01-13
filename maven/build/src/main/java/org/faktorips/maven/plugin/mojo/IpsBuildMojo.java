@@ -963,7 +963,8 @@ public class IpsBuildMojo extends AbstractMojo {
                     "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator\\/bundles\\.info \\(No such file or directory\\)",
                     /* see https://github.com/eclipse-m2e/m2e-core/issues/1210 */
                     "java\\.lang\\.Exception: stack trace\\R(?:\\s+at org\\.apache\\.felix.*)",
-                    "java.lang.IllegalStateException: m2e is shut down!");
+                    "java.lang.IllegalStateException: m2e is shut down!",
+                    "java\\.lang\\.UnsupportedOperationException: The Security Manager is deprecated and will be removed in a future release");
         } else {
             // perThread
             exceptionTexts = List.of();

@@ -10,14 +10,18 @@
 
 package org.faktorips.maven.plugin.mojo.internal;
 
+import static java.util.function.Predicate.isEqual;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.StackWalker.StackFrame;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.exec.StreamPumper;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
@@ -107,7 +111,9 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
                 // set new print stream as system out
                 logStream = new BuildLogPrintStream(projectName, filter);
                 stdStream = System.out;
-                System.setOut(logStream.getPrintStream());
+                PrintStream printStream = logStream.getPrintStream();
+                PrintStream proxyStream = new SplitStream(stdStream, printStream, this::isEclipse);
+                System.setOut(proxyStream);
 
                 // launch eclipse
                 returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
@@ -128,6 +134,13 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
             throw new MojoExecutionException("Error while executing platform: return code=" + returnCode
                     + ", see content of " + expectedLog + "for more details.");
         }
+    }
+
+    private boolean isEclipse() {
+        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+                .walk(s -> s
+                        .map(StackFrame::getDeclaringClass)
+                        .anyMatch(isEqual(StreamPumper.class)));
     }
 
     private void log(BuildLogPrintStream logger) {
