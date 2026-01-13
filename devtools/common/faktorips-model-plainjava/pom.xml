@@ -10,11 +10,7 @@
     <packaging>bundle</packaging>
     <name>Plain-Java implementation of Faktor-IPS Model</name>
     <description>Plain-Java implementation of abstractions used in the Faktor-IPS design time model</description>
-    
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>

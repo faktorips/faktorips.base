@@ -5,6 +5,7 @@
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def p2Server = 'hudson@update.faktorzehn.org'
+def(major, minor, patch, kind, isAlpha) = parseVersion()
 
 def configureRelease() {
     withMaven(publisherStrategy: 'EXPLICIT') {
@@ -29,6 +30,13 @@ def configureDevelopment() {
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${params.RELEASE_VERSION}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
     }
+}
+
+def parseVersion() {
+    def releasePattern = /^(?<major>\d+)\.(?<minor>\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/
+    def (_, major, minor, patch, kind) = (params.RELEASE_VERSION =~ releasePattern)[0]
+    def isAlpha = kind =~ /a\d{8}-\d\d$/
+    return [major, minor, patch, kind, isAlpha.find()]
 }
 
 pipeline {
@@ -65,22 +73,30 @@ pipeline {
 
         stage('Build and Test') {
             steps {
-                sh 'rm -rf $HOME/.m2/repository/.meta'
-                sh 'rm -rf $HOME/.m2/repository/.cache'
-                sh 'rm -rf $HOME/.m2/repository/p2'
-                withMaven(publisherStrategy: 'EXPLICIT') {
-                    sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
-                    sh "mvn -U -V -T 8 -P release clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
-                    sh "mvn -V -T 8 -fae -e site:stage -f maven"
+                script {
+                    sh 'rm -rf $HOME/.m2/repository/.meta'
+                    sh 'rm -rf $HOME/.m2/repository/.cache'
+                    sh 'rm -rf $HOME/.m2/repository/p2'
+
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
+                        if (isAlpha) {
+                            sh "mvn -U -V -T 8 -P nexusRelease clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
+                        } else {
+                            // gpg signing of artifacts for maven central
+                            sh "mvn -U -V -T 8 -P mavenCentralRelease clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
+                        }
+                        sh "mvn -V -T 8 -fae -e site:stage -f maven"
+                    }
+
+                    discoverReferenceBuild referenceJob: "${REFERENCE_JOB}", requiredResult: hudson.model.Result.SUCCESS
+
+                    junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+                    recordIssues enabledForFailure: true,
+                            qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
+                            tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+                    jacoco sourceInclusionPattern: '**/*.java'
                 }
-
-                discoverReferenceBuild referenceJob: "${REFERENCE_JOB}", requiredResult: hudson.model.Result.SUCCESS
-
-                junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
-                recordIssues enabledForFailure: true,
-                        qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
-                        tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
-                jacoco sourceInclusionPattern: '**/*.java'
             }
         }
         stage('Dependency-Check') {
@@ -108,11 +124,15 @@ pipeline {
                 // deploy p2 repository
                 script {
                     uploadRelease() {
-                        def releasePattern = /^(?<major>\d+)\.(?<minor>\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/
-                        def (_, major, minor, patch, kind) = (params.RELEASE_VERSION =~ releasePattern)[0]
-
-                        deployToMavenCentral(
-                                commands: ['mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind'])
+                        if (isAlpha) {
+                            withMaven(publisherStrategy: 'EXPLICIT') {
+                                sh "mvn -V deploy -P nexusRelease -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
+                            }
+                        } else {
+                            deployToMavenCentral(
+                                    commands: ['mvn -V deploy -P mavenCentralRelease -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind']
+                            )
+                        }
                         def archiveZipFile = "org.faktorips.p2repository-${params.RELEASE_VERSION}.zip"
                         def archiveDeployDir = "/var/www/update.faktorzehn.org/faktorips/v${major}_${minor}/downloads/faktorips-${major}.${minor}"
                         def ps2DeployDir = "/var/www/update.faktorzehn.org/faktorips/v${major}_${minor}"

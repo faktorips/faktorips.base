@@ -13,10 +13,6 @@
     <name>Faktor-IPS Model for Eclipse</name>
     <description>Eclipse Module for the Faktor-IPS design time model</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -123,7 +119,7 @@
     </build>
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>
@@ -133,6 +129,19 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>nexusRelease</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

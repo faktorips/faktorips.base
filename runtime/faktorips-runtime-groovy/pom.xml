@@ -15,10 +15,6 @@
     <name>Faktor-IPS Runtime Groovy Extension</name>
     <description>Faktor-IPS Runtime Extension for Formula Evaluation with Groovy</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
     <build>
         <plugins>
             <plugin>
@@ -122,24 +118,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
-                        <configuration>
-                            <skipPublishing>false</skipPublishing>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

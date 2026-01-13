@@ -15,10 +15,6 @@
     <name>Faktor-IPS DT/FL Common</name>
     <description>Common code for Faktor-IPS devtools and formula language</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

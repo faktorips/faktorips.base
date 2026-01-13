@@ -124,5 +124,20 @@
             <artifactId>mockito-core</artifactId>
         </dependency>
     </dependencies>
-
+<!-- skip deploy -->
+    <profiles>
+        <profile>
+            <id>nexusRelease</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

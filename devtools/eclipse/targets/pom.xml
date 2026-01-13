@@ -23,13 +23,9 @@
         <module>2025-12</module>
     </modules>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>
@@ -39,6 +35,19 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>nexusRelease</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

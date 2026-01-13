@@ -10,10 +10,6 @@
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Validation Maven Plugin</name>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>

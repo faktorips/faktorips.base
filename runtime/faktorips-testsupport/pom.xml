@@ -16,10 +16,6 @@
     <name>Faktor-IPS Test-Support</name>
     <description>Utility classes for easier test of Faktor-IPS (generated) code</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
     <build>
         <plugins>
             <plugin>

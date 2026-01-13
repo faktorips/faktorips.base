@@ -14,10 +14,6 @@
     <name>Faktor-IPS Model Builder</name>
     <description>Basic builder implementation for the Faktor-IPS model</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -73,7 +69,7 @@
     </build>
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>
@@ -83,6 +79,19 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>nexusRelease</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

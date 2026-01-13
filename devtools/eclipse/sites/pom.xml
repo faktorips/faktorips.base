@@ -89,13 +89,23 @@
     </build>
     <profiles>
         <profile>
-            <id>release</id>
-            <properties>
-                <skip-publish>true</skip-publish>
-            </properties>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <!-- deployment is done in the release pipeline -->
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>nexusRelease</id>
+            <build>
+                <plugins>
                     <plugin>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <configuration>
