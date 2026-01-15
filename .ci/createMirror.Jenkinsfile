@@ -1,3 +1,5 @@
+library 'f10-jenkins-library@1.1_patches'
+
 def p2Server = 'hudson@update.faktorzehn.org'
 def ps2MirrorDir = '/var/www/update.faktorzehn.org/p2repositories'
 def pomString = """<?xml version="1.0" encoding="UTF-8"?>
