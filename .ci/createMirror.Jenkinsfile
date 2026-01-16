@@ -85,7 +85,12 @@ pipeline {
         stage('Copy Mirror') {
             steps {
                 script {
-                    replaceOnServer server:p2Server, port:'22', localFolder:"/tmp/mirror/${eclipseVersion}", remoteFolder:"${ps2MirrorDir}/${eclipseVersion}"
+                    def localFolder="/tmp/mirror/${eclipseVersion}"
+                    def remoteFolder="${ps2MirrorDir}/${eclipseVersion}"
+                    sh "echo 'save replace files on server'"
+                    sh "scp -P 22 -r ${localFolder} ${p2Server}:${remoteFolder}_deploy"
+                    // a non existing folder would stop the script therefore make it or ignore it (-p)
+                    sh "ssh -p 22 ${p2Server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
                 }
             }
         }
@@ -102,14 +107,4 @@ pipeline {
             sendFailureEmail()
         }
     }
-}
-
-// upload a local folder to a tmp folder on the server
-// mv existing remoteFolder before swaping it with the tmp one
-// remove the old folder
-def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
-    sh "echo 'save replace files on server'"
-    sh "scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy"
-    // a non existing folder would stop the script therefore make it or ignore it (-p)
-    sh "ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
 }
