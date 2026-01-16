@@ -11,7 +11,7 @@ pipeline {
 
     environment {
         MAVEN_OPTS = '-Xmx4g'
-        MAVEN_REPO = '/tmp/$JOB_NAME/$GERRIT_CHANGE_ID'
+        MAVEN_REPO = '.repository'
         DISPLAY = ':0'
         REFERENCE_JOB = 'FaktorIPS_CI'
     }
