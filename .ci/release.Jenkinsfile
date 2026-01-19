@@ -5,7 +5,7 @@
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def p2Server = 'hudson@update.faktorzehn.org'
-def(major, minor, patch, kind, isAlpha) = parseVersion()
+def(major, minor, patch, kind, isAlpha, isRelease, releasePattern) = parseVersion()
 
 def configureRelease() {
     withMaven(publisherStrategy: 'EXPLICIT') {
@@ -36,7 +36,8 @@ def parseVersion() {
     def releasePattern = /^(?<major>\d+)\.(?<minor>\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/
     def (_, major, minor, patch, kind) = (params.RELEASE_VERSION =~ releasePattern)[0]
     def isAlpha = kind =~ /a\d{8}-\d\d$/
-    return [major, minor, patch, kind, isAlpha.find()]
+    def isRelease = kind == 'release'
+    return [major, minor, patch, kind, isAlpha.find(), isRelease, releasePattern]
 }
 
 pipeline {
@@ -167,7 +168,7 @@ pipeline {
                         // deploy maven plugin doc
                         withMaven(publisherStrategy: 'EXPLICIT') {
                             def isMainBranch = env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main'
-                            uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: isMainBranch, legacyMode: true, legacyUser: 'jenkins-fips-legacy'                            // SNAPSHOT versions should also publish to major.minor
+                            uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: isMainBranch && isRelease, legacyMode: true, legacyUser: 'jenkins-fips-legacy' // SNAPSHOT versions should also publish to major.minor
                             uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', updateLatest: false, releasePattern: releasePattern, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                         }
                     }
