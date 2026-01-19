@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>26.7.0.a20260119-01</version>
+        <version>26.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>faktorips-runtime-parent</artifactId>

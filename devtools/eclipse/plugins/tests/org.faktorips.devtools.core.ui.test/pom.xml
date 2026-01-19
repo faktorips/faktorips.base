@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
-        <version>26.7.0.a20260119-01</version>
+        <version>26.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.devtools.core.ui.test</artifactId>
