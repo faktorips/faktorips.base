@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,19 +14,12 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
-import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.util.StringUtil;
 
 /**
  * Persistence provider for EclipseLink 1.1
  */
 public class EclipseLink1PersistenceProvider extends AbstractPersistenceProvider {
-
-    /**
-     * @deprecated Use {@link PersistenceSupportNames#ID_ECLIPSE_LINK_1_1} instead.
-     */
-    @Deprecated(forRemoval = true, since = "21.12")
-    public static final String ID_ECLIPSE_LINK_1_1 = PersistenceSupportNames.ID_ECLIPSE_LINK_1_1;
 
     // orphanRemoval annotation constants
     private static final String ANNOTAITON_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned"; //$NON-NLS-1$

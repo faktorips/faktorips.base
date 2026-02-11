@@ -197,12 +197,12 @@ public class TableUsage extends TypePart {
 
     /**
      *
-     * @deprecated This method is deprecated. Use {@link #getTableStructures()} instead.
+     * @deprecated for removal since 25.1. Use {@link #getTableStructures()} instead.
      *
      * @return the model for the table structure referenced in this table usage.
      * @throws UnsupportedOperationException if this table usage uses multiple table structures.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "25.1")
     public TableStructure getTableStructure() {
         @SuppressWarnings("unchecked")
         Class<? extends ITable<?>> tableClass = (Class<? extends ITable<?>>)getter.getReturnType()

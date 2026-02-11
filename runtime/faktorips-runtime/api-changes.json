@@ -1,4 +1,19 @@
 {
+    "26.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.method.removed",
+                        "old": "method void org.faktorips.runtime.InMemoryRuntimeRepository::putTable(org.faktorips.runtime.ITable<?>, java.lang.String)",
+                        "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use putTable(ITable) instead and ensure the qualified name is set as the table's name."
+                    }
+                ]
+            }
+        }
+    ],
     "26.1.0": [
         {
             "extension": "revapi.differences",

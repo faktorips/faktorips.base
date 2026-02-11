@@ -16,6 +16,51 @@
             }
         }
     ],
+    "26.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.class.removed",
+                        "old": "class org.faktorips.devtools.model.exception.CoreRuntimeException",
+                        "justification": "FIPS-12191: Deprecated exception class removed (marked forRemoval=true since 22.6). Use org.faktorips.devtools.abstraction.exception.IpsException instead."
+                    },
+                    {
+                        "code": "java.class.removed",
+                        "old": "interface org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference",
+                        "justification": "FIPS-12191: Deprecated interface removed (marked forRemoval=true since 22.6). Use IProductCmptProperty.getCategoryPosition() instead."
+                    },
+                    {
+                        "code": "java.class.removed",
+                        "old": "class org.faktorips.devtools.model.internal.productcmpttype.ProductCmptPropertyReference",
+                        "justification": "FIPS-12191: Deprecated implementation class removed (marked forRemoval=true since 22.6). Use IProductCmptProperty.getCategoryPosition() instead."
+                    },
+                    {
+                        "code": "java.method.removed",
+                        "old": "method void org.faktorips.devtools.model.ipsobject.IIpsSrcFile::save(boolean, org.eclipse.core.runtime.IProgressMonitor) throws org.faktorips.devtools.abstraction.exception.IpsException",
+                        "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 22.6). Use save(IProgressMonitor) instead - the force parameter was always ignored."
+                    },
+                    {
+                        "code": "java.method.removed",
+                        "old": "method void org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile::save(boolean, org.eclipse.core.runtime.IProgressMonitor) throws org.faktorips.devtools.abstraction.exception.IpsException",
+                        "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 22.6). Use save(IProgressMonitor) instead - the force parameter was always ignored."
+                    },
+                    {
+                        "code": "java.method.removed",
+                        "old": "method void org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile::save(boolean, org.eclipse.core.runtime.IProgressMonitor)",
+                        "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 22.6). Use save(IProgressMonitor) instead - the force parameter was always ignored."
+                    },
+                    {
+                        "code": "java.method.removed",
+                        "old": "method void org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType::migrateReferences()",
+                        "justification": "FIPS-12191: Deprecated migration method removed (marked forRemoval=true since 22.6). This method was only needed for migration to Faktor-IPS 22.6 and is no longer required."
+                    }
+                ]
+            }
+        }
+    ],
     "26.1.0": [
         {
             "extension": "revapi.differences",

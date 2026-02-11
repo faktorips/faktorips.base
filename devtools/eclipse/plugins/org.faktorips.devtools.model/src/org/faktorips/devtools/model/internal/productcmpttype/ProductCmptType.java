@@ -82,8 +82,6 @@ import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import edu.umd.cs.findbugs.annotations.CheckForNull;
-
 /**
  * Implementation of IProductCmptType.
  *
@@ -91,19 +89,18 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
  */
 public class ProductCmptType extends Type implements IProductCmptType {
 
-    private boolean layerSupertype = false;
-    private boolean configurationForPolicyCmptType = true;
+    private volatile boolean layerSupertype = false;
+    private volatile boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
     private String instancesIconPath = null;
-    private boolean changingOverTime = getIpsProject().getReadOnlyProperties().isChangingOverTimeDefaultEnabled();
+    private volatile boolean changingOverTime = getIpsProject().getReadOnlyProperties()
+            .isChangingOverTimeDefaultEnabled();
 
     private final IpsObjectPartCollection<IProductCmptTypeAttribute> attributes;
     private final IpsObjectPartCollection<ITableStructureUsage> tableStructureUsages;
     private final IpsObjectPartCollection<IProductCmptTypeMethod> methods;
     private final IpsObjectPartCollection<IProductCmptTypeAssociation> associations;
     private final IpsObjectPartCollection<IProductCmptCategory> categories;
-    @Deprecated(forRemoval = true, since = "22.6")
-    private final IpsObjectPartCollection<org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference> propertyReferences;
 
     /**
      * A map that stores changes to category assignments of product component properties belonging
@@ -123,7 +120,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     private Map<IProductCmptProperty, Map<CategoryChange, String>> pendingPolicyChanges = new HashMap<>();
 
-    @SuppressWarnings("removal")
     public ProductCmptType(IIpsSrcFile file) {
         super(file);
 
@@ -137,10 +133,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 IProductCmptTypeAssociation.class, ProductCmptTypeAssociation.TAG_NAME);
         categories = new IpsObjectPartCollection<>(this, ProductCmptCategory.class,
                 IProductCmptCategory.class, ProductCmptCategory.XML_TAG_NAME);
-        propertyReferences = new IpsObjectPartCollection<>(this,
-                ProductCmptPropertyReference.class,
-                org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference.class,
-                ProductCmptPropertyReference.XML_TAG_NAME);
     }
 
     @Override
@@ -237,31 +229,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public IProductCmptType findSuperProductCmptType(IIpsProject project) {
         return (IProductCmptType)project.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getSupertype());
-    }
-
-    /**
-     * Returns the {@link IProductCmptProperty} corresponding to the provided
-     * {@link org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference} or
-     * {@code null} if no such property is found.
-     *
-     * @param reference the
-     *            {@link org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference}
-     *            to search the corresponding {@link IProductCmptProperty} for
-     *
-     * @throws IpsException if an error occurs during the search
-     * @deprecated for removal since 22.6
-     */
-    @CheckForNull
-    @Deprecated(forRemoval = true, since = "22.6")
-    IProductCmptProperty findProductCmptProperty(
-            org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference reference,
-            IIpsProject ipsProject) {
-        for (IProductCmptProperty property : findProductCmptProperties(false, ipsProject)) {
-            if (reference.isReferencedProperty(property)) {
-                return property;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -404,41 +371,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
     protected void initFromXml(Element element, String id) {
         pendingPolicyChanges.clear();
         super.initFromXml(element, id);
-    }
-
-    /**
-     * This method is only intended for migration to Faktor-IPS 22.6 and will be removed again in a
-     * future release.
-     *
-     * @since 22.6
-     * @deprecated for removal
-     */
-    @Deprecated(forRemoval = true, since = "22.6")
-    public void migrateReferences() {
-        // to avoid collisions with existing positions, we start with a higher number
-        int n = getChildren().length;
-        for (int i = 0; i < propertyReferences.size(); i++) {
-            org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference part = propertyReferences
-                    .getPart(i);
-            IProductCmptProperty productCmptProperty = part.findProductCmptProperty(getIpsProject());
-            if (productCmptProperty != null) {
-                productCmptProperty.setCategoryPosition(i + n);
-            }
-        }
-        // now assign continuous numbers inside each category
-        IPolicyCmptType policyType = findPolicyCmptType(getIpsProject());
-        for (IProductCmptCategory category : findCategories(getIpsProject())) {
-            List<IProductCmptProperty> propertiesInCategory = category.findProductCmptProperties(this, true,
-                    getIpsProject());
-            int i = 0;
-            for (IProductCmptProperty property : propertiesInCategory) {
-                if (property.getParent() == this || property.getParent() == policyType) {
-                    property.setCategoryPosition(++i);
-                } else {
-                    i = property.getCategoryPosition();
-                }
-            }
-        }
     }
 
     @Override
@@ -1256,15 +1188,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return newIndices;
     }
 
-    @SuppressWarnings("removal")
-    @Override
-    protected boolean isPartSavedToXml(IIpsObjectPart part) {
-        if (part instanceof org.faktorips.devtools.model.productcmpttype.IProductCmptPropertyReference) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Returns whether at least two categories with the indicated name exist in the supertype
      * hierarchy of this {@link IProductCmptType} of in this {@link IProductCmptType} itself.
@@ -1390,8 +1313,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             collectTableStructureUsages(currentType);
             collectFormulaSignatureDefinitions(currentType);
 
-            IPolicyCmptType policyCmptType;
-            policyCmptType = currentType.findPolicyCmptType(getIpsProject());
+            IPolicyCmptType policyCmptType = currentType.findPolicyCmptType(getIpsProject());
             if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                 return searchSupertypeHierarchy;
             }

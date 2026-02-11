@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<PolicyCmptType xmlns="http://www.faktorzehn.org" abstract="false" configurableByProductCmptType="false" forceExtensionCompilationUnitGeneration="false" generateValidatorClass="false" productCmptType="" supertype="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/21.12/PolicyCmptType.xsd" xml:space="preserve">
- <Label id="91c91d8f-700b-442c-baf5-976de618e55c" locale="en" pluralValue="" value=""/>
- <Description id="6398e148-697a-4830-abd2-5ff9f5686a6d" locale="en"/>
- <Method abstract="false" category="" datatype="void" id="0" modifier="published" name="doitNow">
-  <Label id="6185bbad-0fc8-4df2-81ab-e46c3cc4e485" locale="en" pluralValue="" value=""/>
-  <Description id="9f5c804f-605f-4721-adaa-bc56426c4551" locale="en"/>
- </Method>
-</PolicyCmptType>

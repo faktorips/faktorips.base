@@ -1,0 +1,17 @@
+{
+    "26.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.method.removed",
+                        "old": "method void org.faktorips.devtools.model.ipsobject.IIpsSrcFile::save(boolean, org.eclipse.core.runtime.IProgressMonitor) throws org.faktorips.devtools.abstraction.exception.IpsException",
+                        "justification": "FIPS-12191: Deprecated method removed from dependency (marked forRemoval=true since 22.6). Use save(IProgressMonitor) instead - the force parameter was always ignored."
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -113,56 +113,44 @@ public class GeneratorConfigTest {
         assertThat(propertyValueAsBoolean, is(false));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetJaxbSupport_Default() throws Exception {
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
-        assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetJaxbSupport_OldValue_True() throws Exception {
         when(config.getPropertyValueAsString(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn("true");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.ClassicJAXB));
-        assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetJaxbSupport_OldValue_False() throws Exception {
         when(config.getPropertyValueAsString(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn("false");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
-        assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetJaxbSupport_None() throws Exception {
         when(config.getPropertyValueAsString(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn("none");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
-        assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetJaxbSupport_ClassicJAXB() throws Exception {
         when(config.getPropertyValueAsString(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn("ClassicJAXB");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.ClassicJAXB));
-        assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetJaxbSupport_JakartaXmlBinding() throws Exception {
         when(config.getPropertyValueAsString(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn("JakartaXmlBinding");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.JakartaXmlBinding));
-        assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
 
 }

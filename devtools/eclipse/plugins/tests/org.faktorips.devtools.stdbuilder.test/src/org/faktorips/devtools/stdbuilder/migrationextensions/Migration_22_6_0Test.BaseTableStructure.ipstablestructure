@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<TableStructure xmlns="http://www.faktorzehn.org" since="0.0.1" tableStructureType="multipleContents" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/21.12/TableStructure.xsd" xml:space="preserve">
- <Label id="fb2dd566-ac99-45fe-bf68-7e645dc3ed65" locale="en" pluralValue="" value=""/>
- <Description id="a2af1a92-c0d9-448b-9ca1-8bc7c436e3e3" locale="en"/>
- <Column datatype="Integer" id="f0464e36-2a7b-4e9f-b762-b567797daa6a" name="Column1" since="0.0.1">
-  <Label id="ce3fe1c3-91ab-4854-9a9b-248dd3133809" locale="en" pluralValue="" value=""/>
-  <Description id="ec353d1c-b780-46ca-b7f5-273ecffc117b" locale="en"/>
- </Column>
-</TableStructure>

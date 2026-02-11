@@ -14,6 +14,27 @@
       }
     }
   ],
+  "26.7.0": [
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "criticality": "documented",
+        "differences": [
+          {
+            "ignore": true,
+            "code": "java.annotation.attributeAdded",
+            "old": "method org.faktorips.runtime.model.table.TableStructure org.faktorips.runtime.model.type.TableUsage::getTableStructure()",
+            "new": "method org.faktorips.runtime.model.table.TableStructure org.faktorips.runtime.model.type.TableUsage::getTableStructure()",
+            "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"25.1\")",
+            "attribute": "since",
+            "annotationType": "java.lang.Deprecated",
+            "value": "\"25.1\"",
+            "justification": "FIPS-12191: Added explicit deprecation attributes (forRemoval=true, since=\"25.1\") to existing @Deprecated annotation."   
+          }
+        ]
+      }
+    }
+  ],
   "26.1.0": [
   	{
       "extension": "revapi.differences",

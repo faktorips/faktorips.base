@@ -194,27 +194,6 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(t1, repository.getTable(TestSingleContentTable.class));
     }
 
-    @SuppressWarnings("removal")
-    @Test
-    public void testPutAndRemoveTable_Deprecated_SingleContentTable() {
-        TestSingleContentTable t1 = new TestSingleContentTable("motor.RateTable");
-        repository.putTable(t1, "motor.RateTable");
-        assertEquals(t1, repository.getTable("motor.RateTable"));
-        assertEquals(t1, repository.getTable(TestSingleContentTable.class));
-        repository.removeTable(t1);
-        assertNull(repository.getTable("motor.RateTable"));
-        assertNull(repository.getTable(TestSingleContentTable.class));
-    }
-
-    @SuppressWarnings("removal")
-    @Test
-    public void testPutAndRemoveTable_Deprecated_MultiContentTable() {
-        TestTable t1 = new TestTable("motor.RateTable");
-        repository.putTable(t1, "motor.RateTable");
-        assertEquals(t1, repository.getTable("motor.RateTable"));
-        repository.removeTable(t1);
-        assertNull(repository.getTable("motor.RateTable"));
-    }
 
     @Test
     public void testGetTable_qName_MultiContentTable() {

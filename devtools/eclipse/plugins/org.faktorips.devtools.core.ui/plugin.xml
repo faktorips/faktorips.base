@@ -2257,20 +2257,13 @@
    </extension>
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
-         <propertyTester
-               class="org.faktorips.devtools.core.ui.commands.ModelObjectTester"
-               id="org.faktorips.devtools.core.ui.ModelObjectTester"
-               namespace="org.faktorips.devtools.core.ui.ModelObjectTester"
-               properties="isModelObject"
-               type="org.faktorips.devtools.model.ipsobject.IIpsObject">
-         </propertyTester>
       <propertyTester
-          namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
-       id="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
-       properties="isPartEditableInEditor,isPartEditable"
-       type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart"
-       class="org.faktorips.devtools.core.ui.commands.IpsObjectPartTester">
-     </propertyTester>
+            namespace="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
+            id="org.faktorips.devtools.core.ui.commands.ipsObjectPartTester"
+            properties="isPartEditableInEditor,isPartEditable"
+            type="org.faktorips.devtools.model.ipsobject.IIpsObjectPart"
+            class="org.faktorips.devtools.core.ui.commands.IpsObjectPartTester">
+      </propertyTester>
       <propertyTester
             class="org.faktorips.devtools.core.ui.commands.IpsObjectEditorTester"
             id="org.faktorips.devtools.core.ui.commands.ipsObjectEditorTester"

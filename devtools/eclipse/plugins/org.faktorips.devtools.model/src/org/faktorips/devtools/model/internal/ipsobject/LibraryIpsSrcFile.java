@@ -63,15 +63,6 @@ public class LibraryIpsSrcFile extends AbstractIpsSrcFile implements ILibraryIps
         // never dirty => nothing to do
     }
 
-    /**
-     * @deprecated since 22.6 for removal; use {@link #save(IProgressMonitor)} instead, as the
-     *                 {@code force} parameter is ignored anyways.
-     */
-    @Override
-    @Deprecated(forRemoval = true, since = "22.6")
-    public void save(boolean force, IProgressMonitor monitor) {
-        // not possible => nothing to do
-    }
 
     @Override
     public void save(IProgressMonitor monitor) {

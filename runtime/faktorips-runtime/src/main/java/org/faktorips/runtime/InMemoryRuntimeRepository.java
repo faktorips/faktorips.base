@@ -214,23 +214,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository impleme
 
     }
 
-    /**
-     * Puts the table with the indicated name into the repository. Replaces any table instance with
-     * the same qualified name.
-     *
-     * @throws NullPointerException if table or qName is <code>null</code>.
-     * @deprecated since 24.7 for removal. Use {@link IModifiableRuntimeRepository#putTable(ITable)}
-     *                 for all kinds of tables and make sure the {@code qName} is set as the table's
-     *                 name.
-     */
-    @Deprecated(since = "24.7", forRemoval = true)
-    public void putTable(ITable<?> table, String qName) {
-        if (isMultiContent(table.getClass())) {
-            multipleContentTables.put(qName, table);
-        } else {
-            putSingleContentTable(table);
-        }
-    }
 
     @Override
     public <T> void putEnumValues(Class<T> enumTypeClass, List<T> enumValues, InternationalString description) {
