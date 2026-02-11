@@ -11,7 +11,12 @@
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasSize;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -735,5 +740,260 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
         msgList = persistenceTypeInfo.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID));
+    }
+
+    @Test
+    public void testJoinTableColumnNameValidation_DuplicateColumnsInSameJoinTable() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create target policy type
+        PolicyCmptType targetPcType = newPolicyCmptType(ipsProject, "TargetPolicy");
+        targetPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType.getPersistenceTypeInfo().setTableName("TargetTable");
+
+        // Create association with join table
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setTarget(targetPcType.getQualifiedName());
+        association.setTargetRoleSingular("target");
+        association.setTargetRolePlural("targets");
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setInverseAssociation("inverse");
+
+        IPersistentAssociationInfo pAssInfo = association.getPersistenceAssociatonInfo();
+        pAssInfo.setJoinTableName("JoinTable");
+        pAssInfo.setSourceColumnName("duplicateCol");
+        pAssInfo.setTargetColumnName("duplicateCol");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        // Should detect duplicate column name within the same join table
+        assertThat(msgList, hasMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        Message message = msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString("JoinTable"));
+        assertThat(message.getText(), containsString("duplicate"));
+    }
+
+    @Test
+    public void testJoinTableColumnNameValidation_DifferentColumnsNoError() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create target policy type
+        PolicyCmptType targetPcType = newPolicyCmptType(ipsProject, "TargetPolicy");
+        targetPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType.getPersistenceTypeInfo().setTableName("TargetTable");
+
+        // Create association with join table
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setTarget(targetPcType.getQualifiedName());
+        association.setTargetRoleSingular("target");
+        association.setTargetRolePlural("targets");
+        association.setMaxCardinality(Integer.MAX_VALUE);
+
+        IPersistentAssociationInfo pAssInfo = association.getPersistenceAssociatonInfo();
+        pAssInfo.setJoinTableName("JoinTable");
+        pAssInfo.setSourceColumnName("sourceCol");
+        pAssInfo.setTargetColumnName("targetCol");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        // Should not detect duplicate column names since they are different
+        assertThat(msgList, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    @Test
+    public void testRelationColumnNameValidation_DuplicateInRelation() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create target policy type
+        PolicyCmptType targetPcType = newPolicyCmptType(ipsProject, "TargetPolicy");
+        targetPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType.getPersistenceTypeInfo().setTableName("TargetTable");
+
+        // Create attribute with column name
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("attr1");
+        attribute.setDatatype("String");
+        IPersistentAttributeInfo pAttInfo = attribute.getPersistenceAttributeInfo();
+        pAttInfo.setTableColumnName("dupCol");
+
+        // Create association with join column (no join table) - unidirectional with inverse blank
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        association.setTarget(targetPcType.getQualifiedName());
+        association.setTargetRoleSingular("target");
+        association.setTargetRolePlural("targets");
+        association.setMaxCardinality(1);
+        association.setInverseAssociation(""); // Ensure it's unidirectional and FK created on
+                                               // source side
+
+        IPersistentAssociationInfo pAssInfo = association.getPersistenceAssociatonInfo();
+        pAssInfo.setJoinColumnName("dupCol");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        // Should detect duplicate column name
+        assertThat(msgList, hasMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    @Test
+    public void testColumnNamePrefixingInJoinTables_SameColumnNameInDifferentJoinTables() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create first target policy type
+        PolicyCmptType targetPcType1 = newPolicyCmptType(ipsProject, "TargetPolicy1");
+        targetPcType1.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType1.getPersistenceTypeInfo().setTableName("TargetTable1");
+
+        // Create second target policy type
+        PolicyCmptType targetPcType2 = newPolicyCmptType(ipsProject, "TargetPolicy2");
+        targetPcType2.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType2.getPersistenceTypeInfo().setTableName("TargetTable2");
+
+        // Create first association with join table
+        IPolicyCmptTypeAssociation association1 = policyCmptType.newPolicyCmptTypeAssociation();
+        association1.setAssociationType(AssociationType.ASSOCIATION);
+        association1.setTarget(targetPcType1.getQualifiedName());
+        association1.setTargetRoleSingular("target1");
+        association1.setTargetRolePlural("targets1");
+        association1.setMaxCardinality(Integer.MAX_VALUE);
+
+        IPersistentAssociationInfo pAssInfo1 = association1.getPersistenceAssociatonInfo();
+        pAssInfo1.setJoinTableName("JoinTable1");
+        pAssInfo1.setSourceColumnName("col");
+        pAssInfo1.setTargetColumnName("col2");
+
+        // Create second association with different join table but same column name
+        IPolicyCmptTypeAssociation association2 = policyCmptType.newPolicyCmptTypeAssociation();
+        association2.setAssociationType(AssociationType.ASSOCIATION);
+        association2.setTarget(targetPcType2.getQualifiedName());
+        association2.setTargetRoleSingular("target2");
+        association2.setTargetRolePlural("targets2");
+        association2.setMaxCardinality(Integer.MAX_VALUE);
+
+        IPersistentAssociationInfo pAssInfo2 = association2.getPersistenceAssociatonInfo();
+        pAssInfo2.setJoinTableName("JoinTable2");
+        pAssInfo2.setSourceColumnName("col");
+        pAssInfo2.setTargetColumnName("col2");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        // Should NOT detect duplicate column names since they are in different join tables
+        // (prefixed with join table name internally)
+        assertThat(msgList, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    @Test
+    public void testMixedColumnNameScenarios_AttributesAndJoinTables() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create target policy type
+        PolicyCmptType targetPcType = newPolicyCmptType(ipsProject, "TargetPolicy");
+        targetPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType.getPersistenceTypeInfo().setTableName("TargetTable");
+
+        // Create attribute with column name "col"
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setName("attr1");
+        attribute.setDatatype("String");
+        IPersistentAttributeInfo pAttInfo = attribute.getPersistenceAttributeInfo();
+        pAttInfo.setTableColumnName("col");
+
+        // Create association with join table and source column "col"
+        // This should NOT conflict because join table columns are prefixed with join table name
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setTarget(targetPcType.getQualifiedName());
+        association.setTargetRoleSingular("target");
+        association.setTargetRolePlural("targets");
+        association.setMaxCardinality(Integer.MAX_VALUE);
+
+        IPersistentAssociationInfo pAssInfo = association.getPersistenceAssociatonInfo();
+        pAssInfo.setJoinTableName("JoinTable");
+        pAssInfo.setSourceColumnName("col");
+        pAssInfo.setTargetColumnName("targetCol");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        // Should NOT detect duplicate column names:
+        // - attribute "col" is in entity table
+        // - join table source column "col" is in join table (internally prefixed as
+        // "JoinTable.col")
+        assertThat(msgList, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+    }
+
+    @Test
+    public void testDuplicateColumnNameMessageFormatting_JoinTableMessage() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create target policy type
+        PolicyCmptType targetPcType = newPolicyCmptType(ipsProject, "TargetPolicy");
+        targetPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+        targetPcType.getPersistenceTypeInfo().setTableName("TargetTable");
+
+        // Create association with join table and duplicate columns
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setAssociationType(AssociationType.ASSOCIATION);
+        association.setTarget(targetPcType.getQualifiedName());
+        association.setTargetRoleSingular("target");
+        association.setTargetRolePlural("targets");
+        association.setMaxCardinality(Integer.MAX_VALUE);
+        association.setInverseAssociation("inverse");
+
+        IPersistentAssociationInfo pAssInfo = association.getPersistenceAssociatonInfo();
+        pAssInfo.setJoinTableName("MyJoinTable");
+        pAssInfo.setSourceColumnName("duplicateCol");
+        pAssInfo.setTargetColumnName("duplicateCol");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        assertThat(msgList, hasMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(msgList, hasSize(2));
+        msgList.forEach(message -> {
+            assertThat(message.getText(),
+                    containsString("The join table MyJoinTable has a duplicate column name duplicateCol."));
+            assertThat(message.getText(),
+                    anyOf(containsString("Found duplicate name in target#sourceColumnName."),
+                            containsString("Found duplicate name in target#targetColumnName.")));
+
+        });
+    }
+
+    @Test
+    public void testDuplicateColumnNameMessageFormatting_AttributeDuplicates() {
+        // Set up table name to pass validation
+        policyCmptType.getPersistenceTypeInfo().setTableName("PolicyTable");
+
+        // Create two attributes with same column name
+        IPolicyCmptTypeAttribute attribute1 = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute1.setName("attr1");
+        attribute1.setDatatype("String");
+        IPersistentAttributeInfo pAttInfo1 = attribute1.getPersistenceAttributeInfo();
+        pAttInfo1.setTableColumnName("sameCol");
+
+        IPolicyCmptTypeAttribute attribute2 = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute2.setName("attr2");
+        attribute2.setDatatype("String");
+        IPersistentAttributeInfo pAttInfo2 = attribute2.getPersistenceAttributeInfo();
+        pAttInfo2.setTableColumnName("sameCol");
+
+        MessageList msgList = policyCmptType.getPersistenceTypeInfo().validate(ipsProject);
+
+        // Verify message format
+        assertThat(msgList, hasMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
+        assertThat(msgList, hasSize(2));
+        msgList.forEach(message -> {
+            assertThat(message.getText(), anyOf(
+                    containsString("Duplicate column name sameCol. Found duplicate name in attr1#tableColumnName."),
+                    containsString("Duplicate column name sameCol. Found duplicate name in attr2#tableColumnName.")));
+        });
     }
 }

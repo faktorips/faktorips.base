@@ -63,6 +63,8 @@ public class Messages extends NLS {
     public static String PersistentTypeInfo_msgDiscriminatorValueMustNotBeEmpty;
     public static String PersistentTypeInfo_msgDiscriminatorValueNotConform;
     public static String PersistentTypeInfo_msgDuplicateColumnName;
+    public static String PersistentTypeInfo_msgRelationDuplicateColumnName;
+    public static String PersistentTypeInfo_msgJoinTableDuplicateColumnName;
     public static String PersistentTypeInfo_msgFoundDuplicateColumnNameIn;
     public static String PersistentTypeInfo_msgInvalidInheritanceStratedyCombination;
     public static String PersistentTypeInfo_msgTableNameExceedsMaximumLength;

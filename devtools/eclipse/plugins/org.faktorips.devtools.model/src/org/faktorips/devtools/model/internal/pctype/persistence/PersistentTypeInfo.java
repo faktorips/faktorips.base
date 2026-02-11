@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IPersistentTypeInfo}.
- * 
+ *
  * @author Roman Grutza
  */
 public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersistentTypeInfo {
@@ -377,7 +377,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     /**
      * The discriminator value exceeds the maximum length of the defined in the root entity.
-     * 
+     *
      * @return false if the validation fails
      */
     private boolean validateMaxDiscriminatorLength(MessageList msgList, IPolicyCmptType rootEntity) {
@@ -649,14 +649,44 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private String objectPropertyAsString(ObjectProperty objectProperty) {
+        if (objectProperty.getObject() instanceof IPersistentAssociationInfo pa) {
+            return MessageFormat.format(" {0}#{1}, ", //$NON-NLS-1$
+                    pa.getPolicyComponentTypeAssociation().getName(),
+                    objectProperty.getProperty());
+        }
+        if (objectProperty.getObject() instanceof IPersistentAttributeInfo pa) {
+            return MessageFormat.format(" {0}#{1}, ", //$NON-NLS-1$
+                    pa.getPolicyComponentTypeAttribute().getName(),
+                    objectProperty.getProperty());
+        }
         return MessageFormat.format(" {0}#{1}, ", //$NON-NLS-1$
                 getPolicyCmptTypeFromObjectProperty(objectProperty).getUnqualifiedName(),
                 objectProperty.getProperty());
     }
 
     private void addMessageDuplicateColumnName(MessageList msgList, ObjectProperty objectProperty, String detailText) {
-        msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, MessageFormat.format(
-                Messages.PersistentTypeInfo_msgDuplicateColumnName, detailText), Message.ERROR, objectProperty));
+
+        if (objectProperty.getObject() instanceof IPersistentAssociationInfo pa) {
+            if (IpsStringUtils.isNotBlank(pa.getJoinTableName())) {
+                msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, MessageFormat.format(
+                        Messages.PersistentTypeInfo_msgJoinTableDuplicateColumnName, pa.getJoinTableName(),
+                        detailText.replace(pa.getJoinTableName() + ".", "")),
+                        Message.ERROR,
+                        objectProperty));
+            } else {
+                String target = pa.getPolicyComponentTypeAssociation().getTarget();
+                msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, MessageFormat.format(
+                        Messages.PersistentTypeInfo_msgRelationDuplicateColumnName, target,
+                        detailText.replace(target + ".", "")),
+                        Message.ERROR,
+                        objectProperty));
+            }
+        } else {
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME, MessageFormat.format(
+                    Messages.PersistentTypeInfo_msgDuplicateColumnName, detailText),
+                    Message.ERROR,
+                    objectProperty));
+        }
     }
 
     private boolean isRootEntity() {
@@ -858,9 +888,23 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 }
                 addIfNotEmpty(pAssInfo.getJoinColumnName(), new ObjectProperty(pAssInfo,
                         IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME));
-                addIfNotEmpty(pAssInfo.getSourceColumnName(), new ObjectProperty(pAssInfo,
+
+                String sourceColumnName = pAssInfo.getSourceColumnName();
+                String targetColumnName = pAssInfo.getTargetColumnName();
+                String joinTableName = pAssInfo.getJoinTableName();
+                if (IpsStringUtils.isNotBlank(joinTableName)) {
+                    if (IpsStringUtils.isNotBlank(sourceColumnName)) {
+                        sourceColumnName = joinTableName + "." + sourceColumnName;
+                    }
+                    if (IpsStringUtils.isNotBlank(targetColumnName)) {
+                        targetColumnName = joinTableName + "." + targetColumnName;
+                    }
+                }
+
+                addIfNotEmpty(sourceColumnName, new ObjectProperty(pAssInfo,
                         IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME));
-                addIfNotEmpty(pAssInfo.getTargetColumnName(), new ObjectProperty(pAssInfo,
+
+                addIfNotEmpty(targetColumnName, new ObjectProperty(pAssInfo,
                         IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME));
             }
         }
