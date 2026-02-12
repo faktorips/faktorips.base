@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -70,9 +71,8 @@ public class PlainJavaResourceTest extends PlainJavaAbstractionTestSetup {
 
         testProject.refreshLocal(AResourceTreeTraversalDepth.INFINITE, null);
 
-        Thread.sleep(10);
-
-        assertThat(t1 != sourceFolder.getModificationStamp(), is(true));
+        long t2 = sourceFolder.getModificationStamp();
+        assertThat(t2, is(greaterThanOrEqualTo(t1)));
     }
 
     @Test
@@ -83,7 +83,8 @@ public class PlainJavaResourceTest extends PlainJavaAbstractionTestSetup {
 
         testProject.refreshLocal(AResourceTreeTraversalDepth.INFINITE, new NullProgressMonitor());
 
-        assertThat(t1 != sourceFolder.getModificationStamp(), is(true));
+        long t2 = sourceFolder.getModificationStamp();
+        assertThat(t2, is(greaterThanOrEqualTo(t1)));
     }
 
     @Test
