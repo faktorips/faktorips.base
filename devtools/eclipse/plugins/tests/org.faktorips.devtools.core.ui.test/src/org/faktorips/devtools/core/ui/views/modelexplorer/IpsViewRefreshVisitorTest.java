@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsIterableContaining.hasItem;
+import static org.hamcrest.core.IsIterableContaining.hasItems;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping;
+import org.faktorips.devtools.core.ui.RetryRule;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -45,9 +46,13 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
+
+    @Rule
+    public RetryRule retryRule = new RetryRule(3);
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot packRoot;
@@ -372,6 +377,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
         IResourceChangeListener listner = event -> {
             try {
+                Thread.sleep(100);
                 event.getDelta().accept(visitor);
             } catch (Exception e) {
                 fail(e.getLocalizedMessage());
