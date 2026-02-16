@@ -45,7 +45,6 @@ import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
-import org.faktorips.runtime.xml.IXmlBindingSupport;
 
 /**
  * Abstract implementation of runtime repository.
@@ -681,7 +680,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     /**
      * @deprecated This method does only return valid enums if the id attribute of the enum is of
      *                 type {@link String}. You should never use this method! Use
-     *                 {@link #getEnumValue(Class, Object)} instead. This method may be returned in
+     *                 {@link #getEnumValue(Class, Object)} instead. This method may be removed in
      *                 future releases.
      */
     @Override
@@ -876,38 +875,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * this repository depends on. Adds the classes found to the given result set.
      */
     protected abstract void getAllEnumClasses(LinkedHashSet<Class<?>> result);
-
-    /**
-     * Creates a {@code JAXBContext} that wraps the provided context and extends the marshaling
-     * methods to provide marshaling of Faktor-IPS enumerations and model objects configured by
-     * product components.
-     *
-     * @deprecated for removal since 23.6; directly use an implementation of
-     *                 {@link IXmlBindingSupport#newJAXBContext(Object, IRuntimeRepository)} instead
-     */
-    @Deprecated
-    public <JAXBContext> JAXBContext newJAXBContext(JAXBContext ctx) {
-        IXmlBindingSupport<JAXBContext> xmlBindingSupport = IXmlBindingSupport.get();
-        return xmlBindingSupport.newJAXBContext(ctx, this);
-    }
-
-    /**
-     * Creates a new {@code JAXBContext} that can marshal / unmarshal all model classes defined in
-     * this repository. If the repository references other repositories (directly or indirectly),
-     * the context can also handle the classes defined in those.
-     *
-     * @throws RuntimeException Exceptions that are thrown while trying to load a class from the
-     *             class loader or creating the JAXB context are wrapped into a runtime exception
-     *
-     * @deprecated for removal since 23.6; directly use an implementation of
-     *                 {@link IXmlBindingSupport#newJAXBContext(IRuntimeRepository)} instead
-     */
-    @Override
-    @Deprecated
-    public <JAXBContext> JAXBContext newJAXBContext() {
-        IXmlBindingSupport<JAXBContext> xmlBindingSupport = IXmlBindingSupport.get();
-        return xmlBindingSupport.newJAXBContext(this);
-    }
 
     /**
      * For default there is no formula evaluation supported.

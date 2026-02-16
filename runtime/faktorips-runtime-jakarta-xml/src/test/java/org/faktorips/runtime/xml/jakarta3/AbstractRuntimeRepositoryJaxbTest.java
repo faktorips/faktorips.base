@@ -32,6 +32,7 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.runtime.xml.jakarta.JaxbSupport;
 import org.faktorips.runtime.xml.jakarta.ProductConfigurationXmlAdapter;
 import org.junit.Test;
 
@@ -49,9 +50,7 @@ public class AbstractRuntimeRepositoryJaxbTest {
     @Test
     public void testNewJAXBContext() throws JAXBException {
         AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(Foo.class);
-
-        @SuppressWarnings("deprecation")
-        JAXBContext jaxbContext = repository.newJAXBContext();
+        JAXBContext jaxbContext = JaxbSupport.INSTANCE.newJAXBContext(repository);
         Foo foo = new Foo();
         foo.setX(42);
         StringWriter writer = new StringWriter();
@@ -69,8 +68,7 @@ public class AbstractRuntimeRepositoryJaxbTest {
     public void testNewJAXBContext_SuperSuperClass() {
         AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(FooSuppe2.class);
 
-        @SuppressWarnings("deprecation")
-        JAXBContext jaxbContext = repository.newJAXBContext();
+        JAXBContext jaxbContext = JaxbSupport.INSTANCE.newJAXBContext(repository);
 
         assertNotNull(jaxbContext);
     }

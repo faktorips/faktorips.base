@@ -1,0 +1,32 @@
+{
+    "26.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.values.xml.AnyTypeAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use a custom Adapter."
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.values.xml.DecimalXmlAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was renamed to DecimalAdapter and moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.values.xml.GregorianCalendarXmlAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was renamed to GregorianCalendarAdapter and moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.values.xml.MoneyXmlAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was renamed to MoneyAdapter and moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    }
+                ]
+            }
+        }
+    ]
+}

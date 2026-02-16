@@ -25,7 +25,6 @@ import org.faktorips.runtime.model.type.Type;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
-import org.faktorips.runtime.xml.IXmlBindingSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 
@@ -475,17 +474,6 @@ public interface IRuntimeRepository {
      * Returns an empty set if no type is available.
      */
     Set<String> getAllModelTypeImplementationClasses();
-
-    /**
-     * Creates a new {@code JAXBContext} that can marshal / unmarshal all model classes defined in
-     * the given repository. If the repository references other repositories (directly or
-     * indirectly), the context can also handle the classes defined in these other repositories.
-     *
-     * @deprecated for removal since 23.6; directly use an implementation of
-     *                 {@link IXmlBindingSupport#newJAXBContext(IRuntimeRepository)} instead
-     */
-    @Deprecated
-    <JAXBContext> JAXBContext newJAXBContext();
 
     /**
      * Getting a formula evaluator factory to create a new formula evaluator. If formula evaluation

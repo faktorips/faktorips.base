@@ -49,8 +49,7 @@ public class AbstractRuntimeRepositoryJaxbTest {
     public void testNewJAXBContext() throws JAXBException {
         AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(Foo.class);
 
-        @SuppressWarnings("deprecation")
-        JAXBContext jaxbContext = repository.newJAXBContext();
+        JAXBContext jaxbContext = JaxbSupport.INSTANCE.newJAXBContext(repository);
         Foo foo = new Foo();
         foo.setX(42);
         StringWriter writer = new StringWriter();
@@ -68,8 +67,7 @@ public class AbstractRuntimeRepositoryJaxbTest {
     public void testNewJAXBContext_SuperSuperClass() {
         AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(FooSuppe2.class);
 
-        @SuppressWarnings("deprecation")
-        JAXBContext jaxbContext = repository.newJAXBContext();
+        JAXBContext jaxbContext = JaxbSupport.INSTANCE.newJAXBContext(repository);
 
         assertNotNull(jaxbContext);
     }

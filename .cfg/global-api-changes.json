@@ -21,7 +21,6 @@
         "criticality": "documented",
         "differences": [
           {
-            "ignore": true,
             "code": "java.annotation.attributeAdded",
             "old": "method org.faktorips.runtime.model.table.TableStructure org.faktorips.runtime.model.type.TableUsage::getTableStructure()",
             "new": "method org.faktorips.runtime.model.table.TableStructure org.faktorips.runtime.model.type.TableUsage::getTableStructure()",
@@ -30,6 +29,11 @@
             "annotationType": "java.lang.Deprecated",
             "value": "\"25.1\"",
             "justification": "FIPS-12191: Added explicit deprecation attributes (forRemoval=true, since=\"25.1\") to existing @Deprecated annotation."   
+          },
+          {
+            "code": "java.method.removed",
+            "old": "method <JAXBContext> JAXBContext org.faktorips.runtime.IRuntimeRepository::newJAXBContext()",
+            "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use IXmlBindingSupport#newJAXBContext(IRuntimeRepository)"
           }
         ]
       }

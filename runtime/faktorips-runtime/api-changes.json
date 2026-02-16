@@ -9,6 +9,61 @@
                         "code": "java.method.removed",
                         "old": "method void org.faktorips.runtime.InMemoryRuntimeRepository::putTable(org.faktorips.runtime.ITable<?>, java.lang.String)",
                         "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use putTable(ITable) instead and ensure the qualified name is set as the table's name."
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.internal.AbstractJaxbModelObject",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.IpsJAXBContext",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.LocalDateAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.LocalDateTimeAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.LocalTimeAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.MonthAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.MonthDayAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Was moved to faktorips-runtime-jakarta-xml and faktorips-runtime-javax-xml"
+                    },
+                    {
+                      "code": "java.method.removed",
+                      "old": "method <JAXBContext> JAXBContext org.faktorips.runtime.IRuntimeRepository::newJAXBContext()",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use IXmlBindingSupport#newJAXBContext(IRuntimeRepository)"
+                    },
+                    {
+                      "code": "java.method.removed",
+                      "old": "method <JAXBContext> JAXBContext org.faktorips.runtime.internal.AbstractRuntimeRepository::newJAXBContext()",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use IXmlBindingSupport#newJAXBContext(IRuntimeRepository)"
+                    },
+                    {
+                      "code": "java.method.removed",
+                      "old": "method <JAXBContext> JAXBContext org.faktorips.runtime.internal.AbstractRuntimeRepository::newJAXBContext(JAXBContext)",
+                      "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use IXmlBindingSupport#newJAXBContext(Object, IRuntimeRepository)"
                     }
                 ]
             }

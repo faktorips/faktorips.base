@@ -62,7 +62,6 @@
                                     org.faktorips.runtime.internal.tableindex;
                                     exports org.faktorips.runtime.internal.toc;
                                     exports org.faktorips.runtime.internal.xml;
-                                    exports org.faktorips.runtime.jaxb;
                                     exports org.faktorips.runtime.model;
                                     exports
                                     org.faktorips.runtime.model.annotation;
@@ -98,7 +97,6 @@
                             !edu.umd.cs.findbugs.*,
                             com.opencsv;version="5.6.0";resolution:=optional,
                             com.opencsv.exceptions;version="5.6.0";resolution:=optional,
-                            javax.xml.bind.*;resolution:=optional,
                             junit.framework;resolution:=optional,
                             org.w3c.dom,
                             org.xml.sax.*,
@@ -176,12 +174,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <optional>true</optional>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <!-- Needed only when table contents are saved as CSV -->
