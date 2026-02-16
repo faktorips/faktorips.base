@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Operation to import ipstablecontents from a comma separated values (CSV) file.
- * 
+ *
  * @author Roman Grutza
  */
 public class CSVTableImportOperation extends AbstractTableImportOperation {
@@ -173,6 +173,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 values[i] = readValueFromCsv(i, readLine, datatypes, nullRepresentationString,
                         msgList, rowNumber);
             }
+
             tableRows.newRow(structure, Optional.empty(), Arrays.asList(values));
             ++rowNumber;
         }
@@ -190,6 +191,14 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         String csvField = csvLine[i];
         if (i < csvLine.length) {
             if (!(nullRepresentationString.equals(csvField))) {
+                if (shouldParseEnumNameAndId(datatypes[i]) && isNameAndIdFormat(csvField, datatypes[i])) {
+                    csvField = extractIdFromNameAndIdFormat(csvField);
+                } else if (!shouldParseEnumNameAndId(datatypes[i]) && isNameAndIdFormat(csvField, datatypes[i])) {
+                    String msg = NLS.bind(
+                            "Row {0}, column {1}: Value looks like ''Name (ID)'' format but import option is not enabled.", //$NON-NLS-1$
+                            Integer.valueOf(rowNumber), Integer.valueOf(i));
+                    messageList.add(new Message("", msg, Message.ERROR));
+                }
                 ipsValue = format.getIpsValue(csvField, datatypes[i], messageList);
             }
         }

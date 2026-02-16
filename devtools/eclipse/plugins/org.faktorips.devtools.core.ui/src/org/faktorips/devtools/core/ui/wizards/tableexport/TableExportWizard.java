@@ -29,6 +29,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
@@ -128,6 +129,9 @@ public class TableExportWizard extends IpsObjectExportWizard {
         String nullRepresentation = selectionPage.getNullRepresentation();
         boolean exportColumnHeaderRow = selectionPage.isExportColumnHeaderRow();
 
+        format.setProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID,
+                String.valueOf(selectionPage.isExportEnumAsNameAndId()));
+
         return new WorkspaceModifyOperation(schedulingRule) {
             @Override
             protected void execute(IProgressMonitor monitor)
@@ -152,6 +156,10 @@ public class TableExportWizard extends IpsObjectExportWizard {
         String nullRepresentation = exportPage.getNullRepresentation();
         boolean exportColumnHeaderRow = exportPage.isExportColumnHeaderRow();
         ITableContents tableContents = exportPage.getTableContents();
+
+        format.setProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID,
+                String.valueOf(exportPage.isExportEnumAsNameAndId()));
+
         return new WorkspaceModifyOperation(exportPage.getIpsProject().getCorrespondingResource().unwrap()) {
             @Override
             protected void execute(IProgressMonitor monitor)

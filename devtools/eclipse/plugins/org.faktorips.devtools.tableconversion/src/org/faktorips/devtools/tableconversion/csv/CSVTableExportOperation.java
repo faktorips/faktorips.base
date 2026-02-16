@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
@@ -41,7 +42,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Operation to export an ipstablecontents to an text-file (comma separated values).
- * 
+ *
  * @author Roman Grutza
  */
 public class CSVTableExportOperation extends AbstractTableExportOperation {
@@ -127,14 +128,14 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
 
     /**
      * Create the cells for the export
-     * 
+     *
      * @param writer A CSV writer instance.
      * @param contents The table contents for export.
      * @param tableRows The rows of the content to get the values from.
      * @param structure The structure the content is bound to.
      * @param monitor The monitor to display the progress.
      * @param exportColumnHeaderRow column header names included or not.
-     * 
+     *
      * @throws IpsException thrown if an error occurs during the search for the datatypes of the
      *             structure.
      */
@@ -180,6 +181,13 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             // Null Object for Decimal Datatype returned, see Null-Object Pattern
             csvField = nullRepresentationString;
         }
+
+        // Check if enum should be exported as Name (ID)
+        if (shouldExportEnumAsNameAndId(datatype) && csvField != null
+                && !csvField.equals(nullRepresentationString)) {
+            csvField = formatEnumAsNameAndId((NamedDatatype)datatype, csvField);
+        }
+
         return csvField;
     }
 
@@ -192,7 +200,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
 
     /**
      * Writes the CSV header containing the names of the columns using the given CSV writer.
-     * 
+     *
      * @param writer A CSV writer instance
      * @param columns The table content's columns
      * @param exportColumnHeaderRow Flag to indicate whether to export the header

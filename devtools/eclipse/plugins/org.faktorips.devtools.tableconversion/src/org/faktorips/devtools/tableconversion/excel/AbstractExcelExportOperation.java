@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,14 +21,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.runtime.MessageList;
 
 /**
- * 
- * 
+ *
+ *
  * @author Alexander Weickmann
  */
 abstract class AbstractExcelExportOperation extends AbstractTableExportOperation {
@@ -46,8 +47,8 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
     private Sheet sheet;
 
     /**
-     * 
-     * 
+     *
+     *
      * @param typeToExport An <code>IIpsObject</code> instance.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
@@ -97,7 +98,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
 
     /**
      * Fill the content of the cell.
-     * 
+     *
      * @param cell The cell to set the value.
      * @param ipsValue The ips-string representing the value.
      * @param datatype The datatype defined for the value.
@@ -122,7 +123,11 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
             return;
         }
         if (obj != null) {
-            cell.setCellValue(obj.toString());
+            String cellValue = obj.toString();
+            if (shouldExportEnumAsNameAndId(datatype) && !cellValue.equals(nullRepresentationString)) {
+                cellValue = formatEnumAsNameAndId((NamedDatatype)datatype, cellValue);
+            }
+            cell.setCellValue(cellValue);
         } else {
             cell.setCellValue(nullRepresentationString);
         }

@@ -430,4 +430,95 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         }
     }
 
+    /**
+     * Creates valid table contents with an enum column for testing enum export/import.
+     */
+    protected IEnumType createPaymentModeEnum(IIpsProject ipsProject) {
+        IEnumType paymentMode = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "PaymentMode");
+        paymentMode.setExtensible(false);
+        paymentMode.newEnumLiteralNameAttribute();
+
+        IEnumAttribute idAttr = paymentMode.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setIdentifier(true);
+        idAttr.setUsedAsNameInFaktorIpsUi(false);
+
+        IEnumAttribute nameAttr = paymentMode.newEnumAttribute();
+        nameAttr.setName("name");
+        nameAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttr.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumValue value1 = paymentMode.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues1 = value1.getEnumAttributeValues();
+        enumAttributeValues1.get(0).setValue(ValueFactory.createStringValue("JAEHRLICH"));
+        enumAttributeValues1.get(1).setValue(ValueFactory.createStringValue("1"));
+        enumAttributeValues1.get(2).setValue(ValueFactory.createStringValue("Jährlich"));
+
+        IEnumValue value2 = paymentMode.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues2 = value2.getEnumAttributeValues();
+        enumAttributeValues2.get(0).setValue(ValueFactory.createStringValue("MONATLICH"));
+        enumAttributeValues2.get(1).setValue(ValueFactory.createStringValue("12"));
+        enumAttributeValues2.get(2).setValue(ValueFactory.createStringValue("Monatlich"));
+
+        IEnumValue value3 = paymentMode.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues3 = value3.getEnumAttributeValues();
+        enumAttributeValues3.get(0).setValue(ValueFactory.createStringValue("FOO_FOO"));
+        enumAttributeValues3.get(1).setValue(ValueFactory.createStringValue("foo (bar)"));
+        enumAttributeValues3.get(2).setValue(ValueFactory.createStringValue("foo foo"));
+
+        paymentMode.getIpsSrcFile().save(null);
+
+        return paymentMode;
+    }
+
+    /**
+     * Creates a table structure with string column and PaymentMode enum column.
+     */
+    protected ITableStructure createTableStructureWithEnum(IIpsProject ipsProject) {
+        IEnumType paymentMode = createPaymentModeEnum(ipsProject);
+
+        ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
+                "TestStructureEnum");
+        IColumn col1 = structure.newColumn();
+        col1.setName("name");
+        col1.setDatatype(Datatype.STRING.getQualifiedName());
+
+        IColumn col2 = structure.newColumn();
+        col2.setName("paymentMode");
+        col2.setDatatype(paymentMode.getQualifiedName());
+
+        structure.getIpsSrcFile().save(null);
+
+        return structure;
+    }
+
+    /**
+     * Creates table contents with enum column for export testing. Contains 2 rows with enum values
+     * "1" and "12".
+     */
+    protected ITableContents createTableContentsWithEnum(IIpsProject ipsProject) {
+        ITableStructure structure = createTableStructureWithEnum(ipsProject);
+
+        // Create table contents
+        ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "TestContentsEnum");
+        contents.setTableStructure(structure.getQualifiedName());
+        contents.newColumn(null, "name");
+        contents.newColumn(null, "paymentMode");
+
+        ITableRows rows = contents.newTableRows();
+        IRow row1 = rows.newRow();
+        row1.setValue(0, "Product A");
+        row1.setValue(1, "1");
+
+        IRow row2 = rows.newRow();
+        row2.setValue(0, "Product B");
+        row2.setValue(1, "12");
+
+        contents.getIpsSrcFile().save(null);
+
+        return contents;
+    }
+
 }

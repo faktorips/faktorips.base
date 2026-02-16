@@ -26,7 +26,9 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.core.tableconversion.AbstractTableImportOperation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -88,13 +90,25 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
                 return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
             }
             default -> {
-                String value = cell.getStringCellValue();
-                if (nullRepresentationString.equals(value)) {
-                    return null;
-                }
-                return format.getIpsValue(value, datatype, messageList);
+                return readStringCell(cell, datatype);
             }
         }
+    }
+
+    private String readStringCell(Cell cell, Datatype datatype) {
+        String value = cell.getStringCellValue();
+        if (nullRepresentationString.equals(value)) {
+            return null;
+        }
+        if (shouldParseEnumNameAndId(datatype) && isNameAndIdFormat(value, datatype)) {
+            value = extractIdFromNameAndIdFormat(value);
+        } else if (!shouldParseEnumNameAndId(datatype) && isNameAndIdFormat(value, datatype)) {
+            String msg = NLS.bind(
+                    "Row {0}, column {1}: Value looks like ''Name (ID)'' format but import option is not enabled.", //$NON-NLS-1$
+                    Integer.valueOf(cell.getRowIndex()), Integer.valueOf(cell.getColumnIndex()));
+            messageList.add(new Message("", msg, Message.ERROR));
+        }
+        return format.getIpsValue(value, datatype, messageList);
     }
 
     private boolean isReserved(short dataFormatIndex) {

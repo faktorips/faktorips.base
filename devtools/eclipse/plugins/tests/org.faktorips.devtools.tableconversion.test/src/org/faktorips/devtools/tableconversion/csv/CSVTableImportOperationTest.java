@@ -1,18 +1,22 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.faktorips.testsupport.IpsMatchers;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -182,6 +186,82 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
 
         writer.writeNext(new String[] { "This", "is", "the", "header." });
         writer.writeNext(invalidLine);
+        writer.close();
+    }
+
+    @Test
+    public void testImportEnumWithoutNameAndIdFormat() throws Exception {
+        ITableStructure structure = createTableStructureWithEnum(ipsProject);
+        createCsvFileWithEnumIds();
+
+        // Import without Name (ID) format option
+        format.setProperty(CSVTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "false");
+
+        ITableContents targetContents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "EnumImportTarget");
+        targetContents.setTableStructure(structure.getQualifiedName());
+        targetContents.newColumn(null, "");
+        targetContents.newColumn(null, "");
+        ITableRows targetRows = targetContents.newTableRows();
+
+        MessageList ml = new MessageList();
+        CSVTableImportOperation op = new CSVTableImportOperation(structure, file.getName(), targetRows, format,
+                "NULL", true, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml, IpsMatchers.isEmpty());
+        assertThat(targetRows.getNumOfRows(), is(3));
+        assertThat(targetRows.getRow(0).getValue(1), is("1"));
+        assertThat(targetRows.getRow(2).getValue(1), is("foo (bar)"));
+    }
+
+    @Test
+    public void testImportEnumWithNameAndIdFormat() throws Exception {
+        ITableStructure structure = createTableStructureWithEnum(ipsProject);
+        createCsvFileWithEnumNameAndId();
+
+        // Import with Name (ID) format option enabled
+        format.setProperty(CSVTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "true");
+
+        ITableContents targetContents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "EnumImportTargetNameAndId");
+        targetContents.setTableStructure(structure.getQualifiedName());
+        targetContents.newColumn(null, "");
+        targetContents.newColumn(null, "");
+        ITableRows targetRows = targetContents.newTableRows();
+
+        MessageList ml = new MessageList();
+        CSVTableImportOperation op = new CSVTableImportOperation(structure, file.getName(), targetRows, format,
+                "NULL", true, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml, IpsMatchers.isEmpty());
+        assertThat(targetRows.getNumOfRows(), is(3));
+        assertThat(targetRows.getRow(0).getValue(1), is("1"));
+        assertThat(targetRows.getRow(2).getValue(1), is("foo (bar)"));
+    }
+
+    /**
+     * Creates CSV file with enum values as IDs only (e.g., "1", "12").
+     */
+    private void createCsvFileWithEnumIds() throws Exception {
+        CSVWriter writer = new CSVWriter(new FileWriter(file));
+        writer.writeNext(new String[] { "name", "paymentMode" });
+        writer.writeNext(new String[] { "Product A", "1" });
+        writer.writeNext(new String[] { "Product B", "12" });
+        writer.writeNext(new String[] { "Product C", "foo (bar)" });
+        writer.close();
+    }
+
+    /**
+     * Creates CSV file with enum values in Name (ID) format (e.g., "Jährlich (1)").
+     */
+    private void createCsvFileWithEnumNameAndId() throws Exception {
+        CSVWriter writer = new CSVWriter(new FileWriter(file));
+        writer.writeNext(new String[] { "name", "paymentMode" });
+        writer.writeNext(new String[] { "Product A", "Jährlich (1)" });
+        writer.writeNext(new String[] { "Product B", "Monatlich (12)" });
+        writer.writeNext(new String[] { "Product C", "foo foo (foo (bar))" });
         writer.close();
     }
 

@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
@@ -156,6 +157,9 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = startingPage.isImportIgnoreColumnHeaderRow();
+
+            format.setProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID,
+                    String.valueOf(startingPage.isImportEnumAsNameAndId()));
 
             ICoreRunnable runnable = $ -> format.executeTableImport(structure, new Path(filename), tableRows,
                     getNullRepresentation(),

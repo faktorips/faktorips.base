@@ -52,6 +52,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     private static final String REPLACE_CONTENT = PAGE_NAME + ".REPLACE_CONTENT"; //$NON-NLS-1$
     private static final String FIRST_ROW_HAS_COLUMN_NAMES = PAGE_NAME + ".SELECTED_TREE_ELEMENTS"; //$NON-NLS-1$
     private static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
+    private static final String ENUM_AS_NAME_AND_ID = PAGE_NAME + ".ENUM_AS_NAME_AND_ID"; //$NON-NLS-1$
 
     // true if the input is validated and errors are displayed in the messes area.
     protected boolean validateInput = true;
@@ -65,6 +66,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     private CheckboxField importExistingReplaceField;
     private CheckboxField importExistingAppendField;
     private CheckboxField importIgnoreColumnHeaderRowField;
+    private CheckboxField importEnumAsNameAndIdField;
     private StringValueComboField fileFormatField;
 
     // page control as defined by the wizard page class
@@ -270,6 +272,12 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         importIgnoreColumnHeaderRowField.addChangeListener(this);
         importIgnoreColumnHeaderRowField.getCheckbox().setChecked(true);
 
+        Checkbox importEnumAsNameAndId = toolkit.createCheckbox(pageControl,
+                Messages.SelectFileAndImportMethodPage_labelEnumAsNameAndId);
+        importEnumAsNameAndIdField = new CheckboxField(importEnumAsNameAndId);
+        importEnumAsNameAndIdField.addChangeListener(this);
+        importEnumAsNameAndIdField.getCheckbox().setChecked(false);
+
         Composite additionals = toolkit.createLabelEditColumnComposite(pageControl);
         toolkit.createLabel(additionals, Messages.SelectFileAndImportMethodPage_labelNullRepresentation);
         nullRepresentation = toolkit.createText(additionals);
@@ -362,6 +370,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         }
         importExistingReplaceField.getCheckbox().setChecked(settings.getBoolean(REPLACE_CONTENT));
         importIgnoreColumnHeaderRowField.getCheckbox().setChecked(settings.getBoolean(FIRST_ROW_HAS_COLUMN_NAMES));
+        importEnumAsNameAndIdField.getCheckbox().setChecked(settings.getBoolean(ENUM_AS_NAME_AND_ID));
         nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
 
         importExistingReplaceChanged();
@@ -375,6 +384,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         }
         settings.put(REPLACE_CONTENT, importExistingReplaceField.getCheckbox().isChecked());
         settings.put(FIRST_ROW_HAS_COLUMN_NAMES, importIgnoreColumnHeaderRowField.getCheckbox().isChecked());
+        settings.put(ENUM_AS_NAME_AND_ID, importEnumAsNameAndIdField.getCheckbox().isChecked());
         settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
     }
 
@@ -393,6 +403,10 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
      */
     public void setImportIntoExisting(boolean importIntoExisting) {
         this.importIntoExisting = importIntoExisting;
+    }
+
+    public boolean isImportEnumAsNameAndId() {
+        return importEnumAsNameAndIdField.getCheckbox().isChecked();
     }
 
     /**

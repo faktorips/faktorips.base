@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,6 +37,7 @@ public class Messages extends NLS {
     public static String SelectFileAndImportMethodPage_msgFilenameIsDirectory;
     public static String SelectFileAndImportMethodPage_labelFileFormat;
     public static String SelectFileAndImportMethodPage_labelNullRepresentation;
+    public static String SelectFileAndImportMethodPage_labelEnumAsNameAndId;
     public static String ImportPreviewPage_configurationGroupTitle;
     public static String ImportPreviewPage_livePreviewGroupTitle;
     public static String ImportPreviewPage_pageName;

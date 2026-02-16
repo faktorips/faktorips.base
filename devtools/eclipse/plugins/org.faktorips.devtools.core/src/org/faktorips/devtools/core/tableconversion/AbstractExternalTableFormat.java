@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,6 +27,8 @@ import org.faktorips.runtime.MessageList;
  * @author Thorsten Guenther
  */
 public abstract class AbstractExternalTableFormat implements ITableFormat {
+
+    public static final String PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID = "enumExportAsNameAndId"; //$NON-NLS-1$
 
     /**
      * Table specific properties like text/field delimiter chars for CSV, ...
@@ -117,9 +119,12 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     public String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList) {
         MessageList msgList = new MessageList();
         String ipsValue = getConverter(datatype).getIpsValue(externalValue, msgList);
+
         if (msgList.containsErrorMsg()) {
-            ipsValue = Messages.AbstractExternalTableFormat_Error + msgList.getFirstMessage(Message.ERROR).getText();
+            ipsValue = Messages.AbstractExternalTableFormat_Error
+                    + msgList.getFirstMessage(Message.ERROR).getText();
         }
+
         messageList.add(msgList);
         return ipsValue;
     }

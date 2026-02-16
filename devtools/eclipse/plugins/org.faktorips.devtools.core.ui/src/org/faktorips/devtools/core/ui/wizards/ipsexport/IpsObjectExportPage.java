@@ -76,6 +76,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected static final short MAX_EXCEL_COLUMNS = Short.MAX_VALUE;
     protected static final String EXPORT_WITH_COLUMN_HEADER = PAGE_NAME + ".EXPORT_WITH_COLUMN_HEADER"; //$NON-NLS-1$
     protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
+    protected static final String EXPORT_ENUM_AS_NAME_AND_ID = PAGE_NAME + ".EXPORT_ENUM_AS_NAME_AND_ID"; //$NON-NLS-1$
 
     protected Composite pageControl;
 
@@ -85,6 +86,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected TextButtonField filenameField;
     protected TextButtonField projectField;
     protected CheckboxField exportWithColumnHeaderRowField;
+    protected CheckboxField exportEnumAsNameAndIdField;
     protected StringValueComboField fileFormatField;
 
     protected ITableFormat[] formats;
@@ -358,6 +360,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             return;
         }
         exportWithColumnHeaderRowField.getCheckbox().setChecked(settings.getBoolean(EXPORT_WITH_COLUMN_HEADER));
+        exportEnumAsNameAndIdField.getCheckbox().setChecked(settings.getBoolean(EXPORT_ENUM_AS_NAME_AND_ID));
         nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
 
     }
@@ -382,6 +385,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             return;
         }
         settings.put(EXPORT_WITH_COLUMN_HEADER, exportWithColumnHeaderRowField.getCheckbox().isChecked());
+        settings.put(EXPORT_ENUM_AS_NAME_AND_ID, exportEnumAsNameAndIdField.getCheckbox().isChecked());
         settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
 
     }
@@ -446,6 +450,18 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         withColumnHeaderRow.setChecked(true);
     }
 
+    protected void createEnumNameAndIdCheckBox(UIToolkit toolkit, Composite composite) {
+        Checkbox exportEnumAsNameAndId = toolkit.createCheckbox(composite,
+                Messages.IpsObjectExportPage_exportEnumAsNameAndId);
+        exportEnumAsNameAndIdField = new CheckboxField(exportEnumAsNameAndId);
+        exportEnumAsNameAndIdField.addChangeListener(this);
+        exportEnumAsNameAndId.setChecked(false);
+    }
+
+    public boolean isExportEnumAsNameAndId() {
+        return exportEnumAsNameAndIdField.getCheckbox().isChecked();
+    }
+
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
@@ -465,6 +481,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         createNullPresentationControl(toolkit, lowerComposite);
 
         createColumHeaderCheckBox(toolkit, pageControl);
+        createEnumNameAndIdCheckBox(toolkit, pageControl);
 
         setDefaults(selectedResource);
 

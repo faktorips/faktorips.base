@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -31,6 +33,7 @@ import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.testsupport.IpsMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -352,6 +355,94 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
             row3.createCell(5).setCellValue("NULL");
             row3.createCell(6).setCellValue("NULL");
             row3.createCell(7).setCellValue("NULL");
+
+            wb.write(fos);
+        }
+    }
+
+    @Test
+    public void testImportEnumWithoutNameAndIdFormat() throws Exception {
+        ITableStructure enumStructure = createTableStructureWithEnum(ipsProject);
+        createExcelFileWithEnumIds();
+
+        format.setProperty(ExcelTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "false");
+
+        ITableContents targetContents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "EnumImportTarget");
+        targetContents.setTableStructure(enumStructure.getQualifiedName());
+        targetContents.newColumn(null, "");
+        targetContents.newColumn(null, "");
+        ITableRows targetRows = targetContents.newTableRows();
+
+        MessageList ml = new MessageList();
+        ExcelTableImportOperation op = new ExcelTableImportOperation(enumStructure, file.getName(), targetRows, format,
+                "NULL", true, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml, IpsMatchers.isEmpty());
+        assertThat(targetRows.getRow(0).getValue(1), is("1"));
+    }
+
+    @Test
+    public void testImportEnumWithNameAndIdFormat() throws Exception {
+        ITableStructure enumStructure = createTableStructureWithEnum(ipsProject);
+        createExcelFileWithEnumNameAndId();
+
+        format.setProperty(ExcelTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "true");
+
+        ITableContents targetContents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
+                "EnumImportTargetNameAndId");
+        targetContents.setTableStructure(enumStructure.getQualifiedName());
+        targetContents.newColumn(null, "");
+        targetContents.newColumn(null, "");
+        ITableRows targetRows = targetContents.newTableRows();
+
+        MessageList ml = new MessageList();
+        ExcelTableImportOperation op = new ExcelTableImportOperation(enumStructure, file.getName(), targetRows, format,
+                "NULL", true, ml, true);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml, IpsMatchers.isEmpty());
+        assertThat(targetRows.getRow(0).getValue(1), is("1"));
+        assertThat(targetRows.getRow(1).getValue(1), is("12"));
+        assertThat(targetRows.getRow(2).getValue(1), is("foo (bar)"));
+    }
+
+    private void createExcelFileWithEnumIds() throws Exception {
+        try (HSSFWorkbook wb = new HSSFWorkbook();
+                FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
+            HSSFRow headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("name");
+            headerRow.createCell(1).setCellValue("paymentMode");
+
+            HSSFRow row1 = sheet.createRow(1);
+            row1.createCell(0).setCellValue("Product A");
+            row1.createCell(1).setCellValue("1");
+
+            wb.write(fos);
+        }
+    }
+
+    private void createExcelFileWithEnumNameAndId() throws Exception {
+        try (HSSFWorkbook wb = new HSSFWorkbook();
+                FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
+            HSSFRow headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("name");
+            headerRow.createCell(1).setCellValue("paymentMode");
+
+            HSSFRow row1 = sheet.createRow(1);
+            row1.createCell(0).setCellValue("Product A");
+            row1.createCell(1).setCellValue("Jährlich (1)");
+
+            HSSFRow row2 = sheet.createRow(2);
+            row2.createCell(0).setCellValue("Product B");
+            row2.createCell(1).setCellValue("Monatlich (12)");
+
+            HSSFRow row3 = sheet.createRow(3);
+            row3.createCell(0).setCellValue("Product C");
+            row3.createCell(1).setCellValue("foo foo (foo (bar))");
 
             wb.write(fos);
         }

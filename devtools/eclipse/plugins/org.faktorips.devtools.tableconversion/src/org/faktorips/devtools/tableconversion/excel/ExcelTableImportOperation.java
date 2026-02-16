@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,7 +34,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Operation to import ipstablecontents from an excel-file.
- * 
+ *
  * @author Thorsten Guenther, Alexander Weickmann
  */
 public class ExcelTableImportOperation extends AbstractExcelImportOperation {
@@ -121,8 +122,8 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             Cell cell = sheetRow.getCell(j);
             if (cell == null) {
                 if (IpsStringUtils.isNotEmpty(nullRepresentationString)) {
-                    String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, new Object[] {
-                            rowIndex, j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() });
+                    String msg = MessageFormat.format(Messages.ExcelTableImportOperation_msgImportEscapevalue, rowIndex,
+                            j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
                 }
                 genRow.setValue(j, null);
