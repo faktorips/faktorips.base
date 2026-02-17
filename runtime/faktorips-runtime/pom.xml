@@ -50,7 +50,6 @@
                                     requires static junit;
                                     requires static org.junit.jupiter.api;
                                     requires static com.opencsv;
-                                    requires static java.xml.bind;
                                     exports org.faktorips.runtime;
                                     exports org.faktorips.runtime.annotation;
                                     exports org.faktorips.runtime.caching;
