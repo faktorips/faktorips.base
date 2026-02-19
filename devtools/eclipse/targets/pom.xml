@@ -23,9 +23,16 @@
         <module>2025-12</module>
     </modules>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>
