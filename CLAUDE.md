@@ -63,7 +63,6 @@ mvn javadoc:javadoc
 
 ### Build Profiles
 - `mavenCentralRelease`: Prepare artifacts for Maven Central (includes GPG signing)
-- `nexusRelease`: Deploy to Faktor Zehn's internal Nexus repository
 - `DependencyCheck`: Run OWASP dependency security checks
 
 ### Maven Configuration

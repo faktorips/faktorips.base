@@ -85,6 +85,12 @@
                     <repositoryId>pdrone.faktor-ips_3_snapshots</repositoryId>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -93,19 +99,6 @@
             <build>
                 <plugins>
                     <!-- deployment is done in the release pipeline -->
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>nexusRelease</id>
-            <build>
-                <plugins>
                     <plugin>
                         <artifactId>maven-deploy-plugin</artifactId>
                         <configuration>

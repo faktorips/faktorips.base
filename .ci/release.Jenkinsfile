@@ -82,7 +82,7 @@ pipeline {
                     withMaven(publisherStrategy: 'EXPLICIT') {
                         sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
                         if (isAlpha) {
-                            sh "mvn -U -V -T 8 -P nexusRelease clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
+                            sh "mvn -U -V -T 8 clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
                         } else {
                             // gpg signing of artifacts for maven central
                             sh "mvn -U -V -T 8 -P mavenCentralRelease clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
@@ -127,7 +127,7 @@ pipeline {
                     uploadRelease() {
                         if (isAlpha) {
                             withMaven(publisherStrategy: 'EXPLICIT') {
-                                sh "mvn -V deploy -P nexusRelease -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
+                                sh "mvn -V deploy -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
                             }
                         } else {
                             deployToMavenCentral(
