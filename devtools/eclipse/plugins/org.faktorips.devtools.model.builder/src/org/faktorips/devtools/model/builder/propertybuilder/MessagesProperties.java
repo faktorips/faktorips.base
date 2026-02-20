@@ -16,10 +16,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -149,11 +151,6 @@ public class MessagesProperties {
 
         private static final long serialVersionUID = 7627392983212145038L;
 
-        /** A table of hex digits */
-        private static final char[] HEX_DIGITS = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-        };
-
         private final String lineSeparator;
 
         public SortedProperties(String lineSeparator) {
@@ -176,7 +173,7 @@ public class MessagesProperties {
 
         @Override
         public void store(final OutputStream out, final String comments) throws IOException {
-            store0(new BufferedWriter(new OutputStreamWriter(out, "8859_1")));
+            store0(new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8)));
         }
 
         /*
@@ -188,12 +185,12 @@ public class MessagesProperties {
                 for (Map.Entry<Object, Object> e : entrySet()) {
                     String key = (String)e.getKey();
                     String val = (String)e.getValue();
-                    key = saveConvert(key, true);
+                    key = saveConvert(key, true, false);
                     /*
                      * No need to escape embedded and trailing spaces for value, hence pass false to
                      * flag.
                      */
-                    val = saveConvert(val, false);
+                    val = saveConvert(val, false, false);
                     bw.write(key + "=" + val);
                     bw.write(lineSeparator);
                 }
@@ -202,25 +199,23 @@ public class MessagesProperties {
         }
 
         /*
-         * Converts Unicode characters to encoded &#92;uxxxx and escapes special characters with a
-         * preceding slash.
+         * escapes special characters with a preceding slash.
          *
          * Copied from Properties#saveConvert(String, boolean, boolean)
          */
         // CSOFF: CyclomaticComplexity
         private String saveConvert(String theString,
-                boolean escapeSpace) {
+                boolean escapeSpace,
+                boolean escapeUnicode) {
             int len = theString.length();
             int bufLen = len * 2;
             if (bufLen < 0) {
                 bufLen = Integer.MAX_VALUE;
             }
             StringBuilder outBuffer = new StringBuilder(bufLen);
-
+            HexFormat hex = HexFormat.of().withUpperCase();
             for (int x = 0; x < len; x++) {
                 char aChar = theString.charAt(x);
-                // Handle common case first, selecting largest block that
-                // avoids the specials below
                 if ((aChar > 61) && (aChar < 127)) {
                     if (aChar == '\\') {
                         outBuffer.append('\\');
@@ -264,13 +259,9 @@ public class MessagesProperties {
                         outBuffer.append(aChar);
                         break;
                     default:
-                        if (((aChar < 0x0020) || (aChar > 0x007e))) {
-                            outBuffer.append('\\');
-                            outBuffer.append('u');
-                            outBuffer.append(toHex((aChar >> 12) & 0xF));
-                            outBuffer.append(toHex((aChar >> 8) & 0xF));
-                            outBuffer.append(toHex((aChar >> 4) & 0xF));
-                            outBuffer.append(toHex(aChar & 0xF));
+                        if (((aChar < 0x0020) || (aChar > 0x007e)) && escapeUnicode) {
+                            outBuffer.append("\\u");
+                            outBuffer.append(hex.toHexDigits(aChar));
                         } else {
                             outBuffer.append(aChar);
                         }
@@ -279,17 +270,6 @@ public class MessagesProperties {
             return outBuffer.toString();
         }
         // CSON: CyclomaticComplexity
-
-        /**
-         * Convert a nibble to a hex character.
-         * <p>
-         * Copied from Properties#toHex(int)
-         *
-         * @param nibble the nibble to convert.
-         */
-        private static char toHex(int nibble) {
-            return HEX_DIGITS[(nibble & 0xF)];
-        }
 
         /**
          * @deprecated not supported; use {@link #store(OutputStream, String)} instead
