@@ -27,7 +27,9 @@ import org.faktorips.devtools.model.internal.valueset.ValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.AttributeRelevance;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
@@ -54,6 +56,8 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     public static final String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE_SET;
 
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+
+    private static final String PROPERTY_RELEVANCE = "relevance"; //$NON-NLS-1$ ;
 
     private IValueSet valueSet;
 
@@ -107,41 +111,35 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                     PROPERTY_VALUE_SET));
             return;
         }
+
         if (valueSetToValidate.isAbstract()) {
             String text = Messages.ConfiguredValueSet_error_msg_abstractValueSet;
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
+
         if (valueSetToValidate.isEnum() && modelValueSet.isRange()) {
             validateEnumAgainstRange(list, ipsProject, (IEnumValueSet)valueSetToValidate,
                     (IRangeValueSet)modelValueSet);
             return;
         }
-        if (valueSetToValidate.isEnum()) {
-            if (modelValueSet.isStringLength()) {
-                MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
-                        (IEnumValueSet)valueSetToValidate,
-                        (IStringLengthValueSet)modelValueSet);
-                if (!valueValidationResult.isEmpty()) {
-                    list.add(valueValidationResult);
-                    return;
-                }
 
-            }
-            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull() && !modelValueSet.isAbstract()) {
-                String text = MessageFormat.format(Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
-                        getPolicyCmptTypeAttribute());
-                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, text, Message.ERROR, this,
-                        PROPERTY_VALUE_SET));
-                return;
-            }
+        if (valueSetToValidate.isEnum() || valueSetToValidate.isRange()) {
+            validateProductAgainstModel(list, ipsProject, attribute, valueSetToValidate, modelValueSet);
         }
+
         if (valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
             // situations like model value set is unrestricted, and this value set is a range
             // are ok.
             return;
         }
+
         validateNullIncompatible(list, modelValueSet, valueSetToValidate);
+
+        validateValueSetIsCompatible(list, valueSetToValidate, modelValueSet);
+    }
+
+    private void validateValueSetIsCompatible(MessageList list, IValueSet valueSetToValidate, IValueSet modelValueSet) {
         String msgCode;
         String text;
         if (!valueSetToValidate.isSameTypeOfValueSet(modelValueSet)) {
@@ -150,12 +148,13 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                     modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName());
         } else if (!modelValueSet.containsValueSet(valueSetToValidate)) {
             msgCode = IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
-            text = MessageFormat.format(Messages.ConfigElement_valueSetIsNotASubset, valueSetToValidate.toShortString(),
-                    modelValueSet.toShortString());
+            text = MessageFormat.format(Messages.ConfigElement_valueSetIsNotASubset,
+                    valueSetToValidate.toShortString(), modelValueSet.toShortString());
         } else {
             // should never happen
             throw new RuntimeException();
         }
+
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
         List<ObjectProperty> invalidObjectProperties = new ArrayList<>();
         invalidObjectProperties.add(new ObjectProperty(this, PROPERTY_VALUE_SET));
@@ -167,6 +166,93 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         ObjectProperty[] invalidOP = invalidObjectProperties
                 .toArray(new ObjectProperty[invalidObjectProperties.size()]);
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
+    }
+
+    private void validateProductAgainstModel(MessageList list,
+            IIpsProject ipsProject,
+            IPolicyCmptTypeAttribute attribute,
+            IValueSet valueSetToValidate,
+            IValueSet modelValueSet) {
+        if (modelValueSet.isStringLength()) {
+            MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
+                    (IEnumValueSet)valueSetToValidate,
+                    (IStringLengthValueSet)modelValueSet);
+            if (!valueValidationResult.isEmpty()) {
+                list.add(valueValidationResult);
+                return;
+            }
+        }
+        if (isValueSetOrRelevanceConfiguredByProduct(attribute)) {
+            if (modelValueSet.isEmpty()) {
+                validateEmptyModelValueSet(list, attribute, valueSetToValidate, modelValueSet);
+            } else {
+                if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                        && isConcreteOrForPrimitives(attribute)) {
+                    if (attribute.isValueSetConfiguredByProduct()) {
+                        String textForAtLeastOneValueRequired = MessageFormat.format(
+                                Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                                getPolicyCmptTypeAttribute());
+                        list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
+                                Message.ERROR, this, PROPERTY_VALUE_SET));
+                    }
+                    if (attribute.isRelevanceConfiguredByProduct()) {
+                        String textForMandatoryMustRemainMandatory = MessageFormat.format(
+                                Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
+                                getPolicyCmptTypeAttribute());
+                        list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
+                                textForMandatoryMustRemainMandatory, Message.ERROR, this, PROPERTY_VALUE_SET,
+                                PROPERTY_RELEVANCE));
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    private void validateEmptyModelValueSet(MessageList list,
+            IPolicyCmptTypeAttribute attribute,
+            IValueSet valueSetToValidate,
+            IValueSet modelValueSet) {
+        if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                && modelValueSet.isAbstractAndNotUnrestricted()) {
+            if (attribute.isValueSetConfiguredByProduct()) {
+                String textForAtLeastOneValueRequired = MessageFormat.format(
+                        Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                        getPolicyCmptTypeAttribute());
+                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
+                        Message.ERROR, this, PROPERTY_VALUE_SET));
+                if (attribute.isRelevanceConfiguredByProduct()) {
+                    String textForMandatoryMustRemainMandatory = MessageFormat.format(
+                            Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
+                            getPolicyCmptTypeAttribute());
+                    list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
+                            textForMandatoryMustRemainMandatory, Message.ERROR, this, PROPERTY_VALUE_SET,
+                            PROPERTY_RELEVANCE));
+                }
+            } else {
+                String text = MessageFormat.format(
+                        Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory_RelevanceOnly,
+                        getPolicyCmptTypeAttribute());
+                list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY_RELEVANCE_ONLY, text,
+                        Message.ERROR, this, PROPERTY_VALUE_SET, PROPERTY_RELEVANCE));
+            }
+        }
+    }
+
+    /**
+     * {@return {@code true} if the {@link IValueSet} is not abstract or the {@link ValueDatatype}
+     * of the attribute is a primitive}
+     */
+    private boolean isConcreteOrForPrimitives(IPolicyCmptTypeAttribute attribute) {
+        return !attribute.getValueSet().isAbstract() || attribute.findValueDatatype(getIpsProject()).isPrimitive();
+    }
+
+    /**
+     * {@return {@code true} if either the relevance or/and the value set of the attribute is
+     * configured by a {@link IProductCmpt}}
+     */
+    private boolean isValueSetOrRelevanceConfiguredByProduct(IPolicyCmptTypeAttribute attribute) {
+        return attribute.isRelevanceConfiguredByProduct() || attribute.isValueSetConfiguredByProduct();
     }
 
     private void validateEnumAgainstRange(MessageList list,
@@ -349,6 +435,18 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     public boolean isValueSetUpdateable() {
         return true;
+    }
+
+    @Override
+    public AttributeRelevance getRelevance() {
+        return AttributeRelevance.of(getValueSet());
+    }
+
+    @Override
+    public void setRelevance(AttributeRelevance attributeRelevance) {
+        if (attributeRelevance != null) {
+            attributeRelevance.set(this);
+        }
     }
 
     @Override

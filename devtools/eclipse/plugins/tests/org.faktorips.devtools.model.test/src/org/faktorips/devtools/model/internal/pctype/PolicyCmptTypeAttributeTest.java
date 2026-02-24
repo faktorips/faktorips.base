@@ -464,6 +464,41 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateEmptyAbstractRelevanceOnly_Mandatory() {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("mandatory");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(false);
+        attribute.setRelevanceConfiguredByProduct(true);
+        attribute.getValueSet().setContainsNull(false);
+        attribute.getValueSet().setAbstract(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_MANDATORY_RELEVANCE_ONLY_VALUESET));
+        assertThat(ml.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_MANDATORY_RELEVANCE_ONLY_VALUESET),
+                hasSeverity(Severity.WARNING));
+    }
+
+    @Test
+    public void testValidateEmptyAbstractRelevanceOnly_OptionalIsOK() {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("mandatory");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetConfiguredByProduct(false);
+        attribute.setRelevanceConfiguredByProduct(true);
+        attribute.getValueSet().setContainsNull(true);
+        attribute.getValueSet().setAbstract(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml,
+                not(hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_MANDATORY_RELEVANCE_ONLY_VALUESET)));
+    }
+
+    @Test
     public void testValidateNothingToOverwrite() throws Exception {
         attribute.setName("name");
 

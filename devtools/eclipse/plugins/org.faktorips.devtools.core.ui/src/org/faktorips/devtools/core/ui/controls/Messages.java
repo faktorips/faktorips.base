@@ -142,4 +142,8 @@ public class Messages extends NLS {
 
     public static String ValueSetSpecificationControl_allowEmpty;
 
+    public static String ValueSetSpecificationControl_canBeFurtherRestricted;
+
+    public static String ValueSetSpecificationControl_mustBeConfigured;
+
 }

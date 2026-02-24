@@ -1,21 +1,4 @@
 {
-  "all-versions" : [
-    {
-      "extension": "revapi.differences",
-      "configuration": {
-        "criticality": "documented",
-        "differences": [
-          {
-            "code": "java.missing.oldSuperType",
-            "old": "class org.faktorips.maven.plugin.validation.IpsValidationMojo",
-            "new": "class org.faktorips.maven.plugin.validation.IpsValidationMojo",
-            "superClass": "org.apache.maven.plugin.AbstractMojo",
-            "justification": "False positive due to incorrect dependency resolution"
-          }
-        ]
-      }
-    }
-  ],
   "25.7.4": [
     {
       "extension": "revapi.differences",

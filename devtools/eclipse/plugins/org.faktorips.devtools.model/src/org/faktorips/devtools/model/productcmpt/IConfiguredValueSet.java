@@ -32,6 +32,8 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
 
     String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
 
+    String PROPERTY_RELEVANCE = "relevance"; //$NON-NLS-1$
+
     /**
      * Prefix for all message codes of this class.
      */
@@ -79,6 +81,20 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * value set defined in the model is mandatory.
      */
     String MSGCODE_MANDATORY_VALUESET_IS_EMPTY = MSGCODE_PREFIX + "MandatoryValueSetIsEmpty"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the config elements value set is not set to
+     * mandatory while the value set defined in the model is mandatory.
+     */
+    String MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY = MSGCODE_PREFIX + "ValueSetMustBeMandatory"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the config elements value set is not set to
+     * mandatory while the value set defined in the model is mandatory - but nothing can be done
+     * here, as only the relevance is configurable.
+     */
+    String MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY_RELEVANCE_ONLY = MSGCODE_PREFIX
+            + "ValueSetMustBeMandatoryRelevanceOnly"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a string is too long to fit into the value set.
@@ -159,4 +175,8 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
     IConfiguredValueSet findTemplateProperty(IIpsProject ipsProject);
 
     IValueSet getNonTemplateValueSet();
+
+    AttributeRelevance getRelevance();
+
+    void setRelevance(AttributeRelevance attributeRelevance);
 }
