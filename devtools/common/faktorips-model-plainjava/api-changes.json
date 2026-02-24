@@ -1,0 +1,22 @@
+{
+    "26.1.1": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method org.faktorips.devtools.model.productcmpt.AttributeRelevance org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::getRelevance()",
+                        "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+                    },
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method void org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::setRelevance(org.faktorips.devtools.model.productcmpt.AttributeRelevance)",
+                        "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+                    }
+                ]
+            }
+        }
+    ]
+}

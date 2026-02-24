@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.AttributeRelevance;
 import org.faktorips.devtools.model.valueset.IValueSet;
 
 /**
@@ -43,7 +44,7 @@ public class AttributeRelevanceControl extends ControlComposite {
         ValueDatatype valueDatatype = attribute.findDatatype(attribute.getIpsProject());
         LinkedHashMap<AttributeRelevance, String> options = new LinkedHashMap<>();
         IValueSet valueSet = attribute.getValueSet();
-        if (!valueSet.isEmpty()) {
+        if (!valueSet.isEmpty() || valueSet.isAbstract()) {
             options.put(AttributeRelevance.Mandatory, Messages.AttributeRelevanceControl_Mandatory);
         }
         if (valueSet.isContainsNull()) {

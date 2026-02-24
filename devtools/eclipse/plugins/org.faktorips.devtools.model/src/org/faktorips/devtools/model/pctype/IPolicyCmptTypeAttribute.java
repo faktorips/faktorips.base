@@ -95,6 +95,14 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     String MSGCODE_EMPTY_MANDATORY_VALUESET = IAttribute.MSGCODE_PREFIX + "EmptyMandatoryValueSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the currently configured value set is mandatory,
+     * abstract and only its relevance can be configured in the product, therefore making a valid
+     * product configuration impossible.
+     */
+    String MSGCODE_ABSTRACT_MANDATORY_RELEVANCE_ONLY_VALUESET = IAttribute.MSGCODE_PREFIX
+            + "AbstractMandatoryRelevanceOnlyValueSet"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that a constant attribute can't use an abstract datatype.
      */
     String MSGCODE_CONSTANT_CANT_BE_ABSTRACT = IAttribute.MSGCODE_PREFIX + "ConstantCantBeAbstract"; //$NON-NLS-1$

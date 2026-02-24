@@ -286,11 +286,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private void createConcreteValueSetCheckbox(UIToolkit toolkit, Composite parent) {
         if (!editMode.canDefineAbstractSets()) {
-            // the user has no choice, so need to create a checkbox
+            // the user has no choice, so no need to create a checkbox
             return;
         }
         concreteValueSetLabel = toolkit.createLabel(parent, Messages.ValueSetSpecificationControl_specifyBoundsValues);
-        concreteValueSetCheckbox = toolkit.createCheckbox(parent);
+        concreteValueSetCheckbox = toolkit.createCheckbox(parent, valueSetPmo.getValuesetSpecificationText());
         concreteValueSetField = new CheckboxField(concreteValueSetCheckbox);
         updateConcreteValueSetCheckbox();
         concreteValueSetField.addChangeListener(e -> {
@@ -298,6 +298,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             getValueSet().setAbstract(!checked);
             updateUI();
         });
+        bindingContext
+                .add(new ButtonTextBinding(concreteValueSetCheckbox, valueSetPmo,
+                        ValueSetPmo.PROPERTY_VALUESET_SPECIFICATION_TEXT));
     }
 
     private String getIncludeNullMessage() {
@@ -455,6 +458,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
         public static final String PROPERTY_RELEVANCE_TEXT = "relevanceText"; //$NON-NLS-1$
         public static final String PROPERTY_ENABLED_VALUE = "enabledDefaultAndValueset"; //$NON-NLS-1$
+        public static final String PROPERTY_VALUESET_SPECIFICATION_TEXT = "valuesetSpecificationText"; //$NON-NLS-1$
 
         private IValueSet sourceSet;
 
@@ -487,6 +491,10 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public void setContainsNull(boolean containsNull) {
             getValueSet().setContainsNull(containsNull);
+        }
+
+        public boolean isAbstract() {
+            return getValueSet().isAbstract();
         }
 
         private IValueSet getValueSet() {
@@ -530,6 +538,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         public String getRelevanceText() {
             return isContainsNull() ? Messages.ValueSetSpecificationControl_RelevanceOptional
                     : Messages.ValueSetSpecificationControl_RelevanceMandatory;
+        }
+
+        public String getValuesetSpecificationText() {
+            return isAbstract() ? Messages.ValueSetSpecificationControl_mustBeConfigured
+                    : Messages.ValueSetSpecificationControl_canBeFurtherRestricted;
         }
 
         /**

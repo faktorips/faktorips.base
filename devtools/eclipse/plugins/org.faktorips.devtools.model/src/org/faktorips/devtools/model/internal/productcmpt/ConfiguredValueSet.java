@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.internal.valueset.ValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.AttributeRelevance;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
@@ -123,7 +124,6 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             return;
         }
 
-        // TODO: FIPS-13827 works but FIPS-12831 is still open, careful when fixing
         if (valueSetToValidate.isEnum() || valueSetToValidate.isRange()) {
             validateProductAgainstModel(list, ipsProject, attribute, valueSetToValidate, modelValueSet);
         }
@@ -136,6 +136,10 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
         validateNullIncompatible(list, modelValueSet, valueSetToValidate);
 
+        validateValueSetIsCompatible(list, valueSetToValidate, modelValueSet);
+    }
+
+    private void validateValueSetIsCompatible(MessageList list, IValueSet valueSetToValidate, IValueSet modelValueSet) {
         String msgCode;
         String text;
         if (!valueSetToValidate.isSameTypeOfValueSet(modelValueSet)) {
@@ -178,25 +182,59 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                 return;
             }
         }
-        if (isValueSetOrRelevanceConfiguredByProduct(attribute) && !modelValueSet.isEmpty()) {
-            if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
-                    && isConcreteOrForPrimitives(attribute)) {
-                if (attribute.isValueSetConfiguredByProduct()) {
-                    String textForAtLeastOneValueRequired = MessageFormat.format(
-                            Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
-                            getPolicyCmptTypeAttribute());
-                    list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
-                            Message.ERROR, this, PROPERTY_VALUE_SET));
+        if (isValueSetOrRelevanceConfiguredByProduct(attribute)) {
+            if (modelValueSet.isEmpty()) {
+                validateEmptyModelValueSet(list, attribute, valueSetToValidate, modelValueSet);
+            } else {
+                if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                        && isConcreteOrForPrimitives(attribute)) {
+                    if (attribute.isValueSetConfiguredByProduct()) {
+                        String textForAtLeastOneValueRequired = MessageFormat.format(
+                                Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                                getPolicyCmptTypeAttribute());
+                        list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
+                                Message.ERROR, this, PROPERTY_VALUE_SET));
+                    }
+                    if (attribute.isRelevanceConfiguredByProduct()) {
+                        String textForMandatoryMustRemainMandatory = MessageFormat.format(
+                                Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
+                                getPolicyCmptTypeAttribute());
+                        list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
+                                textForMandatoryMustRemainMandatory, Message.ERROR, this, PROPERTY_VALUE_SET,
+                                PROPERTY_RELEVANCE));
+                    }
+                    return;
                 }
+            }
+        }
+    }
+
+    private void validateEmptyModelValueSet(MessageList list,
+            IPolicyCmptTypeAttribute attribute,
+            IValueSet valueSetToValidate,
+            IValueSet modelValueSet) {
+        if (valueSetToValidate.isEmpty() && !modelValueSet.isContainsNull()
+                && modelValueSet.isAbstractAndNotUnrestricted()) {
+            if (attribute.isValueSetConfiguredByProduct()) {
+                String textForAtLeastOneValueRequired = MessageFormat.format(
+                        Messages.ConfiguredValueSet_error_msg_mandatoryAttribute,
+                        getPolicyCmptTypeAttribute());
+                list.add(new Message(MSGCODE_MANDATORY_VALUESET_IS_EMPTY, textForAtLeastOneValueRequired,
+                        Message.ERROR, this, PROPERTY_VALUE_SET));
                 if (attribute.isRelevanceConfiguredByProduct()) {
                     String textForMandatoryMustRemainMandatory = MessageFormat.format(
                             Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory,
                             getPolicyCmptTypeAttribute());
                     list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY,
-                            textForMandatoryMustRemainMandatory, Message.ERROR, attribute, PROPERTY_RELEVANCE,
-                            PROPERTY_VALUE_SET));
+                            textForMandatoryMustRemainMandatory, Message.ERROR, this, PROPERTY_VALUE_SET,
+                            PROPERTY_RELEVANCE));
                 }
-                return;
+            } else {
+                String text = MessageFormat.format(
+                        Messages.ConfiguredValueSet_error_msg_valueSetMustBeMandatory_RelevanceOnly,
+                        getPolicyCmptTypeAttribute());
+                list.add(new Message(MSGCODE_MANDATORY_VALUESET_MUST_BE_MANDATORY_RELEVANCE_ONLY, text,
+                        Message.ERROR, this, PROPERTY_VALUE_SET, PROPERTY_RELEVANCE));
             }
         }
     }
@@ -397,6 +435,18 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
     @Override
     public boolean isValueSetUpdateable() {
         return true;
+    }
+
+    @Override
+    public AttributeRelevance getRelevance() {
+        return AttributeRelevance.of(getValueSet());
+    }
+
+    @Override
+    public void setRelevance(AttributeRelevance attributeRelevance) {
+        if (attributeRelevance != null) {
+            attributeRelevance.set(this);
+        }
     }
 
     @Override

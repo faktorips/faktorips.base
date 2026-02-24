@@ -275,7 +275,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (getValueDatatype() != null) {
             validateValueSetType(result);
         }
-        if (!getValueSet().isAbstract()) {
+        if (getValueSet().isAbstract()) {
+            validateAbstractValueSet(result);
+        } else {
             validateValueSet(result);
         }
         validateChangingOverTimeFlag(result);
@@ -363,6 +365,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                                     .quote(getValueSet().getValueSetType().getName()));
             result.add(
                     new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this, PROPERTY_VALUE_SET));
+        }
+    }
+
+    private void validateAbstractValueSet(MessageList result) {
+        if (getValueSet() instanceof IEnumValueSet enumValueSet && !enumValueSet.isContainsNull()
+                && isRelevanceConfiguredByProduct()) {
+            String messageText = MessageFormat.format(
+                    Messages.PolicyCmptTypeAttribute_msg_AbstractMandatoryRelevanceOnlyValueSet,
+                    this);
+            result.add(
+                    new Message(MSGCODE_ABSTRACT_MANDATORY_RELEVANCE_ONLY_VALUESET, messageText, Message.WARNING, this,
+                            PROPERTY_VALUE_SET));
         }
     }
 
