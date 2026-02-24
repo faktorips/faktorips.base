@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.controller.fields.BooleanValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.ConfiguredValueSetField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.productcmpt.AttributeRelevance;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -116,8 +117,11 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
 
         AttributeRelevanceEditField attributeRelevanceEditField = new AttributeRelevanceEditField(
                 attributeRelevanceControl);
-        getBindingContext().bindContent(attributeRelevanceEditField, new AttributeRelevanceAccessor(),
-                AttributeRelevanceAccessor.PROPERTY_RELEVANCE);
+        AttributeRelevanceAccessor attributeRelevanceAccessor = new AttributeRelevanceAccessor();
+        getBindingContext().bindContent(attributeRelevanceEditField, attributeRelevanceAccessor,
+                IConfiguredValueSet.PROPERTY_RELEVANCE);
+        getBindingContext().bindProblemMarker(attributeRelevanceEditField, getPropertyValue(),
+                IConfiguredValueSet.PROPERTY_RELEVANCE);
         createTemplateStatusButton(attributeRelevanceEditField);
         return attributeRelevanceEditField;
     }
@@ -143,18 +147,16 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
     /**
      * Wraps the {@link AttributeRelevance} for the
      * {@link ConfiguredValueSetEditComposite#getPropertyValue() property value} as a property named
-     * {@link #PROPERTY_RELEVANCE} for data binding.
+     * {@link IConfiguredValueSet#PROPERTY_RELEVANCE} for data binding.
      */
     public class AttributeRelevanceAccessor {
 
-        public static final String PROPERTY_RELEVANCE = "relevance"; //$NON-NLS-1$
-
         public AttributeRelevance getRelevance() {
-            return AttributeRelevance.of(getPropertyValue().getValueSet());
+            return getPropertyValue().getRelevance();
         }
 
         public void setRelevance(AttributeRelevance attributeRelevance) {
-            attributeRelevance.set(getPropertyValue());
+            getPropertyValue().setRelevance(attributeRelevance);
             getBindingContext().updateUI();
         }
 

@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.controller.fields.DefaultEditField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.util.SelectionListeners;
+import org.faktorips.devtools.model.productcmpt.AttributeRelevance;
 
 /**
  * EditField for {@link AttributeRelevance}.
