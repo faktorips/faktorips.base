@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -62,6 +63,7 @@ import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -141,6 +143,62 @@ public class ProductAttributeTest {
     }
 
     @Test
+    public void testGetValue_NoGetter() throws Exception {
+        Produkt productComponent = new Produkt(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attr1");
+
+        Field getterField = ProductAttribute.class.getDeclaredField("getter");
+        getterField.setAccessible(true);
+        Object originalGetter = getterField.get(attribute);
+
+        try {
+            getterField.set(attribute, null);
+
+            try {
+                attribute.getValue(productComponent, effectiveDate);
+                Assert.fail("Expected IllegalStateException");
+            } catch (IllegalStateException e) {
+                assertThat(e.getMessage(), containsString("Getter for"));
+                assertThat(e.getMessage(), containsString("ProductXYZ"));
+                assertThat(e.getMessage(), containsString("attr1"));
+                assertThat(e.getMessage(), containsString("is not available"));
+            }
+        } finally {
+            getterField.set(attribute, originalGetter);
+        }
+    }
+
+    @Test
+    public void testGetValue_TypedReturn() {
+        Produkt productComponent = new Produkt(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+
+        String stringValue = productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate);
+        assertThat(stringValue, is(equalTo("foo")));
+
+        Integer intValue = productCmptType.getAttribute("attr2").getValue(productComponent, effectiveDate);
+        assertThat(intValue, is(equalTo(42)));
+
+        List<String> listValue = productCmptType.getAttribute("multiString").getValue(productComponent,
+                effectiveDate);
+        assertThat(listValue, is(equalTo(List.of("hello", "world"))));
+    }
+
+    @Test
+    public void testGetValue_DifferentEffectiveDates() {
+        SubProdukt productComponent = new SubProdukt(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
+
+        String valueFirstGen = productCmptType.getAttribute("attrGen").getValue(productComponent,
+                new GregorianCalendar(1999, 1, 2));
+        assertThat(valueFirstGen, is(equalTo("2ndGen")));
+
+        String valueLatestGen = productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate);
+        assertThat(valueLatestGen, is(equalTo("foobaz")));
+    }
+
+    @Test
     public void testSetValue() {
         Produkt productComponent = new Produkt(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
@@ -209,6 +267,101 @@ public class ProductAttributeTest {
                 is(equalTo((Object)"newValue")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)List.of("new", "value"))));
+    }
+
+    @Test
+    public void testSetValue_OnOverriddenAttributeWithHide() {
+        SubProdukt productComponent = new SubProdukt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(SubProdukt.class);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+
+        attribute.setValue(productComponent, null, 1);
+
+        assertThat(attribute.getValue(productComponent, null), is(1));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetValue_NoSetterAndNoSuperAttribute() {
+        Produkt productComponent = new Produkt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = cmptType.getAttribute("multiEnum");
+        attribute.setValue(productComponent, null, List.of());
+    }
+
+    @Test
+    public void testSetValue_WithCachedSuperAttribute() {
+        SubProdukt productComponent = new SubProdukt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(SubProdukt.class);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+
+        attribute.setValue(productComponent, effectiveDate, 42);
+
+        assertThat(attribute.getValue(productComponent, effectiveDate), is(equalTo((Object)42)));
+    }
+
+    @Test
+    public void testSetValue_WithGeneration_CachedSuperAttribute() {
+        SubProdukt productComponent = new SubProdukt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(SubProdukt.class);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+        IProductComponentGeneration generation = productComponent.getLatestProductComponentGeneration();
+
+        attribute.setValue(generation, 99);
+
+        assertThat(attribute.getValue(productComponent, null), is(equalTo((Object)99)));
+    }
+
+    @Test
+    public void testSetValue_MultipleCallsUseCachedSuperAttribute() {
+        SubProdukt productComponent = new SubProdukt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(SubProdukt.class);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+
+        attribute.setValue(productComponent, effectiveDate, 10);
+        assertThat(attribute.getValue(productComponent, effectiveDate), is(equalTo((Object)10)));
+
+        attribute.setValue(productComponent, effectiveDate, 20);
+        assertThat(attribute.getValue(productComponent, effectiveDate), is(equalTo((Object)20)));
+
+        attribute.setValue(productComponent, effectiveDate, 30);
+        assertThat(attribute.getValue(productComponent, effectiveDate), is(equalTo((Object)30)));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSetValue_WithGeneration_NoSetterAndNoSuperAttribute() {
+        Produkt productComponent = new Produkt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = cmptType.getAttribute("multiEnum");
+        IProductComponentGeneration generation = productComponent.getLatestProductComponentGeneration();
+
+        attribute.setValue(generation, List.of());
+    }
+
+    @Test
+    public void testSetValue_SuperAttributeWithSetterIsCached() throws Exception {
+        new SubProdukt(repository);
+        ProductCmptType cmptType = IpsModel.getProductCmptType(SubProdukt.class);
+        ProductAttribute attribute = cmptType.getAttribute("attrToHide");
+
+        Field superAttributeField = ProductAttribute.class.getDeclaredField("superAttributeWithSetter");
+        superAttributeField.setAccessible(true);
+        ProductAttribute cachedSuperAttribute = (ProductAttribute)superAttributeField.get(attribute);
+
+        assertThat(cachedSuperAttribute, is(notNullValue()));
+        assertThat(cachedSuperAttribute.getType().getName(), is(equalTo("ProductXYZ")));
+        assertThat(cachedSuperAttribute.getName(), is(equalTo("attrToHide")));
+    }
+
+    @Test
+    public void testSetValue_SuperAttributeWithSetterIsNullWhenSetterExists() throws Exception {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = cmptType.getAttribute("attr1");
+
+        Field superAttributeField = ProductAttribute.class.getDeclaredField("superAttributeWithSetter");
+        superAttributeField.setAccessible(true);
+        ProductAttribute cachedSuperAttribute = (ProductAttribute)superAttributeField.get(attribute);
+
+        assertThat(cachedSuperAttribute, is(nullValue()));
     }
 
     @Test

@@ -164,8 +164,9 @@ public abstract class ModelElement {
             Method method,
             Object[] args,
             Throwable e) {
+        String methodName = method != null ? method.getName() : "<unknown method>";
         return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
-                method.getName(), IpsStringUtils.join(args), source), e);
+                methodName, IpsStringUtils.join(args), source), e);
     }
 
     protected static Object invokeField(Field field, Object source) {
