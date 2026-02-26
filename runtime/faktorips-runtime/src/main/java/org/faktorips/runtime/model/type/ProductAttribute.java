@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -54,11 +55,35 @@ public class ProductAttribute extends Attribute {
 
     private final Method setter;
 
+    /**
+     * Cached super attribute with setter. Only populated if this attribute has no setter itself.
+     * This avoids searching for the super attribute on every setValue call.
+     */
+    private final ProductAttribute superAttributeWithSetter;
+
     public ProductAttribute(Type type, boolean changingOverTime, Method getter, Method setter) {
         super(type, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
                 findDatatype(getter), changingOverTime, Deprecation.of(getter));
         this.getter = getter;
         this.setter = setter;
+        this.superAttributeWithSetter = findSuperAttributeWithSetter();
+    }
+
+    /**
+     * Finds and caches the super attribute that has a setter, if this attribute has no setter.
+     *
+     * @return the super ProductAttribute with a setter, or null if not found or if this attribute
+     *         has a setter
+     */
+    private ProductAttribute findSuperAttributeWithSetter() {
+        if (setter != null) {
+            return null;
+        }
+        Optional<Attribute> superAttribute = findSuperAttribute();
+        if (superAttribute.isPresent() && superAttribute.get() instanceof ProductAttribute productAttribute) {
+            return productAttribute;
+        }
+        return null;
     }
 
     /**
@@ -112,24 +137,43 @@ public class ProductAttribute extends Attribute {
      *            attribute belongs to.
      * @param effectiveDate (optional) the date to use for selecting the product component's
      *            generation, if this attribute {@link #isChangingOverTime()}
+     * @throws IllegalStateException if no getter is available for this attribute
      */
     @SuppressWarnings("unchecked")
     public <T> T getValue(IProductComponent productComponent, Calendar effectiveDate) {
+        if (getter == null) {
+            throw new IllegalStateException(
+                    "Getter for " + getType().getName() + "." + getName() + " is not available");
+        }
         return (T)invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
     }
 
     /**
      * Sets the value of this attribute in the given product component (or its generation identified
      * by the effectiveDate, if the attribute is changeable over time).
+     * <p>
+     * If this attribute has no setter method, the method attempts to delegate to a super attribute
+     * with a setter. The super attribute is cached during construction for performance.
+     * </p>
      *
      * @param productComponent a product component based on the product component type this
      *            attribute belongs to.
      * @param effectiveDate (optional) the date to use for selecting the product component's
      *            generation, if this attribute {@link #isChangingOverTime()}
      * @param value the new value
+     * @throws IllegalStateException if no setter is available for this attribute and no super
+     *             attribute with a setter can be found
      * @since 24.1
      */
     public void setValue(IProductComponent productComponent, Calendar effectiveDate, Object value) {
+        if (setter == null) {
+            if (superAttributeWithSetter != null) {
+                superAttributeWithSetter.setValue(productComponent, effectiveDate, value);
+                return;
+            }
+            throw new IllegalStateException("Setter for attribute " + getType().getName() + "." + getName()
+                    + " is not available");
+        }
         invokeMethod(setter, getRelevantProductObject(productComponent, effectiveDate), value);
     }
 
@@ -139,12 +183,26 @@ public class ProductAttribute extends Attribute {
      * If the attribute is not changing over time, the underlying product component is used
      * directly; otherwise, the provided generation is used.
      * </p>
+     * <p>
+     * If this attribute has no setter method, the method attempts to delegate to a super attribute
+     * with a setter. The super attribute is cached during construction for performance.
+     * </p>
      *
      * @param generation the product component generation to base the value update on
      * @param value the new value
+     * @throws IllegalStateException if no setter is available for this attribute and no super
+     *             attribute with a setter can be found
      * @since 25.1
      */
     public void setValue(IProductComponentGeneration generation, Object value) {
+        if (setter == null) {
+            if (superAttributeWithSetter != null) {
+                superAttributeWithSetter.setValue(generation, value);
+                return;
+            }
+            throw new IllegalStateException("Setter for attribute " + getType().getName() + "." + getName()
+                    + " is not available");
+        }
         invokeMethod(setter, getRelevantProductObject(generation), value);
     }
 
@@ -249,5 +307,4 @@ public class ProductAttribute extends Attribute {
     protected String getResourceBundleName() {
         return ProductAttribute.class.getName();
     }
-
 }
