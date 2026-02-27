@@ -85,12 +85,6 @@
                     <repositoryId>pdrone.faktor-ips_3_snapshots</repositoryId>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <profiles>
