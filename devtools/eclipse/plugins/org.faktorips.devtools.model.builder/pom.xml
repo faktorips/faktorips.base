@@ -14,10 +14,6 @@
     <name>Faktor-IPS Model Builder</name>
     <description>Basic builder implementation for the Faktor-IPS model</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -79,7 +75,7 @@
     </build>
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>

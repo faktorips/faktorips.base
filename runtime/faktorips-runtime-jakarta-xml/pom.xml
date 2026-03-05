@@ -15,11 +15,7 @@
     <name>Faktor-IPS Runtime Jakarta XML Binding Extension</name>
     <description>Faktor-IPS Runtime Extension for XML binding with Jakarta JAXB 3 as included in Java EE 9.
     You need to provide the jakarta.xml.bind-api as dependency. It is marked as provided here because it is often included in application servers and any version required by Faktor-IPS might collide with them.</description>
-    
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -131,24 +127,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
-                        <configuration>
-                            <skipPublishing>false</skipPublishing>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

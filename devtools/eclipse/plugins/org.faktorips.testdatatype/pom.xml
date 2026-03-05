@@ -12,10 +12,20 @@
     <packaging>eclipse-plugin</packaging>
     <name>Faktor-IPS Test-Datatype</name>
     <description>Plugin providing a Faktor-IPS datatype for testing purposes</description>
-    
+
     <properties>
         <checkstyle.skip>true</checkstyle.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
-        <skip-publish>false</skip-publish>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+              <artifactId>maven-deploy-plugin</artifactId>
+              <configuration>
+                <skip>false</skip>
+              </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

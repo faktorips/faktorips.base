@@ -13,7 +13,7 @@ pipeline {
         MAVEN_OPTS = '-Xmx4g'
         MAVEN_REPO = '/tmp/$JOB_NAME/$GERRIT_CHANGE_ID'
         DISPLAY = ':0'
-        REFERENCE_JOB = 'FaktorIPS_CI'
+        REFERENCE_JOB = 'FaktorIPS_hotfix_26.1'
     }
 
     options {
