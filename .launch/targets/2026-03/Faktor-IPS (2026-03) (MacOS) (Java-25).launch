@@ -24,7 +24,7 @@
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_SHOW_CODEDETAILS_IN_EXCEPTION_MESSAGES" value="true"/>
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/21.0.8-tem"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl EN -consoleLog"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.eclipse.swt.browser.DefaultType=webkit&#10;-Xmx4096m"/>
     <stringAttribute key="pde.version" value="3.3"/>
@@ -60,25 +60,25 @@
         <setEntry value="jaxb-api@default:default"/>
         <setEntry value="jaxen@default:default"/>
         <setEntry value="joda-time@default:default"/>
-        <setEntry value="junit-jupiter-api*5.14.2@default:default"/>
-        <setEntry value="junit-jupiter-api*6.0.2@default:default"/>
-        <setEntry value="junit-jupiter-engine*5.14.2@default:default"/>
-        <setEntry value="junit-jupiter-engine*6.0.2@default:default"/>
+        <setEntry value="junit-jupiter-api*5.14.3@default:default"/>
+        <setEntry value="junit-jupiter-api*6.0.3@default:default"/>
+        <setEntry value="junit-jupiter-engine*5.14.3@default:default"/>
+        <setEntry value="junit-jupiter-engine*6.0.3@default:default"/>
         <setEntry value="junit-jupiter-migrationsupport@default:default"/>
-        <setEntry value="junit-jupiter-params*5.14.2@default:default"/>
-        <setEntry value="junit-jupiter-params*6.0.2@default:default"/>
-        <setEntry value="junit-platform-commons*1.14.2@default:default"/>
-        <setEntry value="junit-platform-commons*6.0.2@default:default"/>
-        <setEntry value="junit-platform-engine*1.14.2@default:default"/>
-        <setEntry value="junit-platform-engine*6.0.2@default:default"/>
-        <setEntry value="junit-platform-launcher*1.14.2@default:default"/>
-        <setEntry value="junit-platform-launcher*6.0.2@default:default"/>
+        <setEntry value="junit-jupiter-params*5.14.3@default:default"/>
+        <setEntry value="junit-jupiter-params*6.0.3@default:default"/>
+        <setEntry value="junit-platform-commons*1.14.3@default:default"/>
+        <setEntry value="junit-platform-commons*6.0.3@default:default"/>
+        <setEntry value="junit-platform-engine*1.14.3@default:default"/>
+        <setEntry value="junit-platform-engine*6.0.3@default:default"/>
+        <setEntry value="junit-platform-launcher*1.14.3@default:default"/>
+        <setEntry value="junit-platform-launcher*6.0.3@default:default"/>
         <setEntry value="junit-platform-runner@default:default"/>
-        <setEntry value="junit-platform-suite-api*1.14.2@default:default"/>
-        <setEntry value="junit-platform-suite-api*6.0.2@default:default"/>
+        <setEntry value="junit-platform-suite-api*1.14.3@default:default"/>
+        <setEntry value="junit-platform-suite-api*6.0.3@default:default"/>
         <setEntry value="junit-platform-suite-commons@default:default"/>
-        <setEntry value="junit-platform-suite-engine*1.14.2@default:default"/>
-        <setEntry value="junit-platform-suite-engine*6.0.2@default:default"/>
+        <setEntry value="junit-platform-suite-engine*1.14.3@default:default"/>
+        <setEntry value="junit-platform-suite-engine*6.0.3@default:default"/>
         <setEntry value="junit-vintage-engine@default:default"/>
         <setEntry value="net.bytebuddy.byte-buddy-agent*1.17.2@default:default"/>
         <setEntry value="net.bytebuddy.byte-buddy@default:default"/>
@@ -413,7 +413,7 @@
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
-        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse@1:true"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
