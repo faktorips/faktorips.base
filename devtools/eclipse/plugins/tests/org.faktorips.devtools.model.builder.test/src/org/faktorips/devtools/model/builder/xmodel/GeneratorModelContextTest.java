@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.model.builder.java.annotations;
+package org.faktorips.devtools.model.builder.xmodel;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
-import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
-import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
+import org.faktorips.devtools.model.builder.java.annotations.AnnotatedJavaElementType;
+import org.faktorips.devtools.model.builder.java.annotations.IAnnotationGenerator;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

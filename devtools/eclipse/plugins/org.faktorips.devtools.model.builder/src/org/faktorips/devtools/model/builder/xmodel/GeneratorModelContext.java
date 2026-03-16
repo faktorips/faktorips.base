@@ -59,19 +59,19 @@ import org.w3c.dom.Element;
  */
 public class GeneratorModelContext {
 
-    private final JavaClassNaming javaClassNaming;
-
     /**
      * The import handler holds the import statements for a single file. However this context is the
      * same for all file generations. Because every file is generated sequentially in one thread we
      * could reuse a {@link ThreadLocal} variable in this model context. Every new file have to
      * clear its {@link ImportHandler} before starting generation.
      */
-    private final ThreadLocal<ImportHandler> importHandlerThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<ImportHandler> IMPORT_HANDLER = new ThreadLocal<>();
 
-    private final ThreadLocal<GeneratorModelCaches> generatorModelCacheThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<GeneratorModelCaches> GENERATOR_MODEL_CACHE = new ThreadLocal<>();
 
-    private final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> generatedJavaElements = new ThreadLocal<>();
+    private static final ThreadLocal<LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>>> GENERATED_JAVA_ELEMENTS = new ThreadLocal<>();
+
+    private final JavaClassNaming javaClassNaming;
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
 
@@ -87,7 +87,7 @@ public class GeneratorModelContext {
         annotationGeneratorMap.putAll(new AnnotationGeneratorBuilder(ipsProject).createAnnotationGenerators());
     }
 
-    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
+    protected GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
             IJavaPackageStructure javaPackageStructure,
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap,
             IIpsProject ipsProject) {
@@ -224,9 +224,9 @@ public class GeneratorModelContext {
      * @param superTypeNames the qualified names of the generated class and its supertypes
      */
     public void resetContext(String packageOfArtifacts, Set<String> superTypeNames) {
-        importHandlerThreadLocal.set(new ImportHandler(packageOfArtifacts, superTypeNames));
-        generatorModelCacheThreadLocal.set(new GeneratorModelCaches());
-        generatedJavaElements.set(new LinkedHashMap<>());
+        IMPORT_HANDLER.set(new ImportHandler(packageOfArtifacts, superTypeNames));
+        GENERATOR_MODEL_CACHE.set(new GeneratorModelCaches());
+        GENERATED_JAVA_ELEMENTS.set(new LinkedHashMap<>());
     }
 
     /**
@@ -242,7 +242,7 @@ public class GeneratorModelContext {
      * @return The thread local import handler
      */
     public ImportHandler getImportHandler() {
-        ImportHandler importHandler = importHandlerThreadLocal.get();
+        ImportHandler importHandler = IMPORT_HANDLER.get();
         if (importHandler != null) {
             return importHandler;
         } else {
@@ -260,7 +260,7 @@ public class GeneratorModelContext {
      * @param importHandler The thread local import handler
      */
     protected void setImportHandler(ImportHandler importHandler) {
-        importHandlerThreadLocal.set(importHandler);
+        IMPORT_HANDLER.set(importHandler);
     }
 
     /**
@@ -273,7 +273,7 @@ public class GeneratorModelContext {
      * @return The thread local generator model cache
      */
     public GeneratorModelCaches getGeneratorModelCache() {
-        return generatorModelCacheThreadLocal.get();
+        return GENERATOR_MODEL_CACHE.get();
     }
 
     /**
@@ -324,7 +324,7 @@ public class GeneratorModelContext {
      *             nodes
      */
     private LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>> getGeneratedJavaElementsMap() {
-        return generatedJavaElements.get();
+        return GENERATED_JAVA_ELEMENTS.get();
     }
 
     /**
@@ -379,5 +379,4 @@ public class GeneratorModelContext {
         return entry.getUniqueBasePackageNameForDerivedArtifacts() + "." //$NON-NLS-1$
                 + entry.getValidationMessagesBundle();
     }
-
 }

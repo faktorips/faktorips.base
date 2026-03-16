@@ -85,11 +85,13 @@ import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -513,7 +515,22 @@ public class IpsModel extends IpsElement implements IIpsModel {
     private IIpsElement getExternalIpsSrcFile(AResource resource) {
         if (resource.getType() == AResourceType.FILE && resource.exists()
                 && getIpsObjectTypeByFileExtension(((AFile)resource).getExtension()) != null) {
-            return new IpsSrcFileOffRoot((AFile)resource);
+            Path projectRelativePath = resource.getProjectRelativePath();
+            AProject project = resource.getProject();
+            if (project != null) {
+                IIpsProject ipsProject = getIpsProject(project);
+                Path outputLocation = project.getWorkspaceRelativePath()
+                        .relativize(ipsProject.getJavaProject().getOutputLocation());
+                if (projectRelativePath.startsWith(outputLocation)) {
+                    return null;
+                }
+                IIpsObjectPath ipsObjectPath = ipsProject.getReadOnlyProperties().getIpsObjectPath();
+                if (Arrays.stream(ipsObjectPath.getSourceFolderEntries())
+                        .map(IIpsSrcFolderEntry::getOutputFolderForDerivedJavaFiles)
+                        .noneMatch(o -> projectRelativePath.startsWith(o.getProjectRelativePath()))) {
+                    return new IpsSrcFileOffRoot((AFile)resource);
+                }
+            }
         }
         return null;
     }
@@ -768,7 +785,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * returned. If the builder set for the current builder set id is not found in the set of
      * registered builder sets a warning is logged and an EmptyBuilderSet will be returned.
      */
-    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
+    public synchronized IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
         ArgumentCheck.notNull(project, this);
         reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
         IIpsArtefactBuilderSet builderSet = getIpsProjectData(project).getIpsArtefactBuilderSet();
@@ -792,7 +809,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         return data.getBuilderSetId();
     }
 
-    private IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
+    private synchronized IIpsArtefactBuilderSet registerBuilderSet(IIpsProject project) {
         IIpsProjectProperties data = getIpsProjectProperties(project);
         IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(getBuilderSetId(data), project);
         if (builderSet == null || !initBuilderSet(builderSet, project, data)) {
@@ -814,7 +831,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * @return true if the initialization was successful
      */
-    private boolean initBuilderSet(IIpsArtefactBuilderSet builderSet,
+    private synchronized boolean initBuilderSet(IIpsArtefactBuilderSet builderSet,
             IIpsProject ipsProject,
             IIpsProjectProperties properties) {
         try {
@@ -889,7 +906,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     public IpsProjectProperties getIpsProjectProperties(IIpsProject ipsProject) {
         AFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties properties = getIpsProjectData(ipsProject).getProjectProperties();
-        if (properties != null
+        if (properties != null && (properties.isCreatedFromParsableFileContents() || propertyFile.exists())
                 && propertyFile.getModificationStamp() != properties.getLastPersistentModificationTimestamp()) {
             clearProjectSpecificCaches(ipsProject);
             properties = null;
@@ -919,7 +936,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Reads the project's data from the .ipsproject file.
      */
-    private IpsProjectProperties readProjectProperties(IIpsProject ipsProject) {
+    private synchronized IpsProjectProperties readProjectProperties(IIpsProject ipsProject) {
         AFile file = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties properties = new IpsProjectProperties(ipsProject);
         XsdValidationHandler xsdValidationHandler = new XsdValidationHandler();

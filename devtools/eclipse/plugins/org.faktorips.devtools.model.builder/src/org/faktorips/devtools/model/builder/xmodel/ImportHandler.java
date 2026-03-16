@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -45,13 +44,6 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  */
 public class ImportHandler {
 
-    /**
-     * Eclipse debug trace option for verbose debug logging of import handler decisions. Enable in
-     * Eclipse by setting <code>org.faktorips.devtools.model.builder/trace/importhandler=true</code>
-     * in the .options file or via Debug Configurations -> Tracing.
-     */
-    public static final boolean TRACE_IMPORT_HANDLER;
-
     private static final String GENERIC_START = "<";
 
     private static final String GENERIC_SEPERATOR = ", ";
@@ -59,11 +51,6 @@ public class ImportHandler {
     private static final String GENERIC_END = ">";
 
     private static final String JAVA_LANG_PACKAGE = "java.lang"; //$NON-NLS-1$
-
-    static {
-        TRACE_IMPORT_HANDLER = Boolean
-                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model.builder/trace/importhandler"));
-    }
 
     private Map<String, ImportStatement> classNameToImportStatementMap;
     private Map<String, ImportStatement> implicitlyImportedClassNamesMap;
@@ -79,12 +66,6 @@ public class ImportHandler {
         classNameToImportStatementMap = new LinkedHashMap<>();
         implicitlyImportedClassNamesMap = new LinkedHashMap<>();
         qualifiedPropertyNameToStaticImportStatementMap = new LinkedHashMap<>();
-
-        if (TRACE_IMPORT_HANDLER && (ownPackage == null || ownPackage.isEmpty())) {
-            System.out.println(String.format(
-                    "WARNING: ImportHandler created with empty/null ownPackage! [Thread: %s, Instance: @%s]",
-                    Thread.currentThread().getName(), Integer.toHexString(System.identityHashCode(this))));
-        }
     }
 
     /**
@@ -227,20 +208,6 @@ public class ImportHandler {
                 importStatement);
         boolean hasConflict = conflictWithExplicit || conflictWithImplicit;
 
-        if (TRACE_IMPORT_HANDLER && "Process".equals(importStatement.getUnqualifiedName())) {
-            String mapType = (registeredImportsMap == classNameToImportStatementMap) ? "explicit" : "implicit";
-            System.out.println(String.format(
-                    """
-                            ImportHandler.registerImportStatementIfPossible(%s map): %s [Thread: %s, Instance: @%s, OwnPkg: '%s']
-                              Conflict with explicit map: %s
-                              Conflict with implicit map: %s
-                              no conflict: %s""",
-                    mapType, importStatement.getQualifiedName(),
-                    Thread.currentThread().getName(), Integer.toHexString(System.identityHashCode(this)),
-                    ownPackage != null ? ownPackage : "NULL",
-                    conflictWithExplicit, conflictWithImplicit, !hasConflict));
-        }
-
         if (!hasConflict) {
             registeredImportsMap.put(importStatement.getUnqualifiedName(), importStatement);
         }
@@ -251,51 +218,16 @@ public class ImportHandler {
             I importStatement) {
         boolean imported = isImported(registeredImportsMap, importStatement);
         boolean hasUnqualifiedNameConflict = registeredImportsMap.containsKey(importStatement.getUnqualifiedName());
-        boolean result = !imported && hasUnqualifiedNameConflict;
 
-        if (TRACE_IMPORT_HANDLER && hasUnqualifiedNameConflict
-                && "Process".equals(importStatement.getUnqualifiedName())) {
-            String mapType = (registeredImportsMap == classNameToImportStatementMap) ? "explicit" : "implicit";
-            I existingImport = registeredImportsMap.get(importStatement.getUnqualifiedName());
-            System.out.println(String.format(
-                    """
-                            ImportHandler.isInConflictWithImportedClassName(%s map): %s for %s [Thread: %s, Instance: @%s, OwnPkg: '%s']
-                              Already imported: %s, Has unqualified name conflict: %s
-                              Existing import: %s, New import: %s""",
-                    mapType, result, importStatement.getQualifiedName(),
-                    Thread.currentThread().getName(), Integer.toHexString(System.identityHashCode(this)),
-                    ownPackage != null ? ownPackage : "NULL",
-                    imported, hasUnqualifiedNameConflict,
-                    existingImport != null ? existingImport.getQualifiedName() : "null",
-                    importStatement.getQualifiedName()));
-        }
-
-        return result;
+        return !imported && hasUnqualifiedNameConflict;
     }
 
     private <I extends AbstractImportStatement> boolean isImported(Map<String, I> registeredImportsMap,
             I importStatement) {
         String unqualifiedName = importStatement.getUnqualifiedName();
         I registeredImportStatement = registeredImportsMap.get(unqualifiedName);
-        boolean result = importStatement.equals(registeredImportStatement);
 
-        if (TRACE_IMPORT_HANDLER && registeredImportStatement != null && !result && "Process".equals(unqualifiedName)) {
-            String mapType = (registeredImportsMap == classNameToImportStatementMap) ? "explicit" : "implicit";
-            System.out.println(String.format(
-                    """
-                            ImportHandler.isImported(%s map): Found unqualified name '%s' but different qualified names [Thread: %s, Instance: @%s, OwnPkg: '%s']
-                              Registered: %s
-                              Checking:   %s
-                              is Imported: %s""",
-                    mapType, unqualifiedName,
-                    Thread.currentThread().getName(), Integer.toHexString(System.identityHashCode(this)),
-                    ownPackage != null ? ownPackage : "NULL",
-                    registeredImportStatement.getQualifiedName(),
-                    importStatement.getQualifiedName(),
-                    result));
-        }
-
-        return result;
+        return importStatement.equals(registeredImportStatement);
     }
 
     /**
@@ -333,38 +265,8 @@ public class ImportHandler {
 
         boolean notImported = notImportedInExplicitMap && notImportedInImplicitMap;
         boolean hasConflict = conflictInExplicitMap || conflictInImplicitMap;
-        boolean result = notImported || hasConflict;
 
-        if (TRACE_IMPORT_HANDLER && "Process".equals(importStatement.getUnqualifiedName())) {
-            StringBuilder logMessage = new StringBuilder();
-            logMessage.append("ImportHandler.requiresQualifiedClassName() decision for: ")
-                    .append(importStatement.getQualifiedName())
-                    .append("\n  Unqualified name: ").append(importStatement.getUnqualifiedName())
-                    .append("\n  Package: ").append(importStatement.getPackage())
-                    .append("\n  Own package: ").append(ownPackage)
-                    .append("\n  Thread: ").append(Thread.currentThread().getName())
-                    .append(" (ID: ").append(Thread.currentThread().threadId()).append(")")
-                    .append("\n  ImportHandler instance: @").append(Integer.toHexString(System.identityHashCode(this)))
-                    .append("\n  --- State checks ---")
-                    .append("\n  Not imported in explicit map: ").append(notImportedInExplicitMap)
-                    .append("\n  Not imported in implicit map: ").append(notImportedInImplicitMap)
-                    .append("\n  Conflict in explicit map: ").append(conflictInExplicitMap)
-                    .append("\n  Conflict in implicit map: ").append(conflictInImplicitMap)
-                    .append("\n  --- Computed values ---")
-                    .append("\n  Not imported at all: ").append(notImported)
-                    .append("\n  Has conflict: ").append(hasConflict)
-                    .append("\n  --- Map contents ---")
-                    .append("\n  Explicit imports (").append(classNameToImportStatementMap.size()).append("): ")
-                    .append(classNameToImportStatementMap.keySet())
-                    .append("\n  Implicit imports (").append(implicitlyImportedClassNamesMap.size()).append("): ")
-                    .append(implicitlyImportedClassNamesMap.keySet())
-                    .append("\n  --- RESULT ---")
-                    .append("\n  Requires qualification: ").append(result);
-
-            System.out.println(logMessage.toString());
-        }
-
-        return result;
+        return notImported || hasConflict;
     }
 
     /**
@@ -395,11 +297,9 @@ public class ImportHandler {
         }
 
         public String getClassName(ImportHandler importHandler) {
-            if (importHandler.requiresQualifiedClassName(importStatement)) {
-                return importStatement.getQualifiedName();
-            } else {
-                return importStatement.getUnqualifiedName();
-            }
+            boolean requiresQualification = importHandler.requiresQualifiedClassName(importStatement);
+
+            return requiresQualification ? importStatement.getQualifiedName() : importStatement.getUnqualifiedName();
         }
 
     }
@@ -427,6 +327,7 @@ public class ImportHandler {
                 }
             }
             resultBuilder.append(GENERIC_END);
+
             return resultBuilder.toString();
         }
 

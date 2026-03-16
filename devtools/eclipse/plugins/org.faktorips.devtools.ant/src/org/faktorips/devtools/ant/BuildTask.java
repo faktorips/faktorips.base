@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.IpsBuilder;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -105,11 +106,13 @@ public class BuildTask extends AbstractIpsTask {
                 IProject project = workspace.getRoot().getProject(name);
                 if (project.exists()) {
                     existingProjects.add(project);
-                    System.out.print("start building project: " + project.getName());
                     IIpsProject ipsProject = IIpsModel.get().getIpsProject(project.getName());
+                    IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
+
+                    System.out.print("start building project: " + project.getName());
                     if (ipsProject.exists()) {
-                        System.out.println(", Faktor-IPS builder set: " + ipsProject.getIpsArtefactBuilderSet().getId()
-                                + ", version: " + ipsProject.getIpsArtefactBuilderSet().getVersion());
+                        System.out.println(", Faktor-IPS builder set: " + ipsArtefactBuilderSet.getId()
+                                + ", version: " + ipsArtefactBuilderSet.getVersion());
                     } else {
                         System.out.println();
                     }
@@ -225,7 +228,7 @@ public class BuildTask extends AbstractIpsTask {
 
     /**
      * This class covers the nested tag EclipseProject.
-     * 
+     *
      * @author Peter Erzberger
      */
     public static class EclipseProject {

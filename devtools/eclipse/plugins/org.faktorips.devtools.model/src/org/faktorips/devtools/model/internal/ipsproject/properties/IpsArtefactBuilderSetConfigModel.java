@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * The default implementation of the IIpsArtefactBuilderSetConfig interface
- * 
+ *
  * @author Peter Erzberger
  */
 public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetConfigModel {
@@ -116,7 +116,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
 
     /**
      * Sets the value of a property
-     * 
+     *
      * @param propertyName the name of the property
      * @param value the value of the property
      */
@@ -159,7 +159,8 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     }
 
     @Override
-    public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
+    public synchronized IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject,
+            IIpsArtefactBuilderSetInfo builderSetInfo) {
         Map<String, Object> parsedValueMap = new LinkedHashMap<>();
         for (String name : properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);

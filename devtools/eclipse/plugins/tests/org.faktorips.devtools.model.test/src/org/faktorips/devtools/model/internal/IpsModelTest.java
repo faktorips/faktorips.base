@@ -12,6 +12,9 @@ package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -34,7 +38,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -381,7 +385,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue(file.exists());
         String encoding = ipsProject.getXmlFileCharset();
         String contents = StringUtil.readFromInputStream(file.getContents(), encoding);
-        contents = StringUtils.replace(contents, "blabla", "something serious");
+        contents = Strings.CS.replace(contents, "blabla", "something serious");
         ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes(encoding));
         file.setContents(is, false, null);
 
@@ -665,4 +669,62 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertSame(versionProvider1, versionProvider2);
     }
 
+    @Test
+    public void testFindIpsElementExternalFolders_OutputFolderForDerived() {
+        AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
+        AProject project = root.getProject("TestProject");
+        IIpsProject pdProject = model.getIpsProject("TestProject");
+        pdProject = this.newIpsProject("TestIpsProject");
+        project = pdProject.getProject();
+        AFolder derivedFolder = project.getFolder("extension");
+        AFile aProduct = derivedFolder.getFile("IpsFile.ipsproduct");
+        aProduct.create(new ByteArrayInputStream(new byte[0]), null);
+
+        assertThat(model.getIpsElement(aProduct), is(nullValue()));
+    }
+
+    @Test
+    public void testFindIpsElementExternalFolders_OutputFolderForBin() {
+        AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
+        AProject project = root.getProject("TestProject");
+        IIpsProject pdProject = model.getIpsProject("TestProject");
+        pdProject = this.newIpsProject("TestIpsProject");
+        project = pdProject.getProject();
+        // bin or target
+        Path outputLocation = pdProject.getJavaProject().getOutputLocation().getName(1);
+        AFolder binFolder = project.getFolder(outputLocation);
+        AFile aProduct = binFolder.getFile("IpsFile.ipsproduct");
+        aProduct.create(new ByteArrayInputStream(new byte[0]), null);
+
+        assertThat(model.getIpsElement(aProduct), is(nullValue()));
+    }
+
+    @Test
+    public void testFindIpsElementExternalFolders_OutputFolderForOtherFolder() {
+        AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
+        AProject project = root.getProject("TestProject");
+        IIpsProject pdProject = model.getIpsProject("TestProject");
+        pdProject = this.newIpsProject("TestIpsProject");
+        project = pdProject.getProject();
+        AFolder otherFolder = project.getFolder("otherFolder");
+        otherFolder.create(null);
+        AFile aProduct = otherFolder.getFile("IpsFile.ipsproduct");
+        aProduct.create(new ByteArrayInputStream(new byte[0]), null);
+
+        assertThat(model.getIpsElement(aProduct), is(notNullValue()));
+    }
+
+    @Test
+    public void testFindIpsElementExternalFolders_OutputFolderForOtherFolderFileNonExists() {
+        AWorkspaceRoot root = Abstractions.getWorkspace().getRoot();
+        AProject project = root.getProject("TestProject");
+        IIpsProject pdProject = model.getIpsProject("TestProject");
+        pdProject = this.newIpsProject("TestIpsProject");
+        project = pdProject.getProject();
+        AFolder otherFolder = project.getFolder("otherFolder");
+        otherFolder.create(null);
+        AFile aProduct = otherFolder.getFile("IpsFile.ipsproduct");
+
+        assertThat(model.getIpsElement(aProduct), is(nullValue()));
+    }
 }

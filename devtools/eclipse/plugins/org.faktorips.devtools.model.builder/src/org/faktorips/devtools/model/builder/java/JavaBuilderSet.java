@@ -217,7 +217,7 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) {
+    public synchronized void initialize(IIpsArtefactBuilderSetConfig config) {
         modelService = new ModelService();
         generatorModelContext = new GeneratorModelContext(config, this, getIpsProject());
         super.initialize(config);

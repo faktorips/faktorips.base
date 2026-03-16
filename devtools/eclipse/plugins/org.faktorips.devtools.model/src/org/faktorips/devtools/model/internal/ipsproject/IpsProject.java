@@ -1288,7 +1288,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet() {
+    public synchronized IIpsArtefactBuilderSet getIpsArtefactBuilderSet() {
         return getIpsModel().getIpsArtefactBuilderSet(this, false);
     }
 
