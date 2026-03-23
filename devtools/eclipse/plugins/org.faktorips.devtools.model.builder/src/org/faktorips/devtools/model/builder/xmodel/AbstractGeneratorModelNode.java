@@ -45,6 +45,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.model.util.DefaultLineSeparator;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IOverridableElement;
@@ -207,7 +208,8 @@ public abstract class AbstractGeneratorModelNode {
 
     public String getDescriptionForJDoc() {
         String description = getDescription();
-        return IpsStringUtils.isEmpty(description) ? "" : "<p>\n" + description;
+        return IpsStringUtils.isEmpty(description) ? ""
+                : "<p>" + DefaultLineSeparator.of(getIpsProject()) + description;
     }
 
     /**
@@ -424,7 +426,8 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     private String removeEmptyLines(String text) {
-        return Arrays.stream(text.split("\\R")).filter(s -> !s.isBlank()).collect(Collectors.joining("\n"));
+        return Arrays.stream(text.split("\\R")).filter(s -> !s.isBlank())
+                .collect(Collectors.joining(DefaultLineSeparator.of(getIpsProject())));
     }
 
     /**

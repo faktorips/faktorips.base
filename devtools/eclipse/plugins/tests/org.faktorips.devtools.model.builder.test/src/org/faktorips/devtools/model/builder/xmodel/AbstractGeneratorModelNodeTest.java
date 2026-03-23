@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.internal.DefaultVersion;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.junit.Before;
@@ -186,6 +187,63 @@ public class AbstractGeneratorModelNodeTest {
         String sinceVersion = modelNode.getSinceVersion();
 
         assertNull(sinceVersion);
+    }
+
+    @Test
+    public void testLocalizedJDoc_MultilineTextUsesDefaultLineSeparator_LF() {
+        xClass = spy(xClass);
+        var lineSeparator = mockDefaultLineSeparator("\n");
+        doReturn("Line one" + lineSeparator + "Line two" + lineSeparator + "Line three")
+                .when(xClass).getLocalizedText("KEY_JAVADOC");
+        when(generatorConfig.isGenerateMinimalJavadoc()).thenReturn(false);
+
+        var result = xClass.localizedJDoc("KEY");
+
+        assertThat(result, is("Line one" + lineSeparator + "Line two" + lineSeparator + "Line three"));
+    }
+
+    @Test
+    public void testLocalizedJDoc_MultilineTextUsesDefaultLineSeparator_CRLF() {
+        xClass = spy(xClass);
+        var lineSeparator = mockDefaultLineSeparator("\r\n");
+        doReturn("Line one" + lineSeparator + "Line two" + lineSeparator + "Line three")
+                .when(xClass).getLocalizedText("KEY_JAVADOC");
+        when(generatorConfig.isGenerateMinimalJavadoc()).thenReturn(false);
+
+        var result = xClass.localizedJDoc("KEY");
+
+        assertThat(result, is("Line one" + lineSeparator + "Line two" + lineSeparator + "Line three"));
+    }
+
+    @Test
+    public void testGetDescriptionForJDoc_UsesDefaultLineSeparator_LF() {
+        xClass = spy(xClass);
+        var lineSeparator = mockDefaultLineSeparator("\n");
+        doReturn("Line one" + lineSeparator + "Line two").when(xClass).getDescription();
+
+        var result = xClass.getDescriptionForJDoc();
+
+        assertThat(result, is("<p>" + lineSeparator + "Line one" + lineSeparator + "Line two"));
+    }
+
+    @Test
+    public void testGetDescriptionForJDoc_UsesDefaultLineSeparator_CRLF() {
+        xClass = spy(xClass);
+        var lineSeparator = mockDefaultLineSeparator("\r\n");
+        doReturn("Line one" + lineSeparator + "Line two").when(xClass).getDescription();
+
+        var result = xClass.getDescriptionForJDoc();
+
+        assertThat(result, is("<p>" + lineSeparator + "Line one" + lineSeparator + "Line two"));
+    }
+
+    private String mockDefaultLineSeparator(String lineSeparator) {
+        var ipsProject = mock(IIpsProject.class);
+        var project = mock(AProject.class);
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.getProject()).thenReturn(project);
+        when(project.getDefaultLineSeparator()).thenReturn(lineSeparator);
+        return lineSeparator;
     }
 
     public static class Inner {
