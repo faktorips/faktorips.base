@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 
 /**
  * Provides the actions available for FaktorIps as Eclipse-Product
- * 
+ *
  * @author Thorsten Guenther
  */
 class IpsActionBarAdvisor extends ActionBarAdvisor {
@@ -77,8 +77,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction savePerspectiveAction;
 
     private OpenPerspectiveAction openSynchronizePerspectiveAction;
-
-    private OpenPerspectiveAction openCVSPerspectiveAction;
 
     private OpenPerspectiveAction openProductDefinitionPerspectiveAction;
 
@@ -197,7 +195,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     /**
      * Constructs a new action builder which contributes actions to the given window.
-     * 
+     *
      * @param configurer the action bar configurer for the window
      */
     public IpsActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -436,7 +434,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         // menu.add(editActionSetAction);
         menu.add(openProductDefinitionPerspectiveAction);
         menu.add(openSynchronizePerspectiveAction);
-        menu.add(openCVSPerspectiveAction);
         menu.add(new Separator());
         addKeyboardShortcuts(menu);
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -500,7 +497,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
      * Adds a <code>GroupMarker</code> or <code>Separator</code> to a menu. The test for whether a
      * separator should be added is done by checking for the existence of a preference matching the
      * string useSeparator.MENUID.GROUPID that is set to <code>true</code>.
-     * 
+     *
      * @param menu the menu to add to
      * @param groupId the group id for the added separator or group marker
      */
@@ -779,8 +776,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
                 .findPerspectiveWithId(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID), m);
         openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
                 .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
-        openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
-                .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.cvs.ui.cvsPerspective"), m); //$NON-NLS-1$
 
         pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR.create(window);
 

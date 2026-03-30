@@ -16,6 +16,7 @@
         <!-- p2 Repository and product -->
         <module>org.faktorips.p2repository</module>
         <module>org.faktorips.p2repository.test</module>
+        <module>org.faktorips.p2product</module>
     </modules>
     
     <distributionManagement>

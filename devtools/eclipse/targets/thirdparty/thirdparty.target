@@ -197,6 +197,17 @@
                     <artifactId>org.w3c.css.sac</artifactId>
                     <version>1.3.1.v200903091627</version>
                 </dependency>
+                <!-- javax for product files -->
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                    <version>4.0.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                    <version>1.3.2</version>
+                </dependency>
             </dependencies>
         </location>
         <location includeDependencyDepth="none" includeDependencyScopes="compile" includeSource="true" label="Wrapped Mapen Dependecies" missingManifest="generate" type="Maven">
@@ -284,6 +295,12 @@
                     <artifactId>poi-ooxml-lite</artifactId>
                     <version>5.4.0</version>
                     <type>jar</type>
+                </dependency>
+                <!-- javax for product files, without manifest -->
+                <dependency>
+                    <groupId>javax.inject</groupId>
+                    <artifactId>javax.inject</artifactId>
+                    <version>1</version>
                 </dependency>
             </dependencies>
             <instructions>
