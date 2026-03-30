@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Configuration
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    label="Eclipse IDE for developing Faktor-IPS">
+  <installation
+      name="faktor.ips.dev.eclipse.installation"
+      label="Eclipse IDE for developing Faktor-IPS">
+    <productVersion
+        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.rcp']/@versions[name='2025-09']"/>
+    <description>Installation based on Eclipse IDE for RCP and RAP Developers 2025-09.</description>
+  </installation>
+  <workspace
+      name="faktor.ips.dev.eclipse.workspace"
+      label="Eclipse Workspace for developing Faktor-IPS">
+    <stream
+        href="faktor_ips_dev_eclipse.setup#//@streams[name='main']"/>
+    <description>Uses the Faktor-IPS-Dev-Eclipse.setup file to configure eclipse and workspace for the development of Faktor-IPS.</description>
+  </workspace>
+  <description>Oomph configuration for Faktor-IPS development based on Eclipse IDE for Java Developers 2025-12</description>
+</setup:Configuration>

@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Project
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:git="http://www.eclipse.org/oomph/setup/git/1.0"
+    xmlns:jdt="http://www.eclipse.org/oomph/setup/jdt/1.0"
+    xmlns:launching="http://www.eclipse.org/oomph/setup/launching/1.0"
+    xmlns:maven="http://www.eclipse.org/oomph/setup/maven/1.0"
+    xmlns:pde="http://www.eclipse.org/oomph/setup/pde/1.0"
+    xmlns:predicates="http://www.eclipse.org/oomph/predicates/1.0"
+    xmlns:projects="http://www.eclipse.org/oomph/setup/projects/1.0"
+    xmlns:resources_1.0="http://www.eclipse.org/oomph/resources/1.0"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    xmlns:setup.p2="http://www.eclipse.org/oomph/setup/p2/1.0"
+    xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
+    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/launching/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Launching.ecore http://www.eclipse.org/oomph/setup/maven/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Maven.ecore http://www.eclipse.org/oomph/setup/pde/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/PDE.ecore http://www.eclipse.org/oomph/predicates/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/projects/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/Projects.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 https://raw.githubusercontent.com/eclipse-oomph/oomph/master/setups/models/SetupWorkingSets.ecore"
+    name="faktorips.base.dev"
+    label="Eclipse IDE for developing Faktor-IPS">
+  <stream name="main"
+      label="Faktor IPS Development Eclipse">
+    <setupTask
+        xsi:type="setup:VariableTask"
+        type="FOLDER"
+        name="git.clone.faktorips.base.location"
+        defaultValue="${installation.location/../git/faktorips.base}"
+        storageURI="scope://Workspace"
+        label="Git Repository Location (faktorips.base)">
+      <description>
+        Full path to faktorips.base repository.
+        If path points to an existing repository, no clone action will be executed.
+      </description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        type="FOLDER"
+        name="git.clone.faktorips.integrationtest.location"
+        defaultValue="${git.clone.faktorips.base.location/../faktorips.integrationtest}"
+        storageURI="scope://Workspace"
+        label="Git Repository Location (faktorips.integrationtest)">
+      <description>
+        Full path to faktorips.integrationtest repository.
+        If path points to an existing repository, no clone action will be executed.
+      </description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        type="FOLDER"
+        name="workspace.location"
+        defaultValue="${installation.location/ws}"
+        storageURI="scope://Workspace"
+        label="Workspace Location">
+      <description>Workspace path for faktorips.base development.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="git.user.name"
+        defaultValue="${user.name}"
+        storageURI="scope://Installation"
+        label="Gerrit Username">
+      <description>Your Gerrit username for SSH authentication. Please enter your Gerrit username here.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="git.clone.faktorips.base.remoteURI"
+        value="ssh://${git.user.name}@gerrit.faktorzehn.de:29418/faktorips/faktorips.base"
+        label="Git Remote URI (faktorips.base)">
+      <description>Remote URI for faktorips.base repository. Format: ssh://username@gerrit.faktorzehn.de:29418/faktorips/faktorips.base</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="git.clone.faktorips.integrationtest.remoteURI"
+        value="ssh://${git.user.name}@gerrit.faktorzehn.de:29418/faktorips/faktorips.integrationtest"
+        label="Git Remote URI (faktorips.integrationtest)">
+      <description>Remote URI for faktorips.integrationtest repository. Format: ssh://username@gerrit.faktorzehn.de:29418/faktorips/faktorips.integrationtest</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="git.clone.branch"
+        defaultValue="main"
+        storageURI="scope://Workspace"
+        label="Git Branch">
+      <description>Branch to check out after cloning the repository. Won't affect existing repositories.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="gerrit.server.url"
+        defaultValue="https://gerrit.faktorzehn.de"
+        storageURI="scope://Workspace"
+        label="Gerrit Server URL">
+      <description>Base URL of the Gerrit server for hook installation.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="jdt:JRETask"
+        version="JavaSE-21"
+        location="${jre.location-21}"
+        name="JRE for JavaSE-21">
+      <description>Define the JRE needed to compile and run the Java projects</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        option="-Xms"
+        value="256m"
+        vm="true">
+      <description>Set minimum heap space</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        option="-Xmx"
+        value="4096m"
+        vm="true">
+      <description>Set the heap space needed to work with the projects</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        excludedTriggers="STARTUP"
+        option="-XX:+AutoCreateSharedArchive"
+        vm="true">
+      <description>Enable CDS archive auto creation</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        excludedTriggers="STARTUP"
+        option="-XX:SharedArchiveFile"
+        value="=${user.home/.eclipse/classes.jsa}"
+        vm="true">
+      <description>Set CDS archive location</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        option="-XX:+UseG1GC"
+        value=""
+        vm="true">
+      <description>Use G1 Garbage Collector for better performance</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        excludedTriggers="STARTUP"
+        option="-perspective"
+        value="org.eclipse.jdt.ui.JavaPerspective">
+      <description>Open Java perspective on first start</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:EclipseIniTask"
+        option="-XX:+UseStringDeduplication"
+        value=""
+        vm="true">
+      <description>Enable string deduplication for memory optimization</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup.p2:P2Task"
+        label="Development Tools and Plugins">
+      <requirement
+          name="org.eclipse.xtend.sdk.feature.group"/>
+      <requirement
+          name="org.eclipse.wst.web_ui.feature.feature.group"/>
+      <requirement
+          name="org.eclipse.wildwebdeveloper.feature.feature.group"/>
+      <requirement
+          name="net.sf.eclipsecs.feature.group"/>
+      <requirement
+          name="com.github.spotbugs.plugin.eclipse.feature.group"/>
+      <requirement
+          name="com.basistech.m2e.code.quality.checkstyle.feature.feature.group"/>
+      <requirement
+          name="com.basistech.m2e.code.quality.spotbugs.feature.feature.group"/>
+      <requirement
+          name="org.moreunit.feature.feature.group"/>
+      <requirement
+          name="de.jcup.jenkinseditor.feature.feature.group"/>
+      <requirement
+          name="de.jcup.yamleditor.feature.group"/>
+      <requirement
+          name="com.essiembre.eclipse.rbe.feature.group"/>
+      <requirement
+          name="org.eclipse.egit.feature.group"/>
+      <requirement
+          name="org.eclipse.pde.feature.group"/>
+      <requirement
+          name="org.eclipse.platform.feature.group"/>
+      <repository
+          url="https://download.eclipse.org/modeling/tmf/xtext/updates/composite/marketplace/"/>
+      <repository
+          url="https://checkstyle.org/eclipse-cs-update-site"/>
+      <repository
+          url="https://spotbugs.github.io/eclipse/"/>
+      <repository
+          url="https://m2e-code-quality.github.io/m2e-code-quality-p2-site/"/>
+      <repository
+          url="https://github.com/MoreUnit/MoreUnit-Eclipse/releases/latest/download/"/>
+      <repository
+          url="https://de-jcup.github.io/update-site-eclipse-jenkins-editor/update-site/"/>
+      <repository
+          url="https://de-jcup.github.io/update-site-eclipse-yaml-editor/update-site/"/>
+      <repository
+          url="https://raw.githubusercontent.com/essiembre/eclipse-rbe/master/eclipse-rbe-update-site/"/>
+      <description>Install essential development tools for FaktorIPS development.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="git:GitCloneTask"
+        id="git.clone.faktorips.base"
+        location="${git.clone.faktorips.base.location}"
+        remoteURI="${git.clone.faktorips.base.remoteURI}"
+        checkoutBranch="${git.clone.branch}"
+        recursive="true">
+      <configSections
+          name="branch">
+        <properties
+            key="autoSetupRebase"
+            value="always"/>
+      </configSections>
+      <configSections
+          name="pull">
+        <properties
+            key="rebase"
+            value="true"/>
+      </configSections>
+      <configSections
+          name="core">
+        <properties
+            key="autocrlf"
+            value="input"/>
+      </configSections>
+      <description>Clone the faktorips.base repository from Gerrit. If the location already contains a Git repository, the clone is skipped and existing repository is used.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="git:GitCloneTask"
+        id="git.clone.faktorips.integrationtest"
+        location="${git.clone.faktorips.integrationtest.location}"
+        remoteURI="${git.clone.faktorips.integrationtest.remoteURI}"
+        checkoutBranch="${git.clone.branch}"
+        recursive="true">
+      <configSections
+          name="branch">
+        <properties
+            key="autoSetupRebase"
+            value="always"/>
+      </configSections>
+      <configSections
+          name="pull">
+        <properties
+            key="rebase"
+            value="true"/>
+      </configSections>
+      <configSections
+          name="core">
+        <properties
+            key="autocrlf"
+            value="input"/>
+      </configSections>
+      <description>Clone the faktorips.integrationtest repository from Gerrit. If the location already contains a Git repository, the clone is skipped and existing repository is used.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Gerrit Hooks Setup">
+      <setupTask
+          xsi:type="setup:ExecuteTask"
+          id="gerrit.commitmsg.base.unix"
+          filter="(|(osgi.os=macosx)(osgi.os=linux))"
+          command="bash"
+          workingDirectory="${git.clone.faktorips.base.location}">
+        <argument
+            value="-c"/>
+        <argument
+            value="git_dir=$(git rev-parse --git-dir) &amp;&amp; hooks_dir=&quot;$git_dir/hooks&quot; &amp;&amp; mkdir -p &quot;$hooks_dir&quot; &amp;&amp; curl -fsSL -o &quot;$hooks_dir/commit-msg&quot; &quot;${gerrit.server.url}/tools/hooks/commit-msg&quot; &amp;&amp; chmod +x &quot;$hooks_dir/commit-msg&quot;"/>
+        <description>Install Gerrit commit-msg hook for faktorips.base (Unix/Mac)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:ExecuteTask"
+          id="gerrit.commitmsg.base.win"
+          filter="(osgi.os=win32)"
+          command="powershell"
+          workingDirectory="${git.clone.faktorips.base.location}">
+        <argument
+            value="-NoProfile"/>
+        <argument
+            value="-ExecutionPolicy"/>
+        <argument
+            value="Bypass"/>
+        <argument
+            value="-Command"/>
+        <argument
+            value="$gitDir = git rev-parse --git-dir; $hooksDir = Join-Path $gitDir 'hooks'; if (!(Test-Path $hooksDir)) { New-Item -ItemType Directory -Path $hooksDir -Force | Out-Null }; Invoke-WebRequest -Uri '${gerrit.server.url}/tools/hooks/commit-msg' -OutFile (Join-Path $hooksDir 'commit-msg') -UseBasicParsing"/>
+        <description>Install Gerrit commit-msg hook for faktorips.base (Windows)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:ExecuteTask"
+          id="gerrit.commitmsg.integrationtest.unix"
+          filter="(|(osgi.os=macosx)(osgi.os=linux))"
+          command="bash"
+          workingDirectory="${git.clone.faktorips.integrationtest.location}">
+        <argument
+            value="-c"/>
+        <argument
+            value="git_dir=$(git rev-parse --git-dir) &amp;&amp; hooks_dir=&quot;$git_dir/hooks&quot; &amp;&amp; mkdir -p &quot;$hooks_dir&quot; &amp;&amp; curl -fsSL -o &quot;$hooks_dir/commit-msg&quot; &quot;${gerrit.server.url}/tools/hooks/commit-msg&quot; &amp;&amp; chmod +x &quot;$hooks_dir/commit-msg&quot;"/>
+        <description>Install Gerrit commit-msg hook for faktorips.integrationtest (Unix/Mac)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:ExecuteTask"
+          id="gerrit.commitmsg.integrationtest.win"
+          filter="(osgi.os=win32)"
+          command="powershell"
+          workingDirectory="${git.clone.faktorips.integrationtest.location}">
+        <argument
+            value="-NoProfile"/>
+        <argument
+            value="-ExecutionPolicy"/>
+        <argument
+            value="Bypass"/>
+        <argument
+            value="-Command"/>
+        <argument
+            value="$gitDir = git rev-parse --git-dir; $hooksDir = Join-Path $gitDir 'hooks'; if (!(Test-Path $hooksDir)) { New-Item -ItemType Directory -Path $hooksDir -Force | Out-Null }; Invoke-WebRequest -Uri '${gerrit.server.url}/tools/hooks/commit-msg' -OutFile (Join-Path $hooksDir 'commit-msg') -UseBasicParsing"/>
+        <description>Install Gerrit commit-msg hook for faktorips.integrationtest (Windows)</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Maven (M2E) Settings">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.m2e.core/eclipse.m2.downloadSources"
+          value="true">
+        <description>Automatically download Maven sources</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.m2e.core/eclipse.m2.downloadJavaDoc"
+          value="false">
+        <description>Do not download JavaDoc by default (can be slow)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.m2e.core/eclipse.m2.updateProjects"
+          value="true">
+        <description>Update Maven projects on startup</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Java Compiler Settings">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform"
+          value="21">
+        <description>Java compiler target platform (Java 21)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance"
+          value="21">
+        <description>Java compiler compliance level (Java 21)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source"
+          value="21">
+        <description>Java compiler source level (Java 21)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.methodParameters"
+          value="generate">
+        <description>Generate method parameters for better debugging</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.release"
+          value="enabled">
+        <description>Enable release flag for proper module compilation</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="maven:MavenImportTask">
+      <sourceLocator
+          rootFolder="${git.clone.faktorips.base.location}">
+        <excludedPath>devtools</excludedPath>
+        <excludedPath>maven</excludedPath>
+        <excludedPath>runtime</excludedPath>
+      </sourceLocator>
+    </setupTask>
+    <setupTask
+        xsi:type="launching:LaunchTask"
+        id="launch.install.targets"
+        predecessor="pde.import"
+        launcher="install targets"/>
+    <setupTask
+        xsi:type="maven:MavenImportTask"
+        id="maven.import">
+      <sourceLocator
+          rootFolder="${git.clone.faktorips.base.location}">
+        <excludedPath>devtools/eclipse/sites/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2024-09/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2024-12/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2025-03/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2025-06/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2025-09/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2025-09-Java25/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2025-12/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/thirdparty/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.abstraction.eclipse/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.ant/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.core/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.core.refactor/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.core.ui/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.htmlexport/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.ui/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.ui.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.model/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.model.builder/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.model.decorators/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.model.eclipse/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder.ui/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.tableconversion/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.tableconversion.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.eclipse.emf.codegen/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.m2e/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.core.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.core.refactor.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.core.ui.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.model.builder.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.model.decorators.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.model.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.stdbuilder.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.nls.devtools.stdbuilder.ui.nl1/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/org.faktorips.testdatatype/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.abstracttest/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.abstracttest.core/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.abstraction.eclipse.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.ant.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.core.refactor.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.core.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.core.ui.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.htmlexport.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.model.builder.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.model.decorators.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.model.eclipse.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.model.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.stdbuilder.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.stdbuilder.ui.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.tableconversion.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.m2e.test/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.testextensions/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.feature/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.feature.nls1/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.feature.test/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.groovy.feature/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.groovy.feature.nls1/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.license/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.m2e.feature/</excludedPath>
+        <excludedPath>devtools/eclipse/features/org.faktorips.testdependencies/</excludedPath>
+        <excludedPath>faktorips-coverage/</excludedPath>
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.ant.test/BuildTest/</excludedPath>
+      </sourceLocator>
+    </setupTask>
+    <setupTask
+        xsi:type="projects:ProjectsImportTask"
+        id="pde.import"
+        predecessor="maven.import"
+        label="Non-Maven Projects Import"
+        force="true">
+      <sourceLocator
+          rootFolder="${git.clone.faktorips.base.location}"
+          locateNestedProjects="true">
+        <excludedPath>devtools/eclipse/plugins/tests/org.faktorips.devtools.ant.test/BuildTest/</excludedPath>
+        <excludedPath>devtools/eclipse/sites/</excludedPath>
+        <excludedPath>devtools/faktorips-coverage/</excludedPath>
+      </sourceLocator>
+      <description>Import Eclipse plugin projects AFTER both target platforms are loaded</description>
+    </setupTask>
+    <setupTask
+        xsi:type="maven:MavenUpdateTask"
+        id="maven.update"
+        predecessor="target.platform.setup"
+        label="Maven Update Projects"
+        updateSnapshots="true">
+      <description>Update all Maven projects to refresh dependencies</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Working Sets">
+      <setupTask
+          xsi:type="setup.workingsets:WorkingSetTask"
+          id="ws.maven"
+          prefix="Maven-">
+        <workingSet
+            name="Maven Projects">
+          <predicate
+              xsi:type="predicates:AndPredicate">
+            <operand
+                xsi:type="predicates:NaturePredicate"
+                nature="org.eclipse.m2e.core.maven2Nature"/>
+          </predicate>
+        </workingSet>
+        <description>Working set for Maven projects (as specified in anleitung)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup.workingsets:WorkingSetTask"
+          id="ws.plugins"
+          prefix="Plugins-">
+        <workingSet
+            name="Eclipse Projects">
+          <predicate
+              xsi:type="predicates:AndPredicate">
+            <operand
+                xsi:type="predicates:NaturePredicate"
+                nature="org.eclipse.pde.PluginNature"/>
+          </predicate>
+        </workingSet>
+        <description>Working set for Eclipse plugin projects (as specified in anleitung)</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        id="project.clean.build"
+        predecessor="maven.update"
+        name="Clean Build">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.core.resources/refresh.enabled"
+          value="true">
+        <description>Enable automatic refresh</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.builder.cleanOutputFolder"
+          value="clean">
+        <description>Configure clean build behavior</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.core.resources/description.autobuilding"
+          value="true">
+        <description>Enable automatic building</description>
+      </setupTask>
+      <description>Trigger full workspace rebuild after all imports</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        id="target.platform.setup"
+        predecessor="//'project.clean.build'/@setupTasks.2"
+        name="Target Platform Setup">
+      <setupTask
+          xsi:type="pde:TargetPlatformTask"
+          id="target.platform.thirdparty"
+          name="thirdparty">
+        <description>Activate the installed thirdparty target platform.</description>
+      </setupTask>
+      <setupTask
+          xsi:type="pde:TargetPlatformTask"
+          id="target.platform.eclipse"
+          predecessor="target.platform.thirdparty"
+          name="Target for Faktor-IPS Base (2024-09)">
+        <description>Activate the installed Eclipse 2024-09 target platform.</description>
+      </setupTask>
+      <description>Activate the installed target platforms before PDE project import.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="pde:TargetPlatformTask"
+        id="target.platform.reactivate.after.maven"
+        name="Target for Faktor-IPS Base (2024-09)">
+      <description>Reactivate the installed Eclipse 2024-09 target platform after the Maven build/import sequence.</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:PreferenceTask"
+        key="/instance/org.eclipse.jdt.ui/spelling_user_dictionary"
+        value="${git.clone.faktorips.base.location}/.cfg/f10_dict.txt">
+      <description>Custom spelling dictionary for FaktorIPS</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Code Formatting and Cleanup Profiles">
+      <setupTask
+          xsi:type="setup:ResourceCopyTask"
+          sourceURL="${git.clone.faktorips.base.location|uri}/.cfg/cleanup.xml"
+          targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.jdt.ui/cleanup.xml">
+        <description>Copy cleanup profile to workspace</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:ResourceCopyTask"
+          sourceURL="${git.clone.faktorips.base.location|uri}/.cfg/codeformats.xml"
+          targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.jdt.ui/formatterProfiles.xml">
+        <description>Copy code formatter profiles to workspace</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:ResourceCopyTask"
+          sourceURL="${git.clone.faktorips.base.location|uri}/.cfg/codetemplates.xml"
+          targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.jdt.ui/codetemplates.xml">
+        <description>Copy code templates to workspace</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.ui/cleanup_profile"
+          value="_FaktorIps">
+        <description>Activate FaktorIPS cleanup profile (note: underscore prefix)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.ui/formatter_profile"
+          value="_FaktorIps">
+        <description>Activate FaktorIPS formatter profile (note: underscore prefix)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.formatterprofiles.version"
+          value="23">
+        <description>Set formatter profiles version</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.importorder"
+          value="java;javax;com;org;">
+        <description>Import order: java, javax, com, org</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.ondemandthreshold"
+          value="99">
+        <description>Number of imports needed for .* (99 = never use star imports)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.staticondemandthreshold"
+          value="99">
+        <description>Number of static imports needed for .* (99 = never use star imports)</description>
+      </setupTask>
+      <description>Import and activate code formatting, cleanup, and template profiles from .cfg directory</description>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="XML Editor Settings">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wst.xml.core/lineWidth"
+          value="999">
+        <description>XML line width (999 = effectively no line wrapping)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wst.xml.core/indentationSize"
+          value="4">
+        <description>XML indentation size (4 spaces)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wst.xml.core/splitMultiAttrs"
+          value="false">
+        <description>Do not split attributes across multiple lines</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wst.xml.ui/lineWidth"
+          value="999">
+        <description>XML UI line width</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wst.xml.ui/indentationSize"
+          value="4">
+        <description>XML UI indentation size</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.wst.sse.ui/format_comment_join_lines"
+          value="false">
+        <description>Do not join lines in XML comments</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Workspace Preferences">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.core.resources/encoding"
+          value="UTF-8">
+        <description>Set workspace encoding to UTF-8</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.ui.editors/spacesForTabs"
+          value="true">
+        <description>Use spaces instead of tabs</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.ui.editors/removeSpacesAsTabs"
+          value="true">
+        <description>Remove trailing whitespace</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.ui.editors/spellingEnabled"
+          value="true">
+        <description>Enable spelling check</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Code Quality Tool Settings">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/com.basistech.m2e.code.quality.checkstyle/eclipseCheckstyleGenerateFormatterSettings"
+          value="true">
+        <description>Generate formatter settings from Checkstyle</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/com.github.spotbugs.plugin.eclipse/run_at_full_build"
+          value="false">
+        <description>Don't run SpotBugs at full build (performance)</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/net.sf.eclipsecs.core/background.full.build"
+          value="true">
+        <description>Run Checkstyle in background during full build</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Console and Debug Settings">
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.debug.ui/Console.limitConsoleOutput"
+          value="false">
+        <description>Don't limit console output</description>
+      </setupTask>
+      <setupTask
+          xsi:type="setup:PreferenceTask"
+          key="/instance/org.eclipse.debug.ui/Console.highWaterMark"
+          value="88000">
+        <description>Console buffer size (88000 characters)</description>
+      </setupTask>
+    </setupTask>
+    <setupTask
+        xsi:type="setup:CompoundTask"
+        name="Import Additional Preferences from .cfg">
+      <setupTask
+          xsi:type="setup:ResourceCopyTask"
+          force="true"
+          sourceURL="${git.clone.faktorips.base.location|uri}/.cfg/faktorips.importorder"
+          targetURL="${workspace.location|uri}/.metadata/.plugins/org.eclipse.jdt.ui/faktorips.importorder">
+        <description>Copy FaktorIPS import order configuration</description>
+      </setupTask>
+      <description>Import additional configuration files from .cfg directory</description>
+    </setupTask>
+    <setupTask
+        xsi:type="resources_1.0:FileURLTask"
+        id="import.preferences.epf"
+        predecessor="pde.import"
+        fileURL="${git.clone.faktorips.base.location}/.cfg/preferences.epf"
+        targetURL="file:${workspace.location}/.metadata/.plugins/org.eclipse.core.runtime/.settings/preferences.epf">
+      <description>Import Eclipse preferences from EPF file - includes formatter, cleanup, templates, and all workspace settings</description>
+    </setupTask>
+  </stream>
+  <logicalProjectContainer
+      xsi:type="setup:ProjectCatalog"
+      href="index:/org.eclipse.setup#//@projectCatalogs[name='org.eclipse']"/>
+  <description>Eclipse IDE for developing Faktor-IPS</description>
+</setup:Project>
