@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,20 +12,28 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PlainJavaFileUtilTest {
+public class PlainJavaFileUtilTest extends PlainJavaAbstractionTestSetup {
 
     private Path tmpDir;
 
@@ -34,9 +42,15 @@ public class PlainJavaFileUtilTest {
         tmpDir = Files.createTempDirectory(PlainJavaFileUtilTest.class.getSimpleName());
     }
 
+    @Override
     @After
-    public void tearDown() throws IOException {
-        FileUtils.deleteDirectory(tmpDir.toFile());
+    public void tearDown() {
+        try {
+            FileUtils.deleteDirectory(tmpDir.toFile());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+        super.tearDown();
     }
 
     @Test
@@ -132,6 +146,30 @@ public class PlainJavaFileUtilTest {
         assertThat(monitor.getName(), containsString("Foo")); //$NON-NLS-1$
         assertThat(monitor.getTotalWork(), is(1));
         assertThat(monitor.getWork(), is(0));
+    }
+
+    @Test
+    public void testInternalResource() {
+        File workspacePath = Abstractions.getWorkspace().getRoot().unwrap();
+        AProject project1 = Wrappers.wrap(workspacePath).as(AProject.class);
+        AProject testProject1 = setupAbstractionProject(project1);
+        toIpsProject(testProject1);
+        newSimpleIpsProject("TestProject1");
+        File project2Dir = new File(workspacePath.getParentFile(), workspacePath.getName() + "TestProject2");
+        project2Dir.mkdir();
+        AProject project = Wrappers.wrap(project2Dir).as(AProject.class);
+        AProject testProject2 = setupAbstractionProject(project);
+        toIpsProject(testProject2);
+
+        AFolder folder = testProject2.getFolder("foo");
+        folder.create(null);
+        AFile file = folder.getFile("bar");
+        file.create(new ByteArrayInputStream("bar".getBytes()), null);
+
+        File internalResource = PlainJavaFileUtil.internalResource(file.unwrap(), (PlainJavaProject)testProject2);
+
+        assertThat(internalResource, is(notNullValue()));
+
     }
 
 }

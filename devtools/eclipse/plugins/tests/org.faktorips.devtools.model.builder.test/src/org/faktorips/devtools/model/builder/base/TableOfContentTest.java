@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,15 +25,16 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
+import org.faktorips.devtools.model.builder.base.MyDummyTocEntryFactory.MyDummyRuntimeObject;
+import org.faktorips.devtools.model.builder.base.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
 import org.faktorips.devtools.model.internal.DefaultVersion;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyRuntimeObject;
-import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.AbstractTocEntryFactory;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
@@ -55,7 +56,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     @Before
     public void setUp() throws Exception {
-        toc = new TableOfContent();
+        toc = new TableOfContent(AbstractTocEntryFactory.getBaseTocEntryFactories());
     }
 
     @Test
@@ -309,7 +310,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         String s1 = "FB";
         String s2 = "Ea";
         assertEquals(s1.hashCode(), s2.hashCode()); // so they must habe the same hashcode
-        toc = new TableOfContent();
+        toc = new TableOfContent(AbstractTocEntryFactory.getBaseTocEntryFactories());
         TocEntryObject entry0 = new ProductCmptTocEntry(s1, "Entry0", "MotorProduct", "2005-01",
                 "MotorProduct2005.ipsproduct", "MotorPolicyPk", "MotorPolicyPkAnpstufe", new DateTime(2010, 1, 1));
         TocEntryObject entry1 = new ProductCmptTocEntry(s2, "Entry1", "MotorProduct", "2005-01",
@@ -318,7 +319,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc.addOrReplaceTocEntry(entry1);
         String tocString = XmlUtil.nodeToString(toc.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8",
                 System.lineSeparator());
-        TableOfContent toc2 = new TableOfContent();
+        TableOfContent toc2 = new TableOfContent(AbstractTocEntryFactory.getBaseTocEntryFactories());
         toc2.addOrReplaceTocEntry(entry1);
         toc2.addOrReplaceTocEntry(entry0);
         String toc2String = XmlUtil.nodeToString(toc2.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8",

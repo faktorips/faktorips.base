@@ -92,8 +92,9 @@ public class PlainJavaFileUtil {
     }
 
     public static File internalResource(File potentialInternal, PlainJavaProject project) {
-        if (potentialInternal.toPath().startsWith(
-                project.getWorkspace().getRoot().directory().toPath().resolve(project.getWorkspaceRelativePath()))) {
+        if (potentialInternal.toPath().normalize().startsWith(
+                project.getWorkspace().getRoot().directory().toPath()
+                        .resolve(project.getWorkspaceRelativePath()).normalize())) {
             return potentialInternal;
         }
         throw new IllegalArgumentException(potentialInternal + " is not in the project: " + project.getName()); //$NON-NLS-1$

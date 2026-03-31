@@ -8,26 +8,20 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.enumtype;
+package org.faktorips.devtools.model.builder.base;
 
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.stdbuilder.XmlContentFileCopyBuilder;
 
-/**
- * Builder for enum content XML files.
- * 
- * @author dirmeier
- */
-public class EnumContentBuilder extends XmlContentFileCopyBuilder {
+public class TableContentBuilder extends XmlContentFileCopyBuilder {
 
-    public EnumContentBuilder(DefaultBuilderSet builderSet) {
-        super(IpsObjectType.ENUM_CONTENT, builderSet);
+    public TableContentBuilder(DefaultBuilderSet builderSet) {
+        super(IpsObjectType.TABLE_CONTENTS, builderSet);
     }
 
     @Override
     public String getName() {
-        return "EnumContentBuilder";
+        return "TableContentBuilder";
     }
 
 }

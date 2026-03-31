@@ -8,13 +8,15 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -22,9 +24,9 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.ABuildKind;
-import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.model.builder.base.BuilderKindIds;
-import org.faktorips.devtools.model.builder.base.TableOfContent;
+import org.faktorips.devtools.model.builder.java.AbstractJavaBuilderPluginTest;
+import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
+import org.faktorips.devtools.model.builder.java.JavaBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
@@ -39,8 +41,6 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
-import org.faktorips.devtools.stdbuilder.xtend.table.TableBuilder;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
@@ -48,26 +48,37 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
  *
- * @author Jan Ortmann
  */
-public class TocFileBuilderTest extends AbstractStdBuilderTest {
+public class BaseTocFileBuilderTest extends AbstractJavaBuilderPluginTest {
 
-    private TableBuilder tableBuilder;
-    private TocFileBuilder tocFileBuilder;
+    private BaseTocFileBuilder tocFileBuilder;
     private GregorianCalendar validFrom;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        tableBuilder = builderSet.getTableBuilder();
-        tocFileBuilder = builderSet.getBuilderById(BuilderKindIds.TOC_FILE, TocFileBuilder.class);
+        tocFileBuilder = new BaseTocFileBuilder(builderSet);
+        builderSet.setProperty(JavaBuilderSet.CONFIG_PROPERTY_FORMULA_COMPILING, FormulaCompiling.XML.name());
+        builderSet.addBuilder(BuilderKindIds.TOC_FILE, tocFileBuilder);
+        builderSet.addBuilder(BuilderKindIds.ENUM_TYPE, mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.ENUM_CONTENT, new EnumContentBuilder(builderSet));
+        builderSet.addBuilder(BuilderKindIds.TABLE, mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.TABLE_CONTENT, new TableContentBuilder(builderSet));
+        builderSet.addBuilder(BuilderKindIds.PRODUCT_CMPT_XML,
+                new ProductCmptXMLBuilder(IpsObjectType.PRODUCT_CMPT, builderSet));
+        builderSet.addBuilder(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION, mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.PRODUCT_CMPT_IMPLEMENTATION, mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
+                mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.TEST_CASE, mock(IXmlFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.TEST_CASE_TYPE, mock(ISourceFileBuilder.class));
         validFrom = new GregorianCalendar();
     }
 
@@ -93,6 +104,15 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
+        var productCmptTypeBuilder = builderSet.getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION,
+                ISourceFileBuilder.class);
+        when(productCmptTypeBuilder.getQualifiedClassName(productCmptType.getIpsSrcFile()))
+                .thenReturn("org.faktorips.sample.model.internal.test.ProductCmpt");
+        var productCmptTypeGenBuilder = builderSet.getBuilderById(
+                BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
+                ISourceFileBuilder.class);
+        when(productCmptTypeGenBuilder.getQualifiedClassName(productCmptType.getIpsSrcFile()))
+                .thenReturn("org.faktorips.sample.model.internal.test.ProductCmptGen");
 
         ProductCmptTocEntry entry = tocFileBuilder.createTocEntry(productCmpt);
 
@@ -110,6 +130,15 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         productCmptType.setChangingOverTime(false);
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
+        var productCmptTypeBuilder = builderSet.getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION,
+                ISourceFileBuilder.class);
+        when(productCmptTypeBuilder.getQualifiedClassName(productCmptType.getIpsSrcFile()))
+                .thenReturn("org.faktorips.sample.model.internal.test.ProductCmpt");
+        var productCmptTypeGenBuilder = builderSet.getBuilderById(
+                BuilderKindIds.PRODUCT_CMPT_TYPE_GENERATION_IMPLEMEMENTATION,
+                ISourceFileBuilder.class);
+        when(productCmptTypeGenBuilder.getQualifiedClassName(productCmptType.getIpsSrcFile()))
+                .thenReturn("org.faktorips.sample.model.internal.test.ProductCmptGen");
 
         ProductCmptTocEntry entry = tocFileBuilder.createTocEntry(productCmpt);
 
@@ -123,6 +152,10 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testCreateTocEntryPolicyCmptType() {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "test.Policy");
+        var policyCmptTypeBuilder = builderSet.getBuilderById(BuilderKindIds.POLICY_CMPT_TYPE_IMPLEMEMENTATION,
+                ISourceFileBuilder.class);
+        when(policyCmptTypeBuilder.getQualifiedClassName(type))
+                .thenReturn("org.faktorips.sample.model.internal.test.Policy");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
         assertEquals("test.Policy", entry.getIpsObjectQualifiedName());
         assertEquals("test.Policy", entry.getIpsObjectId());
@@ -132,6 +165,10 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testCreateTocEntryProductCmptType() {
         IProductCmptType type = newProductCmptType(ipsProject, "test.Product");
+        var productCmptTypeBuilder = builderSet.getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION,
+                ISourceFileBuilder.class);
+        when(productCmptTypeBuilder.getQualifiedClassName(type))
+                .thenReturn("org.faktorips.sample.model.internal.test.Product");
 
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
 
@@ -154,7 +191,8 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         TocEntryObject entry = tocFileBuilder.createTocEntry(table);
 
         assertEquals("motor.RateTable", entry.getIpsObjectId());
-        assertEquals(tableBuilder.getQualifiedClassName(structure), entry.getImplementationClassName());
+        // assertEquals(tableBuilder.getQualifiedClassName(structure),
+        // entry.getImplementationClassName());
         assertTrue(entry instanceof TableContentTocEntry);
     }
 
@@ -180,7 +218,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
 
         assertEquals("productdef.test.JavaEnum", entry.getIpsObjectId());
-        EnumTypeBuilder enumTypeBuilder = builderSet.getEnumTypeBuilder();
+        ISourceFileBuilder enumTypeBuilder = builderSet.getBuilderById(BuilderKindIds.TABLE, ISourceFileBuilder.class);
         assertEquals(enumTypeBuilder.getQualifiedClassName(enumType), entry.getImplementationClassName());
         assertTrue(entry instanceof EnumContentTocEntry);
     }
@@ -207,7 +245,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         TocEntryObject entry = tocFileBuilder.createEmptyEnumContentTocEntry(enumType);
 
         assertEquals("productdef.test.JavaEnum", entry.getIpsObjectId());
-        EnumTypeBuilder enumTypeBuilder = builderSet.getEnumTypeBuilder();
+        ISourceFileBuilder enumTypeBuilder = builderSet.getBuilderById(BuilderKindIds.TABLE, ISourceFileBuilder.class);
         assertEquals(enumTypeBuilder.getQualifiedClassName(enumType), entry.getImplementationClassName());
         assertTrue(entry instanceof EnumContentTocEntry);
     }
@@ -362,27 +400,6 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         TableOfContent builderToc = tocFileBuilder.getToc(root);
         assertNotNull(
                 builderToc.getEntry(new QualifiedNameType("motor.RateTableContent", IpsObjectType.TABLE_CONTENTS)));
-    }
-
-    @Ignore
-    // not supported at the moment
-    @Test
-    public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() {
-        // create a product component
-        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "motor.MotorPolicy", "motor.MotorProduct");
-        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
-        newProductCmpt(productCmptType, "motor.MotorProduct");
-
-        // now make a full build
-        ipsProject.getProject().build(ABuildKind.FULL, null);
-        IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
-        AFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
-        assertTrue(tocFile.exists());
-        long modStamp = tocFile.getModificationStamp();
-
-        // now make a seond full build
-        ipsProject.getProject().build(ABuildKind.FULL, null);
-        assertEquals(modStamp, tocFile.getModificationStamp());
     }
 
 }

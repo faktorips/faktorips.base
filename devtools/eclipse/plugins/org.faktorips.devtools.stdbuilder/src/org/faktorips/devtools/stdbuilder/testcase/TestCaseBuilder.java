@@ -27,6 +27,7 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
+import org.faktorips.devtools.model.builder.base.IXmlFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
@@ -61,7 +62,7 @@ import org.w3c.dom.Element;
  *
  * @author Joerg Ortmann
  */
-public class TestCaseBuilder extends AbstractArtefactBuilder {
+public class TestCaseBuilder extends AbstractArtefactBuilder implements IXmlFileBuilder {
 
     private Map<ITestPolicyCmpt, String> objectIdMap = new HashMap<>();
 
@@ -155,6 +156,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
      * @param ipsSrcFile The {@link IIpsSrcFile} you want to generate
      * @return the relative path to the generated XML file
      */
+    @Override
     public Path getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
         String packageString = getBuilderSet().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
@@ -166,6 +168,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the handle to the file where the xml content for the given ips source file is stored.
      */
+    @Override
     public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) {
         return ((AFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(getXmlContentRelativeFile(ipsSrcFile));

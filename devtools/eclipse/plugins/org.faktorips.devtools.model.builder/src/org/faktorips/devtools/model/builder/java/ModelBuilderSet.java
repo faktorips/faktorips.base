@@ -35,6 +35,7 @@ import org.faktorips.util.ArgumentCheck;
 public class ModelBuilderSet extends JavaBuilderSet {
 
     public static final String ID = "org.faktorips.devtools.model.builder.modelbuilderset";
+    private LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<>();
 
     public ModelBuilderSet() {
     }
@@ -96,7 +97,18 @@ public class ModelBuilderSet extends JavaBuilderSet {
 
     @Override
     protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
-        return new LinkedHashMap<>();
+        return builders;
+    }
+
+    /**
+     * Sets the given builders and reinitializes this builder set. This method is for use in
+     * non-Eclipse scenarios.
+     *
+     * @param builders a map of artefact builders by their IDs
+     */
+    public void setBuilders(LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders) {
+        this.builders = builders;
+        initialize(getConfig());
     }
 
     @Override

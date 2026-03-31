@@ -8,19 +8,18 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.productcmpt;
+package org.faktorips.devtools.model.builder.base;
 
+import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.XmlContentFileCopyBuilder;
 
 /**
  * Copies the product cmpt xml file to the output location (=java source folder).
  */
 public class ProductCmptXMLBuilder extends XmlContentFileCopyBuilder {
 
-    public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet) {
+    public ProductCmptXMLBuilder(IpsObjectType type, DefaultBuilderSet builderSet) {
         super(type, builderSet);
     }
 

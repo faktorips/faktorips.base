@@ -23,6 +23,7 @@ import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.builder.base.ProductCmptXMLBuilder;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.model.internal.IpsModel;

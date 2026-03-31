@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 public class TestJavaBuilderSet extends JavaBuilderSet {
 
     private TestBuilderSetConfig config;
+    private LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> buildersById = new LinkedHashMap<>();
 
     public TestJavaBuilderSet() {
         setId(TestIpsArtefactBuilderSet.ID);
@@ -58,7 +59,12 @@ public class TestJavaBuilderSet extends JavaBuilderSet {
 
     @Override
     protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws IpsException {
-        return new LinkedHashMap<>();
+        return buildersById;
+    }
+
+    public void addBuilder(IBuilderKindId id, IIpsArtefactBuilder builder) {
+        buildersById.put(id, builder);
+        init();
     }
 
 }

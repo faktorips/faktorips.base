@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
 import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_CONTENT;
 import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_TYPE;
@@ -24,12 +24,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
-import org.faktorips.runtime.internal.toc.AbstractTocEntryFactory;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
@@ -45,13 +46,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Table of contents to create the toc-file - used by {@link TocFileBuilder}
+ * Table of contents to create the toc-file - used by {@link BaseTocFileBuilder}
  * <p>
  * <em>The table of contents can be extended to read toc entries for new object types by
  * implementing and registering a {@link ITocEntryFactory}.</em>
  * </p>
- *
- * @author dirmeier
  */
 public class TableOfContent {
 
@@ -64,7 +63,7 @@ public class TableOfContent {
      * This is the version of the table of contents XML file. If change the XML format that old xml
      * files are incompatible with the newer format you have to increase this version. The version
      * is checked before loading the content of the xml file. If the version is incompatible (not
-     * equals) the {@link TocFileBuilder} have to rebuild the whole {@link TableOfContent}.
+     * equals) the {@link BaseTocFileBuilder} has to rebuild the whole {@link TableOfContent}.
      * <p>
      * The version is only interesting while building the XML file, especially in
      * {@link #initFromXml(Element)} for incremental build. It is not considered at runtime.
@@ -81,24 +80,12 @@ public class TableOfContent {
 
     private Map<QualifiedNameType, TocEntryObject> entriesMap = new HashMap<>(100);
 
-    public TableOfContent() {
-        super();
+    public TableOfContent(Set<ITocEntryFactory<?>> tocEntryFactories) {
+        tocEntryFactoriesByXmlTag = tocEntryFactories.stream()
+                .collect(Collectors.toMap(ITocEntryFactory::getXmlTag, Function.identity()));
     }
 
     private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
-        if (tocEntryFactoriesByXmlTag == null) {
-            synchronized (TableOfContent.class) {
-                if (tocEntryFactoriesByXmlTag == null) {
-                    tocEntryFactoriesByXmlTag = new HashMap<>();
-                    for (ITocEntryFactory<?> tocEntryFactory : AbstractTocEntryFactory.getBaseTocEntryFactories()) {
-                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
-                    }
-                    for (ITocEntryFactory<?> tocEntryFactory : StdBuilderPlugin.getDefault().getTocEntryFactories()) {
-                        tocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
-                    }
-                }
-            }
-        }
         return tocEntryFactoriesByXmlTag;
     }
 
@@ -106,21 +93,21 @@ public class TableOfContent {
      * Check if the table of content was modified since last {@link #initFromXml(Element)},
      * {@link #toXml(IVersion, Document)} or {@link #resetModified()}
      */
-    public boolean isModified() {
+    public synchronized boolean isModified() {
         return modified;
     }
 
     /**
      * Setting modified to false.
      */
-    public void resetModified() {
+    public synchronized void resetModified() {
         modified = false;
     }
 
     /**
      * Removes all entriesMap and updated the modification stamp.
      */
-    public void clear() {
+    public synchronized void clear() {
         entriesMap.clear();
         modified = true;
     }
@@ -131,7 +118,7 @@ public class TableOfContent {
      *
      * @return true if the table of content was changed
      */
-    public boolean addOrReplaceTocEntry(TocEntryObject entry) {
+    public synchronized boolean addOrReplaceTocEntry(TocEntryObject entry) {
         if (entry != null) {
             TocEntryObject oldValue;
             oldValue = entriesMap.put(getQualifiedNameType(entry), entry);
@@ -151,7 +138,7 @@ public class TableOfContent {
      * full qualified name for product components). Does nothing if the id does not identify an
      * entry.
      */
-    public TocEntryObject removeEntry(QualifiedNameType id) {
+    public synchronized TocEntryObject removeEntry(QualifiedNameType id) {
         TocEntryObject oldValue = entriesMap.remove(id);
         if (oldValue != null) {
             modified = true;
@@ -178,7 +165,7 @@ public class TableOfContent {
      * @param doc The xml document used to create new objects.
      * @throws NullPointerException if doc is <code>null</code>.
      */
-    public Element toXml(IVersion<?> version, Document doc) {
+    public synchronized Element toXml(IVersion<?> version, Document doc) {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
         if (version.isNotEmptyVersion()) {
@@ -192,7 +179,7 @@ public class TableOfContent {
         return element;
     }
 
-    public void initFromXml(Element tocElement) {
+    public synchronized void initFromXml(Element tocElement) {
         String version = tocElement.getAttribute(VERSION_XML_ATTRIBUTE);
         if (!ACTUAL_XML_VERSION.equals(version)) {
             clear();

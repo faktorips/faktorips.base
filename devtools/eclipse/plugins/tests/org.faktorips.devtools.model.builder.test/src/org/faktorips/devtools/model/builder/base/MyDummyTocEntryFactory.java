@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
+import org.faktorips.devtools.model.builder.base.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyTypedTocEntryObject;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.RuntimeObject;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
@@ -63,6 +63,6 @@ public class MyDummyTocEntryFactory implements ITocEntryFactory<MyDummyTypedTocE
     }
 
     public static class MyDummyRuntimeObject extends RuntimeObject {
-
+        // dummy
     }
 }

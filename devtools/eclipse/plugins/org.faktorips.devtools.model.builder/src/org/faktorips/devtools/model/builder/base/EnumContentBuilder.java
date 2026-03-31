@@ -1,28 +1,30 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.table;
+package org.faktorips.devtools.model.builder.base;
 
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.stdbuilder.XmlContentFileCopyBuilder;
 
-public class TableContentBuilder extends XmlContentFileCopyBuilder {
+/**
+ * Builder for enum content XML files.
+ */
+public class EnumContentBuilder extends XmlContentFileCopyBuilder {
 
-    public TableContentBuilder(DefaultBuilderSet builderSet) {
-        super(IpsObjectType.TABLE_CONTENTS, builderSet);
+    public EnumContentBuilder(DefaultBuilderSet builderSet) {
+        super(IpsObjectType.ENUM_CONTENT, builderSet);
     }
 
     @Override
     public String getName() {
-        return "TableContentBuilder";
+        return "EnumContentBuilder";
     }
 
 }

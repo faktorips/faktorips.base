@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 
@@ -30,25 +30,23 @@ public enum BuilderKindIds implements IBuilderKindId {
 
     POLICY_CMPT_TYPE_INTERFACE,
 
-    POLICY_CMPT_TYPE_IMPLEMEMENTATION(),
+    POLICY_CMPT_TYPE_IMPLEMEMENTATION,
 
     POLICY_CMPT_MODEL_TYPE,
 
     POLICY_CMPT_VALIDATOR_CLASS,
 
-    TABLE(),
+    TABLE,
 
-    TABLE_ROW(),
+    TABLE_ROW,
 
-    TABLE_CONTENT(),
+    TABLE_CONTENT,
 
     TEST_CASE_TYPE,
 
     TEST_CASE,
 
-    BUSINESS_FUNCTION,
-
-    ENUM_TYPE(),
+    ENUM_TYPE,
 
     ENUM_XML_ADAPTER,
 
@@ -60,9 +58,9 @@ public enum BuilderKindIds implements IBuilderKindId {
 
     LABELS_AND_DESCRIPTIONS,
 
-    TOC_FILE(),
+    TOC_FILE,
 
-    MANIFEST_FILE();
+    MANIFEST_FILE;
 
     @Override
     public String getId() {

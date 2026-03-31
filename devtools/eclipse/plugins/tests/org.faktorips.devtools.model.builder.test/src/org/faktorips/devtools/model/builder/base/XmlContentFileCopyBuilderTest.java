@@ -8,10 +8,11 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.nio.file.Path;
 
@@ -20,13 +21,14 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
+import org.faktorips.devtools.model.builder.java.AbstractJavaBuilderPluginTest;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 
-public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
+public class XmlContentFileCopyBuilderTest extends AbstractJavaBuilderPluginTest {
 
     private ITableStructure structure;
     private ITableContents contents;
@@ -37,6 +39,8 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        builderSet.addBuilder(BuilderKindIds.TABLE, mock(ISourceFileBuilder.class));
+        builderSet.addBuilder(BuilderKindIds.TABLE_CONTENT, new TableContentBuilder(builderSet));
         structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "TestTable");
         contents.setTableStructure(structure.getQualifiedName());

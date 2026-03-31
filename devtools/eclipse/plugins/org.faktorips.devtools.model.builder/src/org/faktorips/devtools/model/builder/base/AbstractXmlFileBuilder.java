@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder;
+package org.faktorips.devtools.model.builder.base;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -27,12 +27,11 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 
-// TODO This class should be moved to devtools.core
 /**
  * This abstract xml file builder handles general purposes building xml files in a java package
  * structure.
  */
-public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
+public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder implements IXmlFileBuilder {
 
     private IpsObjectType ipsObjectType;
 
@@ -97,12 +96,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /**
-     * Returns the relative path to the generated XML file.
-     *
-     * @param ipsSrcFile The {@link IIpsSrcFile} you want to generate
-     * @return the relative path to the generated XML file
-     */
+    @Override
     public Path getXmlContentRelativeFile(IIpsSrcFile ipsSrcFile) {
         String packageString = getBuilderSet().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
@@ -111,9 +105,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
                 + ipsSrcFile.getIpsObjectType().getFileExtension());
     }
 
-    /**
-     * Returns the handle to the file where the xml content for the given ips source file is stored.
-     */
+    @Override
     public AFile getXmlContentFile(IIpsSrcFile ipsSrcFile) {
         return ((AFolder)ipsSrcFile.getIpsPackageFragment().getRoot().getArtefactDestination(true).getResource())
                 .getFile(PathUtil.toPortableString(getXmlContentRelativeFile(ipsSrcFile)));
