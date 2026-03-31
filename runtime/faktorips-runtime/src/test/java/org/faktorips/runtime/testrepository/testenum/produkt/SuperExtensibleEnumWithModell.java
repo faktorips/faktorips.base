@@ -62,7 +62,7 @@ public final class SuperExtensibleEnumWithModell
     /**
      * @generated
      */
-    private final IRuntimeRepository productRepository;
+    private final transient IRuntimeRepository productRepository;
 
     /**
      * Erzeugt eine neue Instanz von SuperExtensibleEnumWithModell.

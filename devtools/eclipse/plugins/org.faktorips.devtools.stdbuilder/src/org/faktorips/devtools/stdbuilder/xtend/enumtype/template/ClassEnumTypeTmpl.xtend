@@ -51,8 +51,8 @@ class ClassEnumTypeTmpl {
         /**
          * @generated
          */
-        private final «IRuntimeRepository» «varnameProductRepository»;
-        
+        private final transient «IRuntimeRepository» «varnameProductRepository»;
+
     '''
 
     def private static compareTo(XEnumType it) '''

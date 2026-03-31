@@ -451,7 +451,7 @@ public class EnumAttributeTest {
         private final Decimal mandatoryDecimal;
         private final Decimal optionalDecimal;
         @SuppressWarnings("unused")
-        private final IRuntimeRepository productRepository = new InMemoryRuntimeRepository();
+        private final transient IRuntimeRepository productRepository = new InMemoryRuntimeRepository();
 
         static final EnumType enumType = new EnumType(MyEnumForMandatoryTests.class);
         static final EnumAttribute mandatoryStringAttribute = enumAttribute("mandatoryString");
