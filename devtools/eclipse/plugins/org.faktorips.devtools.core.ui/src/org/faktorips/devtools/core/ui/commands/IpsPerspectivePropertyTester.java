@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,18 +14,18 @@ import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
+import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * This property tester defines two property tests to check active perspectives:
- * 
+ *
  * <ul>
  * <li><em>isPerspectiveOpen</em> takes an perspective id as argument and checks whether this
  * perspective is active</li>
  * <li><em>isProductDefinitionPerspectiveOpen</em> takes no argument and checks whether the ips
  * product definition perspective is open</li>
  * </ul>
- * 
+ *
  * @author dirmeier
  */
 public class IpsPerspectivePropertyTester extends PropertyTester {
@@ -46,7 +46,7 @@ public class IpsPerspectivePropertyTester extends PropertyTester {
                 if (args.length != 0) {
                     throw new RuntimeException("invalid number of arguments in IpsPerspectivePropertyTester"); //$NON-NLS-1$
                 }
-                return isPerspectiveOpen(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID,
+                return isPerspectiveOpen(IpsPlugin.PRODUCTDEFINITIONPERSPECTIVE_ID,
                         window);
             }
         }

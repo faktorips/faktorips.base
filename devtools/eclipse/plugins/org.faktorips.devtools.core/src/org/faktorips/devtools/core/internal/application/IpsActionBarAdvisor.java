@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.application;
 
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.ICoolBarManager;
@@ -19,6 +20,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.Util;
 import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IPerspectiveListener;
@@ -38,8 +41,8 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.ide.IIDEActionConstants;
+import org.eclipse.ui.internal.WorkbenchMessages;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 
 /**
  * Provides the actions available for FaktorIps as Eclipse-Product
@@ -48,7 +51,7 @@ import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
  */
 class IpsActionBarAdvisor extends ActionBarAdvisor {
 
-    final IWorkbenchWindow window;
+    private final IWorkbenchWindow window;
 
     // Generic actions
 
@@ -79,6 +82,10 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     private OpenPerspectiveAction openSynchronizePerspectiveAction;
 
     private OpenPerspectiveAction openProductDefinitionPerspectiveAction;
+
+    private OpenPerspectiveAction openModelPerspectiveAction;
+
+    private OpenPerspectiveAction openGitPerspectiveAction;
 
     private IWorkbenchAction resetPerspectiveAction;
 
@@ -176,6 +183,9 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction cleanProjectsAction;
 
+    private IWorkbenchAction buildAutomaticallyAction;
+
+    private IWorkbenchAction switchWorkspaceAction;
     // Contribution items
 
     private NewWizardMenu newWizardMenu;
@@ -277,6 +287,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     /**
      * Creates and returns the "File" menu.
      */
+    @SuppressWarnings("restriction")
     private MenuManager createFileMenu() {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_file, IWorkbenchActionConstants.M_FILE);
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_START));
@@ -292,6 +303,14 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         menu.add(newMenu);
 
         menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
+
+        menu.add(new GroupMarker(IWorkbenchActionConstants.NEW_EXT));
+
+        MenuManager recent = new MenuManager(WorkbenchMessages.OpenRecentDocuments_text);
+        recent.add(ContributionItemFactory.REOPEN_EDITORS.create(getWindow()));
+        recent.add(new GroupMarker(IWorkbenchActionConstants.MRU));
+        menu.add(recent);
+
         menu.add(new Separator());
 
         menu.add(closeAction);
@@ -321,12 +340,13 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
         menu.add(new Separator());
         menu.add(propertiesAction);
-
-        menu.add(ContributionItemFactory.REOPEN_EDITORS.create(getWindow()));
-        menu.add(new GroupMarker(IWorkbenchActionConstants.MRU));
         menu.add(new Separator());
-        menu.add(quitAction);
+        menu.add(switchWorkspaceAction);
+        ActionContributionItem quitItem = new ActionContributionItem(quitAction);
+        quitItem.setVisible(!Util.isMac());
+        menu.add(quitItem);
         menu.add(new GroupMarker(IWorkbenchActionConstants.FILE_END));
+
         return menu;
     }
 
@@ -416,6 +436,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         menu.add(new Separator());
         menu.add(new GroupMarker(IWorkbenchActionConstants.BUILD_EXT));
         menu.add(cleanProjectsAction);
+        menu.add(buildAutomaticallyAction);
         menu.add(new Separator());
 
         menu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -433,6 +454,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         menu.add(resetPerspectiveAction);
         // menu.add(editActionSetAction);
         menu.add(openProductDefinitionPerspectiveAction);
+        menu.add(openModelPerspectiveAction);
+        menu.add(openGitPerspectiveAction);
         menu.add(openSynchronizePerspectiveAction);
         menu.add(new Separator());
         addKeyboardShortcuts(menu);
@@ -487,9 +510,10 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         addSeparatorOrGroupMarker(menu, IWorkbenchActionConstants.MB_ADDITIONS);
         // about should always be at the bottom
         menu.add(new Separator("group.about")); //$NON-NLS-1$
-        menu.add(aboutAction);
+        ActionContributionItem aboutItem = new ActionContributionItem(aboutAction);
+        aboutItem.setVisible(!Util.isMac());
+        menu.add(aboutItem);
         menu.add(new GroupMarker("group.about.ext")); //$NON-NLS-1$
-
         return menu;
     }
 
@@ -533,6 +557,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         pinEditorContributionItem.dispose();
 
         // Null out actions to make leak debugging easier.
+        switchWorkspaceAction = null;
         closeAction = null;
         closeAllAction = null;
         saveAction = null;
@@ -589,6 +614,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         importResourcesAction = null;
         exportResourcesAction = null;
         openProjectAction = null;
+        buildAutomaticallyAction = null;
         closeProjectAction = null;
         cleanProjectsAction = null;
         newWizardMenu = null;
@@ -660,6 +686,11 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         register(dynamicHelpAction);
 
         aboutAction = ActionFactory.ABOUT.create(window);
+
+        ImageDescriptor descriptor = IpsPlugin.getDefault().getImageRegistry().getDescriptor(IpsPlugin.IPS_ICON_16);
+        aboutAction.setImageDescriptor(descriptor);
+        aboutAction.setDisabledImageDescriptor(descriptor);
+        aboutAction.setHoverImageDescriptor(descriptor);
         register(aboutAction);
 
         openPreferencesAction = ActionFactory.PREFERENCES.create(window);
@@ -737,6 +768,9 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         quitAction = ActionFactory.QUIT.create(window);
         register(quitAction);
 
+        switchWorkspaceAction = IDEActionFactory.OPEN_WORKSPACE.create(window);
+        register(switchWorkspaceAction);
+
         moveAction = ActionFactory.MOVE.create(window);
         register(moveAction);
 
@@ -770,15 +804,24 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         cleanProjectsAction = IDEActionFactory.BUILD_CLEAN.create(window);
         register(cleanProjectsAction);
 
+        buildAutomaticallyAction = IDEActionFactory.BUILD_AUTOMATICALLY.create(window);
+        buildAutomaticallyAction.setText(Messages.IpsActionBarAdvisor_buildAutomaticallyAction);
+        register(buildAutomaticallyAction);
+
         PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
         openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
                 .getPerspectiveRegistry()
-                .findPerspectiveWithId(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID), m);
+                .findPerspectiveWithId(IpsPlugin.PRODUCTDEFINITIONPERSPECTIVE_ID), m);
+        openModelPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
+                .getPerspectiveRegistry()
+                .findPerspectiveWithId(IpsPlugin.MODELPERSPECTIVE_ID), m);
         openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
                 .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
-
+        openGitPerspectiveAction = new OpenPerspectiveAction(getWindow(),
+                PlatformUI.getWorkbench()
+                        .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.egit.ui.GitRepositoryExploring"),
+                m);
         pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR.create(window);
-
     }
 
     private void disableUnwantedActionSets(IWorkbenchPage page) {
@@ -792,6 +835,14 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         page.hideActionSet("org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"); //$NON-NLS-1$
         page.hideActionSet("org.eclipse.debug.ui.debugActionSet"); //$NON-NLS-1$
         page.hideActionSet("org.eclipse.ui.actionSet.keyBindings"); //$NON-NLS-1$
+
+        page.hideActionSet("org.eclipse.jdt.junit.JUnitActionSet"); //$NON-NLS-1$
+        page.hideActionSet("org.eclipse.jdt.debug.ui.JDTDebugActionSet"); //$NON-NLS-1$
+        page.hideActionSet("org.eclipse.debug.ui.profileActionSet"); //$NON-NLS-1$
+        page.hideActionSet("org.eclipse.debug.ui.launchActionSet"); //$NON-NLS-1$
+        page.hideActionSet("org.eclipse.debug.ui.debugActionSet"); //$NON-NLS-1$
+        page.hideActionSet("org.eclipse.debug.ui.breakpointActionSet"); //$NON-NLS-1$
+
         disablingUnwantedActionSets = false;
 
     }

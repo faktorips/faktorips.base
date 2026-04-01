@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -43,12 +44,15 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plug-in class.
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsPlugin extends AbstractUIPlugin {
 
+    public static final String IPS_ICON_16 = "icons/fips_window16.png";
     public static final String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
+    public static final String PRODUCTDEFINITIONPERSPECTIVE_ID = "org.faktorips.devtools.core.productDefinitionPerspective"; //$NON-NLS-1$
+    public static final String MODELPERSPECTIVE_ID = "org.faktorips.devtools.core.modelPerspective"; //$NON-NLS-1$
 
     public static final boolean TRACE_UI = Boolean
             .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")); //$NON-NLS-1$
@@ -96,7 +100,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the full extension id. This is the plugin's id plus the plug-in relative extension id
      * separated by a dot.
-     * 
+     *
      * @throws NullPointerException if pluginRelativeEnxtensionId is <code>null</code>.
      */
     public static final String getFullExtensionId(String pluginRelativeEnxtensionId) {
@@ -194,7 +198,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
     /**
      * Returns whether the product definition perspective is currently active or not
-     * 
+     *
      * @return <code>true</code> if the current active perspective is the product definition
      *             perspective, <code>false</code> if not.
      */
@@ -209,7 +213,7 @@ public class IpsPlugin extends AbstractUIPlugin {
         }
         IPerspectiveDescriptor perspective = activePage.getPerspective();
         if (perspective != null) {
-            return perspective.getId().equals(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID);
+            return perspective.getId().equals(PRODUCTDEFINITIONPERSPECTIVE_ID);
         } else {
             return false;
         }
@@ -250,7 +254,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns a migration operation migrating the content of the given IPS project to match the
      * needs of the current version of Faktor-IPS.
-     * 
+     *
      * @param projectToMigrate The project the migration operation should be returned for.
      */
     public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate) {
@@ -288,4 +292,9 @@ public class IpsPlugin extends AbstractUIPlugin {
         this.ipsCoreExtensions = ipsCoreExtensions;
     }
 
+    @Override
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        reg.put(IPS_ICON_16, imageDescriptorFromPlugin(PLUGIN_ID, IPS_ICON_16));
+        super.initializeImageRegistry(reg);
+    }
 }

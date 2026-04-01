@@ -3,7 +3,7 @@
 <plugin>
 
 <!--
-	Extension points
+    Extension points
 -->
    <extension-point id="externalTableFormat" name="External Table Format" schema="schema/externalTableFormat.exsd"/>
    <extension-point id="externalValueConverter" name="External Value Converter" schema="schema/externalValueConverter.exsd"/>
@@ -58,7 +58,7 @@
          </property>
          <property
                name="aboutImage"
-               value="/icons/fips_128.png">
+               value="platform:/plugin/org.faktorips.devtools.core/icons/fips_about.png">
          </property>
          <property
                name="aboutText"
@@ -66,30 +66,29 @@
          </property>
          <property
                name="windowImages"
-               value="/icons/fips_16.png,/icons/fips_32.png,/icons/fips_48.png,/icons/fips_64.png,/icons/fips_128.png,/icons/fips_256.png">
+               value="platform:/plugin/org.faktorips.devtools.core/icons/fips_window16.png,platform:/plugin/org.faktorips.devtools.core/icons/fips_window32.png,platform:/plugin/org.faktorips.devtools.core/icons/fips_window64.png">
          </property>
-         
          <property
-		    name="cssTheme"
-		    value="org.eclipse.e4.ui.css.theme.e4_default">
-		</property>
-		<property
-		    name="applicationCSSResources"
-		    value="platform:/plugin/org.eclipse.platform/images/">
-		</property>
-		<property
-			name="startupForegroundColor"
-			value="565656"/>
-		<property
-			name="startupProgressRect"
-			value="25,25,460,15"/>
-		<property
-			name="startupMessageRect"
-			value="25,258,460,15"/>
-  <property
-        name="preferenceCustomization"
-        value="plugin_customization.ini">
-  </property>
+            name="cssTheme"
+            value="org.eclipse.e4.ui.css.theme.e4_default">
+        </property>
+        <property
+            name="applicationCSSResources"
+            value="platform:/plugin/org.eclipse.platform/images/">
+        </property>
+        <property
+            name="startupForegroundColor"
+            value="565656"/>
+        <property
+            name="startupProgressRect"
+            value="25,25,460,15"/>
+        <property
+            name="startupMessageRect"
+            value="25,258,460,15"/>
+        <property
+              name="preferenceCustomization"
+              value="plugin_customization.ini">
+        </property>
       </product>
    </extension>
    

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Faktor-IPS" uid="org.faktorips.devtools.core.FaktorIPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="26.7.0.qualifier" type="features" includeLaunchers="true" includeJRE="true" autoIncludeRequirements="false">
+<product name="Faktor-IPS" uid="org.faktorips.devtools.core.FaktorIPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="26.7.0.qualifier" type="mixed" includeLaunchers="true" includeJRE="true" autoIncludeRequirements="false">
 
    <aboutInfo>
-      <image path="/org.faktorips.p2product/icons/fips_128.png"/>
+      <image path="platform:/plugin/org.faktorips.devtools.core/icons/fips_about.png"/>
       <text>
          %org.faktorips.aboutText
       </text>
@@ -24,7 +24,7 @@
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.faktorips.p2product/icons/fips_16.png" i32="/org.faktorips.p2product/icons/fips_32.png" i48="/org.faktorips.p2product/icons/fips_48.png" i64="/org.faktorips.p2product/icons/fips_64.png" i128="/org.faktorips.p2product/icons/fips_128.png" i256="/org.faktorips.p2product/icons/fips_256.png"/>
+   <windowImages i16="platform:/plugin/org.faktorips.devtools.core/icons/fips_window16.png" i32="platform:/plugin/org.faktorips.devtools.core/icons/fips_window32.png" i64="platform:/plugin/org.faktorips.devtools.core/icons/fips_window64.png"/>
 
    <splash
       location="org.faktorips.devtools.core"
@@ -39,7 +39,6 @@
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
       <linux include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21</linux>
@@ -122,6 +121,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    </license>
 
    <plugins>
+      <plugin id="org.eclipse.ui.themes"/>
    </plugins>
 
    <features>
@@ -150,6 +150,11 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
    </configurations>
+
+   <repositories>
+      <repository location="https://update.faktorzehn.org/faktorips" name="update.faktorzehn.org - faktorips" enabled="true" />
+      <repository location="https://update.faktorzehn.org/faktorips/productvariants/" name="update.faktorzehn.org - productvariants" enabled="true" />
+   </repositories>
 
    <preferencesInfo>
       <targetfile overwrite="false"/>

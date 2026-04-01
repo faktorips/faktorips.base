@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,14 +12,21 @@ package org.faktorips.devtools.core.internal.application;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.util.Arrays;
 
+import org.eclipse.core.internal.registry.ExtensionRegistry;
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -33,14 +40,14 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.ide.IDE;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 import org.osgi.framework.Bundle;
 
 /**
  * The workbench-advisor for FaktorIps as own product. This class is a simpler version of the
  * internal Eclipse class IDEWorkbenchAdvisor.
- * 
+ *
  * @author Thorsten Guenther
  */
 class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
@@ -94,7 +101,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
 
     @Override
     public String getInitialWindowPerspectiveId() {
-        return IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID;
+        return IpsPlugin.MODELPERSPECTIVE_ID;
     }
 
     @Override
@@ -104,7 +111,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
 
     /**
      * Declares all IDE-specific workbench images. This includes both "shared" images.
-     * 
+     *
      * @see IWorkbenchConfigurer#declareImage
      */
     private void declareWorkbenchImages() {
@@ -112,24 +119,24 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         Bundle ideBundle = Platform.getBundle("org.eclipse.ui.ide"); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC,
-                PATH_ETOOL + "build_exec.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "build_exec.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC_HOVER, PATH_ETOOL
-                + "build_exec.gif", false); //$NON-NLS-1$
+                + "build_exec.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC_DISABLED, PATH_DTOOL
-                + "build_exec.gif", false); //$NON-NLS-1$
+                + "build_exec.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_SEARCH_SRC,
-                PATH_ETOOL + "search_src.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "search_src.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_SEARCH_SRC_HOVER, PATH_ETOOL
-                + "search_src.gif", false); //$NON-NLS-1$
+                + "search_src.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_SEARCH_SRC_DISABLED, PATH_DTOOL
-                + "search_src.gif", false); //$NON-NLS-1$
+                + "search_src.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_NEXT_NAV,
-                PATH_ETOOL + "next_nav.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "next_nav.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PREVIOUS_NAV,
-                PATH_ETOOL + "prev_nav.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "prev_nav.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_WIZBAN_NEWPRJ_WIZ, PATH_WIZBAN
                 + "newprj_wiz.png", false); //$NON-NLS-1$
@@ -157,80 +164,80 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_DLGBAN_QUICKFIX_DLG, PATH_WIZBAN
                 + "quick_fix.png", false); //$NON-NLS-1$
 
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OPEN_MARKER, PATH_ELOCALTOOL + "gotoobj_tsk.gif", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OPEN_MARKER, PATH_ELOCALTOOL + "gotoobj_tsk.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ELCL_QUICK_FIX_ENABLED, PATH_ELOCALTOOL
-                + "smartmode_co.gif", true); //$NON-NLS-1$
+                + "smartmode_co.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_DLCL_QUICK_FIX_DISABLED, PATH_DLOCALTOOL
-                + "smartmode_co.gif", true); //$NON-NLS-1$
+                + "smartmode_co.png", true); //$NON-NLS-1$
 
         // task objects
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_HPRIO_TSK,
-        // PATH_OBJECT+"hprio_tsk.gif");
+        // PATH_OBJECT+"hprio_tsk.png");
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_MPRIO_TSK,
-        // PATH_OBJECT+"mprio_tsk.gif");
+        // PATH_OBJECT+"mprio_tsk.png");
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_LPRIO_TSK,
-        // PATH_OBJECT+"lprio_tsk.gif");
+        // PATH_OBJECT+"lprio_tsk.png");
 
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_TASK_TSK, PATH_OBJECT + "taskmrk_tsk.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_BKMRK_TSK, PATH_OBJECT + "bkmrk_tsk.gif", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_TASK_TSK, PATH_OBJECT + "taskmrk_tsk.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_BKMRK_TSK, PATH_OBJECT + "bkmrk_tsk.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_COMPLETE_TSK, PATH_OBJECT
-                + "complete_tsk.gif", true); //$NON-NLS-1$
+                + "complete_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_INCOMPLETE_TSK, PATH_OBJECT
-                + "incomplete_tsk.gif", true); //$NON-NLS-1$
+                + "incomplete_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_WELCOME_ITEM, PATH_OBJECT
-                + "welcome_item.gif", true); //$NON-NLS-1$
+                + "welcome_item.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_WELCOME_BANNER, PATH_OBJECT
-                + "welcome_banner.gif", true); //$NON-NLS-1$
+                + "welcome_banner.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_ERROR_PATH,
-                PATH_OBJECT + "error_tsk.gif", true); //$NON-NLS-1$
+                PATH_OBJECT + "error_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_WARNING_PATH,
-                PATH_OBJECT + "warn_tsk.gif", true); //$NON-NLS-1$
+                PATH_OBJECT + "warn_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_INFO_PATH,
-                PATH_OBJECT + "info_tsk.gif", true); //$NON-NLS-1$
+                PATH_OBJECT + "info_tsk.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_FLAT_LAYOUT, PATH_ELOCALTOOL
-                + "flatLayout.gif", true); //$NON-NLS-1$
+                + "flatLayout.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_HIERARCHICAL_LAYOUT, PATH_ELOCALTOOL
-                + "hierarchicalLayout.gif", true); //$NON-NLS-1$
+                + "hierarchicalLayout.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEM_CATEGORY, PATH_ETOOL
-                + "problem_category.gif", true); //$NON-NLS-1$
+                + "problem_category.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_LINKTO_HELP, PATH_ELOCALTOOL
-                + "linkto_help.gif", false); //$NON-NLS-1$
+                + "linkto_help.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW, PATH_EVIEW
-                + "problems_view.gif", true); //$NON-NLS-1$
+                + "problems_view.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW_ERROR, PATH_EVIEW
-                + "problems_view_error.gif", true); //$NON-NLS-1$
+                + "problems_view_error.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW_WARNING, PATH_EVIEW
-                + "problems_view_warning.gif", true); //$NON-NLS-1$
+                + "problems_view_warning.png", true); //$NON-NLS-1$
 
         // synchronization indicator objects
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_WBET_STAT,
-        // PATH_OVERLAY+"wbet_stat.gif");
+        // PATH_OVERLAY+"wbet_stat.png");
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_SBET_STAT,
-        // PATH_OVERLAY+"sbet_stat.gif");
+        // PATH_OVERLAY+"sbet_stat.png");
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_CONFLICT_STAT,
-        // PATH_OVERLAY+"conflict_stat.gif");
+        // PATH_OVERLAY+"conflict_stat.png");
 
         // content locality indicator objects
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_NOTLOCAL_STAT,
-        // PATH_STAT+"notlocal_stat.gif");
+        // PATH_STAT+"notlocal_stat.png");
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_LOCAL_STAT,
-        // PATH_STAT+"local_stat.gif");
+        // PATH_STAT+"local_stat.png");
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_FILLLOCAL_STAT,
-        // PATH_STAT+"filllocal_stat.gif");
+        // PATH_STAT+"filllocal_stat.png");
     }
 
     /**
      * Declares an IDE-specific workbench image.
-     * 
+     *
      * @param symbolicName the symbolic name of the image
      * @param path the path of the image file; this path is relative to the base of the IDE plug-in
      * @param shared <code>true</code> if this is a shared image, and <code>false</code> if this is
@@ -244,6 +251,45 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
     }
 
     @Override
+    public void postStartup() {
+        super.postStartup();
+        removeBuiler("org.eclipse.jdt.core.javabuilder");
+        removeBuiler("org.eclipse.m2e.core.maven2Builder");
+    }
+
+    @SuppressWarnings("restriction")
+    private void removeBuiler(String builder) {
+        IExtensionRegistry registry = RegistryFactory.getRegistry();
+        IExtension jdtJavabuilder = registry.getExtension(builder);
+        Object masterToken = null;
+        try {
+            var masterTokenField = ExtensionRegistry.class.getDeclaredField("masterToken");
+            masterTokenField.setAccessible(true);
+            masterToken = masterTokenField.get(registry);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            throw new IpsException("Can't remove Java Builder", e);
+        }
+        registry.removeExtension(jdtJavabuilder, masterToken);
+    }
+
+    private void removeJavaBuilderFromProjects() {
+        var workspace = ResourcesPlugin.getWorkspace();
+        for (var project : workspace.getRoot().getProjects()) {
+            try {
+                var description = project.getDescription();
+                var buildSpec = description.getBuildSpec();
+                buildSpec = Arrays.stream(buildSpec)
+                        .filter(s -> !s.getBuilderName().equals("org.eclipse.jdt.core.javabuilder"))
+                        .toArray(ICommand[]::new);
+                description.setBuildSpec(buildSpec);
+                project.setDescription(description, IResource.NONE, null);
+            } catch (CoreException e) {
+                throw new IpsException(e);
+            }
+        }
+    }
+
+    @Override
     public void postShutdown() {
         if (ResourcesPlugin.getWorkspace() != null) {
             disconnectFromWorkspace();
@@ -252,7 +298,7 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
 
     /**
      * Disconnect from the core workspace.
-     * 
+     *
      * See Eclipse's IDEWorkbenchAdvisor for more details.
      */
     @SuppressWarnings("restriction")

@@ -20,11 +20,18 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory"
+            class="org.faktorips.devtools.core.ui.perspective.IpsProductDefinitionPerspectiveFactory"
             fixed="false"
             icon="icons/IpsPerspective.gif"
             id="org.faktorips.devtools.core.productDefinitionPerspective"
             name="%org.faktorips.devtools.core.productDefinitionPerspective">
+      </perspective>
+      <perspective
+            class="org.faktorips.devtools.core.ui.perspective.IpsModelPerspectiveFactory"
+            fixed="false"
+            icon="icons/IpsModelPerspective.png"
+            id="org.faktorips.devtools.core.modelPerspective"
+            name="%org.faktorips.devtools.core.modelPerspective">
       </perspective>
    </extension>
 <!--
@@ -500,6 +507,110 @@
                showTitle="true"
                standalone="false"
                visible="false">
+         </view>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.modelExplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.instanceexplorer">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy">
+         </showInPart>
+         <showInPart
+               id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure">
+         </showInPart>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.faktorips.devtools.core.modelPerspective">
+         <actionSet id="org.faktorips.devtools.actions.EditModeActionSet"/>
+         <actionSet id="org.faktorips.devtools.actions.StandardActionSet"/>
+         <actionSet
+               id="org.faktorips.devtools.actions.ModelingActionSet">
+         </actionSet>
+         <actionSet
+               id="org.faktorips.devtools.actions.ProductDefinitionActionSet">
+         </actionSet>
+         <view
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               visible="false"
+               relationship="stack"
+               id="org.faktorips.devtools.core.ui.views.productDefinitionExplorer">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.testRunner"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelExplorer"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelDescription"
+               moveable="true"
+               ratio="0.75"
+               relationship="stack"
+               relative="org.eclipse.ui.views.ContentOutline"
+               showTitle="true"
+               standalone="false"
+               visible="true"/>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               minimized="false"
+               moveable="true"
+               relationship="bottom"
+               relative="org.eclipse.jdt.ui.PackageExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.instanceexplorer"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.ipshierarchy.IpsHierarchy"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="false">
+         </view>
+         <view
+               closeable="true"
+               id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.faktorips.devtools.core.ui.views.productStructureExplorer"
+               showTitle="true"
+               standalone="false"
+               visible="true">
          </view>
          <showInPart
                id="org.faktorips.devtools.core.ui.views.productStructureExplorer">
