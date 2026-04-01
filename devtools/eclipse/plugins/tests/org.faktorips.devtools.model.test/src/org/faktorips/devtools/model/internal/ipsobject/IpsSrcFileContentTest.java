@@ -16,12 +16,15 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyArray;
 
+import java.util.GregorianCalendar;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -52,6 +55,32 @@ public class IpsSrcFileContentTest extends AbstractIpsPluginTest {
         policyCmptType.setSupertype("supertype");
         String stringPropertyValue = ipsSrcFile.getPropertyValue(PolicyCmptType.PROPERTY_SUPERTYPE);
         assertThat(stringPropertyValue, is("supertype"));
+
+        ipsSrcFile.save(null);
+        IpsSrcFileContent ipsSrcFileContent = new IpsSrcFileContent(policyCmptType);
+        String propertyValueFromFile = ipsSrcFileContent.getRootPropertyValue(PolicyCmptType.PROPERTY_SUPERTYPE);
+        assertThat(propertyValueFromFile, is("supertype"));
+    }
+
+    @Test
+    public void testGetRootPropertyValue_ValidFrom() throws Exception {
+        IIpsProject ipsProject = newIpsProject();
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "TestType");
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "TestProduct");
+        productCmpt.setValidFrom(null);
+        IIpsSrcFile ipsSrcFile = productCmpt.getIpsSrcFile();
+
+        String nullPropertyValue = ipsSrcFile.getPropertyValue(ProductCmpt.XML_ATTRIBUTE_VALID_FROM);
+        assertThat(nullPropertyValue, is(nullValue()));
+
+        productCmpt.setValidFrom(new GregorianCalendar(2026, 3, 1));
+        String propertyValueFromObject = ipsSrcFile.getPropertyValue(ProductCmpt.XML_ATTRIBUTE_VALID_FROM);
+        assertThat(propertyValueFromObject, is("2026-04-01"));
+
+        ipsSrcFile.save(null);
+        IpsSrcFileContent ipsSrcFileContent = new IpsSrcFileContent(productCmpt);
+        String propertyValueFromFile = ipsSrcFileContent.getRootPropertyValue(ProductCmpt.XML_ATTRIBUTE_VALID_FROM);
+        assertThat(propertyValueFromFile, is("2026-04-01"));
     }
 
     @Test

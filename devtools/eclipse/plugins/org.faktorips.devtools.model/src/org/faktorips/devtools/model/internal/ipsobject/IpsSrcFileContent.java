@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -73,9 +74,9 @@ public class IpsSrcFileContent {
     /**
      * The corresponding file's modification stamp at the time of reading the content from it.
      */
-    private long modificationStamp;
+    private volatile long modificationStamp;
 
-    private boolean parsable = true;
+    private volatile boolean parsable = true;
 
     /** See <code>wasModStampTriggeredBySave()</code> for details. */
     private List<Long> modStampsAfterSave = null;
@@ -324,6 +325,9 @@ public class IpsSrcFileContent {
             PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(ipsObject.getClass(), propertyName);
             Method readMethod = propertyDescriptor.getReadMethod();
             Object result = readMethod.invoke(ipsObject);
+            if (result instanceof GregorianCalendar greg) {
+                result = org.faktorips.devtools.model.util.XmlUtil.gregorianCalendarToXmlDateString(greg);
+            }
             return result == null ? null : "" + result; //$NON-NLS-1$
         } catch (IllegalArgumentException e) {
             // due to documentation this method should return null in case of property does not
