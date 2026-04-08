@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2026-03)" sequenceNumber="2">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2026-03)" sequenceNumber="3">
     <locations>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
             <unit id="org.eclipse.buildship.feature.group" version="0.0.0"/>
@@ -12,6 +12,7 @@
             <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.epp.package.java.feature.feature.group" version="0.0.0"/>
+            <unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.help.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
             <unit id="org.eclipse.jgit.feature.group" version="0.0.0"/>

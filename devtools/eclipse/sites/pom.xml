@@ -16,9 +16,8 @@
         <!-- p2 Repository and product -->
         <module>org.faktorips.p2repository</module>
         <module>org.faktorips.p2repository.test</module>
-        <module>org.faktorips.p2product</module>
     </modules>
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>pdrone.faktor-ips_3_snapshots</id>
@@ -102,6 +101,18 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>rdp</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <!-- p2 Repository and product -->
+                <module>org.faktorips.p2repository</module>
+                <module>org.faktorips.p2repository.test</module>
+                <module>org.faktorips.p2product</module>
+            </modules>
         </profile>
     </profiles>
 </project>

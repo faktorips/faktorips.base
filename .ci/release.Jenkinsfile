@@ -4,6 +4,7 @@
 @Library('release-library@1.2')
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
+def rdpRepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2product/target/products'
 def p2Server = 'hudson@update.faktorzehn.org'
 def(major, minor, patch, kind, isAlpha, isRelease, releasePattern) = parseVersion()
 
@@ -150,6 +151,8 @@ pipeline {
                             echo "copy to archive download"
                             ssh ${p2Server} 'mkdir -p ${archiveDeployDir}'
                             scp ${p2RepositoryFolder}/target/${archiveZipFile} ${p2Server}:${archiveDeployDir}
+                            scp ${rdpRepositoryFolder}/*.zip ${p2Server}:${archiveDeployDir}
+                            scp ${rdpRepositoryFolder}/*.tar.gz ${p2Server}:${archiveDeployDir}
                         """
                         sh """
                             echo "copy repository to eclipse update site"

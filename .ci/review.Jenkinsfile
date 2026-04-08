@@ -31,7 +31,7 @@ pipeline {
                 withMaven(mavenLocalRepo: "${env.MAVEN_REPO}", publisherStrategy: 'EXPLICIT') {
                     sh "mvn -U -V -fae -e clean install -f codequality-config"
                     sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
-                    sh "mvn -U -V -T 8 -fae -e clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
+                    sh "mvn -U -V -T 8 -fae -e -P!rdp clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
                 }
             }
         }

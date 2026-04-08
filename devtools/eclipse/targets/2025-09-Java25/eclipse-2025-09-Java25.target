@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2025-09) with Java 25" sequenceNumber="4">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2025-09) with Java 25" sequenceNumber="5">
     <locations>
         <location type="Target" uri="mvn:org.faktorips:eclipse-2025-09:26.7.0-SNAPSHOT:target"/>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">

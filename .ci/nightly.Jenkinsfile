@@ -40,7 +40,7 @@ pipeline {
                             }
 
                             withMaven(publisherStrategy: 'EXPLICIT') {
-                                sh "mvn -U -V -T 8 clean verify"
+                                sh "mvn -U -V -T 8 clean verify -Dtarget-platform=eclipse-${TARGET_PLATFORM}"
                             }
                         }
                         post {

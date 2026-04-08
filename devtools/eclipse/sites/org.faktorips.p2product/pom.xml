@@ -41,6 +41,7 @@
                     <products>
                         <product>
                             <id>org.faktorips.devtools.core.FaktorIPS</id>
+                            <archiveFileName>FaktorIPS-Modeling-Tool-${project.version}</archiveFileName>
                             <rootFolder>faktorips</rootFolder>
                         </product>
                     </products>
@@ -51,6 +52,13 @@
                 <artifactId>target-platform-configuration</artifactId>
                 <configuration>
                     <requireEagerResolve>false</requireEagerResolve>
+                </configuration>
+            </plugin>
+            <!-- deployment is done in the release pipeline -->
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>
