@@ -400,6 +400,7 @@
         <setEntry value="org.eclipse.ui.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.themes.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.themes@default:default"/>
+        <setEntry value="org.eclipse.ui.views.log@default:default"/>
         <setEntry value="org.eclipse.ui.views.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.views.properties.tabbed.nl_de@default:false"/>
         <setEntry value="org.eclipse.ui.views.properties.tabbed@default:default"/>

@@ -39,7 +39,7 @@ public class IpsModelPerspectiveFactory implements IPerspectiveFactory {
         outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
         outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
         outputfolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
-
+        outputfolder.addPlaceholder("org.eclipse.pde.runtime.LogView"); //$NON-NLS-1$
         IFolderLayout outlineFolder = layout.createFolder("right", IPageLayout.RIGHT, (float)0.75, editorArea); //$NON-NLS-1$
         outlineFolder.addView(IPageLayout.ID_OUTLINE);
 
@@ -67,7 +67,7 @@ public class IpsModelPerspectiveFactory implements IPerspectiveFactory {
         layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
         layout.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
         layout.addShowViewShortcut(TemplatesView.ID);
-        layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView"); //$NON-NLS-1$
+        layout.addShowViewShortcut("org.eclipse.ui.views.log.LogView"); //$NON-NLS-1$
 
         // new actions - Java project creation wizard
         layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.JavaProjectWizard"); //$NON-NLS-1$
