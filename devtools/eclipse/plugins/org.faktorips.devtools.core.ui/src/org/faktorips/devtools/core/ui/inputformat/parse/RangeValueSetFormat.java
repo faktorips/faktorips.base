@@ -32,8 +32,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private static final String UNLIMITED_BOUND = "*"; //$NON-NLS-1$
     private static final String REGEX_STEP_SEPERATOR = "(\\s*/\\s*)"; //$NON-NLS-1$
     private static final String REGEX_BOUND_SEPERATOR = "(\\s*\\.\\.+\\s*)"; //$NON-NLS-1$
-    private static final String REGEX_BRACKETS = "(^\\s*\\[?)|(\\]?\\s*$)"; //$NON-NLS-1$
-    private static final String REGEX_EMPTY_BRACKETS = "^\\s*\\[\\s*\\]\\s*$"; //$NON-NLS-1$
+    private static final String REGEX_BRACKETS = "(^\\s*[\\[(]?)|([]\\)]?\\s*$)"; //$NON-NLS-1$
+    private static final String REGEX_EMPTY_BRACKETS = "^\\s*[\\[(]\\s*[]\\)]\\s*$"; //$NON-NLS-1$
 
     public RangeValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
@@ -56,7 +56,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private String formatRangeValueSet(IValueSet value) {
         IRangeValueSet range = (IRangeValueSet)value;
         StringBuilder sb = new StringBuilder();
-        sb.append(RangeValueSet.RANGE_VALUESET_START);
+        sb.append(range.isLowerBoundOpen() ? RangeValueSet.RANGE_VALUESET_START_OPEN
+                : RangeValueSet.RANGE_VALUESET_START);
         if (!range.isEmpty()) {
             String lowerBound = range.getLowerBound();
             String upperBound = range.getUpperBound();
@@ -69,7 +70,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
                 sb.append(getInputFormat().format(step));
             }
         }
-        sb.append(RangeValueSet.RANGE_VALUESET_END);
+        sb.append(range.isUpperBoundOpen() ? RangeValueSet.RANGE_VALUESET_END_OPEN : RangeValueSet.RANGE_VALUESET_END);
         if (!range.isEmpty() && range.isContainsNull()) {
             sb.append(' ' + getNullPresentation());
         }
@@ -97,6 +98,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private IValueSet parseValueSet(String stringToBeParsed, boolean containsNull) {
+        boolean lowerBoundOpen = stringToBeParsed.trim().startsWith(RangeValueSet.RANGE_VALUESET_START_OPEN);
+        boolean upperBoundOpen = stringToBeParsed.trim().endsWith(RangeValueSet.RANGE_VALUESET_END_OPEN);
         String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, IpsStringUtils.EMPTY);
         if (IpsStringUtils.isBlank(stringWithoutBrackets)) {
             return RangeValueSet.empty(getValueSetOwner(), getNextPartId());
@@ -107,8 +110,9 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
             String[] splitedUpperBoundAndStep = splitedBounds[1].split(REGEX_STEP_SEPERATOR, 2);
             String upperBound = parseValue(splitedUpperBoundAndStep[0]);
             String step = getStep(splitedUpperBoundAndStep);
-            if (!isEqualContentRange(lowerBound, upperBound, step, containsNull)) {
-                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull, false, false);                                                                                        
+            if (!isEqualContentRange(lowerBound, upperBound, step, lowerBoundOpen, upperBoundOpen, containsNull)) {
+                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull, lowerBoundOpen,
+                        upperBoundOpen);
             }
         }
         return getValueSet();
@@ -131,12 +135,22 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         }
     }
 
-    private boolean isEqualContentRange(String lowerBound, String upperBound, String step, boolean containsNull) {
+    private boolean isEqualContentRange(String lowerBound,
+            String upperBound,
+            String step,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen,
+            boolean containsNull) {
         if (getValueSet().isRange()) {
             IRangeValueSet range = (IRangeValueSet)getValueSet();
-            return Objects.equals(range.getLowerBound(), lowerBound)
-                    && Objects.equals(range.getUpperBound(), upperBound)
-                    && Objects.equals(step, range.getStep()) && (containsNull == getValueSet().isContainsNull());
+            boolean boundsMatch = Objects.equals(range.getLowerBound(), lowerBound)
+                    && Objects.equals(range.getUpperBound(), upperBound);
+            boolean opennessMatch = range.isLowerBoundOpen() == lowerBoundOpen
+                    && range.isUpperBoundOpen() == upperBoundOpen;
+            boolean stepMatch = Objects.equals(range.getStep(), step);
+            boolean nullMatch = range.isContainsNull() == containsNull;
+
+            return boundsMatch && opennessMatch && stepMatch && nullMatch;
         }
         return false;
     }

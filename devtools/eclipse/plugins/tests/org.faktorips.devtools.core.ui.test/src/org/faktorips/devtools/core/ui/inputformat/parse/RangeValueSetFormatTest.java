@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -254,5 +254,165 @@ public class RangeValueSetFormatTest {
         assertTrue(rangeVSFormat.isResponsibleFor("[1 ... 10 / 1]"));
         assertTrue(rangeVSFormat.isResponsibleFor(" [1 ... 10 / 1] " + NULL_PRESENTATION));
         assertFalse(rangeVSFormat.isResponsibleFor("[1 - 10]"));
+    }
+
+    @Test
+    public void testParseInternal_RangeWithLowerBoundOpen() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("(10 .. 100]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertTrue(result.isLowerBoundOpen());
+        assertFalse(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_RangeWithUpperBoundOpen() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 100)");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertFalse(result.isLowerBoundOpen());
+        assertTrue(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_RangeWithBothBoundsOpen() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("(0 .. 100)");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("0", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertTrue(result.isLowerBoundOpen());
+        assertTrue(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_RangeWithBothBoundsClosed() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 100]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertFalse(result.isLowerBoundOpen());
+        assertFalse(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_OpenRangeWithStep() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("(10 .. 100 / 5)");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertEquals("5", result.getStep());
+        assertTrue(result.isLowerBoundOpen());
+        assertTrue(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_OpenRangeWithWhitespace() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("  ( 10 .. 100 )");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertTrue(result.isLowerBoundOpen());
+        assertTrue(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_OpenRangeIncludesNull() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("(10 .. 100] " +
+                NULL_PRESENTATION);
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertTrue(result.isLowerBoundOpen());
+        assertFalse(result.isUpperBoundOpen());
+        assertTrue(result.isContainsNull());
+    }
+
+    @Test
+    public void testParseInternal_OpenRangeUnboundedLower() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("( .. 100]");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(null, result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertTrue(result.isLowerBoundOpen());
+        assertFalse(result.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testParseInternal_EmptyOpenRange() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("()");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testFormatInternal_RangeWithLowerBoundOpen() {
+        IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "1",
+                "10", null,
+                false, true, false);
+
+        assertEquals("(1 ... 10]", rangeVSFormat.formatInternal(valueSet));
+    }
+
+    @Test
+    public void testFormatInternal_RangeWithUpperBoundOpen() {
+        IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "1",
+                "10", null,
+                false, false, true);
+
+        assertEquals("[1 ... 10)", rangeVSFormat.formatInternal(valueSet));
+    }
+
+    @Test
+    public void testFormatInternal_RangeWithBothBoundsOpen() {
+        IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "0",
+                "100", null,
+                false, true, true);
+
+        assertEquals("(0 ... 100)", rangeVSFormat.formatInternal(valueSet));
+    }
+
+    @Test
+    public void testIsResponsibleFor_OpenRange() {
+        when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
+                .thenReturn(ValueSetType.getValueSetTypesAsList());
+        assertTrue(rangeVSFormat.isResponsibleFor("(1 ... 10]"));
+        assertTrue(rangeVSFormat.isResponsibleFor("[1 ... 10)"));
+        assertTrue(rangeVSFormat.isResponsibleFor("(1 ... 10)"));
+        assertTrue(rangeVSFormat.isResponsibleFor("()"));
+    }
+
+    @Test
+    public void testRoundtrip_OpenRange() {
+        String input = "(10 .. 100]";
+        IValueSet parsed = rangeVSFormat.parseInternal(input);
+        String formatted = rangeVSFormat.formatInternal(parsed);
+
+        IValueSet reparsed = rangeVSFormat.parseInternal(formatted);
+        IRangeValueSet result = (IRangeValueSet)reparsed;
+
+        assertEquals("10", result.getLowerBound());
+        assertEquals("100", result.getUpperBound());
+        assertTrue(result.isLowerBoundOpen());
+        assertFalse(result.isUpperBoundOpen());
     }
 }

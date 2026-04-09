@@ -101,12 +101,28 @@ public interface IRangeValueSet extends IValueSet {
      */
     String getStep();
 
+    /**
+     * Returns whether the lower bound is open (exclusive). An open lower bound means the value at
+     * the lower bound itself is not included in the range. For example, in the range (0..10], 0 is
+     * excluded but 10 is included.
+     */
     boolean isLowerBoundOpen();
 
+    /**
+     * Returns whether the upper bound is open (exclusive). An open upper bound means the value at
+     * the upper bound itself is not included in the range. For example, in the range [0..10), 0 is
+     * included but 10 is excluded.
+     */
     boolean isUpperBoundOpen();
 
+    /**
+     * Sets whether the upper bound is open (exclusive) or closed (inclusive).
+     */
     void setUpperBoundOpen(boolean upperBoundOpen);
 
+    /**
+     * Sets whether the lower bound is open (exclusive) or closed (inclusive).
+     */
     void setLowerBoundOpen(boolean lowerBoundOpen);
 
     /**
