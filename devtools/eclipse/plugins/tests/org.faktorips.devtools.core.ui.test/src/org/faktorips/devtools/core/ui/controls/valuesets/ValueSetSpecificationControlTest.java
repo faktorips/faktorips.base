@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -158,7 +158,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype(Datatype.INTEGER.getName());
         attribute.setValueSetConfiguredByProduct(true);
-        attribute.setValueSetCopy(new RangeValueSet(attribute, "mockId", "0", "10", "1", true));
+        attribute.setValueSetCopy(new RangeValueSet(attribute, "mockId", "0", "10", "1", true, false, false));
         IConfiguredValueSet configValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
         ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configValueSet);
 

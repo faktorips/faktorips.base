@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -239,7 +239,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
         IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(policyAttribute,
                 IConfiguredValueSet.class);
         RangeValueSet values = new RangeValueSet(configuredValueSet,
-                ipsProject.getIpsModel().getNextPartId(configuredValueSet), "0", "10", "1.00", true);
+                ipsProject.getIpsModel().getNextPartId(configuredValueSet), "0", "10", "1.00", true, false, false);
         configuredValueSet.setValueSetType(ValueSetType.RANGE);
         configuredValueSet.setValueSet(values);
 

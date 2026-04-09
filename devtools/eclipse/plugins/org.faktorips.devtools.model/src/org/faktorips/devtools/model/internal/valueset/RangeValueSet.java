@@ -51,6 +51,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     private String upperBound;
     private String step;
 
+    private boolean lowerBoundOpen = false;
+
+    private boolean upperBoundOpen = false;
+
     /**
      * Flag that indicates whether this range contains <code>null</code> or not.
      */
@@ -74,19 +78,22 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * Creates a range with the given bounds and step.
      */
     public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step) {
-        this(parent, partId, lower, upper, step, false);
+        this(parent, partId, lower, upper, step, false, false, false);
     }
 
     /**
      * Creates a range with the given bounds, step and continasNull setting.
      */
+    @SuppressWarnings("parameternumber")
     public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step,
-            boolean containsNull) {
+            boolean containsNull, boolean lowerBoundOpen, boolean upperBoundOpen) {
         super(ValueSetType.RANGE, parent, partId);
         lowerBound = lower;
         upperBound = upper;
         this.step = step;
         this.containsNull = containsNull;
+        this.upperBoundOpen = upperBoundOpen;
+        this.lowerBoundOpen = lowerBoundOpen;
     }
 
     /**
@@ -97,6 +104,31 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         emptyRangeValueSet.empty = true;
         emptyRangeValueSet.containsNull = false;
         return emptyRangeValueSet;
+    }
+
+    @Override
+    public boolean isLowerBoundOpen() {
+        return lowerBoundOpen;
+    }
+
+    @Override
+    public void setLowerBoundOpen(boolean lowerBoundOpen) {
+        boolean oldBound = this.lowerBoundOpen;
+        this.lowerBoundOpen = lowerBoundOpen;
+        valueChanged(oldBound, lowerBoundOpen, PROPERTY_LOWERBOUND_OPEN);
+
+    }
+
+    @Override
+    public boolean isUpperBoundOpen() {
+        return upperBoundOpen;
+    }
+
+    @Override
+    public void setUpperBoundOpen(boolean upperBoundOpen) {
+        boolean oldBound = this.upperBoundOpen;
+        this.upperBoundOpen = upperBoundOpen;
+        valueChanged(oldBound, upperBoundOpen, PROPERTY_UPPERBOUND_OPEN);
     }
 
     /**
@@ -180,6 +212,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * <li>The value lies between the upper and the lower value</li>
      * </ul>
      */
+    @SuppressWarnings("all")
     private boolean checkValueInRange(String value, ValueDatatype datatype) {
         try {
             if (isEmpty()) {
@@ -191,8 +224,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             if (isAbstract()) {
                 return true;
             }
-            if ((!isNullValue(datatype, getLowerBound()) && datatype.compare(getLowerBound(), value) > 0)
-                    || (!isNullValue(datatype, getUpperBound()) && datatype.compare(getUpperBound(), value) < 0)) {
+            if ((!isNullValue(datatype, getLowerBound())
+                    && (lowerBoundOpen ? datatype.compare(getLowerBound(), value) >= 0
+                            : datatype.compare(getLowerBound(), value) > 0))
+                    || (!isNullValue(datatype, getUpperBound())
+                            && (upperBoundOpen ? datatype.compare(getUpperBound(), value) <= 0
+                                    : datatype.compare(getUpperBound(), value) < 0))) {
                 return false;
             }
             return isValueMatchStep(value, datatype);
@@ -232,6 +269,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
     }
 
+    // TODO FIPS-14047
     private boolean checkValidRanges(IValueSet subset, IIpsProject contextProject) {
         if (!isValid(contextProject) || !(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
             return false;
@@ -267,13 +305,15 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         String lower = getLowerBound();
         String subLower = subRange.getLowerBound();
-        if (isMatchLowerBound(datatype, lower, subLower)) {
+        boolean subLowerOpen = subRange.isLowerBoundOpen();
+        if (isMatchLowerBound(datatype, lower, subLower, subLowerOpen)) {
             return false;
         }
 
         String upper = getUpperBound();
         String subUpper = subRange.getUpperBound();
-        if (isMatchUpperBound(upper, subUpper, datatype)) {
+        boolean subUpperOpen = subRange.isUpperBoundOpen();
+        if (isMatchUpperBound(upper, subUpper, datatype, subUpperOpen)) {
             return false;
         }
 
@@ -299,14 +339,38 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return true;
     }
 
-    private boolean isMatchLowerBound(NumericDatatype datatype, String lower, String subLower) {
-        return !isNullValue(datatype, lower)
-                && (isNullValue(datatype, subLower) || datatype.compare(lower, subLower) > 0);
+    private boolean isMatchLowerBound(NumericDatatype datatype, String lower, String subLower, boolean subLowerOpen) {
+        if (isNullValue(datatype, lower)) {
+            return false;
+        }
+
+        if (isNullValue(datatype, subLower) || (datatype.compare(lower, subLower) > 0)) {
+            return true;
+        }
+
+        if (datatype.compare(lower, subLower) < 0) {
+            return false;
+        }
+
+        return lowerBoundOpen && !subLowerOpen;
+
     }
 
-    private boolean isMatchUpperBound(String upper, String subUpper, NumericDatatype datatype) {
-        return !isNullValue(datatype, upper)
-                && (isNullValue(datatype, subUpper) || datatype.compare(upper, subUpper) < 0);
+    private boolean isMatchUpperBound(String upper, String subUpper, NumericDatatype datatype, boolean subUpperOpen) {
+
+        if (isNullValue(datatype, upper)) {
+            return false;
+        }
+
+        if (isNullValue(datatype, subUpper) || (datatype.compare(upper, subUpper) < 0)) {
+            return true;
+        }
+
+        if (datatype.compare(upper, subUpper) > 0) {
+            return false;
+        }
+
+        return upperBoundOpen && !subUpperOpen;
     }
 
     private boolean isSubrangeMatchStep(IRangeValueSet other, NumericDatatype datatype) {
@@ -402,6 +466,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return Comparator.comparing(IRangeValueSet::getLowerBound)
                 .thenComparing(IRangeValueSet::getUpperBound)
                 .thenComparing(IRangeValueSet::getStep)
+                .thenComparing(IRangeValueSet::isLowerBoundOpen)
+                .thenComparing(IRangeValueSet::isUpperBoundOpen)
                 .compare(this, otherRangeValueSet);
     }
 
@@ -421,7 +487,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public String getCanonicalString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(RANGE_VALUESET_START);
+        sb.append(lowerBoundOpen ? RANGE_VALUESET_START_OPEN : RANGE_VALUESET_START);
         if (!isEmpty()) {
             sb.append((lowerBound == null ? Messages.RangeValueSet_unlimited : lowerBound));
             sb.append(RANGE_VALUESET_POINTS);
@@ -431,7 +497,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 sb.append(step);
             }
         }
-        sb.append(RANGE_VALUESET_END);
+        sb.append(upperBoundOpen ? RANGE_VALUESET_END_OPEN : RANGE_VALUESET_END);
         if (isContainsNull()) {
             sb.append(" (").append(MessageFormat.format(Messages.ValueSet_includingNull, //$NON-NLS-1$
                     IIpsModelExtensions.get().getModelPreferences().getNullPresentation())).append(")"); //$NON-NLS-1$
@@ -465,6 +531,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
         containsNull = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_CONTAINS_NULL);
         empty = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_EMPTY);
+
+        lowerBoundOpen = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_LOWERBOUND_OPEN);
+        upperBoundOpen = ValueToXmlHelper.isAttributeTrue(el, PROPERTY_UPPERBOUND_OPEN);
     }
 
     @Override
@@ -476,9 +545,19 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
         ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
         ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalize(PROPERTY_STEP));
+
+        if (lowerBoundOpen) {
+            tagElement.setAttribute(PROPERTY_LOWERBOUND_OPEN, Boolean.toString(lowerBoundOpen));
+        }
+
+        if (upperBoundOpen) {
+            tagElement.setAttribute(PROPERTY_UPPERBOUND_OPEN, Boolean.toString(upperBoundOpen));
+        }
+
         if (isEmpty()) {
             tagElement.setAttribute(PROPERTY_EMPTY, Boolean.toString(isEmpty()));
         }
+
         element.appendChild(tagElement);
     }
 
@@ -490,6 +569,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         retValue.step = step;
         retValue.containsNull = isContainsNull();
         retValue.empty = empty;
+        retValue.lowerBoundOpen = lowerBoundOpen;
+        retValue.upperBoundOpen = upperBoundOpen;
         return retValue;
     }
 
@@ -501,6 +582,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         step = set.step;
         containsNull = set.isContainsNull();
         empty = set.empty;
+        lowerBoundOpen = set.lowerBoundOpen;
+        upperBoundOpen = set.upperBoundOpen;
         objectHasChanged();
     }
 
@@ -531,6 +614,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             setLowerBound(null);
             setUpperBound(null);
             setStep(null);
+            setLowerBoundOpen(false);
+            setUpperBoundOpen(false);
         }
     }
 }

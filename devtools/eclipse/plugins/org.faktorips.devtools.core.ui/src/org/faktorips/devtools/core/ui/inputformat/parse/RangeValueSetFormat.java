@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Class to parse and format an {@link IRangeValueSet}.
- * 
+ *
  */
 public class RangeValueSetFormat extends AbstractValueSetFormat {
 
@@ -108,7 +108,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
             String upperBound = parseValue(splitedUpperBoundAndStep[0]);
             String step = getStep(splitedUpperBoundAndStep);
             if (!isEqualContentRange(lowerBound, upperBound, step, containsNull)) {
-                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull);
+                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull, false, false);                                                                                        
             }
         }
         return getValueSet();
@@ -141,9 +141,14 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         return false;
     }
 
-    private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step, boolean containsNull) {
+    private IValueSet createNewRangeValueSet(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
         return new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step,
-                containsNull);
+                containsNull, lowerBoundOpen, upperBoundOpen);
     }
 
     @Override
@@ -161,7 +166,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         if (valueSet.isRange() && isUnlimitedRange((IRangeValueSet)valueSet)) {
             return valueSet;
         } else {
-            return createNewRangeValueSet(null, null, null, false);
+            return createNewRangeValueSet(null, null, null, false, false, false);
         }
     }
 

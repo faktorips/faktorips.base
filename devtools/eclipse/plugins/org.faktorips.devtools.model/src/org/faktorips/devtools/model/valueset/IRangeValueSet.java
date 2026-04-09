@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.valueset;
 
 /**
  * Value set representing a range over a discrete or continuous set of values.
- * 
+ *
  * @author Thorsten Guenther
  */
 public interface IRangeValueSet extends IValueSet {
@@ -48,9 +48,17 @@ public interface IRangeValueSet extends IValueSet {
 
     String PROPERTY_EMPTY = "empty"; //$NON-NLS-1$
 
+    String PROPERTY_LOWERBOUND_OPEN = "lowerBoundOpen"; //$NON-NLS-1$
+
+    String PROPERTY_UPPERBOUND_OPEN = "upperBoundOpen"; //$NON-NLS-1$
+
     String RANGE_VALUESET_START = "["; //$NON-NLS-1$
 
     String RANGE_VALUESET_END = "]"; //$NON-NLS-1$
+
+    String RANGE_VALUESET_START_OPEN = "("; //$NON-NLS-1$
+
+    String RANGE_VALUESET_END_OPEN = ")"; //$NON-NLS-1$
 
     String RANGE_VALUESET_POINTS = " ... "; //$NON-NLS-1$
 
@@ -58,7 +66,7 @@ public interface IRangeValueSet extends IValueSet {
 
     /**
      * Sets the lower bound. An empty string means that the range is unbounded.
-     * 
+     *
      * @throws NullPointerException if {@code lowerBound} is {@code null}
      */
     void setLowerBound(String lowerBound);
@@ -66,14 +74,14 @@ public interface IRangeValueSet extends IValueSet {
     /**
      * Sets the step. An empty string means that no step exists and all possible values in the range
      * are valid.
-     * 
+     *
      * @throws NullPointerException if {@code step} is {@code null}
      */
     void setStep(String step);
 
     /**
      * Sets the upper bound. An empty string means that the range is unbounded.
-     * 
+     *
      * @throws NullPointerException if {@code upperBound} is {@code null}
      */
     void setUpperBound(String upperBound);
@@ -93,9 +101,17 @@ public interface IRangeValueSet extends IValueSet {
      */
     String getStep();
 
+    boolean isLowerBoundOpen();
+
+    boolean isUpperBoundOpen();
+
+    void setUpperBoundOpen(boolean upperBoundOpen);
+
+    void setLowerBoundOpen(boolean lowerBoundOpen);
+
     /**
      * Sets the range to empty. Will reset all bounds and step if set to {@code true}.
-     * 
+     *
      * @since 20.6
      */
     void setEmpty(boolean empty);

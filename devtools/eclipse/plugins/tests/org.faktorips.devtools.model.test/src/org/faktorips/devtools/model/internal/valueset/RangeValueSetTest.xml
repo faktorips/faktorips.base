@@ -24,5 +24,14 @@
       <Step isNull="true"></Step>
     </Range>
   </ValueSet>
-	
+
+  <!-- open bounds since FIPS-11459 -->
+  <ValueSet>
+    <Range containsNull="false" lowerBoundOpen="true" upperBoundOpen="false">
+      <LowerBound isNull="false">0</LowerBound>
+      <UpperBound isNull="false">100</UpperBound>
+      <Step isNull="true"></Step>
+    </Range>
+  </ValueSet>
+
 </TestCases>
