@@ -63,6 +63,17 @@ pipeline {
                     uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: false, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                     // SNAPSHOT versions should also publish to major.minor
                     uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', updateLatest: false, releasePattern: /(?<major>\d+)\.(?<minor>\d+)\.(\d+)(-SNAPSHOT)?/, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
+
+                    script {
+                        def p2Server = 'hudson@update.faktorzehn.org'
+                        def oomphDeployDir = '/var/www/update.faktorzehn.org/oomph/faktorips'
+                        def projectVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                        sh """
+                            echo "copy oomph setup file to update server"
+                            ssh ${p2Server} 'mkdir -p ${oomphDeployDir}/${projectVersion}'
+                            scp .oomph/* ${p2Server}:${oomphDeployDir}/${projectVersion}
+                        """
+                    }
                 }
             }
         }
