@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,10 +25,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class NestedEclipseProjectFileUtilTest extends AbstractIpsPluginTest {
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testGetFile_createdInSubproject() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
@@ -53,6 +56,7 @@ public class NestedEclipseProjectFileUtilTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testGetFile_createdInParentProjectsSubFolder() throws CoreException {
         if (Abstractions.isEclipseRunning()) {

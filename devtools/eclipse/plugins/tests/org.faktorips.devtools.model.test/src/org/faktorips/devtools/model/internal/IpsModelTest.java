@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -381,7 +381,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertTrue(file.exists());
         String encoding = ipsProject.getXmlFileCharset();
         String contents = StringUtil.readFromInputStream(file.getContents(), encoding);
-        contents = StringUtils.replace(contents, "blabla", "something serious");
+        contents = Strings.CS.replace(contents, "blabla", "something serious");
         ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes(encoding));
         file.setContents(is, false, null);
 
