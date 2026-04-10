@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,6 +26,7 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
 
@@ -58,6 +60,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testChangeIpsProjectProperties() {
         if (Abstractions.isEclipseRunning()) {
@@ -71,6 +74,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testChangeManifest() {
         if (Abstractions.isEclipseRunning()) {
@@ -87,6 +91,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testChangeIpsSrcFile() throws JavaModelException {
         if (Abstractions.isEclipseRunning()) {
@@ -98,6 +103,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testChangeIpsSrcFileOffRoot() throws JavaModelException {
         if (Abstractions.isEclipseRunning()) {

@@ -34,6 +34,11 @@ import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -380,7 +385,7 @@ public class IpsBundleManifest {
 
     private void outputDefinedPerSourceFolder(IIpsObjectPath ipsObjectPath, Attributes attributes) {
 
-        IIpsSrcFolderEntry[] sourceFolderEntries = ipsObjectPath.getSourceFolderEntries();
+        IIpsSrcFolderEntry[] sourceFolderEntries = getSourceFolderEntriesWithoutTests(ipsObjectPath);
         if (sourceFolderEntries != null && sourceFolderEntries.length > 0) {
             IIpsSrcFolderEntry firstEntry = sourceFolderEntries[0];
             if (firstEntry != null) {
@@ -397,6 +402,12 @@ public class IpsBundleManifest {
                 }
             }
         }
+    }
+
+    private IIpsSrcFolderEntry[] getSourceFolderEntriesWithoutTests(IIpsObjectPath ipsObjectPath) {
+        return Arrays.stream(ipsObjectPath.getSourceFolderEntries())
+                .filter(e -> !isTestFolder(ipsObjectPath, e))
+                .toArray(IIpsSrcFolderEntry[]::new);
     }
 
     private void writeSourceFolderSpecificSettings(IIpsSrcFolderEntry[] srcFolderEntries) {
@@ -446,7 +457,7 @@ public class IpsBundleManifest {
     }
 
     private void writeObjectDirectorySettings(IIpsObjectPath ipsObjectPath, Attributes attributes) {
-        IIpsSrcFolderEntry[] sourceFolderEntries = ipsObjectPath.getSourceFolderEntries();
+        IIpsSrcFolderEntry[] sourceFolderEntries = getSourceFolderEntriesWithoutTests(ipsObjectPath);
         if (sourceFolderEntries == null || sourceFolderEntries.length == 0) {
             return;
         }
@@ -454,6 +465,7 @@ public class IpsBundleManifest {
         StringBuilder objectDirAttributeBuilder = new StringBuilder();
         for (int i = 0; i < sourceFolderEntries.length; i++) {
             IIpsSrcFolderEntry entry = sourceFolderEntries[i];
+
             if (entry != null && entry.getSourceFolder() != null) {
                 if (i > 0) {
                     objectDirAttributeBuilder.append(",");
@@ -468,6 +480,25 @@ public class IpsBundleManifest {
 
         if (ipsObjectPath.isOutputDefinedPerSrcFolder()) {
             writeSourceFolderSpecificSettings(sourceFolderEntries);
+        }
+    }
+
+    private boolean isTestFolder(IIpsObjectPath ipsObjectPath, IIpsSrcFolderEntry entry) {
+        AFolder outputFolderForDerivedJavaFiles = entry.getOutputFolderForDerivedJavaFiles();
+        if (outputFolderForDerivedJavaFiles == null) {
+            return false;
+        }
+        if (ipsObjectPath.getIpsProject().getJavaProject().unwrap() instanceof IJavaProject javaProject) {
+            IFolder outputFolder = outputFolderForDerivedJavaFiles.unwrap();
+            IPath workspacePath = outputFolder.getFullPath();
+            try {
+                IClasspathEntry classpathEntry = javaProject.getClasspathEntryFor(workspacePath);
+                return classpathEntry != null && classpathEntry.isTest();
+            } catch (JavaModelException e) {
+                return false;
+            }
+        } else {
+            return outputFolderForDerivedJavaFiles.getProjectRelativePath().toString().contains("test");
         }
     }
 
@@ -487,7 +518,8 @@ public class IpsBundleManifest {
     private void saveManifestToFile(IIpsProject ipsProject, AFile manifestFile) {
         File actualManifestFile = manifestFile.getLocation().toFile();
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-        IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath != null ? ipsObjectPath.getSourceFolderEntries()
+        IIpsSrcFolderEntry[] srcFolderEntries = ipsObjectPath != null
+                ? getSourceFolderEntriesWithoutTests(ipsObjectPath)
                 : new IIpsSrcFolderEntry[0];
         try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);

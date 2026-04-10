@@ -50,6 +50,7 @@ import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -59,6 +60,7 @@ import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class IpsArtefactBuilderSetInfoTest {
 
@@ -105,6 +107,7 @@ public class IpsArtefactBuilderSetInfoTest {
 
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testLoadExtensions() {
         if (Abstractions.isEclipseRunning()) {
@@ -113,6 +116,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testValidateIpsBuilderSetPropertyValue_OK() {
         if (Abstractions.isEclipseRunning()) {
@@ -121,6 +125,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testValidateIpsBuilderSetPropertyValue_WrongDatatype() {
         if (Abstractions.isEclipseRunning()) {
@@ -129,6 +134,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testValidateIpsBuilderSetPropertyValue_UnknownProperty() {
         if (Abstractions.isEclipseRunning()) {
@@ -137,6 +143,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testValidateIpsArtefactBuilderSetConfig_OK() {
         if (Abstractions.isEclipseRunning()) {
@@ -152,6 +159,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testValidateIpsArtefactBuilderSetConfig_UnknownProperty() {
         if (Abstractions.isEclipseRunning()) {
@@ -168,6 +176,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testCreateDefaultConfiguration() {
         if (Abstractions.isEclipseRunning()) {
@@ -179,6 +188,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testCreateDefaultConfiguration_OnlyAvailable() {
         if (Abstractions.isEclipseRunning()) {
@@ -191,6 +201,7 @@ public class IpsArtefactBuilderSetInfoTest {
         }
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testLoadExtensions_withoutReplacedBuilderSets() {
         if (Abstractions.isEclipseRunning()) {
