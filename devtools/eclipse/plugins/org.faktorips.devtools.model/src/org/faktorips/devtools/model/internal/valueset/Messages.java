@@ -44,6 +44,7 @@ public class Messages extends NLS {
     public static String ValueSet_includingNull;
     public static String ValueSet_excludingNull;
 
+    public static String RangeValueSet_msgLowerboundEqualUpperboundOpen;
     public static String RangeValueSet_msgStepRangeMismatch;
     public static String RangeValueSet_msgStepWithLowerNull;
     public static String RangeValueSet_msgDatatypeNotNumeric;

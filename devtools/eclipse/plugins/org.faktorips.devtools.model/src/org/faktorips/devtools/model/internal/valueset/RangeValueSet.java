@@ -269,7 +269,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
     }
 
-    // TODO FIPS-14047
     private boolean checkValidRanges(IValueSet subset, IIpsProject contextProject) {
         if (!isValid(contextProject) || !(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
             return false;

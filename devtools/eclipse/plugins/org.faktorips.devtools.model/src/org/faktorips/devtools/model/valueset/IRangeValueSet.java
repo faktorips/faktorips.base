@@ -40,6 +40,12 @@ public interface IRangeValueSet extends IValueSet {
      */
     String MSGCODE_STEP_RANGE_MISMATCH = MSGCODE_PREFIX + "stepRangeMissmatch"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that the lower and upper bounds are equal but at least
+     * one bound is open, resulting in an empty range.
+     */
+    String MSGCODE_LBOUND_EQUAL_UBOUND_OPEN = MSGCODE_PREFIX + "LBoundEqualUBoundOpen"; //$NON-NLS-1$
+
     String PROPERTY_UPPERBOUND = "upperBound"; //$NON-NLS-1$
 
     String PROPERTY_LOWERBOUND = "lowerBound"; //$NON-NLS-1$
