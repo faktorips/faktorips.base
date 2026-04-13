@@ -77,6 +77,8 @@ public enum ValueToXmlHelper {
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_EMPTY = "empty"; //$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_LOWER_BOUND_OPEN = "lowerBoundOpen"; //$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_UPPER_BOUND_OPEN = "upperBoundOpen"; //$NON-NLS-1$
 
     /**
      * Adds the value to the given xml element. Takes care of proper null handling. By value we mean
@@ -382,11 +384,13 @@ public enum ValueToXmlHelper {
         } else {
             return rangeEl.map(r -> {
                 boolean containsNull = isAttributeTrue(r, XML_ATTRIBUTE_CONTAINS_NULL);
+                boolean lowerBoundOpen = isAttributeTrue(r, XML_ATTRIBUTE_LOWER_BOUND_OPEN);
+                boolean upperBoundOpen = isAttributeTrue(r, XML_ATTRIBUTE_UPPER_BOUND_OPEN);
                 String lowerBound = getValueFromElement(r, XML_TAG_LOWER_BOUND);
                 String upperBound = getValueFromElement(r, XML_TAG_UPPER_BOUND);
                 String step = getValueFromElement(r, XML_TAG_STEP);
 
-                return new Range(lowerBound, upperBound, step, containsNull);
+                return new Range(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
             }).orElse(null);
         }
     }

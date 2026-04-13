@@ -10,12 +10,10 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Set;
 
@@ -27,67 +25,67 @@ public class DoubleRangeTest {
     public void testEmpty() {
         DoubleRange range = DoubleRange.empty();
 
-        assertTrue(range.isEmpty());
-        assertTrue(range.isDiscrete());
-        assertFalse(range.containsNull());
-        assertNull(range.getLowerBound());
-        assertNull(range.getUpperBound());
-        assertNull(range.getStep());
+        assertThat(range.isEmpty(), is(true));
+        assertThat(range.isDiscrete(), is(true));
+        assertThat(range.containsNull(), is(false));
+        assertThat(range.getLowerBound(), is(nullValue()));
+        assertThat(range.getUpperBound(), is(nullValue()));
+        assertThat(range.getStep(), is(nullValue()));
     }
 
     @Test
     public void testValueOf_Bounds() {
         DoubleRange range = DoubleRange.valueOf(5.0, 10.0);
 
-        assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
-        assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
-        assertFalse(range.containsNull());
+        assertThat(range.getLowerBound().doubleValue(), is(5.0));
+        assertThat(range.getUpperBound().doubleValue(), is(10.0));
+        assertThat(range.containsNull(), is(false));
     }
 
     @Test
     public void testValueOf_Bounds_ContainsNull() {
         DoubleRange range = DoubleRange.valueOf(5.0, 10.0, true);
 
-        assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
-        assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
-        assertTrue(range.containsNull());
+        assertThat(range.getLowerBound().doubleValue(), is(5.0));
+        assertThat(range.getUpperBound().doubleValue(), is(10.0));
+        assertThat(range.containsNull(), is(true));
     }
 
     @Test
     public void testValueOf_Bounds_Step_ContainsNull() {
         DoubleRange range = DoubleRange.valueOf(5.0, 10.0, 1.0, true);
 
-        assertEquals(range.getLowerBound().doubleValue(), 5.0, 0.0);
-        assertEquals(range.getUpperBound().doubleValue(), 10.0, 0.0);
-        assertEquals(range.getStep().doubleValue(), 1.0, 0.0);
-        assertTrue(range.containsNull());
+        assertThat(range.getLowerBound().doubleValue(), is(5.0));
+        assertThat(range.getUpperBound().doubleValue(), is(10.0));
+        assertThat(range.getStep().doubleValue(), is(1.0));
+        assertThat(range.containsNull(), is(true));
     }
 
     @Test
     public void testContains() {
         DoubleRange range = DoubleRange.valueOf(10.0, 100.0, 10.0, true);
 
-        assertTrue(range.contains(null));
+        assertThat(range.contains(null), is(true));
     }
 
     @Test
     public void testContains_NoLower() {
         DoubleRange range = DoubleRange.valueOf(null, 100.0, 10.0, false);
 
-        assertTrue(range.contains(30.0));
-        assertTrue(range.contains(100.0));
-        assertFalse(range.contains(110.0));
-        assertFalse(range.contains(35.0));
+        assertThat(range.contains(30.0), is(true));
+        assertThat(range.contains(100.0), is(true));
+        assertThat(range.contains(110.0), is(false));
+        assertThat(range.contains(35.0), is(false));
     }
 
     @Test
     public void testContains_NoUpper() {
         DoubleRange range = DoubleRange.valueOf(10.0, null, 10.0, false);
 
-        assertTrue(range.contains(30.0));
-        assertTrue(range.contains(10.0));
-        assertFalse(range.contains(-10.0));
-        assertFalse(range.contains(44.0));
+        assertThat(range.contains(30.0), is(true));
+        assertThat(range.contains(10.0), is(true));
+        assertThat(range.contains(-10.0), is(false));
+        assertThat(range.contains(44.0), is(false));
     }
 
     @Test
@@ -103,13 +101,13 @@ public class DoubleRangeTest {
 
         Set<Double> values = range.getValues(false);
 
-        assertEquals(6, range.size());
-        assertTrue(values.contains(0.0));
-        assertTrue(values.contains(20.0));
-        assertTrue(values.contains(40.0));
-        assertTrue(values.contains(60.0));
-        assertTrue(values.contains(80.0));
-        assertTrue(values.contains(100.0));
+        assertThat(range.size(), is(6));
+        assertThat(values.contains(0.0), is(true));
+        assertThat(values.contains(20.0), is(true));
+        assertThat(values.contains(40.0), is(true));
+        assertThat(values.contains(60.0), is(true));
+        assertThat(values.contains(80.0), is(true));
+        assertThat(values.contains(100.0), is(true));
     }
 
     @Test
@@ -118,14 +116,14 @@ public class DoubleRangeTest {
 
         Set<Double> values = range.getValues(false);
 
-        assertEquals(7, range.size());
-        assertTrue(values.contains(0.0));
-        assertTrue(values.contains(20.0));
-        assertTrue(values.contains(40.0));
-        assertTrue(values.contains(60.0));
-        assertTrue(values.contains(80.0));
-        assertTrue(values.contains(100.0));
-        assertTrue(values.contains(null));
+        assertThat(range.size(), is(7));
+        assertThat(values.contains(0.0), is(true));
+        assertThat(values.contains(20.0), is(true));
+        assertThat(values.contains(40.0), is(true));
+        assertThat(values.contains(60.0), is(true));
+        assertThat(values.contains(80.0), is(true));
+        assertThat(values.contains(100.0), is(true));
+        assertThat(values.contains(null), is(true));
     }
 
     @SuppressWarnings("unlikely-arg-type")
@@ -135,10 +133,10 @@ public class DoubleRangeTest {
 
         Set<Double> values = range.getValues(false);
 
-        assertFalse(values.contains(Integer.valueOf(-10)));
-        assertFalse(values.contains(Integer.valueOf(50)));
-        assertFalse(values.contains(Integer.valueOf(110)));
-        assertFalse(values.contains(Integer.valueOf(120)));
+        assertThat(values.contains(Integer.valueOf(-10)), is(false));
+        assertThat(values.contains(Integer.valueOf(50)), is(false));
+        assertThat(values.contains(Integer.valueOf(110)), is(false));
+        assertThat(values.contains(Integer.valueOf(120)), is(false));
     }
 
     @Test
@@ -146,6 +144,111 @@ public class DoubleRangeTest {
         DoubleRange doubleRange = DoubleRange.valueOf(0.0, 5.0, 0.1, false);
 
         doubleRange.checkIfStepFitsIntoBounds();
+    }
+
+    @Test
+    public void testValueOf_WithOpenBounds() {
+        DoubleRange range = DoubleRange.valueOf("5.0", "10.0", null, false, true, false);
+
+        assertThat(range.isLowerBoundOpen(), is(true));
+        assertThat(range.isUpperBoundOpen(), is(false));
+        assertThat(range.contains(5.0), is(false));
+        assertThat(range.contains(5.01), is(true));
+        assertThat(range.contains(10.0), is(true));
+    }
+
+    @Test
+    public void testValueOf_WithBothOpenBounds() {
+        DoubleRange range = DoubleRange.valueOf("5.0", "10.0", null, false, true, true);
+
+        assertThat(range.contains(5.0), is(false));
+        assertThat(range.contains(5.01), is(true));
+        assertThat(range.contains(9.99), is(true));
+        assertThat(range.contains(10.0), is(false));
+    }
+
+    @Test
+    public void testGetValues_WithLowerOpenBoundAndStep() {
+        DoubleRange range = DoubleRange.valueOf("0.0", "10.0", "2.0", false, true, false);
+
+        Set<Double> values = range.getValues(false);
+
+        assertThat(values.size(), is(5));
+        assertThat(values.contains(0.0), is(false));
+        assertThat(values.contains(2.0), is(true));
+        assertThat(values.contains(10.0), is(true));
+    }
+
+    @Test
+    public void testGetValues_WithBothOpenBoundsAndStep() {
+        DoubleRange range = DoubleRange.valueOf("0.0", "10.0", "2.0", false, true, true);
+
+        Set<Double> values = range.getValues(false);
+
+        assertThat(values.size(), is(4));
+        assertThat(values.contains(0.0), is(false));
+        assertThat(values.contains(2.0), is(true));
+        assertThat(values.contains(8.0), is(true));
+        assertThat(values.contains(10.0), is(false));
+    }
+
+    @Test
+    public void testSize_WithBothOpenBoundsAndStep() {
+        DoubleRange range = DoubleRange.valueOf("0.0", "10.0", "2.0", false, true, true);
+
+        assertThat(range.size(), is(4));
+    }
+
+    @Test
+    public void testSize_WithOpenBoundsAndStepNotFittingClosedBounds() {
+        DoubleRange range = DoubleRange.valueOf("0.0", "10.0", "3.0", false, true, false);
+
+        assertThat(range.size(), is(3));
+    }
+
+    @Test
+    public void testValueOf_StepMismatch() {
+        assertThrows(IllegalArgumentException.class,
+                () -> DoubleRange.valueOf(0.0, 10.0, 3.0, false));
+    }
+
+    @Test
+    public void testContains_WithUpperOpenBound() {
+        DoubleRange range = DoubleRange.valueOf("5.0", "10.0", null, false, false, true);
+
+        assertThat(range.contains(4.99), is(false));
+        assertThat(range.contains(5.0), is(true));
+        assertThat(range.contains(9.99), is(true));
+        assertThat(range.contains(10.0), is(false));
+    }
+
+    @Test
+    public void testContains_WithLowerOpenBound() {
+        DoubleRange range = DoubleRange.valueOf("5.0", "10.0", null, false, true, false);
+
+        assertThat(range.contains(4.99), is(false));
+        assertThat(range.contains(5.0), is(false));
+        assertThat(range.contains(5.01), is(true));
+        assertThat(range.contains(10.0), is(true));
+    }
+
+    @Test
+    public void testSize_WithLowerOpenBound() {
+        DoubleRange range = DoubleRange.valueOf("0.0", "10.0", "2.0", false, true, false);
+
+        assertThat(range.size(), is(5));
+    }
+
+    @Test
+    public void testSize_WithUpperOpenBound() {
+        DoubleRange range = DoubleRange.valueOf("0.0", "10.0", "2.0", false, false, true);
+
+        assertThat(range.size(), is(5));
+    }
+
+    @Test
+    public void testSerializable_WithOpenBounds() throws Exception {
+        TestUtil.testSerializable(DoubleRange.valueOf("5.0", "10.0", null, false, true, true));
     }
 
     @Test

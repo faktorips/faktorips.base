@@ -24,7 +24,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class BigDecimalRange extends DefaultRange<BigDecimal> {
 
-    private static final long serialVersionUID = -9040271817746215911L;
+    private static final long serialVersionUID = -9040271817746215910L;
 
     private static final BigDecimalRange EMPTY = new BigDecimalRange();
 
@@ -53,6 +53,11 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      */
     private BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound, BigDecimal step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    private BigDecimalRange(BigDecimal lowerBound, BigDecimal upperBound, BigDecimal step, boolean containsNull,
+            boolean lowerBoundOpen, boolean upperBoundOpen) {
+        super(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
     }
 
     /**
@@ -157,6 +162,62 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
         return range;
     }
 
+    /**
+     * Creates a new {@link BigDecimalRange} with open/closed bound configuration. The strings are
+     * parsed with the {@link BigDecimal#BigDecimal(String)} constructor. An empty string is
+     * interpreted as {@code null}.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final BigDecimalRange valueOf(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        BigDecimalRange range = new BigDecimalRange(bigDecimalOf(lowerBound), bigDecimalOf(upperBound),
+                bigDecimalOf(step), containsNull, lowerBoundOpen, upperBoundOpen);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
+    /**
+     * Creates a new {@link BigDecimalRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final BigDecimalRange valueOf(BigDecimal lowerBound,
+            BigDecimal upperBound,
+            BigDecimal step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        BigDecimalRange range = new BigDecimalRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen,
+                upperBoundOpen);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
     private static BigDecimal bigDecimalOf(String textToParse) {
         if (textToParse == null || textToParse.isEmpty()) {
             return null;
@@ -180,6 +241,15 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
+        return computeDiscreteSize(RoundingMode.UNNECESSARY);
+    }
+
+    @Override
+    protected int sizeForDiscreteValuesWithFloor() {
+        return computeDiscreteSize(RoundingMode.FLOOR);
+    }
+
+    private int computeDiscreteSize(RoundingMode roundingMode) {
         if (getStep() == null) {
             if (getLowerBound() == null || getUpperBound() == null) {
                 return Integer.MAX_VALUE;
@@ -187,10 +257,10 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
             return getLowerBound().compareTo(getUpperBound()) == 0 ? 1 : Integer.MAX_VALUE;
         }
         BigDecimal size = getUpperBound().subtract(getLowerBound()).abs()
-                .divide(getStep(), 0, RoundingMode.UNNECESSARY).add(BigDecimal.ONE);
+                .divide(getStep(), 0, roundingMode).add(BigDecimal.ONE);
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-                    "The number of values contained within this range is to huge to be supported by this operation.");
+                    "The number of values contained within this range is too huge to be supported by this operation.");
         }
         return size.intValue();
     }

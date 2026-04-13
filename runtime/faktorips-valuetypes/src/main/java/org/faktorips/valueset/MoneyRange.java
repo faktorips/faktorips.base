@@ -30,7 +30,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class MoneyRange extends DefaultRange<Money> {
 
-    private static final long serialVersionUID = 4750295893441094927L;
+    private static final long serialVersionUID = 4750295893441094928L;
 
     private static final MoneyRange EMPTY = new MoneyRange();
 
@@ -59,6 +59,11 @@ public class MoneyRange extends DefaultRange<Money> {
      */
     private MoneyRange(Money lowerBound, Money upperBound, Money step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    private MoneyRange(Money lowerBound, Money upperBound, Money step, boolean containsNull,
+            boolean lowerBoundOpen, boolean upperBoundOpen) {
+        super(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
     }
 
     /**
@@ -160,6 +165,60 @@ public class MoneyRange extends DefaultRange<Money> {
         return range;
     }
 
+    /**
+     * Creates a new {@link MoneyRange} with open/closed bound configuration. The values are
+     * determined by parsing the strings using the {@link Money#valueOf(String)} method.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final MoneyRange valueOf(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        MoneyRange range = new MoneyRange(Money.valueOf(lowerBound), Money.valueOf(upperBound), Money.valueOf(step),
+                containsNull, lowerBoundOpen, upperBoundOpen);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
+    /**
+     * Creates a new {@link MoneyRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final MoneyRange valueOf(Money lowerBound,
+            Money upperBound,
+            Money step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        MoneyRange range = new MoneyRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
     @Override
     @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT", justification = "Only exceptions are of interest, the return value is not needed")
     protected boolean checkIfValueCompliesToStepIncrement(Money value, Money bound) {
@@ -181,15 +240,24 @@ public class MoneyRange extends DefaultRange<Money> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
+        return computeDiscreteSize(RoundingMode.UNNECESSARY);
+    }
+
+    @Override
+    protected int sizeForDiscreteValuesWithFloor() {
+        return computeDiscreteSize(RoundingMode.FLOOR);
+    }
+
+    private int computeDiscreteSize(RoundingMode roundingMode) {
         Decimal upperAmount = getUpperBound().getAmount();
         Decimal lowerAmount = getLowerBound().getAmount();
         Decimal stepAmount = getStep().getAmount();
 
-        Decimal size = upperAmount.subtract(lowerAmount).abs().divide(stepAmount, 0, RoundingMode.UNNECESSARY)
+        Decimal size = upperAmount.subtract(lowerAmount).abs().divide(stepAmount, 0, roundingMode)
                 .add(1);
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-                    "The number of values contained within this range is to huge to be supported by this operation.");
+                    "The number of values contained within this range is too huge to be supported by this operation.");
         }
         return size.intValue();
     }

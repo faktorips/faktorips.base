@@ -64,6 +64,21 @@
                       "code": "java.method.removed",
                       "old": "method <JAXBContext> JAXBContext org.faktorips.runtime.internal.AbstractRuntimeRepository::newJAXBContext(JAXBContext)",
                       "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use IXmlBindingSupport#newJAXBContext(Object, IRuntimeRepository)"
+                    },
+                    {
+                      "code": "java.method.added",
+                      "new": "method void org.faktorips.runtime.internal.Range::<init>(java.lang.String, java.lang.String, java.lang.String, boolean, boolean, boolean)",
+                      "justification": "FIPS-11459/FIPS-14060: New constructor to support open/closed interval bounds. Old constructor without these parameters is still available and defaults to closed intervals."
+                    },
+                    {
+                      "code": "java.field.addedStaticField",
+                      "new": "field org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_LOWER_BOUND_OPEN",
+                      "justification": "FIPS-11459/FIPS-14060: New XML attribute constant for reading open/closed lower bound from Range elements."
+                    },
+                    {
+                      "code": "java.field.addedStaticField",
+                      "new": "field org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_UPPER_BOUND_OPEN",
+                      "justification": "FIPS-11459/FIPS-14060: New XML attribute constant for reading open/closed upper bound from Range elements."
                     }
                 ]
             }

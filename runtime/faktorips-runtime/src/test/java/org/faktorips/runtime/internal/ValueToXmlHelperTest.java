@@ -11,13 +11,9 @@
 package org.faktorips.runtime.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 import java.util.Map;
@@ -58,24 +54,24 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     public void testAddValueToElement() {
         Document doc = getTestDocument();
         Element node = doc.createElement("ParentEl");
-        assertEquals(0, node.getChildNodes().getLength());
+        assertThat(node.getChildNodes().getLength(), is(0));
         ValueToXmlHelper.addValueToElement("Value", node, "Property");
-        assertEquals("Value", ValueToXmlHelper.getValueFromElement(node, "Property"));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "Property"), is("Value"));
 
         node = (Element)doc.getDocumentElement().getElementsByTagName("EmptyTestElement").item(0);
         ValueToXmlHelper.addValueToElement(null, node, "ValueNode");
         node = (Element)node.getElementsByTagName("ValueNode").item(0);
-        assertEquals("true", node.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL));
+        assertThat(node.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL), is("true"));
     }
 
     @Test
     public void testAddValueToElement_NullValue() {
         Document doc = getTestDocument();
         Element node = doc.createElement("ParentEl");
-        assertEquals(0, node.getChildNodes().getLength());
+        assertThat(node.getChildNodes().getLength(), is(0));
         ValueToXmlHelper.addValueToElement(null, node, "Property");
-        assertNull(ValueToXmlHelper.getValueFromElement(node, "Property"));
-        assertFalse(node.hasAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "Property"), is(nullValue()));
+        assertThat(node.hasAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL), is(false));
     }
 
     @Test
@@ -85,9 +81,9 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         Element node = doc.createElement("TestElement");
         node.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, "testAttribute");
         parent.appendChild(node);
-        assertEquals(1, parent.getElementsByTagName("TestElement").getLength());
+        assertThat(parent.getElementsByTagName("TestElement").getLength(), is(1));
         ValueToXmlHelper.deleteExistingElementAndCreateNewElement(parent, "TestElement", "testAttribute");
-        assertEquals(1, parent.getElementsByTagName("TestElement").getLength());
+        assertThat(parent.getElementsByTagName("TestElement").getLength(), is(1));
     }
 
     @Test
@@ -95,19 +91,19 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         Document doc = getTestDocument();
 
         Element node = (Element)doc.getDocumentElement().getElementsByTagName("TestElement").item(0);
-        assertEquals("cdataValue", ValueToXmlHelper.getValueFromElement(node, "ValueNode"));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "ValueNode"), is("cdataValue"));
 
         node = (Element)doc.getDocumentElement().getElementsByTagName("EmptyValueTestElement").item(0);
-        assertEquals("", ValueToXmlHelper.getValueFromElement(node, "ValueNode"));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "ValueNode"), is(""));
 
         node = (Element)doc.getDocumentElement().getElementsByTagName("NullTestElement").item(0);
-        assertNull(ValueToXmlHelper.getValueFromElement(node, "ValueNode"));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "ValueNode"), is(nullValue()));
 
         node = (Element)doc.getDocumentElement().getElementsByTagName("EmptyTestElement").item(0);
-        assertNull(ValueToXmlHelper.getValueFromElement(node, "ValueNode"));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "ValueNode"), is(nullValue()));
 
         node = (Element)doc.getDocumentElement().getElementsByTagName("TextNodeElement").item(0);
-        assertEquals("42", ValueToXmlHelper.getValueFromElement(node, "Property"));
+        assertThat(ValueToXmlHelper.getValueFromElement(node, "Property"), is("42"));
     }
 
     @Test
@@ -116,29 +112,85 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
         Element node = (Element)configElements.item(0);
         Range range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
-        assertNotNull(range);
-        assertEquals("100", range.getLower());
-        assertEquals("200", range.getUpper());
-        assertEquals("10", range.getStep());
-        assertFalse(range.containsNull());
-        assertFalse(range.isEmpty());
+        assertThat(range, is(not(nullValue())));
+        assertThat(range.getLower(), is("100"));
+        assertThat(range.getUpper(), is("200"));
+        assertThat(range.getStep(), is("10"));
+        assertThat(range.containsNull(), is(false));
+        assertThat(range.isEmpty(), is(false));
 
         node = (Element)configElements.item(1);
         range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
-        assertNull(range);
+        assertThat(range, is(nullValue()));
 
         node = (Element)configElements.item(2);
         range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
-        assertNull(range);
+        assertThat(range, is(nullValue()));
 
         node = (Element)configElements.item(7);
         range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
-        assertNotNull(range);
-        assertTrue(range.isEmpty());
-        assertFalse(range.containsNull());
-        assertNull(range.getLower());
-        assertNull(range.getUpper());
-        assertNull(range.getStep());
+        assertThat(range, is(not(nullValue())));
+        assertThat(range.isEmpty(), is(true));
+        assertThat(range.containsNull(), is(false));
+        assertThat(range.getLower(), is(nullValue()));
+        assertThat(range.getUpper(), is(nullValue()));
+        assertThat(range.getStep(), is(nullValue()));
+    }
+
+    @Test
+    public void testGetRangeFromElement_WithBothOpenBounds() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+        Element node = (Element)configElements.item(10);
+        Range range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
+        assertThat(range, is(not(nullValue())));
+        assertThat(range.getLower(), is("5"));
+        assertThat(range.getUpper(), is("10"));
+        assertThat(range.getStep(), is(nullValue()));
+        assertThat(range.containsNull(), is(false));
+        assertThat(range.isLowerBoundOpen(), is(true));
+        assertThat(range.isUpperBoundOpen(), is(true));
+    }
+
+    @Test
+    public void testGetRangeFromElement_WithLowerOpenBound() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+        Element node = (Element)configElements.item(11);
+        Range range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
+        assertThat(range, is(not(nullValue())));
+        assertThat(range.getLower(), is("0"));
+        assertThat(range.getUpper(), is("100"));
+        assertThat(range.getStep(), is("10"));
+        assertThat(range.containsNull(), is(true));
+        assertThat(range.isLowerBoundOpen(), is(true));
+        assertThat(range.isUpperBoundOpen(), is(false));
+    }
+
+    @Test
+    public void testGetRangeFromElement_WithUpperOpenBound() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+        Element node = (Element)configElements.item(12);
+        Range range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
+        assertThat(range, is(not(nullValue())));
+        assertThat(range.getLower(), is("0"));
+        assertThat(range.getUpper(), is("50"));
+        assertThat(range.getStep(), is(nullValue()));
+        assertThat(range.containsNull(), is(false));
+        assertThat(range.isLowerBoundOpen(), is(false));
+        assertThat(range.isUpperBoundOpen(), is(true));
+    }
+
+    @Test
+    public void testGetRangeFromElement_DefaultClosedBounds() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+        Element node = (Element)configElements.item(0);
+        Range range = ValueToXmlHelper.getRangeFromElement(node, "ValueSet");
+        assertThat(range, is(not(nullValue())));
+        assertThat(range.isLowerBoundOpen(), is(false));
+        assertThat(range.isUpperBoundOpen(), is(false));
     }
 
     @Test
@@ -147,19 +199,19 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
         Element node = (Element)configElements.item(3);
         EnumValues enumValues = ValueToXmlHelper.getEnumValueSetFromElement(node, "ValueSet");
-        assertNotNull(enumValues);
-        assertEquals(2, enumValues.getNumberOfValues());
-        assertEquals("10.0", enumValues.getValue(0));
-        assertEquals("20.0", enumValues.getValue(1));
-        assertFalse(enumValues.containsNull());
+        assertThat(enumValues, is(not(nullValue())));
+        assertThat(enumValues.getNumberOfValues(), is(2));
+        assertThat(enumValues.getValue(0), is("10.0"));
+        assertThat(enumValues.getValue(1), is("20.0"));
+        assertThat(enumValues.containsNull(), is(false));
 
         node = (Element)configElements.item(4);
         enumValues = ValueToXmlHelper.getEnumValueSetFromElement(node, "ValueSet");
-        assertNotNull(enumValues);
-        assertEquals(3, enumValues.getNumberOfValues());
-        assertEquals("j", enumValues.getValue(0));
-        assertEquals("h", enumValues.getValue(1));
-        assertTrue(enumValues.containsNull());
+        assertThat(enumValues, is(not(nullValue())));
+        assertThat(enumValues.getNumberOfValues(), is(3));
+        assertThat(enumValues.getValue(0), is("j"));
+        assertThat(enumValues.getValue(1), is("h"));
+        assertThat(enumValues.containsNull(), is(true));
     }
 
     @Test
@@ -193,26 +245,26 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
 
         Element node = (Element)configElements.item(5);
         UnrestrictedValueSet<String> valueSet = ValueToXmlHelper.getUnrestrictedValueSet(node, "ValueSet");
-        assertTrue(valueSet.containsNull());
+        assertThat(valueSet.containsNull(), is(true));
 
         node = (Element)configElements.item(6);
         valueSet = ValueToXmlHelper.getUnrestrictedValueSet(node, "ValueSet");
-        assertFalse(valueSet.containsNull());
+        assertThat(valueSet.containsNull(), is(false));
     }
 
     @Test
     public void testAddTableUsageToElement() {
         Element element = getTestDocument().getDocumentElement();
         NodeList childNodes = element.getChildNodes();
-        assertEquals(33, childNodes.getLength());
+        assertThat(childNodes.getLength(), is(39));
 
         ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(34, childNodes.getLength());
-        Node namedItem = childNodes.item(33).getAttributes().getNamedItem("structureUsage");
-        assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(33).getFirstChild().getTextContent();
-        assertEquals("tableContentNameValue", nodeValue);
+        assertThat(childNodes.getLength(), is(40));
+        Node namedItem = childNodes.item(39).getAttributes().getNamedItem("structureUsage");
+        assertThat(namedItem.getNodeValue(), is("structureUsageValue"));
+        String nodeValue = childNodes.item(39).getFirstChild().getTextContent();
+        assertThat(nodeValue, is("tableContentNameValue"));
     }
 
     @SuppressWarnings("removal")
@@ -224,10 +276,10 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         DefaultInternationalString internationalString = ValueToXmlHelper.getInternationalStringFromElement(
                 attributeValueElement, "Value");
 
-        assertEquals("Wrong default locale", Locale.of("hy"), internationalString.getDefaultLocale());
-        assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(Locale.of("as")));
-        assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(Locale.of("hy")));
-        assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(Locale.of("ko")));
+        assertThat(internationalString.getDefaultLocale(), is(Locale.of("hy")));
+        assertThat(internationalString.get(Locale.of("as")), is("asfdsa"));
+        assertThat(internationalString.get(Locale.of("hy")), is("hyfds"));
+        assertThat(internationalString.get(Locale.of("ko")), is("hyfds"));
     }
 
     @Test
@@ -240,12 +292,11 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         DefaultInternationalString internationalString = ValueToXmlHelper.getInternationalStringFromElement(
                 attributeValueElement, "Value", multiLingualProduct, MultiLingualProduct.PROPERTY_MLATTRIBUTE);
 
-        assertEquals("Wrong default locale", Locale.of("hy"), internationalString.getDefaultLocale());
-        assertEquals("Wrong value for locale 'as'", "asfdsa", internationalString.get(Locale.of("as")));
-        assertEquals("Wrong value for locale 'hy'", "hyfds", internationalString.get(Locale.of("hy")));
-        assertEquals("Wrong value for i18n locale 'it'", "Attributo internazionalizzato",
-                internationalString.get(Locale.ITALIAN));
-        assertEquals("Wrong value for undefined locale 'ko'", "hyfds", internationalString.get(Locale.of("ko")));
+        assertThat(internationalString.getDefaultLocale(), is(Locale.of("hy")));
+        assertThat(internationalString.get(Locale.of("as")), is("asfdsa"));
+        assertThat(internationalString.get(Locale.of("hy")), is("hyfds"));
+        assertThat(internationalString.get(Locale.ITALIAN), is("Attributo internazionalizzato"));
+        assertThat(internationalString.get(Locale.of("ko")), is("hyfds"));
     }
 
     @Test
@@ -253,7 +304,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         Element allValuesElement = (Element)getTestDocument().getDocumentElement().getElementsByTagName("AllValues")
                 .item(0);
 
-        assertFalse(ValueToXmlHelper.isAttributeTrue(allValuesElement, "containsNull"));
+        assertThat(ValueToXmlHelper.isAttributeTrue(allValuesElement, "containsNull"), is(false));
     }
 
     @Test
@@ -261,7 +312,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         Element valueNodeElement = (Element)getTestDocument().getDocumentElement().getElementsByTagName("ValueNode")
                 .item(2);
 
-        assertTrue(ValueToXmlHelper.isAttributeTrue(valueNodeElement, "isNull"));
+        assertThat(ValueToXmlHelper.isAttributeTrue(valueNodeElement, "isNull"), is(true));
     }
 
     @Test
@@ -269,7 +320,7 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         Element testElement = (Element)getTestDocument().getDocumentElement().getElementsByTagName("TestElement")
                 .item(0);
 
-        assertFalse(ValueToXmlHelper.isAttributeTrue(testElement, "foobar"));
+        assertThat(ValueToXmlHelper.isAttributeTrue(testElement, "foobar"), is(false));
     }
 
     @IpsProductCmptType(name = "mlTest.MultiLingualProduct")

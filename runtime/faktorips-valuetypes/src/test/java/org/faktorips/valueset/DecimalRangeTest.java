@@ -10,13 +10,10 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertThrows;
 
 import java.util.Set;
 
@@ -29,12 +26,12 @@ public class DecimalRangeTest {
     public void testEmpty() {
         DecimalRange range = DecimalRange.empty();
 
-        assertTrue(range.isEmpty());
-        assertTrue(range.isDiscrete());
-        assertFalse(range.containsNull());
-        assertNull(range.getLowerBound());
-        assertNull(range.getUpperBound());
-        assertNull(range.getStep());
+        assertThat(range.isEmpty(), is(true));
+        assertThat(range.isDiscrete(), is(true));
+        assertThat(range.containsNull(), is(false));
+        assertThat(range.getLowerBound(), is(nullValue()));
+        assertThat(range.getUpperBound(), is(nullValue()));
+        assertThat(range.getStep(), is(nullValue()));
     }
 
     @Test
@@ -43,8 +40,8 @@ public class DecimalRangeTest {
 
         Decimal lower = range.getLowerBound();
         Decimal upper = range.getUpperBound();
-        assertEquals(Decimal.valueOf(125, 2), lower);
-        assertEquals(Decimal.valueOf(567, 2), upper);
+        assertThat(lower, is(Decimal.valueOf(125, 2)));
+        assertThat(upper, is(Decimal.valueOf(567, 2)));
     }
 
     @Test
@@ -53,34 +50,31 @@ public class DecimalRangeTest {
                 Decimal.valueOf(10, 0));
         DecimalRange.valueOf(Decimal.valueOf(135, 2), Decimal.valueOf(108, 1), Decimal.valueOf(135, 2));
 
-        try {
-            // step doesn't fit to range
-            DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
-                    Decimal.valueOf(Integer.valueOf(12)));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
+                        Decimal.valueOf(Integer.valueOf(100)),
+                        Decimal.valueOf(Integer.valueOf(12))));
 
-        try {
-            DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
-                    Decimal.valueOf(Integer.valueOf(0)));
-            fail("Expect to fail since a step size of zero is not allowed.");
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
+                        Decimal.valueOf(Integer.valueOf(100)),
+                        Decimal.valueOf(Integer.valueOf(0))));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testValueOf_StepMismatch() {
-        DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
-                Decimal.valueOf(Integer.valueOf(12)));
+        assertThrows(IllegalArgumentException.class,
+                () -> DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
+                        Decimal.valueOf(Integer.valueOf(100)),
+                        Decimal.valueOf(Integer.valueOf(12))));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testValueOf_StepZero() {
-        DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), Decimal.valueOf(Integer.valueOf(100)),
-                Decimal.valueOf(Integer.valueOf(0)));
+        assertThrows(IllegalArgumentException.class,
+                () -> DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
+                        Decimal.valueOf(Integer.valueOf(100)),
+                        Decimal.valueOf(Integer.valueOf(0))));
     }
 
     @Test
@@ -89,8 +83,8 @@ public class DecimalRangeTest {
                 Decimal.valueOf(Integer.valueOf(100)),
                 Decimal.valueOf(Integer.valueOf(10)));
 
-        assertTrue(range.contains(Decimal.valueOf(30, 0)));
-        assertFalse(range.contains(Decimal.valueOf(35, 0)));
+        assertThat(range.contains(Decimal.valueOf(30, 0)), is(true));
+        assertThat(range.contains(Decimal.valueOf(35, 0)), is(false));
     }
 
     @Test
@@ -98,9 +92,9 @@ public class DecimalRangeTest {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
                 Decimal.valueOf(Integer.valueOf(100)));
 
-        assertTrue(range.contains(Decimal.valueOf(Integer.valueOf(30))));
-        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(120))));
-        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(5))));
+        assertThat(range.contains(Decimal.valueOf(Integer.valueOf(30))), is(true));
+        assertThat(range.contains(Decimal.valueOf(Integer.valueOf(120))), is(false));
+        assertThat(range.contains(Decimal.valueOf(Integer.valueOf(5))), is(false));
     }
 
     @Test
@@ -109,26 +103,26 @@ public class DecimalRangeTest {
                 Decimal.valueOf(Integer.valueOf(100)),
                 Decimal.NULL);
 
-        assertTrue(range.contains(Decimal.valueOf(Integer.valueOf(30))));
-        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(120))));
-        assertFalse(range.contains(Decimal.valueOf(Integer.valueOf(5))));
+        assertThat(range.contains(Decimal.valueOf(Integer.valueOf(30))), is(true));
+        assertThat(range.contains(Decimal.valueOf(Integer.valueOf(120))), is(false));
+        assertThat(range.contains(Decimal.valueOf(Integer.valueOf(5))), is(false));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValues_NoStep() {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
                 Decimal.valueOf(Integer.valueOf(100)));
 
-        range.getValues(false);
+        assertThrows(IllegalStateException.class, () -> range.getValues(false));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValues_StepNull() {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
                 Decimal.valueOf(Integer.valueOf(100)),
                 Decimal.NULL);
 
-        range.getValues(false);
+        assertThrows(IllegalStateException.class, () -> range.getValues(false));
     }
 
     @Test
@@ -137,16 +131,16 @@ public class DecimalRangeTest {
 
         Set<Decimal> values = range.getValues(false);
 
-        assertEquals(1, values.size());
-        assertEquals(Decimal.valueOf(100), values.iterator().next());
+        assertThat(values.size(), is(1));
+        assertThat(values.iterator().next(), is(Decimal.valueOf(100)));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValues_NoUpper() {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), null,
                 Decimal.valueOf(Integer.valueOf(10)));
 
-        range.getValues(false);
+        assertThrows(IllegalStateException.class, () -> range.getValues(false));
     }
 
     @Test
@@ -157,10 +151,10 @@ public class DecimalRangeTest {
 
         Set<Decimal> values = range.getValues(false);
 
-        assertEquals(10, values.size());
-        assertTrue(values.contains(Decimal.valueOf(100, 0)));
-        assertTrue(values.contains(Decimal.valueOf(70, 0)));
-        assertTrue(values.contains(Decimal.valueOf(10, 0)));
+        assertThat(values.size(), is(10));
+        assertThat(values.contains(Decimal.valueOf(100, 0)), is(true));
+        assertThat(values.contains(Decimal.valueOf(70, 0)), is(true));
+        assertThat(values.contains(Decimal.valueOf(10, 0)), is(true));
     }
 
     @Test
@@ -171,11 +165,11 @@ public class DecimalRangeTest {
 
         Set<Decimal> values = range.getValues(false);
 
-        assertEquals(11, values.size());
-        assertTrue(values.contains(Decimal.valueOf(100, 0)));
-        assertTrue(values.contains(Decimal.valueOf(70, 0)));
-        assertTrue(values.contains(Decimal.valueOf(10, 0)));
-        assertTrue(values.contains(Decimal.NULL));
+        assertThat(values.size(), is(11));
+        assertThat(values.contains(Decimal.valueOf(100, 0)), is(true));
+        assertThat(values.contains(Decimal.valueOf(70, 0)), is(true));
+        assertThat(values.contains(Decimal.valueOf(10, 0)), is(true));
+        assertThat(values.contains(Decimal.NULL), is(true));
     }
 
     @Test
@@ -183,15 +177,15 @@ public class DecimalRangeTest {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(5), Decimal.valueOf(10),
                 Decimal.valueOf(1));
 
-        assertEquals(6, range.size());
+        assertThat(range.size(), is(6));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testSize_TooLarge() {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(0), Decimal.valueOf(Integer.MAX_VALUE),
                 Decimal.valueOf(1, 2));
 
-        range.size();
+        assertThrows(RuntimeException.class, () -> range.size());
     }
 
     @Test
@@ -199,7 +193,7 @@ public class DecimalRangeTest {
         DecimalRange range = DecimalRange.valueOf(null, Decimal.valueOf(10),
                 Decimal.valueOf(1));
 
-        assertEquals(Integer.MAX_VALUE, range.size());
+        assertThat(range.size(), is(Integer.MAX_VALUE));
     }
 
     @Test
@@ -207,7 +201,7 @@ public class DecimalRangeTest {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(5), null,
                 Decimal.valueOf(1));
 
-        assertEquals(Integer.MAX_VALUE, range.size());
+        assertThat(range.size(), is(Integer.MAX_VALUE));
     }
 
     @Test
@@ -215,7 +209,7 @@ public class DecimalRangeTest {
         DecimalRange range = DecimalRange.valueOf(null, null,
                 Decimal.valueOf(1));
 
-        assertEquals(Integer.MAX_VALUE, range.size());
+        assertThat(range.size(), is(Integer.MAX_VALUE));
     }
 
     @Test
@@ -223,7 +217,7 @@ public class DecimalRangeTest {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(0), Decimal.valueOf(100),
                 Decimal.valueOf(10));
 
-        assertEquals(11, range.size());
+        assertThat(range.size(), is(11));
     }
 
     @Test
@@ -238,7 +232,7 @@ public class DecimalRangeTest {
     public void testContainsNull() {
         DecimalRange allowedValues = DecimalRange.valueOf("0", "5", "1", true);
 
-        assertTrue(allowedValues.contains(Decimal.NULL));
+        assertThat(allowedValues.contains(Decimal.NULL), is(true));
     }
 
     @Test
@@ -247,4 +241,104 @@ public class DecimalRangeTest {
         assertThat(range.contains(null), is(false));
         assertThat(range.contains(Decimal.valueOf(1)), is(false));
     }
+
+    @Test
+    public void testValueOf_WithOpenBounds() {
+        DecimalRange range = DecimalRange.valueOf("5", "10", null, false, true, false);
+
+        assertThat(range.isLowerBoundOpen(), is(true));
+        assertThat(range.isUpperBoundOpen(), is(false));
+        assertThat(range.contains(Decimal.valueOf(5)), is(false));
+        assertThat(range.contains(Decimal.valueOf("5.01")), is(true));
+        assertThat(range.contains(Decimal.valueOf(10)), is(true));
+    }
+
+    @Test
+    public void testValueOf_WithBothOpenBounds() {
+        DecimalRange range = DecimalRange.valueOf("5", "10", null, false, true, true);
+
+        assertThat(range.contains(Decimal.valueOf(5)), is(false));
+        assertThat(range.contains(Decimal.valueOf("5.01")), is(true));
+        assertThat(range.contains(Decimal.valueOf("9.99")), is(true));
+        assertThat(range.contains(Decimal.valueOf(10)), is(false));
+    }
+
+    @Test
+    public void testGetValues_WithOpenBoundsAndStep() {
+        DecimalRange range = DecimalRange.valueOf("0", "10", "2", false, true, false);
+
+        Set<Decimal> values = range.getValues(false);
+
+        assertThat(values.size(), is(5));
+        assertThat(values.contains(Decimal.valueOf(0)), is(false));
+        assertThat(values.contains(Decimal.valueOf(2)), is(true));
+        assertThat(values.contains(Decimal.valueOf(10)), is(true));
+    }
+
+    @Test
+    public void testGetValues_WithBothOpenBoundsAndStep() {
+        DecimalRange range = DecimalRange.valueOf("0", "10", "2", false, true, true);
+
+        Set<Decimal> values = range.getValues(false);
+
+        assertThat(values.size(), is(4));
+        assertThat(values.contains(Decimal.valueOf(0)), is(false));
+        assertThat(values.contains(Decimal.valueOf(2)), is(true));
+        assertThat(values.contains(Decimal.valueOf(8)), is(true));
+        assertThat(values.contains(Decimal.valueOf(10)), is(false));
+    }
+
+    @Test
+    public void testSize_WithOpenBoundsAndStepNotFittingClosedBounds() {
+        DecimalRange range = DecimalRange.valueOf("0", "10", "3", false, true, false);
+
+        assertThat(range.size(), is(3));
+    }
+
+    @Test
+    public void testContains_WithUpperOpenBound() {
+        DecimalRange range = DecimalRange.valueOf("5", "10", null, false, false, true);
+
+        assertThat(range.contains(Decimal.valueOf("4.99")), is(false));
+        assertThat(range.contains(Decimal.valueOf(5)), is(true));
+        assertThat(range.contains(Decimal.valueOf("9.99")), is(true));
+        assertThat(range.contains(Decimal.valueOf(10)), is(false));
+    }
+
+    @Test
+    public void testContains_WithLowerOpenBound() {
+        DecimalRange range = DecimalRange.valueOf("5", "10", null, false, true, false);
+
+        assertThat(range.contains(Decimal.valueOf("4.99")), is(false));
+        assertThat(range.contains(Decimal.valueOf(5)), is(false));
+        assertThat(range.contains(Decimal.valueOf("5.01")), is(true));
+        assertThat(range.contains(Decimal.valueOf(10)), is(true));
+    }
+
+    @Test
+    public void testSize_WithBothOpenBoundsAndStep() {
+        DecimalRange range = DecimalRange.valueOf("0", "10", "2", false, true, true);
+
+        assertThat(range.size(), is(4));
+    }
+
+    @Test
+    public void testSize_WithLowerOpenBound() {
+        DecimalRange range = DecimalRange.valueOf("0", "10", "2", false, true, false);
+
+        assertThat(range.size(), is(5));
+    }
+
+    @Test
+    public void testSize_WithUpperOpenBound() {
+        DecimalRange range = DecimalRange.valueOf("0", "10", "2", false, false, true);
+
+        assertThat(range.size(), is(5));
+    }
+
+    @Test
+    public void testSerializable_WithOpenBounds() throws Exception {
+        TestUtil.testSerializable(DecimalRange.valueOf("5", "10", null, false, true, true));
+    }
+
 }
