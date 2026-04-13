@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Faktor-IPS" uid="org.faktorips.devtools.core.FaktorIPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="26.7.0.a20260413-01" type="mixed" includeLaunchers="true" includeJRE="true" autoIncludeRequirements="false">
+<product name="Faktor-IPS" uid="org.faktorips.devtools.core.FaktorIPS" id="org.faktorips.devtools.core.FaktorIPS" application="org.faktorips.devtools.core.productDefinitionTool" version="26.7.0.qualifier" type="mixed" includeLaunchers="true" includeJRE="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="platform:/plugin/org.faktorips.devtools.core/icons/fips_about.png"/>
