@@ -38,6 +38,10 @@ public class Messages extends NLS {
 
     public static String RangeEditControl_labelEmptyRange;
 
+    public static String RangeEditControl_labelLowerBoundOpen;
+
+    public static String RangeEditControl_labelUpperBoundOpen;
+
     public static String StringLengthEditControl_labelMaximum;
 
     public static String IpsPckFragmentRefControl_titleBrowse;
