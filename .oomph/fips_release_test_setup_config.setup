@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Configuration
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    label="Faktor-IPS Release Eclipse">
+  <installation
+      name="fips.release.eclipse.installation"
+      label="Faktor-IPS Release Eclipse Installation">
+    <productVersion
+        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.java']/@versions[name='latest']"/>
+    <description>Installation based on the latest available Eclipse IDE for Java Developers.</description>
+  </installation>
+  <workspace
+      name="fips.release.eclipse.workspace"
+      label="Eclipse Workspace for Faktor-IPS Release Development">
+    <stream
+        href="fips_release_test_eclipse.setup#//@streams[name='main']"/>
+    <description>Uses the fips_release_test_eclipse.setup file to configure Eclipse and workspace for Faktor-IPS release development with vm.shu.privat.</description>
+  </workspace>
+  <description>Oomph configuration for Faktor-IPS release development based on the latest Eclipse IDE for Java Developers.</description>
+</setup:Configuration>
