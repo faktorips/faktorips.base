@@ -112,7 +112,11 @@ public class ListOfValueDatatypeHelperTest {
         JavaCodeFragment upperBoundExp = mock(JavaCodeFragment.class);
         JavaCodeFragment stepExp = mock(JavaCodeFragment.class);
         JavaCodeFragment containsNullExp = mock(JavaCodeFragment.class);
-        listOfValueDatatypeHelper.newRangeInstance(lowerBoundExp, upperBoundExp, stepExp, containsNullExp, true);
-        verify(elementDatatypeHelper).newRangeInstance(lowerBoundExp, upperBoundExp, stepExp, containsNullExp, true);
+        JavaCodeFragment lowerBoundOpenExp = mock(JavaCodeFragment.class);
+        JavaCodeFragment upperBoundOpenExp = mock(JavaCodeFragment.class);
+        listOfValueDatatypeHelper.newRangeInstance(lowerBoundExp, upperBoundExp, stepExp, containsNullExp,
+                lowerBoundOpenExp, upperBoundOpenExp, true);
+        verify(elementDatatypeHelper).newRangeInstance(lowerBoundExp, upperBoundExp, stepExp, containsNullExp,
+                lowerBoundOpenExp, upperBoundOpenExp, true);
     }
 }

@@ -165,6 +165,30 @@ public class DecimalRange extends DefaultRange<Decimal> {
     }
 
     /**
+     * Creates a new {@link DecimalRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final DecimalRange valueOf(Decimal lowerBound,
+            Decimal upperBound,
+            Decimal step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new DecimalRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
      * Creates a new {@link DecimalRange} with open/closed bound configuration. The strings are
      * parsed with the {@link Decimal#valueOf(String)} method.
      *
@@ -188,33 +212,6 @@ public class DecimalRange extends DefaultRange<Decimal> {
             boolean upperBoundOpen) {
         DecimalRange range = new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound),
                 Decimal.valueOf(step), containsNull, lowerBoundOpen, upperBoundOpen);
-        range.checkIfStepFitsIntoBounds();
-        return range;
-    }
-
-    /**
-     * Creates a new {@link DecimalRange} with open/closed bound configuration.
-     *
-     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param step the step increment of this range. The parameter being {@code null} indicates that
-     *            the range is continuous
-     * @param containsNull {@code true} indicates that the range contains {@code null}
-     * @param lowerBoundOpen whether the lower bound is open (exclusive)
-     * @param upperBoundOpen whether the upper bound is open (exclusive)
-     *
-     * @since 26.7
-     */
-    public static final DecimalRange valueOf(Decimal lowerBound,
-            Decimal upperBound,
-            Decimal step,
-            boolean containsNull,
-            boolean lowerBoundOpen,
-            boolean upperBoundOpen) {
-        DecimalRange range = new DecimalRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen,
-                upperBoundOpen);
         range.checkIfStepFitsIntoBounds();
         return range;
     }

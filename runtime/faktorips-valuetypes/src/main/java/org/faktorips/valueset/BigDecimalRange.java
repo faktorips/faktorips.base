@@ -163,6 +163,30 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     }
 
     /**
+     * Creates a new {@link BigDecimalRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final BigDecimalRange valueOf(BigDecimal lowerBound,
+            BigDecimal upperBound,
+            BigDecimal step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new BigDecimalRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
      * Creates a new {@link BigDecimalRange} with open/closed bound configuration. The strings are
      * parsed with the {@link BigDecimal#BigDecimal(String)} constructor. An empty string is
      * interpreted as {@code null}.
@@ -187,33 +211,6 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
             boolean upperBoundOpen) {
         BigDecimalRange range = new BigDecimalRange(bigDecimalOf(lowerBound), bigDecimalOf(upperBound),
                 bigDecimalOf(step), containsNull, lowerBoundOpen, upperBoundOpen);
-        range.checkIfStepFitsIntoBounds();
-        return range;
-    }
-
-    /**
-     * Creates a new {@link BigDecimalRange} with open/closed bound configuration.
-     *
-     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param step the step increment of this range. The parameter being {@code null} indicates that
-     *            the range is continuous
-     * @param containsNull {@code true} indicates that the range contains {@code null}
-     * @param lowerBoundOpen whether the lower bound is open (exclusive)
-     * @param upperBoundOpen whether the upper bound is open (exclusive)
-     *
-     * @since 26.7
-     */
-    public static final BigDecimalRange valueOf(BigDecimal lowerBound,
-            BigDecimal upperBound,
-            BigDecimal step,
-            boolean containsNull,
-            boolean lowerBoundOpen,
-            boolean upperBoundOpen) {
-        BigDecimalRange range = new BigDecimalRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen,
-                upperBoundOpen);
         range.checkIfStepFitsIntoBounds();
         return range;
     }

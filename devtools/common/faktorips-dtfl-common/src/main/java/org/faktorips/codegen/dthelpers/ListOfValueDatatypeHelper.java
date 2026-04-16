@@ -130,9 +130,11 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
+            JavaCodeFragment lowerBoundOpenExp,
+            JavaCodeFragment upperBoundOpenExp,
             boolean useTypesafeCollections) {
         return elementDatatypeHelper.newRangeInstance(lowerBoundExp, upperBoundExp, stepExp, containsNullExp,
-                useTypesafeCollections);
+                lowerBoundOpenExp, upperBoundOpenExp, useTypesafeCollections);
     }
 
     @Override

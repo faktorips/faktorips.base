@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,8 +22,8 @@ import org.faktorips.valueset.DefaultRange;
 
 /**
  * {@link DatatypeHelper} for {@link DateDatatype}.
- * 
- * 
+ *
+ *
  * @author Peter Erzberger
  */
 public class DateHelper extends AbstractDatatypeHelper {
@@ -95,6 +95,8 @@ public class DateHelper extends AbstractDatatypeHelper {
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
+            JavaCodeFragment lowerBoundOpenExp,
+            JavaCodeFragment upperBoundOpenExp,
             boolean useTypesafeCollections) {
 
         JavaCodeFragment frag = new JavaCodeFragment();
@@ -107,6 +109,10 @@ public class DateHelper extends AbstractDatatypeHelper {
         frag.append(stepExp);
         frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
+        frag.append(", "); //$NON-NLS-1$
+        frag.append(lowerBoundOpenExp);
+        frag.append(", "); //$NON-NLS-1$
+        frag.append(upperBoundOpenExp);
         frag.append(")"); //$NON-NLS-1$
         return frag;
     }

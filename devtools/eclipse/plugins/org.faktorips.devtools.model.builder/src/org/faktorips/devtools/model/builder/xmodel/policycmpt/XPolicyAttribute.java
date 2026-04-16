@@ -273,10 +273,13 @@ public class XPolicyAttribute extends XAttribute {
     public String getNewRangeExpression(String lowerBoundExp,
             String upperBoundExp,
             String stepExp,
-            String containsNullExp) {
+            String containsNullExp,
+            String lowerBoundOpenExp,
+            String upperBoundOpenExp) {
         JavaCodeFragment newRangeInstance = getValuesetDatatypeHelper().newRangeInstance(
                 new JavaCodeFragment(lowerBoundExp), new JavaCodeFragment(upperBoundExp), new JavaCodeFragment(stepExp),
-                new JavaCodeFragment(containsNullExp), false);
+                new JavaCodeFragment(containsNullExp), new JavaCodeFragment(lowerBoundOpenExp),
+                new JavaCodeFragment(upperBoundOpenExp), false);
         addImport(newRangeInstance.getImportDeclaration());
         return newRangeInstance.getSourcecode();
     }

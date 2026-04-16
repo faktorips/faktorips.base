@@ -15,7 +15,9 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.GenericEnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
@@ -45,6 +48,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -717,6 +721,42 @@ public class XPolicyAttributeTest {
         doReturn(superDatatypHelper).when(superXPolicyAttribute).getDatatypeHelper();
 
         assertThat(xPolicyAttribute.isSameDatatypeAsOverwritten(), is(false));
+    }
+
+    @Test
+    public void testGetNewRangeExpression_closedBounds() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        DatatypeHelper valuesetHelper = mock(DatatypeHelper.class);
+        when(valuesetHelper.newRangeInstance(any(), any(), any(), any(), any(), any(), anyBoolean()))
+                .thenReturn(new JavaCodeFragment("IntegerRange.valueOf(1, 10, null, false, false, false)"));
+        doReturn(valuesetHelper).when(xPolicyAttribute).getValuesetDatatypeHelper();
+
+        xPolicyAttribute.getNewRangeExpression("1", "10", "null", "false", "false", "false");
+
+        ArgumentCaptor<JavaCodeFragment> lowerBoundOpenCaptor = ArgumentCaptor.forClass(JavaCodeFragment.class);
+        ArgumentCaptor<JavaCodeFragment> upperBoundOpenCaptor = ArgumentCaptor.forClass(JavaCodeFragment.class);
+        verify(valuesetHelper).newRangeInstance(any(), any(), any(), any(),
+                lowerBoundOpenCaptor.capture(), upperBoundOpenCaptor.capture(), eq(false));
+        assertThat(lowerBoundOpenCaptor.getValue().getSourcecode(), is("false"));
+        assertThat(upperBoundOpenCaptor.getValue().getSourcecode(), is("false"));
+    }
+
+    @Test
+    public void testGetNewRangeExpression_openBounds() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        DatatypeHelper valuesetHelper = mock(DatatypeHelper.class);
+        when(valuesetHelper.newRangeInstance(any(), any(), any(), any(), any(), any(), anyBoolean()))
+                .thenReturn(new JavaCodeFragment("IntegerRange.valueOf(1, 10, null, false, true, true)"));
+        doReturn(valuesetHelper).when(xPolicyAttribute).getValuesetDatatypeHelper();
+
+        xPolicyAttribute.getNewRangeExpression("1", "10", "null", "false", "true", "true");
+
+        ArgumentCaptor<JavaCodeFragment> lowerBoundOpenCaptor = ArgumentCaptor.forClass(JavaCodeFragment.class);
+        ArgumentCaptor<JavaCodeFragment> upperBoundOpenCaptor = ArgumentCaptor.forClass(JavaCodeFragment.class);
+        verify(valuesetHelper).newRangeInstance(any(), any(), any(), any(),
+                lowerBoundOpenCaptor.capture(), upperBoundOpenCaptor.capture(), eq(false));
+        assertThat(lowerBoundOpenCaptor.getValue().getSourcecode(), is("true"));
+        assertThat(upperBoundOpenCaptor.getValue().getSourcecode(), is("true"));
     }
 
     @Test

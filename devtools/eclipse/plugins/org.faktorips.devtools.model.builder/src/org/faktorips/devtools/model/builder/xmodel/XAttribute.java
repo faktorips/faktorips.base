@@ -384,9 +384,13 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
             } else {
                 JavaCodeFragment containsNullFrag = new JavaCodeFragment();
                 containsNullFrag.append(range.isContainsNull());
+                JavaCodeFragment lowerBoundOpenFrag = new JavaCodeFragment();
+                lowerBoundOpenFrag.append(range.isLowerBoundOpen());
+                JavaCodeFragment upperBoundOpenFrag = new JavaCodeFragment();
+                upperBoundOpenFrag.append(range.isUpperBoundOpen());
                 result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
                         createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
-                        containsNullFrag, true);
+                        containsNullFrag, lowerBoundOpenFrag, upperBoundOpenFrag, true);
             }
         } else if (isValueSetEnum()) {
             String[] valueIds;

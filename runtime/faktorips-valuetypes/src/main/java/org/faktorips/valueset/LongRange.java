@@ -160,6 +160,30 @@ public class LongRange extends DefaultRange<Long> {
     }
 
     /**
+     * Creates a new {@link LongRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final LongRange valueOf(Long lowerBound,
+            Long upperBound,
+            Long step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new LongRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
      * Creates a new {@link LongRange} with open/closed bound configuration. The strings are parsed
      * with the {@link Long#valueOf(String)} method. An empty string is interpreted as {@code null}.
      *
@@ -185,32 +209,6 @@ public class LongRange extends DefaultRange<Long> {
         Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
         Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
         LongRange range = new LongRange(min, max, stepLong, containsNull, lowerBoundOpen, upperBoundOpen);
-        range.checkIfStepFitsIntoBounds();
-        return range;
-    }
-
-    /**
-     * Creates a new {@link LongRange} with open/closed bound configuration.
-     *
-     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param step the step increment of this range. The parameter being {@code null} indicates that
-     *            the range is continuous
-     * @param containsNull {@code true} indicates that the range contains {@code null}
-     * @param lowerBoundOpen whether the lower bound is open (exclusive)
-     * @param upperBoundOpen whether the upper bound is open (exclusive)
-     *
-     * @since 26.7
-     */
-    public static final LongRange valueOf(Long lowerBound,
-            Long upperBound,
-            Long step,
-            boolean containsNull,
-            boolean lowerBoundOpen,
-            boolean upperBoundOpen) {
-        LongRange range = new LongRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
         range.checkIfStepFitsIntoBounds();
         return range;
     }

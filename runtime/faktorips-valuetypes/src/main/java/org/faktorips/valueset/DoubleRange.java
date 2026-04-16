@@ -197,6 +197,30 @@ public class DoubleRange extends DefaultRange<Double> {
     }
 
     /**
+     * Creates a {@link DoubleRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final DoubleRange valueOf(Double lowerBound,
+            Double upperBound,
+            Double step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new DoubleRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
      * Creates a {@link DoubleRange} with open/closed bound configuration. The strings are parsed
      * with the {@link Double#valueOf(String)} method. An empty string is interpreted as
      * {@code null}.
@@ -223,32 +247,6 @@ public class DoubleRange extends DefaultRange<Double> {
         Double max = (upperBound == null || upperBound.isEmpty()) ? null : Double.valueOf(upperBound);
         Double stepValue = (step == null || step.isEmpty()) ? null : Double.valueOf(step);
         DoubleRange range = new DoubleRange(min, max, stepValue, containsNull, lowerBoundOpen, upperBoundOpen);
-        range.checkIfStepFitsIntoBounds();
-        return range;
-    }
-
-    /**
-     * Creates a {@link DoubleRange} with open/closed bound configuration.
-     *
-     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
-     *            that the range is unlimited on this side
-     * @param step the step increment of this range. The parameter being {@code null} indicates that
-     *            the range is continuous
-     * @param containsNull {@code true} indicates that the range contains {@code null}
-     * @param lowerBoundOpen whether the lower bound is open (exclusive)
-     * @param upperBoundOpen whether the upper bound is open (exclusive)
-     *
-     * @since 26.7
-     */
-    public static final DoubleRange valueOf(Double lowerBound,
-            Double upperBound,
-            Double step,
-            boolean containsNull,
-            boolean lowerBoundOpen,
-            boolean upperBoundOpen) {
-        DoubleRange range = new DoubleRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
         range.checkIfStepFitsIntoBounds();
         return range;
     }

@@ -96,6 +96,8 @@ public class MoneyHelper extends AbstractDatatypeHelper {
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
+            JavaCodeFragment lowerBoundOpenExp,
+            JavaCodeFragment upperBoundOpenExp,
             boolean useTypesafeCollections) {
 
         JavaCodeFragment frag = new JavaCodeFragment();
@@ -108,6 +110,10 @@ public class MoneyHelper extends AbstractDatatypeHelper {
         frag.append(stepExp);
         frag.append(", "); //$NON-NLS-1$
         frag.append(containsNullExp);
+        frag.append(", "); //$NON-NLS-1$
+        frag.append(lowerBoundOpenExp);
+        frag.append(", "); //$NON-NLS-1$
+        frag.append(upperBoundOpenExp);
         frag.append(")"); //$NON-NLS-1$
         return frag;
     }
