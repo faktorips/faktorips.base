@@ -109,8 +109,6 @@
         <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
         <flatten-maven-plugin.version>1.7.2</flatten-maven-plugin.version>
         <auto-service.version>1.1.1</auto-service.version>
-        <dependency-check-plugin.version>9.1.0</dependency-check-plugin.version>
-        <dependency-check-postgres.version>42.7.3</dependency-check-postgres.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
         <revapi-java.version>0.28.1</revapi-java.version>
@@ -608,43 +606,4 @@
             </plugin>
         </plugins>
     </reporting>
-    <profiles>
-        <profile>
-            <id>DependencyCheck</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.owasp</groupId>
-                        <artifactId>dependency-check-maven</artifactId>
-                        <version>${dependency-check-plugin.version}</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${dependency-check-postgres.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>commons-collections</groupId>
-                                <artifactId>commons-collections</artifactId>
-                                <version>${maven-plugin-dependency-commons-collections.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.commons</groupId>
-                                <artifactId>commons-pool2</artifactId>
-                                <version>${maven-plugin-dependency-commons-pool2.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <databaseDriverName>org.postgresql.Driver</databaseDriverName>
-                            <!-- DB config must be set via parameters  -->
-                            <autoUpdate>false</autoUpdate>
-                            <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
-                            <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
-                            <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
