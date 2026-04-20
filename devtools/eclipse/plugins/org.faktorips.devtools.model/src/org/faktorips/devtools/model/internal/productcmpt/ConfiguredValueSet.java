@@ -162,9 +162,10 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_LOWERBOUND));
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_UPPERBOUND));
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_STEP));
+            invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN));
+            invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_UPPERBOUND_OPEN));
         }
-        ObjectProperty[] invalidOP = invalidObjectProperties
-                .toArray(new ObjectProperty[invalidObjectProperties.size()]);
+        ObjectProperty[] invalidOP = invalidObjectProperties.toArray(new ObjectProperty[0]);
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
     }
 

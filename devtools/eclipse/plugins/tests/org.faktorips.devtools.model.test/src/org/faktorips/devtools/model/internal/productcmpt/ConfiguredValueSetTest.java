@@ -12,7 +12,9 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.ValueSetMatchers.contains;
 import static org.faktorips.abstracttest.matcher.ValueSetMatchers.empty;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
@@ -21,11 +23,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -194,7 +194,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         // no test for specific message codes because the codes are under control
         // of the value set.
-        assertTrue(ml.size() > 0);
+        assertThat(ml.size(), is(not(0)));
 
         valueSet = (IRangeValueSet)configuredValueSet.getValueSet();
         valueSet.setLowerBound("0");
@@ -208,7 +208,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         productCmpt.getIpsSrcFile().save(null);
 
         ml = configuredValueSet.validate(ipsProject);
-        assertEquals(0, ml.size());
+        assertThat(ml, isEmpty());
     }
 
     @Test
@@ -257,7 +257,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertTrue(ml.isEmpty());
+        assertThat(ml, isEmpty());
     }
 
     @Test
@@ -341,7 +341,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet.changeValueSetType(ValueSetType.ENUM);
 
         MessageList ml = configuredValueSet.validate(ipsProject);
-        assertTrue(ml.isEmpty());
+        assertThat(ml, isEmpty());
     }
 
     @Test
@@ -378,6 +378,29 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet.setValueSetType(ValueSetType.RANGE);
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_ValueSetTypeMismatch_RangeValueSet_ContainsOpenBoundProperties() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("typeMismatchOpenBoundsTest");
+        attr.setValueSetType(ValueSetType.ENUM);
+        attr.setDatatype("Integer");
+
+        configuredValueSet = productCmpt.newPropertyValue(attr, IConfiguredValueSet.class);
+        configuredValueSet.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet productRange = (IRangeValueSet)configuredValueSet.getValueSet();
+        productRange.setLowerBound("10");
+        productRange.setUpperBound("20");
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_STEP)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND_OPEN)));
     }
 
     @Test
@@ -486,7 +509,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         policyCmptType.getIpsSrcFile().save(null);
 
         ml = configuredValueSet.validate(ipsProject);
-        assertEquals(0, ml.size());
+        assertThat(ml, isEmpty());
 
         // check lower unbound values
         valueSet.setLowerBound(null);
@@ -524,6 +547,308 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         valueSet2.setUpperBound("10");
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ModelLowerOpen_ProductIncludesLower() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (10..20], product [10..20] -> error: product includes 10 but model excludes it
+        modelRange.setLowerBoundOpen(true);
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_SameOpenBounds_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (10..20), product (10..20) -> no error: same open bounds
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBoundOpen(true);
+        productRange.setUpperBoundOpen(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ProductMoreRestricted_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..20], product (10..20) -> no error: product is more restricted
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBoundOpen(false);
+        productRange.setLowerBoundOpen(true);
+        productRange.setUpperBoundOpen(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ModelBothOpen_ProductIncludesLower() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (10..20), product [10..20) -> error: product includes 10 but model excludes it
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_BothClosed_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // baseline: model [10..20], product [10..20] -> no error: both closed, same bounds
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBoundOpen(false);
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ModelUpperOpen_ProductIncludesUpper() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..20), product [10..20] -> error: product includes 20 but model excludes it
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND_OPEN)));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ModelUpperOpen_ProductNarrowerUpper_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..20), product [10..19] -> no error: product upper is within open model bound
+        productRange.setUpperBound("19");
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_UnboundedModelLower_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (*..20], product [10..20] -> no error: model lower is unbounded
+        modelRange.setLowerBound(null);
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(false);
+        productRange.setLowerBound("10");
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_UnboundedModelUpper_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..*), product [10..20] -> no error: model upper is unbounded
+        modelRange.setLowerBound("10");
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBound(null);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setUpperBound("20");
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ModelWider_MixedOpenness_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (5..25), product [10..20] -> no error: model is wider with open bounds
+        modelRange.setLowerBound("5");
+        modelRange.setUpperBound("25");
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBound("10");
+        productRange.setUpperBound("20");
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ProductExceedsModelLower_MixedOpenness() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (10..20), product [5..20) -> error: product lower exceeds open model lower bound
+        modelRange.setLowerBound("10");
+        modelRange.setUpperBound("20");
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBound("5");
+        productRange.setUpperBound("20");
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_StepWithOpenBounds_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (10..20] step=2, product (10..18] step=2 -> no error
+        modelRange.setLowerBound("10");
+        modelRange.setUpperBound("20");
+        modelRange.setStep("2");
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(false);
+        productRange.setLowerBound("10");
+        productRange.setUpperBound("18");
+        productRange.setStep("2");
+        productRange.setLowerBoundOpen(true);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_StepWithOpenBounds_ProductClosedLower() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model (10..20] step=2, product [10..18] step=2 -> error: product includes 10 but model excludes it
+        modelRange.setLowerBound("10");
+        modelRange.setUpperBound("20");
+        modelRange.setStep("2");
+        modelRange.setLowerBoundOpen(true);
+        modelRange.setUpperBoundOpen(false);
+        productRange.setLowerBound("10");
+        productRange.setUpperBound("18");
+        productRange.setStep("2");
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_SameOpenUpperBounds_NoError() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..20), product [10..20) -> no error: same open upper bounds
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBoundOpen(true);
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBoundOpen(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ProductUnboundedLower() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..20], product (*..20] -> error: product lower is unbounded
+        modelRange.setLowerBound("10");
+        modelRange.setUpperBound("20");
+        modelRange.setLowerBoundOpen(false);
+        modelRange.setUpperBoundOpen(false);
+        productRange.setLowerBound(null);
+        productRange.setUpperBound("20");
+        productRange.setLowerBoundOpen(true);
+        productRange.setUpperBoundOpen(false);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
+    }
+
+    @Test
+    public void testValidate_ValueSetNotASubset_ProductUnboundedUpper() {
+        IRangeValueSet[] ranges = setUpIntervalBoundTypesTest();
+        IRangeValueSet modelRange = ranges[0];
+        IRangeValueSet productRange = ranges[1];
+
+        // model [10..20], product [10..*) -> error: product upper is unbounded
+        modelRange.setUpperBound("20");
+        productRange.setLowerBound("10");
+        productRange.setLowerBoundOpen(false);
+        productRange.setUpperBound(null);
+        productRange.setUpperBoundOpen(true);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND)));
+        assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND_OPEN)));
+    }
+
+    private IRangeValueSet[] setUpIntervalBoundTypesTest() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("openBoundsTest");
+        attr.setValueSetType(ValueSetType.RANGE);
+        attr.setDatatype("Integer");
+        IRangeValueSet modelRange = (IRangeValueSet)attr.getValueSet();
+        modelRange.setLowerBound("10");
+        modelRange.setUpperBound("20");
+
+        configuredValueSet = productCmpt.newPropertyValue(attr, IConfiguredValueSet.class);
+        configuredValueSet.setValueSetCopy(modelRange);
+        IRangeValueSet productRange = (IRangeValueSet)configuredValueSet.getValueSet();
+
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
+
+        return new IRangeValueSet[] { modelRange, productRange };
     }
 
     @Test
@@ -622,11 +947,11 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Document doc = getTestDocument();
         configuredValueSet.initFromXml(doc.getDocumentElement());
-        assertEquals("1", configuredValueSet.getId());
+        assertThat(configuredValueSet.getId(), is("1"));
         IRangeValueSet range = (IRangeValueSet)configuredValueSet.getValueSet();
-        assertEquals("22", range.getLowerBound());
-        assertEquals("33", range.getUpperBound());
-        assertEquals("4", range.getStep());
+        assertThat(range.getLowerBound(), is("22"));
+        assertThat(range.getUpperBound(), is("33"));
+        assertThat(range.getStep(), is("4"));
     }
 
     @Test
@@ -682,9 +1007,9 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         IConfiguredValueSet newCfgValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
         newCfgValueSet.initFromXml(xmlElement);
-        assertEquals("22", ((IRangeValueSet)newCfgValueSet.getValueSet()).getLowerBound());
-        assertEquals("33", ((IRangeValueSet)newCfgValueSet.getValueSet()).getUpperBound());
-        assertEquals("4", ((IRangeValueSet)newCfgValueSet.getValueSet()).getStep());
+        assertThat(((IRangeValueSet)newCfgValueSet.getValueSet()).getLowerBound(), is("22"));
+        assertThat(((IRangeValueSet)newCfgValueSet.getValueSet()).getUpperBound(), is("33"));
+        assertThat(((IRangeValueSet)newCfgValueSet.getValueSet()).getStep(), is("4"));
 
         configuredValueSet.setValueSetType(ValueSetType.ENUM);
         IEnumValueSet enumValueSet = (IEnumValueSet)configuredValueSet.getValueSet();
@@ -694,11 +1019,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         enumValueSet.addValue("four");
 
         xmlElement = toXml(configuredValueSet);
-        assertEquals(4, ((IEnumValueSet)configuredValueSet.getValueSet()).getValues().length);
-        assertEquals("one", ((IEnumValueSet)configuredValueSet.getValueSet()).getValues()[0]);
-        assertEquals("two", ((IEnumValueSet)configuredValueSet.getValueSet()).getValues()[1]);
-        assertEquals("three", ((IEnumValueSet)configuredValueSet.getValueSet()).getValues()[2]);
-        assertEquals("four", ((IEnumValueSet)configuredValueSet.getValueSet()).getValues()[3]);
+        assertThat(((IEnumValueSet)configuredValueSet.getValueSet()).getValues(),
+                arrayContaining("one", "two", "three", "four"));
     }
 
     private Element toXml(IConfiguredValueSet configuredValueSet) {
@@ -751,7 +1073,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet.getValueSet().setContainsNull(true);
 
         MessageList messages = configuredValueSet.validate(ipsProject);
-        assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
+        assertThat(messages, hasMessageCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
     }
 
     @Test
@@ -792,31 +1114,31 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         generation = productCmpt.getProductCmptGeneration(0);
         IConfiguredDefault defaultValue = generation.newPropertyValue(a1, IConfiguredDefault.class);
-        assertEquals(a1, defaultValue.findPcTypeAttribute(ipsProject));
+        assertThat(defaultValue.findPcTypeAttribute(ipsProject), is(a1));
     }
 
     @Test
     public void testGetCaption() {
         attribute.setLabelValue(Locale.US, "Attribute Label");
 
-        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "", "Attribute Label"),
-                configuredValueSet.getCaption(Locale.US));
+        assertThat(configuredValueSet.getCaption(Locale.US),
+                is(NLS.bind(Messages.ConfiguredValueSet_caption, "", "Attribute Label")));
 
         attribute.setValueSetType(ValueSetType.DERIVED);
 
-        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "/ ", "Attribute Label"),
-                configuredValueSet.getCaption(Locale.US));
+        assertThat(configuredValueSet.getCaption(Locale.US),
+                is(NLS.bind(Messages.ConfiguredValueSet_caption, "/ ", "Attribute Label")));
     }
 
     @Test
     public void testGetLastResortCaption() {
-        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "", "attribute"),
-                configuredValueSet.getLastResortCaption());
+        assertThat(configuredValueSet.getLastResortCaption(),
+                is(NLS.bind(Messages.ConfiguredValueSet_caption, "", "attribute")));
 
         attribute.setValueSetType(ValueSetType.DERIVED);
 
-        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "/ ", "attribute"),
-                configuredValueSet.getCaption(null));
+        assertThat(configuredValueSet.getCaption(null),
+                is(NLS.bind(Messages.ConfiguredValueSet_caption, "/ ", "attribute")));
     }
 
     @Test
