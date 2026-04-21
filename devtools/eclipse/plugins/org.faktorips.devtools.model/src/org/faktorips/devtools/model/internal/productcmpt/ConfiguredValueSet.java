@@ -136,6 +136,10 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
         validateNullIncompatible(list, modelValueSet, valueSetToValidate);
 
+        if (valueSetToValidate.validate(ipsProject).containsErrorMsg()) {
+            return;
+        }
+
         validateValueSetIsCompatible(list, valueSetToValidate, modelValueSet);
     }
 

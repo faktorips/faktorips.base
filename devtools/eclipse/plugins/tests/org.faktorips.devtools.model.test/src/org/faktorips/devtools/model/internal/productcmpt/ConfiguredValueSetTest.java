@@ -527,6 +527,30 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_ValueSetNotASubset_NoSubsetErrorForInvalidProductRange() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("stepTest");
+        attr.setValueSetType(ValueSetType.RANGE);
+        attr.setDatatype("Integer");
+        IRangeValueSet modelRange = (IRangeValueSet)attr.getValueSet();
+        modelRange.setLowerBound("0");
+        modelRange.setUpperBound("110");
+        modelRange.setStep("2");
+
+        configuredValueSet = productCmpt.newPropertyValue(attr, IConfiguredValueSet.class);
+        configuredValueSet.setValueSetCopy(modelRange);
+        IRangeValueSet productRange = (IRangeValueSet)configuredValueSet.getValueSet();
+        productRange.setStep("4");
+
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmpt.getIpsSrcFile().save(null);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IRangeValueSet.MSGCODE_STEP_RANGE_MISMATCH));
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET));
+    }
+
+    @Test
     public void testValidate_EnumValueSetForStringLengthValueSet() {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("valueTest");
