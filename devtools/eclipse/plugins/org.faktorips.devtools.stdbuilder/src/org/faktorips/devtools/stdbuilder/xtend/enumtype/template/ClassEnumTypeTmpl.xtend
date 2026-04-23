@@ -95,7 +95,7 @@ class ClassEnumTypeTmpl {
         *
         * @generated
         */
-        public static final long serialVersionUID = 2L;
+        public static final long serialVersionUID = 3L;
     '''
 
     def private static hashCode(XEnumType it) '''

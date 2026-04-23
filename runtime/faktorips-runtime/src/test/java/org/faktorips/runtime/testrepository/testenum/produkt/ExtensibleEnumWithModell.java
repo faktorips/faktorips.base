@@ -34,7 +34,7 @@ public final class ExtensibleEnumWithModell
      *
      * @generated
      */
-    public static final long serialVersionUID = 2L;
+    public static final long serialVersionUID = 3L;
     /**
      * @generated
      */

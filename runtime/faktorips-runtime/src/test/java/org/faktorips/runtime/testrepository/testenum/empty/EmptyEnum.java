@@ -31,7 +31,7 @@ public final class EmptyEnum implements Serializable, Comparable<EmptyEnum>, ITo
      *
      * @generated
      */
-    public static final long serialVersionUID = 2L;
+    public static final long serialVersionUID = 3L;
     /**
      * @generated
      */

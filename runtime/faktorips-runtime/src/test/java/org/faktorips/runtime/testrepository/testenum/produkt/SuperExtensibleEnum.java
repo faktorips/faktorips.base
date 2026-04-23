@@ -32,7 +32,7 @@ public final class SuperExtensibleEnum
      *
      * @generated
      */
-    public static final long serialVersionUID = 2L;
+    public static final long serialVersionUID = 3L;
     /**
      * @generated
      */

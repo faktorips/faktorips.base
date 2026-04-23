@@ -31,7 +31,7 @@ public final class ExtensibleEnum implements Serializable, Comparable<Extensible
      *
      * @generated
      */
-    public static final long serialVersionUID = 2L;
+    public static final long serialVersionUID = 3L;
     /**
      * @generated
      */
