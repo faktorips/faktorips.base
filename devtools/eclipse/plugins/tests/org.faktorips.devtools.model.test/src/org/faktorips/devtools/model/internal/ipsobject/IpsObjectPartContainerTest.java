@@ -10,8 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -59,6 +61,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.ipsobject.Identifier;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -453,6 +456,176 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertThat(description.isDeleted(), is(false));
         assertSame(description, part1.getIpsObject().getDescription(Locale.US));
         assertThat(label.isDeleted(), is(false));
+    }
+
+    @Test
+    public void testInitPartContainersFromXml_DuplicateIdentifierLogsInsteadOfThrowing() throws Exception {
+        TestIpsObjectPartContainerWithParts ipsObjectPartContainer = new TestIpsObjectPartContainerWithParts(
+                new IpsSrcFile(ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragments()[0],
+                        "TestFileDuplicate"));
+
+        ipsObjectPartContainer.newTestPart();
+        ipsObjectPartContainer.newTestPart();
+
+        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Element xml = ipsObjectPartContainer.toXml(doc);
+
+        NodeList testPartElements = xml.getElementsByTagName("TestPart");
+        ((Element)testPartElements.item(0)).setAttribute("name", "sameName");
+        ((Element)testPartElements.item(1)).setAttribute("name", "sameName");
+
+        final StringBuilder logMessages = new StringBuilder();
+        final ALogListener listener = (status, $) -> logMessages.append(status.getMessage());
+        IpsLog.get().addLogListener(listener);
+        try {
+            ipsObjectPartContainer.initPartContainersFromXml(xml);
+        } finally {
+            IpsLog.get().removeLogListener(listener);
+        }
+
+        final String logOutput = logMessages.toString();
+        assertThat(logOutput, containsString("Duplicated identifier"));
+        assertThat(logOutput, containsString("TestFileDuplicate"));
+        assertThat(logOutput, containsString("has a non-unique identifier: Name: sameName"));
+        assertThat(logOutput, not(containsString("NamedIdentifier[")));
+    }
+
+    @Test
+    public void testInitPartContainersFromXml_MultipleDuplicatesLogsAll() throws Exception {
+        TestIpsObjectPartContainerWithParts ipsObjectPartContainer = new TestIpsObjectPartContainerWithParts(
+                new IpsSrcFile(ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragments()[0],
+                        "TestFileMultiDup"));
+
+        ipsObjectPartContainer.newTestPart();
+        ipsObjectPartContainer.newTestPart();
+        ipsObjectPartContainer.newTestPart();
+
+        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Element xml = ipsObjectPartContainer.toXml(doc);
+
+        NodeList testPartElements = xml.getElementsByTagName("TestPart");
+        ((Element)testPartElements.item(0)).setAttribute("name", "sameName");
+        ((Element)testPartElements.item(1)).setAttribute("name", "sameName");
+        ((Element)testPartElements.item(2)).setAttribute("name", "sameName");
+
+        final StringBuilder logMessages = new StringBuilder();
+        final ALogListener listener = (status, $) -> logMessages.append(status.getMessage());
+        IpsLog.get().addLogListener(listener);
+        try {
+            ipsObjectPartContainer.initPartContainersFromXml(xml);
+        } finally {
+            IpsLog.get().removeLogListener(listener);
+        }
+
+        final String logOutput = logMessages.toString();
+        assertThat(logOutput, containsString("Duplicated identifier"));
+        final String afterFirst = logOutput.substring(
+                logOutput.indexOf("Duplicated identifier") + "Duplicated identifier".length());
+        assertThat(afterFirst, containsString("Duplicated identifier"));
+    }
+
+    @Test
+    public void testInitPartContainersFromXml_NoDuplicateNoLog() throws Exception {
+        TestIpsObjectPartContainerWithParts ipsObjectPartContainer = new TestIpsObjectPartContainerWithParts(
+                new IpsSrcFile(ipsProject.getIpsPackageFragmentRoots()[0].getIpsPackageFragments()[0],
+                        "TestFileNoDuplicate"));
+
+        ipsObjectPartContainer.newTestPart();
+        ipsObjectPartContainer.newTestPart();
+
+        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Element xml = ipsObjectPartContainer.toXml(doc);
+
+        final StringBuilder logMessages = new StringBuilder();
+        final ALogListener listener = (status, $) -> logMessages.append(status.getMessage());
+        IpsLog.get().addLogListener(listener);
+        try {
+            ipsObjectPartContainer.initPartContainersFromXml(xml);
+        } finally {
+            IpsLog.get().removeLogListener(listener);
+        }
+
+        assertThat(logMessages.toString(), is(""));
+    }
+
+    @Test
+    public void testToDisplayString_NullIdentifier() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        when(part.getId()).thenReturn("partId42");
+
+        final String result = IpsObjectPartContainer.toDisplayString(null, part);
+
+        assertThat(result, is("partId42"));
+    }
+
+    @Test
+    public void testToDisplayString_NamedIdentifier() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        final Identifier identifier = new Identifier.NamedIdentifier("myAttrName");
+
+        final String result = IpsObjectPartContainer.toDisplayString(identifier, part);
+
+        assertThat(result, is("Name: myAttrName"));
+    }
+
+    @Test
+    public void testToDisplayString_EmumValueIdentifier() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        final Identifier identifier = new Identifier.EmumValueIdentifier("enumVal1");
+
+        final String result = IpsObjectPartContainer.toDisplayString(identifier, part);
+
+        assertThat(result, is("Enum identifier value: enumVal1"));
+    }
+
+    @Test
+    public void testToDisplayString_NullIdentifier_BlankId() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        when(part.getId()).thenReturn("");
+
+        final String result = IpsObjectPartContainer.toDisplayString(null, part);
+
+        assertThat(result, is("<null>"));
+    }
+
+    @Test
+    public void testToDisplayString_NullIdentifier_NullId() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        when(part.getId()).thenReturn(null);
+
+        final String result = IpsObjectPartContainer.toDisplayString(null, part);
+
+        assertThat(result, is("<null>"));
+    }
+
+    @Test
+    public void testToDisplayString_NamedIdentifier_BlankName() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        final Identifier identifier = new Identifier.NamedIdentifier("");
+
+        final String result = IpsObjectPartContainer.toDisplayString(identifier, part);
+
+        assertThat(result, is("Name: <null>"));
+    }
+
+    @Test
+    public void testToDisplayString_EmumValueIdentifier_BlankValue() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        final Identifier identifier = new Identifier.EmumValueIdentifier("");
+
+        final String result = IpsObjectPartContainer.toDisplayString(identifier, part);
+
+        assertThat(result, is("Enum identifier value: <null>"));
+    }
+
+    @Test
+    public void testToDisplayString_FallbackToString() {
+        final IIpsObjectPart part = mock(IIpsObjectPart.class);
+        final Identifier identifier = new Identifier.IndexedIdentifier(7);
+
+        final String result = IpsObjectPartContainer.toDisplayString(identifier, part);
+
+        assertThat(result, is(identifier.toString()));
     }
 
     @Test

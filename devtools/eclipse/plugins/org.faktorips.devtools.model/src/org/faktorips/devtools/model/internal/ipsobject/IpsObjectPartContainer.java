@@ -58,6 +58,8 @@ import org.faktorips.devtools.model.ipsobject.Identifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -483,8 +485,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * automatically migrate older parts that may have no ID attribute yet.
      * <p>
      * The initialization also validates that there is no duplicate ID within any
-     * {@link IpsObjectPartContainer}. If a duplicated ID is recognized it throws a
-     * {@link RuntimeException}.
+     * {@link IpsObjectPartContainer}. If a duplicated ID is recognized it is logged and shown in an
+     * error dialog.
      *
      */
     protected void initPartContainersFromXml(Element element) {
@@ -504,6 +506,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected IdPartMap initPartContainersFromXml(Element element, IdPartMap idPartMap) {
         IdPartMap newIdPartMap = new IdPartMap();
         AtomicInteger index = new AtomicInteger();
+        final List<String> duplicateMessages = new ArrayList<>();
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node item = nl.item(i);
@@ -529,12 +532,35 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                 AtomicInteger preIndex = new AtomicInteger(Math.max(index.get() - 1, 0));
                 Identifier identifier = Identifier.of(part, preIndex);
                 if (newIdPartMap.put(identifier, part) != null) {
-                    throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
-                            + part.getId() + ", Identifier: " + identifier);
+                    final String parentName = part.getParent().getName();
+                    duplicateMessages.add(
+                            "Duplicated identifier in Object " + parentName //$NON-NLS-1$
+                                    + ", ID: " + part.getId() //$NON-NLS-1$
+                                    + "\n" + parentName //$NON-NLS-1$
+                                    + " has a non-unique identifier: " //$NON-NLS-1$
+                                    + toDisplayString(identifier, part));
                 }
             }
         }
+        if (!duplicateMessages.isEmpty()) {
+            IpsLog.logAndShowErrorDialog(
+                    new IpsStatus(String.join("\n\n", duplicateMessages))); //$NON-NLS-1$
+        }
         return newIdPartMap;
+    }
+
+    static String toDisplayString(Identifier identifier, IIpsObjectPart part) {
+        return switch (identifier) {
+            case null -> valueOrNullLabel(part.getId());
+            case Identifier.NamedIdentifier named -> "Name: " + valueOrNullLabel(named.name()); //$NON-NLS-1$
+            case Identifier.EmumValueIdentifier enumValue -> "Enum identifier value: " //$NON-NLS-1$
+                    + valueOrNullLabel(enumValue.idAttributeValue());
+            default -> identifier.toString();
+        };
+    }
+
+    private static String valueOrNullLabel(String value) {
+        return IpsStringUtils.isEmpty(value) ? "<null>" : value; //$NON-NLS-1$
     }
 
     private IdPartMap createIdPartMap() {
