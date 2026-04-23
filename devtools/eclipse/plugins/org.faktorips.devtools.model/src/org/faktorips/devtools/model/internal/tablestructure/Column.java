@@ -1,14 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.tablestructure;
+
+import java.text.MessageFormat;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
@@ -17,6 +20,7 @@ import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -64,6 +68,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, PROPERTY_NAME, "", list); //$NON-NLS-1$ //$NON-NLS-2$
+        validateDuplicateName(list);
         Datatype type = ValidationUtils.checkValueDatatypeReference(datatype, false, this, PROPERTY_DATATYPE, "", list); //$NON-NLS-1$
         if (type == null) {
             return;
@@ -73,9 +78,23 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
             list.add(new Message(MSGCODE_DATATYPE_IS_A_PRIMITTVE, text, Message.ERROR, this, PROPERTY_DATATYPE));
         }
 
-        if (!ValidationUtils.validateJavaIdentifier(StringUtils.uncapitalize(name), ipsProject)) {
+        if (IpsStringUtils.isNotBlank(name)
+                && !ValidationUtils.validateJavaIdentifier(StringUtils.uncapitalize(name), ipsProject)) {
             String text = Messages.Column_msgInvalidName;
             list.add(new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME));
+        }
+    }
+
+    private void validateDuplicateName(MessageList list) {
+        if (IpsStringUtils.isEmpty(name)) {
+            return;
+        }
+        final ITableStructure tableStructure = (ITableStructure)getIpsObject();
+        final boolean duplicate = Arrays.stream(tableStructure.getColumns())
+                .anyMatch(c -> c != this && name.equals(c.getName()));
+        if (duplicate) {
+            final String text = MessageFormat.format(Messages.Column_msgDuplicateName, name);
+            list.add(new Message(MSGCODE_DUPLICATE_NAME, text, Message.ERROR, this, PROPERTY_NAME));
         }
     }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,6 +50,7 @@ public class Messages extends NLS {
     public static String ColumnRange_msgNameInvalidJavaIdentifier;
     public static String ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype;
 
+    public static String Column_msgDuplicateName;
     public static String Column_msgInvalidName;
 
     public static String TableAccessFunctionDescription;

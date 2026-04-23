@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,23 +29,28 @@ public interface IColumn extends IKeyItem, ILabeledElement {
     String MSGCODE_DATATYPE_IS_A_PRIMITTVE = MSGCODE_PREFIX + "DatatypeIsAPrimitive"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the column's datatype is a primitive, (but
-     * primitives aren't supported.)
+     * Validation message code to indicate that the column's name is not a valid Java identifier.
      */
     String MSGCODE_INVALID_NAME = MSGCODE_PREFIX + "InvalidName"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the column's name is already used by another column
+     * in the same table structure.
+     */
+    String MSGCODE_DUPLICATE_NAME = MSGCODE_PREFIX + "DuplicateName"; //$NON-NLS-1$
 
     String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /**
      * Sets the column name.
-     * 
+     *
      * @throws IllegalArgumentException if newName is <code>null</code>.
      */
     void setName(String newName);
 
     /**
      * Sets the column's data type.
-     * 
+     *
      * @throws IllegalArgumentException if newDatatype is <code>null</code>.
      */
     void setDatatype(String newDatatype);
