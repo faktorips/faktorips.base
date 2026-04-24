@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,9 +12,12 @@ package org.faktorips.devtools.model.productcmpt;
 
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
+import java.util.SequencedSet;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
@@ -27,7 +30,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  * links} can now be part of both {@link IProductCmpt product components} and
  * {@link IProductCmptGeneration product component generations}. Thus both classes implement this
  * interface.
- * 
+ *
  * @since 3.8
  * @author widmaier
  */
@@ -43,7 +46,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
      * The first one contains the container and the second one the relation type as string. In both
      * cases the property part of the ObjectProperty is empty.
-     * 
+     *
      */
     String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 
@@ -56,14 +59,14 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
      * The first one contains the container and the second one the relation type as string. In both
      * cases the property part of the ObjectProperty is empty.
-     * 
+     *
      */
     String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that two or more relations of a specific type have the
      * same target.
-     * 
+     *
      */
     String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
@@ -79,12 +82,12 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * example a {@link IProductCmptGeneration} is only responsible for associations that may change
      * over time but not for unchanging (static) associations. This method will return
      * <code>false</code> in the latter case.
-     * 
+     *
      * @param association The association that should be checked by the container
-     * 
+     *
      * @return <code>true</code> if the association could part of this container, <code>false</code>
      *             otherwise.
-     * 
+     *
      * @throws NullPointerException if the association is <code>null</code>
      */
     boolean isContainerFor(IProductCmptTypeAssociation association);
@@ -97,14 +100,14 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     /**
      * Creates a new link that is an instance of the product component type association identified
      * by the given association name.
-     * 
+     *
      * @throws NullPointerException if associationName is <code>null</code>.
      */
     IProductCmptLink newLink(String associationName);
 
     /**
      * Creates a new link that is an instance of the product component type association.
-     * 
+     *
      * @throws NullPointerException if the association is <code>null</code>.
      */
     IProductCmptLink newLink(IProductCmptTypeAssociation association);
@@ -119,13 +122,13 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     /**
      * Checks whether a new link as instance of the given {@link IProductCmptTypeAssociation product
      * component type association} and the given target will be valid.
-     * 
+     *
      * @param ipsProject The project whose IPS object path is used for the search. This is not
      *            necessarily the project this component is an element of.
-     * 
+     *
      * @return <code>true</code> if a new relation with the given values will be valid,
      *             <code>false</code> otherwise.
-     * 
+     *
      * @throws IpsException if a problem occur during the search of the type hierarchy.
      */
     boolean canCreateValidLink(IProductCmpt target,
@@ -142,16 +145,16 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * <p>
      * The boolean parameter <code>above</code> specifies to move the link either above or below the
      * target link.
-     * 
+     *
      * @param toMove the link you want to move
      * @param target target link you want to move the <code>toMove</code>-Link
      * @param above <code>true</code> to place the link above the target, <code>false</code> to
      *            place it below the target
-     * 
+     *
      * @return The method returns <code>true</code> if the link could be moved and returns
      *             <code>false</code> if either the link or the target are <code>null</code> or if
      *             one of the links is not a part of this container.
-     * 
+     *
      */
     boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above);
 
@@ -164,7 +167,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     /**
      * Returns all {@link IProductCmptLink product component links} for the given association name
      * as a typed list.
-     * 
+     *
      * @param associationName the name (=target role singular) of the association to return links
      *            for
      */
@@ -195,5 +198,39 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * Returns the point in time from that on this generation contains the object's data.
      */
     GregorianCalendar getValidFrom();
+
+    /**
+     * Returns the {@link IPolicyCmptLinkCardinality policy component cardinality} for the given
+     * association name as an {@link Optional} or an empty Optional, if the given name does not
+     * refer to an {@link IPolicyCmptTypeAssociation} marked as
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() cardinality configurable}.
+     *
+     * @param policyAssociationName the name (=target role singular) of the association to return
+     *            the cardinality configuration for
+     * @since 26.7
+     */
+    Optional<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinality(String policyAssociationName);
+
+    /**
+     * Returns the {@link IPolicyCmptLinkCardinality policy component cardinalities} for all
+     * associations referring to a {@link IPolicyCmptTypeAssociation} marked as
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() cardinality configurable}.
+     *
+     * @since 26.7
+     */
+    SequencedSet<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinalities();
+
+    /**
+     * Creates a new {@link IPolicyCmptLinkCardinality} that configures the policy component type
+     * association identified by the given association name.
+     *
+     * @throws NullPointerException if policyAssociationName is {@code null}
+     * @throws IllegalArgumentException if policyAssociationName does not refer to an
+     *             {@link IPolicyCmptTypeAssociation} marked as
+     *             {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() cardinality
+     *             configurable}.
+     * @since 26.7
+     */
+    IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality(String policyAssociationName);
 
 }

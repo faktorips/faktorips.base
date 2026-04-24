@@ -52,7 +52,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     /**
      * Validation message code to indicate that the association in the model can't be found.
      */
-    String MSGCODE_UNKNWON_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the target product component does not exist.

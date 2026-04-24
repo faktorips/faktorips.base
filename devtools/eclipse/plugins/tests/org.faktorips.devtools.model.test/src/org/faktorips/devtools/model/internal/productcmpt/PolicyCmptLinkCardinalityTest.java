@@ -10,11 +10,9 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.faktorips.testsupport.IpsMatchers.containsMessages;
+import static org.faktorips.abstracttest.matcher.Matchers.absent;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.hasSize;
-import static org.faktorips.testsupport.IpsMatchers.isEmpty;
-import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -36,32 +34,31 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
-import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.model.type.IAssociation;
-import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
-public class ProductCmptLinkTest extends AbstractIpsPluginTest {
+public class PolicyCmptLinkCardinalityTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;
-    private IProductCmptLink link;
+    private IPolicyCmptLinkCardinality link;
     private ProductCmpt template;
     private IProductCmptGeneration templateGeneration;
-    private IProductCmptLink templateLink;
+    private IPolicyCmptLinkCardinality templateLink;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IIpsProject ipsProject;
+    private IPolicyCmptTypeAssociation policyCmptTypeAssociation;
+    private IProductCmptTypeAssociation productCmptTypeAssociation;
 
     @Override
     @Before
@@ -70,56 +67,40 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        policyCmptTypeAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyCmptTypeAssociation.setTargetRoleSingular("Coverage");
+        productCmptTypeAssociation = productCmptType.newProductCmptTypeAssociation();
+        productCmptTypeAssociation.setMatchingAssociationName("Coverage");
+        productCmptTypeAssociation.setTargetRoleSingular("CoverageType");
+        policyCmptTypeAssociation.setMatchingAssociationName("CoverageType");
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
-        link = generation.newLink("CoverageType");
+        link = generation.newPolicyCmptLinkCardinality("Coverage");
 
         template = newProductTemplate(productCmptType, "TestTemplate");
         templateGeneration = template.getProductCmptGeneration(0);
-        templateLink = templateGeneration.newLink("CoverageType");
+        templateLink = templateGeneration.newPolicyCmptLinkCardinality("Coverage");
 
         ipsSrcFile = productCmpt.getIpsSrcFile();
     }
 
     @Test
     public void testGetAssociation() {
-        assertEquals("CoverageType", link.getAssociation());
+        assertEquals("Coverage", link.getAssociation());
     }
 
     @Test
     public void testFindAssociation() {
-        IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
+        assertEquals(policyCmptTypeAssociation, link.findAssociation(ipsProject));
 
-        assocation.setTargetRoleSingular("CoverageType");
-        assertEquals(assocation, link.findAssociation(ipsProject));
-
-        assocation.setTargetRoleSingular("blabla");
+        policyCmptTypeAssociation.setTargetRoleSingular("blabla");
         assertNull(link.findAssociation(ipsProject));
     }
 
     @Test
     public void testRemove() {
         link.delete();
-        assertEquals(0, generation.getNumOfLinks());
-        assertTrue(ipsSrcFile.isDirty());
-    }
-
-    @Test
-    public void testSetTarget() {
-        newProductCmptType(ipsProject, "my.TargetType");
-        ProductCmpt targetProductCmpt = newProductCmpt(productCmptType, "my.Target");
-        targetProductCmpt.setRuntimeId("my.target.runtime.id");
-        link.setTarget("my.Target");
-        assertEquals("my.Target", link.getTarget());
-        assertEquals("my.target.runtime.id", link.getTargetRuntimeId());
-        assertTrue(ipsSrcFile.isDirty());
-    }
-
-    @Test
-    public void testSetTarget_DoesNotExist() {
-        link.setTarget("newTarget");
-        assertEquals("newTarget", link.getTarget());
-        assertNull(link.getTargetRuntimeId());
+        assertThat(generation.getPolicyCmptLinkCardinality("Coverage"), is(absent()));
         assertTrue(ipsSrcFile.isDirty());
     }
 
@@ -127,19 +108,16 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     public void testToXml() {
         setUpAssociation(true);
         productCmpt.setTemplate("TestTemplate");
-        templateLink.setTarget("newTarget");
         templateLink.setMinCardinality(2);
         templateLink.setMaxCardinality(3);
         templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-        link.setTarget("newTarget");
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         Element element = link.toXml(newDocument());
 
-        IProductCmptLink copy = new ProductCmptLink(generation, "asd");
+        IPolicyCmptLinkCardinality copy = new PolicyCmptLinkCardinality(generation, "asd");
         copy.initFromXml(element);
         assertEquals(link.getId(), copy.getId());
-        assertEquals("newTarget", copy.getTarget());
-        assertEquals("CoverageType", copy.getAssociation());
+        assertEquals("Coverage", copy.getAssociation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
         assertEquals(TemplateValueStatus.INHERITED, copy.getTemplateValueStatus());
@@ -153,111 +131,38 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testInitFromXml() {
         setUpAssociation(true);
-        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
-        association.setTargetRoleSingular("FullCoverage");
         productCmpt.setTemplate("TestTemplate");
-        templateLink.setAssociation("FullCoverage");
-        templateLink.setTarget("FullCoveragePlus");
         templateLink.setMinCardinality(2);
         templateLink.setMaxCardinality(3);
         templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IPolicyCmptLinkCardinality.TAG_NAME)
                 .item(0));
         assertEquals("42", link.getId());
-        assertEquals("FullCoverage", link.getAssociation());
-        assertEquals("FullCoveragePlus", link.getTarget());
+        assertEquals("Coverage", link.getAssociation());
         assertEquals(2, link.getMinCardinality());
         assertEquals(3, link.getMaxCardinality());
         assertEquals(TemplateValueStatus.INHERITED, link.getTemplateValueStatus());
 
-        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IPolicyCmptLinkCardinality.TAG_NAME)
                 .item(1));
         assertEquals("43", link.getId());
         assertEquals(1, link.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
 
-        link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IPolicyCmptLinkCardinality.TAG_NAME)
                 .item(2));
         assertEquals("44", link.getId());
         assertEquals(Cardinality.UNDEFINED, link.getCardinality());
     }
 
     @Test
-    public void testValidateUnknownAssociate() {
+    public void testValidateUnknownAssociation() {
+        link.setAssociation("foo");
         MessageList ml = link.validate(ipsProject);
-        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_UNKNOWN_ASSOCIATION));
-    }
-
-    @Test
-    public void testValidateUnknownTarget() {
-        link.setTarget("unknown");
-        MessageList ml = link.validate(ipsProject);
-        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
-
-        link.setTarget(productCmpt.getQualifiedName());
-        ml = link.validate(ipsProject);
-        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
-    }
-
-    @Test
-    public void testValidateCardinalityForQualified() {
-        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
-        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
-
-        ProductCmpt cmpt = newProductCmpt(coverageTypeType, "CoverageType");
-        link.setTarget(cmpt.getQualifiedName());
-
-        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
-        productAssociation.setTarget(coverageTypeType.getQualifiedName());
-        productAssociation.setTargetRoleSingular("CoverageType");
-
-        IPolicyCmptTypeAssociation policyAssociation = (IPolicyCmptTypeAssociation)policyCmptType.newAssociation();
-        policyAssociation.setTarget(coverageType.getQualifiedName());
-        policyAssociation.setTargetRoleSingular("Coverage");
-        policyAssociation.setQualified(true);
-        policyAssociation.setMinCardinality(1);
-        policyAssociation.setMaxCardinality(1);
-
-        MessageList msgList = link.validate(ipsProject);
-        assertThat(msgList, isEmpty());
-
-        IProductCmptLink secondLink = generation.newLink("CoverageType");
-        secondLink.setTarget(cmpt.getQualifiedName());
-        secondLink.setMaxCardinality(1);
-
-        msgList = link.validate(ipsProject);
-        assertThat(msgList, isEmpty());
-        msgList = secondLink.validate(ipsProject);
-        assertThat(msgList, isEmpty());
-
-        secondLink.setMaxCardinality(2);
-        msgList = secondLink.validate(ipsProject);
-        assertThat(msgList, containsMessages());
-        assertThat(msgList, hasMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
-    }
-
-    @Test
-    public void testValidateInvalidTarget() throws Exception {
-        IPolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "Coverage", "CoverageType");
-        IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
-        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
-        association.setTarget(targetProductType.getQualifiedName());
-        association.setTargetRoleSingular("testRelation");
-
-        IProductCmptLink link = generation.newLink(association.getName());
-        IProductCmpt target = newProductCmpt(targetProductType, "target.Target");
-        link.setTarget(productCmpt.getQualifiedName());
-
-        MessageList ml = link.validate(ipsProject);
-        Message invalidTargetMessage = ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET);
-        assertNotNull(invalidTargetMessage);
-        assertThat(ml.getMessagesFor(link), hasSize(1));
-        assertEquals(invalidTargetMessage, ml.getMessagesFor(link).getMessage(0));
-
-        link.setTarget(target.getQualifiedName());
-
-        ml = link.validate(ipsProject);
-        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_INVALID_TARGET));
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_UNKNOWN_ASSOCIATION));
     }
 
     @Test
@@ -323,21 +228,21 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     private void setUpAssociation(boolean changingOverTime) {
-        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
-        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
-        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
-        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        IPolicyCmptType Coverage = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverage");
+        IProductCmptType CoverageType = Coverage.findProductCmptType(ipsProject);
+        IProductCmptTypeAssociation productAssociation = policyCmptTypeAssociation
+                .findMatchingProductCmptTypeAssociation(ipsProject);
+        productAssociation.setTarget(CoverageType.getQualifiedName());
         productAssociation.setTargetRoleSingular("CoverageType");
 
         productAssociation.setChangingOverTime(changingOverTime);
-
-        IProductCmpt targetCmpt = newProductCmpt(coverageTypeType, "TestCoverage");
-        link.setTarget(targetCmpt.getQualifiedName());
     }
 
     @Test
     public void testGetCaption() {
-        createAssociation();
+        ILabel label = policyCmptTypeAssociation.getLabel(Locale.US);
+        label.setValue("foo");
+        label.setPluralValue("foos");
         assertEquals("foo", link.getCaption(Locale.US));
     }
 
@@ -353,7 +258,9 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetPluralCaption() {
-        createAssociation();
+        ILabel label = policyCmptTypeAssociation.getLabel(Locale.US);
+        label.setValue("foo");
+        label.setPluralValue("foos");
         assertEquals("foos", link.getPluralCaption(Locale.US));
     }
 
@@ -369,62 +276,42 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLastResortCaption() {
+        policyCmptTypeAssociation.setTargetRoleSingular("notCapitalized");
+        productCmptTypeAssociation.setMatchingAssociationName("notCapitalized");
         link.setAssociation("notCapitalized");
         assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortCaption());
     }
 
     @Test
     public void testGetLastResortPluralCaption() {
+        policyCmptTypeAssociation.setTargetRoleSingular("notCapitalized");
+        productCmptTypeAssociation.setMatchingAssociationName("notCapitalized");
         link.setAssociation("notCapitalized");
         assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortPluralCaption());
     }
 
-    private IAssociation createAssociation() {
-        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
-        association.setTargetRoleSingular("CoverageType");
-
-        ILabel label = association.getLabel(Locale.US);
-        label.setValue("foo");
-        label.setPluralValue("foos");
-
-        return association;
+    @Test
+    public void testGetProductCmptLinkContainer_Product() {
+        IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality = createLinkWithContainer(productCmpt, "id1",
+                "Coverage");
+        assertNotNull(newPolicyCmptLinkCardinality.getProductCmptLinkContainer());
+        assertEquals(productCmpt, newPolicyCmptLinkCardinality.getProductCmptLinkContainer());
     }
 
     @Test
-    public void testGetProductCmpt() {
-        IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
-        assertNotNull(newLink.getProductCmpt());
-        assertEquals(productCmpt, newLink.getProductCmpt());
+    public void testGetProductCmptLinkContainer_Generation() {
+        IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality = createLinkWithContainer(generation, "id1",
+                "Coverage");
+        assertNotNull(newPolicyCmptLinkCardinality.getProductCmptLinkContainer());
+        assertEquals(generation, newPolicyCmptLinkCardinality.getProductCmptLinkContainer());
     }
 
-    @Test
-    public void testGetProductCmpt2() {
-        IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
-        assertNotNull(newLink.getProductCmpt());
-        assertEquals(productCmpt, newLink.getProductCmpt());
-    }
-
-    @Test
-    public void testGetProductCmptGeneration() {
-        IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
-
-        assertNotNull(newLink.getProductCmptLinkContainer());
-        assertEquals(generation, newLink.getProductCmptLinkContainer());
-    }
-
-    @Test
-    public void testGetProductCmptGeneration2() {
-        IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
-
-        assertFalse(newLink.getProductCmptLinkContainer() instanceof IProductCmptGeneration);
-    }
-
-    private IProductCmptLink createLinkWithContainer(IProductCmptLinkContainer container,
+    private IPolicyCmptLinkCardinality createLinkWithContainer(IProductCmptLinkContainer container,
             String partId,
             String associationName) {
-        IProductCmptLink newLink = new ProductCmptLink(container, partId);
-        newLink.setAssociation(associationName);
-        return newLink;
+        IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality = new PolicyCmptLinkCardinality(container, partId);
+        newPolicyCmptLinkCardinality.setAssociation(associationName);
+        return newPolicyCmptLinkCardinality;
     }
 
     @Test
@@ -444,14 +331,6 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultCardinality() throws Exception {
-        Cardinality cardinality = new Cardinality(123, 321, 221);
-        link.setCardinality(cardinality);
-
-        assertThat(link.getDefaultCardinality(), is(221));
-    }
-
-    @Test
     public void testGetCardinality_Defined_NoTemplate() throws Exception {
         Cardinality cardinality = new Cardinality(123, 321, 221);
         link.setCardinality(cardinality);
@@ -464,7 +343,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     public void testGetCardinality_Inherited_WithTemplate() throws Exception {
         Cardinality templateCardinality = new Cardinality(123, 321, 221);
         Cardinality linkCardinality = new Cardinality(2, 5, 3);
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         templateLink.setCardinality(templateCardinality);
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         link.setCardinality(linkCardinality);
@@ -475,7 +354,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testGetCardinality_Undefined() throws Exception {
         Cardinality cardinality = new Cardinality(123, 321, 221);
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         templateLink.setCardinality(cardinality);
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
@@ -485,7 +364,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testGetCardinality_Inherited() throws Exception {
         Cardinality cardinality = new Cardinality(123, 321, 221);
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         templateLink.setCardinality(cardinality);
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
@@ -498,7 +377,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         Cardinality linkCardinality = new Cardinality(2, 5, 3);
         link.setCardinality(linkCardinality);
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         templateLink.setCardinality(templateCardinality);
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
@@ -508,7 +387,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testSetTemplateValueStatus_FormerlyUndefinedCardinalityIsCopiedFromTemplate() throws Exception {
         Cardinality cardinality = new Cardinality(123, 321, 221);
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         templateLink.setCardinality(cardinality);
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         assertThat(link.getCardinality(), is(Cardinality.UNDEFINED));
@@ -519,7 +398,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDelete_InheritedLinkIsSetToUndefined() {
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         // sanity check
@@ -528,21 +407,21 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.delete();
         assertThat(link.isDeleted(), is(false));
         assertThat(link.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
-        assertThat(generation.getLinksAsList(), hasItem(link));
+        assertThat(generation.getPolicyCmptLinkCardinalities(), hasItem(link));
     }
 
     @Test
     public void testDelete_DefinedLinkIsSetToUndefinedWhenTemplateIsPresent() {
-        IProductCmptLink templateLink = createTemplateLink();
+        IPolicyCmptLinkCardinality templateLink = createTemplateLink();
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-
         // sanity check
         assertThat(link.findTemplateProperty(ipsProject), is(templateLink));
 
         link.delete();
+
         assertThat(link.isDeleted(), is(false));
         assertThat(link.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
-        assertThat(generation.getLinksAsList(), hasItem(link));
+        assertThat(generation.getPolicyCmptLinkCardinalities(), hasItem(link));
     }
 
     @Test
@@ -554,11 +433,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         // sanity check
         assertThat(productCmpt.isUsingTemplate(), is(true));
         assertThat(link.findTemplateProperty(ipsProject), is(nullValue()));
-        assertThat(generation.getLinksAsList(), hasItem(link));
+        assertThat(generation.getPolicyCmptLinkCardinalities(), hasItem(link));
 
         link.delete();
         assertThat(link.isDeleted(), is(true));
-        assertThat(generation.getLinksAsList().size(), is(0));
+        assertThat(generation.getPolicyCmptLinkCardinalities().size(), is(0));
     }
 
     @Test
@@ -569,11 +448,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         // sanity check
         assertThat(productCmpt.isUsingTemplate(), is(true));
         assertThat(link.findTemplateProperty(ipsProject), is(nullValue()));
-        assertThat(generation.getLinksAsList(), hasItem(link));
+        assertThat(generation.getPolicyCmptLinkCardinalities(), hasItem(link));
 
         link.delete();
         assertThat(link.isDeleted(), is(true));
-        assertThat(generation.getLinksAsList().size(), is(0));
+        assertThat(generation.getPolicyCmptLinkCardinalities().size(), is(0));
     }
 
     @Test
@@ -581,21 +460,18 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         // sanity check
         assertThat(productCmpt.isUsingTemplate(), is(false));
         assertThat(link.findTemplateProperty(ipsProject), is(nullValue()));
-        assertThat(generation.getLinksAsList(), hasItem(link));
+        assertThat(generation.getPolicyCmptLinkCardinalities(), hasItem(link));
 
         link.delete();
         assertThat(link.isDeleted(), is(true));
         assertThat(generation.getLinksAsList().size(), is(0));
     }
 
-    protected IProductCmptLink createTemplateLink() {
+    protected IPolicyCmptLinkCardinality createTemplateLink() {
         setUpAssociation(true);
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         productCmpt.setTemplate(template.getQualifiedName());
-        IProductCmptLink templateLink = template.getProductCmptGeneration(0).newLink("CoverageType");
-        templateLink.setTarget("newTarget");
-        link.setTarget("newTarget");
-        return templateLink;
+        return template.getProductCmptGeneration(0).newPolicyCmptLinkCardinality("Coverage");
     }
 
     @Test
@@ -603,7 +479,6 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         // make product cmpt part of template hierarchy
         setUpAssociation(true);
         productCmpt.setTemplate("TestTemplate");
-        templateLink.setTarget("newTarget");
         templateLink.setMinCardinality(2);
         templateLink.setMaxCardinality(3);
         templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -614,52 +489,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         assertTrue(templateLink.isConcreteValue());
 
-        link.setTarget("newTarget");
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         assertTrue(link.isConcreteValue());
 
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         assertFalse(link.isConcreteValue());
-    }
-
-    @Test
-    public void testIsConfiguringPolicyAssociation() {
-        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
-        productAssociation.setTargetRoleSingular("CoverageType");
-        productAssociation.setMatchingAssociationSource(policyCmptType.getName());
-        productAssociation.setMatchingAssociationName("Coverage");
-        assertThat(link.isConfiguringPolicyAssociation(), is(false));
-
-        IPolicyCmptTypeAssociation policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
-        policyAssociation.setTargetRoleSingular("Coverage");
-        assertThat(link.isConfiguringPolicyAssociation(), is(true));
-    }
-
-    @Test
-    public void testIsConfiguringPolicyAssociation_ProductCmptWithoutPolicyCmpt() {
-        IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
-        IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
-        productAssociation.setTargetRoleSingular("CoverageType");
-
-        IProductCmpt cmpt = newProductCmpt(type, "NonConfiguringComponent");
-        IProductCmptGeneration gen = cmpt.getProductCmptGeneration(0);
-        IProductCmptLink nonConfiguringLink = gen.newLink("CoverageType");
-
-        assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
-    }
-
-    @Test
-    public void testIsConfiguringPolicyAssociation_ProductCmptTypeNotFound() {
-        IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
-        IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
-        productAssociation.setTargetRoleSingular("CoverageType");
-
-        IProductCmpt cmpt = newProductCmpt(type, "NonConfiguringComponent");
-        IProductCmptGeneration gen = cmpt.getProductCmptGeneration(0);
-        IProductCmptLink nonConfiguringLink = gen.newLink("CoverageType");
-        cmpt.setProductCmptType("NonExistant");
-
-        assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
     }
 
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.faktorips.util.StringUtil;
 /**
  * Defines the cardinality of a link. The cardinality consists of a minimum, a maximum and a default
  * value.
- * 
+ *
  * This class is immutable. If you like to "change" only one property you could call the with...
  * methods to get a new {@link Cardinality} with the one updated value.
  */
@@ -65,7 +65,7 @@ public class Cardinality implements Comparable<Cardinality> {
 
     /**
      * Creates a new {@link Cardinality} with the specified properties
-     * 
+     *
      * @param min The minimum cardinality
      * @param max The maximum cardinality
      * @param defaultCard The default cardinality
@@ -94,7 +94,7 @@ public class Cardinality implements Comparable<Cardinality> {
 
     /**
      * Creates a new Cardinality with the minimum cardinality updated to the specified value.
-     * 
+     *
      * @param newMin The new minimum
      * @return A new cardinality with the same maximum and default but updated minimum
      */
@@ -104,7 +104,7 @@ public class Cardinality implements Comparable<Cardinality> {
 
     /**
      * Creates a new Cardinality with the maximum cardinality updated to the specified value.
-     * 
+     *
      * @param newMax The new maximum
      * @return A new cardinality with the same minimum and default but updated maximum
      */
@@ -114,7 +114,7 @@ public class Cardinality implements Comparable<Cardinality> {
 
     /**
      * Creates a new Cardinality with the default cardinality updated to the specified value
-     * 
+     *
      * @param newDefault The new default
      * @return A new cardinality with the same minimum and maximum but updated default
      */
@@ -143,6 +143,25 @@ public class Cardinality implements Comparable<Cardinality> {
             );
             result.add(new Message(MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE, text, Message.ERROR, link,
                     IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY));
+        }
+        return result;
+    }
+
+    public MessageList validate(IPolicyCmptLinkCardinality policyLinkCardinality) {
+        MessageList result = new MessageList();
+        if (min < 0) {
+            String text = Messages.ProductCmptRelation_msgMinCardinalityIsLessThan0;
+            result.add(new Message(MSGCODE_MIN_CARDINALITY_IS_LESS_THAN_0, text, Message.ERROR, policyLinkCardinality,
+                    IPolicyCmptLinkCardinality.PROPERTY_MIN_CARDINALITY));
+        } else if (max < 1) {
+            String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
+            result.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text, Message.ERROR, policyLinkCardinality,
+                    IPolicyCmptLinkCardinality.PROPERTY_MAX_CARDINALITY));
+        } else if (min > max) {
+            String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
+            result.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, policyLinkCardinality,
+                    IPolicyCmptLinkCardinality.PROPERTY_MIN_CARDINALITY,
+                    IPolicyCmptLinkCardinality.PROPERTY_MAX_CARDINALITY));
         }
         return result;
     }

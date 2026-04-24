@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.SequencedSet;
 import java.util.Set;
 
 import org.faktorips.devtools.model.IIpsElement;
@@ -34,6 +36,7 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
 import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -60,6 +63,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
 
     private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
             linkCollection);
+
+    private final PolicyCmptLinkCardinalityCollection policyCmptLinkCardinalities = new PolicyCmptLinkCardinalityCollection(
+            this);
 
     public ProductCmptGeneration(ITimedIpsObject ipsObject, String id) {
         super(ipsObject, id);
@@ -383,6 +389,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         List<IIpsElement> children = new ArrayList<>(size);
         children.addAll(propertyValueCollection.getAllPropertyValues());
         children.addAll(getLinksAsList());
+        children.addAll(policyCmptLinkCardinalities.getAll());
         return children.toArray(new IIpsElement[children.size()]);
     }
 
@@ -401,11 +408,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(IProductCmptLink.TAG_NAME)) {
-            return createAndAddNewLinkInternal(id);
-        } else {
-            return propertyValueCollection.newPropertyValue(xmlTagName, id);
-        }
+        return switch (xmlTagName) {
+            case IProductCmptLink.TAG_NAME -> createAndAddNewLinkInternal(id);
+            case IPolicyCmptLinkCardinality.TAG_NAME -> policyCmptLinkCardinalities.newPolicyCmptLinkCardinality(
+                    id, xmlTag.getAttribute(IPolicyCmptLinkCardinality.PROPERTY_ASSOCIATION));
+            default -> propertyValueCollection.newPropertyValue(xmlTagName, id);
+        };
     }
 
     /**
@@ -425,6 +433,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected boolean addPartThis(IIpsObjectPart part) {
         return switch (part) {
             case IProductCmptLink productCmptLink -> linkCollection.addLink(productCmptLink);
+            case IPolicyCmptLinkCardinality policyCmptLinkCardinality -> policyCmptLinkCardinalities
+                    .add(policyCmptLinkCardinality);
             case IPropertyValue propertyValue -> propertyValueCollection.addPropertyValue(propertyValue);
             default -> false;
         };
@@ -434,6 +444,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected boolean removePartThis(IIpsObjectPart part) {
         return switch (part) {
             case IProductCmptLink productCmptLink -> linkCollection.remove(productCmptLink);
+            case IPolicyCmptLinkCardinality policyCmptLinkCardinality -> policyCmptLinkCardinalities
+                    .remove(policyCmptLinkCardinality);
             case IPropertyValue propertyValue -> propertyValueCollection.removePropertyValue(propertyValue);
             default -> false;
         };
@@ -443,6 +455,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     protected void reinitPartCollectionsThis() {
         propertyValueCollection.clear();
         linkCollection.clear();
+        policyCmptLinkCardinalities.clear();
     }
 
     @Override
@@ -558,6 +571,21 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public void removeUndefinedLinks() {
         linkCollection.removeUndefinedLinks();
+    }
+
+    @Override
+    public Optional<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinality(String policyAssociationName) {
+        return policyCmptLinkCardinalities.getPolicyCmptLinkCardinality(policyAssociationName);
+    }
+
+    @Override
+    public SequencedSet<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinalities() {
+        return policyCmptLinkCardinalities.getAll();
+    }
+
+    @Override
+    public IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality(String policyAssociationName) {
+        return policyCmptLinkCardinalities.newPolicyCmptLinkCardinality(getNextPartId(), policyAssociationName);
     }
 
 }

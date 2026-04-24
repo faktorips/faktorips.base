@@ -224,7 +224,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             }
             String text = MessageFormat.format(Messages.ProductCmptRelation_msgNoRelationDefined, association,
                     typeLabel);
-            list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
+            list.add(new Message(MSGCODE_UNKNOWN_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
         } else {
             validateCardinalityForMatchingAssociation(list, ipsProject, associationObj);
 

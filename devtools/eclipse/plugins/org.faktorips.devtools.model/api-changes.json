@@ -58,14 +58,44 @@
                         "justification": "FIPS-12191: Deprecated migration method removed (marked forRemoval=true since 22.6). This method was only needed for migration to Faktor-IPS 22.6 and is no longer required."
                     },
                     {
-                      "code": "java.method.addedToInterface",
-                      "new": "method org.faktorips.devtools.model.productcmpt.AttributeRelevance org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::getRelevance()",
-                      "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+                        "code": "java.method.addedToInterface",
+                        "new": "method org.faktorips.devtools.model.productcmpt.AttributeRelevance org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::getRelevance()",
+                        "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
                     },
                     {
-                      "code": "java.method.addedToInterface",
-                      "new": "method void org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::setRelevance(org.faktorips.devtools.model.productcmpt.AttributeRelevance)",
-                      "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+                        "code": "java.method.addedToInterface",
+                        "new": "method void org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::setRelevance(org.faktorips.devtools.model.productcmpt.AttributeRelevance)",
+                        "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+                    },
+                    {
+                        "code": "java.field.removedWithConstant",
+                        "old": "field org.faktorips.devtools.model.productcmpt.IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION",
+                        "justification": "FIPS-9911: Typo in constant name corrected from MSGCODE_UNKNWON_ASSOCIATION to MSGCODE_UNKNOWN_ASSOCIATION."
+                    },
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method boolean org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation::isCardinalityConfigurable()",
+                        "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+                    },
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method void org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation::setCardinalityConfigurable(boolean)",
+                        "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+                    },
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method java.util.Optional<org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality> org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer::getPolicyCmptLinkCardinality(java.lang.String)",
+                        "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+                    },
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer::newPolicyCmptLinkCardinality(java.lang.String)",
+                        "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+                    },
+                    {
+                        "code": "java.method.addedToInterface",
+                        "new": "method java.util.SequencedSet<org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality> org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer::getPolicyCmptLinkCardinalities()",
+                        "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
                     }
                 ]
             }

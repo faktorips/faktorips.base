@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.abstracttest.matcher;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.faktorips.runtime.Message;
@@ -117,7 +118,7 @@ public class Matchers {
     /**
      * A {@link Matcher Matcher&lt;T&gt;} that uses a wrapped {@link Matcher Matcher&lt;P&gt;} on a
      * property of type &lt;P&gt; of the matched object of type &lt;T&gt;.
-     * 
+     *
      * @param <T> the type of the matched object
      * @param <P> the type of the object's property matched by the wrapped matcher
      */
@@ -161,13 +162,41 @@ public class Matchers {
      * {@link MessageList} may contain additional {@link Message Messages} not matched by any
      * {@link Matcher}. The order of the {@link Message Messages} and {@link Matcher Matchers} is
      * irrelevant.
-     * 
+     *
      * @deprecated since 21.12. Use {@link IpsMatchers#hasMessages(Matcher...)} instead.
      */
     @SafeVarargs
     @Deprecated
     public static Matcher<MessageList> hasMessages(Matcher<Message>... messageMatchers) {
         return new MessageListMessagesMatcher(messageMatchers);
+    }
+
+    /**
+     * A {@link Matcher} that matches if an {@link Optional} is absent.
+     *
+     * @since 26.7
+     */
+    public static OptionalPresentMatcher<Object> absent() {
+        return new OptionalPresentMatcher<>(false);
+    }
+
+    /**
+     * A {@link Matcher} that matches if an {@link Optional} is present.
+     *
+     * @since 26.7
+     */
+    public static OptionalPresentMatcher<Object> present() {
+        return new OptionalPresentMatcher<>(true);
+    }
+
+    /**
+     * A {@link Matcher} that matches if an {@link Optional Optional's} value is equal to a given
+     * value.
+     *
+     * @since 26.7
+     */
+    public static <T> OptionalValueMatcher<T> hasValue(T value) {
+        return new OptionalValueMatcher<>(value);
     }
 
 }

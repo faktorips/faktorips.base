@@ -46,6 +46,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private boolean configurable = true;
 
+    /** @since 26.7 */
+    private boolean cardinalityConfigurable = true;
+
     private String inverseAssociation = ""; //$NON-NLS-1$
 
     /**
@@ -404,6 +407,18 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
+    public boolean isCardinalityConfigurable() {
+        return cardinalityConfigurable;
+    }
+
+    @Override
+    public void setCardinalityConfigurable(boolean cardinalityConfigurable) {
+        boolean oldValue = this.cardinalityConfigurable;
+        this.cardinalityConfigurable = cardinalityConfigurable;
+        valueChanged(oldValue, cardinalityConfigurable);
+    }
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         // detail to master must have maxCardinality = 1
@@ -707,6 +722,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         configurable = element.hasAttribute(PROPERTY_CONFIGURABLE)
                 ? Boolean.parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE))
                 : true;
+        cardinalityConfigurable = element.hasAttribute(PROPERTY_CARDINALITY_CONFIGURABLE)
+                ? Boolean.parseBoolean(element.getAttribute(PROPERTY_CARDINALITY_CONFIGURABLE))
+                : true;
     }
 
     @Override
@@ -728,6 +746,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, getMatchingAssociationSource());
         }
         newElement.setAttribute(PROPERTY_CONFIGURABLE, Boolean.toString(isConfigurable()));
+        if (cardinalityConfigurable) {
+            newElement.setAttribute(PROPERTY_CARDINALITY_CONFIGURABLE, Boolean.toString(cardinalityConfigurable));
+        }
     }
 
     @Override
