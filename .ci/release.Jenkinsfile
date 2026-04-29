@@ -8,12 +8,22 @@ def rdpRepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2product/targ
 def p2Server = 'hudson@update.faktorzehn.org'
 def(major, minor, patch, kind, isAlpha, isRelease, releasePattern) = parseVersion()
 
+def setVersionForPlatformBoms(String oldVersion, String newVersion) {
+    sh """
+        for boms in \$(find devtools/common/bom/ -type d -name "*-platform-dependencies");
+        do
+            sed -i "s|<version>${oldVersion}</version>|<version>${newVersion}</version>|" \$boms/pom.xml;
+        done
+    """
+}
+
 def configureRelease() {
     withMaven(publisherStrategy: 'EXPLICIT') {
         oldVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
         sh "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.RELEASE_VERSION} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${params.RELEASE_VERSION}/' {} \\;"
+        setVersionForPlatformBoms(oldVersion, params.RELEASE_VERSION)
         // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
         // must be installed before enforcer plugin is executed
         sh "mvn -U -V -fae -e clean install -f codequality-config"
@@ -30,6 +40,7 @@ def configureDevelopment() {
         }
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${params.RELEASE_VERSION}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
+        setVersionForPlatformBoms(params.RELEASE_VERSION, "${params.DEVELOPMENT_VERSION}-SNAPSHOT")
     }
 }
 

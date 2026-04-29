@@ -59,6 +59,10 @@
                     <escapeString>\</escapeString>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-maven-plugin</artifactId>
+            </plugin>
         </plugins>
 
         <pluginManagement>

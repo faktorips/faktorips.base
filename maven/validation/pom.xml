@@ -14,7 +14,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.faktorips</groupId>
-                <artifactId>eclipse-platform-dependencies</artifactId>
+                <artifactId>${target-platform}-platform-dependencies</artifactId>
                 <version>${faktorips.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -87,6 +87,10 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
