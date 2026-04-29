@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.pctype.AssociationQualificationGroup;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
@@ -30,7 +31,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Page to specify the properties of the association.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class PropertyPage extends WizardPage implements IBlockedValidationWizardPage, IDefaultFocusPage {
@@ -48,6 +49,7 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     private CardinalityField cardinalityFieldMax;
     private AssociationQualificationGroup associationQualificationGroup;
     private Text noteAboutProductStructureConstrained;
+    private Checkbox cardinalityConfigurableCheckbox;
 
     protected PropertyPage(NewPcTypeAssociationWizard wizard, IPolicyCmptTypeAssociation association,
             UIToolkit toolkit, BindingContext bindingContext) {
@@ -120,6 +122,10 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         cardinalityFieldMax = new CardinalityField(maxCardinalityText);
         visibleProperties.add(IAssociation.PROPERTY_MAX_CARDINALITY);
 
+        cardinalityConfigurableCheckbox = toolkit.createCheckbox(workArea,
+                Messages.PropertyPage_labelCardinalityConfigurable);
+        ((GridData)cardinalityConfigurableCheckbox.getLayoutData()).horizontalSpan = 2;
+
         Composite info = toolkit.createGridComposite(groupGeneral, 1, true, false);
 
         // create note about constrained by product structure
@@ -133,6 +139,8 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
         bindingContext.bindContent(targetRolePluralText, association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         bindingContext.bindContent(cardinalityFieldMin, association, IAssociation.PROPERTY_MIN_CARDINALITY);
         bindingContext.bindContent(cardinalityFieldMax, association, IAssociation.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(cardinalityConfigurableCheckbox, association,
+                IPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE);
     }
 
     private void updateDefaultTargetRolePlural() {

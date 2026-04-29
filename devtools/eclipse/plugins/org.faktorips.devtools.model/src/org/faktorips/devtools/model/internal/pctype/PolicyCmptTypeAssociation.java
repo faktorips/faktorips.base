@@ -47,7 +47,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     private boolean configurable = true;
 
     /** @since 26.7 */
-    private boolean cardinalityConfigurable = true;
+    private boolean cardinalityConfigurable = false;
 
     private String inverseAssociation = ""; //$NON-NLS-1$
 
