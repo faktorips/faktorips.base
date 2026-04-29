@@ -24,7 +24,7 @@
     </properties>
 
     <modules>
-        <module>bom/eclipse-platform-dependencies</module>
+        <module>bom/${target-platform}-platform-dependencies</module>
         <module>bom</module>
         <module>faktorips-abstraction</module>
         <module>faktorips-abstraction-plainjava</module>
@@ -55,7 +55,7 @@
             </dependency>
             <dependency>
                 <groupId>org.faktorips</groupId>
-                <artifactId>eclipse-platform-dependencies</artifactId>
+                <artifactId>${target-platform}-platform-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>

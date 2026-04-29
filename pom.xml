@@ -75,6 +75,10 @@
 
     <properties>
         <faktorips.version>${project.version}</faktorips.version>
+        <!-- 
+            The minimum supported eclipse version. 
+        -->
+        <target-platform>eclipse-2024-09</target-platform>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <git.user>${user.name}</git.user>
@@ -578,10 +582,6 @@
                         <phase>validate</phase>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.revapi</groupId>
-                <artifactId>revapi-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -12,7 +12,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <target-platform>eclipse-2024-09</target-platform>
         <version.kind>ci</version.kind>
         <maven.site.skip>true</maven.site.skip>
     </properties>
@@ -43,7 +42,7 @@
             </dependency>
             <dependency>
                 <groupId>org.faktorips</groupId>
-                <artifactId>eclipse-platform-dependencies</artifactId>
+                <artifactId>${target-platform}-platform-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
