@@ -255,6 +255,8 @@
             </xsd:element>
         </xsd:sequence>
         <xsd:attribute name="containsNull" type="boolean" use="required" />
+        <xsd:attribute name="lowerBoundOpen" type="boolean" use="optional" />
+        <xsd:attribute name="upperBoundOpen" type="boolean" use="optional" />
         <xsd:attribute name="empty" type="boolean" use="optional" />
     </xsd:complexType>
 
