@@ -343,4 +343,24 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
     public void setEmpty(boolean empty) {
         throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
     }
+
+    @Override
+    public boolean isLowerBoundOpen() {
+        return getRangeDelegate().isLowerBoundOpen();
+    }
+
+    @Override
+    public boolean isUpperBoundOpen() {
+        return getRangeDelegate().isUpperBoundOpen();
+    }
+
+    @Override
+    public void setUpperBoundOpen(boolean upperBoundOpen) {
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
+    }
+
+    @Override
+    public void setLowerBoundOpen(boolean lowerBoundOpen) {
+        throw new IllegalStateException("DelegatingValueSets cannot be changed"); //$NON-NLS-1$
+    }
 }

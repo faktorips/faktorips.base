@@ -26,7 +26,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class DecimalRange extends DefaultRange<Decimal> {
 
-    private static final long serialVersionUID = 5007646029371664759L;
+    private static final long serialVersionUID = 5007646029371664760L;
 
     private static final DecimalRange EMPTY = new DecimalRange();
 
@@ -55,6 +55,11 @@ public class DecimalRange extends DefaultRange<Decimal> {
      */
     private DecimalRange(Decimal lowerBound, Decimal upperBound, Decimal step, boolean containsNull) {
         super(lowerBound, upperBound, step, containsNull);
+    }
+
+    private DecimalRange(Decimal lowerBound, Decimal upperBound, Decimal step, boolean containsNull,
+            boolean lowerBoundOpen, boolean upperBoundOpen) {
+        super(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
     }
 
     /**
@@ -159,6 +164,58 @@ public class DecimalRange extends DefaultRange<Decimal> {
         return range;
     }
 
+    /**
+     * Creates a new {@link DecimalRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final DecimalRange valueOf(Decimal lowerBound,
+            Decimal upperBound,
+            Decimal step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new DecimalRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
+     * Creates a new {@link DecimalRange} with open/closed bound configuration. The strings are
+     * parsed with the {@link Decimal#valueOf(String)} method.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final DecimalRange valueOf(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        DecimalRange range = new DecimalRange(Decimal.valueOf(lowerBound), Decimal.valueOf(upperBound),
+                Decimal.valueOf(step), containsNull, lowerBoundOpen, upperBoundOpen);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
     @Override
     @SuppressFBWarnings(value = "RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT", justification = "Only exceptions are of interest, the return value is not needed")
     protected boolean checkIfValueCompliesToStepIncrement(Decimal value, Decimal bound) {
@@ -174,13 +231,22 @@ public class DecimalRange extends DefaultRange<Decimal> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
+        return computeDiscreteSize(RoundingMode.UNNECESSARY);
+    }
+
+    @Override
+    protected int sizeForDiscreteValuesWithFloor() {
+        return computeDiscreteSize(RoundingMode.FLOOR);
+    }
+
+    private int computeDiscreteSize(RoundingMode roundingMode) {
         Decimal absSize = getUpperBound().subtract(getLowerBound()).abs();
         Decimal size = absSize.equals(Decimal.ZERO)
                 ? Decimal.valueOf(1)
-                : absSize.divide(getStep(), 0, RoundingMode.UNNECESSARY).add(Decimal.valueOf(1));
+                : absSize.divide(getStep(), 0, roundingMode).add(Decimal.valueOf(1));
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-                    "The number of values contained within this range is to huge to be supported by this operation.");
+                    "The number of values contained within this range is too huge to be supported by this operation.");
         }
         return size.intValue();
     }

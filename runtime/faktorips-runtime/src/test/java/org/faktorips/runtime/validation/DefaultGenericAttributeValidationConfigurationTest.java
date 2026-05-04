@@ -12,10 +12,9 @@ package org.faktorips.runtime.validation;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ListResourceBundle;
 import java.util.Locale;
@@ -42,7 +41,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
         IModelObject modelObject = new TestPolicyWithVisitor();
 
-        assertTrue(config.shouldValidate(policyAttribute, modelObject));
+        assertThat(config.shouldValidate(policyAttribute, modelObject), is(true));
     }
 
     @Test
@@ -72,7 +71,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -95,7 +94,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -118,7 +117,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -141,7 +140,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.hasMarker(MandatoryMarker.INSTANCE), is(true));
         assertThat(config.getMissingMandatoryValueMarker(), is(MandatoryMarker.INSTANCE));
     }
@@ -157,7 +156,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValuePresentForIrrelevantAttribute(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.IrrelevantValuePresent.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -185,7 +184,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValuePresentForIrrelevantAttribute(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.IrrelevantValuePresent.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -208,7 +207,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValuePresentForIrrelevantAttribute(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.IrrelevantValuePresent.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -231,7 +230,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -259,7 +258,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -282,7 +281,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -306,7 +305,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -331,7 +330,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -356,7 +355,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -381,7 +380,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -406,7 +405,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -431,7 +430,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -456,7 +455,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -481,7 +480,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -506,7 +505,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -531,7 +530,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -556,7 +555,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -581,7 +580,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -592,6 +591,407 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
                 is(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpen_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", null, false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getCode(),
+                startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
+        assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss gr\u00F6\u00DFer als 10 und h\u00F6chstens 20 sein."));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpen_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", null, false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be greater than 10 and at most 20."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpen_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", null, false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss mindestens 10 und kleiner als 20 sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpen_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", null, false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be at least 10 and less than 20."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_BothOpen_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", null, false, true, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss gr\u00F6\u00DFer als 10 und kleiner als 20 sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_BothOpen_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", null, false, true, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be greater than 10 and less than 20."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpenUnboundedUpper_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("3", null, null, false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss gr\u00F6\u00DFer als 3 sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpenUnboundedUpper_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("3", null, null, false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be greater than 3."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpenUnboundedLower_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf((String)null, "42", null, false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss kleiner als 42 sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpenUnboundedLower_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf((String)null, "42", null, false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be less than 42."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_NullBoundsWithOpenFlags_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf((String)null, "42", null, false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getCode(),
+                startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
+        assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert darf h\u00F6chstens 42 sein."));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_NullBoundsWithOpenFlags_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf((String)null, "42", null, false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getCode(),
+                startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
+        assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
+        assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be at most 42."));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(modelObject));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpenWithStep_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("0", "100", "5", false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss gr\u00F6\u00DFer als 0 und h\u00F6chstens 100 (Schrittweite 5) sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpenWithStep_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("0", "100", "5", false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be greater than 0 and at most 100 (step 5)."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpenWithStep_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", "5", false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss mindestens 10 und kleiner als 20 (Schrittweite 5) sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpenWithStep_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", "5", false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be at least 10 and less than 20 (step 5)."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_BothOpenWithStep_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", "5", false, true, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be greater than 10 and less than 20 (step 5)."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_BothOpenWithStep_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("10", "20", "5", false, true, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss gr\u00F6\u00DFer als 10 und kleiner als 20 (Schrittweite 5) sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpenNoUpperWithStep_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("3", null, "2", false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss gr\u00F6\u00DFer als 3 (Schrittweite 2) sein."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_LowerOpenNoUpperWithStep_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf("3", null, "2", false, true, false));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be greater than 3 (step 2)."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpenNoLowerWithStep_EN() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf((String)null, "100", "10", false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "The field \"Integer Attribute\" contains an invalid value. The value must be less than 100 (step 10)."));
+    }
+
+    @Test
+    public void testCreateMessageForValueNotInAllowedValueSetRange_UpperOpenNoLowerWithStep_DE() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForIntegerAttribute(
+                IntegerRange.valueOf((String)null, "100", "10", false, false, true));
+
+        Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertThat(message.getText(), is(
+                "Das Feld \"Integer-Attribut\" enth\u00E4lt einen ung\u00FCltigen Wert. Der Wert muss kleiner als 100 (Schrittweite 10) sein."));
     }
 
     @Test
@@ -608,7 +1008,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -635,7 +1035,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.ValueNotInValueSet.getId()));
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
@@ -659,7 +1059,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId().toUpperCase()));
         assertThat(message.getCode(), containsString("TESTPOLICYWITHVISITOR"));
@@ -705,7 +1105,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
                 TestPolicyWithVisitor.class);
 
-        assertNotNull(message);
+        assertThat(message, is(notNullValue()));
         assertThat(message.getCode(),
                 startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId().toUpperCase()));
         assertThat(message.getText(),

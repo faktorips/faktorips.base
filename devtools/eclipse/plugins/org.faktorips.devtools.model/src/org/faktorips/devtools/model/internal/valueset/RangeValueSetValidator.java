@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNonNull;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
+import static org.faktorips.devtools.model.valueset.IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN;
 import static org.faktorips.devtools.model.valueset.IRangeValueSet.MSGCODE_LBOUND_GREATER_UBOUND;
 import static org.faktorips.devtools.model.valueset.IRangeValueSet.MSGCODE_NOT_NUMERIC_DATATYPE;
 import static org.faktorips.devtools.model.valueset.IRangeValueSet.MSGCODE_STEP_RANGE_MISMATCH;
@@ -69,10 +70,9 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
         }
 
         if (isNonNull(numDatatype, lowerBound, upperBound)) {
-            if (datatypeToValidate.compare(lowerBound, upperBound) > 0) {
-                String text = Messages.Range_msgLowerboundGreaterUpperbound;
-                messages.newError(MSGCODE_LBOUND_GREATER_UBOUND, text, parentObjectProperty, lowerBoundProperty,
-                        upperBoundProperty);
+            validateBoundsOrder(datatypeToValidate, lowerBound, upperBound, messages,
+                    parentObjectProperty, lowerBoundProperty, upperBoundProperty);
+            if (messages.containsErrorMsg()) {
                 return messages;
             }
         }
@@ -93,6 +93,26 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
         }
 
         return messages;
+    }
+
+    private void validateBoundsOrder(ValueDatatype datatypeToValidate,
+            String lowerBound,
+            String upperBound,
+            MessageList messages,
+            ObjectProperty parentObjectProperty,
+            ObjectProperty lowerBoundProperty,
+            ObjectProperty upperBoundProperty) {
+        int lowerToUpperComparison = datatypeToValidate.compare(lowerBound, upperBound);
+        if (lowerToUpperComparison > 0) {
+            String text = Messages.Range_msgLowerboundGreaterUpperbound;
+            messages.newError(MSGCODE_LBOUND_GREATER_UBOUND, text, parentObjectProperty, lowerBoundProperty,
+                    upperBoundProperty);
+        } else if (lowerToUpperComparison == 0
+                && (getValueSet().isLowerBoundOpen() || getValueSet().isUpperBoundOpen())) {
+            String text = Messages.RangeValueSet_msgLowerboundEqualUpperboundOpen;
+            messages.newError(MSGCODE_LBOUND_EQUAL_UBOUND_OPEN, text, parentObjectProperty,
+                    lowerBoundProperty, upperBoundProperty);
+        }
     }
 
     private ValueDatatype getDatatypeOrWrapperForPrimitivDatatype(ValueDatatype datatype) {

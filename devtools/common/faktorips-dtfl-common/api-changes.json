@@ -1,0 +1,72 @@
+{
+    "26.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.DatatypeHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.DatatypeHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.AbstractDatatypeHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.AbstractDatatypeHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.BigDecimalHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.BigDecimalHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.DateHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.DateHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.DecimalHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.DecimalHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.DoubleHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.DoubleHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.IntegerHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.IntegerHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.ListOfValueDatatypeHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.LongHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.LongHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.MoneyHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "new": "method org.faktorips.codegen.JavaCodeFragment org.faktorips.codegen.dthelpers.MoneyHelper::newRangeInstance(org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, org.faktorips.codegen.JavaCodeFragment, boolean)",
+                        "justification": "FIPS-11459: newRangeInstance extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    }
+                ]
+            }
+        }
+    ]
+}

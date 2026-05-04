@@ -106,6 +106,14 @@ class Constants {
         addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_EMPTY"
     }
 
+    def static XML_ATTRIBUTE_LOWER_BOUND_OPEN(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_LOWER_BOUND_OPEN"
+    }
+
+    def static XML_ATTRIBUTE_UPPER_BOUND_OPEN(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_UPPER_BOUND_OPEN"
+    }
+
     def static CONFIGURED_VALUE_SET_PREFIX(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".CONFIGURED_VALUE_SET_PREFIX"
     }

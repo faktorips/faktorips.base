@@ -88,6 +88,33 @@
             </StringLength>
         </ValueSet>
     </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Range containsNull="false" lowerBoundOpen="true" upperBoundOpen="true">
+                <LowerBound isNull="false">5</LowerBound>
+                <UpperBound isNull="false">10</UpperBound>
+                <Step isNull="true"></Step>
+            </Range>
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Range containsNull="true" lowerBoundOpen="true" upperBoundOpen="false">
+                <LowerBound isNull="false">0</LowerBound>
+                <UpperBound isNull="false">100</UpperBound>
+                <Step isNull="false">10</Step>
+            </Range>
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Range containsNull="false" lowerBoundOpen="false" upperBoundOpen="true">
+                <LowerBound isNull="false">0</LowerBound>
+                <UpperBound isNull="false">50</UpperBound>
+                <Step isNull="true"></Step>
+            </Range>
+        </ValueSet>
+    </ConfigElement>
     <AttributeValue attribute="A" id="1">
         <Value isNull="false" valueType="SingleValue">
             <InternationalString defaultLocale="hy">

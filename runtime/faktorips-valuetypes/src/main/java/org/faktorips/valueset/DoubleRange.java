@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 public class DoubleRange extends DefaultRange<Double> {
 
-    private static final long serialVersionUID = 3093772484960108819L;
+    private static final long serialVersionUID = 3093772484960108820L;
 
     private static final DoubleRange EMPTY = new DoubleRange();
 
@@ -60,6 +60,11 @@ public class DoubleRange extends DefaultRange<Double> {
         this(lowerBound, upperBound, false);
     }
 
+    private DoubleRange(Double lowerBound, Double upperBound, Double step, boolean containsNull,
+            boolean lowerBoundOpen, boolean upperBoundOpen) {
+        super(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
     /**
      * Creates an empty {@link DoubleRange}.
      */
@@ -77,7 +82,7 @@ public class DoubleRange extends DefaultRange<Double> {
      * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
      */
-    public static DoubleRange valueOf(String lowerBound, String upperBound) {
+    public static final DoubleRange valueOf(String lowerBound, String upperBound) {
         return valueOf(lowerBound, upperBound, null, false);
     }
 
@@ -90,7 +95,7 @@ public class DoubleRange extends DefaultRange<Double> {
      * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
      */
-    public static DoubleRange valueOf(Double lowerBound, Double upperBound) {
+    public static final DoubleRange valueOf(Double lowerBound, Double upperBound) {
         return valueOf(lowerBound, upperBound, null, false);
     }
 
@@ -106,7 +111,7 @@ public class DoubleRange extends DefaultRange<Double> {
      * @param step the step increment of this range. The parameter being {@code null} indicates that
      *            the range is continuous
      */
-    public static DoubleRange valueOf(String lowerBound, String upperBound, String step) {
+    public static final DoubleRange valueOf(String lowerBound, String upperBound, String step) {
         return valueOf(lowerBound, upperBound, step, false);
     }
 
@@ -120,7 +125,7 @@ public class DoubleRange extends DefaultRange<Double> {
      * @param step the step increment of this range. The parameter being {@code null} indicates that
      *            the range is continuous
      */
-    public static DoubleRange valueOf(Double lowerBound, Double upperBound, Double step) {
+    public static final DoubleRange valueOf(Double lowerBound, Double upperBound, Double step) {
         return valueOf(lowerBound, upperBound, step, false);
     }
 
@@ -135,7 +140,7 @@ public class DoubleRange extends DefaultRange<Double> {
      *            that the range is open on this side
      * @param containsNull {@code true} indicates that the range contains {@code null}
      */
-    public static DoubleRange valueOf(String lowerBound, String upperBound, boolean containsNull) {
+    public static final DoubleRange valueOf(String lowerBound, String upperBound, boolean containsNull) {
         return valueOf(lowerBound, upperBound, null, containsNull);
     }
 
@@ -148,7 +153,7 @@ public class DoubleRange extends DefaultRange<Double> {
      *            that the range is open on this side
      * @param containsNull {@code true} indicates that the range contains {@code null}
      */
-    public static DoubleRange valueOf(Double lowerBound, Double upperBound, boolean containsNull) {
+    public static final DoubleRange valueOf(Double lowerBound, Double upperBound, boolean containsNull) {
         return valueOf(lowerBound, upperBound, null, containsNull);
     }
 
@@ -165,10 +170,10 @@ public class DoubleRange extends DefaultRange<Double> {
      *            the range is continuous
      * @param containsNull {@code true} indicates that the range contains {@code null}
      */
-    public static DoubleRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
-        Double min = lowerBound == null || lowerBound.isEmpty() ? null : Double.valueOf(lowerBound);
-        Double max = upperBound == null || upperBound.isEmpty() ? null : Double.valueOf(upperBound);
-        Double stepValue = step == null || step.isEmpty() ? null : Double.valueOf(step);
+    public static final DoubleRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
+        Double min = (lowerBound == null || lowerBound.isEmpty()) ? null : Double.valueOf(lowerBound);
+        Double max = (upperBound == null || upperBound.isEmpty()) ? null : Double.valueOf(upperBound);
+        Double stepValue = (step == null || step.isEmpty()) ? null : Double.valueOf(step);
         DoubleRange range = new DoubleRange(min, max, stepValue, containsNull);
         range.checkIfStepFitsIntoBounds();
         return range;
@@ -185,8 +190,63 @@ public class DoubleRange extends DefaultRange<Double> {
      *            the range is continuous
      * @param containsNull {@code true} indicates that the range contains {@code null}
      */
-    public static DoubleRange valueOf(Double lowerBound, Double upperBound, Double step, boolean containsNull) {
+    public static final DoubleRange valueOf(Double lowerBound, Double upperBound, Double step, boolean containsNull) {
         DoubleRange range = new DoubleRange(lowerBound, upperBound, step, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
+    /**
+     * Creates a {@link DoubleRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final DoubleRange valueOf(Double lowerBound,
+            Double upperBound,
+            Double step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new DoubleRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
+     * Creates a {@link DoubleRange} with open/closed bound configuration. The strings are parsed
+     * with the {@link Double#valueOf(String)} method. An empty string is interpreted as
+     * {@code null}.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final DoubleRange valueOf(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        Double min = (lowerBound == null || lowerBound.isEmpty()) ? null : Double.valueOf(lowerBound);
+        Double max = (upperBound == null || upperBound.isEmpty()) ? null : Double.valueOf(upperBound);
+        Double stepValue = (step == null || step.isEmpty()) ? null : Double.valueOf(step);
+        DoubleRange range = new DoubleRange(min, max, stepValue, containsNull, lowerBoundOpen, upperBoundOpen);
         range.checkIfStepFitsIntoBounds();
         return range;
     }
@@ -203,6 +263,17 @@ public class DoubleRange extends DefaultRange<Double> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
+        double diff = Math.abs(getUpperBound() - getLowerBound());
+        BigDecimal remaining = BigDecimal.valueOf(diff).remainder(BigDecimal.valueOf(getStep()));
+        if (!remaining.equals(BigDecimal.valueOf(0, remaining.scale()))) {
+            throw new ArithmeticException(
+                    "The step doesn't fit into the specified bounds without remainder.");
+        }
+        return 1 + Double.valueOf(diff / getStep()).intValue();
+    }
+
+    @Override
+    protected int sizeForDiscreteValuesWithFloor() {
         double diff = Math.abs(getUpperBound() - getLowerBound());
         return 1 + Double.valueOf(diff / getStep()).intValue();
     }

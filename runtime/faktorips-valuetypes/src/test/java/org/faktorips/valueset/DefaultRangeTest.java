@@ -92,6 +92,38 @@ public class DefaultRangeTest {
     }
 
     @Test
+    public void testCheckIfStepFitsIntoBounds_ClosedBoundsThrow() {
+        assertThrows(IllegalArgumentException.class, () -> new TestRange(0, 10, 3, false, false, false));
+    }
+
+    @Test
+    public void testCheckIfStepFitsIntoBounds_LowerOpenDoesNotThrow() {
+        TestRange range = new TestRange(0, 10, 3, false, true, false);
+
+        assertThat(range.getLowerBound(), is(0));
+        assertThat(range.getUpperBound(), is(10));
+        assertThat(range.getStep(), is(3));
+    }
+
+    @Test
+    public void testCheckIfStepFitsIntoBounds_UpperOpenDoesNotThrow() {
+        TestRange range = new TestRange(0, 10, 3, false, false, true);
+
+        assertThat(range.getLowerBound(), is(0));
+        assertThat(range.getUpperBound(), is(10));
+        assertThat(range.getStep(), is(3));
+    }
+
+    @Test
+    public void testCheckIfStepFitsIntoBounds_BothOpenDoNotThrow() {
+        TestRange range = new TestRange(0, 10, 3, false, true, true);
+
+        assertThat(range.getLowerBound(), is(0));
+        assertThat(range.getUpperBound(), is(10));
+        assertThat(range.getStep(), is(3));
+    }
+
+    @Test
     public void testEquals_LegacyAndNewEmpty() {
         TestRange emptytRange = new TestRange();
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
@@ -325,9 +357,9 @@ public class DefaultRangeTest {
                 new BigDecimal("5.0")));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetValues_NoStep() {
-        new TestRange(1, 5, null).getValues(true);
+        assertThrows(RuntimeException.class, () -> new TestRange(1, 5, null).getValues(true));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -402,6 +434,456 @@ public class DefaultRangeTest {
                 is(not(subsetOf((Range)LongRange.valueOf(0L, 20L, 2L, false)))));
     }
 
+    @Test
+    public void testContains_LowerBoundOpen() {
+        TestRange range = new TestRange(5, 10, null, false, true, false);
+
+        assertThat(range.contains(4), is(false));
+        assertThat(range.contains(5), is(false));
+        assertThat(range.contains(6), is(true));
+        assertThat(range.contains(10), is(true));
+        assertThat(range.contains(11), is(false));
+    }
+
+    @Test
+    public void testContains_UpperBoundOpen() {
+        TestRange range = new TestRange(5, 10, null, false, false, true);
+
+        assertThat(range.contains(4), is(false));
+        assertThat(range.contains(5), is(true));
+        assertThat(range.contains(9), is(true));
+        assertThat(range.contains(10), is(false));
+        assertThat(range.contains(11), is(false));
+    }
+
+    @Test
+    public void testContains_BothBoundsOpen() {
+        TestRange range = new TestRange(5, 10, null, false, true, true);
+
+        assertThat(range.contains(5), is(false));
+        assertThat(range.contains(6), is(true));
+        assertThat(range.contains(9), is(true));
+        assertThat(range.contains(10), is(false));
+    }
+
+    @Test
+    public void testContains_BothBoundsClosed() {
+        TestRange range = new TestRange(5, 10, null, false, false, false);
+
+        assertThat(range.contains(5), is(true));
+        assertThat(range.contains(10), is(true));
+    }
+
+    @Test
+    public void testIsEmpty_EqualBoundsLowerOpen() {
+        TestRange range = new TestRange(5, 5, null, false, true, false);
+
+        assertThat(range.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testIsEmpty_EqualBoundsUpperOpen() {
+        TestRange range = new TestRange(5, 5, null, false, false, true);
+
+        assertThat(range.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testIsEmpty_EqualBoundsBothOpen() {
+        TestRange range = new TestRange(5, 5, null, false, true, true);
+
+        assertThat(range.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testIsEmpty_EqualBoundsBothClosed() {
+        TestRange range = new TestRange(5, 5, null, false, false, false);
+
+        assertThat(range.isEmpty(), is(false));
+    }
+
+    @Test
+    public void testIsEmpty_DifferentBoundsWithOpen() {
+        TestRange range = new TestRange(5, 10, null, false, true, true);
+
+        assertThat(range.isEmpty(), is(false));
+    }
+
+    @Test
+    public void testEquals_DifferentOpenClosed() {
+        TestRange closedRange = new TestRange(5, 10, null, false, false, false);
+        TestRange openRange = new TestRange(5, 10, null, false, true, false);
+
+        assertThat(closedRange, is(not(openRange)));
+    }
+
+    @Test
+    public void testEquals_SameOpenClosed() {
+        TestRange range1 = new TestRange(5, 10, null, false, true, true);
+        TestRange range2 = new TestRange(5, 10, null, false, true, true);
+
+        assertThat(range1, is(range2));
+    }
+
+    @Test
+    public void testHashCode_DifferentOpenClosed() {
+        TestRange closedRange = new TestRange(5, 10, null, false, false, false);
+        TestRange openRange = new TestRange(5, 10, null, false, true, false);
+
+        assertThat(closedRange.hashCode(), is(not(openRange.hashCode())));
+    }
+
+    @Test
+    public void testToString_Closed() {
+        TestRange range = new TestRange(5, 10, null, false, false, false);
+
+        assertThat(range.toString(), is("[5-10]"));
+    }
+
+    @Test
+    public void testToString_LowerOpen() {
+        TestRange range = new TestRange(5, 10, null, false, true, false);
+
+        assertThat(range.toString(), is("(5-10]"));
+    }
+
+    @Test
+    public void testToString_UpperOpen() {
+        TestRange range = new TestRange(5, 10, null, false, false, true);
+
+        assertThat(range.toString(), is("[5-10)"));
+    }
+
+    @Test
+    public void testToString_BothOpen() {
+        TestRange range = new TestRange(5, 10, null, false, true, true);
+
+        assertThat(range.toString(), is("(5-10)"));
+    }
+
+    @Test
+    public void testToString_OpenWithStep() {
+        TestRange range = new TestRange(5, 10, 2, false, true, false);
+
+        assertThat(range.toString(), is("(5-10, 2]"));
+    }
+
+    @Test
+    public void testContains_NullWithOpenBounds() {
+        TestRange range = new TestRange(5, 10, null, true, true, true);
+
+        assertThat(range.contains(null), is(true));
+        assertThat(range.contains(5), is(false));
+    }
+
+    @Test
+    public void testIsLowerBoundOpen() {
+        TestRange range = new TestRange(5, 10, null, false, true, false);
+
+        assertThat(range.isLowerBoundOpen(), is(true));
+        assertThat(range.isUpperBoundOpen(), is(false));
+    }
+
+    @Test
+    public void testIsUpperBoundOpen() {
+        TestRange range = new TestRange(5, 10, null, false, false, true);
+
+        assertThat(range.isLowerBoundOpen(), is(false));
+        assertThat(range.isUpperBoundOpen(), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithLowerOpenBoundOnNullBound() {
+        TestRange range = new TestRange(null, null, null, true, true, false);
+
+        assertThat(range.isUnrestricted(false), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithLowerOpenBoundOnNullBound_ExcludeNull() {
+        TestRange range = new TestRange(null, null, null, true, true, false);
+
+        assertThat(range.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithLowerOpenBoundOnNonNullBound() {
+        TestRange range = new TestRange(5, null, null, true, true, false);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithUpperOpenBoundOnNullBound() {
+        TestRange range = new TestRange(null, null, null, true, false, true);
+
+        assertThat(range.isUnrestricted(false), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithUpperOpenBoundOnNonNullBound() {
+        TestRange range = new TestRange(null, 10, null, true, false, true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithBothOpenBoundsOnNullBounds() {
+        TestRange range = new TestRange(null, null, null, true, true, true);
+
+        assertThat(range.isUnrestricted(false), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithBothOpenBoundsOnNullBounds_ExcludeNull() {
+        TestRange range = new TestRange(null, null, null, true, true, true);
+
+        assertThat(range.isUnrestricted(true), is(true));
+    }
+
+    @Test
+    public void testIsUnrestricted_WithBothOpenBoundsOnNonNullBounds() {
+        TestRange range = new TestRange(5, 10, null, true, true, true);
+
+        assertThat(range.isUnrestricted(false), is(false));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_OpenWithinClosed() {
+        TestRange openRange = new TestRange(5, 10, null, false, true, true);
+        TestRange closedRange = new TestRange(5, 10, null, false, false, false);
+
+        assertThat(openRange, is(subsetOf((Range)closedRange)));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_ClosedNotWithinOpen() {
+        TestRange closedRange = new TestRange(5, 10, null, false, false, false);
+        TestRange openRange = new TestRange(5, 10, null, false, true, true);
+
+        assertThat(closedRange, is(not(subsetOf((Range)openRange))));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_HalfOpenWithinClosed() {
+        TestRange halfOpen = new TestRange(5, 10, null, false, true, false);
+        TestRange closed = new TestRange(5, 10, null, false, false, false);
+
+        assertThat(halfOpen, is(subsetOf((Range)closed)));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_ClosedNotWithinUpperOpen() {
+        TestRange closed = new TestRange(5, 10, null, false, false, false);
+        TestRange upperOpen = new TestRange(5, 10, null, false, false, true);
+
+        assertThat(closed, is(not(subsetOf((Range)upperOpen))));
+    }
+
+    @Test
+    public void testToString_EmptyOpenRange() {
+        TestRange range = new TestRange(5, 5, null, false, true, false);
+
+        assertThat(range.toString(), is("[]"));
+    }
+
+    @Test
+    public void testGetValues_EqualBoundsWithOpen() {
+        TestRange range = new TestRange(5, 5, 1, false, true, false);
+
+        Set<Integer> values = range.getValues(false);
+
+        assertThat(values, is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_WithContainsNullAndOpenBounds() {
+        TestRange range = new TestRange(5, 10, 1, true, true, true);
+
+        Set<Integer> values = range.getValues(false);
+
+        assertThat(values.size(), is(5));
+        assertThat(values.contains(null), is(true));
+        assertThat(values.contains(5), is(false));
+        assertThat(values.contains(6), is(true));
+        assertThat(values.contains(9), is(true));
+        assertThat(values.contains(10), is(false));
+    }
+
+    @Test
+    public void testSize_EqualBoundsWithOpen() {
+        TestRange range = new TestRange(5, 5, null, false, true, false);
+
+        assertThat(range.size(), is(0));
+    }
+
+    @Test
+    public void testContains_WithStepAndLowerOpen() {
+        TestRange range = new TestRange(0, 10, 2, false, true, false);
+
+        assertThat(range.contains(0), is(false));
+        assertThat(range.contains(2), is(true));
+        assertThat(range.contains(4), is(true));
+        assertThat(range.contains(10), is(true));
+        assertThat(range.contains(3), is(false));
+    }
+
+    @Test
+    public void testContains_WithStepAndUpperOpen() {
+        TestRange range = new TestRange(0, 10, 2, false, false, true);
+
+        assertThat(range.contains(0), is(true));
+        assertThat(range.contains(8), is(true));
+        assertThat(range.contains(10), is(false));
+        assertThat(range.contains(3), is(false));
+    }
+
+    @Test
+    public void testContains_WithStepAndBothOpen() {
+        TestRange range = new TestRange(0, 10, 3, false, true, true);
+
+        assertThat(range.contains(0), is(false));
+        assertThat(range.contains(3), is(true));
+        assertThat(range.contains(6), is(true));
+        assertThat(range.contains(9), is(true));
+        assertThat(range.contains(10), is(false));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_OpenWithStepWithinClosedWithStep() {
+        TestRange openRange = new TestRange(0, 10, 2, false, true, false);
+        TestRange closedRange = new TestRange(0, 10, 2, false, false, false);
+
+        assertThat(openRange, is(subsetOf((Range)closedRange)));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_ClosedWithStepNotWithinOpenWithStep() {
+        TestRange closedRange = new TestRange(0, 10, 2, false, false, false);
+        TestRange openRange = new TestRange(0, 10, 2, false, true, true);
+
+        assertThat(closedRange, is(not(subsetOf((Range)openRange))));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_OpenWithStepWithinWiderClosed() {
+        TestRange openRange = new TestRange(0, 10, 2, false, true, true);
+        TestRange closedRange = new TestRange(0, 20, 2, false, false, false);
+
+        assertThat(openRange, is(subsetOf((Range)closedRange)));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_UpperOpenStepAlignedWithinClosed() {
+        TestRange upperOpenRange = new TestRange(0, 10, 2, false, false, true);
+        TestRange closedRange = new TestRange(0, 10, 2, false, false, false);
+
+        assertThat(upperOpenRange, is(subsetOf((Range)closedRange)));
+        assertThat(closedRange, is(not(subsetOf((Range)upperOpenRange))));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf_BothOpenStepAlignedWithinClosed() {
+        TestRange openRange = new TestRange(0, 12, 3, false, true, true);
+        TestRange closedRange = new TestRange(0, 12, 3, false, false, false);
+
+        assertThat(openRange, is(subsetOf((Range)closedRange)));
+        assertThat(closedRange, is(not(subsetOf((Range)openRange))));
+    }
+
+    @Test
+    public void testContains_WithNullLowerBoundAndOpenFlag() {
+        TestRange range = new TestRange(null, 10, null, false, true, false);
+
+        assertThat(range.contains(5), is(true));
+        assertThat(range.contains(10), is(true));
+        assertThat(range.contains(11), is(false));
+    }
+
+    @Test
+    public void testContains_WithNullUpperBoundAndOpenFlag() {
+        TestRange range = new TestRange(5, null, null, false, false, true);
+
+        assertThat(range.contains(4), is(false));
+        assertThat(range.contains(5), is(true));
+        assertThat(range.contains(100), is(true));
+    }
+
+    @Test
+    public void testGetValues_WithOpenBoundsAndNullLowerBound() {
+        TestRange range = new TestRange(null, 10, 1, false, true, false);
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(false));
+    }
+
+    @Test
+    public void testGetValues_WithOpenBoundsAndNullUpperBound() {
+        TestRange range = new TestRange(5, null, 1, false, false, true);
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(false));
+    }
+
+    @Test
+    public void testSize_WithOpenLowerBound() {
+        TestRange range = new TestRange(0, 10, 2, false, true, false);
+
+        assertThat(range.size(), is(5));
+    }
+
+    @Test
+    public void testSize_WithOpenUpperBound() {
+        TestRange range = new TestRange(0, 10, 2, false, false, true);
+
+        assertThat(range.size(), is(5));
+    }
+
+    @Test
+    public void testSize_WithBothOpenBounds() {
+        TestRange range = new TestRange(0, 10, 2, false, true, true);
+
+        assertThat(range.size(), is(4));
+    }
+
+    @Test
+    public void testSize_WithOpenBoundsWhereUpperNotOnStep() {
+        TestRange range = new TestRange(0, 10, 3, false, true, true);
+
+        assertThat(range.size(), is(3));
+    }
+
+    @Test
+    public void testSize_WithBothOpenBoundsWhereUpperIsOnStep() {
+        // (0,9) step 3 → values 3, 6 → size 2 (upper 9 is on the grid, so excluded)
+        TestRange range = new TestRange(0, 9, 3, false, true, true);
+
+        assertThat(range.size(), is(2));
+        Set<Integer> values = range.getValues(false);
+        assertThat(values, is(Set.of(3, 6)));
+    }
+
+    @Test
+    public void testSize_WithNullLowerAndOpenFlag() {
+        TestRange range = new TestRange(null, 10, 1, false, true, false);
+
+        assertThat(range.size(), is(Integer.MAX_VALUE));
+    }
+
+    @Test
+    public void testSize_WithNullUpperAndOpenFlag() {
+        TestRange range = new TestRange(5, null, 1, false, false, true);
+
+        assertThat(range.size(), is(Integer.MAX_VALUE));
+    }
+
     private static class TestRangeForDiscreteValues extends DefaultRange<LocalDate> {
         private static final long serialVersionUID = 1L;
 
@@ -434,6 +916,27 @@ public class DefaultRangeTest {
 
         public TestRange(Integer lower, Integer upper, Integer step, boolean containsNull) {
             super(lower, upper, step, containsNull);
+        }
+
+        public TestRange(Integer lower, Integer upper, Integer step, boolean containsNull,
+                boolean lowerBoundOpen, boolean upperBoundOpen) {
+            super(lower, upper, step, containsNull, lowerBoundOpen, upperBoundOpen);
+        }
+
+        @Override
+        protected int sizeForDiscreteValuesExcludingNull() {
+            int diff = Math.abs(getUpperBound() - getLowerBound());
+            return diff / getStep() + 1;
+        }
+
+        @Override
+        protected int sizeForDiscreteValuesWithFloor() {
+            return sizeForDiscreteValuesExcludingNull();
+        }
+
+        @Override
+        protected Integer getNextValue(Integer currentValue) {
+            return currentValue + getStep();
         }
 
         @Override

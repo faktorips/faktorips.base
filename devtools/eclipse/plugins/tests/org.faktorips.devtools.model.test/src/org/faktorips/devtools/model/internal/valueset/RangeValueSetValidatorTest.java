@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -86,6 +86,115 @@ public class RangeValueSetValidatorTest {
         Message messageByCode = validatotList.getMessageByCode(IRangeValueSet.MSGCODE_UNKNOWN_DATATYPE);
 
         assertThat(messageByCode, hasInvalidObject(owner));
+    }
+
+    @Test
+    public void testValidate_EqualBoundsWithLowerOpen_Error() {
+        when(datatype.isParsable(ANY_VALUE)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        when(datatype.compare(ANY_VALUE, ANY_VALUE)).thenReturn(0);
+        doReturn(ANY_VALUE).when(range).getLowerBound();
+        doReturn(ANY_VALUE).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+        doReturn(true).when(range).isLowerBoundOpen();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, hasMessageCode(IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN));
+    }
+
+    @Test
+    public void testValidate_EqualBoundsWithUpperOpen_Error() {
+        when(datatype.isParsable(ANY_VALUE)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        when(datatype.compare(ANY_VALUE, ANY_VALUE)).thenReturn(0);
+        doReturn(ANY_VALUE).when(range).getLowerBound();
+        doReturn(ANY_VALUE).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+        doReturn(false).when(range).isLowerBoundOpen();
+        doReturn(true).when(range).isUpperBoundOpen();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, hasMessageCode(IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN));
+    }
+
+    @Test
+    public void testValidate_EqualBoundsWithBothOpen_Error() {
+        when(datatype.isParsable(ANY_VALUE)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        when(datatype.compare(ANY_VALUE, ANY_VALUE)).thenReturn(0);
+        doReturn(ANY_VALUE).when(range).getLowerBound();
+        doReturn(ANY_VALUE).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+        doReturn(true).when(range).isLowerBoundOpen();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, hasMessageCode(IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN));
+    }
+
+    @Test
+    public void testValidate_EqualBoundsWithBothClosed_NoError() {
+        when(datatype.isParsable(ANY_VALUE)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        when(datatype.compare(ANY_VALUE, ANY_VALUE)).thenReturn(0);
+        doReturn(ANY_VALUE).when(range).getLowerBound();
+        doReturn(ANY_VALUE).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+        doReturn(false).when(range).isLowerBoundOpen();
+        doReturn(false).when(range).isUpperBoundOpen();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, lacksMessageCode(IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN));
+    }
+
+    @Test
+    public void testValidate_NullLowerBoundWithOpen_NoError() {
+        when(datatype.isParsable(ANY_VALUE)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        doReturn(null).when(range).getLowerBound();
+        doReturn(ANY_VALUE).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, lacksMessageCode(IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN));
+    }
+
+    @Test
+    public void testValidate_DifferentBoundsWithOpen_NoError() {
+        String lowerValue = "lower";
+        String upperValue = "upper";
+        when(datatype.isParsable(lowerValue)).thenReturn(true);
+        when(datatype.isParsable(upperValue)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        when(datatype.compare(lowerValue, upperValue)).thenReturn(-1);
+        doReturn(lowerValue).when(range).getLowerBound();
+        doReturn(upperValue).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, lacksMessageCode(IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN));
+    }
+
+    @Test
+    public void testValidate_LowerBoundGreaterUpperBound_Error() {
+        String lowerValue = "lower";
+        String upperValue = "upper";
+        when(datatype.isParsable(lowerValue)).thenReturn(true);
+        when(datatype.isParsable(upperValue)).thenReturn(true);
+        when(datatype.isParsable(null)).thenReturn(true);
+        when(datatype.compare(lowerValue, upperValue)).thenReturn(1);
+        doReturn(lowerValue).when(range).getLowerBound();
+        doReturn(upperValue).when(range).getUpperBound();
+        doReturn(null).when(range).getStep();
+
+        MessageList messageList = new RangeValueSetValidator(range, owner, datatype).validate();
+
+        assertThat(messageList, hasMessageCode(IRangeValueSet.MSGCODE_LBOUND_GREATER_UBOUND));
     }
 
 }

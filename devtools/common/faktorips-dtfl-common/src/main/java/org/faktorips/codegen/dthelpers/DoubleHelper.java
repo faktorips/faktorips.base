@@ -68,6 +68,8 @@ public class DoubleHelper extends AbstractDatatypeHelper {
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
+            JavaCodeFragment lowerBoundOpenExp,
+            JavaCodeFragment upperBoundOpenExp,
             boolean useTypesafeCollections) {
 
         return new JavaCodeFragment().appendClassName(getRangeJavaClassName(useTypesafeCollections))
@@ -75,6 +77,8 @@ public class DoubleHelper extends AbstractDatatypeHelper {
                 .append(lowerBoundExp).append(", ") //$NON-NLS-1$
                 .append(upperBoundExp).append(", ") //$NON-NLS-1$
                 .append(stepExp).append(", ") //$NON-NLS-1$
-                .append(containsNullExp).append(")"); //$NON-NLS-1$
+                .append(containsNullExp).append(", ") //$NON-NLS-1$
+                .append(lowerBoundOpenExp).append(", ") //$NON-NLS-1$
+                .append(upperBoundOpenExp).append(")"); //$NON-NLS-1$
     }
 }

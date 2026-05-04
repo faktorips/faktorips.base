@@ -66,6 +66,37 @@
                       "code": "java.method.addedToInterface",
                       "new": "method void org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::setRelevance(org.faktorips.devtools.model.productcmpt.AttributeRelevance)",
                       "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+                    },
+                    {
+                      "code": "java.method.numberOfParametersChanged",
+                      "old": "method void org.faktorips.devtools.model.internal.valueset.RangeValueSet::<init>(org.faktorips.devtools.model.valueset.IValueSetOwner, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)",
+                      "new": "method void org.faktorips.devtools.model.internal.valueset.RangeValueSet::<init>(org.faktorips.devtools.model.valueset.IValueSetOwner, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, boolean, boolean)",
+                      "justification": "FIPS-11459: Extended constructor to support open/half-open intervals (lowerBoundOpen, upperBoundOpen). Old constructor without these parameters is still available and defaults to closed intervals."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.faktorips.devtools.model.valueset.IRangeValueSet::isLowerBoundOpen()",
+                      "justification": "FIPS-11459: New method to support open/half-open intervals. Allows checking whether the lower bound of a range is open (exclusive)."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.faktorips.devtools.model.valueset.IRangeValueSet::isUpperBoundOpen()",
+                      "justification": "FIPS-11459: New method to support open/half-open intervals. Allows checking whether the upper bound of a range is open (exclusive)."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.valueset.IRangeValueSet::setLowerBoundOpen(boolean)",
+                      "justification": "FIPS-11459: New method to support open/half-open intervals. Allows configuring the lower bound of a range as open (exclusive)."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.valueset.IRangeValueSet::setUpperBoundOpen(boolean)",
+                      "justification": "FIPS-11459: New method to support open/half-open intervals. Allows configuring the upper bound of a range as open (exclusive)."
+                    },
+                    {
+                      "code": "java.field.addedStaticField",
+                      "new": "field org.faktorips.devtools.model.valueset.IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN",
+                      "justification": "FIPS-11459/FIPS-14047: New validation message code for ranges where bounds are equal but at least one bound is open, making the range effectively empty."
                     }
                 ]
             }

@@ -215,8 +215,9 @@ class DefaultAndAllowedValuesTmpl {
                         if (range.isEmpty()) {
                           «fieldNameValueSet» = «addImport(getValuesetDatatypeHelper.getRangeJavaClassName(false))».empty();
                         } else {
-                          «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range
-                                .getUpper()", "range.getStep()", "range.containsNull()")»;
+                          «fieldNameValueSet» = «getNewRangeExpression("range.getLower()", "range.getUpper()",
+                                "range.getStep()", "range.containsNull()",
+                                "range.isLowerBoundOpen()", "range.isUpperBoundOpen()")»;
                         }
                     }
                 «ENDIF»
@@ -298,7 +299,13 @@ class DefaultAndAllowedValuesTmpl {
         Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_RANGE»);
         valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
         if («fieldNameValueSet».«empty») {
-            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_EMPTY», Boolean.toString(«fieldNameValueSet».«isEmpty»));
+            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_EMPTY», Boolean.TRUE.toString());
+        }
+        if («rangeVar».isLowerBoundOpen()) {
+            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_LOWER_BOUND_OPEN», Boolean.TRUE.toString());
+        }
+        if («rangeVar».isUpperBoundOpen()) {
+            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_UPPER_BOUND_OPEN», Boolean.TRUE.toString());
         }
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getLowerBound()"), "valueSetValuesElement", XML_TAG_LOWER_BOUND)»;
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getUpperBound()"), "valueSetValuesElement", XML_TAG_UPPER_BOUND)»;

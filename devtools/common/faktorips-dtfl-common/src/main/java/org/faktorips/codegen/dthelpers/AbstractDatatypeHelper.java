@@ -107,6 +107,8 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
+            JavaCodeFragment lowerBoundOpenExp,
+            JavaCodeFragment upperBoundOpenExp,
             boolean useTypesafeCollections) {
 
         return null;

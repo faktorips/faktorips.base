@@ -64,8 +64,13 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
     public static final String ERROR_INVALID_MSG_CODE_PREFIX = "InvalidAttribute.Invalid";
 
     private static final String MSG_KEY_VALUE_IN_RANGE = "ValueInRange";
+    private static final String MSG_KEY_VALUE_IN_RANGE_LOWER_OPEN = "ValueInRangeLowerOpen";
+    private static final String MSG_KEY_VALUE_IN_RANGE_UPPER_OPEN = "ValueInRangeUpperOpen";
+    private static final String MSG_KEY_VALUE_IN_RANGE_BOTH_OPEN = "ValueInRangeBothOpen";
     private static final String MSG_KEY_VALUE_IN_RANGE_LOWER = "ValueInRangeLower";
+    private static final String MSG_KEY_VALUE_IN_RANGE_LOWER_OPEN_ONLY = "ValueInRangeLowerOpenOnly";
     private static final String MSG_KEY_VALUE_IN_RANGE_UPPER = "ValueInRangeUpper";
+    private static final String MSG_KEY_VALUE_IN_RANGE_UPPER_OPEN_ONLY = "ValueInRangeUpperOpenOnly";
     private static final String MSG_KEY_VALUE_IN_RANGE_STEPS = "ValueInRangeSteps";
     private static final String MSG_KEY_VALUE_IN_STRING_LENGTH_VALUE_SET_INVALID = "ValueInStringLengthValueSetInvalid";
 
@@ -230,14 +235,19 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
             Comparable<?> lowerBound = range.getLowerBound();
             Comparable<?> upperBound = range.getUpperBound();
             Comparable<?> step = range.getStep();
+            boolean lowerOpen = range.isLowerBoundOpen();
+            boolean upperOpen = range.isUpperBoundOpen();
             String stepLabel = ObjectUtil.isNull(step) ? IpsStringUtils.EMPTY
                     : format(MSG_KEY_VALUE_IN_RANGE_STEPS, step);
             if (ObjectUtil.isNull(lowerBound)) {
-                sb.append(format(MSG_KEY_VALUE_IN_RANGE_UPPER, upperBound, stepLabel));
+                String msgKey = upperOpen ? MSG_KEY_VALUE_IN_RANGE_UPPER_OPEN_ONLY : MSG_KEY_VALUE_IN_RANGE_UPPER;
+                sb.append(format(msgKey, upperBound, stepLabel));
             } else if (ObjectUtil.isNull(upperBound)) {
-                sb.append(format(MSG_KEY_VALUE_IN_RANGE_LOWER, lowerBound, stepLabel));
+                String msgKey = lowerOpen ? MSG_KEY_VALUE_IN_RANGE_LOWER_OPEN_ONLY : MSG_KEY_VALUE_IN_RANGE_LOWER;
+                sb.append(format(msgKey, lowerBound, stepLabel));
             } else {
-                sb.append(format(MSG_KEY_VALUE_IN_RANGE, lowerBound, upperBound, stepLabel));
+                String msgKey = getRangeMessageKey(lowerOpen, upperOpen);
+                sb.append(format(msgKey, lowerBound, upperBound, stepLabel));
             }
         }
         if (valueSet instanceof StringLengthValueSet) {
@@ -249,6 +259,18 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
         }
         return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.ValueNotInValueSet,
                 definingModelObjectClass, sb.toString());
+    }
+
+    private String getRangeMessageKey(boolean lowerOpen, boolean upperOpen) {
+        if (lowerOpen && upperOpen) {
+            return MSG_KEY_VALUE_IN_RANGE_BOTH_OPEN;
+        } else if (lowerOpen) {
+            return MSG_KEY_VALUE_IN_RANGE_LOWER_OPEN;
+        } else if (upperOpen) {
+            return MSG_KEY_VALUE_IN_RANGE_UPPER_OPEN;
+        } else {
+            return MSG_KEY_VALUE_IN_RANGE;
+        }
     }
 
 }

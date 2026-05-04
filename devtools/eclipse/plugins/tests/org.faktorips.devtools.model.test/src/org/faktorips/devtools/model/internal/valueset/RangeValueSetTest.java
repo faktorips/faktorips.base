@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -112,6 +112,17 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertNull(range.getStep());
         assertFalse(range.isContainsNull());
         assertTrue(range.isEmpty());
+
+        // open bounds
+        element = XmlUtil.getElement(root, 3);
+        range = new RangeValueSet(cValueSet, "3");
+        range.initFromXml(element);
+        assertEquals("0", range.getLowerBound());
+        assertEquals("100", range.getUpperBound());
+        assertNull(range.getStep());
+        assertFalse(range.isContainsNull());
+        assertTrue(range.isLowerBoundOpen());
+        assertFalse(range.isUpperBoundOpen());
     }
 
     @Test
@@ -129,6 +140,24 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals(range.getStep(), r2.getStep());
         assertEquals(range.isContainsNull(), r2.isContainsNull());
         assertEquals(range.isEmpty(), r2.isEmpty());
+        assertEquals(range.isLowerBoundOpen(), r2.isLowerBoundOpen());
+        assertEquals(range.isUpperBoundOpen(), r2.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testToXml_OpenBounds() {
+        IRangeValueSet range = new RangeValueSet(cValueSet, "1");
+        range.setLowerBound("10");
+        range.setUpperBound("100");
+        range.setLowerBoundOpen(true);
+        range.setUpperBoundOpen(true);
+        Element element = range.toXml(newDocument());
+        IRangeValueSet r2 = new RangeValueSet(cValueSet, "1");
+        r2.initFromXml(element);
+        assertEquals(range.getLowerBound(), r2.getLowerBound());
+        assertEquals(range.getUpperBound(), r2.getUpperBound());
+        assertTrue(r2.isLowerBoundOpen());
+        assertTrue(r2.isUpperBoundOpen());
     }
 
     @Test
@@ -142,6 +171,8 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals(range.getStep(), r2.getStep());
         assertEquals(range.isContainsNull(), r2.isContainsNull());
         assertEquals(range.isEmpty(), r2.isEmpty());
+        assertEquals(range.isLowerBoundOpen(), r2.isLowerBoundOpen());
+        assertEquals(range.isUpperBoundOpen(), r2.isUpperBoundOpen());
     }
 
     @Test
@@ -155,6 +186,8 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals(range.getStep(), r2.getStep());
         assertEquals(range.isContainsNull(), r2.isContainsNull());
         assertEquals(range.isEmpty(), r2.isEmpty());
+        assertEquals(range.isLowerBoundOpen(), r2.isLowerBoundOpen());
+        assertEquals(range.isUpperBoundOpen(), r2.isUpperBoundOpen());
     }
 
     @Test
@@ -266,6 +299,49 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         range.setStep("1");
 
         assertTrue(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_OpenLowerBound() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("20");
+        range.setUpperBound("25");
+        range.setLowerBoundOpen(true);
+
+        assertFalse(range.containsValue("20", ipsProject));
+        assertTrue(range.containsValue("21", ipsProject));
+        assertTrue(range.containsValue("25", ipsProject));
+        assertFalse(range.containsValue("19", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_OpenUpperBound() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("20");
+        range.setUpperBound("25");
+        range.setUpperBoundOpen(true);
+
+        assertTrue(range.containsValue("20", ipsProject));
+        assertTrue(range.containsValue("24", ipsProject));
+        assertFalse(range.containsValue("25", ipsProject));
+        assertFalse(range.containsValue("26", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_BothBoundsOpen() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("20");
+        range.setUpperBound("25");
+        range.setLowerBoundOpen(true);
+        range.setUpperBoundOpen(true);
+
+        assertFalse(range.containsValue("20", ipsProject));
+        assertTrue(range.containsValue("21", ipsProject));
+        assertTrue(range.containsValue("24", ipsProject));
+        assertFalse(range.containsValue("25", ipsProject));
     }
 
     @Test
@@ -705,6 +781,98 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValueSet_OpenLowerBoundDoesNotContainClosedSubRange() {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+        range.setLowerBoundOpen(true);
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("100");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_OpenLowerBoundContainsOpenSubRange() {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+        range.setLowerBoundOpen(true);
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("50");
+        subRange.setLowerBoundOpen(true);
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_ClosedContainsOpenSubRange() {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("100");
+        subRange.setLowerBoundOpen(true);
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_OpenUpperBoundDoesNotContainClosedSubRange() {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+        range.setUpperBoundOpen(true);
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("100");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_OpenUpperBoundContainsOpenSubRange() {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+        range.setUpperBoundOpen(true);
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("50");
+        subRange.setUpperBoundOpen(true);
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_ClosedContainsOpenUpperSubRange() {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("0");
+        range.setUpperBound("100");
+
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("0");
+        subRange.setUpperBound("100");
+        subRange.setUpperBoundOpen(true);
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
     public void testContainsValueSet_EnumSet_BothBounds() {
         RangeValueSet rangeSet = new RangeValueSet(intEl, "50");
         rangeSet.setLowerBound("10");
@@ -810,6 +978,72 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         subRange.setLowerBound("12");
         subRange.setUpperBound("20");
         assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testCopy() {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        range.setLowerBound("10");
+        range.setUpperBound("100");
+        range.setStep("5");
+        range.setContainsNull(true);
+
+        IValueSet copy = range.copy(intEl, "51");
+
+        assertThat(((IRangeValueSet)copy).getLowerBound(), is("10"));
+        assertThat(((IRangeValueSet)copy).getUpperBound(), is("100"));
+        assertThat(((IRangeValueSet)copy).getStep(), is("5"));
+        assertTrue(copy.isContainsNull());
+        assertFalse(((IRangeValueSet)copy).isLowerBoundOpen());
+        assertFalse(((IRangeValueSet)copy).isUpperBoundOpen());
+    }
+
+    @Test
+    public void testCopy_OpenBounds() {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+        range.setLowerBound("10");
+        range.setUpperBound("100");
+        range.setLowerBoundOpen(true);
+        range.setUpperBoundOpen(true);
+
+        IValueSet copy = range.copy(intEl, "51");
+
+        assertTrue(((IRangeValueSet)copy).isLowerBoundOpen());
+        assertTrue(((IRangeValueSet)copy).isUpperBoundOpen());
+    }
+
+    @Test
+    public void testCopyPropertiesFrom() {
+        RangeValueSet source = new RangeValueSet(intEl, "50");
+        source.setLowerBound("10");
+        source.setUpperBound("100");
+        source.setStep("5");
+        source.setContainsNull(true);
+
+        RangeValueSet target = new RangeValueSet(intEl, "51");
+        target.copyPropertiesFrom(source);
+
+        assertThat(target.getLowerBound(), is("10"));
+        assertThat(target.getUpperBound(), is("100"));
+        assertThat(target.getStep(), is("5"));
+        assertTrue(target.isContainsNull());
+        assertFalse(target.isLowerBoundOpen());
+        assertFalse(target.isUpperBoundOpen());
+    }
+
+    @Test
+    public void testCopyPropertiesFrom_OpenBounds() {
+        RangeValueSet source = new RangeValueSet(intEl, "50");
+        source.setLowerBound("10");
+        source.setUpperBound("100");
+        source.setLowerBoundOpen(true);
+        source.setUpperBoundOpen(true);
+
+        RangeValueSet target = new RangeValueSet(intEl, "51");
+        target.copyPropertiesFrom(source);
+
+        assertTrue(target.isLowerBoundOpen());
+        assertTrue(target.isUpperBoundOpen());
     }
 
     @Test
@@ -932,6 +1166,24 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCompareTo_ClosedVsOpenLower() throws Exception {
+        IRangeValueSet closed = createRange("0", "100", null);
+        IRangeValueSet open = createRange("0", "100", null, true, false);
+
+        // [0...100] contains (0...100] but not vice versa → closed > open
+        assertThat(closed.compareTo(open), is(1));
+        assertThat(open.compareTo(closed), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_SameBoundsOpenAndClosed_AreNotEqual() throws Exception {
+        IRangeValueSet closed = createRange("0", "100", null);
+        IRangeValueSet open = createRange("0", "100", null, true, false);
+
+        assertFalse(closed.compareTo(open) == 0);
+    }
+
+    @Test
     public void testGetCanonicalString_Empty() {
         IRangeValueSet rangeValueSet = RangeValueSet.empty(intEl, "p1");
 
@@ -967,8 +1219,47 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertThat(rangeValueSet.getCanonicalString(), is("[0 ... 100 / 10] (incl. <null>)"));
     }
 
+    @Test
+    public void testGetCanonicalString_LowerOpen() {
+        IRangeValueSet rangeValueSet = createRange("5", null, null, true, false);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("(5 ... *]"));
+    }
+
+    @Test
+    public void testGetCanonicalString_UpperOpen() {
+        IRangeValueSet rangeValueSet = createRange(null, "100", null, false, true);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("[* ... 100)"));
+    }
+
+    @Test
+    public void testGetCanonicalString_BothOpen() {
+        IRangeValueSet rangeValueSet = createRange("0", "100", null, true, true);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("(0 ... 100)"));
+    }
+
+    @Test
+    public void testGetCanonicalString_BothOpen_WithStep() {
+        IRangeValueSet rangeValueSet = createRange("0", "100", "10", true, true);
+
+        assertThat(rangeValueSet.getCanonicalString(), is("(0 ... 100 / 10)"));
+    }
+
     private IRangeValueSet createRange(String lower, String upper, String step) {
         return new RangeValueSet(intEl, "1234", lower, upper, step);
+    }
+
+    private IRangeValueSet createRange(String lower,
+            String upper,
+            String step,
+            boolean lowerOpen,
+            boolean upperOpen) {
+        RangeValueSet range = new RangeValueSet(intEl, "1234", lower, upper, step);
+        range.setLowerBoundOpen(lowerOpen);
+        range.setUpperBoundOpen(upperOpen);
+        return range;
     }
 
 }

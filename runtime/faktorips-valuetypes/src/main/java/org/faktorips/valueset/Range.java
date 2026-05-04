@@ -44,9 +44,10 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * By convention a range is empty if the upper bound is less than the lower bound, but since
      * Faktor-IPS 20.6 it can also be marked explicitly as empty while having no bounds or step.
+     * Since 26.7, a range with equal bounds is also empty if either bound is open (exclusive).
      */
     @Override
     boolean isEmpty();
@@ -59,5 +60,31 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
      * value can be null indicating that this is a continuous range.
      */
     T getStep();
+
+    /**
+     * Returns whether the lower bound is open (exclusive). An open lower bound means the lower
+     * bound value itself is not included in the range.
+     *
+     * @return {@code true} if the lower bound is open (exclusive), {@code false} if closed
+     *             (inclusive)
+     *
+     * @since 26.7
+     */
+    default boolean isLowerBoundOpen() {
+        return false;
+    }
+
+    /**
+     * Returns whether the upper bound is open (exclusive). An open upper bound means the upper
+     * bound value itself is not included in the range.
+     *
+     * @return {@code true} if the upper bound is open (exclusive), {@code false} if closed
+     *             (inclusive)
+     *
+     * @since 26.7
+     */
+    default boolean isUpperBoundOpen() {
+        return false;
+    }
 
 }

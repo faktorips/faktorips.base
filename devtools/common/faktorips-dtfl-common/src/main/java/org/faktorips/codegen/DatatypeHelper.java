@@ -175,6 +175,8 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * @param stepExp the minimum increment expression for values within the lower and upper bounds.
      *            Can be <code>null</code> to indicate that this is a continuous range.
      * @param containsNullExp the containsNull expression
+     * @param lowerBoundOpenExp the expression for the open lower bound flag
+     * @param upperBoundOpenExp the expression for the open upper bound flag
      * @return the code fragment to create a new range instance. Can be null to indicate that a
      *             range is not supported.
      */
@@ -182,6 +184,8 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
+            JavaCodeFragment lowerBoundOpenExp,
+            JavaCodeFragment upperBoundOpenExp,
             boolean useTypesafeCollections);
 
     /**

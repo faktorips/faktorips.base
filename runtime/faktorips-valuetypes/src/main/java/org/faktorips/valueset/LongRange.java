@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 public class LongRange extends DefaultRange<Long> {
 
-    private static final long serialVersionUID = -785773839824461985L;
+    private static final long serialVersionUID = -785773839824461984L;
 
     private static final LongRange EMPTY = new LongRange();
 
@@ -50,6 +50,11 @@ public class LongRange extends DefaultRange<Long> {
         super(lowerBound, upperBound, step, containsNull);
     }
 
+    private LongRange(Long lowerBound, Long upperBound, Long step, boolean containsNull,
+            boolean lowerBoundOpen, boolean upperBoundOpen) {
+        super(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
     /**
      * Creates an empty {@link LongRange}.
      */
@@ -67,7 +72,7 @@ public class LongRange extends DefaultRange<Long> {
      * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
      */
-    public static LongRange valueOf(String lowerBound, String upperBound) {
+    public static final LongRange valueOf(String lowerBound, String upperBound) {
         return valueOf(lowerBound, upperBound, "1", false);
     }
 
@@ -80,7 +85,7 @@ public class LongRange extends DefaultRange<Long> {
      * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
      *            that the range is open on this side
      */
-    public static LongRange valueOf(Long lowerBound, Long upperBound) {
+    public static final LongRange valueOf(Long lowerBound, Long upperBound) {
         return valueOf(lowerBound, upperBound, 1L, false);
     }
 
@@ -96,7 +101,7 @@ public class LongRange extends DefaultRange<Long> {
      * @param step the step increment of this range. The parameter being {@code null} indicates that
      *            the range is continuous
      */
-    public static LongRange valueOf(String lowerBound, String upperBound, String step) {
+    public static final LongRange valueOf(String lowerBound, String upperBound, String step) {
         return valueOf(lowerBound, upperBound, step, false);
     }
 
@@ -110,7 +115,7 @@ public class LongRange extends DefaultRange<Long> {
      * @param step the step increment of this range. The parameter being {@code null} indicates that
      *            the range is continuous
      */
-    public static LongRange valueOf(Long lowerBound, Long upperBound, Long step) {
+    public static final LongRange valueOf(Long lowerBound, Long upperBound, Long step) {
         return valueOf(lowerBound, upperBound, step, false);
     }
 
@@ -127,7 +132,7 @@ public class LongRange extends DefaultRange<Long> {
      *            the range is continuous
      * @param containsNull {@code true} indicates that the range contains {@code null}
      */
-    public static LongRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
+    public static final LongRange valueOf(String lowerBound, String upperBound, String step, boolean containsNull) {
         Long min = (lowerBound == null || lowerBound.isEmpty()) ? null : Long.valueOf(lowerBound);
         Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
         Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
@@ -148,8 +153,62 @@ public class LongRange extends DefaultRange<Long> {
      *            the range is continuous
      * @param containsNull {@code true} indicates that the range contains {@code null}
      */
-    public static LongRange valueOf(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
+    public static final LongRange valueOf(Long lowerBound, Long upperBound, Long step, boolean containsNull) {
         LongRange range = new LongRange(lowerBound, upperBound, step, containsNull);
+        range.checkIfStepFitsIntoBounds();
+        return range;
+    }
+
+    /**
+     * Creates a new {@link LongRange} with open/closed bound configuration.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull if {@code true}, {@code null} is contained in the range
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final LongRange valueOf(Long lowerBound,
+            Long upperBound,
+            Long step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        return new LongRange(lowerBound, upperBound, step, containsNull, lowerBoundOpen, upperBoundOpen);
+    }
+
+    /**
+     * Creates a new {@link LongRange} with open/closed bound configuration. The strings are parsed
+     * with the {@link Long#valueOf(String)} method. An empty string is interpreted as {@code null}.
+     *
+     * @param lowerBound the lower bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param upperBound the upper bound of the range. The parameter being {@code null} indicates
+     *            that the range is unlimited on this side
+     * @param step the step increment of this range. The parameter being {@code null} indicates that
+     *            the range is continuous
+     * @param containsNull {@code true} indicates that the range contains {@code null}
+     * @param lowerBoundOpen whether the lower bound is open (exclusive)
+     * @param upperBoundOpen whether the upper bound is open (exclusive)
+     *
+     * @since 26.7
+     */
+    public static final LongRange valueOf(String lowerBound,
+            String upperBound,
+            String step,
+            boolean containsNull,
+            boolean lowerBoundOpen,
+            boolean upperBoundOpen) {
+        Long min = (lowerBound == null || lowerBound.isEmpty()) ? null : Long.valueOf(lowerBound);
+        Long max = (upperBound == null || upperBound.isEmpty()) ? null : Long.valueOf(upperBound);
+        Long stepLong = (step == null || step.isEmpty()) ? null : Long.valueOf(step);
+        LongRange range = new LongRange(min, max, stepLong, containsNull, lowerBoundOpen, upperBoundOpen);
         range.checkIfStepFitsIntoBounds();
         return range;
     }
@@ -169,13 +228,26 @@ public class LongRange extends DefaultRange<Long> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
+        return computeDiscreteSize(true);
+    }
+
+    @Override
+    protected int sizeForDiscreteValuesWithFloor() {
+        return computeDiscreteSize(false);
+    }
+
+    private int computeDiscreteSize(boolean checkRemainder) {
         BigInteger diff = BigInteger.valueOf(Math.abs(getUpperBound() - getLowerBound()));
         BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf((getStep()).longValue()));
+        if (checkRemainder && divAndRemainder[1].longValue() != 0) {
+            throw new ArithmeticException(
+                    "The step doesn't fit into the specified bounds without remainder.");
+        }
         BigInteger returnValue = divAndRemainder[0].add(BigInteger.valueOf(1));
 
         if (returnValue.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
-                    "The number of values contained within this range is to huge to be supported by this operation.");
+                    "The number of values contained within this range is too huge to be supported by this operation.");
         }
 
         return returnValue.intValue();

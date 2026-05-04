@@ -95,13 +95,16 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
 
     @Test
     public void testOf_RangeWithoutNull() {
-        assertThat(AttributeRelevance.of(new RangeValueSet(configuredValueSet, "1", "0", "100", "10", false)),
+        assertThat(
+                AttributeRelevance
+                        .of(new RangeValueSet(configuredValueSet, "1", "0", "100", "10", false, false, false)),
                 is(AttributeRelevance.Mandatory));
     }
 
     @Test
     public void testOf_RangeWithNull() {
-        assertThat(AttributeRelevance.of(new RangeValueSet(configuredValueSet, "1", "0", "100", "10", true)),
+        assertThat(
+                AttributeRelevance.of(new RangeValueSet(configuredValueSet, "1", "0", "100", "10", true, false, false)),
                 is(AttributeRelevance.Optional));
     }
 
