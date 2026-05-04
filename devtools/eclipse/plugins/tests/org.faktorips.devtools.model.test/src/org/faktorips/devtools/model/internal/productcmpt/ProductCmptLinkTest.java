@@ -662,4 +662,45 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
     }
 
+    @Test
+    public void testIsCardinalityConfigurable_NoProductAssociation() {
+        assertThat(link.isCardinalityConfigurable(ipsProject), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_NoPolicyAssociation() {
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+        productAssociation.setMatchingAssociationSource(policyCmptType.getName());
+        productAssociation.setMatchingAssociationName("Coverage");
+
+        assertThat(link.isCardinalityConfigurable(ipsProject), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_CardinalityNotConfigurable() {
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+        productAssociation.setMatchingAssociationSource(policyCmptType.getName());
+        productAssociation.setMatchingAssociationName("Coverage");
+        IPolicyCmptTypeAssociation policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyAssociation.setTargetRoleSingular("Coverage");
+        policyAssociation.setCardinalityConfigurable(false);
+
+        assertThat(link.isCardinalityConfigurable(ipsProject), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_True() {
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+        productAssociation.setMatchingAssociationSource(policyCmptType.getName());
+        productAssociation.setMatchingAssociationName("Coverage");
+        IPolicyCmptTypeAssociation policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyAssociation.setTargetRoleSingular("Coverage");
+        policyAssociation.setCardinalityConfigurable(true);
+
+        assertThat(link.isCardinalityConfigurable(ipsProject), is(true));
+    }
+
 }

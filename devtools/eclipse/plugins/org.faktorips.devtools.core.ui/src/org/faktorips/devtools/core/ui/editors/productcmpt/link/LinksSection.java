@@ -517,7 +517,13 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             if (typedSelection.isValid()) {
                 cardinalityPanel.setProductCmptLinkToEdit(typedSelection.getElements());
             } else {
-                cardinalityPanel.setProductCmptLinkToEdit(Collections.<LinkViewItem> emptyList());
+                TypedSelection<AssociationViewItem> associationSelection = TypedSelection
+                        .createAnyCount(AssociationViewItem.class, event.getSelection());
+                if (associationSelection.isValid()) {
+                    cardinalityPanel.setAssociationToEdit(associationSelection.getElement());
+                } else {
+                    cardinalityPanel.setProductCmptLinkToEdit(Collections.<LinkViewItem> emptyList());
+                }
             }
             if (!isDataChangeable()) {
                 cardinalityPanel.setDataChangeable(false);

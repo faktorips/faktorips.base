@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
@@ -87,22 +88,25 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
         }
 
         private StyledString getAssociationViewItemStyledText(AssociationViewItem associationViewItem) {
-            String cardinality = getCardinalitiesFromPolicy(associationViewItem.getAssociation());
+            String cardinality = getCardinalitiesFromPolicy(associationViewItem);
             StyledString cardinalityStyledString = new StyledString(cardinality, IpsStyler.MODEL_CARDINALITY_STYLER);
             StyledString nameStyledString = new StyledString(getText(associationViewItem));
             return nameStyledString.append(cardinalityStyledString);
         }
 
-        private String getCardinalitiesFromPolicy(IProductCmptTypeAssociation association) {
+        private String getCardinalitiesFromPolicy(AssociationViewItem associationViewItem) {
+            IProductCmptTypeAssociation association = associationViewItem.getAssociation();
             IPolicyCmptTypeAssociation policyAssociation = association
                     .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
             if (policyAssociation == null) {
                 return IpsStringUtils.EMPTY;
-            } else {
-                return StringUtil.BLANK
-                        + StringUtil.getRangeString(policyAssociation.getMinCardinality(),
-                                policyAssociation.getMaxCardinality());
             }
+            return associationViewItem.getLinkContainer()
+                    .getPolicyCmptLinkCardinality(policyAssociation.getName())
+                    .map(c -> StringUtil.BLANK
+                            + StringUtil.getRangeString(c.getMinCardinality(), c.getMaxCardinality()))
+                    .orElse(StringUtil.BLANK + StringUtil.getRangeString(policyAssociation.getMinCardinality(),
+                            policyAssociation.getMaxCardinality()));
         }
 
         private StyledString getLinkViewItemStyledString(LinkViewItem linkViewItem) {

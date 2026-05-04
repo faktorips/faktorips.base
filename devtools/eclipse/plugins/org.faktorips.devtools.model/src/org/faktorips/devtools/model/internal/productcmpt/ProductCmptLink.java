@@ -361,6 +361,19 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
+    public boolean isCardinalityConfigurable(IIpsProject ipsProject) {
+        if (isDeleted()) {
+            return false;
+        }
+        IProductCmptTypeAssociation assoc = findAssociation(ipsProject);
+        if (assoc == null) {
+            return false;
+        }
+        IPolicyCmptTypeAssociation matching = assoc.findMatchingPolicyCmptTypeAssociation(ipsProject);
+        return matching != null && matching.isCardinalityConfigurable();
+    }
+
+    @Override
     public boolean isMandatory() {
         return getMinCardinality() == 1 && getMaxCardinality() == 1;
     }
