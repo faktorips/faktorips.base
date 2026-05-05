@@ -30,6 +30,7 @@ import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
 import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.values.ObjectUtil;
+import org.faktorips.valueset.IntegerRange;
 
 /**
  * An association between two {@link Type Types}.
@@ -330,6 +331,58 @@ public abstract class Association extends TypePart {
     // CSON: ParameterNumber
 
     public abstract Association createOverwritingAssociationFor(Type subType);
+
+    /**
+     * Validates that the given configured cardinality does not violate the supplied model bounds.
+     * Adds error messages for max exceeds model max and min below model min. Uses this
+     * association's name in the messages.
+     *
+     * @param list the message list to add errors to
+     * @param context the validation context
+     * @param source the product component being validated
+     * @param configured the configured cardinality, or {@code null} if none
+     * @param modelMax the model-defined maximum cardinality to validate against
+     * @param modelMin the model-defined minimum cardinality to validate against
+     * @param configuredMaxExceedsMsgCode error code for max violation
+     * @param configuredMaxExceedsMsgKey message key for max violation
+     * @param configuredMinFallsBelowMsgCode error code for min violation
+     * @param configuredMinFallsBelowMsgKey message key for min violation
+     *
+     * @since 26.7
+     */
+    // CSOFF: ParameterNumber
+    protected void validateConfiguredCardinalityBounds(MessageList list,
+            IValidationContext context,
+            Object source,
+            IntegerRange configured,
+            int modelMax,
+            int modelMin,
+            String configuredMaxExceedsMsgCode,
+            String configuredMaxExceedsMsgKey,
+            String configuredMinFallsBelowMsgCode,
+            String configuredMinFallsBelowMsgKey) {
+        if (configured == null) {
+            return;
+        }
+        Integer upperBound = configured.getUpperBound();
+        if (upperBound != null && upperBound != Integer.MAX_VALUE
+                && modelMax != Integer.MAX_VALUE && upperBound > modelMax) {
+            list.newError(configuredMaxExceedsMsgCode,
+                    generateValidationMessage(context.getLocale(),
+                            getResourceBundleName(), configuredMaxExceedsMsgKey,
+                            upperBound, getUsedName(), modelMax),
+                    new ObjectProperty[] { new ObjectProperty(source, getName()) });
+        }
+        Integer lowerBound = configured.getLowerBound();
+        if (lowerBound != null && lowerBound < modelMin) {
+            list.newError(configuredMinFallsBelowMsgCode,
+                    generateValidationMessage(context.getLocale(),
+                            getResourceBundleName(), configuredMinFallsBelowMsgKey,
+                            lowerBound, getUsedName(), modelMin),
+                    new ObjectProperty[] { new ObjectProperty(source, getName()) });
+        }
+    }
+    // CSON: ParameterNumber
 
     @Override
     public String toString() {

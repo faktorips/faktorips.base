@@ -15,7 +15,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
+import org.faktorips.runtime.model.annotation.IpsAssociation;
+import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.type.ProductAssociation;
 import org.faktorips.runtime.model.type.Type;
 
@@ -44,6 +47,19 @@ public class ProductAssociationCollector
             super.process(descriptor, annotatedDeclaration, annotatedElement);
             descriptor.setChangingOverTime(
                     IProductComponentGeneration.class.isAssignableFrom(annotatedDeclaration.getImplementationClass()));
+            IpsAssociation annotation = ((Method)annotatedElement).getAnnotation(IpsAssociation.class);
+            if (annotation.cardinalityConfigurable()) {
+                IpsMatchingAssociation matchingAnnotation = ((Method)annotatedElement)
+                        .getAnnotation(IpsMatchingAssociation.class);
+                if (matchingAnnotation != null) {
+                    String getterName = "getCardinalityFor"
+                            + IpsStringUtils.toUpperFirstChar(matchingAnnotation.name());
+                    annotatedDeclaration.getDeclaredMethods().stream()
+                            .filter(m -> m.getName().equals(getterName) && m.getParameterCount() == 0)
+                            .findFirst()
+                            .ifPresent(descriptor::setGetCardinalityMethod);
+                }
+            }
         }
     }
 
@@ -52,6 +68,7 @@ public class ProductAssociationCollector
         private boolean changingOverTime;
         private Method getLinksMethod;
         private Method addWithCardinality;
+        private Method getCardinalityMethod;
 
         public boolean isChangingOverTime() {
             return changingOverTime;
@@ -69,12 +86,17 @@ public class ProductAssociationCollector
             this.addWithCardinality = addWithCardinality;
         }
 
+        public void setGetCardinalityMethod(Method getCardinalityMethod) {
+            this.getCardinalityMethod = getCardinalityMethod;
+        }
+
         @Override
         protected ProductAssociation createValid(Type type) {
             return new ProductAssociation(type, getAnnotatedElement(), getAddMethod(), addWithCardinality,
                     getRemoveMethod(),
                     changingOverTime,
-                    getLinksMethod);
+                    getLinksMethod,
+                    getCardinalityMethod);
         }
 
     }

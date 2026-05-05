@@ -330,6 +330,9 @@ public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IP
             IPolicyCmptTypeAssociation polAssociation,
             IIpsProject ipsProject) {
         IProductCmptTypeAssociation associationObj = polAssociation.findMatchingProductCmptTypeAssociation(ipsProject);
+        if (associationObj == null) {
+            return;
+        }
         if (!getProductCmptLinkContainer().isContainerFor(associationObj)) {
             String associationLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(associationObj);
             String msg;

@@ -10,8 +10,10 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -20,22 +22,30 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
+import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
@@ -45,6 +55,7 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.values.ListUtil;
 import org.faktorips.values.ObjectUtil;
+import org.faktorips.valueset.IntegerRange;
 import org.junit.Test;
 
 public class PolicyAssociationTest {
@@ -456,15 +467,160 @@ public class PolicyAssociationTest {
         assertThat(association1ToN.isCardinalityConfigurable(), is(false));
     }
 
+    @Test
+    public void testValidate_notCardinalityConfigurable_noError() {
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        MessageList messages = new MessageList();
+
+        association1ToN.validate(messages, new ValidationContext(), product, null);
+
+        assertThat(messages.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testValidate_noCardinalityMethod_noError() {
+        PolicyAssociation configurableAssociation = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        MessageList messages = new MessageList();
+        configurableAssociation.validate(messages, new ValidationContext(), product, null);
+
+        assertThat(messages.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testValidate_configuredMaxExceedsModelMax() throws Exception {
+
+        PolicyAssociation boundedAssoc = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets2");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        Method cardinalityMethod = ConfiguringProduct.class
+                .getMethod("getCardinalityForConfigurableTargets2");
+        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
+        product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, 6);
+        MessageList messages = new MessageList();
+
+        boundedAssoc.validate(messages, new ValidationContext(Locale.ENGLISH), product, null);
+
+        Message message = messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString(
+                "The configured maximum cardinality ('6') of the relationship 'configurableTargets2' exceeds the model defined maximum cardinality ('5')."));
+    }
+
+    @Test
+    public void testValidate_configuredMinFallsBelowModelMin() throws Exception {
+        PolicyAssociation boundedAssoc = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets2");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        Method cardinalityMethod = ConfiguringProduct.class
+                .getMethod("getCardinalityForConfigurableTargets2");
+        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
+        product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(0, 3);
+        MessageList messages = new MessageList();
+
+        boundedAssoc.validate(messages, new ValidationContext(Locale.ENGLISH), product, null);
+
+        Message message = messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString(
+                "The configured minimum cardinality ('0') of the relationship 'configurableTargets2' falls below the model defined minimum cardinality ('1')."));
+    }
+
+    @Test
+    public void testValidate_withinBounds_noError() throws Exception {
+        PolicyAssociation configurableAssociation = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        Method cardinalityMethod = ConfiguringProduct.class
+                .getMethod("getCardinalityForConfigurableTargets");
+        configurableAssociation.setGetCardinalityMethod(cardinalityMethod);
+        product.cardinalityForConfigurableTargets = IntegerRange.valueOf(0, 2);
+        MessageList messages = new MessageList();
+
+        configurableAssociation.validate(messages, new ValidationContext(), product, null);
+
+        assertThat(messages.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testValidate_configuredUpperBoundNull_noError() throws Exception {
+        PolicyAssociation boundedAssoc = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets2");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        Method cardinalityMethod = ConfiguringProduct.class
+                .getMethod("getCardinalityForConfigurableTargets2");
+        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
+        product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, null);
+        MessageList messages = new MessageList();
+
+        boundedAssoc.validate(messages, new ValidationContext(), product, null);
+
+        assertThat(messages.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testValidate_configuredLowerBoundNull_noError() throws Exception {
+        PolicyAssociation boundedAssoc = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets2");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        Method cardinalityMethod = ConfiguringProduct.class
+                .getMethod("getCardinalityForConfigurableTargets2");
+        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
+        product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(null, 3);
+        MessageList messages = new MessageList();
+
+        boundedAssoc.validate(messages, new ValidationContext(), product, null);
+
+        assertThat(messages.containsErrorMsg(), is(false));
+    }
+
+    @Test
+    public void testValidate_configuredMaxUnbounded_noError() throws Exception {
+        PolicyAssociation boundedAssoc = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets2");
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
+        Method cardinalityMethod = ConfiguringProduct.class
+                .getMethod("getCardinalityForConfigurableTargets2");
+        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
+        product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, Integer.MAX_VALUE);
+        MessageList messages = new MessageList();
+
+        boundedAssoc.validate(messages, new ValidationContext(), product, null);
+
+        assertThat(messages.containsErrorMsg(), is(false));
+    }
+
     @IpsPolicyCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN", "configurableTargets" })
+    @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN", "configurableTargets",
+            "configurableTargets2" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
-    private static class Source implements IModelObject {
+    private static class Source implements IConfigurableModelObject {
 
         private Target target;
         private final List<Target> targets1toN = new ArrayList<>();
         private final List<Target> moreTargets1toN = new ArrayList<>();
         private final List<Target> configurableTargets = new ArrayList<>();
+        private final List<Target> configurableTargets2 = new ArrayList<>();
+        private IProductComponent productComponent;
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productComponent;
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            this.productComponent = productComponent;
+        }
 
         @Override
         public MessageList validate(IValidationContext context) {
@@ -539,6 +695,21 @@ public class PolicyAssociationTest {
         public void removeConfigurableTargets(Target objectToRemove) {
             configurableTargets.remove(objectToRemove);
         }
+
+        @IpsAssociation(name = "configurableTargets2", pluralName = "configurableTargets2", min = 1, max = 5, kind = AssociationKind.Composition, targetClass = Target.class, cardinalityConfigurable = true)
+        public List<? extends Target> getConfigurableTargets2() {
+            return configurableTargets2;
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public void initialize() {
+            // Auto-generated method stub
+        }
     }
 
     @IpsPolicyCmptType(name = "MySource")
@@ -592,6 +763,38 @@ public class PolicyAssociationTest {
 
         @Override
         public MessageList validate(IValidationContext context) {
+            return null;
+        }
+    }
+
+    @IpsProductCmptType(name = "ConfiguringProduct")
+    @IpsConfigures(Source.class)
+    private static class ConfiguringProduct extends ProductComponent {
+
+        IntegerRange cardinalityForConfigurableTargets = IntegerRange.valueOf(0, Integer.MAX_VALUE);
+        IntegerRange cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, 5);
+
+        public ConfiguringProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForConfigurableTargets() {
+            return cardinalityForConfigurableTargets;
+        }
+
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForConfigurableTargets2() {
+            return cardinalityForConfigurableTargets2;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
             return null;
         }
     }

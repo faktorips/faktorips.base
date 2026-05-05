@@ -13,13 +13,19 @@ package org.faktorips.runtime.model.type;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
+import org.faktorips.valueset.IntegerRange;
 
 /**
  * An association between two {@link PolicyCmptType PolicyCmptTypes}.
@@ -28,6 +34,7 @@ public class PolicyAssociation extends Association {
 
     private final Method addMethod;
     private final Method removeMethod;
+    private volatile Method getCardinalityMethod;
 
     /**
      *
@@ -65,7 +72,40 @@ public class PolicyAssociation extends Association {
 
     @Override
     public PolicyAssociation createOverwritingAssociationFor(Type subType) {
-        return new PolicyAssociation(subType, getGetterMethod(), addMethod, removeMethod);
+        PolicyAssociation overwriting = new PolicyAssociation(subType, getGetterMethod(), addMethod, removeMethod);
+        overwriting.getCardinalityMethod = getCardinalityMethod;
+        return overwriting;
+    }
+
+    void setGetCardinalityMethod(Method method) {
+        getCardinalityMethod = method;
+    }
+
+    /**
+     * Validates that the configured cardinality stored in the product component does not violate
+     * the model-defined min/max cardinality of this association.
+     *
+     * @since 26.7
+     */
+    @Override
+    public void validate(MessageList list,
+            IValidationContext context,
+            IProductComponent product,
+            Calendar effectiveDate) {
+        if (!isCardinalityConfigurable() || getCardinalityMethod == null) {
+            return;
+        }
+        Object cardinalitySource =
+                IProductComponentGeneration.class.isAssignableFrom(getCardinalityMethod.getDeclaringClass())
+                        ? product.getGenerationBase(effectiveDate)
+                        : product;
+        IntegerRange configured = (IntegerRange)invokeMethod(getCardinalityMethod, cardinalitySource);
+        validateConfiguredCardinalityBounds(list, context, product, configured,
+                getMaxCardinality(), getMinCardinality(),
+                ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX,
+                ProductAssociation.MSGKEY_CONFIGURED_MAX_EXCEEDS_MODEL_MAX,
+                ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN,
+                ProductAssociation.MSGKEY_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN);
     }
 
     /**
