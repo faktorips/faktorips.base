@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -448,14 +448,23 @@ public class PolicyAssociationTest {
         assertThat(association1ToN.isQualified(), is(false));
     }
 
+    @Test
+    public void testIsCardinalityConfigurable() {
+        PolicyAssociation configurableAssociation = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("configurableTargets");
+        assertThat(configurableAssociation.isCardinalityConfigurable(), is(true));
+        assertThat(association1ToN.isCardinalityConfigurable(), is(false));
+    }
+
     @IpsPolicyCmptType(name = "MySource")
-    @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN" })
+    @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN", "configurableTargets" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Source implements IModelObject {
 
         private Target target;
         private final List<Target> targets1toN = new ArrayList<>();
         private final List<Target> moreTargets1toN = new ArrayList<>();
+        private final List<Target> configurableTargets = new ArrayList<>();
 
         @Override
         public MessageList validate(IValidationContext context) {
@@ -514,6 +523,21 @@ public class PolicyAssociationTest {
         @IpsAssociationRemover(association = "moreTargets1toN")
         public void removeMoreTargets1toN(Target objectToRemove) {
             moreTargets1toN.remove(objectToRemove);
+        }
+
+        @IpsAssociation(name = "configurableTargets", pluralName = "configurableTargets", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class, cardinalityConfigurable = true)
+        public List<? extends Target> getConfigurableTargets() {
+            return configurableTargets;
+        }
+
+        @IpsAssociationAdder(association = "configurableTargets")
+        public void addConfigurableTargets(Target objectToAdd) {
+            configurableTargets.add(objectToAdd);
+        }
+
+        @IpsAssociationRemover(association = "configurableTargets")
+        public void removeConfigurableTargets(Target objectToRemove) {
+            configurableTargets.remove(objectToRemove);
         }
     }
 

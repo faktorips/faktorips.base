@@ -143,6 +143,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         doInitPropertiesFromXml(propertyElements);
         doInitTableUsagesFromXml(propertyElements);
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(genElement));
+        doInitPolicyLinkCardinalitiesFromXml(
+                ProductComponentXmlUtil.getPolicyLinkCardinalityElements(genElement));
         doInitFormulaFromXml(genElement);
         doInitValidationRuleConfigsFromXml(genElement);
         initExtensionPropertiesFromXml(genElement);
@@ -170,6 +172,36 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         //
         // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to super.doInitReferencesFromXml().
+    }
+
+    /**
+     * Initializes the configurable policy link cardinalities with the data in the map. The map
+     * contains the policy association name as key and the xml element containing the cardinality
+     * data as value.
+     *
+     * @param cardinalityElements the map of policy link cardinality elements
+     *
+     * @since 26.7
+     */
+    protected void doInitPolicyLinkCardinalitiesFromXml(Map<String, Element> cardinalityElements) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitPolicyLinkCardinalitiesFromXml().
+    }
+
+    /**
+     * Parses an {@link IntegerRange} from the {@code minCardinality} and {@code maxCardinality}
+     * attributes of the given XML element.
+     *
+     * @throws NumberFormatException if {@code minCardinality} or {@code maxCardinality} is missing
+     *             or not a valid integer (and not {@code *} or {@code n} for maxCardinality)
+     *
+     * @see ProductComponent#parseCardinalityRange(Element)
+     * @since 26.7
+     */
+    public static IntegerRange parseCardinalityRange(Element element) {
+        return ProductComponent.parseCardinalityRange(element);
     }
 
     /**
@@ -241,14 +273,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
     public static void addToCardinalityMap(Map<String, IntegerRange> cardinalityMap,
             String targetId,
             Element relationElement) {
-        String maxStr = relationElement.getAttribute("maxCardinality");
-        Integer maxCardinality = switch (maxStr.toLowerCase()) {
-            case "*", "n" -> Integer.MAX_VALUE;
-            default -> Integer.valueOf(maxStr);
-        };
-
-        Integer minCardinality = Integer.valueOf(relationElement.getAttribute("minCardinality"));
-        cardinalityMap.put(targetId, IntegerRange.valueOf(minCardinality, maxCardinality));
+        cardinalityMap.put(targetId, ProductComponent.parseCardinalityRange(relationElement));
     }
 
     @Override
@@ -301,6 +326,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         writeTableUsagesToXml(genElement);
         writeValidationRuleConfigsToXml(genElement);
         writeReferencesToXml(genElement);
+        writePolicyLinkCardinalitiesToXml(genElement);
         return genElement;
     }
 
@@ -344,6 +370,21 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         /*
          * Nothing to be done base class. Note that this method is deliberately not declared
          * abstract to allow calls to super.writeReferencesToXml() in subclasses.
+         */
+    }
+
+    /**
+     * Writes the configurable policy link cardinalities to the given XML element. The given
+     * {@link Element} is the element representing this {@link ProductComponentGeneration}.
+     *
+     * @param element the element all policy link cardinalities should be added to
+     *
+     * @since 26.7
+     */
+    protected void writePolicyLinkCardinalitiesToXml(Element element) {
+        /*
+         * Nothing to be done in the base class. Note that this method is deliberately not declared
+         * abstract to allow calls to super.writePolicyLinkCardinalitiesToXml() in subclasses.
          */
     }
 

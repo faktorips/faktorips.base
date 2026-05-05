@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.pctype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -1036,7 +1037,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     /**
      * This is testing the special combination of product and policy type associations discussed in
      * FIPS-563
-     * 
+     *
      */
     @Test
     public void testFindMatchingProductCmptTypeAssociation2() throws Exception {
@@ -1074,7 +1075,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
 
     /**
      * FIPS-710
-     * 
+     *
      */
     @Test
     public void shouldFindNoMatchingProductCmptTypeAssociationForDetailToMaster() throws Exception {
@@ -1221,6 +1222,40 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         association.initPropertiesFromXml(element, "aggr");
 
         assertTrue(association.isConfigurable());
+    }
+
+    @Test
+    public void test_initFromXMLCardinalityConfigurable_true() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
+        when(element.hasAttribute(IPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE)).thenReturn(true);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE)).thenReturn("true");
+
+        association.initPropertiesFromXml(element, "aggr");
+
+        assertThat(association.isCardinalityConfigurable(), is(true));
+    }
+
+    @Test
+    public void test_initFromXMLCardinalityConfigurable_false() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
+        when(element.hasAttribute(IPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE)).thenReturn(true);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE)).thenReturn("false");
+
+        association.initPropertiesFromXml(element, "aggr");
+
+        assertThat(association.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void test_initFromXMLCardinalityConfigurable_default() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
+
+        association.initPropertiesFromXml(element, "aggr");
+
+        assertThat(association.isCardinalityConfigurable(), is(false));
     }
 
 }

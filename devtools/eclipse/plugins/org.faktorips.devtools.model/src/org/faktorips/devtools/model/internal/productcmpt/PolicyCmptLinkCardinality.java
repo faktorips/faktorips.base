@@ -108,8 +108,12 @@ public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IP
             if (template != null) {
                 var templateCmpt = template.getProductCmpt();
                 var templateProductCmptType = templateCmpt.findProductCmptType(getIpsProject());
+                if (templateProductCmptType == null) {
+                    return false;
+                }
                 var templatePolicyCmptType = templateProductCmptType.findPolicyCmptType(getIpsProject());
-                return templatePolicyCmptType.findAssociation(policyAssociationName, getIpsProject()) != null;
+                return templatePolicyCmptType != null
+                        && templatePolicyCmptType.findAssociation(policyAssociationName, getIpsProject()) != null;
             }
         }
         return false;

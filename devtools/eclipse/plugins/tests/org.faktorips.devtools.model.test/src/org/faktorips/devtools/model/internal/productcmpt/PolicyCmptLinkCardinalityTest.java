@@ -475,6 +475,55 @@ public class PolicyCmptLinkCardinalityTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenProductCmptTypeIsNull() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        template.setProductCmptType("NonExistentType");
+
+        final PolicyCmptLinkCardinality policyCmptLinkCardinality = (PolicyCmptLinkCardinality)link;
+        assertThat(policyCmptLinkCardinality.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenPolicyCmptTypeIsNull() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        // template resolves the same productCmptType; disabling its policy configuration
+        // makes findPolicyCmptType() return null
+        productCmptType.setConfigurationForPolicyCmptType(false);
+
+        final PolicyCmptLinkCardinality policyCmptLinkCardinality = (PolicyCmptLinkCardinality)link;
+        assertThat(policyCmptLinkCardinality.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenAssociationNotFound() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        policyCmptTypeAssociation.setTargetRoleSingular("SomethingElse");
+
+        final PolicyCmptLinkCardinality policyCmptLinkCardinality = (PolicyCmptLinkCardinality)link;
+        assertThat(policyCmptLinkCardinality.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsTrue_WhenAssociationExists() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+
+        final PolicyCmptLinkCardinality policyCmptLinkCardinality = (PolicyCmptLinkCardinality)link;
+        assertThat(policyCmptLinkCardinality.isAssociationConfiguredInTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenNotUsingTemplate() {
+        setUpAssociation(true);
+
+        final PolicyCmptLinkCardinality policyCmptLinkCardinality = (PolicyCmptLinkCardinality)link;
+        assertThat(policyCmptLinkCardinality.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
     public void testIsConcreteValue() {
         // make product cmpt part of template hierarchy
         setUpAssociation(true);

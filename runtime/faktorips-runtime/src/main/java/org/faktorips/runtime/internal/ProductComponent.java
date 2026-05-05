@@ -14,6 +14,7 @@ import static java.util.Comparator.comparing;
 import static java.util.Map.entry;
 import static org.faktorips.runtime.internal.DescriptionXmlHelper.XML_ELEMENT_DESCRIPTION;
 import static org.faktorips.runtime.internal.ProductComponentLink.XML_ELEMENT_LINK;
+import static org.faktorips.runtime.internal.ProductComponentXmlUtil.XML_ELEMENT_POLICY_LINK_CARDINALITY;
 import static org.faktorips.runtime.internal.ProductComponentXmlUtil.XML_TAG_FORMULA;
 import static org.faktorips.runtime.internal.ValidationRules.XML_ELEMENT_VALIDATION_RULE_CONFIG;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE;
@@ -46,6 +47,7 @@ import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
+import org.faktorips.valueset.IntegerRange;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -88,7 +90,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             entry(XML_TAG_FORMULA, 7),
             entry(XML_TAG_TABLE_CONTENT_USAGE, 8),
             entry(XML_ELEMENT_VALIDATION_RULE_CONFIG, 9),
-            entry(XML_ELEMENT_LINK, 10));
+            entry(XML_ELEMENT_LINK, 10),
+            entry(XML_ELEMENT_POLICY_LINK_CARDINALITY, 11));
     private static final Comparator<Element> BY_TAG_IN_SCHEMA_ORDER = comparing(e -> ORDER.get(e.getNodeName()));
     private static final String[] ALL_SORTED_TAGS = ORDER.keySet().toArray(String[]::new);
     /**
@@ -340,6 +343,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         doInitTableUsagesFromXml(propertyElements);
         doInitFormulaFromXml(cmptElement);
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
+        doInitPolicyLinkCardinalitiesFromXml(
+                ProductComponentXmlUtil.getPolicyLinkCardinalityElements(cmptElement));
         doInitValidationRuleConfigsFromXml(cmptElement);
         initExtensionPropertiesFromXml(cmptElement);
         description = DescriptionXmlHelper.read(cmptElement);
@@ -399,6 +404,41 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         //
         // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to super.doInitReferencesFromXml().
+    }
+
+    /**
+     * Initializes the configurable policy link cardinalities with the data in the map. The map
+     * contains the policy association name as key and the xml element containing the cardinality
+     * data as value.
+     *
+     * @param cardinalityElements the map of policy link cardinality elements
+     *
+     * @since 26.7
+     */
+    protected void doInitPolicyLinkCardinalitiesFromXml(Map<String, Element> cardinalityElements) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitPolicyLinkCardinalitiesFromXml().
+    }
+
+    /**
+     * Parses an {@link IntegerRange} from the {@code minCardinality} and {@code maxCardinality}
+     * attributes of the given XML element.
+     *
+     * @throws NumberFormatException if {@code minCardinality} or {@code maxCardinality} is missing
+     *             or not a valid integer (and not {@code *} or {@code n} for maxCardinality)
+     *
+     * @since 26.7
+     */
+    public static IntegerRange parseCardinalityRange(Element element) {
+        String maxStr = element.getAttribute("maxCardinality");
+        int maxCardinality = switch (maxStr.toLowerCase(Locale.ROOT)) {
+            case "*", "n" -> Integer.MAX_VALUE;
+            default -> Integer.parseInt(maxStr);
+        };
+        int minCardinality = Integer.parseInt(element.getAttribute("minCardinality"));
+        return IntegerRange.valueOf(minCardinality, maxCardinality);
     }
 
     /**
@@ -477,6 +517,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeTableUsagesToXml(prodCmptElement);
         writeValidationRuleConfigsToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
+        writePolicyLinkCardinalitiesToXml(prodCmptElement);
 
         return sortNodesInAlphabeticalOrder(prodCmptElement);
     }
@@ -591,6 +632,21 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         /*
          * Nothing to be done base class. Note that this method is deliberately not declaredtoXml
          * abstract to allow calls to super.writeReferencesToXml() in subclasses.
+         */
+    }
+
+    /**
+     * Writes the configurable policy link cardinalities to the given XML element. The given
+     * {@link Element} is the element representing this {@link ProductComponent}.
+     *
+     * @param element the element all policy link cardinalities should be added to
+     *
+     * @since 26.7
+     */
+    protected void writePolicyLinkCardinalitiesToXml(Element element) {
+        /*
+         * Nothing to be done in the base class. Note that this method is deliberately not declared
+         * abstract to allow calls to super.writePolicyLinkCardinalitiesToXml() in subclasses.
          */
     }
 

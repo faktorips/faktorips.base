@@ -469,6 +469,68 @@ public class XPolicyAssociation extends XAssociation {
         return getModelNode(polCmptType, XPolicyCmptClass.class);
     }
 
+    /**
+     * {@return true if the cardinality of this association is configurable by a product component}
+     *
+     * @since 26.7
+     */
+    public boolean isCardinalityConfigurable() {
+        if (isDerivedUnion() || isConstrain()) {
+            return false;
+        }
+        return getAssociation().isCardinalityConfigurable();
+    }
+
+    /**
+     * {@return the field name for the configurable cardinality of this association}
+     *
+     * @since 26.7
+     */
+    public String getFieldNameCardinality() {
+        String singularName = IpsStringUtils.toUpperFirstChar(getName(false));
+        return "cardinalityOf" + singularName;
+    }
+
+    /**
+     * {@return the getter method name for the configurable cardinality}
+     *
+     * @since 26.7
+     */
+    public String getMethodNameGetCardinalityFor() {
+        String singularName = IpsStringUtils.toUpperFirstChar(getName(false));
+        return getJavaNamingConvention().getGetterMethodName("CardinalityFor" + singularName);
+    }
+
+    /**
+     * {@return the setter method name for the configurable cardinality}
+     *
+     * @since 26.7
+     */
+    public String getMethodNameSetCardinalityFor() {
+        String singularName = IpsStringUtils.toUpperFirstChar(getName(false));
+        return getJavaNamingConvention().getSetterMethodName("CardinalityFor" + singularName);
+    }
+
+    /**
+     * {@return the private method name for initializing the cardinality from XML}
+     *
+     * @since 26.7
+     */
+    public String getMethodNameDoInitCardinalityFromXml() {
+        String singularName = IpsStringUtils.toUpperFirstChar(getName(false));
+        return "doInitCardinalityOf" + singularName + "FromXml";
+    }
+
+    /**
+     * {@return the private method name for writing the cardinality to XML}
+     *
+     * @since 26.7
+     */
+    public String getMethodNameWriteCardinalityToXml() {
+        String singularName = IpsStringUtils.toUpperFirstChar(getName(false));
+        return "writeCardinalityOf" + singularName + "ToXml";
+    }
+
     public boolean isProductRelevant() {
         return getAssociation().isConstrainedByProductStructure(getIpsProject());
     }

@@ -367,6 +367,15 @@ public class PolicyAssociation extends Association {
     }
 
     /**
+     * Returns whether the cardinality of this association is configurable by a product component.
+     *
+     * @since 26.7
+     */
+    public boolean isCardinalityConfigurable() {
+        return getAnnotation().cardinalityConfigurable();
+    }
+
+    /**
      * A {@link PolicyAssociation} is never changing over time, but it's associated
      * {@link ProductAssociation} might be.
      *

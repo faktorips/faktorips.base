@@ -303,4 +303,73 @@ public class XPolicyAssociationTest {
 
         assertThat(assoc.getCopySupportLoopVarName(), is("aFoo"));
     }
+
+    @Test
+    public void testIsCardinalityConfigurable_true() {
+        when(typeAssoc.isCardinalityConfigurable()).thenReturn(true);
+
+        assertThat(assoc.isCardinalityConfigurable(), is(true));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_false() {
+        when(typeAssoc.isCardinalityConfigurable()).thenReturn(false);
+
+        assertThat(assoc.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseForDerivedUnion() {
+        when(typeAssoc.isDerivedUnion()).thenReturn(true);
+
+        assertThat(assoc.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseForConstrain() {
+        when(typeAssoc.isConstrain()).thenReturn(true);
+
+        assertThat(assoc.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testGetFieldNameCardinality() {
+        doReturn("coverage").when(assoc).getName(false);
+
+        assertThat(assoc.getFieldNameCardinality(), is("cardinalityOfCoverage"));
+    }
+
+    @Test
+    public void testGetMethodNameGetCardinalityFor() {
+        doReturn("coverage").when(assoc).getName(false);
+        doReturn(ipsProject).when(assoc).getIpsProject();
+        IJavaNamingConvention namingConvention = new JavaNamingConvention();
+        doReturn(namingConvention).when(ipsProject).getJavaNamingConvention();
+
+        assertThat(assoc.getMethodNameGetCardinalityFor(), is("getCardinalityForCoverage"));
+    }
+
+    @Test
+    public void testGetMethodNameSetCardinalityFor() {
+        doReturn("coverage").when(assoc).getName(false);
+        doReturn(ipsProject).when(assoc).getIpsProject();
+        IJavaNamingConvention namingConvention = new JavaNamingConvention();
+        doReturn(namingConvention).when(ipsProject).getJavaNamingConvention();
+
+        assertThat(assoc.getMethodNameSetCardinalityFor(), is("setCardinalityForCoverage"));
+    }
+
+    @Test
+    public void testGetMethodNameDoInitCardinalityFromXml() {
+        doReturn("coverage").when(assoc).getName(false);
+
+        assertThat(assoc.getMethodNameDoInitCardinalityFromXml(), is("doInitCardinalityOfCoverageFromXml"));
+    }
+
+    @Test
+    public void testGetMethodNameWriteCardinalityToXml() {
+        doReturn("coverage").when(assoc).getName(false);
+
+        assertThat(assoc.getMethodNameWriteCardinalityToXml(), is("writeCardinalityOfCoverageToXml"));
+    }
 }

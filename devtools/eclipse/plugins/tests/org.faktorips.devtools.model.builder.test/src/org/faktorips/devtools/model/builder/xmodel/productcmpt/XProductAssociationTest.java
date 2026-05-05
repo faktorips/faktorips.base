@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,9 +12,6 @@ package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -85,7 +82,7 @@ public class XProductAssociationTest {
     @Test
     public void testGetTargetClassGenerationName() {
         String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
-        assertEquals("ITargetTypeGen", targetClassGenerationName);
+        assertThat(targetClassGenerationName, is("ITargetTypeGen"));
     }
 
     @Test
@@ -94,13 +91,13 @@ public class XProductAssociationTest {
         when(xTargetGenerationClass.getMethodNameGetProductComponentGeneration()).thenReturn("getTargetTypeGen");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
-        assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
+        assertThat(getterNameForTargetGeneration, is("getTargetTypeGen"));
     }
 
     @Test
     public void testGetTargetClassProductComponentName() {
         String targetClassProductName = xProductAssociation.getTargetClassGenerationName();
-        assertEquals("ITargetTypeGen", targetClassProductName);
+        assertThat(targetClassProductName, is("ITargetTypeGen"));
     }
 
     @Test
@@ -109,7 +106,7 @@ public class XProductAssociationTest {
         when(association.is1ToMany()).thenReturn(true);
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinksFor();
-        assertEquals("getLinksForTestTargets", methodName);
+        assertThat(methodName, is("getLinksForTestTargets"));
     }
 
     @Test
@@ -118,7 +115,7 @@ public class XProductAssociationTest {
         when(association.is1ToMany()).thenReturn(false);
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinksFor();
-        assertEquals("getLinkForTestTarget", methodName);
+        assertThat(methodName, is("getLinkForTestTarget"));
     }
 
     @Test
@@ -127,10 +124,10 @@ public class XProductAssociationTest {
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinkFor();
 
-        assertEquals("getLinkForTestTarget", methodName);
+        assertThat(methodName, is("getLinkForTestTarget"));
 
         methodName = xProductAssociation.getMethodNameGetLinkFor();
-        assertEquals("getLinkForTestTarget", methodName);
+        assertThat(methodName, is("getLinkForTestTarget"));
     }
 
     @Test
@@ -140,7 +137,7 @@ public class XProductAssociationTest {
         when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetCardinalityFor();
-        assertEquals("getCardinalityForPolTarget", methodName);
+        assertThat(methodName, is("getCardinalityForPolTarget"));
     }
 
     @Test
@@ -148,10 +145,94 @@ public class XProductAssociationTest {
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
 
         when(association.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(true);
-        assertTrue(xProductAssociation.hasMatchingAssociation());
+        assertThat(xProductAssociation.hasMatchingAssociation(), is(true));
 
         when(association.constrainsPolicyCmptTypeAssociation(any(IIpsProject.class))).thenReturn(false);
-        assertFalse(xProductAssociation.hasMatchingAssociation());
+        assertThat(xProductAssociation.hasMatchingAssociation(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_true() {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.isCardinalityConfigurable()).thenReturn(true);
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+
+        assertThat(xProductAssociation.isCardinalityConfigurable(), is(true));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseWhenDerivedUnion() {
+        when(association.isDerivedUnion()).thenReturn(true);
+
+        assertThat(xProductAssociation.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseWhenConstrain() {
+        when(association.isConstrain()).thenReturn(true);
+
+        assertThat(xProductAssociation.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseWhenBothDerivedUnionAndConstrain() {
+        when(association.isDerivedUnion()).thenReturn(true);
+
+        assertThat(xProductAssociation.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseWhenNoMatchingAssociation() {
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(null);
+
+        assertThat(xProductAssociation.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_falseWhenNotConfigurable() {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.isCardinalityConfigurable()).thenReturn(false);
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+
+        assertThat(xProductAssociation.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testGetFieldNameCardinality() {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("coverage");
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+
+        assertThat(xProductAssociation.getFieldNameCardinality(), is("cardinalityOfCoverage"));
+    }
+
+    @Test
+    public void testGetMethodNameSetCardinalityFor() {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("coverage");
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+
+        assertThat(xProductAssociation.getMethodNameSetCardinalityFor(), is("setCardinalityForCoverage"));
+    }
+
+    @Test
+    public void testGetMethodNameDoInitCardinalityFromXml() {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("coverage");
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+
+        assertThat(xProductAssociation.getMethodNameDoInitCardinalityFromXml(),
+                is("doInitCardinalityOfCoverageFromXml"));
+    }
+
+    @Test
+    public void testGetMethodNameWriteCardinalityToXml() {
+        IPolicyCmptTypeAssociation mockPolicyAsso = mock(IPolicyCmptTypeAssociation.class);
+        when(mockPolicyAsso.getTargetRoleSingular()).thenReturn("coverage");
+        when(association.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(mockPolicyAsso);
+
+        assertThat(xProductAssociation.getMethodNameWriteCardinalityToXml(),
+                is("writeCardinalityOfCoverageToXml"));
     }
 
     @Test

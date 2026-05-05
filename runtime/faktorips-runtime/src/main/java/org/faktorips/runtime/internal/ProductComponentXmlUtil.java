@@ -38,6 +38,7 @@ enum ProductComponentXmlUtil {
     static final String XML_TAG_FORMULA = "Formula";
     static final String XML_TAG_EXPRESSION = "Expression";
     static final String XML_ATTRIBUTE_FORMULA_SIGNATURE = "formulaSignature";
+    static final String XML_ELEMENT_POLICY_LINK_CARDINALITY = "PolicyLinkCardinality";
 
     /**
      * Returns a map containing the xml elements representing relations found in the indicated
@@ -61,6 +62,31 @@ enum ProductComponentXmlUtil {
                 associationElements.add(childElement);
             }
 
+        }
+        return elementMap;
+    }
+
+    /**
+     * Returns a map containing the xml elements representing policy link cardinality configurations
+     * found in the indicated element. For each policy association the map contains an entry with
+     * the association name as key and the xml element containing the cardinality data as value.
+     *
+     * @param element An xml element containing a product component's or generation's data.
+     * @throws NullPointerException if element is <code>null</code>.
+     *
+     * @since 26.7
+     */
+    static final Map<String, Element> getPolicyLinkCardinalityElements(Element element) {
+        Map<String, Element> elementMap = new HashMap<>();
+        NodeList nl = element.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node node = nl.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE
+                    && XML_ELEMENT_POLICY_LINK_CARDINALITY.equals(node.getNodeName())) {
+                Element childElement = (Element)node;
+                String association = childElement.getAttribute("association");
+                elementMap.put(association, childElement);
+            }
         }
         return elementMap;
     }

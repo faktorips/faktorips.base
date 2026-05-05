@@ -62,11 +62,15 @@ class MethodNames {
 
     def static doInitReferencesFromXml(String paramMap)  {     "doInitReferencesFromXml(" + paramMap + ")"    }
 
+    def static doInitPolicyLinkCardinalitiesFromXml(String paramMap)  {     "doInitPolicyLinkCardinalitiesFromXml(" + paramMap + ")"    }
+
     def static doInitTableUsagesFromXml(String paramMap)  {     "doInitTableUsagesFromXml(" + paramMap + ")"    }
 
     def static writePropertiesToXml(String paramElement)  {     "writePropertiesToXml(" + paramElement + ")"    }
 
     def static writeReferencesToXml(String paramElement)  {     "writeReferencesToXml(" + paramElement + ")"    }
+
+    def static writePolicyLinkCardinalitiesToXml(String paramElement)  {     "writePolicyLinkCardinalitiesToXml(" + paramElement + ")"    }
 
     def static writeTableUsagesToXml(String paramElement)  {     "writeTableUsagesToXml(" + paramElement + ")"    }
     

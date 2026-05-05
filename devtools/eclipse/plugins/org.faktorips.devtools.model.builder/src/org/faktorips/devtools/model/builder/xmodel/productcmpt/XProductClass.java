@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,11 +30,13 @@ import org.faktorips.devtools.model.builder.xmodel.XAttribute;
 import org.faktorips.devtools.model.builder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XMethod;
 import org.faktorips.devtools.model.builder.xmodel.XType;
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
@@ -356,6 +359,54 @@ public abstract class XProductClass extends XType {
 
     @Override
     public abstract Set<? extends XProductClass> getClassHierarchy();
+
+    /**
+     * Returns all product associations that have a matching policy association with
+     * {@code cardinalityConfigurable=true}.
+     *
+     * @since 26.7
+     */
+    public Set<XProductAssociation> getCardinalityConfigurableAssociations() {
+        return getAssociations().stream()
+                .filter(XProductAssociation::isCardinalityConfigurable)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    /**
+     * Returns all policy associations that have {@code cardinalityConfigurable=true} but are NOT
+     * already covered by a matching product association. These are "pure policy associations"
+     * (reine Vertragsbeziehungen) that still need cardinality fields generated on the product
+     * component or generation.
+     * <p>
+     * For product types with generations ({@code isChangingOverTime()=true}), the cardinality is
+     * generated on the generation class. For product types without generations, it is generated on
+     * the component class.
+     *
+     * @since 26.7
+     */
+    public Set<XPolicyAssociation> getPureCardinalityConfigurablePolicyAssociations() {
+        if (!isConfigurationForPolicyCmptType()) {
+            return new LinkedHashSet<>();
+        }
+        boolean typeHasGenerations = getType().isChangingOverTime();
+        if (typeHasGenerations != isChangeOverTimeClass()) {
+            return new LinkedHashSet<>();
+        }
+        XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+        if (!policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
+            return new LinkedHashSet<>();
+        }
+        Set<String> coveredByProductAssociation = getAllDeclaredAssociations().stream()
+                .filter(XProductAssociation::isCardinalityConfigurable)
+                .map(a -> a.getAssociation().findMatchingPolicyCmptTypeAssociation(getIpsProject()))
+                .filter(Objects::nonNull)
+                .map(IPolicyCmptTypeAssociation::getTargetRoleSingular)
+                .collect(Collectors.toSet());
+        return policyCmptClass.getAssociations().stream()
+                .filter(XPolicyAssociation::isCardinalityConfigurable)
+                .filter(a -> !coveredByProductAssociation.contains(a.getName(false)))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 
     /**
      * Returns true if there is at least one association that is not a derived union or the inverse

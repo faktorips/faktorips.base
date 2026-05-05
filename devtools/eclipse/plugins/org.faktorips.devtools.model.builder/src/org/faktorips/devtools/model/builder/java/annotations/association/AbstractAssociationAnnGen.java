@@ -15,6 +15,7 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.builder.java.annotations.IAnnotationGenerator;
 import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
@@ -63,6 +64,9 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
         }
         if (association instanceof XProductAssociation pA && !pA.isVisible()) {
             paramsBuilder.append(", hide = true");
+        }
+        if (association instanceof XPolicyAssociation pA && pA.isCardinalityConfigurable()) {
+            paramsBuilder.append(", cardinalityConfigurable = true");
         }
         return new JavaCodeFragmentBuilder().annotationLn(IpsAssociation.class, paramsBuilder.getFragment())
                 .getFragment();

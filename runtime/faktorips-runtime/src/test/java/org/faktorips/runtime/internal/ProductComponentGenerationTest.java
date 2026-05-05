@@ -1,18 +1,19 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.aMapWithSize;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -50,34 +51,34 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         Element genEl = getTestDocument().getDocumentElement();
         Map<String, List<Element>> map = ProductComponentXmlUtil.getLinkElements(genEl);
         List<Element> list = map.get("relation3");
-        assertEquals(1, list.size());
+        assertThat(list.size(), is(1));
         Element relEl = list.get(0);
         HashMap<String, IntegerRange> cardinalityMap = new HashMap<>();
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation3", relEl);
         IntegerRange cardinality = cardinalityMap.get("relation3");
-        assertEquals(IntegerRange.valueOf(0, Integer.MAX_VALUE), cardinality);
+        assertThat(cardinality, is(IntegerRange.valueOf(0, Integer.MAX_VALUE)));
 
         list = map.get("relation4");
-        assertEquals(1, list.size());
+        assertThat(list.size(), is(1));
         relEl = list.get(0);
         cardinalityMap = new HashMap<>();
         ProductComponentGeneration.addToCardinalityMap(cardinalityMap, "relation4", relEl);
         cardinality = cardinalityMap.get("relation4");
-        assertEquals(IntegerRange.valueOf(0, Integer.MAX_VALUE), cardinality);
+        assertThat(cardinality, is(IntegerRange.valueOf(0, Integer.MAX_VALUE)));
     }
 
     @Test
     public void testSetValidationRuleActivated() {
 
-        assertEquals(false, gen.isValidationRuleActivated("MyRule"));
+        assertThat(gen.isValidationRuleActivated("MyRule"), is(false));
 
         gen.setValidationRuleActivated("MyRule", true);
 
-        assertEquals(true, gen.isValidationRuleActivated("MyRule"));
+        assertThat(gen.isValidationRuleActivated("MyRule"), is(true));
 
         gen.setValidationRuleActivated("MyRule", false);
 
-        assertEquals(false, gen.isValidationRuleActivated("MyRule"));
+        assertThat(gen.isValidationRuleActivated("MyRule"), is(false));
 
     }
 
@@ -86,11 +87,11 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         Element genElement = getTestDocument().getDocumentElement();
         gen.initFromXml(genElement);
 
-        assertEquals(true, gen.isValidationRuleActivated("activeRule"));
-        assertEquals(false, gen.isValidationRuleActivated("inactiveRule"));
-        assertEquals(false, gen.isValidationRuleActivated("invalidActivationRule"));
+        assertThat(gen.isValidationRuleActivated("activeRule"), is(true));
+        assertThat(gen.isValidationRuleActivated("inactiveRule"), is(false));
+        assertThat(gen.isValidationRuleActivated("invalidActivationRule"), is(false));
 
-        assertEquals(false, gen.isValidationRuleActivated("nonExistentRule"));
+        assertThat(gen.isValidationRuleActivated("nonExistentRule"), is(false));
     }
 
     @Test
@@ -98,30 +99,31 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         Element genElement = getTestDocument().getDocumentElement();
         gen.initFromXml(genElement);
 
-        assertTrue(gen.isFormulaAvailable("testFormula"));
-        assertFalse(gen.isFormulaAvailable("emptyFormula"));
-        assertFalse(gen.isFormulaAvailable("notExistingFormula"));
+        assertThat(gen.isFormulaAvailable("testFormula"), is(true));
+        assertThat(gen.isFormulaAvailable("emptyFormula"), is(false));
+        assertThat(gen.isFormulaAvailable("notExistingFormula"), is(false));
     }
 
     @Test
     public void testWriteTableUsageToXml() {
         Element genElement = getTestDocument().getDocumentElement();
         NodeList childNodes = genElement.getChildNodes();
-        assertEquals(31, childNodes.getLength());
+        int initialLength = childNodes.getLength();
 
         gen.writeTableUsageToXml(genElement, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(32, childNodes.getLength());
-        Node namedItem = childNodes.item(31).getAttributes().getNamedItem("structureUsage");
-        assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(31).getFirstChild().getTextContent();
-        assertEquals("tableContentNameValue", nodeValue);
+        assertThat(childNodes.getLength(), is(initialLength + 1));
+        Node addedNode = childNodes.item(initialLength);
+        Node namedItem = addedNode.getAttributes().getNamedItem("structureUsage");
+        assertThat(namedItem.getNodeValue(), is("structureUsageValue"));
+        String nodeValue = addedNode.getFirstChild().getTextContent();
+        assertThat(nodeValue, is("tableContentNameValue"));
     }
 
     @Test
     public void testSetValidFrom() {
         gen.setValidFrom(new DateTime(2010, 1, 1));
-        assertEquals(new DateTime(2010, 1, 1), gen.getValidFrom());
+        assertThat(gen.getValidFrom(), is(new DateTime(2010, 1, 1)));
     }
 
     @Test
@@ -131,7 +133,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
 
         gen.setValidFrom(new DateTime(2010, 1, 1));
 
-        assertEquals(new DateTime(2010, 1, 1), gen.getValidFrom());
+        assertThat(gen.getValidFrom(), is(new DateTime(2010, 1, 1)));
     }
 
     @Test(expected = IllegalRepositoryModificationException.class)
@@ -148,6 +150,33 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     @Test(expected = NullPointerException.class)
     public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
         gen.setValidFrom(null);
+    }
+
+    @Test
+    public void testDoInitPolicyLinkCardinalitiesFromXml() {
+        Element genElement = getTestDocument().getDocumentElement();
+        gen.initFromXml(genElement);
+
+        Map<String, IntegerRange> cardinalities = gen.getPolicyLinkCardinalities();
+        assertThat(cardinalities, aMapWithSize(2));
+        assertThat(cardinalities.keySet(), hasItems("coverage", "rider"));
+        assertThat(cardinalities.get("coverage"), is(IntegerRange.valueOf(1, 5)));
+        assertThat(cardinalities.get("rider"), is(IntegerRange.valueOf(0, Integer.MAX_VALUE)));
+    }
+
+    @Test
+    public void testWritePolicyLinkCardinalitiesToXml_roundTrip() {
+        gen.setPolicyLinkCardinality("coverage", IntegerRange.valueOf(1, 5));
+        gen.setPolicyLinkCardinality("rider", IntegerRange.valueOf(0, Integer.MAX_VALUE));
+
+        Element xmlElement = gen.toXml(newDocument());
+        TestProductCmptGeneration restoredGen = new TestProductCmptGeneration(pc);
+        restoredGen.initFromXml(xmlElement);
+
+        Map<String, IntegerRange> cardinalities = restoredGen.getPolicyLinkCardinalities();
+        assertThat(cardinalities, aMapWithSize(2));
+        assertThat(cardinalities.get("coverage"), is(IntegerRange.valueOf(1, 5)));
+        assertThat(cardinalities.get("rider"), is(IntegerRange.valueOf(0, Integer.MAX_VALUE)));
     }
 
 }

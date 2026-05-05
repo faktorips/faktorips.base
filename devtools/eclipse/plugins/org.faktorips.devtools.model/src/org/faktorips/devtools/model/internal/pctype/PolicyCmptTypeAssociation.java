@@ -724,7 +724,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 : true;
         cardinalityConfigurable = element.hasAttribute(PROPERTY_CARDINALITY_CONFIGURABLE)
                 ? Boolean.parseBoolean(element.getAttribute(PROPERTY_CARDINALITY_CONFIGURABLE))
-                : true;
+                : false;
     }
 
     @Override
