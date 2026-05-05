@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.builder.propertybuilder;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -171,6 +172,19 @@ public class MessagesProperties {
             return treeSet;
         }
 
+        /**
+         * {@link Properties#load(InputStream)} uses ISO-8859-1 by default; delegates to
+         * {@link Properties#load(java.io.Reader)} to force UTF-8.
+         */
+        @Override
+        public synchronized void load(InputStream inStream) throws IOException {
+            super.load(new InputStreamReader(inStream, StandardCharsets.UTF_8));
+        }
+
+        /**
+         * Writes UTF-8 encoded properties without the timestamp comment that
+         * {@link Properties#store(OutputStream, String)} would otherwise prepend.
+         */
         @Override
         public void store(final OutputStream out, final String comments) throws IOException {
             store0(new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8)));

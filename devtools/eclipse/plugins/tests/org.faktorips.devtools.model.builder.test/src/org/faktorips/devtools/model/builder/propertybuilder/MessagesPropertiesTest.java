@@ -11,11 +11,8 @@
 package org.faktorips.devtools.model.builder.propertybuilder;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -26,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -37,7 +35,7 @@ public class MessagesPropertiesTest {
 
         validationMessages.put("abc", "message");
 
-        assertEquals("message", validationMessages.getMessage("abc"));
+        assertThat(validationMessages.getMessage("abc"), is("message"));
     }
 
     @Test
@@ -47,37 +45,36 @@ public class MessagesPropertiesTest {
         validationMessages.put("abc", "message");
         validationMessages.remove("abc");
 
-        assertNull(validationMessages.getMessage("abc"));
+        assertThat(validationMessages.getMessage("abc"), is(nullValue()));
     }
 
     @Test
     public void shouldBeModifiedAfterSuccessfullPut() throws Exception {
         MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(false));
 
         validationMessages.put("key", "message");
-        assertTrue(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(true));
 
         validationMessages.store(mock(OutputStream.class));
         validationMessages.put("key", "message");
-        assertFalse(validationMessages.isModified());
-
+        assertThat(validationMessages.isModified(), is(false));
     }
 
     @Test
     public void shouldBeModifiedAfterSuccessfullRemove() throws Exception {
         MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(false));
 
         validationMessages.remove("key");
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(false));
 
         validationMessages.put("key", "message");
 
         validationMessages.store(mock(OutputStream.class));
 
         validationMessages.remove("key");
-        assertTrue(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(true));
     }
 
     @Test
@@ -101,28 +98,47 @@ public class MessagesPropertiesTest {
         InputStream inputStream = mock(InputStream.class);
         validationMessages.load(inputStream);
 
-        verify(inputStream).read(any(byte[].class));
+        verify(inputStream).read(any(byte[].class), any(int.class), any(int.class));
         verify(inputStream).close();
+    }
+
+    @Test
+    public void shouldLoadAndStoreUTF8EncodedStrings() throws Exception {
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
+
+        InputStream inputStream = new ByteArrayInputStream(
+                "name_ä=A name with umlaut".getBytes(StandardCharsets.UTF_8));
+        validationMessages.load(inputStream);
+
+        assertThat(validationMessages.getMessage("name_ä"), is("A name with umlaut"));
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        validationMessages.store(outputStream);
+
+        String string = outputStream.toString(StandardCharsets.UTF_8);
+        assertThat(string, is("name_ä=A name with umlaut" + System.lineSeparator()));
     }
 
     @Test
     public void shouldNotBeModifiedAfterLoad() throws Exception {
         MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(false));
 
         validationMessages.put("abc", "text");
 
-        InputStream inputStream = mock(InputStream.class);
+        InputStream inputStream = new ByteArrayInputStream(
+                "name_ä=A name with umlaut".getBytes(StandardCharsets.UTF_8));
         validationMessages.load(inputStream);
 
-        assertNull(validationMessages.getMessage("abc"));
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.getMessage("abc"), is(nullValue()));
+        assertThat(validationMessages.getMessage("name_ä"), is("A name with umlaut"));
+        assertThat(validationMessages.isModified(), is(false));
     }
 
     @Test
     public void shouldNotBeModifiedAfterStore() throws Exception {
         MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.isModified(), is(false));
 
         String messageText = "text";
         validationMessages.put("abc", messageText);
@@ -130,8 +146,8 @@ public class MessagesPropertiesTest {
         OutputStream outputStream = mock(OutputStream.class);
         validationMessages.store(outputStream);
 
-        assertEquals(messageText, validationMessages.getMessage("abc"));
-        assertFalse(validationMessages.isModified());
+        assertThat(validationMessages.getMessage("abc"), is(messageText));
+        assertThat(validationMessages.isModified(), is(false));
     }
 
     @Test
@@ -142,7 +158,7 @@ public class MessagesPropertiesTest {
         validationMessages.put("abc", "312");
         validationMessages.put("xyz", "123");
 
-        assertEquals(2, validationMessages.size());
+        assertThat(validationMessages.size(), is(2));
     }
 
     @Test
@@ -159,7 +175,7 @@ public class MessagesPropertiesTest {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         validationMessages.store(outputStream);
 
-        String propertyText = outputStream.toString();
+        String propertyText = outputStream.toString(StandardCharsets.UTF_8);
 
         assertThat(propertyText, is("aaa0=123" + System.lineSeparator()
                 + "aaa1=123" + System.lineSeparator()
@@ -169,4 +185,63 @@ public class MessagesPropertiesTest {
                 + "def=312" + System.lineSeparator()));
     }
 
+    @Test
+    public void shouldLoadUmlautePropertyKeysAndValues() throws Exception {
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
+
+        String umlaute = "Ä=Ä" + System.lineSeparator()
+                + "Ö=Ö" + System.lineSeparator()
+                + "Ü=Ü" + System.lineSeparator()
+                + "ä=ä" + System.lineSeparator()
+                + "ö=ö" + System.lineSeparator()
+                + "ü=ü" + System.lineSeparator()
+                + "ß=ß" + System.lineSeparator();
+        InputStream inputStream = new ByteArrayInputStream(
+                umlaute.getBytes(StandardCharsets.UTF_8));
+
+        validationMessages.load(inputStream);
+
+        assertThat(validationMessages.getMessage("Ä"), is("Ä"));
+        assertThat(validationMessages.getMessage("Ö"), is("Ö"));
+        assertThat(validationMessages.getMessage("Ü"), is("Ü"));
+        assertThat(validationMessages.getMessage("ä"), is("ä"));
+        assertThat(validationMessages.getMessage("ö"), is("ö"));
+        assertThat(validationMessages.getMessage("ü"), is("ü"));
+        assertThat(validationMessages.getMessage("ß"), is("ß"));
+    }
+
+    @Test
+    public void shouldSaveUmlautePropertyKeysAndValues() throws Exception {
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
+
+        validationMessages.put("ä", "ä");
+        validationMessages.put("ö", "ö");
+        validationMessages.put("ü", "ü");
+        validationMessages.put("ß", "ß");
+        validationMessages.put("Ä", "Ä");
+        validationMessages.put("Ö", "Ö");
+        validationMessages.put("Ü", "Ü");
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        validationMessages.store(outputStream);
+
+        String propertyText = outputStream.toString(StandardCharsets.UTF_8);
+
+        assertThat(propertyText, is("Ä=Ä" + System.lineSeparator()
+                + "Ö=Ö" + System.lineSeparator()
+                + "Ü=Ü" + System.lineSeparator()
+                + "ß=ß" + System.lineSeparator()
+                + "ä=ä" + System.lineSeparator()
+                + "ö=ö" + System.lineSeparator()
+                + "ü=ü" + System.lineSeparator()));
+    }
+
+    @Test
+    public void shouldLoadEmptyStream() throws Exception {
+        MessagesProperties validationMessages = new MessagesProperties(System.lineSeparator());
+
+        validationMessages.load(new ByteArrayInputStream(new byte[0]));
+
+        assertThat(validationMessages.size(), is(0));
+    }
 }
