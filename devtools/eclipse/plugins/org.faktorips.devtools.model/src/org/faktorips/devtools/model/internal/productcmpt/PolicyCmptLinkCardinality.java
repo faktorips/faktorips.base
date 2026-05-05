@@ -42,6 +42,9 @@ import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * @since 26.7
+ */
 public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IPolicyCmptLinkCardinality {
 
     private final TemplateValueSettings templateValueSettings;

@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 
 /**
  * Common interface for all classes that can contain {@link IProductCmptLink product component
@@ -232,5 +233,55 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * @since 26.7
      */
     IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality(String policyAssociationName);
+
+    /**
+     * Returns the maximum number of links allowed in the given association. If it is a qualified
+     * association, the max cardinality specifies the number of links per qualifier(!).
+     * <p>
+     * If the number is not limited, {@link IAssociation#CARDINALITY_MANY} is returned.
+     * <p>
+     * If the association is a {@link IPolicyCmptTypeAssociation} with a
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() total cardinality configurable
+     * via product}, the maximum {@linkplain #getPolicyCmptLinkCardinality(String) configured
+     * cardinality} from this {@link IProductCmptLinkContainer} is returned.
+     *
+     * @see IPolicyCmptTypeAssociation#getMaxCardinality()
+     * @see IPolicyCmptTypeAssociation#isCardinalityConfigurable()
+     * @see #getPolicyCmptLinkCardinality(String)
+     *
+     * @since 26.7
+     */
+    default int getMaxCardinality(IPolicyCmptTypeAssociation policyAssociation) {
+        int maxType = policyAssociation.getMaxCardinality();
+        if (policyAssociation.isCardinalityConfigurable()) {
+            maxType = getPolicyCmptLinkCardinality(policyAssociation.getTargetRoleSingular())
+                    .map(IPolicyCmptLinkCardinality::getMaxCardinality).orElse(maxType);
+        }
+        return maxType;
+    }
+
+    /**
+     * Returns the minimum number of links allowed in the given association. If it is a qualified
+     * association, the max cardinality specifies the number of links per qualifier(!).
+     * <p>
+     * If the association is a {@link IPolicyCmptTypeAssociation} with a
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() total cardinality configurable
+     * via product}, the minimum {@linkplain #getPolicyCmptLinkCardinality(String) configured
+     * cardinality} from this {@link IProductCmptLinkContainer} is returned.
+     *
+     * @see IPolicyCmptTypeAssociation#getMinCardinality()
+     * @see IPolicyCmptTypeAssociation#isCardinalityConfigurable()
+     * @see #getPolicyCmptLinkCardinality(String)
+     *
+     * @since 26.7
+     */
+    default int getMinCardinality(IPolicyCmptTypeAssociation policyAssociation) {
+        int minType = policyAssociation.getMinCardinality();
+        if (policyAssociation.isCardinalityConfigurable()) {
+            minType = getPolicyCmptLinkCardinality(policyAssociation.getTargetRoleSingular())
+                    .map(IPolicyCmptLinkCardinality::getMinCardinality).orElse(minType);
+        }
+        return minType;
+    }
 
 }

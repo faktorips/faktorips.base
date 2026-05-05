@@ -274,10 +274,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         list.add(cardinalityValidation);
         if (!cardinalityValidation.containsErrorMsg()) {
             if (associationObj.isQualified()) {
-                if (getMaxCardinality() > associationObj.getMaxCardinality()) {
+                int maxPolicyCardinality = getProductCmptLinkContainer().getMaxCardinality(associationObj);
+                if (getMaxCardinality() > maxPolicyCardinality) {
                     String text = MessageFormat.format(
                             Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
-                            getMaxCardinality(), associationObj.getMaxCardinality());
+                            getMaxCardinality(), maxPolicyCardinality);
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }

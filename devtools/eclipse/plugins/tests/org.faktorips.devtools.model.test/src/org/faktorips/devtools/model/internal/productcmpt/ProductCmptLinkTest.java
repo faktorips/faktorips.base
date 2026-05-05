@@ -19,7 +19,6 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -83,7 +82,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetAssociation() {
-        assertEquals("CoverageType", link.getAssociation());
+        assertThat(link.getAssociation(), is("CoverageType"));
     }
 
     @Test
@@ -91,7 +90,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
 
         assocation.setTargetRoleSingular("CoverageType");
-        assertEquals(assocation, link.findAssociation(ipsProject));
+        assertThat(link.findAssociation(ipsProject), is(assocation));
 
         assocation.setTargetRoleSingular("blabla");
         assertNull(link.findAssociation(ipsProject));
@@ -100,7 +99,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         link.delete();
-        assertEquals(0, generation.getNumOfLinks());
+        assertThat(generation.getNumOfLinks(), is(0));
         assertTrue(ipsSrcFile.isDirty());
     }
 
@@ -110,15 +109,15 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         ProductCmpt targetProductCmpt = newProductCmpt(productCmptType, "my.Target");
         targetProductCmpt.setRuntimeId("my.target.runtime.id");
         link.setTarget("my.Target");
-        assertEquals("my.Target", link.getTarget());
-        assertEquals("my.target.runtime.id", link.getTargetRuntimeId());
+        assertThat(link.getTarget(), is("my.Target"));
+        assertThat(link.getTargetRuntimeId(), is("my.target.runtime.id"));
         assertTrue(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testSetTarget_DoesNotExist() {
         link.setTarget("newTarget");
-        assertEquals("newTarget", link.getTarget());
+        assertThat(link.getTarget(), is("newTarget"));
         assertNull(link.getTargetRuntimeId());
         assertTrue(ipsSrcFile.isDirty());
     }
@@ -137,17 +136,17 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
         IProductCmptLink copy = new ProductCmptLink(generation, "asd");
         copy.initFromXml(element);
-        assertEquals(link.getId(), copy.getId());
-        assertEquals("newTarget", copy.getTarget());
-        assertEquals("CoverageType", copy.getAssociation());
-        assertEquals(2, copy.getMinCardinality());
-        assertEquals(3, copy.getMaxCardinality());
-        assertEquals(TemplateValueStatus.INHERITED, copy.getTemplateValueStatus());
+        assertThat(copy.getId(), is(link.getId()));
+        assertThat(copy.getTarget(), is("newTarget"));
+        assertThat(copy.getAssociation(), is("CoverageType"));
+        assertThat(copy.getMinCardinality(), is(2));
+        assertThat(copy.getMaxCardinality(), is(3));
+        assertThat(copy.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
 
         templateLink.setMaxCardinality(Integer.MAX_VALUE);
         element = link.toXml(newDocument());
         copy.initFromXml(element);
-        assertEquals(Integer.MAX_VALUE, copy.getMaxCardinality());
+        assertThat(copy.getMaxCardinality(), is(Integer.MAX_VALUE));
     }
 
     @Test
@@ -163,23 +162,23 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
                 .item(0));
-        assertEquals("42", link.getId());
-        assertEquals("FullCoverage", link.getAssociation());
-        assertEquals("FullCoveragePlus", link.getTarget());
-        assertEquals(2, link.getMinCardinality());
-        assertEquals(3, link.getMaxCardinality());
-        assertEquals(TemplateValueStatus.INHERITED, link.getTemplateValueStatus());
+        assertThat(link.getId(), is("42"));
+        assertThat(link.getAssociation(), is("FullCoverage"));
+        assertThat(link.getTarget(), is("FullCoveragePlus"));
+        assertThat(link.getMinCardinality(), is(2));
+        assertThat(link.getMaxCardinality(), is(3));
+        assertThat(link.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
 
         link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
                 .item(1));
-        assertEquals("43", link.getId());
-        assertEquals(1, link.getMinCardinality());
-        assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
+        assertThat(link.getId(), is("43"));
+        assertThat(link.getMinCardinality(), is(1));
+        assertThat(link.getMaxCardinality(), is(Integer.MAX_VALUE));
 
         link.initFromXml((Element)getTestDocument().getDocumentElement().getElementsByTagName(IProductCmptLink.TAG_NAME)
                 .item(2));
-        assertEquals("44", link.getId());
-        assertEquals(Cardinality.UNDEFINED, link.getCardinality());
+        assertThat(link.getId(), is("44"));
+        assertThat(link.getCardinality(), is(Cardinality.UNDEFINED));
     }
 
     @Test
@@ -237,6 +236,46 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateCardinalityForQualified_Configured() {
+        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
+        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
+
+        ProductCmpt cmpt = newProductCmpt(coverageTypeType, "CoverageType");
+        link.setTarget(cmpt.getQualifiedName());
+
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        IPolicyCmptTypeAssociation policyAssociation = (IPolicyCmptTypeAssociation)policyCmptType.newAssociation();
+        policyAssociation.setTarget(coverageType.getQualifiedName());
+        policyAssociation.setTargetRoleSingular("Coverage");
+        policyAssociation.setQualified(true);
+        policyAssociation.setMinCardinality(1);
+        policyAssociation.setMaxCardinality(Integer.MAX_VALUE);
+        policyAssociation.setCardinalityConfigurable(true);
+        var linkCardinality = generation.newPolicyCmptLinkCardinality("Coverage");
+        linkCardinality.setCardinality(new Cardinality(1, 1, 0));
+
+        MessageList msgList = link.validate(ipsProject);
+        assertThat(msgList, isEmpty());
+
+        IProductCmptLink secondLink = generation.newLink("CoverageType");
+        secondLink.setTarget(cmpt.getQualifiedName());
+        secondLink.setMaxCardinality(1);
+
+        msgList = link.validate(ipsProject);
+        assertThat(msgList, isEmpty());
+        msgList = secondLink.validate(ipsProject);
+        assertThat(msgList, isEmpty());
+
+        secondLink.setMaxCardinality(2);
+        msgList = secondLink.validate(ipsProject);
+        assertThat(msgList, containsMessages());
+        assertThat(msgList, hasMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+    }
+
+    @Test
     public void testValidateInvalidTarget() throws Exception {
         IPolicyCmptType targetType = newPolicyAndProductCmptType(ipsProject, "Coverage", "CoverageType");
         IProductCmptType targetProductType = targetType.findProductCmptType(ipsProject);
@@ -252,7 +291,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         Message invalidTargetMessage = ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET);
         assertNotNull(invalidTargetMessage);
         assertThat(ml.getMessagesFor(link), hasSize(1));
-        assertEquals(invalidTargetMessage, ml.getMessagesFor(link).getMessage(0));
+        assertThat(ml.getMessagesFor(link).getMessage(0), is(invalidTargetMessage));
 
         link.setTarget(target.getQualifiedName());
 
@@ -338,7 +377,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testGetCaption() {
         createAssociation();
-        assertEquals("foo", link.getCaption(Locale.US));
+        assertThat(link.getCaption(Locale.US), is("foo"));
     }
 
     @Test
@@ -354,7 +393,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testGetPluralCaption() {
         createAssociation();
-        assertEquals("foos", link.getPluralCaption(Locale.US));
+        assertThat(link.getPluralCaption(Locale.US), is("foos"));
     }
 
     @Test
@@ -370,13 +409,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testGetLastResortCaption() {
         link.setAssociation("notCapitalized");
-        assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortCaption());
+        assertThat(link.getLastResortCaption(), is(StringUtils.capitalize(link.getAssociation())));
     }
 
     @Test
     public void testGetLastResortPluralCaption() {
         link.setAssociation("notCapitalized");
-        assertEquals(StringUtils.capitalize(link.getAssociation()), link.getLastResortPluralCaption());
+        assertThat(link.getLastResortPluralCaption(), is(StringUtils.capitalize(link.getAssociation())));
     }
 
     private IAssociation createAssociation() {
@@ -394,14 +433,14 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     public void testGetProductCmpt() {
         IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
         assertNotNull(newLink.getProductCmpt());
-        assertEquals(productCmpt, newLink.getProductCmpt());
+        assertThat(newLink.getProductCmpt(), is(productCmpt));
     }
 
     @Test
     public void testGetProductCmpt2() {
         IProductCmptLink newLink = createLinkWithContainer(productCmpt, "id1", "assoc1");
         assertNotNull(newLink.getProductCmpt());
-        assertEquals(productCmpt, newLink.getProductCmpt());
+        assertThat(newLink.getProductCmpt(), is(productCmpt));
     }
 
     @Test
@@ -409,7 +448,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         IProductCmptLink newLink = createLinkWithContainer(generation, "id1", "assoc1");
 
         assertNotNull(newLink.getProductCmptLinkContainer());
-        assertEquals(generation, newLink.getProductCmptLinkContainer());
+        assertThat(newLink.getProductCmptLinkContainer(), is(generation));
     }
 
     @Test
