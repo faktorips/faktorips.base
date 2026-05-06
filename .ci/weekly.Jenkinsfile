@@ -18,7 +18,7 @@ pipeline {
                 withMaven(publisherStrategy: 'EXPLICIT') {
                     sh "mvn -U -V -fae -e clean install -f codequality-config"
                     sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
-                    sh "mvn -U -V -T 8 -fae -e -P!rdp clean install -Dmaven.test.failure.ignore=true -Dmaven.test.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dtycho.localArtifacts=ignore"
+                    sh "mvn -U -V -T 8 -fae -e clean install -Dmaven.test.failure.ignore=true -Dmaven.test.skip=true -DskipTests=true -Dcheckstyle.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dmaven.javadoc.skip=true -Dtycho.localArtifacts=ignore"
                 }
             }
         }
