@@ -162,7 +162,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         // should only return true if all dragged cmpts are valid
         IProductCmptTypeAssociation association = getAssociation(target);
         boolean result = false;
-        if (generation == null) {
+        if (association == null || generation == null) {
             return false;
         }
         IProductCmptLinkContainer linkContainer = LinkCreatorUtil.getLinkContainerFor(generation, association);

@@ -78,6 +78,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
         @Override
         public StyledString getStyledText(Object element) {
+            if (element instanceof PolicyAssociationViewItem policyItem) {
+                return getPolicyAssociationViewItemStyledText(policyItem);
+            }
             if (element instanceof AssociationViewItem) {
                 return getAssociationViewItemStyledText((AssociationViewItem)element);
             }
@@ -85,6 +88,17 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
                 return getLinkViewItemStyledString((LinkViewItem)element);
             }
             return new StyledString(getText(element));
+        }
+
+        private StyledString getPolicyAssociationViewItemStyledText(PolicyAssociationViewItem viewItem) {
+            IPolicyCmptTypeAssociation assoc = viewItem.getAssociation();
+            String cardinality = viewItem.getLinkContainer()
+                    .getPolicyCmptLinkCardinality(assoc.getName())
+                    .map(LinksMessageCueLabelProvider.InternalLabelProvider::formatCardinality)
+                    .orElseGet(() -> formatCardinality(assoc.getMinCardinality(), assoc.getMaxCardinality()));
+            StyledString nameStyledString = new StyledString(getText(viewItem));
+            StyledString cardinalityStyledString = new StyledString(cardinality, IpsStyler.MODEL_CARDINALITY_STYLER);
+            return nameStyledString.append(cardinalityStyledString);
         }
 
         private StyledString getAssociationViewItemStyledText(AssociationViewItem associationViewItem) {
@@ -103,10 +117,17 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             }
             return associationViewItem.getLinkContainer()
                     .getPolicyCmptLinkCardinality(policyAssociation.getName())
-                    .map(c -> StringUtil.BLANK
-                            + StringUtil.getRangeString(c.getMinCardinality(), c.getMaxCardinality()))
-                    .orElse(StringUtil.BLANK + StringUtil.getRangeString(policyAssociation.getMinCardinality(),
+                    .map(LinksMessageCueLabelProvider.InternalLabelProvider::formatCardinality)
+                    .orElseGet(() -> formatCardinality(policyAssociation.getMinCardinality(),
                             policyAssociation.getMaxCardinality()));
+        }
+
+        private static String formatCardinality(IPolicyCmptLinkCardinality c) {
+            return formatCardinality(c.getMinCardinality(), c.getMaxCardinality());
+        }
+
+        private static String formatCardinality(int min, int max) {
+            return StringUtil.BLANK + StringUtil.getRangeString(min, max);
         }
 
         private StyledString getLinkViewItemStyledString(LinkViewItem linkViewItem) {

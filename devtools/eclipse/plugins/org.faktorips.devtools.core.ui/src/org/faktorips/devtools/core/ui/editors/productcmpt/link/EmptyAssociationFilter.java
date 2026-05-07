@@ -31,6 +31,9 @@ public class EmptyAssociationFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
+        if (element instanceof PolicyAssociationViewItem) {
+            return true;
+        }
         if (canSelect(element)) {
             List<IProductCmptLink> links = getLinks(element);
             return !links.isEmpty();

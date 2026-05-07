@@ -313,7 +313,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             getBindingContext().bindContent(cardinalityCheckbox, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE);
             getBindingContext().bindEnabled(cardinalityCheckbox, pmoAssociation,
-                    PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED);
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE_CHECKBOX_ENABLED);
             ((GridData)cardinalityCheckbox.getLayoutData()).horizontalSpan = 2;
 
             // inverse association
@@ -461,6 +461,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
         public static final String PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED = "configurableCheckboxEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CARDINALITY_CONFIGURABLE = "cardinalityConfigurable"; //$NON-NLS-1$
+        public static final String PROPERTY_CARDINALITY_CONFIGURABLE_CHECKBOX_ENABLED = "cardinalityConfigurableCheckboxEnabled"; //$NON-NLS-1$
         private boolean matchingExplicitly;
 
         private String actualConfiguredAssociationSourceName;
@@ -648,17 +649,21 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
          * @param configurable whether the cardinality should be configurable.
          */
         public void setCardinalityConfigurable(boolean configurable) {
-            getAssociation().setCardinalityConfigurable(configurable);
+            getAssociation().setCardinalityConfigurable(configurable && isCardinalityConfigurableCheckboxEnabled());
         }
 
         /**
          * {@return whether the cardinality is configurable}
          */
         public boolean isCardinalityConfigurable() {
-            if (!getAssociation().isConstrainedByProductStructure(ipsProject)) {
-                return false;
-            }
             return getAssociation().isCardinalityConfigurable();
+        }
+
+        /**
+         * {@return whether the cardinality can be made configurable}
+         */
+        public boolean isCardinalityConfigurableCheckboxEnabled() {
+            return getAssociation().getPolicyCmptType().isConfigurableByProductCmptType();
         }
 
         /**

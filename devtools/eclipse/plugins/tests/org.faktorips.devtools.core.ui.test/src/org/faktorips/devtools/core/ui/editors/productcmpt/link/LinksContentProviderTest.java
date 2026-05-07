@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -26,11 +28,14 @@ import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,23 +103,110 @@ public class LinksContentProviderTest {
     }
 
     @Test
-    public void testGetAssociationItems() {
-        List<IProductCmptTypeAssociation> listAssociations = new ArrayList<>();
+    public void testGetAssociationItems_onlyProductAssociations_returnsFlat() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation asso2 = mock(IProductCmptTypeAssociation.class);
         when(asso1.isRelevant()).thenReturn(false);
         when(asso2.isRelevant()).thenReturn(true);
-        listAssociations.add(asso1);
-        listAssociations.add(asso2);
-        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(listAssociations);
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of(asso1, asso2));
         when(gen.isContainerFor(asso2)).thenReturn(true);
         IProductCmptType productCmptType = mock(IProductCmptType.class);
         when(asso2.getProductCmptType()).thenReturn(productCmptType);
         when(productCmptType.isChangingOverTime()).thenReturn(true);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(null);
 
-        AssociationViewItem[] associationItems = provider.getAssociationItems(type, ipsProject, gen);
-        assertTrue(associationItems.length == 1);
-        assertEquals(asso2, associationItems[0].getAssociation());
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(1, items.length);
+        assertThat(items[0], instanceOf(AssociationViewItem.class));
+        assertEquals(asso2, ((AssociationViewItem)items[0]).getAssociation());
+    }
+
+    @Test
+    public void testGetAssociationItems_onlyPolicyAssociations_returnsFlat() {
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of());
+        IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
+        IPolicyCmptTypeAssociation policyAssoc = mockUnmatchedCardinalityConfigurableAssoc();
+        when(policyCmptType.findAllAssociations(ipsProject)).thenReturn(List.of(policyAssoc));
+
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(1, items.length);
+        assertThat(items[0], instanceOf(PolicyAssociationViewItem.class));
+        assertEquals(policyAssoc, ((PolicyAssociationViewItem)items[0]).getAssociation());
+    }
+
+    @Test
+    public void testGetAssociationItems_bothTypes_returnsFlat() {
+        IProductCmptTypeAssociation prodAssoc = mockRelevantProductAssoc();
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of(prodAssoc));
+        IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
+        IPolicyCmptTypeAssociation policyAssoc = mockUnmatchedCardinalityConfigurableAssoc();
+        when(policyCmptType.findAllAssociations(ipsProject)).thenReturn(List.of(policyAssoc));
+
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(2, items.length);
+        assertThat(items[0], instanceOf(AssociationViewItem.class));
+        assertThat(items[1], instanceOf(PolicyAssociationViewItem.class));
+    }
+
+    @Test
+    public void testGetAssociationItems_policyAssocMatched_excluded() {
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of());
+        IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
+        IPolicyCmptTypeAssociation policyAssoc = mock(IPolicyCmptTypeAssociation.class);
+        when(policyAssoc.isCardinalityConfigurable()).thenReturn(true);
+        IProductCmptTypeAssociation matchingProdAssoc = mock(IProductCmptTypeAssociation.class);
+        when(policyAssoc.findMatchingProductCmptTypeAssociation(ipsProject)).thenReturn(matchingProdAssoc);
+        when(policyCmptType.findAllAssociations(ipsProject)).thenReturn(List.of(policyAssoc));
+
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(0, items.length);
+    }
+
+    @Test
+    public void testGetAssociationItems_policyAssocNotCardinalityConfigurable_excluded() {
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of());
+        IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
+        IPolicyCmptTypeAssociation policyAssoc = mock(IPolicyCmptTypeAssociation.class);
+        when(policyAssoc.isCardinalityConfigurable()).thenReturn(false);
+        when(policyCmptType.findAllAssociations(ipsProject)).thenReturn(List.of(policyAssoc));
+
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(0, items.length);
+    }
+
+    @Test
+    public void testGetAssociationItems_noPolicyCmptType_noPolicyItems() {
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of());
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(null);
+
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(0, items.length);
+    }
+
+    @Test
+    public void testGetAssociationItems_policyAssocFromSupertype_included() {
+        when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(List.of());
+        IPolicyCmptType policyCmptType = mock(IPolicyCmptType.class);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
+        IPolicyCmptTypeAssociation supertypeAssoc = mockUnmatchedCardinalityConfigurableAssoc();
+        IAssociation nonPolicyAssoc = mock(IAssociation.class);
+        when(policyCmptType.findAllAssociations(ipsProject)).thenReturn(List.of(nonPolicyAssoc, supertypeAssoc));
+
+        Object[] items = provider.getAssociationItems(type, ipsProject, gen);
+
+        assertEquals(1, items.length);
+        assertThat(items[0], instanceOf(PolicyAssociationViewItem.class));
+        assertEquals(supertypeAssoc, ((PolicyAssociationViewItem)items[0]).getAssociation());
     }
 
     @Test
@@ -144,4 +236,22 @@ public class LinksContentProviderTest {
 
         assertNull(parent);
     }
+
+    private IProductCmptTypeAssociation mockRelevantProductAssoc() {
+        IProductCmptTypeAssociation prodAssoc = mock(IProductCmptTypeAssociation.class);
+        when(prodAssoc.isRelevant()).thenReturn(true);
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        when(prodAssoc.getProductCmptType()).thenReturn(productCmptType);
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+        when(gen.isContainerFor(prodAssoc)).thenReturn(true);
+        return prodAssoc;
+    }
+
+    private IPolicyCmptTypeAssociation mockUnmatchedCardinalityConfigurableAssoc() {
+        IPolicyCmptTypeAssociation policyAssoc = mock(IPolicyCmptTypeAssociation.class);
+        when(policyAssoc.isCardinalityConfigurable()).thenReturn(true);
+        when(policyAssoc.findMatchingProductCmptTypeAssociation(ipsProject)).thenReturn(null);
+        return policyAssoc;
+    }
+
 }

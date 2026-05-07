@@ -13,6 +13,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -45,7 +47,6 @@ import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
@@ -192,7 +193,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      */
     public void setProductCmptLinkToEdit(List<LinkViewItem> links) {
         pmo.setLinks(links);
-        pmo.setSelectedAssociation(null, null);
+        pmo.setSelectedViewItem(null);
         setDefaultFieldVisible(true);
         refresh();
     }
@@ -203,12 +204,19 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      */
     public void setAssociationToEdit(AssociationViewItem associationViewItem) {
         pmo.setLinks(Collections.emptyList());
-        if (associationViewItem != null) {
-            pmo.setSelectedAssociation(associationViewItem.getAssociation(),
-                    associationViewItem.getLinkContainer());
-        } else {
-            pmo.setSelectedAssociation(null, null);
-        }
+        pmo.setSelectedViewItem(associationViewItem);
+        setDefaultFieldVisible(false);
+        refresh();
+    }
+
+    /**
+     * Activates this panel based on the selected policy association node (without links). Used for
+     * policy associations with configurable cardinality that are not matched by any product
+     * association.
+     */
+    public void setAssociationToEdit(PolicyAssociationViewItem viewItem) {
+        pmo.setLinks(Collections.emptyList());
+        pmo.setSelectedViewItem(viewItem);
         setDefaultFieldVisible(false);
         refresh();
     }
@@ -361,8 +369,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
          */
         private final TemplateLinkPmo templatePmo = new TemplateLinkPmo();
         private List<LinkViewItem> links = Collections.emptyList();
-        private IProductCmptTypeAssociation selectedAssociation;
-        private IProductCmptLinkContainer selectedLinkContainer;
+        @CheckForNull
+        private AbstractAssociationViewItem selectedViewItem;
 
         public List<LinkViewItem> getLinks() {
             return links;
@@ -378,29 +386,36 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             notifyListeners();
         }
 
-        public void setSelectedAssociation(IProductCmptTypeAssociation association,
-                IProductCmptLinkContainer linkContainer) {
-            selectedAssociation = association;
-            selectedLinkContainer = linkContainer;
+        public void setSelectedViewItem(@CheckForNull AbstractAssociationViewItem viewItem) {
+            selectedViewItem = viewItem;
         }
 
-        @CheckForNull 
+        @CheckForNull
         private IPolicyCmptLinkCardinality getOrCreatePolicyCmptLinkCardinality() {
+            if (selectedViewItem instanceof PolicyAssociationViewItem policyItem) {
+                String name = policyItem.getAssociation().getName();
+                return policyItem.getLinkContainer().getPolicyCmptLinkCardinality(name)
+                        .orElseGet(() -> policyItem.getLinkContainer().newPolicyCmptLinkCardinality(name));
+            }
+            if (!(selectedViewItem instanceof AssociationViewItem assocItem)) {
+                return null;
+            }
             IPolicyCmptTypeAssociation matching = findMatchingPolicyAssociation();
             if (matching == null) {
                 return null;
             }
             String assocName = matching.getName();
-            return selectedLinkContainer.getPolicyCmptLinkCardinality(assocName)
-                    .orElseGet(() -> selectedLinkContainer.newPolicyCmptLinkCardinality(assocName));
+            return assocItem.getLinkContainer().getPolicyCmptLinkCardinality(assocName)
+                    .orElseGet(() -> assocItem.getLinkContainer().newPolicyCmptLinkCardinality(assocName));
         }
 
         @CheckForNull
         private IPolicyCmptTypeAssociation findMatchingPolicyAssociation() {
-            if (selectedAssociation == null || selectedLinkContainer == null) {
+            if (!(selectedViewItem instanceof AssociationViewItem assocItem)) {
                 return null;
             }
-            return selectedAssociation.findMatchingPolicyCmptTypeAssociation(selectedAssociation.getIpsProject());
+            IProductCmptTypeAssociation association = assocItem.getAssociation();
+            return association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
         }
 
         private void updateTemplatePmo(List<LinkViewItem> links2) {
@@ -413,8 +428,9 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         public boolean constrainsPolicyCmptTypeAssociation() {
             if (getLinks().isEmpty()) {
-                if (selectedAssociation == null) {
-                    return false;
+                if (selectedViewItem instanceof PolicyAssociationViewItem policyItem) {
+                    IPolicyCmptTypeAssociation assoc = policyItem.getAssociation();
+                    return assoc.isConfigurable() && assoc.isCardinalityConfigurable();
                 }
                 IPolicyCmptTypeAssociation matching = findMatchingPolicyAssociation();
                 return matching != null && matching.isConfigurable() && matching.isCardinalityConfigurable();
@@ -429,7 +445,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         }
 
         public boolean isEmpty() {
-            return getLinks().isEmpty() && selectedAssociation == null;
+            return getLinks().isEmpty() && selectedViewItem == null;
         }
 
         public boolean isMandatory() {
@@ -444,15 +460,44 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             return Objects.equals(getMinCardinality(), 0) && Objects.equals(getMaxCardinality(), 1);
         }
 
+        @CheckForNull
+        private Integer getAssociationCardinality(Function<IPolicyCmptLinkCardinality, Integer> configuredGetter,
+                Function<IPolicyCmptTypeAssociation, Integer> modelGetter) {
+            if (selectedViewItem instanceof PolicyAssociationViewItem policyItem) {
+                IPolicyCmptTypeAssociation assoc = policyItem.getAssociation();
+                return policyItem.getLinkContainer()
+                        .getPolicyCmptLinkCardinality(assoc.getName())
+                        .map(configuredGetter)
+                        .orElseGet(() -> modelGetter.apply(assoc));
+            }
+            if (!(selectedViewItem instanceof AssociationViewItem assocItem)) {
+                return null;
+            }
+            IPolicyCmptTypeAssociation matching = findMatchingPolicyAssociation();
+            if (matching == null) {
+                return null;
+            }
+            return assocItem.getLinkContainer()
+                    .getPolicyCmptLinkCardinality(matching.getName())
+                    .map(configuredGetter)
+                    .orElseGet(() -> modelGetter.apply(matching));
+        }
+
+        private void setAssociationCardinality(Integer newValue,
+                BiConsumer<IPolicyCmptLinkCardinality, Integer> setter) {
+            if (newValue == null) {
+                return;
+            }
+            IPolicyCmptLinkCardinality linkCardinality = getOrCreatePolicyCmptLinkCardinality();
+            if (linkCardinality != null) {
+                setter.accept(linkCardinality, newValue);
+            }
+        }
+
         public Integer getMinCardinality() {
             if (getLinks().isEmpty()) {
-                IPolicyCmptTypeAssociation matching = findMatchingPolicyAssociation();
-                if (matching == null) {
-                    return null;
-                }
-                return selectedLinkContainer.getPolicyCmptLinkCardinality(matching.getName())
-                        .map(IPolicyCmptLinkCardinality::getMinCardinality)
-                        .orElse(matching.getMinCardinality());
+                return getAssociationCardinality(IPolicyCmptLinkCardinality::getMinCardinality,
+                        IPolicyCmptTypeAssociation::getMinCardinality);
             }
             Integer result = getLinks().get(0).getLink().getMinCardinality();
             for (LinkViewItem linkViewItem : getLinks()) {
@@ -468,12 +513,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
          */
         public void setMinCardinality(Integer newValue) {
             if (getLinks().isEmpty()) {
-                if (newValue != null) {
-                    IPolicyCmptLinkCardinality linkCardinality = getOrCreatePolicyCmptLinkCardinality();
-                    if (linkCardinality != null) {
-                        linkCardinality.setMinCardinality(newValue);
-                    }
-                }
+                setAssociationCardinality(newValue, IPolicyCmptLinkCardinality::setMinCardinality);
                 return;
             }
             for (LinkViewItem linkViewItem : getLinks()) {
@@ -512,13 +552,8 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
          */
         public Integer getMaxCardinality() {
             if (getLinks().isEmpty()) {
-                IPolicyCmptTypeAssociation matching = findMatchingPolicyAssociation();
-                if (matching == null) {
-                    return null;
-                }
-                return selectedLinkContainer.getPolicyCmptLinkCardinality(matching.getName())
-                        .map(IPolicyCmptLinkCardinality::getMaxCardinality)
-                        .orElse(matching.getMaxCardinality());
+                return getAssociationCardinality(IPolicyCmptLinkCardinality::getMaxCardinality,
+                        IPolicyCmptTypeAssociation::getMaxCardinality);
             }
             Integer result = getLinks().get(0).getLink().getMaxCardinality();
             for (LinkViewItem linkViewItem : getLinks()) {
@@ -535,12 +570,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
          */
         public void setMaxCardinality(Integer newValue) {
             if (getLinks().isEmpty()) {
-                if (newValue != null) {
-                    IPolicyCmptLinkCardinality linkCardinality = getOrCreatePolicyCmptLinkCardinality();
-                    if (linkCardinality != null) {
-                        linkCardinality.setMaxCardinality(newValue);
-                    }
-                }
+                setAssociationCardinality(newValue, IPolicyCmptLinkCardinality::setMaxCardinality);
                 return;
             }
             for (LinkViewItem linkViewItem : getLinks()) {
