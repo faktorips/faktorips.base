@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.faktorips.codegen.DatatypeHelper;
@@ -152,6 +153,11 @@ public class XProductAttribute extends XAttribute {
     }
 
     public String getNewMultiValueInstanceWithDefaultValue() {
+        if (getAttribute().getDefaultValue() == null) {
+            JavaCodeFragment result = newListInitializer(Collections.emptyList());
+            addImport(result.getImportDeclaration());
+            return result.getSourcecode();
+        }
         String[] defaultValues = MultiValueHolder.Factory.getSplitMultiValue(getAttribute().getDefaultValue());
         List<String> defaultValueCodes = new ArrayList<>(defaultValues.length);
         for (String defaultValue : defaultValues) {

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,6 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
 import org.faktorips.devtools.model.builder.xmodel.ModelService;
@@ -194,6 +197,33 @@ public class XProductAttributeTest {
         when(attribute.findOverwrittenAttribute(ipsProject)).thenReturn(superAttribute);
 
         assertTrue(xProductAttribute.isCallSetDefaultValue());
+    }
+
+    @Test
+    public void testGetNewMultiValueInstanceWithDefaultValue_nullDefaultGeneratesEmptyList() {
+        String result = xProductAttribute.getNewMultiValueInstanceWithDefaultValue();
+
+        assertThat(result, is("ListUtil.newList()"));
+    }
+
+    @Test
+    public void testGetNewMultiValueInstanceWithDefaultValue_multipleValues() {
+        DatatypeHelper datatypeHelper = mockDatatypeHelper(DATATYPE);
+        when(datatypeHelper.newInstance("1")).thenReturn(new JavaCodeFragment("1"));
+        when(datatypeHelper.newInstance("2")).thenReturn(new JavaCodeFragment("2"));
+        when(datatypeHelper.newInstance("3")).thenReturn(new JavaCodeFragment("3"));
+        when(attribute.getDatatype()).thenReturn(DATATYPE);
+        when(attribute.getDefaultValue()).thenReturn("1|2|3");
+
+        String result = xProductAttribute.getNewMultiValueInstanceWithDefaultValue();
+
+        assertThat(result, is("ListUtil.newList(1, 2, 3)"));
+    }
+
+    private DatatypeHelper mockDatatypeHelper(String datatypeName) {
+        DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
+        when(ipsProject.findDatatypeHelper(datatypeName)).thenReturn(datatypeHelper);
+        return datatypeHelper;
     }
 
 }

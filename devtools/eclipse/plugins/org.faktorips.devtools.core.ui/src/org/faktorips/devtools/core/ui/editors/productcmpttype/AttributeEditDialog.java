@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
@@ -56,6 +58,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Dialog to edit a product cmpt type attribute.
@@ -281,6 +284,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     currentDatatype);
             defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), defaultEditFieldPlaceholder,
                     currentDatatype, attribute.getValueSet(), ipsProject);
+            if (Datatype.STRING.equals(currentDatatype)
+                    && defaultValueField instanceof FormattingTextField<?> field) {
+                field.getFormat().setNullString(IpsStringUtils.EMPTY);
+            }
         }
     }
 
@@ -289,7 +296,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private void createMultiValueDefaultField() {
         Text multiValueText = getToolkit().createText(defaultEditFieldPlaceholder);
-        defaultValueField = new TextField(multiValueText);
+        TextField textField = new TextField(multiValueText);
+        textField.setSupportsNullStringRepresentation(false);
+        defaultValueField = textField;
         multiValueText.setToolTipText(Messages.AttributeEditDialog_hint_multiValueDefault);
     }
 

@@ -1105,7 +1105,7 @@ public class ProductAttributeTest {
                 null,
                 "a", "b", "c");
         @IpsDefaultValue("multiText")
-        public static final List<String> DEFAULT_VALUE_FOR_MULTI_TEXT = ListUtil.newList(null);
+        public static final List<String> DEFAULT_VALUE_FOR_MULTI_TEXT = ListUtil.newList();
 
         private final ProduktGen produktGen = new ProduktGen(this);
         private String attr1 = "foo";
