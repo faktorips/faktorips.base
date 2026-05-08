@@ -16,11 +16,12 @@ import org.eclipse.emf.codegen.AdditionalAnnotationsLocation;
 
 /**
  * These settings control the handling of annotations by {@link JMerger}. Additional annotations
- * (and their corresponding imports) are generated on all generated elements (with the exception on
- * methods marked as {@code @restrainedmodifiable}, if the
- * {@link AdditionalAnnotationsLocation#OnlyGenerated} is set), while annotations already present on
- * the corresponding elements in the previous code are only retained if they are included in the
- * list of retained annotations.
+ * (and their corresponding imports) are generated on all generated members (classes, methods,
+ * enum constants) with the exception — when
+ * {@link AdditionalAnnotationsLocation#OnlyGenerated} is set — of members marked as
+ * {@code @restrainedmodifiable}. Annotations already present on the
+ * corresponding elements in the previous code are only retained if they are included in the list of
+ * retained annotations.
  *
  * @since 24.1
  */

@@ -43,6 +43,7 @@ import org.eclipse.emf.codegen.merge.java.facade.FacadeVisitor;
 import org.eclipse.emf.codegen.merge.java.facade.JAbstractType;
 import org.eclipse.emf.codegen.merge.java.facade.JAnnotation;
 import org.eclipse.emf.codegen.merge.java.facade.JCompilationUnit;
+import org.eclipse.emf.codegen.merge.java.facade.JEnumConstant;
 import org.eclipse.emf.codegen.merge.java.facade.JImport;
 import org.eclipse.emf.codegen.merge.java.facade.JMember;
 import org.eclipse.emf.codegen.merge.java.facade.JMethod;
@@ -167,7 +168,8 @@ public class JMerger {
     }
 
     private void addAdditionalAnnotations(JNode target) {
-        if (target instanceof JMethod method && isGenerateForRestrainedModifiable(method)) {
+        if (target instanceof JMember member && isAnnotatable(member)
+                && isGenerateForAdditionalAnnotations(member)) {
             List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
             for (ASTJNode<?> astjNode : annotations) {
                 if (isNotExistingAnnotation(target, astjNode.getName())) {
@@ -175,6 +177,12 @@ public class JMerger {
                 }
             }
         }
+    }
+
+    private boolean isAnnotatable(JMember member) {
+        return member instanceof JMethod
+                || member instanceof JAbstractType
+                || member instanceof JEnumConstant;
     }
 
     private boolean isNotExistingAnnotation(JNode target, String annotationName) {
@@ -706,10 +714,13 @@ public class JMerger {
         }
     }
 
-    private boolean isGenerateForRestrainedModifiable(JMethod method) {
+    private boolean isGenerateForAdditionalAnnotations(JMember member) {
         return switch (annotationGenerationSettings.additionalAnnotationsLocation()) {
             case GeneratedAndRestrainedModifiable -> true;
-            case OnlyGenerated -> method.getComment().contains("@generated");
+            case OnlyGenerated -> {
+                final String comment = member.getComment();
+                yield comment != null && comment.contains("@generated");
+            }
         };
     }
 

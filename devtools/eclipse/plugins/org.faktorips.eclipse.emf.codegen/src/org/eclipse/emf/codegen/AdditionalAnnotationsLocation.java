@@ -11,7 +11,7 @@
 package org.eclipse.emf.codegen;
 
 /**
- * Defines on which methods additional annotations are generated.
+ * Defines on which members additional annotations are generated.
  *
  * @since 24.1
  */

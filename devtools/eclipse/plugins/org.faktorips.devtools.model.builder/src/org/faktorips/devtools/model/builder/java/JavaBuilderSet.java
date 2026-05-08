@@ -140,22 +140,23 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
 
     /**
      * Configuration property that defines additional annotations that are generated above all
-     * generated methods of {@link IPolicyCmptType}, {@link IProductCmptType}, {@link IEnumType},
-     * {@link ITableStructure} and {@link ITableContents}
+     * generated members (classes, methods, enum constants) of {@link IPolicyCmptType},
+     * {@link IProductCmptType}, {@link IEnumType}, {@link ITableStructure} and
+     * {@link ITableContents}
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines whether restrained modifiable methods should be included
+     * Configuration property that defines whether restrained modifiable members should be included
      * when generating additional annotations. The default value is
      * {@link AdditionalAnnotationsLocation#GeneratedAndRestrainedModifiable} and therefore the
      * annotations should be generated above {@code @generated} as well as
-     * {@code @restrainedmodifiable} methods.
+     * {@code @restrainedmodifiable} members.
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS_LOCATION = "additionalAnnotationsLocation"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines annotations that are not removed from generated methods
+     * Configuration property that defines annotations that are not removed from generated members
      * of {@link IPolicyCmptType}, {@link IProductCmptType}, {@link IEnumType},
      * {@link ITableStructure} and {@link ITableContents}
      */
