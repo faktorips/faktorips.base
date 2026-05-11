@@ -91,6 +91,18 @@
         </property>
       </product>
    </extension>
+
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="org.faktorips.devtools.core.internal.application.IpsModellerSplashHandler"
+            id="org.faktorips.devtools.core.splashHandler">
+      </splashHandler>
+      <splashHandlerProductBinding
+            productId="org.faktorips.devtools.core.FaktorIPS"
+            splashId="org.faktorips.devtools.core.splashHandler">
+      </splashHandlerProductBinding>
+   </extension>
    
    <extension
          point="org.faktorips.devtools.model.faktorIpsFeatureVersionManager">
