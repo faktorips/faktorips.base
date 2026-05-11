@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,15 +26,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.ide.ChooseWorkspaceData;
+import org.eclipse.ui.internal.ide.ChooseWorkspaceDialog;
 import org.faktorips.devtools.core.IpsPlugin;
 
 /**
  * Application for Faktor-IPS to be used with eclipse. Provides reduced functionality in comparison
  * with the use as plug-in within an eclipse running the IDE-Product. Used for department-workers.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class IpsApplication implements IApplication, IExecutableExtension {
+
+    static final String SKIP_WORKSPACE_DIALOG_PROPERTY = "org.faktorips.modeller.skipWorkspaceDialog"; //$NON-NLS-1$
 
     // see org.eclipse.ui.internal.ide.application.IDEApplication.PROP_EXIT_CODE
     private static final String PROP_EXIT_CODE = "eclipse.exitcode"; //$NON-NLS-1$
@@ -53,11 +57,10 @@ public class IpsApplication implements IApplication, IExecutableExtension {
             shell.setText(Messages.IpsWorkbenchAdvisor_title);
             shell.setImages(Dialog.getDefaultImages());
         }
-
-        if (!checkInstanceLocation(shell)) {
-            return EXIT_OK;
+        Object workspaceResult = checkInstanceLocation(shell);
+        if (workspaceResult != null) {
+            return workspaceResult;
         }
-
         int returnCode = PlatformUI.createAndRunWorkbench(display, new IpsWorkbenchAdvisor());
 
         // fix to restart product, see
@@ -80,27 +83,60 @@ public class IpsApplication implements IApplication, IExecutableExtension {
     }
 
     /**
-     * Return true if a valid workspace path has been set and false otherwise. Prompt for and set
-     * the path if possible and required.
-     * 
-     * @return true if a valid instance location has been set and false otherwise
+     * Enables workspace selection at start.
+     *
+     * @return a non-null exit code ({@link IApplication#EXIT_OK} or
+     *             {@link IApplication#EXIT_RELAUNCH}) if the application should exit, or
+     *             {@code null} if the workspace is ready and the application should start normally
      */
-    private boolean checkInstanceLocation(Shell shell) {
-        // -data @none was specified but an ide requires workspace
+    // CSOFF: CyclomaticComplexity
+    @SuppressWarnings("restriction")
+    private Object checkInstanceLocation(Shell shell) {
         Location instanceLoc = Platform.getInstanceLocation();
         if (instanceLoc == null || !instanceLoc.isSet()) {
             MessageDialog.openError(shell, Messages.IpsApplication_workspaceNotSet_title,
                     Messages.IpsApplication_workspaceNotSet_msg);
-            return false;
+            return EXIT_OK;
         }
 
-        // at this point its valid, so try to lock it and update the
-        // metadata version information if successful
+        boolean skipDialog = System.getProperty(SKIP_WORKSPACE_DIALOG_PROPERTY) != null;
+        if (!skipDialog) {
+            ChooseWorkspaceData data = new ChooseWorkspaceData(instanceLoc.getURL());
+            String selection;
+            if (data.getShowDialog()) {
+                ChooseWorkspaceDialog dialog = new ChooseWorkspaceDialog(shell, data, true, true);
+                dialog.prompt(true);
+                selection = data.getSelection();
+                if (selection == null) {
+                    return EXIT_OK;
+                }
+                data.writePersistedData();
+            } else {
+                String[] recentWorkspaces = data.getRecentWorkspaces();
+                selection = (recentWorkspaces != null && recentWorkspaces.length > 0
+                        && recentWorkspaces[0] != null && !recentWorkspaces[0].isBlank())
+                                ? recentWorkspaces[0]
+                                : data.getInitialDefault();
+            }
+            try {
+                if (selection != null) {
+                    File currentWorkspace = new File(instanceLoc.getURL().getFile()).getCanonicalFile();
+                    File selectedWorkspace = new File(selection).getCanonicalFile();
+                    if (!currentWorkspace.equals(selectedWorkspace)) {
+                        Object restartArguments = EclipseIniUtil.setCmdLineParams(selection);
+                        return restartArguments != null ? restartArguments : EXIT_OK;
+                    }
+                }
+            } catch (IOException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+                return EXIT_OK;
+            }
+        }
         try {
             if (instanceLoc.lock()) {
-                return true;
+                // workspace ready, proceed normally
+                return null;
             }
-
             // we failed to create the directory.
             // Two possibilities:
             // 1. directory is already in use
@@ -119,8 +155,9 @@ public class IpsApplication implements IApplication, IExecutableExtension {
         } catch (IOException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
-        return false;
+        return EXIT_OK;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public void stop() {

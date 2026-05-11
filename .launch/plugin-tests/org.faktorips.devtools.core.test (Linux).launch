@@ -56,10 +56,8 @@
         <setEntry value="com.sun.jna.platform@default:default"/>
         <setEntry value="com.sun.jna@default:default"/>
         <setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
-        <setEntry value="jakarta.annotation-api@default:default"/>
-        <setEntry value="jakarta.inject.jakarta.inject-api@default:default"/>
-        <setEntry value="javax.annotation@default:default"/>
-        <setEntry value="javax.inject@default:default"/>
+        <setEntry value="jakarta.annotation-api*2.1.1@default:default"/>
+        <setEntry value="jakarta.inject.jakarta.inject-api*2.0.1@default:default"/>
         <setEntry value="javax.xml@default:default"/>
         <setEntry value="jaxb-api@default:default"/>
         <setEntry value="jaxen@default:default"/>
@@ -74,8 +72,8 @@
         <setEntry value="org.apache.batik.util@default:default"/>
         <setEntry value="org.apache.commons.cli@default:default"/>
         <setEntry value="org.apache.commons.codec@default:default"/>
-        <setEntry value="org.apache.commons.collections@default:default"/>
-        <setEntry value="org.apache.commons.commons-beanutils*1.10.1@default:default"/>
+        <setEntry value="org.apache.commons.collections*3.2.2.v201511171945@default:default"/>
+        <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
         <setEntry value="org.apache.commons.commons-io*2.18.0@default:default"/>
@@ -221,7 +219,6 @@
         <setEntry value="org.eclipse.m2e.model.edit@default:default"/>
         <setEntry value="org.eclipse.m2e.workspace.cli@default:default"/>
         <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
-        <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
         <setEntry value="org.eclipse.osgi@-1:true"/>
         <setEntry value="org.eclipse.platform@default:default"/>
