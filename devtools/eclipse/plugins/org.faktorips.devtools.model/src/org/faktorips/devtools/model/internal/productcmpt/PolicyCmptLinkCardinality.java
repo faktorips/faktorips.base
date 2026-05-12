@@ -36,6 +36,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.util.NullSafeComparableComparator;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.Message.Builder;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.ArgumentCheck;
@@ -312,7 +313,7 @@ public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IP
                     typeLabel);
             list.add(new Message(MSGCODE_UNKNOWN_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
         } else {
-            validateCardinalityForMatchingAssociation(list, associationObj);
+            validateCardinalityForMatchingAssociation(list, associationObj, ipsProject);
 
             validateChangingOverTimeProperty(list, associationObj, ipsProject);
         }
@@ -320,10 +321,9 @@ public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IP
     }
 
     protected void validateCardinalityForMatchingAssociation(MessageList list,
-            IPolicyCmptTypeAssociation polAssociation) {
-        if (polAssociation != null) {
-            validateCardinality(list, polAssociation);
-        }
+            IPolicyCmptTypeAssociation polAssociation,
+            IIpsProject ipsProject) {
+        validateCardinality(list, polAssociation, ipsProject);
     }
 
     private void validateChangingOverTimeProperty(MessageList list,
@@ -351,7 +351,9 @@ public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IP
         }
     }
 
-    private void validateCardinality(MessageList list, IPolicyCmptTypeAssociation associationObj) {
+    private void validateCardinality(MessageList list,
+            IPolicyCmptTypeAssociation associationObj,
+            IIpsProject ipsProject) {
         MessageList cardinalityValidation = getCardinality().validate(this);
         list.add(cardinalityValidation);
         if (!cardinalityValidation.containsErrorMsg()) {
@@ -363,8 +365,38 @@ public class PolicyCmptLinkCardinality extends AtomicIpsObjectPart implements IP
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
+            } else if (associationObj.isCardinalityConfigurable()) {
+                IProductCmptTypeAssociation matchingProductAssociation = associationObj
+                        .findMatchingProductCmptTypeAssociation(ipsProject);
+                if (getMaxCardinality() > associationObj.getMaxCardinality()) {
+                    list.add(createCardinalityMessage(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX,
+                            Messages.PolicyCmptLinkCardinality_msgMaxCardinalityExceedsModelMax,
+                            PROPERTY_MAX_CARDINALITY, getMaxCardinality(), associationObj.getMaxCardinality(),
+                            matchingProductAssociation));
+                }
+                if (getMinCardinality() < associationObj.getMinCardinality()) {
+                    list.add(createCardinalityMessage(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN,
+                            Messages.PolicyCmptLinkCardinality_msgMinCardinalityFallsBelowModelMin,
+                            PROPERTY_MIN_CARDINALITY, getMinCardinality(), associationObj.getMinCardinality(),
+                            matchingProductAssociation));
+                }
             }
         }
+    }
+
+    private Message createCardinalityMessage(String msgCode,
+            String msgTemplate,
+            String property,
+            int configuredValue,
+            int modelValue,
+            IProductCmptTypeAssociation matchingProductAssociation) {
+        String text = MessageFormat.format(msgTemplate, configuredValue, modelValue);
+        Builder msgBuilder = new Builder(text, Message.ERROR).code(msgCode)
+                .invalidObjects(new ObjectProperty(this, property), new ObjectProperty(policyAssociationName, null));
+        if (matchingProductAssociation != null) {
+            msgBuilder.invalidObject(new ObjectProperty(matchingProductAssociation.getTargetRoleSingular(), null));
+        }
+        return msgBuilder.create();
     }
 
     @Override

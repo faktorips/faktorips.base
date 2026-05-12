@@ -166,6 +166,108 @@ public class PolicyCmptLinkCardinalityTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateMaxCardinalityExceedsModelMax() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(true);
+        policyCmptTypeAssociation.setMinCardinality(1);
+        policyCmptTypeAssociation.setMaxCardinality(2);
+        link.setMinCardinality(1);
+        link.setMaxCardinality(3);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+    }
+
+    @Test
+    public void testValidateMinCardinalityFallsBelowModelMin() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(true);
+        policyCmptTypeAssociation.setMinCardinality(1);
+        policyCmptTypeAssociation.setMaxCardinality(2);
+        link.setMinCardinality(0);
+        link.setMaxCardinality(2);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+    }
+
+    @Test
+    public void testValidateWithinModelBounds() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(true);
+        policyCmptTypeAssociation.setMinCardinality(1);
+        policyCmptTypeAssociation.setMaxCardinality(2);
+        link.setMinCardinality(1);
+        link.setMaxCardinality(2);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml.getMessageByCode(IPolicyCmptLinkCardinality.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX),
+                is(nullValue()));
+        assertThat(ml.getMessageByCode(IPolicyCmptLinkCardinality.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidateBothMaxAndMinViolated() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(true);
+        policyCmptTypeAssociation.setMinCardinality(2);
+        policyCmptTypeAssociation.setMaxCardinality(4);
+        link.setMinCardinality(1);
+        link.setMaxCardinality(5);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+    }
+
+    @Test
+    public void testValidate_notCardinalityConfigurable_noFalsePositive() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(false);
+        policyCmptTypeAssociation.setMinCardinality(1);
+        policyCmptTypeAssociation.setMaxCardinality(2);
+        link.setMinCardinality(0);
+        link.setMaxCardinality(5);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml.getMessageByCode(IPolicyCmptLinkCardinality.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX),
+                is(nullValue()));
+        assertThat(ml.getMessageByCode(IPolicyCmptLinkCardinality.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_noMatchingProductAssociation_noNpe() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(true);
+        policyCmptTypeAssociation.setMinCardinality(1);
+        policyCmptTypeAssociation.setMaxCardinality(2);
+        policyCmptTypeAssociation.setMatchingAssociationName("");
+        link.setMinCardinality(0);
+        link.setMaxCardinality(5);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, hasMessageCode(IPolicyCmptLinkCardinality.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+    }
+
+    @Test
+    public void testValidate_isQualified_cardinalityConfigurableIgnored() {
+        policyCmptTypeAssociation.setCardinalityConfigurable(true);
+        policyCmptTypeAssociation.setQualified(true);
+        policyCmptTypeAssociation.setMinCardinality(1);
+        policyCmptTypeAssociation.setMaxCardinality(2);
+        link.setMinCardinality(0);
+        link.setMaxCardinality(5);
+
+        MessageList ml = link.validate(ipsProject);
+
+        assertThat(ml.getMessageByCode(IPolicyCmptLinkCardinality.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
     public void testIsMandatory() {
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
