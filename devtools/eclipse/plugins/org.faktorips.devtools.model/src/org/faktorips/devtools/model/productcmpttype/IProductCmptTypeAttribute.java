@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,9 +22,9 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 
 /**
  * An attribute of a product component type.
- * 
+ *
  * @since 2.0
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
@@ -40,7 +40,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * <p>
      * For example a person has only one name (single value attribute) but may speak multiple
      * foreign languages (multi value attribute).
-     * 
+     *
      * @see #isMultiValueAttribute()
      * @see #setMultiValueAttribute(boolean)
      */
@@ -51,7 +51,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * <p>
      * If this attribute is defined as multilingual the values could be entered in multiple
      * languages. An attribute could only be marked as multilingual if the data type is string.
-     * 
+     *
      * @see #isMultilingual()
      * @see #setMultilingual(boolean)
      */
@@ -63,7 +63,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * This is a read only property!
      * <p>
      * The property multilingualSupported is true if the datatype of the attribute is string.
-     * 
+     *
      * @see #isMultilingualSupported()
      */
     String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
@@ -97,6 +97,14 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
             + "DefaultNotInValueSetWhileHidden"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the default value of a multi-value attribute
+     * contains {@code null}. A multi-value attribute's null state is represented by an empty list,
+     * not by a list containing a null value.
+     */
+    String MSGCODE_MULTI_VALUE_DEFAULT_CONTAINS_NULL = IAttribute.MSGCODE_PREFIX
+            + "MultiValueDefaultContainsNull"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type the attribute belongs to.
      */
     IProductCmptType getProductCmptType();
@@ -104,11 +112,11 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     /**
      * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
      * provide more detailed documentation.
-     * 
+     *
      * For component type attributes the allowed values set types are the types returned by
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
      * attribute's data type.
-     * 
+     *
      * @throws IpsException if an error occurs.
      */
     @Override
@@ -130,7 +138,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * foreign languages (multi value attribute).
      * <p>
      * The default value is false.
-     * 
+     *
      * @return true if this attribute is a multi value attribute, false if not
      */
     boolean isMultiValueAttribute();
@@ -144,7 +152,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * <p>
      * For example a person has only one name (single value attribute) but may speak multiple
      * foreign languages (multi value attribute).
-     * 
+     *
      * @param multiValueAttribute true to mark this attribute as multi value attribute, false to
      *            mark as single value attribute
      */
@@ -158,7 +166,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * displayed in the editor and can be edited by the user.
      * <p>
      * The default value is true.
-     * 
+     *
      * @return true if the attribute is visible, false otherwise
      */
     boolean isVisible();
@@ -172,14 +180,14 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * <p>
      * This flag is useful in combination with overwritten attributes when an insurance class needs
      * the attribute but does not need to modify its value.
-     * 
+     *
      * @param visible true to mark the attribute as visible, false to mark it as invisible
      */
     void setVisible(boolean visible);
 
     /**
      * Returns whether this attribute support multilingual.
-     * 
+     *
      * @return true if this attribute is a multilingual attribute, false if not
      */
     boolean isMultilingual();
@@ -190,7 +198,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * If this attribute is marked as multilingual, the text of this attribute can be entered in
      * different languages. If it is not marked as multilingual, the text of this attribute can only
      * be entered in one language in the Product-Component editor.
-     * 
+     *
      * @param multiLingual to mark this attribute as multilingual attribute, false to mark it as not
      *            supporting multilingual
      */
@@ -199,7 +207,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     /**
      * Returns true if the property multilingual is supported by this attribute. Currently
      * multilingual is only supported for data type string.
-     * 
+     *
      * @return {@code True} if the property multilingual is support, otherwise false
      */
     boolean isMultilingualSupported();

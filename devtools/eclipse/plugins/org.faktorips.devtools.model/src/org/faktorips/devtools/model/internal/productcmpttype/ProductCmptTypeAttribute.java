@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IAttribute.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ProductCmptTypeAttribute extends Attribute implements IProductCmptTypeAttribute {
@@ -317,8 +317,10 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
-        if (isMultiValueAttribute() && getDefaultValue() != null) {
-            validateMultiDefaultValues(valueDatatype, result, ipsProject);
+        if (isMultiValueAttribute()) {
+            if (getDefaultValue() != null) {
+                validateMultiDefaultValues(valueDatatype, result, ipsProject);
+            }
         } else {
             super.validateDefaultValue(valueDatatype, result, ipsProject);
         }
@@ -327,7 +329,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     private void validateMultiDefaultValues(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         String[] split = MultiValueHolder.Factory.getSplitMultiValue(getDefaultValue());
         for (String singleValue : split) {
-            validateDefaultValue(singleValue, valueDatatype, result, ipsProject);
+            if (singleValue == null) {
+                result.newError(MSGCODE_MULTI_VALUE_DEFAULT_CONTAINS_NULL,
+                        Messages.ProductCmptTypeAttribute_msgMultiValueDefaultContainsNull, this,
+                        PROPERTY_DEFAULT_VALUE);
+            } else {
+                validateDefaultValue(singleValue, valueDatatype, result, ipsProject);
+            }
         }
     }
 

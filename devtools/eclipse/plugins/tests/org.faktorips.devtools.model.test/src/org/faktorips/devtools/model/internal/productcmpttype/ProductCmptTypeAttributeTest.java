@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -595,6 +596,33 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
                 message.getInvalidObjectProperties().get(0));
         assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
                 message.getInvalidObjectProperties().get(1));
+    }
+
+    @Test
+    public void testValidate_multiValueAttribute_nullDefaultValue_noError() {
+        productAttribute.setMultiValueAttribute(true);
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        productAttribute.setDefaultValue(null);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+
+        assertNull(productAttribute.getDefaultValue());
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+
+    }
+
+    @Test
+    public void testValidate_multiValueAttribute_defaultContainsNull_error() {
+        productAttribute.setMultiValueAttribute(true);
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        String nullPresentation = IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
+        productAttribute.setDefaultValue(nullPresentation);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_MULTI_VALUE_DEFAULT_CONTAINS_NULL));
     }
 
 }
