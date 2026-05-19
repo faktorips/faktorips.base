@@ -877,6 +877,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder impl
                     new AnnotationGenerationSettings(
                             builderSet.getAdditionalImports(),
                             builderSet.getAdditionalAnnotations(),
+                            builderSet.getAdditionalImportsForFields(),
+                            builderSet.getAdditionalAnnotationsForFields(),
                             builderSet.getAdditionalAnnotationsLocation(),
                             builderSet.getRetainedAnnotations()));
         } catch (Exception e) {

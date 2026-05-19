@@ -44,6 +44,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JAbstractType;
 import org.eclipse.emf.codegen.merge.java.facade.JAnnotation;
 import org.eclipse.emf.codegen.merge.java.facade.JCompilationUnit;
 import org.eclipse.emf.codegen.merge.java.facade.JEnumConstant;
+import org.eclipse.emf.codegen.merge.java.facade.JField;
 import org.eclipse.emf.codegen.merge.java.facade.JImport;
 import org.eclipse.emf.codegen.merge.java.facade.JMember;
 import org.eclipse.emf.codegen.merge.java.facade.JMethod;
@@ -92,7 +93,11 @@ public class JMerger {
 
     private List<ASTNode> additionalAnnotationNodes;
 
+    private List<ASTNode> additionalAnnotationNodesForFields;
+
     private List<ImportDeclaration> additionalImportDeclarations;
+
+    private List<ImportDeclaration> additionalImportDeclarationsForFields;
 
     /**
      * This creates an empty instances, an when used as a runnable.
@@ -156,9 +161,18 @@ public class JMerger {
     }
 
     private void addAdditionalAnnotationsAndImports(Set<JNode> nodesToAnnotate) {
+        Set<String> addedImports = new HashSet<>();
         List<ASTJNode<?>> importNodes = getAdditionalImportsNodes();
         for (ASTJNode<?> astjNode : importNodes) {
             if (!targetPatternDictionary.getImportMap().containsKey(astjNode.getName())) {
+                targetCompilationUnit.addChild(astjNode);
+                addedImports.add(astjNode.getName());
+            }
+        }
+        List<ASTJNode<?>> importNodesForFields = getAdditionalImportsNodesForFields();
+        for (ASTJNode<?> astjNode : importNodesForFields) {
+            if (!targetPatternDictionary.getImportMap().containsKey(astjNode.getName())
+                    && !addedImports.contains(astjNode.getName())) {
                 targetCompilationUnit.addChild(astjNode);
             }
         }
@@ -168,18 +182,25 @@ public class JMerger {
     }
 
     private void addAdditionalAnnotations(JNode target) {
-        if (target instanceof JMember member && isAnnotatable(member)
-                && isGenerateForAdditionalAnnotations(member)) {
-            List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
-            for (ASTJNode<?> astjNode : annotations) {
-                if (isNotExistingAnnotation(target, astjNode.getName())) {
-                    getFacadeHelper().addChild(target, astjNode);
-                }
+        if (target instanceof JMember member && isGenerateForAdditionalAnnotations(member)) {
+            if (isAnnotatableMember(member)) {
+                addAnnotationsIfNotExisting(target, getAdditionalAnnotationsNodes());
+            }
+            if (member instanceof JField) {
+                addAnnotationsIfNotExisting(target, getAdditionalAnnotationsNodesForFields());
             }
         }
     }
 
-    private boolean isAnnotatable(JMember member) {
+    private void addAnnotationsIfNotExisting(JNode target, List<ASTJNode<?>> annotations) {
+        for (ASTJNode<?> astjNode : annotations) {
+            if (isNotExistingAnnotation(target, astjNode.getName())) {
+                getFacadeHelper().addChild(target, astjNode);
+            }
+        }
+    }
+
+    private boolean isAnnotatableMember(JMember member) {
         return member instanceof JMethod
                 || member instanceof JAbstractType
                 || member instanceof JEnumConstant;
@@ -193,37 +214,61 @@ public class JMerger {
 
     private List<ASTJNode<?>> getAdditionalAnnotationsNodes() {
         if (additionalAnnotationNodes == null) {
-            String source = "";
-            for (String annotation : annotationGenerationSettings.additionalAnnotations()) {
-                source += "@" + annotation + "\n";
-            }
-            source += "class A{}";
-
-            CompilationUnit astCompilationUnit = parseCodeSnippet(source);
-            AbstractTypeDeclaration typeA = (AbstractTypeDeclaration)astCompilationUnit.types().get(0);
-
-            @SuppressWarnings("unchecked")
-            List<ASTNode> modifiers = typeA.modifiers();
-            additionalAnnotationNodes = modifiers;
+            additionalAnnotationNodes = parseAnnotationNodes(
+                    annotationGenerationSettings.additionalAnnotations());
         }
         return getFacadeHelper().copyAndConvert(additionalAnnotationNodes, targetCompilationUnit);
     }
 
+    private List<ASTJNode<?>> getAdditionalAnnotationsNodesForFields() {
+        if (additionalAnnotationNodesForFields == null) {
+            additionalAnnotationNodesForFields = parseAnnotationNodes(
+                    annotationGenerationSettings.additionalAnnotationsForFields());
+        }
+        return getFacadeHelper().copyAndConvert(additionalAnnotationNodesForFields, targetCompilationUnit);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<ASTNode> parseAnnotationNodes(List<String> annotations) {
+        String source = "";
+        for (String annotation : annotations) {
+            source += "@" + annotation + System.lineSeparator();
+        }
+        source += "class A{}";
+
+        CompilationUnit astCompilationUnit = parseCodeSnippet(source);
+        AbstractTypeDeclaration typeA = (AbstractTypeDeclaration)astCompilationUnit.types().get(0);
+
+        return typeA.modifiers();
+    }
+
     private List<ASTJNode<?>> getAdditionalImportsNodes() {
         if (additionalImportDeclarations == null) {
-            String source = getImportStatements();
-
-            CompilationUnit astCompilationUnit = parseCodeSnippet(source);
-            @SuppressWarnings("unchecked")
-            List<ImportDeclaration> imports = astCompilationUnit.imports();
-            additionalImportDeclarations = imports;
+            additionalImportDeclarations = parseImportNodes(
+                    annotationGenerationSettings.additionalImports());
         }
         return getFacadeHelper().copyAndConvert(additionalImportDeclarations, targetCompilationUnit);
     }
 
-    private String getImportStatements() {
+    private List<ASTJNode<?>> getAdditionalImportsNodesForFields() {
+        if (additionalImportDeclarationsForFields == null) {
+            additionalImportDeclarationsForFields = parseImportNodes(
+                    annotationGenerationSettings.additionalImportsForFields());
+        }
+        return getFacadeHelper().copyAndConvert(additionalImportDeclarationsForFields, targetCompilationUnit);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<ImportDeclaration> parseImportNodes(List<String> imports) {
+        String source = getImportStatements(imports);
+
+        CompilationUnit astCompilationUnit = parseCodeSnippet(source);
+        return astCompilationUnit.imports();
+    }
+
+    private String getImportStatements(List<String> imports) {
         String source = "";
-        for (String importStatement : annotationGenerationSettings.additionalImports()) {
+        for (String importStatement : imports) {
             source += "import " + importStatement + ";";
         }
         return source;

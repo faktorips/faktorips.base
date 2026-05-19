@@ -147,6 +147,14 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
     /**
+     * Configuration property that defines additional annotations that are generated above all
+     * generated fields and constants.
+     *
+     * @since 26.7
+     */
+    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS_FOR_FIELDS = "additionalAnnotationsForFields"; //$NON-NLS-1$
+
+    /**
      * Configuration property that defines whether restrained modifiable members should be included
      * when generating additional annotations. The default value is
      * {@link AdditionalAnnotationsLocation#GeneratedAndRestrainedModifiable} and therefore the
@@ -244,6 +252,11 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
     @Override
     protected String getConfiguredAdditionalAnnotations() {
         return generatorModelContext.getBaseGeneratorConfig().getConfiguredAdditionalAnnotations();
+    }
+
+    @Override
+    protected String getConfiguredAdditionalAnnotationsForFields() {
+        return generatorModelContext.getBaseGeneratorConfig().getConfiguredAdditionalAnnotationsForFields();
     }
 
     @Override

@@ -15,14 +15,15 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -78,30 +79,27 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         AFile aManifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
         assertThat(aManifestFile.exists(), is(true));
 
-        String initialContent = readManifestContent(aManifestFile);
-        assertThat(initialContent, not(containsString("Fips-BasePackage")));
-        assertThat(initialContent, not(containsString("Fips-SourcecodeOutput")));
-        assertThat(initialContent, not(containsString("Fips-ResourceOutput")));
-        assertThat(initialContent, not(containsString("Fips-GeneratorConfig")));
-        assertThat(initialContent, not(containsString("Fips-ObjectDir")));
-        assertThat(initialContent, not(containsString("toc=")));
-        assertThat(initialContent, not(containsString("generateJaxbSupport")));
-        assertThat(initialContent, not(containsString("generatePublishedInterfaces")));
-        assertThat(initialContent, not(containsString("Fips-RuntimeIdPrefix")));
+        Attributes initialAttrs = readManifestAttributes(aManifestFile);
+        assertThat(initialAttrs.getValue("Fips-BasePackage"), is(nullValue()));
+        assertThat(initialAttrs.getValue("Fips-SourcecodeOutput"), is(nullValue()));
+        assertThat(initialAttrs.getValue("Fips-ResourceOutput"), is(nullValue()));
+        assertThat(initialAttrs.getValue("Fips-GeneratorConfig"), is(nullValue()));
+        assertThat(initialAttrs.getValue("Fips-ObjectDir"), is(nullValue()));
+        assertThat(initialAttrs.getValue("Fips-RuntimeIdPrefix"), is(nullValue()));
 
         ipsProject.getProject().build(ABuildKind.FULL, null);
-        String afterBuild = readManifestContent(aManifestFile);
+        Attributes afterAttrs = readManifestAttributes(aManifestFile);
 
-        assertThat(afterBuild, containsString("Fips-BasePackage: org.fipsi"));
-        assertThat(afterBuild, containsString("Fips-SourcecodeOutput: src/main/java"));
-        assertThat(afterBuild, containsString("Fips-ResourceOutput: src/main/resources"));
-        assertThat(afterBuild,
-                containsString("Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
-        assertThat(afterBuild, containsString("Fips-ObjectDir: productdef"));
-        assertThat(afterBuild, containsString("toc=\"faktorips-repository-toc.xml\""));
-        assertThat(afterBuild, containsString("generateJaxbSupport"));
-        assertThat(afterBuild, containsString("generatePublishedInterfaces"));
-        assertThat(afterBuild, containsString("Fips-RuntimeIdPrefix"));
+        assertThat(afterAttrs.getValue("Fips-BasePackage"), is("org.fipsi"));
+        assertThat(afterAttrs.getValue("Fips-SourcecodeOutput"), is("src/main/java"));
+        assertThat(afterAttrs.getValue("Fips-ResourceOutput"), is("src/main/resources"));
+        assertThat(afterAttrs.getValue("Fips-GeneratorConfig"),
+                startsWith("org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
+        assertThat(afterAttrs.getValue("Fips-GeneratorConfig"), containsString("generateJaxbSupport"));
+        assertThat(afterAttrs.getValue("Fips-GeneratorConfig"), containsString("generatePublishedInterfaces"));
+        assertThat(afterAttrs.getValue("Fips-ObjectDir"), startsWith("productdef"));
+        assertThat(afterAttrs.getValue("Fips-ObjectDir"), containsString("toc=\"faktorips-repository-toc.xml\""));
+        assertThat(afterAttrs.getValue("Fips-RuntimeIdPrefix"), is(notNullValue()));
     }
 
     @Test
@@ -202,12 +200,10 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
         objectPath.setOutputDefinedPerSrcFolder(false);
     }
 
-    private String readManifestContent(AFile manifestFile) throws IOException {
-        if (!manifestFile.exists()) {
-            return "";
+    private Attributes readManifestAttributes(AFile manifestFile) throws IOException {
+        try (InputStream in = manifestFile.getContents()) {
+            return new Manifest(in).getMainAttributes();
         }
-        Path path = Paths.get(manifestFile.getLocation().toFile().toURI());
-        return Files.readString(path, StandardCharsets.UTF_8);
     }
 
 }

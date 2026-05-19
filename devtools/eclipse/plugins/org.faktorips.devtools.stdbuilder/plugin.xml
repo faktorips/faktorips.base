@@ -183,6 +183,14 @@
             type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
+            defaultValue=""
+            description="%additionalAnnotationsForFieldsDescription"
+            disableValue=""
+            label="%additionalAnnotationsForFieldsLabel"
+            name="additionalAnnotationsForFields"
+            type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
             defaultValue="GeneratedAndRestrainedModifiable"
             description="%additionalAnnotationsLocationDescription"
             disableValue="GeneratedAndRestrainedModifiable"

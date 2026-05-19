@@ -57,6 +57,10 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     private List<String> additionalImports = new ArrayList<>();
 
+    private List<String> additionalAnnotationsForFields = new ArrayList<>();
+
+    private List<String> additionalImportsForFields = new ArrayList<>();
+
     private List<String> retainedAnnotations = new ArrayList<>();
 
     @Override
@@ -166,10 +170,15 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public void beforeBuildProcess(ABuildKind buildKind) {
         super.beforeBuildProcess(buildKind);
         initAdditionalAnnotationsAndImports();
+        initAdditionalAnnotationsForFieldsAndImports();
         retainedAnnotations = initRetainedAnnotations();
     }
 
     protected String getConfiguredAdditionalAnnotations() {
+        return IpsStringUtils.EMPTY;
+    }
+
+    protected String getConfiguredAdditionalAnnotationsForFields() {
         return IpsStringUtils.EMPTY;
     }
 
@@ -189,8 +198,22 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     private void initAdditionalAnnotationsAndImports() {
         additionalAnnotations = new LinkedList<>();
         additionalImports = new LinkedList<>();
+        parseAnnotationsAndImports(getConfiguredAdditionalAnnotations(), additionalAnnotations, additionalImports);
+    }
+
+    private void initAdditionalAnnotationsForFieldsAndImports() {
+        additionalAnnotationsForFields = new LinkedList<>();
+        additionalImportsForFields = new LinkedList<>();
+        parseAnnotationsAndImports(getConfiguredAdditionalAnnotationsForFields(), additionalAnnotationsForFields,
+                additionalImportsForFields);
+    }
+
+    private void parseAnnotationsAndImports(String configured, List<String> annotations, List<String> imports) {
+        if (configured.isEmpty()) {
+            return;
+        }
         Set<String> unqualifiedNames = new HashSet<>();
-        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
+        List<String> splitInput = splitString(configured);
         for (String splitString : splitInput) {
             int i = splitString.indexOf(PARENTHESIS_CHARACTER);
             if (i < 0) {
@@ -201,9 +224,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             String nameForAnnotation = unqualifiedNames.contains(unqualifiedName) ? qualifiedName : unqualifiedName;
             unqualifiedNames.add(unqualifiedName);
             if (!qualifiedName.equals(nameForAnnotation)) {
-                additionalImports.add(qualifiedName);
+                imports.add(qualifiedName);
             }
-            additionalAnnotations.add(nameForAnnotation + splitString.substring(i));
+            annotations.add(nameForAnnotation + splitString.substring(i));
         }
     }
 
@@ -224,6 +247,14 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     public List<String> getAdditionalAnnotations() {
         return additionalAnnotations;
+    }
+
+    public List<String> getAdditionalImportsForFields() {
+        return additionalImportsForFields;
+    }
+
+    public List<String> getAdditionalAnnotationsForFields() {
+        return additionalAnnotationsForFields;
     }
 
     public String getAdditionalAnnotationsLocation() {
