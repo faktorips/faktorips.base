@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,8 +16,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AFile;
@@ -75,10 +77,17 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
     public void setContents(InputStream source, boolean keepHistory, IProgressMonitor monitor) {
         // keepHistory wird vorerst ignoriert.
         long previousModificationStamp = getModificationStamp();
-        withMonitor(file(), monitor, "Writing", p -> //$NON-NLS-1$
-        Files.copy(source, p, StandardCopyOption.REPLACE_EXISTING));
+        withMonitor(file(), monitor, "Writing", p -> {
+            try (OutputStream out = Files.newOutputStream(p,
+                    StandardOpenOption.WRITE,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING)) {
+                source.transferTo(out);
+            }
+        });
         ensureNewModificationStamp(previousModificationStamp);
         PlainJavaImplementation.getResourceChanges().resourceChanged(this);
+
     }
 
     private void ensureNewModificationStamp(long previousModificationStamp) {
