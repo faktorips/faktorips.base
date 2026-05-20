@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,14 +22,14 @@ import org.faktorips.runtime.MessageList;
  * containers in JDT. As JDT containers, IPS object path containers exist per project. (In the JDT
  * documentation is is sometime not clear if they refer to a container type (like JRE runtime,
  * MAVEN, PluginDependencies) or the container instance that exists per project.
- * 
+ *
  * <p>
  * To use an IPS object path container in an IPS project, the project's IPS object path must contain
  * an {@link IIpsContainerEntry} that refers to an IPS object path container by container type id (
  * {@link IIpsObjectPathContainerType#getId()}.
- * 
+ *
  * @since 3.3
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IIpsObjectPathContainer {
@@ -47,7 +47,7 @@ public interface IIpsObjectPathContainer {
     /**
      * Returns the ID of the container provided by the {@link IIpsObjectPathContainerType}. The ID
      * could be used to identify this container and it cannot change during life cycle.
-     * 
+     *
      * @return The identifier of this container according to its {@link IIpsObjectPathContainerType}
      */
     String getContainerId();
@@ -62,19 +62,26 @@ public interface IIpsObjectPathContainer {
      * Returns the list of entries of type {@link IIpsObjectPathEntry#TYPE_PROJECT_REFERENCE} or
      * {@link IIpsObjectPathEntry#TYPE_ARCHIVE} that are provided by this container for the given
      * container entry.
-     * 
+     *
      * @return The resolved list of entries.
-     * 
+     *
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
     List<IIpsObjectPathEntry> resolveEntries();
 
     /**
      * Validates if the given entry is valid.
-     * 
+     *
      * @return list of messages or <code>null</code>.
-     * 
+     *
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
     MessageList validate();
+
+    /**
+     * Forgets any cached entries and recreates them on the next call to {@link #resolveEntries()}.
+     *
+     * @since 26.7
+     */
+    void reset();
 }

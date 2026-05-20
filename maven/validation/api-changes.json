@@ -36,6 +36,11 @@
               "code": "java.method.addedToInterface",
               "new": "method void org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::setRelevance(org.faktorips.devtools.model.productcmpt.AttributeRelevance)",
               "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
+            },
+            {
+              "code": "java.method.addedToInterface",
+              "new": "method void org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer::reset()",
+              "justification": "PD-2389: Allow resetting of project information after git changes"
             }
           ]
         }

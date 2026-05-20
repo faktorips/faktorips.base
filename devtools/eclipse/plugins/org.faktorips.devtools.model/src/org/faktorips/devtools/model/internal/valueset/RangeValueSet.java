@@ -82,11 +82,20 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     /**
-     * Creates a range with the given bounds, step and continasNull setting.
+     * Creates a range with the given bounds, step and containsNull setting.
      */
-    @SuppressWarnings("parameternumber")
+    public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step,
+            boolean containsNull) {
+        this(parent, partId, lower, upper, step, containsNull, false, false);
+    }
+
+    /**
+     * Creates a range with the given bounds, step and containsNull setting.
+     */
+    // CSOFF: ParameterNumber
     public RangeValueSet(IValueSetOwner parent, String partId, String lower, String upper, String step,
             boolean containsNull, boolean lowerBoundOpen, boolean upperBoundOpen) {
+        // CSON: ParameterNumber
         super(ValueSetType.RANGE, parent, partId);
         lowerBound = lower;
         upperBound = upper;
@@ -280,8 +289,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * Another range is a subset of this range if the following conditions match:
      * <ul>
      * <li>An abstract valueset is considered containing all values and thus all non-abstract
-     * rangeValueSets.</li></li>If this range is not abstract, an other abstract range cannot be a
-     * subset of this range</li>
+     * rangeValueSets.</li>
+     * <li>If this range is not abstract, an other abstract range cannot be a subset of this
+     * range</li>
      * <li>The other range is no subset if it contains null but this range does not</li>
      * <li>If both ranges are not abstract, the other range is a subset if every value that is
      * allowed in the other range is also allowed in this range, according to lower bound, upper

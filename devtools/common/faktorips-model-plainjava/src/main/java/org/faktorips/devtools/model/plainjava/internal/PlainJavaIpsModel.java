@@ -130,7 +130,7 @@ public class PlainJavaIpsModel extends IpsModel {
      * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in each
      * content object.
      */
-    private synchronized void forceReloadOfCachedIpsSrcFileContents(IIpsProject ipsProject) {
+    public synchronized void forceReloadOfCachedIpsSrcFileContents(IIpsProject ipsProject) {
         HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
         for (IIpsSrcFile srcFile : copyKeys) {
             if (!srcFile.isDirty() && srcFile.getIpsProject().equals(ipsProject)) {

@@ -144,6 +144,11 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
             }
 
             @Override
+            public synchronized void reset() {
+                entries = null;
+            }
+
+            @Override
             public List<IIpsObjectPathEntry> resolveEntries() {
                 List<IIpsObjectPathEntry> result = entries;
                 if (result == null) {

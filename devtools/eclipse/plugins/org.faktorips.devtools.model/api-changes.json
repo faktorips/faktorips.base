@@ -97,6 +97,11 @@
                       "code": "java.field.addedStaticField",
                       "new": "field org.faktorips.devtools.model.valueset.IRangeValueSet.MSGCODE_LBOUND_EQUAL_UBOUND_OPEN",
                       "justification": "FIPS-11459/FIPS-14047: New validation message code for ranges where bounds are equal but at least one bound is open, making the range effectively empty."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer::reset()",
+                      "justification": "PD-2389: Allow resetting of project information after git changes"
                     }
                 ]
             }

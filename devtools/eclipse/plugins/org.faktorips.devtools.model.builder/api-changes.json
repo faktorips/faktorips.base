@@ -36,6 +36,11 @@
                         "old": "method java.lang.String org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute::getNewRangeExpression(java.lang.String, java.lang.String, java.lang.String, java.lang.String)",
                         "new": "method java.lang.String org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute::getNewRangeExpression(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)",
                         "justification": "FIPS-11459: getNewRangeExpression extended with lowerBoundOpen and upperBoundOpen parameters to support open/closed interval bounds."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer::reset()",
+                      "justification": "PD-2389: Allow resetting of project information after git changes"
                     }
                 ]
             }

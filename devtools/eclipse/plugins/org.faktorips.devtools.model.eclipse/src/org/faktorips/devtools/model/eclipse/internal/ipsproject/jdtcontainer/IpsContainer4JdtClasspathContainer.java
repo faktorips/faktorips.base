@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -44,7 +44,7 @@ import org.faktorips.runtime.MessageList;
  * re-export= <code>false</code>. The flag tells the {@link IIpsObjectPath} to not follow these
  * project references. Otherwise IPS objects might be found multiple times and thus cause errors,
  * due to the fact that all transitive references have already been resolved by the JDT container.
- * 
+ *
  */
 public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathContainer {
 
@@ -62,7 +62,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
 
     /**
      * Creates an IPS container that references the JDT classpath container with the specified path.
-     * 
+     *
      * @param jdtContainerPath The JDT classpath container path
      * @param ipsProject The {@link IIpsProject} that holds this container
      */
@@ -135,12 +135,17 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         }
     }
 
+    @Override
+    public synchronized void reset() {
+        jdtClasspathContainer = null;
+    }
+
     /**
      * Returns the JDT classpath container identified by the given IPS container entry.
-     * 
+     *
      * @return The identified JDT classpath container or <code>null</code> of the entry does not
      *             identify one.
-     * 
+     *
      * @throws JavaModelException if an error occurs while accessing the classpath container.
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
