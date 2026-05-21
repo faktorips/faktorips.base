@@ -66,7 +66,7 @@ public class PolicyAssociationViewItem extends AbstractAssociationViewItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(association);
+        return Objects.hash(association, getLinkContainer());
     }
 
     @Override
@@ -78,7 +78,8 @@ public class PolicyAssociationViewItem extends AbstractAssociationViewItem {
             return false;
         }
         PolicyAssociationViewItem other = (PolicyAssociationViewItem)obj;
-        return Objects.equals(association, other.association);
+        return Objects.equals(association, other.association)
+                && Objects.equals(getLinkContainer(), other.getLinkContainer());
     }
 
 }

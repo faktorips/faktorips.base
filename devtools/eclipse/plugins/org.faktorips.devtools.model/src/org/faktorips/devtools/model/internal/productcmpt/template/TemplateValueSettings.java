@@ -137,6 +137,7 @@ public class TemplateValueSettings {
 
     private boolean noDeletableLinkFound(IPolicyCmptLinkCardinality linkCardinality, IIpsProject ipsProject) {
         return linkCardinality.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED
+                && !linkCardinality.getTemplatedValueContainer().isProductTemplate()
                 && linkCardinality.findTemplateProperty(ipsProject) == null;
     }
 

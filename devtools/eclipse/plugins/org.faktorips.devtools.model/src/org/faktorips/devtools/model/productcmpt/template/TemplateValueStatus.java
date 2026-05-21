@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.productcmpt.template;
 import java.util.Arrays;
 import java.util.List;
 
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 
@@ -57,7 +58,8 @@ public enum TemplateValueStatus {
     UNDEFINED("undefined") { //$NON-NLS-1$
         @Override
         public boolean isAllowedStatus(ITemplatedValue value) {
-            return isTemplatePropertyValue(value) || isLinkWithTemplate(value);
+            return isTemplatePropertyValue(value) || isLinkWithTemplate(value)
+                    || isCardinalityInTemplate(value);
         }
 
         private boolean isTemplatePropertyValue(ITemplatedValue value) {
@@ -66,6 +68,11 @@ public enum TemplateValueStatus {
 
         private boolean isLinkWithTemplate(ITemplatedValue value) {
             return value instanceof IProductCmptLink && value.findTemplateProperty(value.getIpsProject()) != null;
+        }
+
+        private boolean isCardinalityInTemplate(ITemplatedValue value) {
+            return value instanceof IPolicyCmptLinkCardinality
+                    && value.getTemplatedValueContainer().isProductTemplate();
         }
     };
 

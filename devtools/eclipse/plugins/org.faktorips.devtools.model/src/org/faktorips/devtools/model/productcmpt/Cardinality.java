@@ -228,6 +228,11 @@ public class Cardinality implements Comparable<Cardinality> {
         }
 
         @Override
+        public MessageList validate(IPolicyCmptLinkCardinality policyLinkCardinality) {
+            return new MessageList();
+        }
+
+        @Override
         public int hashCode() {
             return 0;
         }

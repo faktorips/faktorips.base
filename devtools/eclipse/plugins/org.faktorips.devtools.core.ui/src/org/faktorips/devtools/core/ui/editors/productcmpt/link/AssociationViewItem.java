@@ -61,7 +61,7 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(association);
+        return Objects.hash(association, getLinkContainer());
     }
 
     @Override
@@ -73,7 +73,8 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
             return false;
         }
         AssociationViewItem other = (AssociationViewItem)obj;
-        return Objects.equals(association, other.association);
+        return Objects.equals(association, other.association)
+                && Objects.equals(getLinkContainer(), other.getLinkContainer());
     }
 
 }

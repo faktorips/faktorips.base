@@ -742,4 +742,51 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertThat(link.isCardinalityConfigurable(ipsProject), is(true));
     }
 
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenNotUsingTemplate() {
+        setUpAssociation(true);
+
+        final ProductCmptLink productCmptLink = (ProductCmptLink)link;
+        assertThat(productCmptLink.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenTemplateNotFound() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("NonExistentTemplate");
+
+        final ProductCmptLink productCmptLink = (ProductCmptLink)link;
+        assertThat(productCmptLink.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenProductCmptTypeIsNull() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        template.setProductCmptType("NonExistentType");
+
+        final ProductCmptLink productCmptLink = (ProductCmptLink)link;
+        assertThat(productCmptLink.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsFalse_WhenAssociationNotFound() {
+        productCmpt.setTemplate("TestTemplate");
+        IProductCmptLink nonExistentLink = generation.newLink("NonExistentAssociation");
+
+        final ProductCmptLink productCmptLink = (ProductCmptLink)nonExistentLink;
+        assertThat(productCmptLink.isAssociationConfiguredInTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsAssociationConfiguredInTemplate_ReturnsTrue_WhenAssociationFoundInTemplate() {
+        setUpAssociation(true);
+        productCmpt.setTemplate("TestTemplate");
+        IProductCmptTypeAssociation templateAssociation = productCmptType.newProductCmptTypeAssociation();
+        templateAssociation.setTargetRoleSingular("CoverageType");
+
+        final ProductCmptLink productCmptLink = (ProductCmptLink)link;
+        assertThat(productCmptLink.isAssociationConfiguredInTemplate(), is(true));
+    }
+
 }
