@@ -732,156 +732,218 @@ public class ModelObjectDeltaChildrenByObjectTest extends AbstractModelObjectDel
     }
 
     @Test
-    public void testIsValuesEqual_Numeric_String() {
+    public void testAreValuesEqual_Numeric_String() {
         Decimal value1 = Decimal.valueOf(4);
         String value2 = "Test";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_Numeric_Numeric() {
+    public void testAreValuesEqual_Numeric_Numeric() {
         Decimal value1 = Decimal.valueOf(4);
         Decimal value2 = Decimal.valueOf(4);
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_String_Numeric() {
+    public void testAreValuesEqual_String_Numeric() {
         String value1 = "Test";
         Decimal value2 = Decimal.valueOf(4);
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_EqualValue() {
+    public void testAreValuesEqual_Strings_EqualValue() {
         String value1 = "Test";
         String value2 = "Test";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_DifferentValue() {
+    public void testAreValuesEqual_Strings_DifferentValue() {
         String value1 = "Test1";
         String value2 = "Test2";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_Null() {
+    public void testAreValuesEqual_Strings_Null() {
         String value1 = null;
         String value2 = null;
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_Empty() {
+    public void testAreValuesEqual_Strings_Empty() {
         String value1 = "";
         String value2 = "";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_Blank() {
+    public void testAreValuesEqual_Strings_Blank() {
         String value1 = "    ";
         String value2 = "    ";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_NullAndEmpty() {
+    public void testAreValuesEqual_Strings_NullAndEmpty() {
         String value1 = null;
         String value2 = "";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_EmptyAndNull() {
+    public void testAreValuesEqual_Strings_EmptyAndNull() {
         String value1 = "";
         String value2 = null;
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_NullAndBlank() {
+    public void testAreValuesEqual_Strings_NullAndBlank() {
         String value1 = null;
         String value2 = "    ";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_NullAndValue() {
+    public void testAreValuesEqual_Strings_NullAndValue() {
         String value1 = null;
         String value2 = "foo";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_BlankAndNull() {
+    public void testAreValuesEqual_Strings_BlankAndNull() {
         String value1 = "    ";
         String value2 = null;
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_ValueAndNull() {
+    public void testAreValuesEqual_Strings_ValueAndNull() {
         String value1 = "foo";
         String value2 = null;
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_EmptyAndBlank() {
+    public void testAreValuesEqual_Strings_EmptyAndBlank() {
         String value1 = "";
         String value2 = "    ";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_BlankAndEmpty() {
+    public void testAreValuesEqual_Strings_BlankAndEmpty() {
         String value1 = "    ";
         String value2 = "";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_BlankAndValue() {
+    public void testAreValuesEqual_Strings_BlankAndValue() {
         String value1 = "";
         String value2 = "foo";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_Strings_SameReference() {
+    public void testAreValuesEqual_Strings_SameReference() {
         String value1 = "";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value1), is(true));
     }
 
     @Test
-    public void testIsValuesEqual_StringAndNumeric() {
+    public void testAreValuesEqual_StringAndNumeric() {
         String value1 = "  ";
         Decimal value2 = Decimal.valueOf(2);
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_NumericAndString() {
+    public void testAreValuesEqual_NumericAndString() {
         Decimal value1 = Decimal.valueOf(2);
         String value2 = "  ";
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_NullAndNumeric() {
+    public void testAreValuesEqual_NullAndNumeric() {
         String value1 = null;
         Decimal value2 = Decimal.valueOf(2);
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
     }
 
     @Test
-    public void testIsValuesEqual_NumericAndNull() {
+    public void testAreValuesEqual_NumericAndNull() {
         Decimal value1 = Decimal.valueOf(2);
         String value2 = null;
         assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
+    }
+
+    @Test
+    public void testAreValuesEqual_NullObject_Null() {
+        Decimal value1 = Decimal.NULL;
+        Object value2 = null;
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
+    }
+
+    @Test
+    public void testAreValuesEqual_Null_NullObject() {
+        Object value1 = null;
+        Decimal value2 = Decimal.NULL;
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
+    }
+
+    @Test
+    public void testAreValuesEqual_NullObject_NullObject() {
+        Decimal value1 = Decimal.NULL;
+        Decimal value2 = Decimal.NULL;
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
+    }
+
+    @Test
+    public void testAreValuesEqual_NullObject_Value() {
+        Decimal value1 = Decimal.NULL;
+        Decimal value2 = Decimal.valueOf(1);
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
+    }
+
+    @Test
+    public void testAreValuesEqual_Arrays_EqualContent() {
+        String[] value1 = {"a", "b"};
+        String[] value2 = {"a", "b"};
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
+    }
+
+    @Test
+    public void testAreValuesEqual_Arrays_DifferentContent() {
+        String[] value1 = {"a"};
+        String[] value2 = {"b"};
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
+    }
+
+    @Test
+    public void testAreValuesEqual_Arrays_DifferentLength() {
+        String[] value1 = {"a"};
+        String[] value2 = {"a", "b"};
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(false));
+    }
+
+    @Test
+    public void testAreValuesEqual_Arrays_SameReference() {
+        String[] value1 = {"x"};
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value1), is(true));
+    }
+
+    @Test
+    public void testAreValuesEqual_Arrays_Nested() {
+        String[][] value1 = {{"a"}, {"b"}};
+        String[][] value2 = {{"a"}, {"b"}};
+        assertThat(computationByObject().areValuesEqual(null, null, value1, value2), is(true));
     }
 
     private static TestOptions computationByObject() {

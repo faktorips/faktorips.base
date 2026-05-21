@@ -10,9 +10,11 @@
 
 package org.faktorips.runtime;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.runtime.model.type.AssociationKind;
 
 /**
@@ -143,9 +145,13 @@ public interface IDeltaComputationOptions {
      * Two values are considered equal if:
      * <ul>
      * <li>They are the same reference (including both {@code null}).</li>
+     * <li>Both are {@link org.faktorips.values.NullObject NullObjects} or {@code null} (as
+     * determined by {@link ObjectUtil#isNull(Object)}).</li>
      * <li>Both are {@link String Strings} and both are blank (either {@code null}, empty, or only
      * whitespace).</li>
      * <li>One is {@code null} and the other is a blank {@code String}.</li>
+     * <li>Both are arrays and their contents are deeply equal (using
+     * {@link Arrays#deepEquals(Object[], Object[])}).</li>
      * <li>Otherwise, they are equal according to {@link Objects#equals(Object, Object)}.</li>
      * </ul>
      *
@@ -156,8 +162,12 @@ public interface IDeltaComputationOptions {
      * @return <code>true</code> if the values are the same
      *
      */
+    // CSOFF: CyclomaticComplexity
     default boolean areValuesEqual(Class<?> clazz, String property, Object value1, Object value2) {
         if (value1 == value2) {
+            return true;
+        }
+        if (ObjectUtil.isNull(value1) && ObjectUtil.isNull(value2)) {
             return true;
         }
         if (value1 instanceof String s1 && value2 instanceof String s2) {
@@ -171,8 +181,12 @@ public interface IDeltaComputationOptions {
         if (value2 == null && value1 instanceof String s1) {
             return IpsStringUtils.isBlank(s1);
         }
+        if (value1 instanceof Object[] arr1 && value2 instanceof Object[] arr2) {
+            return Arrays.deepEquals(arr1, arr2);
+        }
         return Objects.equals(value1, value2);
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Controls whether {@link AssociationKind#Association associations} should be ignored when
