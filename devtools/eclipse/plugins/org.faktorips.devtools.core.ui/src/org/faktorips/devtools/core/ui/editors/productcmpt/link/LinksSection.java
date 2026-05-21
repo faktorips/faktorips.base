@@ -128,7 +128,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
      * Creates a new RelationsSection which displays relations for the given generation.
      *
      * @param generation The base to get the relations from.
-     * @param parent The composite whicht is the ui-parent for this section.
+     * @param parent The composite which is the ui-parent for this section.
      * @param toolkit The ui-toolkit to support drawing.
      */
     public LinksSection(ProductCmptEditor editor, IProductCmptGeneration generation, Composite parent,

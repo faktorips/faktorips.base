@@ -94,6 +94,26 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     boolean isContainerFor(IProductCmptTypeAssociation association);
 
     /**
+     * Returns <code>true</code> if this container is responsible for the given association. For
+     * example a {@link IProductCmptGeneration} is only responsible for associations that may change
+     * over time but not for unchanging (static) associations. This method will return
+     * <code>false</code> in the latter case.
+     * <p>
+     * If the association is not configured by a matching {@link IProductCmptTypeAssociation}, it is
+     * configured in the {@link IProductCmpt} if the product does not use generations, otherwise in
+     * the {@link IProductCmptGeneration}.
+     *
+     * @param policyAssociation The association that should be checked by the container
+     *
+     * @return <code>true</code> if the association could part of this container, <code>false</code>
+     *             otherwise.
+     *
+     * @throws NullPointerException if the association is <code>null</code>
+     * @since 26.7
+     */
+    boolean isContainerFor(IPolicyCmptTypeAssociation policyAssociation);
+
+    /**
      * Returns the number of relations.
      */
     int getNumOfLinks();

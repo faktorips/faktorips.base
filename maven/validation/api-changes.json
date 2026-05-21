@@ -63,14 +63,19 @@
               "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
             },
             {
-                "code": "java.method.addedToInterface",
-                "new": "method java.util.SequencedSet<org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality> org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer::getPolicyCmptLinkCardinalities()",
-                "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+              "code": "java.method.addedToInterface",
+              "new": "method java.util.SequencedSet<org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality> org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer::getPolicyCmptLinkCardinalities()",
+              "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
             },
             {
-                "code": "java.method.addedToInterface",
-                "new": "method boolean org.faktorips.devtools.model.productcmpt.IProductCmptLink::isCardinalityConfigurable(org.faktorips.devtools.model.ipsproject.IIpsProject)",
-                "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+              "code": "java.method.addedToInterface",
+              "new": "method boolean org.faktorips.devtools.model.productcmpt.IProductCmptLink::isCardinalityConfigurable(org.faktorips.devtools.model.ipsproject.IIpsProject)",
+              "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
+            },
+            {
+              "code": "java.method.addedToInterface",
+              "new": "method boolean org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer::isContainerFor(org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation)",
+              "justification": "FIPS-9911: Configuration of policy model cardinality in product components"
             }
           ]
         }

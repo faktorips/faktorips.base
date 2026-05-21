@@ -10,7 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -18,10 +20,11 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.decorators.internal.AssociationDecorator;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 /**
- * Represents a policy component type association in the product component editor's structure section.
- * Used for policy associations that have  a configured cardinality but are not matched by
+ * Represents a policy component type association in the product component editor's structure
+ * section. Used for policy associations that have a configured cardinality but are not matched by
  * any product component type association.
  */
 public class PolicyAssociationViewItem extends AbstractAssociationViewItem {
@@ -29,20 +32,12 @@ public class PolicyAssociationViewItem extends AbstractAssociationViewItem {
     private final IPolicyCmptTypeAssociation association;
     private final AssociationDecorator workbenchAdapter;
 
-    public PolicyAssociationViewItem(IProductCmptLinkContainer container,
-            IPolicyCmptTypeAssociation association) {
+    public PolicyAssociationViewItem(IProductCmptLinkContainer container, IPolicyCmptTypeAssociation association) {
         super(container);
         this.association = association;
-        workbenchAdapter = new AssociationDecorator(false);
-    }
-
-    public IPolicyCmptTypeAssociation getAssociation() {
-        return association;
-    }
-
-    @Override
-    public String getAssociationName() {
-        return association.getName();
+        workbenchAdapter = new AssociationDecorator(container.getProductCmpt()
+                .findProductCmptType(container.getIpsProject()) instanceof IProductCmptType productCmptType
+                && productCmptType.isChangingOverTime());
     }
 
     @Override
@@ -60,8 +55,22 @@ public class PolicyAssociationViewItem extends AbstractAssociationViewItem {
     }
 
     @Override
+    public String getAssociationName() {
+        return association.getName();
+    }
+
+    public IPolicyCmptTypeAssociation getAssociation() {
+        return association;
+    }
+
+    @Override
     public boolean hasChildren() {
         return false;
+    }
+
+    @Override
+    public List<ILinkSectionViewItem> getChildren() {
+        return List.of();
     }
 
     @Override
@@ -80,6 +89,11 @@ public class PolicyAssociationViewItem extends AbstractAssociationViewItem {
         PolicyAssociationViewItem other = (PolicyAssociationViewItem)obj;
         return Objects.equals(association, other.association)
                 && Objects.equals(getLinkContainer(), other.getLinkContainer());
+    }
+
+    @Override
+    protected Optional<IPolicyCmptTypeAssociation> findPolicyCmptTypeAssociation() {
+        return Optional.of(association);
     }
 
 }

@@ -10,9 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.beans.PropertyChangeEvent;
-import java.util.function.Supplier;
-
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 
@@ -24,8 +21,6 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 public class TemplatePolicyCmptLinkCardinalityPmo extends AbstractTemplateValuePmo<IPolicyCmptLinkCardinality> {
 
     public static final String PROPERTY_STATUS_BUTTON_ENABLED = "statusButtonEnabled"; //$NON-NLS-1$
-
-    private Supplier<IPolicyCmptLinkCardinality> cardinalityCreator;
 
     @Override
     public TemplateValueUiStatus getTemplateValueStatus() {
@@ -60,21 +55,10 @@ public class TemplatePolicyCmptLinkCardinalityPmo extends AbstractTemplateValueP
 
     @Override
     public void onClick() {
-        if (!isCardinalityAvailable()) {
-            IPolicyCmptLinkCardinality created = createCardinality();
-            if (created == null) {
-                return;
-            }
-            setCardinality(created);
+        if (isCardinalityAvailable()) {
+            setCardinality(getTemplatedProperty());
         }
         super.onClick();
-    }
-
-    private IPolicyCmptLinkCardinality createCardinality() {
-        if (cardinalityCreator != null) {
-            return cardinalityCreator.get();
-        }
-        return null;
     }
 
     private String getAssociationLabel() {
@@ -83,11 +67,6 @@ public class TemplatePolicyCmptLinkCardinalityPmo extends AbstractTemplateValueP
 
     public void setCardinality(IPolicyCmptLinkCardinality cardinality) {
         setTemplatedProperty(cardinality);
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_STATUS_BUTTON_ENABLED, null, null));
-    }
-
-    public void setCardinalityCreator(Supplier<IPolicyCmptLinkCardinality> creator) {
-        cardinalityCreator = creator;
     }
 
     @CheckForNull
@@ -96,7 +75,7 @@ public class TemplatePolicyCmptLinkCardinalityPmo extends AbstractTemplateValueP
     }
 
     public boolean isStatusButtonEnabled() {
-        return cardinalityCreator != null || isCardinalityAvailable();
+        return isCardinalityAvailable();
     }
 
     @CheckForNull

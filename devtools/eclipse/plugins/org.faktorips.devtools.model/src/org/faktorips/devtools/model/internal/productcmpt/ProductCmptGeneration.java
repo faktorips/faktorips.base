@@ -516,6 +516,17 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
+    public boolean isContainerFor(IPolicyCmptTypeAssociation policyAssociation) {
+        var matchingProductCmptTypeAssociation = policyAssociation
+                .findMatchingProductCmptTypeAssociation(getIpsProject());
+        if (matchingProductCmptTypeAssociation != null) {
+            return isContainerFor(matchingProductCmptTypeAssociation);
+        }
+        var pcType = findProductCmptType(getIpsProject());
+        return pcType != null && pcType.isChangingOverTime();
+    }
+
+    @Override
     public List<IProductCmptLink> getLinksAsList() {
         return linkCollection.getLinks();
     }

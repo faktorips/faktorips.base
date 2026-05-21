@@ -80,14 +80,6 @@ public class TemplatePolicyCmptLinkCardinalityPmoTest {
     }
 
     @Test
-    public void testIsStatusButtonEnabled_noCardinalityWithCreator() {
-        TemplatePolicyCmptLinkCardinalityPmo pmo = new TemplatePolicyCmptLinkCardinalityPmo();
-        pmo.setCardinalityCreator(() -> cardinality);
-
-        assertThat(pmo.isStatusButtonEnabled(), is(true));
-    }
-
-    @Test
     public void testIsStatusButtonEnabled_withCardinality() {
         TemplatePolicyCmptLinkCardinalityPmo pmo = new TemplatePolicyCmptLinkCardinalityPmo();
         pmo.setCardinality(cardinality);
@@ -120,28 +112,6 @@ public class TemplatePolicyCmptLinkCardinalityPmoTest {
         pmo.setCardinality(cardinality);
 
         assertThat(pmo.findTemplateCardinality(), is(templateCardinality));
-    }
-
-    @Test
-    public void testOnClick_createsCardinalityWhenNull() {
-        TemplatePolicyCmptLinkCardinalityPmo pmo = new TemplatePolicyCmptLinkCardinalityPmo();
-        when(cardinality.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
-        when(cardinality.getIpsProject()).thenReturn(ipsProject);
-        when(cardinality.findTemplateProperty(any())).thenReturn(null);
-        pmo.setCardinalityCreator(() -> cardinality);
-
-        pmo.onClick();
-
-        assertThat(pmo.getCardinality(), is(cardinality));
-    }
-
-    @Test
-    public void testOnClick_noCreatorDoesNothing() {
-        TemplatePolicyCmptLinkCardinalityPmo pmo = new TemplatePolicyCmptLinkCardinalityPmo();
-
-        pmo.onClick();
-
-        assertThat(pmo.getCardinality(), is(nullValue()));
     }
 
     @Test

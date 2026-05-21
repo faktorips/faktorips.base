@@ -89,6 +89,7 @@ public class LinksContentProviderTest {
         staticLinks.add(staticLink2);
 
         when(gen.getProductCmpt()).thenReturn(prodCmpt);
+        when(gen.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test

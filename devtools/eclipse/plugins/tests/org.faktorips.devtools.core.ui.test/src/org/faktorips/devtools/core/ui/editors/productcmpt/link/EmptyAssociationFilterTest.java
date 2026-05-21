@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -85,7 +86,9 @@ public class EmptyAssociationFilterTest {
 
     @Test
     public void testSelect_policyAssociationViewItem_alwaysVisible() {
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
         IProductCmptLinkContainer container = mock(IProductCmptLinkContainer.class);
+        doReturn(productCmpt).when(container).getProductCmpt();
         IPolicyCmptTypeAssociation policyAssoc = mock(IPolicyCmptTypeAssociation.class);
         when(policyAssoc.getName()).thenReturn("policyAssoc");
         PolicyAssociationViewItem viewItem = new PolicyAssociationViewItem(container, policyAssoc);
