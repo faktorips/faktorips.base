@@ -64,14 +64,14 @@ def static String body(XPolicyCmptClass it) '''
             /**
              * @generated
              */
-            private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = «IF type.generateValidatorClass && !hasSupertype()»2L«ELSE»1L«ENDIF»;
         «ENDIF»
 
         «IF type.generateValidatorClass && !hasSupertype()»
             /**
              * @generated
              */
-            private volatile «validatorClassName» validator;
+            private transient volatile «validatorClassName» validator;
         «ENDIF»
 
         «PropertyChangeSupportTmpl.fieldDefinition(it)»
