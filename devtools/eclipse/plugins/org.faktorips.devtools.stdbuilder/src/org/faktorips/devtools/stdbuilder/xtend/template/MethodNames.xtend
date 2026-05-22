@@ -166,6 +166,7 @@ class MethodNames {
     def static addInternationalStringToElement(String valueParam, String elementParam, String tagNameParam)  {     "addInternationalStringToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")"    }
 
     def static getUnrestrictedValueSet(String paramConfigElement, String paramValueSet)  {     "getUnrestrictedValueSet("+ paramConfigElement + ", " + paramValueSet + ")"    }
+    def static getDerivedValueSet(String paramConfigElement, String paramValueSet)  {     "getDerivedValueSet("+ paramConfigElement + ", " + paramValueSet + ")"    }
     
     
     def static deleteExistingElementAndCreateNewElement(String elementParam, String tagNameParam, String attributeNameParam) {

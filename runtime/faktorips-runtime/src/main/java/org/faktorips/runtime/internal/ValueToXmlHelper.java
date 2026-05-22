@@ -21,6 +21,7 @@ import org.faktorips.runtime.util.MessagesHelper;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
+import org.faktorips.valueset.DerivedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.CDATASection;
@@ -434,6 +435,16 @@ public enum ValueToXmlHelper {
             return new UnrestrictedValueSet<>(containsNull);
         });
         return valueSet.orElse(new UnrestrictedValueSet<>(true));
+    }
+
+    public static <T> DerivedValueSet<T> getDerivedValueSet(Element el, String tagName) {
+        Optional<Element> valueSetEl = XmlUtil.findFirstElement(el, tagName);
+        Optional<Element> allValuesEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_ALL_VALUES))
+                .filter(e -> e.hasAttribute(XML_ATTRIBUTE_CONTAINS_NULL));
+        boolean containsNull = allValuesEl
+                .map(e -> isAttributeTrue(e, XML_ATTRIBUTE_CONTAINS_NULL))
+                .orElse(true);
+        return new DerivedValueSet<>(containsNull);
     }
 
     /**

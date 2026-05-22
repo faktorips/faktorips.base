@@ -34,6 +34,7 @@ import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.ValueSetKind;
 import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.valueset.DerivedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -253,17 +254,37 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testGetDerivedValueSet_containsNullFromAllValues() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+
+        Element node = (Element)configElements.item(13);
+        DerivedValueSet<String> valueSet = ValueToXmlHelper.getDerivedValueSet(node, "ValueSet");
+        assertThat(valueSet.containsNull(), is(false));
+    }
+
+    @Test
+    public void testGetDerivedValueSet_containsNullDefaultsToTrue() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+
+        Element node = (Element)configElements.item(14);
+        DerivedValueSet<String> valueSet = ValueToXmlHelper.getDerivedValueSet(node, "ValueSet");
+        assertThat(valueSet.containsNull(), is(true));
+    }
+
+    @Test
     public void testAddTableUsageToElement() {
         Element element = getTestDocument().getDocumentElement();
         NodeList childNodes = element.getChildNodes();
-        assertThat(childNodes.getLength(), is(39));
+        assertThat(childNodes.getLength(), is(43));
 
         ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
 
-        assertThat(childNodes.getLength(), is(40));
-        Node namedItem = childNodes.item(39).getAttributes().getNamedItem("structureUsage");
+        assertThat(childNodes.getLength(), is(44));
+        Node namedItem = childNodes.item(43).getAttributes().getNamedItem("structureUsage");
         assertThat(namedItem.getNodeValue(), is("structureUsageValue"));
-        String nodeValue = childNodes.item(39).getFirstChild().getTextContent();
+        String nodeValue = childNodes.item(43).getFirstChild().getTextContent();
         assertThat(nodeValue, is("tableContentNameValue"));
     }
 

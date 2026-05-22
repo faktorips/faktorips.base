@@ -115,6 +115,16 @@
             </Range>
         </ValueSet>
     </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <AllValues containsNull="false" />
+        </ValueSet>
+    </ConfigElement>
+    <ConfigElement>
+        <ValueSet id="1" description="">
+            <Derived />
+        </ValueSet>
+    </ConfigElement>
     <AttributeValue attribute="A" id="1">
         <Value isNull="false" valueType="SingleValue">
             <InternationalString defaultLocale="hy">

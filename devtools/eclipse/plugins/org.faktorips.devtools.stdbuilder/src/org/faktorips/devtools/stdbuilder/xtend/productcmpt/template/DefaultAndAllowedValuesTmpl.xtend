@@ -179,7 +179,7 @@ class DefaultAndAllowedValuesTmpl {
             Element valueSetElement = configMap.get(«CONFIGURED_VALUE_SET_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
             if (valueSetElement != null) {
                 «IF valueSetDerived»
-                    «fieldNameValueSet» = «newDerivedValueSetInstance»;
+                    «fieldNameValueSet» = «ValueToXmlHelper()».«getDerivedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
                 «ELSEIF valueSetUnrestricted || valueSetConfiguredDynamic »
                     «IF ipsEnum»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;

@@ -18,6 +18,10 @@ public class DerivedValueSet<T> extends UnrestrictedValueSet<T> {
         super(true);
     }
 
+    public DerivedValueSet(boolean containsNull) {
+        super(containsNull);
+    }
+
     @Override
     public String toString() {
         return "DerivedValueSet";
