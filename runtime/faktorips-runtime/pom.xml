@@ -40,45 +40,36 @@
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.runtime {
-                                    requires transitive
-                                    org.faktorips.valuetypes;
-                                    requires transitive java.desktop;
-                                    requires transitive java.sql;
-                                    requires transitive java.xml;
-                                    requires static
-                                    com.github.spotbugs.annotations;
-                                    requires static junit;
-                                    requires static org.junit.jupiter.api;
-                                    requires static com.opencsv;
-                                    exports org.faktorips.runtime;
-                                    exports org.faktorips.runtime.annotation;
-                                    exports org.faktorips.runtime.caching;
-                                    exports org.faktorips.runtime.formula;
-                                    exports org.faktorips.runtime.internal;
-                                    exports
-                                    org.faktorips.runtime.internal.productvariant;
-                                    exports
-                                    org.faktorips.runtime.internal.tableindex;
-                                    exports org.faktorips.runtime.internal.toc;
-                                    exports org.faktorips.runtime.internal.xml;
-                                    exports org.faktorips.runtime.model;
-                                    exports
-                                    org.faktorips.runtime.model.annotation;
-                                    exports
-                                    org.faktorips.runtime.model.enumtype;
-                                    exports org.faktorips.runtime.model.table;
-                                    exports org.faktorips.runtime.model.type;
-                                    exports
-                                    org.faktorips.runtime.model.type.read;
-                                    exports
-                                    org.faktorips.runtime.productdataprovider;
-                                    exports org.faktorips.runtime.test;
-                                    exports org.faktorips.runtime.util;
-                                    exports org.faktorips.runtime.util.function;
-                                    exports org.faktorips.runtime.validation;
-                                    exports org.faktorips.runtime.xml;
-                                    uses
-                                    org.faktorips.runtime.internal.toc.ITocEntryFactory;
+                                        requires transitive org.faktorips.valuetypes;
+                                        requires transitive java.desktop;
+                                        requires transitive java.sql;
+                                        requires transitive java.xml;
+                                        requires static com.github.spotbugs.annotations;
+                                        requires static junit;
+                                        requires static org.junit.jupiter.api;
+                                        requires static com.opencsv;
+                                        exports org.faktorips.runtime;
+                                        exports org.faktorips.runtime.annotation;
+                                        exports org.faktorips.runtime.caching;
+                                        exports org.faktorips.runtime.formula;
+                                        exports org.faktorips.runtime.internal;
+                                        exports org.faktorips.runtime.internal.productvariant;
+                                        exports org.faktorips.runtime.internal.tableindex;
+                                        exports org.faktorips.runtime.internal.toc;
+                                        exports org.faktorips.runtime.internal.xml;
+                                        exports org.faktorips.runtime.model;
+                                        exports org.faktorips.runtime.model.annotation;
+                                        exports org.faktorips.runtime.model.enumtype;
+                                        exports org.faktorips.runtime.model.table;
+                                        exports org.faktorips.runtime.model.type;
+                                        exports org.faktorips.runtime.model.type.read;
+                                        exports org.faktorips.runtime.productdataprovider;
+                                        exports org.faktorips.runtime.productswitch;
+                                        exports org.faktorips.runtime.test;
+                                        exports org.faktorips.runtime.util;
+                                        exports org.faktorips.runtime.validation;
+                                        exports org.faktorips.runtime.xml;
+                                        uses org.faktorips.runtime.internal.toc.ITocEntryFactory;
                                     }
                                 </moduleInfoSource>
                             </module>

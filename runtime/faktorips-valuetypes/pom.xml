@@ -61,7 +61,6 @@
                                         requires static com.github.spotbugs.annotations;
                                         exports org.faktorips.annotation;
                                         exports org.faktorips.values;
-                                        exports org.faktorips.values.xml;
                                         exports org.faktorips.valueset;
                                     }
                                 </moduleInfoSource>
@@ -81,7 +80,6 @@
                         <Export-Package>
                             org.faktorips.annotation,
                             org.faktorips.values,
-                            org.faktorips.values.xml,
                             org.faktorips.valueset
                         </Export-Package>
                         <Bundle-SymbolicName>org.faktorips.valuetypes</Bundle-SymbolicName>
