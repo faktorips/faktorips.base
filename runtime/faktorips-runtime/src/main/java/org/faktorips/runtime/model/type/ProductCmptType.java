@@ -79,27 +79,6 @@ public class ProductCmptType extends Type {
         associations = associationCollector.createParts(this);
         tableUsages = tableUsageCollector.createParts(this);
         formulas = formulaCollector.createParts(this);
-        initCardinalityGettersForUnmatchedPolicyAssociations();
-    }
-
-    private void initCardinalityGettersForUnmatchedPolicyAssociations() {
-        if (!isConfigurationForPolicyCmptType()) {
-            return;
-        }
-        Class<?> searchClass = isChangingOverTime() && getGenerationJavaClass() != null
-                ? getGenerationJavaClass()
-                : getJavaClass();
-        getPolicyCmptType().getAssociations().stream()
-                .filter(PolicyAssociation::isCardinalityConfigurable)
-                .filter(a -> a.getGetterMethod().getAnnotation(IpsMatchingAssociation.class) == null)
-                .forEach(policyAssoc -> {
-                    String getterName = "getCardinalityFor"
-                            + IpsStringUtils.toUpperFirstChar(policyAssoc.getName());
-                    Stream.of(searchClass.getMethods())
-                            .filter(m -> m.getName().equals(getterName) && m.getParameterCount() == 0)
-                            .findFirst()
-                            .ifPresent(policyAssoc::setGetCardinalityMethod);
-                });
     }
 
     private void initParts(ProductAttributeCollector attributeCollector,

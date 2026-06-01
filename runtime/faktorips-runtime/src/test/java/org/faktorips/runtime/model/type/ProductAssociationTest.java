@@ -1556,6 +1556,7 @@ public class ProductAssociationTest {
         }
 
         // konfigurierte Kardinalität: Min=2, Max=3
+        @SuppressWarnings("unused")
         public IntegerRange getCardinalityForConfigurablePolicyAsso() {
             return IntegerRange.valueOf(2, 3);
         }
@@ -1609,6 +1610,7 @@ public class ProductAssociationTest {
             return List.of();
         }
 
+        @SuppressWarnings("unused")
         public IntegerRange getCardinalityForRestrictedPolicyAsso() {
             return IntegerRange.valueOf(1, 8);
         }
@@ -1624,6 +1626,7 @@ public class ProductAssociationTest {
             return List.of();
         }
 
+        @SuppressWarnings("unused")
         public IntegerRange getCardinalityForRestrictedPolicyAssoValid() {
             return IntegerRange.valueOf(3, 5);
         }

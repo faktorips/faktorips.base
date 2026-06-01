@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -59,6 +59,7 @@ public class ValidationRuleTest {
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class SuperPolicy implements IModelObject {
 
+        @SuppressWarnings("unused")
         @IpsValidationRule(name = "rule", msgCode = "", severity = Severity.ERROR)
         protected boolean rule(MessageList ml, IValidationContext context) {
             return true;

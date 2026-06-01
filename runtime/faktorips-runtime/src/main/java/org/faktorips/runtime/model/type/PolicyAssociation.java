@@ -23,6 +23,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.valueset.IntegerRange;
@@ -34,7 +35,7 @@ public class PolicyAssociation extends Association {
 
     private final Method addMethod;
     private final Method removeMethod;
-    private volatile Method getCardinalityMethod;
+    private final Method getCardinalityMethod;
 
     /**
      *
@@ -49,6 +50,52 @@ public class PolicyAssociation extends Association {
         super(type, getterMethod);
         this.addMethod = addMethod;
         this.removeMethod = removeMethod;
+        getCardinalityMethod = findGetCardinalityMethod();
+    }
+
+    /**
+     *
+     * @param type the type the association belongs to
+     * @param getterMethod the getter method for retrieving all associated instances
+     * @param addMethod the method for associating new instances (add-method for ..N associations,
+     *            set-method for ..1 associations)
+     * @param removeMethod the method for removing instances from the association (<code>null</code>
+     *            in case of a ..1 association, as no method is generated)
+     * @param getCardinalityMethod the method for accessing the configured cardinality from the
+     *            matching {@link ProductCmptType}, if this association
+     *            {@link #isCardinalityConfigurable()}
+     */
+    public PolicyAssociation(Type type, Method getterMethod, Method addMethod, Method removeMethod,
+            Method getCardinalityMethod) {
+        super(type, getterMethod);
+        this.addMethod = addMethod;
+        this.removeMethod = removeMethod;
+        this.getCardinalityMethod = getCardinalityMethod;
+    }
+
+    private Method findGetCardinalityMethod() {
+        if (isCardinalityConfigurable()) {
+            var productCmptType = getType().getProductCmptType();
+            if (productCmptType != null) {
+                Optional<ProductAssociation> matchingAssociation = findMatchingAssociation();
+                boolean isMatchingAssociationChangingOverTime = matchingAssociation.isPresent()
+                        && matchingAssociation.get().isChangingOverTime();
+                boolean isPolicyOnlyButMatchingProductIsChangingOverTime = matchingAssociation.isEmpty()
+                        && productCmptType.isChangingOverTime();
+                Class<?> searchClass = (isMatchingAssociationChangingOverTime
+                        || isPolicyOnlyButMatchingProductIsChangingOverTime)
+                        && productCmptType.getGenerationJavaClass() != null
+                                ? productCmptType.getGenerationJavaClass()
+                                : productCmptType.getJavaClass();
+                String getterName = "getCardinalityFor" + IpsStringUtils.toUpperFirstChar(getName());
+                try {
+                    return searchClass.getMethod(getterName);
+                } catch (NoSuchMethodException | SecurityException e) {
+                    // fall through to return null
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -72,13 +119,7 @@ public class PolicyAssociation extends Association {
 
     @Override
     public PolicyAssociation createOverwritingAssociationFor(Type subType) {
-        PolicyAssociation overwriting = new PolicyAssociation(subType, getGetterMethod(), addMethod, removeMethod);
-        overwriting.getCardinalityMethod = getCardinalityMethod;
-        return overwriting;
-    }
-
-    void setGetCardinalityMethod(Method method) {
-        getCardinalityMethod = method;
+        return new PolicyAssociation(subType, getGetterMethod(), addMethod, removeMethod, getCardinalityMethod);
     }
 
     /**
@@ -95,9 +136,11 @@ public class PolicyAssociation extends Association {
         if (!isCardinalityConfigurable() || getCardinalityMethod == null) {
             return;
         }
-        Object cardinalitySource =
-                IProductComponentGeneration.class.isAssignableFrom(getCardinalityMethod.getDeclaringClass())
-                        ? product.getGenerationBase(effectiveDate)
+        Object cardinalitySource = IProductComponentGeneration.class
+                .isAssignableFrom(getCardinalityMethod.getDeclaringClass())
+                        ? effectiveDate != null
+                                ? product.getGenerationBase(effectiveDate)
+                                : product.getLatestProductComponentGeneration()
                         : product;
         IntegerRange configured = (IntegerRange)invokeMethod(getCardinalityMethod, cardinalitySource);
         validateConfiguredCardinalityBounds(list, context, product, configured,

@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -45,6 +44,7 @@ import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
 import org.faktorips.runtime.model.annotation.IpsAssociations;
+import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
 import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
@@ -497,9 +497,6 @@ public class PolicyAssociationTest {
                 .getAssociation("configurableTargets2");
         IRuntimeRepository repository = new InMemoryRuntimeRepository();
         ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
-        Method cardinalityMethod = ConfiguringProduct.class
-                .getMethod("getCardinalityForConfigurableTargets2");
-        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
         product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, 6);
         MessageList messages = new MessageList();
 
@@ -517,9 +514,6 @@ public class PolicyAssociationTest {
                 .getAssociation("configurableTargets2");
         IRuntimeRepository repository = new InMemoryRuntimeRepository();
         ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
-        Method cardinalityMethod = ConfiguringProduct.class
-                .getMethod("getCardinalityForConfigurableTargets2");
-        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
         product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(0, 3);
         MessageList messages = new MessageList();
 
@@ -537,9 +531,6 @@ public class PolicyAssociationTest {
                 .getAssociation("configurableTargets");
         IRuntimeRepository repository = new InMemoryRuntimeRepository();
         ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
-        Method cardinalityMethod = ConfiguringProduct.class
-                .getMethod("getCardinalityForConfigurableTargets");
-        configurableAssociation.setGetCardinalityMethod(cardinalityMethod);
         product.cardinalityForConfigurableTargets = IntegerRange.valueOf(0, 2);
         MessageList messages = new MessageList();
 
@@ -554,9 +545,6 @@ public class PolicyAssociationTest {
                 .getAssociation("configurableTargets2");
         IRuntimeRepository repository = new InMemoryRuntimeRepository();
         ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
-        Method cardinalityMethod = ConfiguringProduct.class
-                .getMethod("getCardinalityForConfigurableTargets2");
-        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
         product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, null);
         MessageList messages = new MessageList();
 
@@ -571,9 +559,6 @@ public class PolicyAssociationTest {
                 .getAssociation("configurableTargets2");
         IRuntimeRepository repository = new InMemoryRuntimeRepository();
         ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
-        Method cardinalityMethod = ConfiguringProduct.class
-                .getMethod("getCardinalityForConfigurableTargets2");
-        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
         product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(null, 3);
         MessageList messages = new MessageList();
 
@@ -588,9 +573,6 @@ public class PolicyAssociationTest {
                 .getAssociation("configurableTargets2");
         IRuntimeRepository repository = new InMemoryRuntimeRepository();
         ConfiguringProduct product = new ConfiguringProduct(repository, "P1", "P", "1");
-        Method cardinalityMethod = ConfiguringProduct.class
-                .getMethod("getCardinalityForConfigurableTargets2");
-        boundedAssoc.setGetCardinalityMethod(cardinalityMethod);
         product.cardinalityForConfigurableTargets2 = IntegerRange.valueOf(1, Integer.MAX_VALUE);
         MessageList messages = new MessageList();
 
@@ -599,6 +581,7 @@ public class PolicyAssociationTest {
         assertThat(messages.containsErrorMsg(), is(false));
     }
 
+    @IpsConfiguredBy(ConfiguringProduct.class)
     @IpsPolicyCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN", "configurableTargets",
             "configurableTargets2" })
