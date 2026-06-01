@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -42,7 +43,7 @@ import org.faktorips.devtools.model.type.IAssociation;
 
 /**
  * This class provides several ways to create a links in a product component.
- * 
+ *
  * @author dirmeier
  */
 public class LinkCreatorUtil {
@@ -79,6 +80,7 @@ public class LinkCreatorUtil {
         }
     }
 
+    // CSOFF: CyclomaticComplexity
     protected boolean processProductCmptReference(List<IProductCmpt> draggedCmpts,
             IProductCmptReference target,
             boolean createLinks) {
@@ -128,6 +130,7 @@ public class LinkCreatorUtil {
         }
         return result;
     }
+    // CSON: CyclomaticComplexity
 
     private boolean canCreateValidLink(IProductCmptGeneration generation,
             IProductCmpt draggedCmpt,
@@ -202,7 +205,7 @@ public class LinkCreatorUtil {
      * Creates a new link instance for the given association. If the association is defined as
      * changing over time, the link instance will be added to the product component generation.
      * Otherwise it will be added to the product component itself.
-     * 
+     *
      * @param association the association the new link is an instance of.
      * @param generation the generation currently active in the editor. The new link is not
      *            necessarily added to this generation!
@@ -223,7 +226,7 @@ public class LinkCreatorUtil {
     /**
      * Returns the generation if it is a container for the given association. Returns the
      * generation's product component otherwise.
-     * 
+     *
      * @param generation the possible link container
      * @param association the association to retrieve a {@link IProductCmptLinkContainer container}
      *            for.
@@ -243,7 +246,7 @@ public class LinkCreatorUtil {
      * link to the corresponding policyAssociation values, if the {@link IProductCmptLink} is the
      * first in container, has a single target and the association contains a matching
      * policyAssociation.
-     * 
+     *
      * @param droppedCmptQName the name of the dropped component
      * @param container contains the newly created link
      * @param association the association to retrieve a {@link IProductCmptLinkContainer container}
@@ -256,14 +259,15 @@ public class LinkCreatorUtil {
             IProductCmptTypeAssociation association,
             boolean singleTarget) {
         IProductCmptLink newLink = container.newLink(association.getName());
-        IAssociation policyAssociation = association.findMatchingAssociation();
+        IPolicyCmptTypeAssociation policyAssociation = (IPolicyCmptTypeAssociation)association
+                .findMatchingAssociation();
         newLink.setTarget(droppedCmptQName);
         if (singleTarget
                 && policyAssociation != null
                 && isFirstLink(container, newLink)) {
-            newLink.setMaxCardinality(policyAssociation.getMaxCardinality());
-            newLink.setMinCardinality(policyAssociation.getMinCardinality());
-            newLink.setDefaultCardinality(policyAssociation.getMinCardinality());
+            newLink.setMaxCardinality(container.getMaxCardinality(policyAssociation));
+            newLink.setMinCardinality(container.getMinCardinality(policyAssociation));
+            newLink.setDefaultCardinality(container.getMinCardinality(policyAssociation));
         } else {
             newLink.setMaxCardinality(1);
             newLink.setMinCardinality(0);

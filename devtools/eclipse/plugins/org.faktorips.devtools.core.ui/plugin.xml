@@ -2830,6 +2830,11 @@
                      <instanceof
                            value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                      </instanceof>
+                     <not>
+                        <instanceof
+                              value="org.faktorips.devtools.core.ui.editors.productcmpt.link.PolicyAssociationViewItem">
+                        </instanceof>
+                     </not>
                   </iterate>
                </with>
             </visibleWhen>
@@ -2847,6 +2852,11 @@
                      <instanceof
                            value="org.faktorips.devtools.core.ui.editors.productcmpt.link.AbstractAssociationViewItem">
                      </instanceof>
+                     <not>
+                        <instanceof
+                              value="org.faktorips.devtools.core.ui.editors.productcmpt.link.PolicyAssociationViewItem">
+                        </instanceof>
+                     </not>
                   </iterate>
                </with>
             </visibleWhen>

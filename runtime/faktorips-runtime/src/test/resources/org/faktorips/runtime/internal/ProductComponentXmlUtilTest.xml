@@ -60,6 +60,8 @@
 		]]>
 		</compiledExpression>
 	</Formula>
+	<PolicyLinkCardinality association="coverage" minCardinality="1" maxCardinality="5"/>
+	<PolicyLinkCardinality association="rider" minCardinality="0" maxCardinality="*"/>
 	<ValidationRuleConfig ruleName="Regel1" active="true"/>
 	<ValidationRuleConfig ruleName="RegelZwei" active="false"/>
 	<ValidationRuleConfig ruleName="RegelDrei" active="xxx"/>

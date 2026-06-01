@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.SequencedSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
 import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptKind;
@@ -100,6 +103,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
             linkCollection);
+
+    private final PolicyCmptLinkCardinalityCollection policyCmptLinkCardinalities = new PolicyCmptLinkCardinalityCollection(
+            this);
 
     private final IpsObjectType ipsObjectType;
 
@@ -545,6 +551,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return switch (xmlTagName) {
             case IIpsObjectGeneration.TAG_NAME -> newGenerationInternal(id);
             case IProductCmptLink.TAG_NAME -> createAndAddNewLinkInternal(id);
+            case IPolicyCmptLinkCardinality.TAG_NAME -> policyCmptLinkCardinalities.newPolicyCmptLinkCardinality(id);
             default -> propertyValueCollection.newPropertyValue(xmlTagName, id);
         };
     }
@@ -602,6 +609,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         children.addAll(propertyValueCollection.getAllPropertyValues());
         children.addAll(getLinksAsList());
+        children.addAll(policyCmptLinkCardinalities.getAll());
         return children.toArray(new IIpsElement[children.size()]);
     }
 
@@ -709,6 +717,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         return switch (part) {
             case IProductCmptLink productCmptLink -> linkCollection.addLink(productCmptLink);
+            case IPolicyCmptLinkCardinality policyCmptLinkCardinality -> policyCmptLinkCardinalities
+                    .add(policyCmptLinkCardinality);
             case IPropertyValue propertyValue -> propertyValueCollection.addPropertyValue(propertyValue);
             default -> false;
         };
@@ -721,6 +731,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         return switch (part) {
             case IProductCmptLink productCmptLink -> linkCollection.remove(productCmptLink);
+            case IPolicyCmptLinkCardinality policyCmptLinkCardinality -> policyCmptLinkCardinalities
+                    .remove(policyCmptLinkCardinality);
             case IPropertyValue propertyValue -> propertyValueCollection.removePropertyValue(propertyValue);
             default -> false;
         };
@@ -731,6 +743,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.reinitPartCollectionsThis();
         propertyValueCollection.clear();
         linkCollection.clear();
+        policyCmptLinkCardinalities.clear();
     }
 
     @Override
@@ -799,6 +812,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public boolean isContainerFor(IProductCmptTypeAssociation association) {
         return association.isChangingOverTime() == isChangingOverTimeContainer();
+    }
+
+    @Override
+    public boolean isContainerFor(IPolicyCmptTypeAssociation policyAssociation) {
+        var matchingProductCmptTypeAssociation = policyAssociation
+                .findMatchingProductCmptTypeAssociation(getIpsProject());
+        if (matchingProductCmptTypeAssociation != null) {
+            return isContainerFor(matchingProductCmptTypeAssociation);
+        }
+        var pcType = findProductCmptType(getIpsProject());
+        return pcType != null && pcType.isChangingOverTime() == isChangingOverTimeContainer();
     }
 
     @Override
@@ -937,6 +961,21 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                 IValidationRuleConfig.class);
         objectHasChanged();
         return ruleConfig;
+    }
+
+    @Override
+    public Optional<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinality(String policyAssociationName) {
+        return policyCmptLinkCardinalities.getPolicyCmptLinkCardinality(policyAssociationName);
+    }
+
+    @Override
+    public SequencedSet<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinalities() {
+        return policyCmptLinkCardinalities.getAll();
+    }
+
+    @Override
+    public IPolicyCmptLinkCardinality newPolicyCmptLinkCardinality(String policyAssociationName) {
+        return policyCmptLinkCardinalities.newPolicyCmptLinkCardinality(getNextPartId(), policyAssociationName);
     }
 
 }

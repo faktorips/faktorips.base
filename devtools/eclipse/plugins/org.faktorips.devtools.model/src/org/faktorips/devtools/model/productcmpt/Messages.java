@@ -26,10 +26,12 @@ public class Messages extends NLS {
     public static String DeltaType_LinksNotFoundInTheModel;
     public static String DeltaType_LinksWithWrongParent;
     public static String DeltaType_LinksWithWrongTargetRuntimeId;
+    public static String DeltaType_missingPolicyCmptLinkCardinality;
     public static String DeltaType_missingTemplateLink;
     public static String DeltaType_missingValue;
     public static String DeltaType_MissingVRuleConfig;
     public static String DeltaType_multilingualMismatch;
+    public static String DeltaType_policyCmptLinkCardinalityNotFoundInModel;
     public static String DeltaType_propertiesNotFoundInTheModel;
     public static String DeltaType_propertiesWithTypeMismatch;
     public static String DeltaType_removedTemplateLink;

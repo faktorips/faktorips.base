@@ -27,9 +27,11 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedU
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.InheritedUndefinedPropertyTemplateMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.LinkWithoutAssociationEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPolicyCmptLinkCardinalityEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MissingTemplateLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.MultilingualMismatchEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.PolicyCmptLinkCardinalityNotFoundInModelEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.PropertyTypeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.RemovedTemplateLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueHolderMismatchEntry;
@@ -38,12 +40,15 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueWitho
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.WrongRuntimeIdForLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
@@ -95,6 +100,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         if (getLinkContainer().isUsingTemplate()) {
             createEntriesForTemplateLinks();
         }
+        createEntriesForPolicyCmptLinkCardinalities();
         createAdditionalEntriesAndChildren();
     }
 
@@ -176,6 +182,37 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     @Override
     public IIpsElement getCorrespondingIpsElement() {
         return propertyValueContainer;
+    }
+
+    private void createEntriesForPolicyCmptLinkCardinalities() {
+        if (getProductCmptType().isConfigurationForPolicyCmptType()) {
+            var policyCmptType = getProductCmptType().findPolicyCmptType(getIpsProject());
+            if (policyCmptType != null) {
+                getLinkContainer().getPolicyCmptLinkCardinalities().forEach(
+                        c -> createEntryForPolicyCmptLinkCardinalityNotFoundInModel(policyCmptType, c));
+                policyCmptType.findAllAssociations(getIpsProject()).stream()
+                        .map(IPolicyCmptTypeAssociation.class::cast)
+                        .filter(a -> getLinkContainer().isContainerFor(a))
+                        .forEach(this::createEntryForMissingPolicyCmptLinkCardinalities);
+            }
+        }
+    }
+
+    private void createEntryForPolicyCmptLinkCardinalityNotFoundInModel(IPolicyCmptType policyCmptType,
+            IPolicyCmptLinkCardinality policyCmptLinkCardinality) {
+        var association = policyCmptType.findAssociation(policyCmptLinkCardinality.getAssociation(), getIpsProject());
+        if (!(association instanceof IPolicyCmptTypeAssociation policyAssociation)
+                || !policyAssociation.isCardinalityConfigurable()
+                || !getLinkContainer().isContainerFor(policyAssociation)) {
+            addEntry(new PolicyCmptLinkCardinalityNotFoundInModelEntry(policyCmptLinkCardinality));
+        }
+    }
+
+    private void createEntryForMissingPolicyCmptLinkCardinalities(IPolicyCmptTypeAssociation policyAssociation) {
+        var policyCmptLinkCardinality = getLinkContainer().getPolicyCmptLinkCardinality(policyAssociation.getName());
+        if (policyAssociation.isCardinalityConfigurable() && policyCmptLinkCardinality.isEmpty()) {
+            addEntry(new MissingPolicyCmptLinkCardinalityEntry(policyAssociation, getLinkContainer()));
+        }
     }
 
     /**

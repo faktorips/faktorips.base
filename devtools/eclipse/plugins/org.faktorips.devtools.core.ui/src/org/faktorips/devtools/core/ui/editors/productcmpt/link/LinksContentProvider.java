@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -29,7 +32,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 /**
  * Provides the content for a generation-based association-tree. The association names are requested
  * from the given generation and all supertypes the type containing this generation is based on.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class LinksContentProvider implements ITreeContentProvider {
@@ -76,19 +79,42 @@ public class LinksContentProvider implements ITreeContentProvider {
         return items;
     }
 
-    protected AssociationViewItem[] getAssociationItems(IProductCmptType type,
+    protected Object[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
             IProductCmptGeneration generation) {
-        ArrayList<AssociationViewItem> items = new ArrayList<>();
-        List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
-        for (IProductCmptTypeAssociation association : associations) {
+        List<AbstractAssociationViewItem> items = new ArrayList<>(buildProductItems(type, ipsProject, generation));
+        items.addAll(buildPolicyItems(type, ipsProject, generation));
+        return items.toArray();
+    }
+
+    private List<AbstractAssociationViewItem> buildProductItems(IProductCmptType type,
+            IIpsProject ipsProject,
+            IProductCmptGeneration generation) {
+        List<AbstractAssociationViewItem> items = new ArrayList<>();
+        for (IProductCmptTypeAssociation association : type.findAllNotDerivedAssociations(ipsProject)) {
             if (association.isRelevant()) {
                 IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
-                AssociationViewItem associationViewItem = createAssociationViewItem(container, association);
-                items.add(associationViewItem);
+                items.add(createAssociationViewItem(container, association));
             }
         }
-        return items.toArray(new AssociationViewItem[items.size()]);
+        return items;
+    }
+
+    private List<AbstractAssociationViewItem> buildPolicyItems(IProductCmptType type,
+            IIpsProject ipsProject,
+            IProductCmptGeneration generation) {
+        List<AbstractAssociationViewItem> items = new ArrayList<>();
+        IPolicyCmptType policyCmptType = type.findPolicyCmptType(ipsProject);
+        if (policyCmptType != null) {
+            for (IAssociation assoc : policyCmptType.findAllAssociations(ipsProject)) {
+                if (assoc instanceof IPolicyCmptTypeAssociation policyAssoc
+                        && policyAssoc.isCardinalityConfigurable()
+                        && policyAssoc.findMatchingProductCmptTypeAssociation(ipsProject) == null) {
+                    items.add(new PolicyAssociationViewItem(generation, policyAssoc));
+                }
+            }
+        }
+        return items;
     }
 
     private AssociationViewItem createAssociationViewItem(IProductCmptLinkContainer container,
@@ -103,9 +129,9 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof AbstractAssociationViewItem) {
-            List<ILinkSectionViewItem> children = ((AbstractAssociationViewItem)parentElement).getChildren();
-            return children.toArray(new ILinkSectionViewItem[children.size()]);
+        if (parentElement instanceof AbstractAssociationViewItem assoc) {
+            List<ILinkSectionViewItem> children = assoc.getChildren();
+            return children.toArray(new ILinkSectionViewItem[0]);
         }
         return new Object[0];
     }
@@ -122,11 +148,10 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public boolean hasChildren(Object element) {
-        if (element instanceof AbstractAssociationViewItem associationViewItem) {
-            return associationViewItem.hasChildren();
-        } else {
-            return false;
+        if (element instanceof AbstractAssociationViewItem assoc) {
+            return assoc.hasChildren();
         }
+        return false;
     }
 
     @Override

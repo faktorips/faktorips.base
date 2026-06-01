@@ -9,6 +9,7 @@ import static org.faktorips.devtools.model.builder.java.annotations.AnnotatedJav
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.DefaultAndAllowedValuesTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.MethodsTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.PolicyLinkCardinalityTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
@@ -67,6 +68,10 @@ class ProductComponentGenTmpl {
 
                 «FOR it : associations» «field» «ENDFOR»
 
+                «FOR it : cardinalityConfigurableAssociations» «cardinalityField» «ENDFOR»
+
+                «FOR it : pureCardinalityConfigurablePolicyAssociations» «cardinalityField» «ENDFOR»
+
                 «FOR it : tables» «propertyField» «ENDFOR»
 
                 «FOR it : tables» «memberField» «ENDFOR»
@@ -108,6 +113,8 @@ class ProductComponentGenTmpl {
                 «ENDFOR»
 
                 «FOR it : associations» «getterSetterAdderRemover» «ENDFOR»
+                «FOR it : cardinalityConfigurableAssociations» «cardinalityGetterSetter» «ENDFOR»
+                «FOR it : pureCardinalityConfigurablePolicyAssociations» «cardinalityGetterSetter» «ENDFOR»
 
                 «FOR derivedUnions : subsettedDerivedUnions» «methodsForDerivedUnion(derivedUnions)» «ENDFOR»
 
@@ -150,6 +157,8 @@ class ProductComponentGenTmpl {
                 «ENDIF»
 
                 «FOR it : associations» «doInitFromXmlMethod» «ENDFOR»
+
+                «doInitCardinalitiesFromXml»
 
                 «IF containsTables»
                     /**

@@ -37,6 +37,7 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.type.read.FormulaCollector;
 import org.faktorips.runtime.model.type.read.ProductAssociationCollector;
 import org.faktorips.runtime.model.type.read.ProductAttributeCollector;
@@ -440,12 +441,24 @@ public class ProductCmptType extends Type {
         }
         var validFroms = collectValidFroms(productComponent);
         getAttributes().forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
-        if (isConfigurationForPolicyCmptType()) {
-            getPolicyCmptType().getAttributes().stream().filter(PolicyAttribute::isProductRelevant)
-                    .forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
-        }
         getAssociations().stream().filter(not(ProductAssociation::isDerivedUnion))
                 .forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
+        if (isConfigurationForPolicyCmptType()) {
+            PolicyCmptType policyCmptType = getPolicyCmptType();
+            policyCmptType.getAttributes().stream().filter(PolicyAttribute::isProductRelevant)
+                    .forEach(a -> validatePart(a, messages, context, productComponent, validFroms));
+            policyCmptType.getAssociations().stream()
+                    .filter(PolicyAssociation::isCardinalityConfigurable)
+                    .filter(a -> a.getGetterMethod().getAnnotation(IpsMatchingAssociation.class) == null)
+                    .forEach(a -> {
+                        if (isChangingOverTime()) {
+                            validFroms.forEach(
+                                    effectiveDate -> a.validate(messages, context, productComponent, effectiveDate));
+                        } else {
+                            a.validate(messages, context, productComponent, null);
+                        }
+                    });
+        }
     }
 
     private <T extends TypePart> void validatePart(T part,

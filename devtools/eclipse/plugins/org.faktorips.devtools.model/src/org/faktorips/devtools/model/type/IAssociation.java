@@ -18,6 +18,7 @@ import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.AggregationKind;
 
 /**
@@ -305,6 +306,16 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
 
     /**
      * Returns the minimum number of target instances required in this association.
+     * <p>
+     * If this association is a {@link IPolicyCmptTypeAssociation} with a
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() total cardinality configurable
+     * via product}, call
+     * {@linkplain IProductCmptLinkContainer#getPolicyCmptLinkCardinality(String)} with this
+     * association's {@linkplain #getTargetRoleSingular() target role} to get the actual minimum in
+     * context of that {@link IProductCmptLinkContainer}.
+     *
+     * @see IPolicyCmptTypeAssociation#isCardinalityConfigurable()
+     * @see IProductCmptLinkContainer#getPolicyCmptLinkCardinality(String)
      */
     int getMinCardinality();
 
@@ -317,7 +328,17 @@ public interface IAssociation extends IOverridableLabeledElement, ITypePart {
      * Returns the maximum number of links allowed in this association. If this is a qualified
      * association, the max cardinality specifies the number of links per qualifier(!).
      * <p>
-     * If the number is not limited, <code>CARDINALITY_MANY</code> is returned.
+     * If the number is not limited, {@link #CARDINALITY_MANY} is returned.
+     * <p>
+     * If this association is a {@link IPolicyCmptTypeAssociation} with a
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() total cardinality configurable
+     * via product}, call
+     * {@linkplain IProductCmptLinkContainer#getPolicyCmptLinkCardinality(String)} with this
+     * association's {@linkplain #getTargetRoleSingular() target role} to get the actual maximum in
+     * context of that {@link IProductCmptLinkContainer}.
+     *
+     * @see IPolicyCmptTypeAssociation#isCardinalityConfigurable()
+     * @see IProductCmptLinkContainer#getPolicyCmptLinkCardinality(String)
      */
     int getMaxCardinality();
 

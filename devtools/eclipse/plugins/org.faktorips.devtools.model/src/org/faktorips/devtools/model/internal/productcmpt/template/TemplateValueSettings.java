@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 
 import org.faktorips.devtools.model.internal.productcmpt.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
@@ -55,7 +56,7 @@ public class TemplateValueSettings {
 
     /**
      * Validates the template status of the given property value.
-     * 
+     *
      * @param value the property value to validate
      * @param ipsProject the IPS project to use for validating
      * @return a message list containing all appropriate validation messages regarding the template
@@ -73,7 +74,7 @@ public class TemplateValueSettings {
 
     /**
      * Validates the template status of the given link.
-     * 
+     *
      * @param link the product component link to validate
      * @param ipsProject the IPS project to use for validating
      * @return a message list containing all appropriate validation messages regarding the template
@@ -107,6 +108,37 @@ public class TemplateValueSettings {
     private boolean noDeletableLinkFound(IProductCmptLink link, IIpsProject ipsProject) {
         return link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED
                 && link.findTemplateProperty(ipsProject) == null;
+    }
+
+    /**
+     * Validates the template status of the given link cardinality.
+     *
+     * @param linkCardinality the policy component link cardinality to validate
+     * @param ipsProject the IPS project to use for validating
+     * @return a message list containing all appropriate validation messages regarding the template
+     *             status of the given property value.
+     */
+    public MessageList validate(IPolicyCmptLinkCardinality linkCardinality, IIpsProject ipsProject) {
+        MessageList messageList = new MessageList();
+        if (noInheritablePropertyFound(linkCardinality, ipsProject)) {
+            String message = MessageFormat.format(Messages.TemplateValueSettings_msgNoInheritableLinkFound,
+                    linkCardinality.getAssociation());
+            messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, linkCardinality,
+                    PROPERTY_TEMPLATE_VALUE_STATUS);
+        }
+        if (noDeletableLinkFound(linkCardinality, ipsProject)) {
+            String message = MessageFormat.format(Messages.TemplateValueSettings_msgNoDeletableLinkFound,
+                    linkCardinality.getAssociation());
+            messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, linkCardinality,
+                    PROPERTY_TEMPLATE_VALUE_STATUS);
+        }
+        return messageList;
+    }
+
+    private boolean noDeletableLinkFound(IPolicyCmptLinkCardinality linkCardinality, IIpsProject ipsProject) {
+        return linkCardinality.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED
+                && !linkCardinality.getTemplatedValueContainer().isProductTemplate()
+                && linkCardinality.findTemplateProperty(ipsProject) == null;
     }
 
     public void initPropertiesFromXml(Element element) {

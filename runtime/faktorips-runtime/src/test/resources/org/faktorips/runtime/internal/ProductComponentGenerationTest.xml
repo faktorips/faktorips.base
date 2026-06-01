@@ -42,5 +42,7 @@
     <ValidationRuleConfig ruleName="activeRule" active="true" />
     <ValidationRuleConfig ruleName="inactiveRule" active="false" />
     <ValidationRuleConfig ruleName="invalidActivationRule" active="xxx" />
+    <PolicyLinkCardinality association="coverage" minCardinality="1" maxCardinality="5" />
+    <PolicyLinkCardinality association="rider" minCardinality="0" maxCardinality="*" />
 </Generation>
 

@@ -136,6 +136,7 @@
             </xsd:attribute>
             <xsd:attributeGroup ref="category" />
             <xsd:attribute name="configurable" type="boolean" use="required" />
+            <xsd:attribute name="cardinalityConfigurable" type="boolean" use="optional" />
             <xsd:attributeGroup ref="constrain" />
             <xsd:attributeGroup ref="derivedUnion" />
             <xsd:attributeGroup ref="id" />

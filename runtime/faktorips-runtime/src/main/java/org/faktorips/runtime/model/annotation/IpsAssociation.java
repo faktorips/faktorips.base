@@ -71,4 +71,11 @@ public @interface IpsAssociation {
      * @since 25.7
      */
     boolean hide() default false;
+
+    /**
+     * Whether the cardinality of this association is configurable by a product component.
+     *
+     * @since 26.7
+     */
+    boolean cardinalityConfigurable() default false;
 }

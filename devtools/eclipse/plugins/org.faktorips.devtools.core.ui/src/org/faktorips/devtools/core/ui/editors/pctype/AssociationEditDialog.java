@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -307,6 +307,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             cardinalityField = new CardinalityField(maxCardinalityText);
             getBindingContext().bindContent(cardinalityField, association, IAssociation.PROPERTY_MAX_CARDINALITY);
 
+            // cardinality configurable
+            Checkbox cardinalityCheckbox = getToolkit().createCheckbox(workArea,
+                    Messages.AssociationEditDialog_check_cardinalityConfigurable);
+            getBindingContext().bindContent(cardinalityCheckbox, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE);
+            getBindingContext().bindEnabled(cardinalityCheckbox, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CARDINALITY_CONFIGURABLE_CHECKBOX_ENABLED);
+            ((GridData)cardinalityCheckbox.getLayoutData()).horizontalSpan = 2;
+
             // inverse association
             getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_inverseAssociationLabel);
             Composite inverseAssoComposite = getToolkit().createComposite(workArea);
@@ -451,6 +460,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
         public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
         public static final String PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED = "configurableCheckboxEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_CARDINALITY_CONFIGURABLE = "cardinalityConfigurable"; //$NON-NLS-1$
+        public static final String PROPERTY_CARDINALITY_CONFIGURABLE_CHECKBOX_ENABLED = "cardinalityConfigurableCheckboxEnabled"; //$NON-NLS-1$
         private boolean matchingExplicitly;
 
         private String actualConfiguredAssociationSourceName;
@@ -521,7 +532,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         /**
          * This method is binded by property {@link #PROPERTY_MATCHING_EXPLICITLY}
-         * 
+         *
          * @param matchingExplicitly The matchingExplicitly to set.
          */
         public void setMatchingExplicitly(boolean matchingExplicitly) {
@@ -544,7 +555,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         /**
          * This method is binded by property {@link #PROPERTY_MATCHING_EXPLICITLY}
-         * 
+         *
          * @return Returns the matchingExplicitly.
          */
         public boolean isMatchingExplicitly() {
@@ -554,7 +565,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         /**
          * This method is binded by property
          * {@link IPolicyCmptTypeAssociation#PROPERTY_MATCHING_ASSOCIATION_NAME}
-         * 
+         *
          * @param matchingAssociationName The constrainingAssociationName to set.
          */
         public void setMatchingAssociationName(String matchingAssociationName) {
@@ -566,7 +577,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         /**
          * This method is binded by property
          * {@link IPolicyCmptTypeAssociation#PROPERTY_MATCHING_ASSOCIATION_NAME}
-         * 
+         *
          * @return Returns the constrainingAssociationName.
          */
         public String getMatchingAssociationName() {
@@ -635,11 +646,32 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         /**
+         * @param configurable whether the cardinality should be configurable.
+         */
+        public void setCardinalityConfigurable(boolean configurable) {
+            getAssociation().setCardinalityConfigurable(configurable && isCardinalityConfigurableCheckboxEnabled());
+        }
+
+        /**
+         * {@return whether the cardinality is configurable}
+         */
+        public boolean isCardinalityConfigurable() {
+            return getAssociation().isCardinalityConfigurable();
+        }
+
+        /**
+         * {@return whether the cardinality can be made configurable}
+         */
+        public boolean isCardinalityConfigurableCheckboxEnabled() {
+            return getAssociation().getPolicyCmptType().isConfigurableByProductCmptType();
+        }
+
+        /**
          * Updating the list of possibly matching associations in the given {@link ComboViewerField}
          * if the matching association source has changed
-         * 
+         *
          * @param configuringAssociationField The {@link ComboViewerField} that should get the list
-         *            of possibly matchning associations
+         *            of possibly matching associations
          */
         public void updateConstrainingAssociationCombo(final ComboViewerField<String> configuringAssociationField) {
             String configuredAssociationSourceName = getAssociation().getMatchingAssociationSource();

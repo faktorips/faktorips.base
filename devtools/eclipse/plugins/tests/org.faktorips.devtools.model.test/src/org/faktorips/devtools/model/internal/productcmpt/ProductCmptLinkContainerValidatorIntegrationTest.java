@@ -12,13 +12,14 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -112,21 +113,82 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         link2.setMaxCardinality(2);
 
         MessageList list = callValidator(gen);
-        assertEquals(2, list.size());
+        assertThat(list.size(), is(2));
         Message message = list.getMessage(0);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().size());
-        assertEquals(link1, message.getInvalidObjectProperties().get(0).getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MIN_CARDINALITY,
-                message.getInvalidObjectProperties().get(0).getProperty());
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MIN_CARDINALITY));
         message = list.getMessage(1);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().size());
-        assertEquals(link2, message.getInvalidObjectProperties().get(0).getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MIN_CARDINALITY,
-                message.getInvalidObjectProperties().get(0).getProperty());
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link2));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MIN_CARDINALITY));
+    }
+
+    @Test
+    public void testValidateTotalMin_ShouldBeConfiguredButIsnt() {
+        associationPolicy.setMinCardinality(5);
+        associationPolicy.setMaxCardinality(Integer.MAX_VALUE);
+        associationPolicy.setCardinalityConfigurable(true);
+        link1.setMaxCardinality(1);
+        link2.setMaxCardinality(2);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(2));
+        Message message = list.getMessage(0);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MIN_CARDINALITY));
+        message = list.getMessage(1);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link2));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MIN_CARDINALITY));
+    }
+
+    @Test
+    public void testValidateTotalMin_Configured() {
+        associationPolicy.setMinCardinality(5);
+        associationPolicy.setMaxCardinality(Integer.MAX_VALUE);
+        associationPolicy.setCardinalityConfigurable(true);
+        var linkCardinality = gen.newPolicyCmptLinkCardinality("testRelationPolicySide");
+        linkCardinality.setCardinality(new Cardinality(8, Integer.MAX_VALUE, 0));
+        link1.setMaxCardinality(Integer.MAX_VALUE);
+        link2.setMaxCardinality(6);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(1));
+        Message message = list.getMessage(0);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MIN_CARDINALITY));
+    }
+
+    @Test
+    public void testValidateTotalMin_Configured_NoError() {
+        associationPolicy.setMinCardinality(5);
+        associationPolicy.setMaxCardinality(Integer.MAX_VALUE);
+        associationPolicy.setCardinalityConfigurable(true);
+        var linkCardinality = gen.newPolicyCmptLinkCardinality("testRelationPolicySide");
+        linkCardinality.setCardinality(new Cardinality(8, Integer.MAX_VALUE, 0));
+        link1.setMaxCardinality(Integer.MAX_VALUE);
+        link2.setMaxCardinality(10);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(0));
     }
 
     @Test
@@ -137,7 +199,7 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         link2.setMaxCardinality(6);
 
         MessageList list = callValidator(gen);
-        assertEquals(0, list.size());
+        assertThat(list.size(), is(0));
     }
 
     @Test
@@ -167,21 +229,101 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         link2.setMaxCardinality(8);
 
         MessageList list = callValidator(gen);
-        assertEquals(2, list.size());
+        assertThat(list.size(), is(2));
         Message message = list.getMessage(0);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().size());
-        assertEquals(link1, message.getInvalidObjectProperties().get(0).getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MAX_CARDINALITY,
-                message.getInvalidObjectProperties().get(0).getProperty());
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+        assertThat(message.getText(), containsString("(8)"));
         message = list.getMessage(1);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, message.getCode());
-        assertEquals(1, message.getInvalidObjectProperties().size());
-        assertEquals(link2, message.getInvalidObjectProperties().get(0).getObject());
-        assertEquals(IProductCmptLink.PROPERTY_MAX_CARDINALITY,
-                message.getInvalidObjectProperties().get(0).getProperty());
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link2));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+        assertThat(message.getText(), containsString("(8)"));
+    }
+
+    @Test
+    public void testValidateTotalMax_Configured() {
+        associationPolicy.setMinCardinality(1);
+        associationPolicy.setMaxCardinality(8);
+        associationPolicy.setCardinalityConfigurable(true);
+        var linkCardinality = gen.newPolicyCmptLinkCardinality("testRelationPolicySide");
+        linkCardinality.setCardinality(new Cardinality(2, 6, 0));
+        link1.setMinCardinality(1);
+        link1.setMaxCardinality(6);
+        link2.setMinCardinality(2);
+        link2.setMaxCardinality(7);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(2));
+        Message message = list.getMessage(0);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+        assertThat(message.getText(), containsString("(6)"));
+        message = list.getMessage(1);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link2));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+        assertThat(message.getText(), containsString("(6)"));
+    }
+
+    @Test
+    public void testValidateTotalMax_ShouldBeConfiguredButIsnt() {
+        associationPolicy.setMinCardinality(1);
+        associationPolicy.setMaxCardinality(8);
+        associationPolicy.setCardinalityConfigurable(true);
+        link1.setMinCardinality(1);
+        link1.setMaxCardinality(Integer.MAX_VALUE);
+        link2.setMinCardinality(2);
+        link2.setMaxCardinality(8);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(2));
+        Message message = list.getMessage(0);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link1));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+        assertThat(message.getText(), containsString("(8)"));
+        message = list.getMessage(1);
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(message.getInvalidObjectProperties().size(), is(1));
+        assertThat(message.getInvalidObjectProperties().get(0).getObject(), is(link2));
+        assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
+                is(IProductCmptLink.PROPERTY_MAX_CARDINALITY));
+        assertThat(message.getText(), containsString("(8)"));
+    }
+
+    @Test
+    public void testValidateTotalMax_Configured_NoError() {
+        associationPolicy.setMinCardinality(1);
+        associationPolicy.setMaxCardinality(8);
+        associationPolicy.setCardinalityConfigurable(true);
+        var linkCardinality = gen.newPolicyCmptLinkCardinality("testRelationPolicySide");
+        linkCardinality.setCardinality(new Cardinality(2, 6, 0));
+        link1.setMinCardinality(1);
+        link1.setMaxCardinality(4);
+        link2.setMinCardinality(2);
+        link2.setMaxCardinality(5);
+
+        MessageList list = callValidator(gen);
+        assertThat(list.size(), is(0));
     }
 
     @Test
@@ -194,7 +336,7 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         link2.setMaxCardinality(7);
 
         MessageList list = callValidator(gen);
-        assertEquals(0, list.size());
+        assertThat(list.size(), is(0));
     }
 
     @Test
@@ -242,10 +384,10 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         association.setMaxCardinality(5);
 
         MessageList list = callValidator(gen);
-        assertEquals(1, list.size());
+        assertThat(list.size(), is(1));
         Message message = list.getMessage(0);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS, message.getCode());
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
     }
 
     @Test
@@ -253,10 +395,10 @@ public class ProductCmptLinkContainerValidatorIntegrationTest extends AbstractIp
         link2.setTarget(target1.getQualifiedName());
 
         MessageList list = callValidator(gen);
-        assertEquals(1, list.size());
+        assertThat(list.size(), is(1));
         Message message = list.getMessage(0);
-        assertEquals(Message.ERROR, message.getSeverity());
-        assertEquals(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET, message.getCode());
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
 
     @Test

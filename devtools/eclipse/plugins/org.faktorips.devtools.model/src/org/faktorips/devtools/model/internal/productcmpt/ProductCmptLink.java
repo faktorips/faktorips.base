@@ -224,7 +224,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             }
             String text = MessageFormat.format(Messages.ProductCmptRelation_msgNoRelationDefined, association,
                     typeLabel);
-            list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
+            list.add(new Message(MSGCODE_UNKNOWN_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
         } else {
             validateCardinalityForMatchingAssociation(list, ipsProject, associationObj);
 
@@ -274,10 +274,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         list.add(cardinalityValidation);
         if (!cardinalityValidation.containsErrorMsg()) {
             if (associationObj.isQualified()) {
-                if (getMaxCardinality() > associationObj.getMaxCardinality()) {
+                int maxPolicyCardinality = getProductCmptLinkContainer().getMaxCardinality(associationObj);
+                if (getMaxCardinality() > maxPolicyCardinality) {
                     String text = MessageFormat.format(
                             Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
-                            getMaxCardinality(), associationObj.getMaxCardinality());
+                            getMaxCardinality(), maxPolicyCardinality);
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
@@ -358,6 +359,19 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 .findMatchingPolicyCmptTypeAssociation(ipsProject);
         return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
 
+    }
+
+    @Override
+    public boolean isCardinalityConfigurable(IIpsProject ipsProject) {
+        if (isDeleted()) {
+            return false;
+        }
+        IProductCmptTypeAssociation assoc = findAssociation(ipsProject);
+        if (assoc == null) {
+            return false;
+        }
+        IPolicyCmptTypeAssociation matching = assoc.findMatchingPolicyCmptTypeAssociation(ipsProject);
+        return matching != null && matching.isCardinalityConfigurable();
     }
 
     @Override
@@ -492,6 +506,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             if (template != null) {
                 IProductCmpt templateCmpt = template.getProductCmpt();
                 IProductCmptType templateProductCmptType = templateCmpt.findProductCmptType(getIpsProject());
+                if (templateProductCmptType == null) {
+                    return false;
+                }
                 return templateProductCmptType.findAssociation(association, getIpsProject()) != null;
             }
         }

@@ -16,6 +16,7 @@ import java.util.function.Function;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
@@ -52,7 +53,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     /**
      * Validation message code to indicate that the association in the model can't be found.
      */
-    String MSGCODE_UNKNWON_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the target product component does not exist.
@@ -217,6 +218,12 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @see IProductCmptTypeAssociation#constrainsPolicyCmptTypeAssociation(IIpsProject)
      */
     boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
+
+    /**
+     * Returns true if the cardinality of this link's matching policy component type association
+     * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable()} is true.
+     */
+    boolean isCardinalityConfigurable(IIpsProject ipsProject);
 
     /**
      * Returns whether this relation is mandatory. A Relation is mandatory if both minimum and

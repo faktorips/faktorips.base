@@ -4,6 +4,7 @@ import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductClass
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.DefaultAndAllowedValuesTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.PolicyLinkCardinalityTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.TableUsagesTmpl.*
@@ -65,6 +66,20 @@ class ProductCommonsTmpl {
             «ENDIF»
 
             «FOR it : associations» «writeReferencesToXmlMethod» «ENDFOR»
+
+            «IF !cardinalityConfigurableAssociations.empty || !pureCardinalityConfigurablePolicyAssociations.empty»
+                /**
+                 * @generated
+                 */
+                @Override
+                protected void «writePolicyLinkCardinalitiesToXml(Element + " element")» {
+                    super.«writePolicyLinkCardinalitiesToXml("element")»;
+                    «FOR it : cardinalityConfigurableAssociations» «writeCardinalityToXmlMethodCall» «ENDFOR»
+                    «FOR it : pureCardinalityConfigurablePolicyAssociations» «writeCardinalityToXmlMethodCall» «ENDFOR»
+                }
+            «ENDIF»
+
+            «writeCardinalitiesToXml»
 
             «IF containsTables»
                 /**

@@ -19,6 +19,7 @@ import org.faktorips.devtools.model.builder.xmodel.ModelService;
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XClass;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IType;
@@ -67,6 +68,11 @@ public class XProductAssociation extends XAssociation {
                 "Link" + (plural ? "s" : "") + "For" + IpsStringUtils.toUpperFirstChar(getName(plural)));
     }
 
+    /**
+     * {@return the getter method name for the configurable cardinality}
+     *
+     * @since 26.7
+     */
     public String getMethodNameGetCardinalityFor() {
         String matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
         return getJavaNamingConvention().getGetterMethodName("CardinalityFor" + matchingSingularName);
@@ -139,6 +145,66 @@ public class XProductAssociation extends XAssociation {
         } else {
             return false;
         }
+    }
+
+    /**
+     * {@return true if the matching policy association has cardinality configurable enabled and
+     * this association is not a derived union or constraining association}
+     *
+     * @since 26.7
+     */
+    public boolean isCardinalityConfigurable() {
+        if (isDerivedUnion() || isConstrain()) {
+            return false;
+        }
+        IPolicyCmptTypeAssociation policyAssociation = getAssociation()
+                .findMatchingPolicyCmptTypeAssociation(getIpsProject());
+        return policyAssociation != null && policyAssociation.isCardinalityConfigurable();
+    }
+
+    /**
+     * {@return the field name for the configurable cardinality of the matching policy association}
+     *
+     * @throws NullPointerException if no matching policy association exists
+     * @since 26.7
+     */
+    public String getFieldNameCardinality() {
+        String matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
+        return "cardinalityOf" + matchingSingularName;
+    }
+
+    /**
+     * {@return the setter method name for the configurable cardinality}
+     *
+     * @throws NullPointerException if no matching policy association exists
+     * @see #getMethodNameGetCardinalityFor()
+     * @since 26.7
+     */
+    public String getMethodNameSetCardinalityFor() {
+        String matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
+        return getJavaNamingConvention().getSetterMethodName("CardinalityFor" + matchingSingularName);
+    }
+
+    /**
+     * {@return the private method name for initializing the cardinality from XML}
+     *
+     * @throws NullPointerException if no matching policy association exists
+     * @since 26.7
+     */
+    public String getMethodNameDoInitCardinalityFromXml() {
+        String matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
+        return "doInitCardinalityOf" + matchingSingularName + "FromXml";
+    }
+
+    /**
+     * {@return the private method name for writing the cardinality to XML}
+     *
+     * @throws NullPointerException if no matching policy association exists
+     * @since 26.7
+     */
+    public String getMethodNameWriteCardinalityToXml() {
+        String matchingSingularName = IpsStringUtils.toUpperFirstChar(getNameOfMatchingAssociation());
+        return "writeCardinalityOf" + matchingSingularName + "ToXml";
     }
 
     /**

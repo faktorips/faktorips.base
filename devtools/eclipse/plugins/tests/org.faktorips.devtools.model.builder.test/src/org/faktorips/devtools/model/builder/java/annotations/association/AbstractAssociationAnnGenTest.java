@@ -10,13 +10,15 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.association;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XType;
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.Test;
@@ -67,46 +69,46 @@ public class AbstractAssociationAnnGenTest {
     @Test
     public void testCreateAnnAssociation() {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
-        assertEquals(annAssociation, annGen.createAnnAssociation(association).getSourcecode());
+        assertThat(annGen.createAnnAssociation(association).getSourcecode(), is(annAssociation));
     }
 
     @Test
     public void testCreateAnnAssociation_ConflictingImport() {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET);
 
-        assertEquals(annAssociationQualified, annGen.createAnnAssociation(association).getSourcecode());
+        assertThat(annGen.createAnnAssociation(association).getSourcecode(), is(annAssociationQualified));
     }
 
     @Test
     public void testCreateAnnQualifiedAssociation() {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         when(association.isQualified()).thenReturn(true);
-        assertEquals(annQualifiedAssociation, annGen.createAnnAssociation(association).getSourcecode());
+        assertThat(annGen.createAnnAssociation(association).getSourcecode(), is(annQualifiedAssociation));
     }
 
     @Test
     public void testCreateAnnDerivedUnion() {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
-        assertEquals("", annGen.createAnnDerivedUnion(association).getSourcecode());
+        assertThat(annGen.createAnnDerivedUnion(association).getSourcecode(), is(""));
 
         mockDerivedUnion(association);
-        assertEquals(annDerivedUnion, annGen.createAnnDerivedUnion(association).getSourcecode());
+        assertThat(annGen.createAnnDerivedUnion(association).getSourcecode(), is(annDerivedUnion));
     }
 
     @Test
     public void testCreateAnnSubsetOfDerivedUnion() {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
-        assertEquals("", annGen.createAnnSubsetOfDerivedUnion(association).getSourcecode());
+        assertThat(annGen.createAnnSubsetOfDerivedUnion(association).getSourcecode(), is(""));
 
         mockSubsetOfDerivedUnion(association);
-        assertEquals(annSubsetOfDerivedUnion, annGen.createAnnSubsetOfDerivedUnion(association).getSourcecode());
+        assertThat(annGen.createAnnSubsetOfDerivedUnion(association).getSourcecode(), is(annSubsetOfDerivedUnion));
     }
 
     @Test
     public void testMatchingAssociation() {
         XAssociation association = mockBasicAssociation(ASSOCIATION_TARGET_UNQUALIFIED);
         mockMatchingAssociation(association);
-        assertEquals(annMatchingAssociation, annGen.createAnnMatchingAssociation(association).getSourcecode());
+        assertThat(annGen.createAnnMatchingAssociation(association).getSourcecode(), is(annMatchingAssociation));
     }
 
     @Test
@@ -121,10 +123,26 @@ public class AbstractAssociationAnnGenTest {
         when(association.addImport(ASSOCIATION_TARGET)).thenReturn(ASSOCIATION_TARGET_UNQUALIFIED);
         when(association.isVisible()).thenReturn(false);
 
-        assertEquals(
-                "@IpsAssociation(name = \"association\", pluralName = \"associations\", kind = AssociationKind.Composition, targetClass = AssociationTarget.class, min = 0, max = 10, hide = true)"
-                        + System.lineSeparator(),
-                annGen.createAnnAssociation(association).getSourcecode());
+        assertThat(annGen.createAnnAssociation(association).getSourcecode(),
+                is("@IpsAssociation(name = \"association\", pluralName = \"associations\", kind = AssociationKind.Composition, targetClass = AssociationTarget.class, min = 0, max = 10, hide = true)"
+                        + System.lineSeparator()));
+    }
+
+    @Test
+    public void testCreateAnnAssociationCardinalityConfigurable() {
+        XPolicyAssociation association = mock(XPolicyAssociation.class);
+        when(association.getName(false)).thenReturn(ASSOCIATION);
+        when(association.getName(true)).thenReturn(ASSOCIATION_PLURAL);
+        when(association.getAssociationKind()).thenReturn(AssociationKind.Composition);
+        when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
+        when(association.getMinCardinality()).thenReturn(MIN_CARD);
+        when(association.getMaxCardinality()).thenReturn(MAX_CARD);
+        when(association.addImport(ASSOCIATION_TARGET)).thenReturn(ASSOCIATION_TARGET_UNQUALIFIED);
+        when(association.isCardinalityConfigurable()).thenReturn(true);
+
+        assertThat(annGen.createAnnAssociation(association).getSourcecode(),
+                is("@IpsAssociation(name = \"association\", pluralName = \"associations\", kind = AssociationKind.Composition, targetClass = AssociationTarget.class, min = 0, max = 10, cardinalityConfigurable = true)"
+                        + System.lineSeparator()));
     }
 
     private void mockDerivedUnion(XAssociation association) {

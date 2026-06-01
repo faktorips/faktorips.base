@@ -35,6 +35,7 @@ import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
 import org.faktorips.runtime.model.annotation.IpsAssociationLinks;
 import org.faktorips.runtime.model.annotation.IpsAssociationRemover;
+import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.Range;
 
 public class ProductAssociation extends Association {
@@ -55,6 +56,14 @@ public class ProductAssociation extends Association {
 
     public static final String MSGKEY_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = "Validation.MinCardinalityFallsBelowModelMin";
 
+    public static final String MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX = "ASSOCIATION-CONFIGURED_MAX_EXCEEDS_MODEL_MAX";
+
+    public static final String MSGKEY_CONFIGURED_MAX_EXCEEDS_MODEL_MAX = "Validation.ConfiguredMaxExceedsModelMax";
+
+    public static final String MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN = "ASSOCIATION-CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN";
+
+    public static final String MSGKEY_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN = "Validation.ConfiguredMinFallsBelowModelMin";
+
     public static final String MSGCODE_DATE_FROM_NOT_VALID = "ASSOCIATION-VALID_FROM_NOT_VALID";
 
     public static final String MSGKEY_DATE_FROM_NOT_VALID = "Validation.DateFromNotValid";
@@ -65,27 +74,33 @@ public class ProductAssociation extends Association {
 
     private final boolean changingOverTime;
     private final Method getLinksMethod;
+    private final Method getCardinalityMethod;
     private final Method addMethodWithCardinality;
     private final Method addMethod;
     private final Method removeMethod;
 
+    // CSOFF: ParameterNumber
     public ProductAssociation(Type type, Method getterMethod, Method addMethod, Method addMethodWithCardinality,
             Method removeMethod,
             boolean changingOverTime,
-            Method getLinksMethod) {
+            Method getLinksMethod,
+            Method getCardinalityMethod) {
         super(type, getterMethod);
         this.addMethod = addMethod;
         this.addMethodWithCardinality = addMethodWithCardinality;
         this.removeMethod = removeMethod;
         this.changingOverTime = changingOverTime;
         this.getLinksMethod = getLinksMethod;
+        this.getCardinalityMethod = getCardinalityMethod;
     }
+    // CSON: ParameterNumber
 
     @Override
     public ProductAssociation createOverwritingAssociationFor(Type subType) {
         return new ProductAssociation(subType, getGetterMethod(), addMethod, addMethodWithCardinality, removeMethod,
                 changingOverTime,
-                getLinksMethod);
+                getLinksMethod,
+                getCardinalityMethod);
     }
 
     /**
@@ -496,6 +511,16 @@ public class ProductAssociation extends Association {
     }
 
     /**
+     * @return <code>true</code> if the cardinality of the matching policy association is
+     *             configurable
+     *
+     * @since 26.7
+     */
+    public boolean isCardinalityConfigurable() {
+        return getAnnotation().cardinalityConfigurable();
+    }
+
+    /**
      * Retrieves all {@link IProductComponentLink links} for this association from a product
      * component.
      *
@@ -571,6 +596,7 @@ public class ProductAssociation extends Association {
         List<IProductComponent> targetObjects = getTargetObjects(source, effectiveDate);
         validateMinCardinality(list, context, source, targetObjects, effectiveDate);
         validateMaxCardinality(list, context, source, targetObjects, effectiveDate);
+        validateConfiguredCardinality(list, context, source, effectiveDate);
         validateValidFrom(list, context, source, targetObjects, effectiveDate);
         validateValidTo(list, context, source, targetObjects);
     }
@@ -592,7 +618,7 @@ public class ProductAssociation extends Association {
 
         findMatchingAssociation().ifPresent(
                 policyAssociation -> validateTotalMin(list, policyAssociation, getLinks(source, effectiveDate),
-                        context));
+                        context, source, effectiveDate));
 
     }
 
@@ -612,15 +638,34 @@ public class ProductAssociation extends Association {
 
         findMatchingAssociation().ifPresent(
                 policyAssociation -> validateTotalMax(list, policyAssociation, getLinks(source, effectiveDate),
-                        context));
+                        context, source, effectiveDate));
 
+    }
+
+    private void validateConfiguredCardinality(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        findMatchingAssociation().ifPresent(policyAssociation -> {
+            IntegerRange configured = getConfiguredCardinality(source, effectiveDate);
+            validateConfiguredCardinalityBounds(list, context, source, configured,
+                    policyAssociation.getMaxCardinality(), policyAssociation.getMinCardinality(),
+                    MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX,
+                    MSGKEY_CONFIGURED_MAX_EXCEEDS_MODEL_MAX,
+                    MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN,
+                    MSGKEY_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN);
+        });
     }
 
     private void validateTotalMax(MessageList list,
             PolicyAssociation policyAssociation,
             Collection<IProductComponentLink<IProductComponent>> links,
-            IValidationContext context) {
-        int maxType = policyAssociation.getMaxCardinality();
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        IntegerRange configured = getConfiguredCardinality(source, effectiveDate);
+        Integer configuredUpperBound = configured != null ? configured.getUpperBound() : null;
+        int maxType = configuredUpperBound != null ? configuredUpperBound : policyAssociation.getMaxCardinality();
         if (maxType != Integer.MAX_VALUE) {
             int sumMinCardinality = links.stream()
                     .mapToInt(relation -> relation.getCardinality().getLowerBound())
@@ -652,8 +697,12 @@ public class ProductAssociation extends Association {
     private void validateTotalMin(MessageList list,
             PolicyAssociation policyAssociation,
             Collection<IProductComponentLink<IProductComponent>> links,
-            IValidationContext context) {
-        int minType = policyAssociation.getMinCardinality();
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        IntegerRange configured = getConfiguredCardinality(source, effectiveDate);
+        Integer configuredLowerBound = configured != null ? configured.getLowerBound() : null;
+        int minType = configuredLowerBound != null ? configuredLowerBound : policyAssociation.getMinCardinality();
         for (IProductComponentLink<IProductComponent> link : links) {
             int sumMaxCardinality = link.getCardinality().getLowerBound();
             for (IProductComponentLink<IProductComponent> otherLink : links) {
@@ -736,6 +785,14 @@ public class ProductAssociation extends Association {
         if (getTargetObjects(source, effectiveDate).contains(targetToReset)) {
             addTargetObjects(source, effectiveDate, new IProductComponent[] { null });
         }
+    }
+
+    private IntegerRange getConfiguredCardinality(IProductComponent source, Calendar effectiveDate) {
+        if (!isCardinalityConfigurable() || getCardinalityMethod == null) {
+            return null;
+        }
+        Object linkSource = isChangingOverTime() ? getRelevantProductObject(source, effectiveDate, true) : source;
+        return (IntegerRange)invokeMethod(getCardinalityMethod, linkSource);
     }
 
     @SuppressWarnings("unchecked")

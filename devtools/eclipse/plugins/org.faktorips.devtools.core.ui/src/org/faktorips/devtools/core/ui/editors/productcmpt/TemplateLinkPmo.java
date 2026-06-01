@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -43,7 +43,6 @@ public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> 
             case OVERWRITE_EQUAL -> NLS.bind(Messages.TemplateLinkPmo_Status_OverrideEqual, getTemplateName());
             case UNDEFINED -> NLS.bind(Messages.TemplateLinkPmo_Status_Delete, getLinkLabel(), getTemplateName());
             case NEWLY_DEFINED -> Messages.TemplateLinkPmo_Status_NewlyDefined;
-            default -> IpsStringUtils.EMPTY;
         };
     }
 

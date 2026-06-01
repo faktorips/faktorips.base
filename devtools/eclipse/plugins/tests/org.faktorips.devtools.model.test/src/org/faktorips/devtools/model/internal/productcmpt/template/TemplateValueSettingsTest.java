@@ -23,7 +23,9 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.junit.Before;
@@ -194,4 +196,17 @@ public class TemplateValueSettingsTest {
         TemplateValueSettings settings = new TemplateValueSettings(link);
         assertThat(settings.validate(link, ipsProject), lacksMessageCode(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
     }
+
+    @Test
+    public void testValidate_UndefinedCardinalityInTemplate_NoError() {
+        IPolicyCmptLinkCardinality cardinality = mock(IPolicyCmptLinkCardinality.class);
+        IProductCmptLinkContainer templateContainer = mock(IProductCmptLinkContainer.class);
+        when(cardinality.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        when(cardinality.getTemplatedValueContainer()).thenReturn(templateContainer);
+        when(templateContainer.isProductTemplate()).thenReturn(true);
+
+        TemplateValueSettings settings = new TemplateValueSettings(cardinality);
+        assertThat(settings.validate(cardinality, ipsProject), lacksMessageCode(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+    }
+
 }

@@ -128,7 +128,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
      * Creates a new RelationsSection which displays relations for the given generation.
      *
      * @param generation The base to get the relations from.
-     * @param parent The composite whicht is the ui-parent for this section.
+     * @param parent The composite which is the ui-parent for this section.
      * @param toolkit The ui-toolkit to support drawing.
      */
     public LinksSection(ProductCmptEditor editor, IProductCmptGeneration generation, Composite parent,
@@ -448,6 +448,13 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         @Override
         public String getToolTipText(Object element) {
+            if (element instanceof PolicyAssociationViewItem policyItem) {
+                IPolicyCmptTypeAssociation association = policyItem.getAssociation();
+                String role = getRole(association);
+                String cardinality = StringUtil.getRangeString(
+                        association.getMinCardinality(), association.getMaxCardinality());
+                return NLS.bind(Messages.LinksSection_Tooltip_PolicyAssociation_Unmatched, role, cardinality);
+            }
             if (element instanceof AssociationViewItem || element instanceof LinkViewItem) {
                 IProductCmptTypeAssociation productAssociation;
                 if (element instanceof LinkViewItem) {
@@ -489,7 +496,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         }
 
         private String getPolicyAssociationToolTip(IPolicyCmptTypeAssociation association) {
-            return NLS.bind(Messages.LinksSection_Tooltip_PolicyAssociation, getRole(association));
+            String tooltip = NLS.bind(Messages.LinksSection_Tooltip_PolicyAssociation, getRole(association));
+            if (association.isCardinalityConfigurable()) {
+                tooltip += Messages.LinksSection_Tooltip_PolicyAssociation_CardinalityConfigurable;
+            }
+            return tooltip;
         }
 
         private String getRole(IAssociation association) {
@@ -512,12 +523,22 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
-            TypedSelection<LinkViewItem> typedSelection = TypedSelection.createAnyCount(LinkViewItem.class,
+            TypedSelection<LinkViewItem> linkSelection = TypedSelection.createAnyCount(LinkViewItem.class,
                     event.getSelection());
-            if (typedSelection.isValid()) {
-                cardinalityPanel.setProductCmptLinkToEdit(typedSelection.getElements());
+            if (linkSelection.isValid()) {
+                cardinalityPanel.setProductCmptLinkToEdit(linkSelection.getElements());
             } else {
-                cardinalityPanel.setProductCmptLinkToEdit(Collections.<LinkViewItem> emptyList());
+                TypedSelection<AssociationViewItem> assocSelection = TypedSelection
+                        .createAnyCount(AssociationViewItem.class, event.getSelection());
+                TypedSelection<PolicyAssociationViewItem> policyAssocSelection = TypedSelection
+                        .createAnyCount(PolicyAssociationViewItem.class, event.getSelection());
+                if (assocSelection.isValid()) {
+                    cardinalityPanel.setAssociationToEdit(assocSelection.getElement());
+                } else if (policyAssocSelection.isValid()) {
+                    cardinalityPanel.setAssociationToEdit(policyAssocSelection.getElement());
+                } else {
+                    cardinalityPanel.setProductCmptLinkToEdit(Collections.<LinkViewItem> emptyList());
+                }
             }
             if (!isDataChangeable()) {
                 cardinalityPanel.setDataChangeable(false);

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,10 +12,9 @@ package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.empty;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -32,10 +31,12 @@ import org.faktorips.devtools.model.builder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorModelCaches;
 import org.faktorips.devtools.model.builder.xmodel.GeneratorModelContext;
 import org.faktorips.devtools.model.builder.xmodel.ModelService;
+import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
@@ -173,7 +174,7 @@ public class XProductClassTest {
     public void getChangableProductAttributes() {
         XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
         Set<XProductAttribute> attributes = productClass.getAttributes();
-        assertEquals(2, attributes.size());
+        assertThat(attributes.size(), is(2));
         assertThat(attributes, hasItems(attrNode1, attrNode3));
     }
 
@@ -181,7 +182,7 @@ public class XProductClassTest {
     public void getStaticProductAttributes() {
         XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
         Set<XProductAttribute> attributes = productClass.getAttributes();
-        assertEquals(1, attributes.size());
+        assertThat(attributes.size(), is(1));
         assertThat(attributes, hasItem(attrNode2));
     }
 
@@ -189,7 +190,7 @@ public class XProductClassTest {
     public void getAllAttributes() {
         XProductCmptClass productClass = new XProductCmptClass(type, modelContext, modelService);
         Set<XProductAttribute> attributes = productClass.getAllDeclaredAttributes();
-        assertEquals(3, attributes.size());
+        assertThat(attributes.size(), is(3));
         assertThat(attributes, hasItems(attrNode1, attrNode2, attrNode3));
     }
 
@@ -197,7 +198,7 @@ public class XProductClassTest {
     public void getChangingProductAssociations() {
         XProductClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
         Set<XProductAssociation> associations = productClass.getAssociations();
-        assertEquals(1, associations.size());
+        assertThat(associations.size(), is(1));
         assertThat(associations, hasItems(assocNode2));
     }
 
@@ -205,7 +206,7 @@ public class XProductClassTest {
     public void getStaticProductAssociations() {
         XProductClass productClass = new XProductCmptClass(type, modelContext, modelService);
         Set<XProductAssociation> associations = productClass.getAssociations();
-        assertEquals(2, associations.size());
+        assertThat(associations.size(), is(2));
         assertThat(associations, hasItems(assocNode1, assocNode3));
     }
 
@@ -213,7 +214,7 @@ public class XProductClassTest {
     public void getAllAssociations() {
         XProductClass productClass = new XProductCmptClass(type, modelContext, modelService);
         Set<XProductAssociation> associations = productClass.getAllDeclaredAssociations();
-        assertEquals(3, associations.size());
+        assertThat(associations.size(), is(3));
         assertThat(associations, hasItems(assocNode1, assocNode2, assocNode3));
     }
 
@@ -226,29 +227,29 @@ public class XProductClassTest {
         when(xPolicyCmpt.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("IPolicyCmpt");
         when(xPolicyCmpt.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("PolicyCmpt");
 
-        assertEquals("IPolicyCmpt", xProductClass.getPolicyClassName(BuilderAspect.INTERFACE));
-        assertEquals("PolicyCmpt", xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION));
+        assertThat(xProductClass.getPolicyClassName(BuilderAspect.INTERFACE), is("IPolicyCmpt"));
+        assertThat(xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION), is("PolicyCmpt"));
 
-        assertEquals("IPolicyCmpt", xProductClass.getPolicyInterfaceName());
-        assertEquals("PolicyCmpt", xProductClass.getPolicyImplClassName());
+        assertThat(xProductClass.getPolicyInterfaceName(), is("IPolicyCmpt"));
+        assertThat(xProductClass.getPolicyImplClassName(), is("PolicyCmpt"));
     }
 
     @Test
     public void testGetPolicyClassName_notConfigured() throws Exception {
         when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
 
-        assertEquals(IConfigurableModelObject.class.getSimpleName(),
-                xProductClass.getPolicyClassName(BuilderAspect.INTERFACE));
-        assertEquals(IConfigurableModelObject.class.getSimpleName(),
-                xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION));
-        assertEquals(IConfigurableModelObject.class.getSimpleName(), xProductClass.getPolicyInterfaceName());
-        assertEquals(IConfigurableModelObject.class.getSimpleName(), xProductClass.getPolicyImplClassName());
+        assertThat(xProductClass.getPolicyClassName(BuilderAspect.INTERFACE),
+                is(IConfigurableModelObject.class.getSimpleName()));
+        assertThat(xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION),
+                is(IConfigurableModelObject.class.getSimpleName()));
+        assertThat(xProductClass.getPolicyInterfaceName(), is(IConfigurableModelObject.class.getSimpleName()));
+        assertThat(xProductClass.getPolicyImplClassName(), is(IConfigurableModelObject.class.getSimpleName()));
     }
 
     @Test
     public void testIsContainsNotDerivedOrConstrainingAssociations_noAssociation() throws Exception {
         doReturn(new HashSet<>()).when(xProductClass).getAssociations();
-        assertFalse(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
+        assertThat(xProductClass.isContainsNotDerivedOrConstrainingAssociations(), is(false));
     }
 
     @Test
@@ -258,7 +259,7 @@ public class XProductClassTest {
         associations.add(assocNode1);
         associations.add(assocNode2);
         doReturn(associations).when(xProductClass).getAssociations();
-        assertTrue(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
+        assertThat(xProductClass.isContainsNotDerivedOrConstrainingAssociations(), is(true));
     }
 
     @Test
@@ -268,7 +269,7 @@ public class XProductClassTest {
         associations.add(assocNode1);
         associations.add(assocNode2);
         doReturn(associations).when(xProductClass).getAssociations();
-        assertTrue(xProductClass.isContainsNotDerivedOrConstrainingAssociations());
+        assertThat(xProductClass.isContainsNotDerivedOrConstrainingAssociations(), is(true));
     }
 
     @Test
@@ -276,11 +277,11 @@ public class XProductClassTest {
         when(xProductClass.getType()).thenReturn(type);
         doReturn(xPolicyCmpt).when(xProductClass).getPolicyCmptClass();
 
-        assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
+        assertThat(xProductClass.getConfiguredAttributesInternal(), is(empty()));
 
         when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
 
-        assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
+        assertThat(xProductClass.getConfiguredAttributesInternal(), is(empty()));
 
         doReturn(true).when(xProductClass).isConfigurationForPolicyCmptType();
 
@@ -295,12 +296,12 @@ public class XProductClassTest {
 
         when(xPolicyCmpt.getAttributes()).thenReturn(attributes);
 
-        assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
+        assertThat(xProductClass.getConfiguredAttributesInternal(), is(empty()));
 
         when(type.getQualifiedName()).thenReturn("myProduct");
         when(xPolicyCmpt.isConfiguredBy("myProduct")).thenReturn(true);
 
-        assertEquals(1, xProductClass.getConfiguredAttributesInternal().size());
+        assertThat(xProductClass.getConfiguredAttributesInternal().size(), is(1));
         assertThat(xProductClass.getConfiguredAttributesInternal(), hasItem(polAttrNode1));
     }
 
@@ -308,14 +309,14 @@ public class XProductClassTest {
     public void testGetAssociationsInternal_changing() {
         Set<IProductCmptTypeAssociation> associations = xProductClass.getAssociationsInternal(true);
 
-        assertEquals(1, associations.size());
+        assertThat(associations.size(), is(1));
     }
 
     @Test
     public void testGetAssociationsInternal_static() {
         Set<IProductCmptTypeAssociation> associations = xProductClass.getAssociationsInternal(false);
 
-        assertEquals(2, associations.size());
+        assertThat(associations.size(), is(2));
     }
 
     @Test
@@ -326,7 +327,7 @@ public class XProductClassTest {
 
         Set<XProductAttribute> result = productClass.getAttributes();
 
-        assertTrue(result.isEmpty());
+        assertThat(result, is(empty()));
     }
 
     @Test
@@ -337,8 +338,43 @@ public class XProductClassTest {
 
         Set<XProductAttribute> result = productClass.getAttributes();
 
-        assertEquals(1, result.size());
+        assertThat(result.size(), is(1));
         assertThat(result, hasItem(attrNode3));
+    }
+
+    @Test
+    public void testGetCardinalityConfigurableAssociations() {
+        when(assocNode1.isCardinalityConfigurable()).thenReturn(true);
+        when(assocNode2.isCardinalityConfigurable()).thenReturn(false);
+        when(assocNode3.isCardinalityConfigurable()).thenReturn(true);
+
+        LinkedHashSet<XProductAssociation> associations = new LinkedHashSet<>();
+        associations.add(assocNode1);
+        associations.add(assocNode2);
+        associations.add(assocNode3);
+        doReturn(associations).when(xProductClass).getAssociations();
+
+        Set<XProductAssociation> result = xProductClass.getCardinalityConfigurableAssociations();
+
+        assertThat(result.size(), is(2));
+        assertThat(result, hasItems(assocNode1, assocNode3));
+    }
+
+    @Test
+    public void testGetCardinalityConfigurableAssociations_none() {
+        when(assocNode1.isCardinalityConfigurable()).thenReturn(false);
+        when(assocNode2.isCardinalityConfigurable()).thenReturn(false);
+        when(assocNode3.isCardinalityConfigurable()).thenReturn(false);
+
+        LinkedHashSet<XProductAssociation> associations = new LinkedHashSet<>();
+        associations.add(assocNode1);
+        associations.add(assocNode2);
+        associations.add(assocNode3);
+        doReturn(associations).when(xProductClass).getAssociations();
+
+        Set<XProductAssociation> result = xProductClass.getCardinalityConfigurableAssociations();
+
+        assertThat(result, is(empty()));
     }
 
     @Test
@@ -352,7 +388,7 @@ public class XProductClassTest {
         when(xPolicyCmpt.getType()).thenReturn(policyType);
         when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject);
 
-        assertTrue(xProductClass.isValidForCodeGeneration());
+        assertThat(xProductClass.isValidForCodeGeneration(), is(true));
     }
 
     @Test
@@ -360,7 +396,7 @@ public class XProductClassTest {
         when(xProductClass.getType()).thenReturn(type);
         when(type.isValid(ipsProject)).thenReturn(false);
 
-        assertFalse(xProductClass.isValidForCodeGeneration());
+        assertThat(xProductClass.isValidForCodeGeneration(), is(false));
     }
 
     @Test
@@ -369,7 +405,7 @@ public class XProductClassTest {
         when(type.isValid(ipsProject)).thenReturn(true);
         when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
 
-        assertTrue(xProductClass.isValidForCodeGeneration());
+        assertThat(xProductClass.isValidForCodeGeneration(), is(true));
     }
 
     @Test
@@ -383,7 +419,7 @@ public class XProductClassTest {
         when(xPolicyCmpt.getType()).thenReturn(policyType);
         when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject);
 
-        assertFalse(xProductClass.isValidForCodeGeneration());
+        assertThat(xProductClass.isValidForCodeGeneration(), is(false));
     }
 
     @Test
@@ -398,7 +434,133 @@ public class XProductClassTest {
         when(xPolicyCmpt.getType()).thenReturn(policyType);
         when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject2);
 
-        assertTrue(xProductClass.isValidForCodeGeneration());
+        assertThat(xProductClass.isValidForCodeGeneration(), is(true));
+    }
+
+    @Test
+    public void testGetPureCardinalityConfigurablePolicyAssociations_notConfigured() {
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
+
+        Set<XPolicyAssociation> result = xProductClass.getPureCardinalityConfigurablePolicyAssociations();
+
+        assertThat(result, is(empty()));
+    }
+
+    @Test
+    public void testGetPureCardinalityConfigurablePolicyAssociations_componentWithoutGenerations() {
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(xProductClass.isChangeOverTimeClass()).thenReturn(false);
+        when(type.isChangingOverTime()).thenReturn(false);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(type.getQualifiedName()).thenReturn("myProduct");
+        when(xPolicyCmpt.isConfiguredBy("myProduct")).thenReturn(true);
+
+        XPolicyAssociation polAssoc1 = mock(XPolicyAssociation.class);
+        XPolicyAssociation polAssoc2 = mock(XPolicyAssociation.class);
+        when(polAssoc1.isCardinalityConfigurable()).thenReturn(true);
+        when(polAssoc1.getName(false)).thenReturn("coverage");
+        when(polAssoc2.isCardinalityConfigurable()).thenReturn(false);
+
+        LinkedHashSet<XPolicyAssociation> polAssociations = new LinkedHashSet<>();
+        polAssociations.add(polAssoc1);
+        polAssociations.add(polAssoc2);
+        when(xPolicyCmpt.getAssociations()).thenReturn(polAssociations);
+
+        doReturn(new LinkedHashSet<>()).when(xProductClass).getAllDeclaredAssociations();
+
+        Set<XPolicyAssociation> result = xProductClass.getPureCardinalityConfigurablePolicyAssociations();
+
+        assertThat(result.size(), is(1));
+        assertThat(result, hasItem(polAssoc1));
+    }
+
+    @Test
+    public void testGetPureCardinalityConfigurablePolicyAssociations_excludesCoveredByProductAssociation() {
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(xProductClass.isChangeOverTimeClass()).thenReturn(false);
+        when(type.isChangingOverTime()).thenReturn(false);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(type.getQualifiedName()).thenReturn("myProduct");
+        when(xPolicyCmpt.isConfiguredBy("myProduct")).thenReturn(true);
+
+        XPolicyAssociation polAssoc1 = mock(XPolicyAssociation.class);
+        when(polAssoc1.isCardinalityConfigurable()).thenReturn(true);
+        when(polAssoc1.getName(false)).thenReturn("coverage");
+
+        LinkedHashSet<XPolicyAssociation> polAssociations = new LinkedHashSet<>();
+        polAssociations.add(polAssoc1);
+        when(xPolicyCmpt.getAssociations()).thenReturn(polAssociations);
+
+        IProductCmptTypeAssociation prodAssoc = mock(IProductCmptTypeAssociation.class);
+        IPolicyCmptTypeAssociation matchingPolAssoc = mock(IPolicyCmptTypeAssociation.class);
+        when(prodAssoc.findMatchingPolicyCmptTypeAssociation(ipsProject)).thenReturn(matchingPolAssoc);
+        when(matchingPolAssoc.getTargetRoleSingular()).thenReturn("coverage");
+
+        XProductAssociation xProdAssoc = mock(XProductAssociation.class);
+        when(xProdAssoc.isCardinalityConfigurable()).thenReturn(true);
+        when(xProdAssoc.getAssociation()).thenReturn(prodAssoc);
+
+        LinkedHashSet<XProductAssociation> prodAssociations = new LinkedHashSet<>();
+        prodAssociations.add(xProdAssoc);
+        doReturn(prodAssociations).when(xProductClass).getAllDeclaredAssociations();
+
+        Set<XPolicyAssociation> result = xProductClass.getPureCardinalityConfigurablePolicyAssociations();
+
+        assertThat(result, is(empty()));
+    }
+
+    @Test
+    public void testGetPureCardinalityConfigurablePolicyAssociations_generationClassForTypeWithGenerations() {
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(xProductClass.isChangeOverTimeClass()).thenReturn(true);
+        when(type.isChangingOverTime()).thenReturn(true);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(type.getQualifiedName()).thenReturn("myProduct");
+        when(xPolicyCmpt.isConfiguredBy("myProduct")).thenReturn(true);
+
+        XPolicyAssociation polAssoc1 = mock(XPolicyAssociation.class);
+        when(polAssoc1.isCardinalityConfigurable()).thenReturn(true);
+        when(polAssoc1.getName(false)).thenReturn("coverage");
+
+        LinkedHashSet<XPolicyAssociation> polAssociations = new LinkedHashSet<>();
+        polAssociations.add(polAssoc1);
+        when(xPolicyCmpt.getAssociations()).thenReturn(polAssociations);
+
+        doReturn(new LinkedHashSet<>()).when(xProductClass).getAllDeclaredAssociations();
+
+        Set<XPolicyAssociation> result = xProductClass.getPureCardinalityConfigurablePolicyAssociations();
+
+        assertThat(result.size(), is(1));
+        assertThat(result, hasItem(polAssoc1));
+    }
+
+    @Test
+    public void testGetPureCardinalityConfigurablePolicyAssociations_componentClassForTypeWithGenerations() {
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(xProductClass.isChangeOverTimeClass()).thenReturn(false);
+        when(type.isChangingOverTime()).thenReturn(true);
+
+        Set<XPolicyAssociation> result = xProductClass.getPureCardinalityConfigurablePolicyAssociations();
+
+        assertThat(result, is(empty()));
+    }
+
+    @Test
+    public void testGetPureCardinalityConfigurablePolicyAssociations_notConfiguredByThisType() {
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(xProductClass.isChangeOverTimeClass()).thenReturn(false);
+        when(type.isChangingOverTime()).thenReturn(false);
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(type.getQualifiedName()).thenReturn("myProduct");
+        when(xPolicyCmpt.isConfiguredBy("myProduct")).thenReturn(false);
+
+        Set<XPolicyAssociation> result = xProductClass.getPureCardinalityConfigurablePolicyAssociations();
+
+        assertThat(result, is(empty()));
     }
 
 }

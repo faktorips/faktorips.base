@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,10 +19,8 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MessageCueLabelProvider;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
@@ -30,7 +28,7 @@ import org.faktorips.util.StringUtil;
 /**
  * Provides labels for links. {@link IProductCmptLink}s are displayed as the target object including
  * a special cue label provider to get messages from the generations instead of the link itself.
- * 
+ *
  * @author Thorsten Guenther
  * @author Cornelius Dirmeier
  * @author Stefan Widmaier
@@ -44,8 +42,8 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     @Override
     public MessageList getMessages(Object element) {
         if (element instanceof AbstractAssociationViewItem viewItem) {
-            IProductCmpt productCmpt = viewItem.getProductCmpt();
-            MessageList msgList = productCmpt.validate(productCmpt.getIpsProject());
+            var linkContainer = viewItem.getLinkContainer();
+            MessageList msgList = linkContainer.validate(linkContainer.getIpsProject());
             return msgList.getMessagesFor(viewItem.getAssociationName());
         }
         if (element instanceof LinkViewItem viewItem) {
@@ -77,6 +75,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
         @Override
         public StyledString getStyledText(Object element) {
+            if (element instanceof PolicyAssociationViewItem policyItem) {
+                return getPolicyAssociationViewItemStyledText(policyItem);
+            }
             if (element instanceof AssociationViewItem) {
                 return getAssociationViewItemStyledText((AssociationViewItem)element);
             }
@@ -86,23 +87,31 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             return new StyledString(getText(element));
         }
 
+        private StyledString getPolicyAssociationViewItemStyledText(PolicyAssociationViewItem viewItem) {
+            String cardinality = viewItem.findPolicyCmptLinkCardinality()
+                    .map(LinksMessageCueLabelProvider.InternalLabelProvider::formatCardinality)
+                    .orElseGet(() -> formatCardinality(viewItem.getAssociation().getMinCardinality(),
+                            viewItem.getAssociation().getMaxCardinality()));
+            StyledString nameStyledString = new StyledString(getText(viewItem));
+            StyledString cardinalityStyledString = new StyledString(cardinality, IpsStyler.MODEL_CARDINALITY_STYLER);
+            return nameStyledString.append(cardinalityStyledString);
+        }
+
         private StyledString getAssociationViewItemStyledText(AssociationViewItem associationViewItem) {
-            String cardinality = getCardinalitiesFromPolicy(associationViewItem.getAssociation());
+            String cardinality = associationViewItem.findPolicyCmptLinkCardinality()
+                    .map(LinksMessageCueLabelProvider.InternalLabelProvider::formatCardinality)
+                    .orElse(IpsStringUtils.EMPTY);
             StyledString cardinalityStyledString = new StyledString(cardinality, IpsStyler.MODEL_CARDINALITY_STYLER);
             StyledString nameStyledString = new StyledString(getText(associationViewItem));
             return nameStyledString.append(cardinalityStyledString);
         }
 
-        private String getCardinalitiesFromPolicy(IProductCmptTypeAssociation association) {
-            IPolicyCmptTypeAssociation policyAssociation = association
-                    .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
-            if (policyAssociation == null) {
-                return IpsStringUtils.EMPTY;
-            } else {
-                return StringUtil.BLANK
-                        + StringUtil.getRangeString(policyAssociation.getMinCardinality(),
-                                policyAssociation.getMaxCardinality());
-            }
+        private static String formatCardinality(IPolicyCmptLinkCardinality c) {
+            return formatCardinality(c.getMinCardinality(), c.getMaxCardinality());
+        }
+
+        private static String formatCardinality(int min, int max) {
+            return StringUtil.BLANK + StringUtil.getRangeString(min, max);
         }
 
         private StyledString getLinkViewItemStyledString(LinkViewItem linkViewItem) {

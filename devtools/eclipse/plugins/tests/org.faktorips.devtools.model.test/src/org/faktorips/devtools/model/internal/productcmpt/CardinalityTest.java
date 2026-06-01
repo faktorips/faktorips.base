@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.devtools.model.productcmpt.Cardinality;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,9 @@ public class CardinalityTest {
 
     @Mock
     private IProductCmptLink link;
+
+    @Mock
+    private IPolicyCmptLinkCardinality policyLinkCardinality;
 
     @Test
     public void testValidate_Ok() throws Exception {
@@ -163,6 +167,11 @@ public class CardinalityTest {
     @Test
     public void testUndefinedCardinalityValidation() {
         assertThat(Cardinality.UNDEFINED.validate(link), isEmpty());
+    }
+
+    @Test
+    public void testUndefinedCardinalityValidation_PolicyLinkCardinality() {
+        assertThat(Cardinality.UNDEFINED.validate(policyLinkCardinality), isEmpty());
     }
 
     @Test

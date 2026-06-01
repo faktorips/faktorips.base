@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,6 +20,7 @@ import java.util.Arrays;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -80,6 +82,18 @@ public class EmptyAssociationFilterTest {
         AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation, prodCmpt);
 
         assertFalse(filter.select(viewer, prodCmpt, viewItem));
+    }
+
+    @Test
+    public void testSelect_policyAssociationViewItem_alwaysVisible() {
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        IProductCmptLinkContainer container = mock(IProductCmptLinkContainer.class);
+        doReturn(productCmpt).when(container).getProductCmpt();
+        IPolicyCmptTypeAssociation policyAssoc = mock(IPolicyCmptTypeAssociation.class);
+        when(policyAssoc.getName()).thenReturn("policyAssoc");
+        PolicyAssociationViewItem viewItem = new PolicyAssociationViewItem(container, policyAssoc);
+
+        assertTrue(filter.select(viewer, null, viewItem));
     }
 
     private void mockAssociationAndLinks(String association,

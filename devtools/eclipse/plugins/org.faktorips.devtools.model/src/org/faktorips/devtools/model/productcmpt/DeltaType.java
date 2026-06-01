@@ -38,10 +38,15 @@ public enum DeltaType {
                     .getGenerationConceptNamePlural(true)),
             Kind.DELETE),
     DATATYPE_MISMATCH(Messages.DeltaType_datatypeMissmatch, Kind.MODIFY),
-    /* @since 24.1.1 */
+    /** @since 24.1.1 */
     INHERITED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedTemplateMismatch, Kind.MODIFY),
-    /* @since 24.1.2 */
-    INHERITED_UNDEFINED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedUndefinedTemplateMismatch, Kind.MODIFY);
+    /** @since 24.1.2 */
+    INHERITED_UNDEFINED_TEMPLATE_MISMATCH(Messages.DeltaType_InheritedUndefinedTemplateMismatch, Kind.MODIFY),
+    /** @since 26.7 */
+    MISSING_POLICY_CMPT_LINK_CARDINALITY(Messages.DeltaType_missingPolicyCmptLinkCardinality, Kind.ADD),
+    /** @since 26.7 */
+    POLICY_CMPT_LINK_CARDINALITY_NOT_FOUND_IN_MODEL(Messages.DeltaType_policyCmptLinkCardinalityNotFoundInModel,
+            Kind.DELETE);
 
     private final String description;
 

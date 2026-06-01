@@ -22,6 +22,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,6 +68,7 @@ import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.values.ObjectUtil;
+import org.faktorips.valueset.IntegerRange;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -1019,6 +1022,219 @@ public class ProductAssociationTest {
         assertThat(pa.isHidden(), is(true));
     }
 
+    @Test
+    public void testIsCardinalityConfigurable_False() {
+        assertThat(associationPolicy.isCardinalityConfigurable(), is(false));
+    }
+
+    @Test
+    public void testIsCardinalityConfigurable_True() {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        assertThat(pa.isCardinalityConfigurable(), is(true));
+    }
+
+    @Test
+    public void testValidate_MaxCardinalityExceedsConfiguredMax() {
+        ConfigurableSource source = new ConfigurableSource();
+
+        source.targets = List.of(new Target(), new Target());
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX),
+                is(notNullValue()));
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX).getText(),
+                containsString(
+                        "The maximum cardinality ('4') of the relationship target 'id2', in combination with the minimum cardinalities of the other relationship targets, exceeds the model defined maximum cardinality ('3') of the relationship 'configurableAssos'."));
+    }
+
+
+    @Test
+    public void testValidate_configuredUpperBoundNull_treatedAsUnbounded_noError() {
+        ConfigurableSource source = spy(new ConfigurableSource());
+        when(source.getCardinalityForConfigurablePolicyAsso()).thenReturn(IntegerRange.valueOf(2, null));
+        source.targets = List.of(new Target(), new Target(), new Target(), new Target(), new Target());
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        MessageList ml = new MessageList();
+
+        pa.validate(ml, new ValidationContext(Locale.ENGLISH), source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX), is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_configuredLowerBoundNull_treatedAsZero_noError() {
+        ConfigurableSource source = spy(new ConfigurableSource());
+        when(source.getCardinalityForConfigurablePolicyAsso()).thenReturn(IntegerRange.valueOf(null, 3));
+        source.targets = List.of(new Target());
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        MessageList ml = new MessageList();
+
+        pa.validate(ml, new ValidationContext(Locale.ENGLISH), source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN), is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_MaxCardinalityExceedsConfiguredMax_NoError() {
+        ConfigurableSource source = new ConfigurableSource();
+        source.targets = List.of(new Target());
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_MinCardinalityFallsBelowConfiguredMin() {
+        ConfigurableSource source = new ConfigurableSource();
+        source.targets = List.of(new Target());
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN),
+                is(notNullValue()));
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN).getText(),
+                containsString(
+                        "The minimum cardinality ('1') of the relationship target 'id2', in combination with the maximum cardinalities of the other relationship targets, falls below the model defined minimum cardinality ('2') of the relationship 'configurableAssos'."));
+    }
+
+    @Test
+    public void testValidate_MinCardinalityFallsBelowConfiguredMin_NoError() {
+        ConfigurableSource source = new ConfigurableSource();
+        source.targets = List.of(new Target(), new Target());
+
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAsso");
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_ConfiguredMaxExceedsModelMax() {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(RestrictedConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("restrictedAsso");
+        RestrictedConfigurableSource source = new RestrictedConfigurableSource();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString(
+                "The configured maximum cardinality ('8') of the relationship 'restrictedAssos' exceeds the model defined maximum cardinality ('5')."));
+    }
+
+    @Test
+    public void testValidate_ConfiguredMaxExceedsModelMax_NoError() {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(RestrictedConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("restrictedAssoValid");
+        RestrictedConfigurableSource source = new RestrictedConfigurableSource();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX), is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_ConfiguredMinFallsBelowModelMin() {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(RestrictedConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("restrictedAsso");
+        RestrictedConfigurableSource source = new RestrictedConfigurableSource();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        Message message = ml.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN);
+        assertThat(message, is(notNullValue()));
+        assertThat(message.getText(), containsString(
+                "The configured minimum cardinality ('1') of the relationship 'restrictedAssos' falls below the model defined minimum cardinality ('3')."));
+    }
+
+    @Test
+    public void testValidate_ConfiguredMinFallsBelowModelMin_NoError() {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(RestrictedConfigurableSource.class);
+        ProductAssociation pa = cmptType.getAssociation("restrictedAssoValid");
+        RestrictedConfigurableSource source = new RestrictedConfigurableSource();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_ConfiguredCardinality_NotConfigurable_NoError() {
+        Source source = new Source();
+        source.targets = List.of();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        associationPolicy.validate(ml, context, source, null);
+
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX), is(nullValue()));
+        assertThat(ml.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_noCardinalityMethod_noError() {
+        ProductCmptType cmptType = IpsModel.getProductCmptType(ConfigurableSourceWithoutCardinalityMethod.class);
+        ProductAssociation pa = cmptType.getAssociation("configurableAssoWithoutCardinalityMethod");
+        ConfigurableSourceWithoutCardinalityMethod source = new ConfigurableSourceWithoutCardinalityMethod();
+
+        MessageList ml = new MessageList();
+        IValidationContext context = new ValidationContext(Locale.ENGLISH);
+
+        pa.validate(ml, context, source, null);
+
+        assertThat(ml.containsErrorMsg(), is(false));
+    }
+
     @IpsProductCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "asso3", "overriddenAsso", "asso4", "assoTest", "policyAsso" })
     @IpsChangingOverTime(ProductGen.class)
@@ -1343,6 +1559,190 @@ public class ProductAssociationTest {
     @IpsProductCmptType(name = "MySubTarget")
     private class SubTarget extends Target {
         // another target
+    }
+
+    // konfiguriertes Min=2, Max=3 (Modell-Min=0, Modell-Max=10)
+    @IpsProductCmptType(name = "ConfigurableSource")
+    @IpsAssociations({ "configurableAsso" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
+    private class ConfigurableSource extends ProductComponent {
+
+        List<Target> targets;
+
+        public ConfigurableSource() {
+            super(repository, "id", "productKindId", "versionId");
+        }
+
+        @IpsAssociation(name = "configurableAsso", pluralName = "configurableAssos", min = 1, max = 10, kind = AssociationKind.Composition, targetClass = Target.class, cardinalityConfigurable = true)
+        @IpsMatchingAssociation(source = ConfigurablePolicy.class, name = "configurablePolicyAsso")
+        public List<Target> getConfigurableAsso() {
+            return targets;
+        }
+
+        @IpsAssociationLinks(association = "configurableAsso")
+        public List<IProductComponentLink<Target>> getLinksForConfigurableAsso() {
+            List<IProductComponentLink<Target>> list = new ArrayList<>();
+            if (targets != null) {
+                for (Target t : targets) {
+                    list.add(new ProductComponentLink<>(this, t, new CardinalityRange(1, 3, 1)));
+                }
+            }
+            return list;
+        }
+
+        // konfigurierte Kardinalität: Min=2, Max=3
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForConfigurablePolicyAsso() {
+            return IntegerRange.valueOf(2, 3);
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "ConfigurablePolicy")
+    @IpsAssociations({ "configurablePolicyAsso" })
+    @IpsConfiguredBy(ConfigurableSource.class)
+    private class ConfigurablePolicy implements IModelObject {
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return null;
+        }
+
+        @IpsAssociation(name = "configurablePolicyAsso", pluralName = "configurablePolicyAssos", min = 0, max = 10, kind = AssociationKind.Association, targetClass = Target.class, cardinalityConfigurable = true)
+        public List<Target> getConfigurablePolicyAssos() {
+            return List.of();
+        }
+    }
+
+    // restrictedAsso: configured Min=1, Max=8 vs. model Min=3, Max=5 → both errors
+    // restrictedAssoValid: configured Min=3, Max=5 vs. model Min=3, Max=5 → no error
+    @IpsProductCmptType(name = "RestrictedConfigurableSource")
+    @IpsAssociations({ "restrictedAsso", "restrictedAssoValid" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
+    private class RestrictedConfigurableSource extends ProductComponent {
+
+        public RestrictedConfigurableSource() {
+            super(repository, "id", "productKindId", "versionId");
+        }
+
+        @IpsAssociation(name = "restrictedAsso", pluralName = "restrictedAssos", min = 0, max = 10, kind = AssociationKind.Composition, targetClass = Target.class, cardinalityConfigurable = true)
+        @IpsMatchingAssociation(source = RestrictedPolicy.class, name = "restrictedPolicyAsso")
+        public List<Target> getRestrictedAsso() {
+            return List.of();
+        }
+
+        @IpsAssociationLinks(association = "restrictedAsso")
+        public List<IProductComponentLink<Target>> getLinksForRestrictedAsso() {
+            return List.of();
+        }
+
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForRestrictedPolicyAsso() {
+            return IntegerRange.valueOf(1, 8);
+        }
+
+        @IpsAssociation(name = "restrictedAssoValid", pluralName = "restrictedAssoValids", min = 0, max = 10, kind = AssociationKind.Composition, targetClass = Target.class, cardinalityConfigurable = true)
+        @IpsMatchingAssociation(source = RestrictedPolicy.class, name = "restrictedPolicyAssoValid")
+        public List<Target> getRestrictedAssoValid() {
+            return List.of();
+        }
+
+        @IpsAssociationLinks(association = "restrictedAssoValid")
+        public List<IProductComponentLink<Target>> getLinksForRestrictedAssoValid() {
+            return List.of();
+        }
+
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForRestrictedPolicyAssoValid() {
+            return IntegerRange.valueOf(3, 5);
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "RestrictedPolicy")
+    @IpsAssociations({ "restrictedPolicyAsso", "restrictedPolicyAssoValid" })
+    @IpsConfiguredBy(RestrictedConfigurableSource.class)
+    private class RestrictedPolicy implements IModelObject {
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return null;
+        }
+
+        @IpsAssociation(name = "restrictedPolicyAsso", pluralName = "restrictedPolicyAssos", min = 3, max = 5, kind = AssociationKind.Association, targetClass = Target.class, cardinalityConfigurable = true)
+        public List<Target> getRestrictedPolicyAssos() {
+            return List.of();
+        }
+
+        @IpsAssociation(name = "restrictedPolicyAssoValid", pluralName = "restrictedPolicyAssoValids", min = 3, max = 5, kind = AssociationKind.Association, targetClass = Target.class, cardinalityConfigurable = true)
+        public List<Target> getRestrictedPolicyAssoValids() {
+            return List.of();
+        }
+    }
+
+    @IpsProductCmptType(name = "ConfigurableSourceWithoutCardinalityMethod")
+    @IpsAssociations({ "configurableAssoWithoutCardinalityMethod" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
+    private class ConfigurableSourceWithoutCardinalityMethod extends ProductComponent {
+
+        public ConfigurableSourceWithoutCardinalityMethod() {
+            super(repository, "id", "productKindId", "versionId");
+        }
+
+        @IpsAssociation(name = "configurableAssoWithoutCardinalityMethod", pluralName = "configurableAssoWithoutCardinalityMethods", min = 0, max = 10, kind = AssociationKind.Composition, targetClass = Target.class, cardinalityConfigurable = true)
+        @IpsMatchingAssociation(source = ConfigurablePolicyWithoutCardinalityMethod.class, name = "configurablePolicyAssoWithoutCardinalityMethod")
+        public List<Target> getConfigurableAssoWithoutCardinalityMethod() {
+            return List.of();
+        }
+
+        @IpsAssociationLinks(association = "configurableAssoWithoutCardinalityMethod")
+        public List<IProductComponentLink<Target>> getLinksForConfigurableAssoWithoutCardinalityMethod() {
+            return List.of();
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "ConfigurablePolicyWithoutCardinalityMethod")
+    @IpsAssociations({ "configurablePolicyAssoWithoutCardinalityMethod" })
+    @IpsConfiguredBy(ConfigurableSourceWithoutCardinalityMethod.class)
+    private class ConfigurablePolicyWithoutCardinalityMethod implements IModelObject {
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return null;
+        }
+
+        @IpsAssociation(name = "configurablePolicyAssoWithoutCardinalityMethod", pluralName = "configurablePolicyAssoWithoutCardinalityMethods", min = 0, max = 10, kind = AssociationKind.Association, targetClass = Target.class, cardinalityConfigurable = true)
+        public List<Target> getConfigurablePolicyAssoWithoutCardinalityMethods() {
+            return List.of();
+        }
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")

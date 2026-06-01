@@ -19,6 +19,7 @@
                 <xsd:element ref="TableContentUsage" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="ValidationRuleConfig" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="Link" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="PolicyLinkCardinality" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="productCmptType" type="qualifiedName" use="required" />
             <xsd:attribute name="implementationClass" type="qualifiedName" use="optional" />
@@ -46,6 +47,7 @@
                 <xsd:element ref="TableContentUsage" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="ValidationRuleConfig" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="Link" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="PolicyLinkCardinality" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="validFrom" type="dateType" use="required" />
@@ -158,6 +160,22 @@
             <xsd:attributeGroup ref="templateValueStatus" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInLink">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+    
+    <xsd:element name="PolicyLinkCardinality">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="association" type="qualifiedName" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="cardinality" />
+            <xsd:attributeGroup ref="templateValueStatus" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInPolicyLinkCardinality">
             <xsd:selector xpath="./*" />
             <xsd:field xpath="@id" />
         </xsd:unique>

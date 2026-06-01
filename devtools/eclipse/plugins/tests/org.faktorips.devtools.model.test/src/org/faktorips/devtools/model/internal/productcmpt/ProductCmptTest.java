@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasValue;
 import static org.faktorips.testsupport.IpsMatchers.containsText;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
@@ -84,6 +85,7 @@ import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
 import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptKind;
@@ -840,6 +842,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2, productCmpt.getNumOfLinks());
         assertEquals("staticCoverage", productCmpt.getLinksAsList().get(0).getAssociation());
         assertEquals("staticIDontKnow", productCmpt.getLinksAsList().get(1).getAssociation());
+        assertEquals("Coverage", productCmpt.getPolicyCmptLinkCardinalities().getFirst().getAssociation());
     }
 
     @Test
@@ -863,6 +866,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2, productCmpt.getNumOfLinks());
         assertEquals("staticCoverage", productCmpt.getLinksAsList().get(0).getAssociation());
         assertEquals("staticIDontKnow", productCmpt.getLinksAsList().get(1).getAssociation());
+        IPolicyCmptLinkCardinality linkCardinality = productCmpt.getPolicyCmptLinkCardinalities().getFirst();
+        assertEquals("Coverage", linkCardinality.getAssociation());
 
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         assertThat(productCmpt.getPropertyValue("myAttribute", IConfiguredValueSet.class),
@@ -870,6 +875,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         var newGen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
         assertThat(newGen, is(sameInstance(gen)));
         assertThat(newGen.getConfiguredDefaults()[0], is(sameInstance(ce)));
+        assertThat(productCmpt.getPolicyCmptLinkCardinalities().getFirst(), is(sameInstance(linkCardinality)));
     }
 
     @Test
@@ -883,6 +889,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         ce1.setValue("0.15");
         IIpsObjectGeneration gen2 = productCmpt.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2000, 0, 1));
+        var linkCardinality = productCmpt.newPolicyCmptLinkCardinality("Coverage");
+        linkCardinality.setMaxCardinality(5);
 
         Element element = productCmpt.toXml(newDocument());
         ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
@@ -890,6 +898,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals("MotorProduct", copy.getProductCmptType());
         assertEquals("MotorProductId", copy.getRuntimeId());
         assertEquals("MeinTemplate", productCmpt.getTemplate());
+        assertEquals("Coverage", copy.getPolicyCmptLinkCardinalities().getFirst().getAssociation());
+        assertEquals(5, copy.getPolicyCmptLinkCardinalities().getFirst().getMaxCardinality());
         assertEquals(2, copy.getNumOfGenerations());
         IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, genCopy.getConfiguredDefaults().length);
@@ -1702,5 +1712,17 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(productCmpt.getValidationRuleConfig("ruleThree"));
         assertNull(productCmpt.getValidationRuleConfig("nonExistingRule"));
         assertNull(productCmpt.getValidationRuleConfig(null));
+    }
+
+    @Test
+    public void testGetPolicyCmptLinkCardinality() {
+        var policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyAssociation.setTargetRoleSingular("target");
+        policyAssociation.setTarget(policyCmptType.getQualifiedName());
+        policyAssociation.setCardinalityConfigurable(true);
+        var linkCardinality = productCmpt.newPolicyCmptLinkCardinality("target");
+
+        assertThat(productCmpt.getPolicyCmptLinkCardinality("target"), hasValue(linkCardinality));
+        assertThat(linkCardinality.getAssociation(), is("target"));
     }
 }

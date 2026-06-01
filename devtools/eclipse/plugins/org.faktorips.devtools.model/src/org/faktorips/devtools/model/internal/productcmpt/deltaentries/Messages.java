@@ -26,6 +26,7 @@ public class Messages extends NLS {
     public static String LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt;
     public static String LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen;
     public static String LinkChangingOverTimeMismatchEntry_Description_RemoveOnly;
+    public static String MissingPolicyCmptLinkCardinalityEntry_fixMessage;
     public static String MissingPropertyValueEntry_ATTRIBUTE_VALUE;
     public static String MissingPropertyValueEntry_CONFIGURED_DEFAULT;
     public static String MissingPropertyValueEntry_CONFIGURED_VALUESET;
@@ -36,6 +37,7 @@ public class Messages extends NLS {
     public static String MissingTemplateLinkEntry_missingTemplateLink;
     public static String MultilingualMismatchEntry_convertToInternatlStringValue;
     public static String MultilingualMismatchEntry_convertToStringValue;
+    public static String PolicyCmptLinkCardinalityNotFoundInModelEntry_fixMessage;
     public static String PropertyTypeMismatchEntry_desc;
     public static String ValueMismatchEntry_convertMultiToSingleValue;
     public static String ValueMismatchEntry_convertSingleToMultiValue;

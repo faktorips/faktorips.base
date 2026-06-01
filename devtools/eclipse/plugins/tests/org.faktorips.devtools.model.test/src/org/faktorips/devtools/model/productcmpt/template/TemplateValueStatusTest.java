@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.junit.Before;
@@ -36,12 +37,16 @@ public class TemplateValueStatusTest {
     private IProductCmptLink link;
 
     @Mock
+    private IPolicyCmptLinkCardinality cardinality;
+
+    @Mock
     private IIpsProject ipsProject;
 
     @Before
     public void setUp() {
         doReturn(ipsProject).when(attributeValue).getIpsProject();
         doReturn(ipsProject).when(link).getIpsProject();
+        doReturn(ipsProject).when(cardinality).getIpsProject();
     }
 
     @Test
@@ -109,6 +114,61 @@ public class TemplateValueStatusTest {
 
         assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(link), is(true));
         assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(templateLink), is(false));
+    }
+
+    @Test
+    public void testIsAllowedStatus_Cardinality_UNDEFINED() throws Exception {
+        makeProductCmpt(cardinality);
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(cardinality), is(false));
+
+        makeTemplate(cardinality);
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(cardinality), is(true));
+    }
+
+    @Test
+    public void testGetNextStatus_Cardinality_InTemplate() throws Exception {
+        makeTemplate(cardinality);
+        when(cardinality.findTemplateProperty(ipsProject)).thenReturn(null);
+
+        assertThat(TemplateValueStatus.DEFINED.getNextStatus(cardinality),
+                is(TemplateValueStatus.UNDEFINED));
+        assertThat(TemplateValueStatus.UNDEFINED.getNextStatus(cardinality),
+                is(TemplateValueStatus.DEFINED));
+    }
+
+    @Test
+    public void testGetNextStatus_Cardinality_InTemplateWithParentTemplate() throws Exception {
+        makeTemplate(cardinality);
+        IPolicyCmptLinkCardinality templateCardinality = mock(IPolicyCmptLinkCardinality.class);
+        when(cardinality.findTemplateProperty(ipsProject)).thenReturn(templateCardinality);
+
+        assertThat(TemplateValueStatus.DEFINED.getNextStatus(cardinality),
+                is(TemplateValueStatus.UNDEFINED));
+        assertThat(TemplateValueStatus.UNDEFINED.getNextStatus(cardinality),
+                is(TemplateValueStatus.INHERITED));
+        assertThat(TemplateValueStatus.INHERITED.getNextStatus(cardinality),
+                is(TemplateValueStatus.DEFINED));
+    }
+
+    @Test
+    public void testGetNextStatus_Cardinality_InProductCmptWithTemplate() throws Exception {
+        makeProductCmpt(cardinality);
+        IPolicyCmptLinkCardinality templateCardinality = mock(IPolicyCmptLinkCardinality.class);
+        when(cardinality.findTemplateProperty(ipsProject)).thenReturn(templateCardinality);
+
+        assertThat(TemplateValueStatus.DEFINED.getNextStatus(cardinality),
+                is(TemplateValueStatus.INHERITED));
+        assertThat(TemplateValueStatus.INHERITED.getNextStatus(cardinality),
+                is(TemplateValueStatus.DEFINED));
+    }
+
+    @Test
+    public void testGetNextStatus_Cardinality_InProductCmptWithoutTemplate() throws Exception {
+        makeProductCmpt(cardinality);
+        when(cardinality.findTemplateProperty(ipsProject)).thenReturn(null);
+
+        assertThat(TemplateValueStatus.DEFINED.getNextStatus(cardinality),
+                is(TemplateValueStatus.DEFINED));
     }
 
     @Test

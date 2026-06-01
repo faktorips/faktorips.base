@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,7 +47,7 @@ import org.junit.Test;
 
 /**
  * Tests for LinkCreatorUtil
- * 
+ *
  * @author Cornelius Dirmeier
  */
 public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
@@ -231,6 +231,28 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCreateLinkWithConfiguredPolicyAssociationCardinalitySingleLink()
+            throws CycleInProductStructureException {
+        IPolicyCmptTypeAssociation policyAssociation = setUpPolicyAssociation();
+        policyAssociation.setCardinalityConfigurable(true);
+        var linkCardinality = cmptA.getFirstGeneration()
+                .newPolicyCmptLinkCardinality(policyAssociation.getTargetRoleSingular());
+        linkCardinality.setCardinality(new Cardinality(2, 5, 0));
+
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
+
+        assertTrue(linkCreator.createLinks(getList(cmptC1), references[2]));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+        assertEquals(1, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(2, links[0].getMinCardinality());
+        assertEquals(2, links[0].getDefaultCardinality());
+        assertEquals(5, links[0].getMaxCardinality());
+    }
+
+    @Test
     public void testCreateLinkWithPolicyAssociationCardinalityMultipleLinks()
             throws CycleInProductStructureException {
         setUpPolicyAssociation();
@@ -258,7 +280,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         assertEquals(1, links[1].getMaxCardinality());
     }
 
-    private void setUpPolicyAssociation() throws CycleInProductStructureException {
+    private IPolicyCmptTypeAssociation setUpPolicyAssociation() throws CycleInProductStructureException {
         PolicyCmptType policyA = newPolicyCmptType(ipsProject, "testPack.PolicyA");
         policyA.setProductCmptType(typeA.getQualifiedName());
         typeA.setPolicyCmptType(policyA.getQualifiedName());
@@ -277,6 +299,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
 
         structure = cmptA.getStructure(new GregorianCalendar(), ipsProject);
         treeViewer.setInput(structure);
+        return policyAssociationToC;
     }
 
     @Test
@@ -348,7 +371,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     /**
      * check dropping components on the target, target have to be set before calling this method. In
      * case of target is a link there already have to exists at least one link
-     * 
+     *
      * @param alreadyExistingLinks the number of links that already exists in the product cmpt
      */
     private void checkDropWithSinglePossibility(IProductCmptStructureReference target, int alreadyExistingLinks) {
@@ -384,7 +407,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     /**
      * override the original class to select an association without calling the dialog. Dialog
      * clicking could not be tested very well.
-     * 
+     *
      * @author dirmeier
      */
     public class MyLinkCreator extends LinkCreatorUtil {

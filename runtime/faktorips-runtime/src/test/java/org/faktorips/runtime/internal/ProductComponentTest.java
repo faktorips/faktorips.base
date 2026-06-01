@@ -45,6 +45,7 @@ import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
+import org.faktorips.valueset.IntegerRange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -521,11 +522,82 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     public void testInitVRuleConfigs() {
         pc.initFromXml(getTestDocument().getDocumentElement());
 
-        assertEquals(true, pc.isValidationRuleActivated("activeRule"));
-        assertEquals(false, pc.isValidationRuleActivated("inactiveRule"));
-        assertEquals(false, pc.isValidationRuleActivated("invalidActivationRule"));
+        assertThat(pc.isValidationRuleActivated("activeRule"), is(true));
+        assertThat(pc.isValidationRuleActivated("inactiveRule"), is(false));
+        assertThat(pc.isValidationRuleActivated("invalidActivationRule"), is(false));
 
-        assertEquals(false, pc.isValidationRuleActivated("nonExistentRule"));
+        assertThat(pc.isValidationRuleActivated("nonExistentRule"), is(false));
+    }
+
+    @Test
+    public void testParseCardinalityRange_numericBounds() {
+        Document document = newDocument();
+        Element element = document.createElement("PolicyLinkCardinality");
+        element.setAttribute("minCardinality", "1");
+        element.setAttribute("maxCardinality", "5");
+
+        IntegerRange range = ProductComponent.parseCardinalityRange(element);
+
+        assertThat(range.getLowerBound(), is(1));
+        assertThat(range.getUpperBound(), is(5));
+    }
+
+    @Test
+    public void testParseCardinalityRange_unboundedStar() {
+        Document document = newDocument();
+        Element element = document.createElement("PolicyLinkCardinality");
+        element.setAttribute("minCardinality", "0");
+        element.setAttribute("maxCardinality", "*");
+
+        IntegerRange range = ProductComponent.parseCardinalityRange(element);
+
+        assertThat(range.getLowerBound(), is(0));
+        assertThat(range.getUpperBound(), is(Integer.MAX_VALUE));
+    }
+
+    @Test
+    public void testParseCardinalityRange_unboundedLowercaseN() {
+        Document document = newDocument();
+        Element element = document.createElement("PolicyLinkCardinality");
+        element.setAttribute("minCardinality", "0");
+        element.setAttribute("maxCardinality", "n");
+
+        IntegerRange range = ProductComponent.parseCardinalityRange(element);
+
+        assertThat(range.getLowerBound(), is(0));
+        assertThat(range.getUpperBound(), is(Integer.MAX_VALUE));
+    }
+
+    @Test
+    public void testParseCardinalityRange_unboundedUppercaseN() {
+        Document document = newDocument();
+        Element element = document.createElement("PolicyLinkCardinality");
+        element.setAttribute("minCardinality", "0");
+        element.setAttribute("maxCardinality", "N");
+
+        IntegerRange range = ProductComponent.parseCardinalityRange(element);
+
+        assertThat(range.getLowerBound(), is(0));
+        assertThat(range.getUpperBound(), is(Integer.MAX_VALUE));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testParseCardinalityRange_invalidMaxCardinality() {
+        Document document = newDocument();
+        Element element = document.createElement("PolicyLinkCardinality");
+        element.setAttribute("minCardinality", "0");
+        element.setAttribute("maxCardinality", "abc");
+
+        ProductComponent.parseCardinalityRange(element);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testParseCardinalityRange_missingMinCardinality() {
+        Document document = newDocument();
+        Element element = document.createElement("PolicyLinkCardinality");
+        element.setAttribute("maxCardinality", "5");
+
+        ProductComponent.parseCardinalityRange(element);
     }
 
     /**

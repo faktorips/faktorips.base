@@ -12,6 +12,7 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -303,74 +304,310 @@ public class ProductCmptTypeTest {
     }
 
     @Test
-        public void testValidatePart_WrongType() {
-            IRuntimeRepository repository = new InMemoryRuntimeRepository();
-            Produkt productComponent = new Produkt(repository);
-            ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
-    
-            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                    () -> productCmptType.validate(productComponent, new MessageList(), new ValidationContext()));
-            assertThat(exception.getMessage(), containsString("id"));
-            assertThat(exception.getMessage(), containsString("ConfiguringProduct"));
-        }
+    public void testValidatePart_WrongType() {
+        IRuntimeRepository repository = new InMemoryRuntimeRepository();
+        Produkt productComponent = new Produkt(repository);
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> productCmptType.validate(productComponent, new MessageList(), new ValidationContext()));
+        assertThat(exception.getMessage(), containsString("id"));
+        assertThat(exception.getMessage(), containsString("ConfiguringProduct"));
+    }
 
     @Test
-        public void testValidatePart_Attributes() {
-            IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
-            ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
-            ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
-            productComponent.setAllowedValuesForStaticPolicyAttribute(new StringLengthValueSet(42));
-            productComponent.setStaticProductAttribute("foo");
-            repository.putProductComponent(productComponent);
-            TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
-            repository.putProductComponent(targetProduct);
-            ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
-            configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
-            configuringProductAdj1.setProductAttribute(-1);
-            configuringProductAdj1.setDefaultValuePolicyAttribute(99);
-            configuringProductAdj1.addProductAssociation(targetProduct, CardinalityRange.MANDATORY);
-            repository.putProductCmptGeneration(configuringProductAdj1);
-            MessageList messages = new MessageList();
-    
-            productCmptType.validate(productComponent, messages, new ValidationContext());
-    
-            assertThat(messages.containsErrorMsg(), is(true));
-            assertThat(messages.size(), is(4));
-            assertThat(messages.toString(), containsString("foo"));
-            assertThat(messages.toString(), containsString("42"));
-            assertThat(messages.toString(), containsString("-1"));
-            assertThat(messages.toString(), containsString("99"));
-            assertThat(
-                    messages.getMessageByCode(DefaultPolicyAttribute.MSGCODE_VALUE_SET_NOT_IN_VALUE_SET)
-                            .getInvalidObjectProperties().get(0).getProperty(),
-                    is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
-            assertThat(
-                    messages.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET)
-                            .getInvalidObjectProperties().get(0).getProperty(),
-                    is(ProductAttribute.PROPERTY_VALUE));
-        }
+    public void testValidatePart_Attributes() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+        ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+        productComponent.setAllowedValuesForStaticPolicyAttribute(new StringLengthValueSet(42));
+        productComponent.setStaticProductAttribute("foo");
+        repository.putProductComponent(productComponent);
+        TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
+        repository.putProductComponent(targetProduct);
+        ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
+        configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
+        configuringProductAdj1.setProductAttribute(-1);
+        configuringProductAdj1.setDefaultValuePolicyAttribute(99);
+        configuringProductAdj1.addProductAssociation(targetProduct, CardinalityRange.MANDATORY);
+        repository.putProductCmptGeneration(configuringProductAdj1);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.containsErrorMsg(), is(true));
+        assertThat(messages.size(), is(4));
+        assertThat(messages.toString(), containsString("foo"));
+        assertThat(messages.toString(), containsString("42"));
+        assertThat(messages.toString(), containsString("-1"));
+        assertThat(messages.toString(), containsString("99"));
+        assertThat(
+                messages.getMessageByCode(DefaultPolicyAttribute.MSGCODE_VALUE_SET_NOT_IN_VALUE_SET)
+                        .getInvalidObjectProperties().get(0).getProperty(),
+                is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+        assertThat(
+                messages.getMessageByCode(ProductAttribute.MSGCODE_VALUE_NOT_IN_VALUE_SET)
+                        .getInvalidObjectProperties().get(0).getProperty(),
+                is(ProductAttribute.PROPERTY_VALUE));
+    }
 
     @Test
-        public void testValidatePart_Associations() {
-            IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
-            ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
-            TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
-            repository.putProductComponent(targetProduct);
-            ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
-            productComponent.addStaticProductAssociation(targetProduct, new CardinalityRange(100, 200, 150));
-            repository.putProductComponent(productComponent);
-            ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
-            configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
-            repository.putProductCmptGeneration(configuringProductAdj1);
-            MessageList messages = new MessageList();
-    
-            productCmptType.validate(productComponent, messages, new ValidationContext());
-    
-            assertThat(messages.containsErrorMsg(), is(true));
-            assertThat(messages.size(), is(2));
-            assertThat(messages.toString(), containsString("200"));
-            assertThat(messages.toString(), containsString("1"));
+    public void testValidatePart_Associations() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+        TargetProduct targetProduct = new TargetProduct(repository, "T 1", "T", "1");
+        repository.putProductComponent(targetProduct);
+        ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+        productComponent.addStaticProductAssociation(targetProduct, new CardinalityRange(100, 200, 150));
+        repository.putProductComponent(productComponent);
+        ConfiguringProductAdj configuringProductAdj1 = new ConfiguringProductAdj(productComponent);
+        configuringProductAdj1.setValidFrom(new DateTime(2024, 1, 1));
+        repository.putProductCmptGeneration(configuringProductAdj1);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.containsErrorMsg(), is(true));
+        assertThat(messages.size(), is(2));
+        assertThat(messages.toString(), containsString("200"));
+        assertThat(messages.toString(), containsString("1"));
+    }
+
+    @Test
+    public void testValidatePart_PurePolicyAssociation_changingOverTime_configuredMaxExceedsModelMax() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+        ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+        repository.putProductComponent(productComponent);
+        ConfiguringProductAdj adj = new ConfiguringProductAdj(productComponent);
+        adj.setValidFrom(new DateTime(2024, 1, 1));
+        adj.setCardinalityForPurePolicyAssociation(IntegerRange.valueOf(1, 5));
+        repository.putProductCmptGeneration(adj);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.containsErrorMsg(), is(true));
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX),
+                is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidatePart_PurePolicyAssociation_changingOverTime_configuredMinFallsBelowModelMin() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+        ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+        repository.putProductComponent(productComponent);
+        ConfiguringProductAdj adj = new ConfiguringProductAdj(productComponent);
+        adj.setValidFrom(new DateTime(2024, 1, 1));
+        adj.setCardinalityForPurePolicyAssociation(IntegerRange.valueOf(0, 3));
+        repository.putProductCmptGeneration(adj);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.containsErrorMsg(), is(true));
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN),
+                is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidatePart_PurePolicyAssociation_withinBounds_noError() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(ConfiguringProduct.class);
+        ConfiguringProduct productComponent = new ConfiguringProduct(repository, "P 1", "P", "1");
+        repository.putProductComponent(productComponent);
+        ConfiguringProductAdj adj = new ConfiguringProductAdj(productComponent);
+        adj.setValidFrom(new DateTime(2024, 1, 1));
+        adj.setCardinalityForPurePolicyAssociation(IntegerRange.valueOf(1, 2));
+        repository.putProductCmptGeneration(adj);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX),
+                is(nullValue()));
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @Test
+    public void testValidatePart_PurePolicyAssociation_notChangingOverTime_configuredMaxExceedsModelMax() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(StaticProduct.class);
+        StaticProduct productComponent = new StaticProduct(repository, "P 1", "P", "1");
+        productComponent.cardinalityForPurePolicyAsso = IntegerRange.valueOf(1, 5);
+        repository.putProductComponent(productComponent);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX),
+                is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidatePart_PurePolicyAssociation_notChangingOverTime_configuredMinFallsBelowModelMin() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(StaticProduct.class);
+        StaticProduct productComponent = new StaticProduct(repository, "P 1", "P", "1");
+        productComponent.cardinalityForPurePolicyAsso = IntegerRange.valueOf(0, 3);
+        repository.putProductComponent(productComponent);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN),
+                is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidatePart_PurePolicyAssociation_notChangingOverTime_withinBounds_noError() {
+        IModifiableRuntimeRepository repository = new InMemoryRuntimeRepository();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(StaticProduct.class);
+        StaticProduct productComponent = new StaticProduct(repository, "P 1", "P", "1");
+        productComponent.cardinalityForPurePolicyAsso = IntegerRange.valueOf(1, 2);
+        repository.putProductComponent(productComponent);
+        MessageList messages = new MessageList();
+
+        productCmptType.validate(productComponent, messages, new ValidationContext());
+
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MAX_EXCEEDS_MODEL_MAX),
+                is(nullValue()));
+        assertThat(messages.getMessageByCode(ProductAssociation.MSGCODE_CONFIGURED_MIN_FALLS_BELOW_MODEL_MIN),
+                is(nullValue()));
+    }
+
+    @IpsPolicyCmptType(name = "StaticPurePolicy")
+    @IpsAssociations({ "purePolicyAsso" })
+    @IpsConfiguredBy(StaticProduct.class)
+    public static class StaticPurePolicy extends AbstractModelObject implements IConfigurableModelObject {
+
+        private ProductConfiguration productConfiguration = new ProductConfiguration();
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
         }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public void initialize() {
+            // nothing to do
+        }
+
+        @IpsAssociation(name = "purePolicyAsso", pluralName = "purePolicyAssos", kind = AssociationKind.Composition, targetClass = TargetPolicy.class, min = 1, max = 3, cardinalityConfigurable = true)
+        public List<? extends TargetPolicy> getPurePolicyAssos() {
+            return Collections.emptyList();
+        }
+    }
+
+    @IpsProductCmptType(name = "StaticProduct")
+    @IpsConfigures(StaticPurePolicy.class)
+    public static class StaticProduct extends ProductComponent {
+
+        IntegerRange cardinalityForPurePolicyAsso = IntegerRange.valueOf(1, 3);
+
+        public StaticProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForPurePolicyAsso() {
+            return cardinalityForPurePolicyAsso;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+    }
+
+    @IpsPolicyCmptType(name = "PurePolicyCot")
+    @IpsAssociations({ "purePolicyAsso" })
+    @IpsConfiguredBy(ChangingOverTimeProduct.class)
+    public static class PurePolicyCot extends AbstractModelObject implements ITimedConfigurableModelObject {
+
+        private ProductConfiguration productConfiguration = new ProductConfiguration();
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public IProductComponentGeneration getProductCmptGeneration() {
+            return productConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
+        }
+
+        @Override
+        public void initialize() {
+            // nothing to do
+        }
+
+        @IpsAssociation(name = "purePolicyAsso", pluralName = "purePolicyAssos", kind = AssociationKind.Composition, targetClass = TargetPolicy.class, min = 1, max = 3, cardinalityConfigurable = true)
+        public List<? extends TargetPolicy> getPurePolicyAssos() {
+            return Collections.emptyList();
+        }
+    }
+
+    @IpsProductCmptType(name = "ChangingOverTimeProduct")
+    @IpsConfigures(PurePolicyCot.class)
+    @IpsChangingOverTime(ChangingOverTimeProductGen.class)
+    public static class ChangingOverTimeProduct extends ProductComponent {
+
+        public ChangingOverTimeProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+    }
+
+    public static class ChangingOverTimeProductGen extends ProductComponentGeneration {
+
+        IntegerRange cardinalityForPurePolicyAsso = IntegerRange.valueOf(1, 3);
+
+        public ChangingOverTimeProductGen(ChangingOverTimeProduct productCmpt) {
+            super(productCmpt);
+        }
+
+        @SuppressWarnings("unused")
+        public IntegerRange getCardinalityForPurePolicyAsso() {
+            return cardinalityForPurePolicyAsso;
+        }
+    }
 
     @IpsProductCmptType(name = "MyProduct")
     @IpsConfigures(Policy.class)
@@ -511,7 +748,7 @@ public class ProductCmptTypeTest {
 
     @IpsPolicyCmptType(name = "ConfiguredPolicy")
     @IpsAttributes({ "staticPolicyAttribute", "policyAttribute" })
-    @IpsAssociations({ "staticPolicyAssociation", "policyAssociation" })
+    @IpsAssociations({ "staticPolicyAssociation", "policyAssociation", "purePolicyAssociation" })
     @IpsConfiguredBy(ConfiguringProduct.class)
     @IpsDocumented(bundleName = "org.faktorips.sample.model.model-label-and-descriptions", defaultLocale = "en")
     public static class ConfiguredPolicy extends AbstractModelObject implements ITimedConfigurableModelObject {
@@ -629,6 +866,11 @@ public class ProductCmptTypeTest {
         @IpsMatchingAssociation(source = ConfiguringProduct.class, name = "ProductAssociation")
         public List<? extends TargetPolicy> getPolicyAssociations() {
             return Collections.unmodifiableList(policyAssociations);
+        }
+
+        @IpsAssociation(name = "purePolicyAssociation", pluralName = "purePolicyAssociations", kind = AssociationKind.Composition, targetClass = TargetPolicy.class, min = 1, max = 3, cardinalityConfigurable = true)
+        public List<? extends TargetPolicy> getPurePolicyAssociations() {
+            return Collections.emptyList();
         }
 
         public TargetPolicy getPolicyAssociation(int index) {
@@ -881,6 +1123,16 @@ public class ProductCmptTypeTest {
 
         public ConfiguringProductAdj(ConfiguringProduct productCmpt) {
             super(productCmpt);
+        }
+
+        private IntegerRange cardinalityForPurePolicyAssociation = IntegerRange.valueOf(1, 3);
+
+        public IntegerRange getCardinalityForPurePolicyAssociation() {
+            return cardinalityForPurePolicyAssociation;
+        }
+
+        public void setCardinalityForPurePolicyAssociation(IntegerRange cardinality) {
+            cardinalityForPurePolicyAssociation = cardinality;
         }
 
         @IpsAttribute(name = "productAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Range)

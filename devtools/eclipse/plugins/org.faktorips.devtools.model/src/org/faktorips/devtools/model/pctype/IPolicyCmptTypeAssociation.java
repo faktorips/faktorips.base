@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,7 +29,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * bidirectional association is represented in Faktor-IPS by two relations of type association. A
  * bidirectional composition is represented in Faktor-IPS by one master to detail composition and
  * one detail to master composition.
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IPolicyCmptTypeAssociation extends IAssociation {
@@ -52,6 +52,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
     String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
+
+    String PROPERTY_CARDINALITY_CONFIGURABLE = "cardinalityConfigurable"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -179,7 +181,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Returns <code>true</code> if this association can be marked as derived union or can be a
      * subset of a derived union association. This is the case for associations and master-to-detail
      * composites.
-     * 
+     *
      * @since 3.8
      */
     boolean isDerivedUnionApplicable();
@@ -193,7 +195,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Returns the target policy component type or <code>null</code> if either this relation hasn't
      * got a target or the target does not exist.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
      */
     IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject);
@@ -255,7 +257,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * product structure. n this case {@link #findMatchingProductCmptTypeAssociation(IIpsProject)}
      * returns the matching association on the product side of the model. See the method's Javadoc
      * for a detailed description.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
      */
     boolean isConstrainedByProductStructure(IIpsProject ipsProject);
@@ -279,9 +281,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Searches the inverse association and returns it, if it exists. Returns <code>null</code> if
      * no inverse association exists.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching.
      */
     IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws IpsException;
@@ -299,11 +301,11 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * <li>The association is a composition (master-to-detail)</li>
      * <li>The target policy component type exists and is configurable by a product component type.
      * </ul>
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the target.
-     * 
+     *
      * @see #setQualified(boolean)
      */
     boolean isQualificationPossible(IIpsProject ipsProject) throws IpsException;
@@ -311,7 +313,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Returns <code>true</code> if this association is the inverse of a derived union association,
      * otherwise <code>false</code>.
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the derived union association.
      */
     boolean isInverseOfDerivedUnion() throws IpsException;
@@ -325,9 +327,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * the target policy component type has to be found.
      * <p>
      * Returns am empty String if either this association can't be qualified.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the target.
      */
     String findQualifierCandidate(IIpsProject ipsProject) throws IpsException;
@@ -335,16 +337,16 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Returns the product component type that qualifies this association. Returns <code>null</code>
      * if either the association is not qualified or the qualifier can't be found.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the target.
      */
     IProductCmptType findQualifier(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new inverse association. Returns the newly created association.
-     * 
+     *
      * CoreException if an error occurs while creating the association, e.g. if the target of this
      * association wasn't found.
      */
@@ -353,10 +355,10 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Returns the object containing information about how to persist this policy component type
      * association into a relational database table.
-     * 
+     *
      * @return <code>null</code> if the persistence information is not available, e.g. when the
      *             corresponding IPS project this type belongs to does not support persistence.
-     * 
+     *
      * @see org.faktorips.devtools.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     IPersistentAssociationInfo getPersistenceAssociatonInfo();
@@ -366,8 +368,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * with the same name as another detail-to-master association in the super type which has an
      * inverse association and the optional constraint
      * {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled.
-     * 
-     * 
+     *
+     *
      * @param sharedAssociation The sharedAssociation to set.
      */
     void setSharedAssociation(boolean sharedAssociation);
@@ -382,7 +384,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * in a super type.
      * <p>
      * Also read the discussion of FIPS-85.
-     * 
+     *
      * @return Returns the true if this is an detail-to-master composition that is marked as shared
      *             association and and the optional constraint
      *             {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled.
@@ -394,7 +396,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * not a shared association by itself. The found association must have the same target as this
      * association. The found association could be the shared association host of this association.
      * However this method does not check if this association is marked as shared association!
-     * 
+     *
      * @param ipsProject The project used to search from
      * @return an association with the same name and target found in the super type hierarchy
      * @throws IpsException in case of a core exception in the finder methods
@@ -413,7 +415,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * product component type 'Product' and coverage by 'CoverageType'. There is also an association
      * between product and coverage type. This association is the matching association for the
      * Policy-Coverage composition.
-     * 
+     *
      * @param ipsProject The IPS project which IPS object path is used to search.
      */
     IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject);
@@ -421,9 +423,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Finding the default matching product component association. The dafault is used when no
      * explicit matching association is set.
-     * 
+     *
      * @see #findMatchingProductCmptTypeAssociation(IIpsProject)
-     * 
+     *
      * @param ipsProject The project used to find the association
      * @return the default matching association
      */
@@ -435,7 +437,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * this {@link IPolicyCmptTypeAssociation}. The name of the association is set by
      * {@link #setMatchingAssociationName(String)}. If the matching association should be found
      * automatically you have to set this field to {@link IpsStringUtils#EMPTY}.
-     * 
+     *
      * @param matchingAssociationSource The qualified name of the source {@link IProductCmptType}
      */
     void setMatchingAssociationSource(String matchingAssociationSource);
@@ -445,7 +447,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * {@link IProductCmptTypeAssociation} that constrains this association. The name of the
      * association is returned by {@link #getMatchingAssociationName()}. If the matching association
      * should be found automatically this method returns {@link IpsStringUtils#EMPTY}.
-     * 
+     *
      * @return The qualified name of the source {@link IProductCmptType} that's association should
      *             constrains this one
      */
@@ -456,7 +458,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * association is set by {@link #setMatchingAssociationSource(String)}. If the matching
      * association should be found automatically you have to set this field to
      * {@link IpsStringUtils#EMPTY}.
-     * 
+     *
      * @param matchingAssociationName The name of the association that constrains this one
      */
     void setMatchingAssociationName(String matchingAssociationName);
@@ -466,14 +468,14 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * The qualified name of the source {@link IProductCmptType} is returned by
      * {@link #getMatchingAssociationSource()}. If the matching association should be found
      * automatically this method returns {@link IpsStringUtils#EMPTY}.
-     * 
+     *
      * @return The name of the association that constrains this one
      */
     String getMatchingAssociationName();
 
     /**
      * Setting whether this association is configured by product component or not.
-     * 
+     *
      * @param configurable True to mark this association to be configured by product component
      */
     void setConfigurable(boolean configurable);
@@ -481,11 +483,31 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Getting whether this association is configured by product component or not. A
      * {@link IPolicyCmptTypeAssociation} could only be configured if there is a matching
-     * {@link IProductCmptTypeAssociation}. Hence if you realy want to know if this association is
+     * {@link IProductCmptTypeAssociation}. Hence if you really want to know if this association is
      * configured you have to check {@link #isConstrainedByProductStructure(IIpsProject)} also.
-     * 
+     *
      * @return true if this association is marked as being configured by product component
      */
     boolean isConfigurable();
+
+    /**
+     * Getting whether the cardinality of this association is configured by a product component or
+     * not
+     *
+     * @return true if the cardinality of this association is configured by a product component
+     *
+     * @since 26.7
+     */
+    boolean isCardinalityConfigurable();
+
+    /**
+     * Setting whether the cardinality of this association is configured by a product component or
+     * not.
+     *
+     * @param cardinalityConfigurable True to mark the cardinality configurable
+     *
+     * @since 26.7
+     */
+    void setCardinalityConfigurable(boolean cardinalityConfigurable);
 
 }

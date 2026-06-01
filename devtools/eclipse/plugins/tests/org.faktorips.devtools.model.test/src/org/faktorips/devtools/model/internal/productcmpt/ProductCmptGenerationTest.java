@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasValue;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -307,6 +308,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newLink("coverage").setTargetRuntimeId("t1");
         generation.newLink("coverage").setTargetRuntimeId("t2");
         generation.newLink("coverage").setTargetRuntimeId("t3");
+        var linkCardinality = generation.newPolicyCmptLinkCardinality("Coverage");
+        linkCardinality.setMaxCardinality(5);
         generation.newFormula().setFormulaSignature("f1");
         generation.newFormula().setFormulaSignature("f2");
         generation.newAttributeValue().setAttribute("a1");
@@ -320,6 +323,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
         assertEquals(3, copy.getNumOfLinks());
+        assertEquals("Coverage", copy.getPolicyCmptLinkCardinalities().getFirst().getAssociation());
+        assertEquals(5, copy.getPolicyCmptLinkCardinalities().getFirst().getMaxCardinality());
         assertEquals(2, copy.getNumOfFormulas());
         assertEquals(1, copy.getNumOfAttributeValues());
         assertEquals(2, copy.getNumOfValidationRules());
@@ -339,6 +344,8 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         IProductCmptLink[] relations = generation.getLinks();
         assertEquals(1, relations.length);
+
+        assertEquals("Coverage", generation.getPolicyCmptLinkCardinalities().getFirst().getAssociation());
 
         IFormula[] formulas = generation.getFormulas();
         assertEquals(2, formulas.length);
@@ -805,5 +812,23 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         assertThat(generation.removePartThis(configDefault), is(true));
         assertNull(generation.getPropertyValue(attribute1, IConfiguredDefault.class));
+    }
+
+    @Test
+    public void testGetPolicyCmptLinkCardinality() {
+        var policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyAssociation.setTargetRoleSingular("target");
+        policyAssociation.setTarget(policyCmptType.getQualifiedName());
+        policyAssociation.setCardinalityConfigurable(true);
+        var productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setMatchingAssociationName("target");
+        productAssociation.setAssociationType(AssociationType.AGGREGATION);
+        productAssociation.setTarget(productCmptType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("pTarget");
+        productAssociation.setTargetRolePlural("pTargets");
+        productAssociation.setChangingOverTime(true);
+        var linkCardinality = generation.newPolicyCmptLinkCardinality("target");
+
+        assertThat(generation.getPolicyCmptLinkCardinality("target"), hasValue(linkCardinality));
     }
 }

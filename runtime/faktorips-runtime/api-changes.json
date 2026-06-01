@@ -6,6 +6,12 @@
                 "criticality": "documented",
                 "differences": [
                     {
+                        "code": "java.method.numberOfParametersChanged",
+                        "old": "method void org.faktorips.runtime.model.type.ProductAssociation::<init>(org.faktorips.runtime.model.type.Type, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.reflect.Method, boolean, java.lang.reflect.Method)",
+                        "new": "method void org.faktorips.runtime.model.type.ProductAssociation::<init>(org.faktorips.runtime.model.type.Type, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.reflect.Method, java.lang.reflect.Method, boolean, java.lang.reflect.Method, java.lang.reflect.Method)",
+                        "justification": "FIPS-9911: Added getCardinalityMethod parameter to support runtime validation against product-configured policy association cardinalities."
+                    },
+                    {
                         "code": "java.method.removed",
                         "old": "method void org.faktorips.runtime.InMemoryRuntimeRepository::putTable(org.faktorips.runtime.ITable<?>, java.lang.String)",
                         "justification": "FIPS-12191: Deprecated method removed (marked forRemoval=true since 24.7). Use putTable(ITable) instead and ensure the qualified name is set as the table's name."

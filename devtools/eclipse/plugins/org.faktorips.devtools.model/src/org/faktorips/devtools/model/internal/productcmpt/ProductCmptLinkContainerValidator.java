@@ -119,7 +119,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     private void validateTotalMax(List<IProductCmptLink> relations,
             MessageList list,
             IPolicyCmptTypeAssociation associationObj) {
-        int maxType = associationObj.getMaxCardinality();
+        int maxType = linkContainer.getMaxCardinality(associationObj);
         if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
             int sumMinCardinality = relations.stream().mapToInt(IProductCmptLink::getMinCardinality).sum();
             for (IProductCmptLink productCmptLink : relations) {
@@ -147,7 +147,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     private void validateTotalMin(List<IProductCmptLink> relations,
             MessageList list,
             IPolicyCmptTypeAssociation associationObj) {
-        int minType = associationObj.getMinCardinality();
+        int minType = linkContainer.getMinCardinality(associationObj);
         for (IProductCmptLink productCmptLink : relations) {
             int sumMaxCardinality = productCmptLink.getMinCardinality();
             for (IProductCmptLink link : relations) {

@@ -7,6 +7,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.Produ
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.DefaultAndAllowedValuesTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.MethodsTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.PolicyLinkCardinalityTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductAttributeTmpl.*
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
@@ -79,6 +80,8 @@ class ProductComponentGenInterfaceTmpl {
                 «ENDFOR»
 
                 «FOR it : associations» «getterSetterAdderRemover» «ENDFOR»
+                «FOR it : cardinalityConfigurableAssociations» «cardinalityGetterSetter» «ENDFOR»
+                «FOR it : pureCardinalityConfigurablePolicyAssociations» «cardinalityGetterSetter» «ENDFOR»
 
                 «FOR it : methods»
                     «IF published»
