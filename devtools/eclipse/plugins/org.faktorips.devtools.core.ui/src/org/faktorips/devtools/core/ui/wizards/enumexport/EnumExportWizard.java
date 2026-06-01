@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,6 +31,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
@@ -44,7 +45,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard for exporting enumeration types and enumeration contents to external files.
- * 
+ *
  * @author Roman Grutza, Alexander Weickmann
  */
 public class EnumExportWizard extends IpsObjectExportWizard {
@@ -113,6 +114,8 @@ public class EnumExportWizard extends IpsObjectExportWizard {
             final ITableFormat format = exportPage.getFormat();
             final String nullRepresentation = exportPage.getNullRepresentation();
             final boolean exportColumnHeaderRow = exportPage.isExportColumnHeaderRow();
+            format.setProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID,
+                    String.valueOf(exportPage.isExportEnumAsNameAndId()));
 
             File exportFile = new File(exportFilename);
             if (exportFile.exists()) {

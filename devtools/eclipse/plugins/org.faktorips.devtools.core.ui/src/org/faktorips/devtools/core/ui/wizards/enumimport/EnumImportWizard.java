@@ -25,6 +25,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
@@ -166,6 +167,8 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             }
 
             final MessageList messageList = new MessageList();
+            format.setProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID,
+                    String.valueOf(startingPage.isImportEnumAsNameAndId()));
 
             ICoreRunnable runnable = $ -> format.executeEnumImport(enumTypeOrContent,
                     new Path(startingPage.getFilename()),

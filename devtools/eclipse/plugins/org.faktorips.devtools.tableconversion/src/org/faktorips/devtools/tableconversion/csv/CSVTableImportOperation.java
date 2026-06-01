@@ -32,8 +32,8 @@ import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
-import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
@@ -69,21 +69,17 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     // CSON: ParameterNumberCheck
 
     private void initDatatypes() {
-        IColumn[] columns = structure.getColumns();
-        datatypes = new Datatype[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
-        }
+        setDatatypes(DatatypesHelper.findTableColumnDatatypes(tableRows.getIpsProject(), structure));
     }
 
     @Override
     public void run(IProgressMonitor monitor) {
         try {
-            monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+            monitor.beginTask("Import file " + getSourceFile(), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
             MessageList ml = structure.validate(structure.getIpsProject());
             if (ml.containsErrorMsg()) {
-                messageList.add(ml);
+                getMessageList().add(ml);
                 return;
             }
 
@@ -92,12 +88,12 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 return;
             }
 
-            File importFile = new File(sourceFile);
+            File importFile = new File(getSourceFile());
             try (FileInputStream fis = new FileInputStream(importFile)) {
                 // update datatypes because the structure might be altered if this operation is
                 // reused
                 initDatatypes();
-                messageList.add(fillGeneration(fis));
+                getMessageList().add(fillGeneration(fis));
             }
 
             monitor.worked(1);
@@ -109,7 +105,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             monitor.done();
         } catch (IOException | CsvValidationException e) {
             throw new IpsException(new IpsStatus(
-                    NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
+                    NLS.bind(Messages.getString("CSVImportOperation_errRead"), getSourceFile()), e)); //$NON-NLS-1$
         }
     }
 
@@ -120,7 +116,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 .withCSVParser(new CSVParserBuilder().withSeparator(fieldSeparator).build()).build()) {
             // row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0
             // contains data. thus read over header if necessary
-            if (ignoreColumnHeaderRow) {
+            if (isIgnoreColumnHeaderRow()) {
                 reader.readNext();
             }
 
@@ -133,7 +129,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     }
 
     private char getFieldSeparator() {
-        String fieldSeparator = format.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
+        String fieldSeparator = getFormat().getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);
         if (fieldSeparator == null || fieldSeparator.length() != 1) {
             return ',';
         }
@@ -150,13 +146,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     private MessageList readFromCsv(CSVReader reader) throws IOException, CsvValidationException {
         MessageList msgList = new MessageList();
         int expectedFields = structure.getNumOfColumns();
-        Datatype[] datatypes = new Datatype[expectedFields];
-        for (int i = 0; i < datatypes.length; i++) {
-            String datatype = structure.getColumns()[i].getDatatype();
-            datatypes[i] = structure.getIpsProject().findDatatype(datatype);
-        }
+        Datatype[] datatypes = getDatatypes();
         String[] readLine;
-        int rowNumber = ignoreColumnHeaderRow ? 2 : 1;
+        int rowNumber = isIgnoreColumnHeaderRow() ? 2 : 1;
         while ((readLine = reader.readNext()) != null) {
             if (isEmptyRow(readLine)) {
                 rowNumber++;
@@ -170,7 +162,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             int columns = Math.min(structure.getNumOfColumns(), readLine.length);
             String[] values = new String[columns];
             for (int i = 0; i < columns; i++) {
-                values[i] = readValueFromCsv(i, readLine, datatypes, nullRepresentationString,
+                values[i] = readValueFromCsv(i, readLine, datatypes, getNullRepresentationString(),
                         msgList, rowNumber);
             }
 
@@ -199,7 +191,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                             Integer.valueOf(rowNumber), Integer.valueOf(i));
                     messageList.add(new Message("", msg, Message.ERROR));
                 }
-                ipsValue = format.getIpsValue(csvField, datatypes[i], messageList);
+                ipsValue = getFormat().getIpsValue(csvField, datatypes[i], messageList);
             }
         }
 

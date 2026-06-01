@@ -1,16 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.excel;
 
-import static org.junit.Assert.assertTrue;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 
@@ -19,9 +20,9 @@ import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,11 +37,7 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        ipsProject = newIpsProject("test");
-        IIpsProjectProperties props = ipsProject.getProperties();
-        String[] datatypes = getColumnDatatypes();
-        props.setPredefinedDatatypesUsed(datatypes);
-        ipsProject.setProperties(props);
+        ipsProject = initializeIpsProject("test");
 
         format = new ExcelTableFormat();
         format.setDefaultExtension(".xls");
@@ -69,7 +66,8 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertTrue(ml.toString(), ml.isEmpty());
+
+        assertThat(ml, isEmpty());
     }
 
     @Test
@@ -79,7 +77,46 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumContent, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertTrue(ml.toString(), ml.isEmpty());
+
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
+    public void testExportWithIdAndName_EnumType() throws Exception {
+        IEnumType enumReferencingEnum = createEnumReferencingEnum(ipsProject);
+        format.setProperty(ExcelTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "true");
+        MessageList ml = new MessageList();
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumReferencingEnum, filename, format, "NULL", true,
+                ml);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml, isEmpty());
+
+        String cellValue = readExcelCell(filename, 1, 2);
+
+        assertThat(cellValue, Matchers.containsString("Jährlich (1)"));
+    }
+
+    @Test
+    public void testExportWithIdAndName_EnumContent() throws Exception {
+        var modelProject = initializeIpsProject("model");
+        setProjectProperty(ipsProject, p -> {
+            var ipsObjectPath = p.getIpsObjectPath();
+            ipsObjectPath.newIpsProjectRefEntry(modelProject);
+            p.setIpsObjectPath(ipsObjectPath);
+        });
+        IEnumContent enumReferencingEnum = createEnumReferencingEnumInSeparateProjects(modelProject, ipsProject);
+        format.setProperty(ExcelTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "true");
+        MessageList ml = new MessageList();
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumReferencingEnum, filename, format, "NULL", true,
+                ml);
+        op.run(new NullProgressMonitor());
+
+        assertThat(ml, isEmpty());
+
+        String cellValue = readExcelCell(filename, 1, 1);
+
+        assertThat(cellValue, Matchers.containsString("Jährlich (1)"));
     }
 
     @Test
@@ -90,7 +127,8 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertTrue(ml.toString(), ml.isEmpty());
+
+        assertThat(ml, isEmpty());
     }
 
 }

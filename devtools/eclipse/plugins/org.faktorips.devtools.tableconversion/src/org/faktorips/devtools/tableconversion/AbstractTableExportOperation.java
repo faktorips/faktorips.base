@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
@@ -34,32 +35,66 @@ public abstract class AbstractTableExportOperation implements ICoreRunnable {
     /**
      * The IPS object to export
      */
-    protected IIpsObject typeToExport;
+    private IIpsObject typeToExport;
 
     /**
      * The qualified name of the target-file for export.
      */
-    protected String filename;
+    private String filename;
 
     /**
      * The format to use to convert data.
      */
-    protected ITableFormat format;
+    private ITableFormat format;
 
     /**
      * The string to use if the value is null.
      */
-    protected String nullRepresentationString;
+    private String nullRepresentationString;
 
     /**
      * Column header names are included or not.
      */
-    protected boolean exportColumnHeaderRow;
+    private boolean exportColumnHeaderRow;
 
     /**
      * List of messages describing problems occurred during export.
      */
-    protected MessageList messageList;
+    private MessageList messageList;
+
+    protected AbstractTableExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
+            String nullRepresentationString, boolean exportColumnHeaderRow, MessageList messageList) {
+        this.typeToExport = typeToExport;
+        this.filename = filename;
+        this.format = format;
+        this.nullRepresentationString = nullRepresentationString;
+        this.exportColumnHeaderRow = exportColumnHeaderRow;
+        this.messageList = messageList;
+    }
+
+    protected IIpsObject getTypeToExport() {
+        return typeToExport;
+    }
+
+    protected String getFilename() {
+        return filename;
+    }
+
+    protected ITableFormat getFormat() {
+        return format;
+    }
+
+    protected String getNullRepresentationString() {
+        return nullRepresentationString;
+    }
+
+    protected boolean isExportColumnHeaderRow() {
+        return exportColumnHeaderRow;
+    }
+
+    protected MessageList getMessageList() {
+        return messageList;
+    }
 
     @Override
     public abstract void run(IProgressMonitor monitor) throws IpsException;
@@ -79,9 +114,10 @@ public abstract class AbstractTableExportOperation implements ICoreRunnable {
      * @param datatype The datatype to check
      * @return true if the datatype is a NamedDatatype supporting names and the export option is
      *             enabled
+     * @since 26.7
      */
     protected boolean shouldExportEnumAsNameAndId(Datatype datatype) {
-        String property = format.getProperty("enumExportAsNameAndId"); //$NON-NLS-1$
+        String property = getFormat().getProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID);
         return "true".equals(property) //$NON-NLS-1$
                 && datatype instanceof NamedDatatype
                 && ((NamedDatatype)datatype).isSupportingNames();
@@ -93,6 +129,7 @@ public abstract class AbstractTableExportOperation implements ICoreRunnable {
      * @param datatype The NamedDatatype to get the name from
      * @param id The ID value to format
      * @return The formatted string "Name (ID)" or just the ID if name is not available
+     * @since 26.7
      */
     protected String formatEnumAsNameAndId(NamedDatatype datatype, String id) {
         String name = datatype.getValueName(id);

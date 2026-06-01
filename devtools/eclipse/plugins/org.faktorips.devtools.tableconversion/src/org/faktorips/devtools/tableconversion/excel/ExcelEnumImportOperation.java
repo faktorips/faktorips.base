@@ -11,7 +11,6 @@
 package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -20,12 +19,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IInternationalString;
-import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
@@ -35,6 +31,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.Messages;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
@@ -60,15 +57,8 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
     @Override
     protected void initDatatypes() {
         try {
-            IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());
-            boolean includeLiteralName = valueContainer instanceof IEnumType;
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
-            datatypes = new Datatype[enumAttributes.size()];
-            for (int i = 0; i < datatypes.length; i++) {
-                IEnumAttribute enumAttribute = enumAttributes.get(i);
-                ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
-                datatypes[i] = datatype;
-            }
+            setDatatypes(DatatypesHelper.findEnumAttributeDatatypes(valueContainer,
+                    valueContainer instanceof IEnumType));
         } catch (IpsException e) {
             throw new RuntimeException(e);
         }
@@ -84,7 +74,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         }
         try {
             initWorkbookAndSheet();
-            progressMonitor.beginTask("Import file " + sourceFile, 2 + getNumberOfExcelRows(getSheet())); //$NON-NLS-1$
+            progressMonitor.beginTask("Import file " + getSourceFile(), 2 + getNumberOfExcelRows(getSheet())); //$NON-NLS-1$
 
             // Update datatypes because the structure might be altered if this operation is reused.
             initDatatypes();
@@ -98,14 +88,14 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             progressMonitor.done();
         } catch (IOException e) {
             throw new IpsException(new IpsStatus(
-                    NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
+                    NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, getSourceFile()), e));
         }
     }
 
     private int getNumberOfExcelRows(Sheet sheet) {
         int numberRows = 0;
         // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
-        int startRow = ignoreColumnHeaderRow ? 1 : 0;
+        int startRow = isIgnoreColumnHeaderRow() ? 1 : 0;
         for (int i = startRow;; i++) {
             Row sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
@@ -119,7 +109,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
 
     private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor) {
 
-        int startRow = ignoreColumnHeaderRow ? 1 : 0;
+        int startRow = isIgnoreColumnHeaderRow() ? 1 : 0;
         IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());
         boolean includeLiteralName = valueContainer instanceof IEnumType;
         int expectedFields = enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
@@ -139,10 +129,10 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                     objects[1] = Integer.valueOf(j);
                     objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                     String msg = NLS.bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
-                    messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+                    getMessageList().add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
                     setValueAttribute(enumAttributeValue, null);
                 } else {
-                    setValueAttribute(enumAttributeValue, readCell(cell, datatypes[j]));
+                    setValueAttribute(enumAttributeValue, readCell(cell, getDatatypes()[j]));
                 }
             }
 

@@ -22,6 +22,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
@@ -64,7 +65,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
     public void run(IProgressMonitor monitor) {
         IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         // Currently, there is only one generation per table contents
-        ITableContents contents = getTableContents(typeToExport);
+        ITableContents contents = getTableContents(getTypeToExport());
         ITableRows currentTableRows = contents.getTableRows();
 
         progressMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentTableRows.getNumOfRows());
@@ -73,24 +74,24 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         progressMonitor.worked(1);
 
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
-        exportHeader(getSheet(), structure.getColumns(), exportColumnHeaderRow);
+        exportHeader(getSheet(), structure.getColumns(), isExportColumnHeaderRow());
         progressMonitor.worked(1);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(getSheet(), currentTableRows, structure, progressMonitor, exportColumnHeaderRow);
+        exportDataCells(getSheet(), currentTableRows, structure, progressMonitor, isExportColumnHeaderRow());
         if (progressMonitor.isCanceled()) {
             return;
         }
 
         try {
-            FileOutputStream out = new FileOutputStream(new File(filename));
+            FileOutputStream out = new FileOutputStream(new File(getFilename()));
             getWorkbook().write(out);
             out.close();
         } catch (IOException e) {
             IpsPlugin.log(e);
-            messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
+            getMessageList().add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
         progressMonitor.done();
     }
@@ -134,13 +135,8 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) {
 
-        ITableContents contents = getTableContents(typeToExport);
-
-        // init datatypes
-        Datatype[] datatypes = new Datatype[contents.getNumOfColumns()];
-        for (int i = 0; i < datatypes.length; i++) {
-            datatypes[i] = structure.getIpsProject().findDatatype(structure.getColumns()[i].getDatatype());
-        }
+        ITableContents contents = getTableContents(getTypeToExport());
+        Datatype[] datatypes = DatatypesHelper.findTableColumnDatatypes(contents.getIpsProject(), structure);
 
         IRow[] contentRows = generation.getRows();
         int offset = exportColumnHeaderRow ? 1 : 0;

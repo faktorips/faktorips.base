@@ -60,12 +60,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
     protected AbstractExcelExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
 
-        this.typeToExport = typeToExport;
-        this.filename = filename;
-        this.format = format;
-        this.nullRepresentationString = nullRepresentationString;
-        this.exportColumnHeaderRow = exportColumnHeaderRow;
-        messageList = list;
+        super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
     }
 
     protected Workbook getWorkbook() {
@@ -89,7 +84,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
     }
 
     private void createWorkbook() {
-        if (filename.endsWith(XLSX_FILE_EXTENSION)) {
+        if (getFilename().endsWith(XLSX_FILE_EXTENSION)) {
             workbook = new XSSFWorkbook();
         } else {
             workbook = new HSSFWorkbook();
@@ -104,7 +99,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
      * @param datatype The datatype defined for the value.
      */
     protected void fillCell(Cell cell, String ipsValue, Datatype datatype) {
-        Object obj = format.getExternalValue(ipsValue, datatype, messageList);
+        Object obj = getFormat().getExternalValue(ipsValue, datatype, getMessageList());
         if (obj instanceof Date) {
             cell.setCellValue((Date)obj);
             cell.setCellStyle(dateStyle);
@@ -114,7 +109,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
             try {
                 cell.setCellValue(((Number)obj).doubleValue());
             } catch (NullPointerException npe) {
-                cell.setCellValue(nullRepresentationString);
+                cell.setCellValue(getNullRepresentationString());
             }
             return;
         }
@@ -124,12 +119,12 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
         }
         if (obj != null) {
             String cellValue = obj.toString();
-            if (shouldExportEnumAsNameAndId(datatype) && !cellValue.equals(nullRepresentationString)) {
+            if (shouldExportEnumAsNameAndId(datatype) && !cellValue.equals(getNullRepresentationString())) {
                 cellValue = formatEnumAsNameAndId((NamedDatatype)datatype, cellValue);
             }
             cell.setCellValue(cellValue);
         } else {
-            cell.setCellValue(nullRepresentationString);
+            cell.setCellValue(getNullRepresentationString());
         }
     }
 

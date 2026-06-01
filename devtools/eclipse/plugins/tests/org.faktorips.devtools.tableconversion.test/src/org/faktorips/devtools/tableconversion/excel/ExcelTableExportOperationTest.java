@@ -13,23 +13,16 @@ package org.faktorips.devtools.tableconversion.excel;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.faktorips.testsupport.IpsMatchers;
 
 import java.io.File;
-import java.io.FileInputStream;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.testsupport.IpsMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,11 +37,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        ipsProject = newIpsProject("test");
-        IIpsProjectProperties props = ipsProject.getProperties();
-        String[] datatypes = getColumnDatatypes();
-        props.setPredefinedDatatypesUsed(datatypes);
-        ipsProject.setProperties(props);
+        ipsProject = initializeIpsProject("test");
 
         format = new ExcelTableFormat();
         format.setDefaultExtension(".xls");
@@ -114,16 +103,26 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
         ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         String cellValue = readExcelCell(filename, 1, 1);
-        assertThat(cellValue.contains("Jährlich (1)"), is(true));
+        assertThat(cellValue, Matchers.containsString("Jährlich (1)"));
     }
 
-    private String readExcelCell(String filepath, int rowIndex, int cellIndex) throws Exception {
-        try (FileInputStream fis = new FileInputStream(filepath);
-                Workbook workbook = WorkbookFactory.create(fis)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            Row row = sheet.getRow(rowIndex);
-            return row.getCell(cellIndex).getStringCellValue();
-        }
+    @Test
+    public void testExportEnumWithNameAndIdFormat_SeparateProject() throws Exception {
+        var modelProject = initializeIpsProject("model");
+        setProjectProperty(ipsProject, p -> {
+            var ipsObjectPath = p.getIpsObjectPath();
+            ipsObjectPath.newIpsProjectRefEntry(modelProject);
+            p.setIpsObjectPath(ipsObjectPath);
+        });
+        ITableContents contents = createTableContentsWithEnumInSeparatedProjects(ipsProject, modelProject);
+
+        format.setProperty(ExcelTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "true");
+
+        MessageList ml = new MessageList();
+        ExcelTableExportOperation op = new ExcelTableExportOperation(contents, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        String cellValue = readExcelCell(filename, 1, 1);
+        assertThat(cellValue, Matchers.containsString("Jährlich (1)"));
     }
 
 }

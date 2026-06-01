@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.Locale;
 
 import com.opencsv.CSVParserBuilder;
@@ -26,12 +25,11 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.model.IInternationalString;
-import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
@@ -78,15 +76,7 @@ public class CSVEnumImportOperation implements ICoreRunnable {
 
     private void initDatatypes(IEnumValueContainer valueContainer) {
         try {
-            List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
-            datatypes = new Datatype[enumAttributes.size()];
-
-            for (int i = 0; i < datatypes.length; i++) {
-                IEnumAttribute enumAttribute = enumAttributes.get(i);
-                ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
-                datatypes[i] = datatype;
-            }
+            datatypes = DatatypesHelper.findEnumAttributeDatatypes(valueContainer, includeLiteralName);
         } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);

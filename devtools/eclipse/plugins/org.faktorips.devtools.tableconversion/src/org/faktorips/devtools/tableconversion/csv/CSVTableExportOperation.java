@@ -15,9 +15,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 
@@ -37,6 +34,7 @@ import org.faktorips.devtools.model.tablecontents.Messages;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
@@ -58,17 +56,12 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      */
     public CSVTableExportOperation(IIpsObject typeToExport, String filename, ITableFormat format,
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
+        super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
         if (!(typeToExport instanceof ITableContents)) {
             throw new IllegalArgumentException(
                     "The given IPS object is not supported. Expected ITableContents, but got '" //$NON-NLS-1$
                             + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
         }
-        this.typeToExport = typeToExport;
-        this.filename = filename;
-        this.format = format;
-        this.nullRepresentationString = nullRepresentationString;
-        this.exportColumnHeaderRow = exportColumnHeaderRow;
-        messageList = list;
     }
 
     @Override
@@ -78,7 +71,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             localMonitor = new NullProgressMonitor();
         }
 
-        ITableContents contents = getTableContents(typeToExport);
+        ITableContents contents = getTableContents(getTypeToExport());
 
         ITableRows currentTableRows = contents.getTableRows();
 
@@ -88,41 +81,41 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
         if (structure == null) {
             String text = NLS.bind(Messages.TableExportOperation_errStructureNotFound, contents.getTableStructure());
-            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
+            getMessageList().add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
         localMonitor.worked(1);
 
-        messageList.add(contents.validate(contents.getIpsProject()));
-        if (messageList.containsErrorMsg()) {
+        getMessageList().add(contents.validate(contents.getIpsProject()));
+        if (getMessageList().containsErrorMsg()) {
             return;
         }
         localMonitor.worked(1);
 
-        messageList.add(structure.validate(contents.getIpsProject()));
-        if (messageList.containsErrorMsg()) {
+        getMessageList().add(structure.validate(contents.getIpsProject()));
+        if (getMessageList().containsErrorMsg()) {
             return;
         }
 
         // if we have reached here, the environment is valid, so try to export the data
         localMonitor.worked(1);
 
-        char fieldSeparatorChar = getFieldSeparatorCSV(format);
-        try (FileOutputStream out = new FileOutputStream(new File(filename));
+        char fieldSeparatorChar = getFieldSeparatorCSV(getFormat());
+        try (FileOutputStream out = new FileOutputStream(new File(getFilename()));
                 ICSVWriter writer = new CSVWriterBuilder(new BufferedWriter(new OutputStreamWriter(out)))
                         .withSeparator(fieldSeparatorChar).build()) {
             if (!localMonitor.isCanceled()) {
                 // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
                 // Zielordner
-                exportHeader(writer, structure.getColumns(), exportColumnHeaderRow);
+                exportHeader(writer, structure.getColumns(), isExportColumnHeaderRow());
 
                 localMonitor.worked(1);
 
-                exportDataCells(writer, contents, currentTableRows, structure, localMonitor, exportColumnHeaderRow);
+                exportDataCells(writer, contents, currentTableRows, structure, localMonitor, isExportColumnHeaderRow());
             }
         } catch (IOException e) {
             IpsPlugin.log(e);
-            messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
+            getMessageList().add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
     }
 
@@ -146,18 +139,14 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) {
 
-        List<Datatype> datatypes = new ArrayList<>(contents.getNumOfColumns());
-        for (IColumn column : structure.getColumns()) {
-            Datatype datatype = structure.getIpsProject().findDatatype(column.getDatatype());
-            datatypes.add(datatype);
-        }
+        Datatype[] datatypes = DatatypesHelper.findTableColumnDatatypes(contents.getIpsProject(), structure);
 
         int numOfColumns = structure.getNumOfColumns();
         String[] fieldsToExport = new String[numOfColumns];
         for (IRow row : tableRows.getRows()) {
             for (int i = 0; i < numOfColumns; i++) {
-                fieldsToExport[i] = valueToCsv(row.getValue(i), datatypes.get(i), nullRepresentationString,
-                        messageList);
+                fieldsToExport[i] = valueToCsv(row.getValue(i), datatypes[i], getNullRepresentationString(),
+                        getMessageList());
             }
             writer.writeNext(fieldsToExport);
 
@@ -172,7 +161,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
             Datatype datatype,
             String nullRepresentationString,
             MessageList messageList) {
-        Object obj = format.getExternalValue(ipsValue, datatype, messageList);
+        Object obj = getFormat().getExternalValue(ipsValue, datatype, messageList);
 
         String csvField;
         try {

@@ -12,9 +12,14 @@ package org.faktorips.devtools.tableconversion;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -26,8 +31,11 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
+import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
@@ -60,6 +68,15 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
     public String[] getColumnDatatypes() {
         return datatypes;
+    }
+
+    protected IIpsProject initializeIpsProject(String name) {
+        var ipsProject = newIpsProject(name);
+        IIpsProjectProperties props = ipsProject.getProperties();
+        String[] datatypes = getColumnDatatypes();
+        props.setPredefinedDatatypesUsed(datatypes);
+        ipsProject.setProperties(props);
+        return ipsProject;
     }
 
     /**
@@ -434,21 +451,16 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * Creates valid table contents with an enum column for testing enum export/import.
      */
     protected IEnumType createPaymentModeEnum(IIpsProject ipsProject) {
-        IEnumType paymentMode = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "PaymentMode");
-        paymentMode.setExtensible(false);
-        paymentMode.newEnumLiteralNameAttribute();
+        IEnumType paymentMode = createPaymentModeEnumType(ipsProject, false);
 
-        IEnumAttribute idAttr = paymentMode.newEnumAttribute();
-        idAttr.setName("id");
-        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
-        idAttr.setIdentifier(true);
-        idAttr.setUsedAsNameInFaktorIpsUi(false);
+        createPaymentModeEnumValues(paymentMode);
 
-        IEnumAttribute nameAttr = paymentMode.newEnumAttribute();
-        nameAttr.setName("name");
-        nameAttr.setDatatype(Datatype.STRING.getQualifiedName());
-        nameAttr.setUsedAsNameInFaktorIpsUi(true);
+        paymentMode.getIpsSrcFile().save(null);
 
+        return paymentMode;
+    }
+
+    private void createPaymentModeEnumValues(IEnumValueContainer paymentMode) {
         IEnumValue value1 = paymentMode.newEnumValue();
         List<IEnumAttributeValue> enumAttributeValues1 = value1.getEnumAttributeValues();
         enumAttributeValues1.get(0).setValue(ValueFactory.createStringValue("JAEHRLICH"));
@@ -466,10 +478,6 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumAttributeValues3.get(0).setValue(ValueFactory.createStringValue("FOO_FOO"));
         enumAttributeValues3.get(1).setValue(ValueFactory.createStringValue("foo (bar)"));
         enumAttributeValues3.get(2).setValue(ValueFactory.createStringValue("foo foo"));
-
-        paymentMode.getIpsSrcFile().save(null);
-
-        return paymentMode;
     }
 
     /**
@@ -478,6 +486,10 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     protected ITableStructure createTableStructureWithEnum(IIpsProject ipsProject) {
         IEnumType paymentMode = createPaymentModeEnum(ipsProject);
 
+        return createTableStructureWithEnum(ipsProject, paymentMode);
+    }
+
+    private ITableStructure createTableStructureWithEnum(IIpsProject ipsProject, IEnumType paymentMode) {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "TestStructureEnum");
         IColumn col1 = structure.newColumn();
@@ -489,7 +501,6 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         col2.setDatatype(paymentMode.getQualifiedName());
 
         structure.getIpsSrcFile().save(null);
-
         return structure;
     }
 
@@ -500,6 +511,10 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     protected ITableContents createTableContentsWithEnum(IIpsProject ipsProject) {
         ITableStructure structure = createTableStructureWithEnum(ipsProject);
 
+        return createTableContentsWithEnum(ipsProject, structure);
+    }
+
+    private ITableContents createTableContentsWithEnum(IIpsProject ipsProject, ITableStructure structure) {
         // Create table contents
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "TestContentsEnum");
@@ -517,8 +532,137 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row2.setValue(1, "12");
 
         contents.getIpsSrcFile().save(null);
-
         return contents;
+    }
+
+    protected ITableContents createTableContentsWithEnumInSeparatedProjects(IIpsProject ipsProject,
+            IIpsProject modelProject) {
+        ITableStructure structure = createTableStructureWithEnumInSeparatedProjects(ipsProject, modelProject);
+
+        return createTableContentsWithEnum(ipsProject, structure);
+    }
+
+    private ITableStructure createTableStructureWithEnumInSeparatedProjects(IIpsProject ipsProject,
+            IIpsProject modelProject) {
+        IEnumType paymentMode = createPaymentModeEnumInSeparatedProjects(ipsProject, modelProject);
+
+        ITableStructure structure = createTableStructureWithEnum(modelProject, paymentMode);
+        setProjectProperty(ipsProject, p -> {
+            IIpsObjectPath ipsObjectPath = p.getIpsObjectPath();
+            ipsObjectPath.newIpsProjectRefEntry(modelProject);
+            p.setIpsObjectPath(ipsObjectPath);
+        });
+        return structure;
+    }
+
+    private IEnumType createPaymentModeEnumInSeparatedProjects(IIpsProject ipsProject, IIpsProject modelProject) {
+        IEnumType paymentMode = createPaymentModeEnumType(modelProject, true);
+
+        paymentMode.getIpsSrcFile().save(null);
+
+        IEnumContent paymentModeContent = (IEnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT,
+                "PaymentModeContent");
+        paymentModeContent.setEnumType("PaymentMode");
+
+        createPaymentModeEnumValues(paymentMode);
+
+        paymentModeContent.getIpsSrcFile().save(null);
+        return paymentMode;
+    }
+
+    private IEnumType createPaymentModeEnumType(IIpsProject modelProject, boolean extensible) {
+        IEnumType paymentMode = (IEnumType)newIpsObject(modelProject, IpsObjectType.ENUM_TYPE, "PaymentMode");
+        paymentMode.setExtensible(extensible);
+        if (extensible) {
+            paymentMode.setEnumContentName("PaymentModeContent");
+        }
+        paymentMode.newEnumLiteralNameAttribute();
+
+        IEnumAttribute idAttr = paymentMode.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setIdentifier(true);
+        idAttr.setUsedAsNameInFaktorIpsUi(false);
+
+        IEnumAttribute nameAttr = paymentMode.newEnumAttribute();
+        nameAttr.setName("name");
+        nameAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        nameAttr.setUsedAsNameInFaktorIpsUi(true);
+        return paymentMode;
+    }
+
+    protected IEnumType createEnumReferencingEnum(IIpsProject ipsProject) {
+        IEnumType paymentMode = createPaymentModeEnum(ipsProject);
+        IEnumType paymentModeIndex = createPaymentModeIndexEnumType(ipsProject, false, paymentMode);
+
+        createPaymentModeIndexEnumValues(paymentModeIndex);
+        return paymentModeIndex;
+    }
+
+    protected IEnumContent createEnumReferencingEnumInSeparateProjects(IIpsProject modelProject,
+            IIpsProject ipsProject) {
+        IEnumType paymentMode = createPaymentModeEnumInSeparatedProjects(ipsProject, modelProject);
+        IEnumType paymentModeIndex = createPaymentModeIndexEnumType(modelProject, true, paymentMode);
+
+        IEnumContent paymentModeIndexContent = (IEnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT,
+                "PaymentModeIndexContent");
+        paymentModeIndexContent.setEnumType(paymentModeIndex.getQualifiedName());
+
+        createPaymentModeIndexEnumValues(paymentModeIndexContent);
+        return paymentModeIndexContent;
+    }
+
+    private IEnumType createPaymentModeIndexEnumType(IIpsProject modelProject,
+            boolean extensible,
+            IEnumType paymentModeEnumType) {
+        IEnumType paymentModeIndex = (IEnumType)newIpsObject(modelProject, IpsObjectType.ENUM_TYPE, "PaymentModeIndex");
+        paymentModeIndex.setExtensible(extensible);
+        if (extensible) {
+            paymentModeIndex.setEnumContentName("PaymentModeIndexContent");
+        }
+        paymentModeIndex.newEnumLiteralNameAttribute();
+
+        IEnumAttribute idAttr = paymentModeIndex.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setIdentifier(true);
+        idAttr.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumAttribute pamentModeAttr = paymentModeIndex.newEnumAttribute();
+        pamentModeAttr.setName("paymentMode");
+        pamentModeAttr.setDatatype(paymentModeEnumType.getQualifiedName());
+        pamentModeAttr.setUsedAsNameInFaktorIpsUi(false);
+        paymentModeIndex.getIpsSrcFile().save(null);
+        return paymentModeIndex;
+    }
+
+    private void createPaymentModeIndexEnumValues(IEnumValueContainer paymentModeIndex) {
+        IEnumValue value1 = paymentModeIndex.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues1 = value1.getEnumAttributeValues();
+        int i = 0;
+        if (paymentModeIndex instanceof IEnumType) {
+            enumAttributeValues1.get(i++).setValue(ValueFactory.createStringValue("A"));
+        }
+        enumAttributeValues1.get(i++).setValue(ValueFactory.createStringValue("a"));
+        enumAttributeValues1.get(i++).setValue(ValueFactory.createStringValue("1"));
+
+        IEnumValue value2 = paymentModeIndex.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues2 = value2.getEnumAttributeValues();
+        i = 0;
+        if (paymentModeIndex instanceof IEnumType) {
+            enumAttributeValues1.get(i++).setValue(ValueFactory.createStringValue("B"));
+        }
+        enumAttributeValues2.get(i++).setValue(ValueFactory.createStringValue("b"));
+        enumAttributeValues2.get(i++).setValue(ValueFactory.createStringValue("12"));
+    }
+
+    protected String readExcelCell(String filepath, int rowIndex, int cellIndex) throws Exception {
+        try (FileInputStream fis = new FileInputStream(filepath);
+                Workbook workbook = WorkbookFactory.create(fis)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            Row row = sheet.getRow(rowIndex);
+            return row.getCell(cellIndex).getStringCellValue();
+        }
     }
 
 }

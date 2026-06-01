@@ -28,7 +28,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.core.tableconversion.AbstractTableImportOperation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -78,16 +77,16 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
                 if (DateUtil.isCellDateFormatted(cell) || isReserved(cell.getCellStyle().getDataFormat())) {
                     Date dateCellValue = cell.getDateCellValue();
                     if (mightBeOpenOffice) {
-                        dateCellValue = correctOffset(cell, messageList);
+                        dateCellValue = correctOffset(cell, getMessageList());
                     }
-                    return format.getIpsValue(dateCellValue, datatype, messageList);
+                    return getFormat().getIpsValue(dateCellValue, datatype, getMessageList());
                 }
                 double numericCellValue = cell.getNumericCellValue();
                 BigDecimal roundedResult = roundNumericCellValue(numericCellValue);
-                return format.getIpsValue(roundedResult, datatype, messageList);
+                return getFormat().getIpsValue(roundedResult, datatype, getMessageList());
             }
             case CellType.BOOLEAN -> {
-                return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
+                return getFormat().getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, getMessageList());
             }
             default -> {
                 return readStringCell(cell, datatype);
@@ -97,7 +96,7 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
 
     private String readStringCell(Cell cell, Datatype datatype) {
         String value = cell.getStringCellValue();
-        if (nullRepresentationString.equals(value)) {
+        if (getNullRepresentationString().equals(value)) {
             return null;
         }
         if (shouldParseEnumNameAndId(datatype) && isNameAndIdFormat(value, datatype)) {
@@ -106,9 +105,9 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
             String msg = NLS.bind(
                     "Row {0}, column {1}: Value looks like ''Name (ID)'' format but import option is not enabled.", //$NON-NLS-1$
                     Integer.valueOf(cell.getRowIndex()), Integer.valueOf(cell.getColumnIndex()));
-            messageList.add(new Message("", msg, Message.ERROR));
+            getMessageList().add(new Message("", msg, Message.ERROR));
         }
-        return format.getIpsValue(value, datatype, messageList);
+        return getFormat().getIpsValue(value, datatype, getMessageList());
     }
 
     private boolean isReserved(short dataFormatIndex) {
@@ -162,7 +161,7 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
     }
 
     private Workbook newWorkbook() throws IOException {
-        File importFile = new File(sourceFile);
+        File importFile = new File(getSourceFile());
         try (FileInputStream fis = new FileInputStream(importFile)) {
             workbook = WorkbookFactory.create(fis);
             checkForOpenOfficeFormat(workbook);

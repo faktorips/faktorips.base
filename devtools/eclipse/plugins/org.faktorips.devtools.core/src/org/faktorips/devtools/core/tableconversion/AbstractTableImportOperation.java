@@ -31,36 +31,36 @@ public abstract class AbstractTableImportOperation implements ICoreRunnable {
     /**
      * The qualified name of the file to import from.
      */
-    protected String sourceFile;
+    private String sourceFile;
 
     /**
      * Data types for the columns. The data type at index 1 is the data type defined in the
      * structure for column at index 1.
      */
-    protected Datatype[] datatypes;
+    private Datatype[] datatypes;
 
     /**
      * The format which handles data conversion
      */
-    protected ITableFormat format;
+    private ITableFormat format;
 
     /**
      * String representing <code>null</code>.
      */
-    protected String nullRepresentationString;
+    private String nullRepresentationString;
 
     /**
      * List of messages describing problems occurred during import.
      */
-    protected MessageList messageList;
+    private MessageList messageList;
 
-    protected boolean importIntoExisting;
+    private boolean importIntoExisting;
 
     /**
      * <code>true</code> if the first row contains column header and should be ignored
      * <code>false</code> if the to be imported content contains no column header row.
      */
-    protected boolean ignoreColumnHeaderRow;
+    private boolean ignoreColumnHeaderRow;
 
     public AbstractTableImportOperation(String sourceFile, ITableFormat format, String nullRepresentationString,
             boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
@@ -76,6 +76,38 @@ public abstract class AbstractTableImportOperation implements ICoreRunnable {
     @Override
     public abstract void run(IProgressMonitor monitor) throws IpsException;
 
+    protected String getSourceFile() {
+        return sourceFile;
+    }
+
+    protected Datatype[] getDatatypes() {
+        return datatypes;
+    }
+
+    protected void setDatatypes(Datatype[] datatypes) {
+        this.datatypes = datatypes;
+    }
+
+    protected ITableFormat getFormat() {
+        return format;
+    }
+
+    protected String getNullRepresentationString() {
+        return nullRepresentationString;
+    }
+
+    protected MessageList getMessageList() {
+        return messageList;
+    }
+
+    protected boolean isImportIntoExisting() {
+        return importIntoExisting;
+    }
+
+    protected boolean isIgnoreColumnHeaderRow() {
+        return ignoreColumnHeaderRow;
+    }
+
     /**
      * Checks if the enum import with Name (ID) format option is enabled for the given datatype.
      *
@@ -84,7 +116,7 @@ public abstract class AbstractTableImportOperation implements ICoreRunnable {
      *             enabled
      */
     protected boolean shouldParseEnumNameAndId(Datatype datatype) {
-        String property = format.getProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID);
+        String property = getFormat().getProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID);
         return "true".equals(property) //$NON-NLS-1$
                 && datatype instanceof NamedDatatype
                 && ((NamedDatatype)datatype).isSupportingNames();

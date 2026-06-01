@@ -19,15 +19,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablecontents.Messages;
-import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -61,11 +60,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
 
     @Override
     protected void initDatatypes() {
-        IColumn[] columns = structure.getColumns();
-        datatypes = new Datatype[columns.length];
-        for (int i = 0; i < columns.length; i++) {
-            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
-        }
+        setDatatypes(DatatypesHelper.findTableColumnDatatypes(targetGeneration.getIpsProject(), structure));
     }
 
     @Override
@@ -78,7 +73,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         }
         try {
             initWorkbookAndSheet();
-            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + sourceFile,
+            monitor.beginTask(Messages.ExcelTableImportOperation_labelImportFile + getSourceFile(),
                     targetGeneration.getNumOfRows() + 2);
 
             // Update datatypes because the structure might be altered if this operation is reused.
@@ -94,13 +89,13 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             monitor.done();
         } catch (IOException e) {
             throw new IpsException(
-                    new IpsStatus(NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
+                    new IpsStatus(NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, getSourceFile()), e));
         }
     }
 
     private void fillGeneration(ITableRows generation, Sheet sheet, IProgressMonitor monitor) {
         // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
-        int startRow = ignoreColumnHeaderRow ? 1 : 0;
+        int startRow = isIgnoreColumnHeaderRow() ? 1 : 0;
         for (int i = startRow;; i++) {
             Row sheetRow = sheet.getRow(i);
             if (sheetRow == null) {
@@ -121,14 +116,14 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         for (int j = 0; j < structure.getNumOfColumns(); j++) {
             Cell cell = sheetRow.getCell(j);
             if (cell == null) {
-                if (IpsStringUtils.isNotEmpty(nullRepresentationString)) {
+                if (IpsStringUtils.isNotEmpty(getNullRepresentationString())) {
                     String msg = MessageFormat.format(Messages.ExcelTableImportOperation_msgImportEscapevalue, rowIndex,
                             j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
-                    messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+                    getMessageList().add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
                 }
                 genRow.setValue(j, null);
             } else {
-                genRow.setValue(j, readCell(cell, datatypes[j]));
+                genRow.setValue(j, readCell(cell, getDatatypes()[j]));
             }
         }
     }

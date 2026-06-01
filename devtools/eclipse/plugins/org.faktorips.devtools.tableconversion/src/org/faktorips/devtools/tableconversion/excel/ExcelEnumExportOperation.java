@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,12 +29,13 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.tablecontents.Messages;
+import org.faktorips.devtools.tableconversion.DatatypesHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
 /**
  * Operation to export Enum types or contents to an Excel file.
- * 
+ *
  * @author Roman Grutza, Alexander Weickmann
  */
 public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
@@ -43,8 +44,8 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
     private IEnumValueContainer enumValueContainer;
 
     /**
-     * 
-     * 
+     *
+     *
      * @param typeToExport An <code>IEnumValueContainer</code> instance.
      * @param filename The name of the file to export to.
      * @param format The format to use for transforming the data.
@@ -77,32 +78,31 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         IEnumType structure = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
         List<IEnumAttribute> attributes = structure
                 .getEnumAttributesIncludeSupertypeCopies(enumValueContainer instanceof IEnumType);
-        exportHeader(getSheet(), attributes, exportColumnHeaderRow);
+        exportHeader(getSheet(), attributes, isExportColumnHeaderRow());
         progressMonitor.worked(1);
         if (progressMonitor.isCanceled()) {
             return;
         }
 
-        exportDataCells(getSheet(), enumValueContainer.getEnumValues(), structure, progressMonitor,
-                exportColumnHeaderRow);
+        exportDataCells(getSheet(), enumValueContainer.getEnumValues(), progressMonitor, isExportColumnHeaderRow());
         if (progressMonitor.isCanceled()) {
             return;
         }
 
         try {
-            FileOutputStream out = new FileOutputStream(new File(filename));
+            FileOutputStream out = new FileOutputStream(new File(getFilename()));
             getWorkbook().write(out);
             out.close();
         } catch (IOException e) {
             IpsPlugin.log(e);
-            messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
+            getMessageList().add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
         }
         progressMonitor.done();
     }
 
     /**
      * Create the header as first row.
-     * 
+     *
      * @param sheet The sheet where to create the header
      * @param enumAttributes The column names defined by the structure.
      * @param exportColumnHeaderRow <code>true</code> if a header line containing the column names
@@ -121,16 +121,11 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
 
     private void exportDataCells(Sheet sheet,
             List<IEnumValue> values,
-            IEnumType structure,
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) {
 
-        boolean exportingEnumType = enumValueContainer instanceof IEnumType;
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(exportingEnumType);
-        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(exportingEnumType)];
-        for (int i = 0; i < datatypes.length; i++) {
-            datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
-        }
+        Datatype[] datatypes = DatatypesHelper.findEnumAttributeDatatypes(enumValueContainer,
+                enumValueContainer instanceof IEnumType);
 
         int offest = exportColumnHeaderRow ? 1 : 0;
         for (int i = 0; i < values.size(); i++) {
