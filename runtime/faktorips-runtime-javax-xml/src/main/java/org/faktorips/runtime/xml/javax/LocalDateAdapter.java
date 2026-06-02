@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,7 +18,7 @@ import org.faktorips.runtime.xml.IIpsLocalDateAdapter;
 /**
  * {@link XmlAdapter} for {@link LocalDate}. The adapter can be used for individual
  * elements/attributes or registered in {@code package-info.java}:
- * 
+ *
  * <pre>
  * <code>
  &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
@@ -28,7 +28,10 @@ import org.faktorips.runtime.xml.IIpsLocalDateAdapter;
  package com.acme.foo;
  * </code>
  * </pre>
+ *
+ * @deprecated for removal since 26.7, use faktorips-runtime-jakarta-xml instead
  */
+@Deprecated(forRemoval = true, since = "26.7")
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> implements IIpsLocalDateAdapter {
 
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,7 +33,11 @@ import org.w3c.dom.Node;
  * held by a Faktor-IPS {@link IRuntimeRepository}. See {@link #createMarshaller()} and
  * {@link #createUnmarshaller()} for more details. All other methods just delegate to the wrapped
  * context.
+ *
+ * @deprecated for removal since 26.7, use faktorips-runtime-jakarta-xml instead
  */
+@Deprecated(forRemoval = true, since = "26.7")
+@SuppressWarnings("removal")
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;
@@ -85,7 +89,7 @@ public class IpsJAXBContext extends JAXBContext {
         return unmarshaller;
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true, since = "26.7")
     @Override
     public javax.xml.bind.Validator createValidator() throws JAXBException {
         return wrappedCtx.createValidator();

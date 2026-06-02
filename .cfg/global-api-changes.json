@@ -294,7 +294,6 @@
             "justification": "Eclipse API update"
           },
           {
-            "ignore": true,
             "code": "java.method.addedToInterface",
             "new": "method <A> A org.osgi.framework.ServiceReference<S>::adapt(java.lang.Class<A>)",
             "justification": "Eclipse API update confusion"

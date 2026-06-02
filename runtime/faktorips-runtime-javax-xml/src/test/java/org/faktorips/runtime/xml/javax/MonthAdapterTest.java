@@ -15,6 +15,7 @@ import java.time.Month;
 
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class MonthAdapterTest {
 
     private final MonthAdapter adapter = new MonthAdapter();

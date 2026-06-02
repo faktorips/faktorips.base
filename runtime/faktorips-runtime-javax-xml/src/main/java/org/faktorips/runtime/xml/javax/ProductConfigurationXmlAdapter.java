@@ -24,7 +24,10 @@ import org.faktorips.runtime.xml.IpsProductConfigurationXmlAdapter;
  * When marshalling/unmarshalling a configurable policy component (and thus a
  * {@link ProductConfiguration}), the respective product component is preserved in XML by the means
  * of the product component ID.
+ *
+ * @deprecated for removal since 26.7, use faktorips-runtime-jakarta-xml instead
  */
+@Deprecated(forRemoval = true, since = "26.7")
 public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductConfiguration>
         implements IIpsXmlAdapter<String, ProductConfiguration> {
 

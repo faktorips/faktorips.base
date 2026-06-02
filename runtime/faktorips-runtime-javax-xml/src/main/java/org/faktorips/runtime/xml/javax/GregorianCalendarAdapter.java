@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,10 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * <p>
  * This adapter can be used, if you are only interested in the date portion of a
  * {@link GregorianCalendar}.
+ *
+ * @deprecated for removal since 26.7, use faktorips-runtime-jakarta-xml instead
  */
+@Deprecated(forRemoval = true, since = "26.7")
 public class GregorianCalendarAdapter extends XmlAdapter<String, GregorianCalendar> {
 
     // can't move this to an interface, as it can't have instance fields and DateFormat is not

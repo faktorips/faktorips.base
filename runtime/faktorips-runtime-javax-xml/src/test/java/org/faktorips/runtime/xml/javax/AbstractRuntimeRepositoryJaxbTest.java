@@ -43,6 +43,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.junit.Test;
 
+@SuppressWarnings("removal")
 public class AbstractRuntimeRepositoryJaxbTest {
 
     @Test

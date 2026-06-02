@@ -23,7 +23,11 @@ import org.faktorips.runtime.xml.IXmlBindingSupport;
 /**
  * Classic {@link JAXB} version of the {@link IXmlBindingSupport}, to be used with Java 8 and Java
  * EE up to 8.
+ *
+ * @deprecated for removal since 26.7, use faktorips-runtime-jakarta-xml instead
  */
+@Deprecated(forRemoval = true, since = "26.7")
+@SuppressWarnings("removal")
 public enum JaxbSupport implements IXmlBindingSupport<JAXBContext> {
     INSTANCE;
 

@@ -1,0 +1,110 @@
+{
+    "26.7.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.AbstractJaxbModelObject",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.DecimalAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.GregorianCalendarAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.IpsJAXBContext",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.JaxbSupport",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.LocalDateAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.LocalDateTimeAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.LocalTimeAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.MoneyAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.MonthAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.MonthDayAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.ProductConfigurationXmlAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.added",
+                        "new": "class org.faktorips.runtime.xml.javax.YearAdapter",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.attributeAdded",
+                        "old": "method javax.xml.bind.Validator org.faktorips.runtime.xml.javax.IpsJAXBContext::createValidator() throws javax.xml.bind.JAXBException",
+                        "new": "method javax.xml.bind.Validator org.faktorips.runtime.xml.javax.IpsJAXBContext::createValidator() throws javax.xml.bind.JAXBException",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "attribute": "forRemoval",
+                        "annotationType": "java.lang.Deprecated",
+                        "value": "true",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    },
+                    {
+                        "code": "java.annotation.attributeAdded",
+                        "old": "method javax.xml.bind.Validator org.faktorips.runtime.xml.javax.IpsJAXBContext::createValidator() throws javax.xml.bind.JAXBException",
+                        "new": "method javax.xml.bind.Validator org.faktorips.runtime.xml.javax.IpsJAXBContext::createValidator() throws javax.xml.bind.JAXBException",
+                        "annotation": "@java.lang.Deprecated(forRemoval = true, since = \"26.7\")",
+                        "attribute": "since",
+                        "annotationType": "java.lang.Deprecated",
+                        "value": "\"26.7\"",
+                        "justification": "FIPS-13572, use faktorips-runtime-jakarta-xml instead"
+                    }
+                ]
+            }
+        }
+    ]
+}
