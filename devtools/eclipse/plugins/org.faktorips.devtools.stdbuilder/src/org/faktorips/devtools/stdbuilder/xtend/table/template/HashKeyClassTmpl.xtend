@@ -77,11 +77,10 @@ class HashKeyClassTmpl {
                */
                @Override
                public boolean «method("equals", "Object", "o")»{
-                   if (o instanceof «hashKeyClassName»){
-                       «hashKeyClassName» other = («hashKeyClassName») o;
+                   if (o instanceof «hashKeyClassName» other){
                        return
                        «FOR key : columnKeys.indexed»
-                           «Objects».equals(«key.value.attributeName», other.«key.value.attributeName») «IF key.key < columnKeys.size -1»&&«ENDIF»
+                           «IF key.key > 0»&& «ENDIF»«Objects».equals(«key.value.attributeName», other.«key.value.attributeName»)
                        «ENDFOR»;
                    }
                    return false;
