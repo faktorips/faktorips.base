@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -263,8 +264,11 @@ public class IpsValidationMojo extends AbstractMojo {
     private boolean isFipsProjectFromManifest(File file) {
         if (file.getName().matches(".*\\.(JAR|jar)")) {
             try (JarFile jarFile = new JarFile(file)) {
-                return jarFile.getManifest().getMainAttributes()
-                        .get(new Attributes.Name("Fips-BasePackage")) != null;
+                Manifest manifest = jarFile.getManifest();
+                if (manifest != null) {
+                    return manifest.getMainAttributes()
+                            .get(new Attributes.Name("Fips-BasePackage")) != null;
+                }
             } catch (IOException e) {
                 getLog().error("Can't read JAR file " + file, e);
             }
