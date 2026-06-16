@@ -183,10 +183,10 @@ public class JMerger {
 
     private void addAdditionalAnnotations(JNode target) {
         if (target instanceof JMember member && isGenerateForAdditionalAnnotations(member)) {
-            if (isAnnotatableMember(member)) {
+            if (member instanceof JMethod) {
                 addAnnotationsIfNotExisting(target, getAdditionalAnnotationsNodes());
             }
-            if (member instanceof JField) {
+            if (member instanceof JField || member instanceof JEnumConstant) {
                 addAnnotationsIfNotExisting(target, getAdditionalAnnotationsNodesForFields());
             }
         }
@@ -198,12 +198,6 @@ public class JMerger {
                 getFacadeHelper().addChild(target, astjNode);
             }
         }
-    }
-
-    private boolean isAnnotatableMember(JMember member) {
-        return member instanceof JMethod
-                || member instanceof JAbstractType
-                || member instanceof JEnumConstant;
     }
 
     private boolean isNotExistingAnnotation(JNode target, String annotationName) {

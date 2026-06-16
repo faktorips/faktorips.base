@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.builder.java;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -249,7 +250,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                      * @generated
                      */
                     public class TestPolicy {
-                    
+
                         /**
                          * @generated
                          */
@@ -293,7 +294,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                      * @generated
                      */
                     public class TestPolicy {
-                    
+
                         /**
                          * @generated
                          */
@@ -356,7 +357,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                      * @generated
                      */
                     public class TestPolicy {
-                    
+
                         /**
                          * @generated
                          */
@@ -419,7 +420,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                      * @generated
                      */
                     public class TestPolicy {
-                    
+
                         /**
                          * @generated
                          */
@@ -482,7 +483,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                      * @generated
                      */
                     public class TestPolicy {
-                    
+
                         /**
                          * @generated
                          */
@@ -540,7 +541,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                      * @generated
                      */
                     public class TestPolicy {
-                    
+
                         /**
                          * @generated
                          */
@@ -601,6 +602,147 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         assertThat(javaFileContents, not(containsString("public void foo() {\r\n")));
         assertThat(javaFileContents, containsString("public class TestPolicy {\n"));
         assertThat(javaFileContents, not(containsString("public class TestPolicy {\r\n")));
+    }
+
+    @Test
+    public void testAdditionalAnnotations_notGeneratedOnClass() {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return "foo.bar.Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() {
+                //@formatter:off
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
+                //@formatter:on
+            }
+        };
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, containsString("@Baz"));
+        assertThat(javaFileContents, not(matchesPattern("(?s).*@Baz[\\s\\r\\n]+public class.*")));
+    }
+
+    @Test
+    public void testAdditionalAnnotationsForFields_generatedOnFieldsAndEnumConstants() {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredAdditionalAnnotationsForFields() {
+                return "foo.bar.Qux";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() {
+                //@formatter:off
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+
+                        /**
+                         * @generated
+                         */
+                        private String myField;
+
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
+                //@formatter:on
+            }
+        };
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, containsString("import foo.bar.Qux;"));
+        assertThat(javaFileContents, containsString("@Qux"));
+        assertThat(javaFileContents, not(matchesPattern("(?s).*@Qux[\\s\\r\\n]+public void.*")));
+        assertThat(javaFileContents, not(matchesPattern("(?s).*@Qux[\\s\\r\\n]+public class.*")));
+    }
+
+    @Test
+    public void testAdditionalAnnotations_notGeneratedOnFields() {
+        TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return "foo.bar.Baz";
+            }
+        };
+        builderSet.setIpsProject(ipsProject);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+
+        builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
+                ipsSrcFile, true) {
+            @Override
+            protected String generate() {
+                //@formatter:off
+                return """
+                    /**
+                     * @generated
+                     */
+                    public class TestPolicy {
+
+                        /**
+                         * @generated
+                         */
+                        private String myField;
+
+                        /**
+                         * @generated
+                         */
+                        public void foo(){
+                        }
+                    }""";
+                //@formatter:on
+            }
+        };
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
+        builder.setMergeEnabled(true);
+
+        builder.build(ipsSrcFile);
+
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
+
+        assertThat(javaFileContents, containsString("@Baz"));
+        assertThat(javaFileContents, not(matchesPattern("(?s).*@Baz[\\s\\r\\n]+private.*")));
     }
 
     public static class StubJavaSourceFileBuilder extends JavaSourceFileBuilder {

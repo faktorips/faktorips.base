@@ -140,7 +140,7 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
 
     /**
      * Configuration property that defines additional annotations that are generated above all
-     * generated members (classes, methods, enum constants) of {@link IPolicyCmptType},
+     * generated methods of {@link IPolicyCmptType},
      * {@link IProductCmptType}, {@link IEnumType}, {@link ITableStructure} and
      * {@link ITableContents}
      */
