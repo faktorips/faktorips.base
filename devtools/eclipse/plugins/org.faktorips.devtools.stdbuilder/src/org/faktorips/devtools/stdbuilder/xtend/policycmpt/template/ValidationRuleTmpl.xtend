@@ -70,7 +70,9 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
     /**
      «IF description.length > 0»
         * «description»
+        «IF !isGenerateMinimalJavadoc(it)»
         * <p>
+        «ENDIF»
      «ENDIF»
      *
      *«localizedJDoc("EXEC_RULE", name)»
