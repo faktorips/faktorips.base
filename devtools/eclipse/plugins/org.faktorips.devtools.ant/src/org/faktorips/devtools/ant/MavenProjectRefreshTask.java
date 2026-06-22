@@ -1,22 +1,26 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.ant;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 import org.eclipse.m2e.core.project.MavenUpdateRequest;
 
 public class MavenProjectRefreshTask extends AbstractIpsTask {
+
+    private static final long SERVICE_TIMEOUT_MS = 5 * 60 * 1000L;
 
     private boolean offline = false;
     private boolean updateSnapshots = false;
@@ -61,7 +65,7 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
 
     /**
      * Update project configuration from pom.xml.
-     * 
+     *
      * @return default is {@code true}
      */
     public boolean isUpdateConfiguration() {
@@ -74,7 +78,7 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
 
     /**
      * Refresh workspace resources from local file system.
-     * 
+     *
      * @return default is {@code true}
      */
     public boolean isRefreshFromFilesystem() {
@@ -100,7 +104,7 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
     @SuppressWarnings("restriction")
     protected void executeInternal() throws Exception {
         MavenUpdateRequest mavenUpdateRequest = new MavenUpdateRequest(
-                MavenPlugin.getMavenProjectRegistry()
+                waitForService(MavenPlugin::getMavenProjectRegistry, "IMavenProjectRegistry", SERVICE_TIMEOUT_MS)
                         .getProjects().stream()
                         .map(IMavenProjectFacade::getProject)
                         .peek(p -> System.out.println("refreshing: " + p.getName()))
@@ -108,12 +112,18 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
                 isOffline(),
                 isUpdateSnapshots());
 
-        IProjectConfigurationManager pm = MavenPlugin.getProjectConfigurationManager();
+        IProjectConfigurationManager pm = waitForService(
+                MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", SERVICE_TIMEOUT_MS);
+        System.out.println("calling updateProjectConfiguration");
         ((org.eclipse.m2e.core.internal.project.ProjectConfigurationManager)pm).updateProjectConfiguration(
                 mavenUpdateRequest,
                 isUpdateConfiguration(),
                 isCleanProjects(),
                 isRefreshFromFilesystem(),
                 new NullProgressMonitor());
+
+        System.out.println("waiting for build jobs to finish");
+        Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_BUILD, new NullProgressMonitor());
+        Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, new NullProgressMonitor());
     }
 }

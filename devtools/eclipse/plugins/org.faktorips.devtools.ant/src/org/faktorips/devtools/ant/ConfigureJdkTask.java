@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,7 +47,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
 
     /**
      * Sets the Ant attribute which describes the location of the JDK to configure.
-     * 
+     *
      * @param dir path to the JDK as String
      */
     public void setDir(String dir) {
@@ -56,7 +56,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
 
     /**
      * Returns the path of the JDK to configure as String
-     * 
+     *
      * @return Path as String
      */
     public String getDir() {
@@ -84,8 +84,8 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * Does some checks on the provided directory attribute.
      *
      * @return the directory as a {@link File}.
-     * 
-     * @throws BuildException
+     *
+     * @throws BuildException if not a valid writable folder
      */
     private File checkDir() {
 
@@ -140,10 +140,6 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * the <code>found</code> list. Any directories specified in the <code>ignore</code> are not
      * traversed.
      *
-     * @param directory
-     * @param found
-     * @param types
-     * @param ignore
      */
     private static void searchJDK(File directory,
             List<File> found,

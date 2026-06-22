@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -26,7 +27,7 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
 
 /**
  * Base class for all Faktor-IPS Ant tasks.
- * 
+ *
  * @author Peter Erzberger
  */
 public abstract class AbstractIpsTask extends Task {
@@ -54,7 +55,7 @@ public abstract class AbstractIpsTask extends Task {
 
     /**
      * Executes the Ant task
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -100,7 +101,7 @@ public abstract class AbstractIpsTask extends Task {
      * in that file to signal a failed task without throwing an exception, otherwise a
      * {@link BuildException} is thrown with the given message.
      *
-     * @param message
+     * @param message explaining the failure
      */
     protected void fail(String message) {
         if (IpsStringUtils.isNotBlank(statusFile)) {
@@ -131,8 +132,48 @@ public abstract class AbstractIpsTask extends Task {
     }
 
     /**
+     * Waits until the given supplier returns a non-null value, polling every 500ms. Throws a
+     * {@link BuildException} if the value is still null after the timeout.
+     * <p>
+     * This is needed because on Windows the OSGi DS activation order can trigger a circular
+     * reference in m2e (felix.scr), which causes m2e services to be temporarily unavailable. Felix
+     * retries the activation asynchronously, so waiting here.
+     *
+     * @param supplier the service to poll
+     * @param serviceName used in the error message
+     * @param timeoutMs maximum time to wait in milliseconds
+     * @return the non-null service
+     */
+    protected <T> T waitForService(Supplier<T> supplier, String serviceName, long timeoutMs) {
+        System.out.println("waiting for OSGi service: " + serviceName);
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        int attempts = 0;
+        while (System.currentTimeMillis() < deadline) {
+            T value = supplier.get();
+            attempts++;
+            if (value != null) {
+                if (attempts > 1) {
+                    System.out.println("service " + serviceName + " available after " + attempts + " attempt(s)");
+                }
+                return value;
+            }
+            System.out.println(
+                    "service " + serviceName + " not yet available (attempt " + attempts + "), retrying in 500ms...");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new BuildException("Interrupted while waiting for " + serviceName, e);
+            }
+        }
+        throw new BuildException("OSGi service " + serviceName
+                + " was not available after " + timeoutMs + "ms. "
+                + "This may be caused by a circular reference in m2e DS activation (felix.scr).");
+    }
+
+    /**
      * The execution logic of the task needs to be implemented within this method
-     * 
+     *
      * @throws Exception checked exceptions can just be delegated within this method
      */
     protected abstract void executeInternal() throws Exception;

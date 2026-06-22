@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectImportResult;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
@@ -27,6 +28,8 @@ import org.eclipse.m2e.core.project.MavenProjectInfo;
 import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 
 public class MavenProjectImportTask extends AbstractIpsTask {
+
+    private static final long SERVICE_TIMEOUT_MS = 5 * 60 * 1000L;
 
     private String projectDir;
     private long timeout = 5 * 60 * 1000L;
@@ -37,7 +40,7 @@ public class MavenProjectImportTask extends AbstractIpsTask {
 
     /**
      * Sets the Ant attribute which describes the location of the maven project to import.
-     * 
+     *
      * @param dir Path to the Project as String
      */
     public void setDir(String dir) {
@@ -46,7 +49,7 @@ public class MavenProjectImportTask extends AbstractIpsTask {
 
     /**
      * Returns the path of the maven project to import as String
-     * 
+     *
      * @return Path as String
      */
     public String getDir() {
@@ -65,11 +68,13 @@ public class MavenProjectImportTask extends AbstractIpsTask {
         NullProgressMonitor monitor = new NullProgressMonitor();
 
         if (new File(getDir(), "pom.xml").exists()) {
-            IProjectConfigurationManager projectConfigManager = MavenPlugin.getProjectConfigurationManager();
+            IProjectConfigurationManager projectConfigManager = waitForService(
+                    MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", SERVICE_TIMEOUT_MS);
             LocalProjectScanner scanner = new LocalProjectScanner(
                     List.of(getDir()),
                     false,
-                    MavenPlugin.getMavenModelManager());
+                    waitForService(MavenPlugin::getMavenModelManager, "IMavenModelManager", SERVICE_TIMEOUT_MS));
+            System.out.println("running ProjectScanner");
             scanner.run(monitor);
 
             Set<MavenProjectInfo> projectSet = projectConfigManager.collectProjects(scanner.getProjects());
@@ -77,7 +82,7 @@ public class MavenProjectImportTask extends AbstractIpsTask {
                 System.out.println("No Maven-Projects found in: " + getDir());
                 return;
             }
-
+            System.out.println("running importProjects");
             ProjectImportConfiguration configuration = new ProjectImportConfiguration();
             List<IMavenProjectImportResult> importResults = projectConfigManager.importProjects(
                     projectSet,
@@ -104,6 +109,10 @@ public class MavenProjectImportTask extends AbstractIpsTask {
                         .collect(Collectors.toSet());
                 mavenProjectNames.removeAll(projectNamesInWorkspace);
             }
+
+            System.out.println("waiting for build jobs to finish");
+            Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_BUILD, new NullProgressMonitor());
+            Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, new NullProgressMonitor());
         }
     }
 }

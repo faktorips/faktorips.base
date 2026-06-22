@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,10 +24,10 @@ public class RecursiveCopy {
 
     /**
      * Do a recursive directory copy
-     * 
+     *
      * @param fromDir source directory
      * @param toDir target directory
-     * @throws IOException
+     * @throws IOException if anything goes wrong while copying files and folders
      */
     public void copyDir(Path fromDir, Path toDir) throws IOException {
         File dirFile = fromDir.toFile();
@@ -56,7 +56,7 @@ public class RecursiveCopy {
 
     /**
      * Copy a single {@link File}
-     * 
+     *
      * @param from path to the source file
      * @param to path to the target file
      */
@@ -86,7 +86,7 @@ public class RecursiveCopy {
     /**
      * Create a directory. Supports creating multiple directories at once. Example:
      * mkdir("/path/to/a/new/dir") will create all subdirs
-     * 
+     *
      * @param dir directory name
      */
     private void mkdir(Path dir) {
@@ -95,7 +95,7 @@ public class RecursiveCopy {
 
     /**
      * Create multiple directories recursively
-     * 
+     *
      * @param file new path
      */
     private void mkdirs(Path file) {
