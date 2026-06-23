@@ -105,7 +105,7 @@ public abstract class AbstractCheckbox extends ControlComposite {
 
     @Override
     public boolean getEnabled() {
-        return button.getEnabled();
+        return !button.isDisposed() && button.getEnabled();
     }
 
     @Override
