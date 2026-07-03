@@ -23,6 +23,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
@@ -43,6 +44,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controls.tableedit.DatatypeEditingSupport;
 import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSupport;
@@ -132,6 +134,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     /** Action to move <code>IEnumValue</code>s down by 1. */
     private IAction moveEnumValueDownAction;
+
+    /** Action to import <code>IEnumValue</code>s from an external file. */
+    private IAction importAction;
+
+    /** Action to export <code>IEnumValue</code>s to an external file. */
+    private IAction exportAction;
 
     /**
      * Action that locks the literal name column and synchronizes it's values with the values of the
@@ -436,6 +444,9 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             renameLiteralNameRefactoringAction = new RenameLiteralNameRefactoringAction(enumValuesTableViewer);
             resetLiteralNamesAction = new ResetLiteralNamesAction(enumValuesTableViewer, enumType);
         }
+
+        importAction = new EnumImportExportActionInSection(true);
+        exportAction = new EnumImportExportActionInSection(false);
     }
 
     private void enableActions(boolean enabled) {
@@ -443,6 +454,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         deleteEnumValueAction.setEnabled(enabled);
         moveEnumValueUpAction.setEnabled(enabled);
         moveEnumValueDownAction.setEnabled(enabled);
+        importAction.setEnabled(enabled);
+        // Export bleibt auch im Read-only-Modus verfügbar
 
         if (enumTypeEditing) {
             lockAndSyncLiteralNameAction.setEnabled(enabled);
@@ -465,6 +478,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             toolBarManager.add(new Separator());
             toolBarManager.add(lockAndSyncLiteralNameAction);
         }
+
+        toolBarManager.add(new Separator());
+        toolBarManager.add(importAction);
+        toolBarManager.add(exportAction);
     }
 
     /**
@@ -483,7 +500,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     void toggleLockAndSyncLiteralNames() {
         lockAndSynchronizeLiteralNames = !(lockAndSynchronizeLiteralNames);
         lockAndSyncLiteralNameAction.setChecked(lockAndSynchronizeLiteralNames);
-
         IDialogSettings settings = IpsUIPlugin.getDefault().getDialogSettings();
         settings.put(SETTINGS_KEY_LOCK_AND_SYNC, lockAndSynchronizeLiteralNames);
     }
@@ -510,6 +526,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         boolean enabled = enumValueContainer.isCapableOfContainingValues();
         newEnumValueAction.setEnabled(enabled);
         deleteEnumValueAction.setEnabled(enabled);
+        importAction.setEnabled(enabled);
+        exportAction.setEnabled(enabled);
         if (enumTypeEditing) {
             newEnumValueAction.setEnabled(enabled);
             deleteEnumValueAction.setEnabled(enabled);
@@ -805,6 +823,25 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 }
             }
             return true;
+        }
+    }
+
+    private class EnumImportExportActionInSection extends EnumImportExportAction {
+
+        public EnumImportExportActionInSection(boolean isImport) {
+            super(getShell(), enumValueContainer);
+            if (isImport) {
+                initImportAction();
+            } else {
+                initExportAction();
+            }
+        }
+
+        @Override
+        public void run(IStructuredSelection selection) {
+            if (super.runInternal(selection)) {
+                refresh();
+            }
         }
     }
 
