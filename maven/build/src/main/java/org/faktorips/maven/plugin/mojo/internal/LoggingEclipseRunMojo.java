@@ -18,8 +18,6 @@ import java.io.PrintStream;
 import java.lang.StackWalker.StackFrame;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.exec.StreamPumper;
 import org.apache.commons.io.FileUtils;
@@ -41,8 +39,6 @@ import org.eclipse.tycho.eclipserun.Repository;
 import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
 
 public class LoggingEclipseRunMojo extends EclipseRunMojo {
-
-    private static final ConcurrentMap<String, Object> WORKSPACE_LOCKS = new ConcurrentHashMap<>();
 
     private final File work;
     private final boolean clearWorkspaceBeforeLaunch;
@@ -96,43 +92,41 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
     public void runEclipse(EquinoxInstallation runtime) throws MojoExecutionException {
         BuildLogPrintStream logStream = null;
         PrintStream stdStream = null;
-        int returnCode;
-        File expectedLog;
+        int returnCode = 0;
+        File expectedLog = null;
         try {
             File workspace = new File(work, "data").getAbsoluteFile();
-            synchronized (WORKSPACE_LOCKS.computeIfAbsent(workspace.getAbsolutePath(), k -> new Object())) {
-                if (clearWorkspaceBeforeLaunch) {
-                    FileUtils.deleteDirectory(workspace);
-                }
-                LaunchConfiguration cli = createCommandLine(runtime);
-                expectedLog = new File(workspace, ".metadata/.log");
-                getLog().info("Expected eclipse log file: " + expectedLog.getCanonicalPath());
-
-                // set new print stream as system out
-                logStream = new BuildLogPrintStream(projectName, filter);
-                stdStream = System.out;
-                PrintStream printStream = logStream.getPrintStream();
-                PrintStream proxyStream = new SplitStream(stdStream, printStream, this::isEclipse);
-                System.setOut(proxyStream);
-
-                // launch eclipse
-                returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
+            if (clearWorkspaceBeforeLaunch) {
+                FileUtils.deleteDirectory(workspace);
             }
+            LaunchConfiguration cli = createCommandLine(runtime);
+            expectedLog = new File(workspace, ".metadata/.log");
+            getLog().info("Expected eclipse log file: " + expectedLog.getCanonicalPath());
+
+            // set new print stream as system out
+            logStream = new BuildLogPrintStream(projectName, filter);
+            stdStream = System.out;
+            PrintStream printStream = logStream.getPrintStream();
+            PrintStream proxyStream = new SplitStream(stdStream, printStream, this::isEclipse);
+            System.setOut(proxyStream);
+
+            // launch eclipse
+            returnCode = launcher.execute(cli, forkedProcessTimeoutInSeconds);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new MojoExecutionException("Error while executing platform", e);
         } finally {
+            // CSON: IllegalCatch
             // set old system out
             if (stdStream != null) {
                 System.setOut(stdStream);
             }
             log(logStream);
         }
-        // CSON: IllegalCatch
 
         if (returnCode != 0) {
             throw new MojoExecutionException("Error while executing platform: return code=" + returnCode
-                    + ", see content of " + expectedLog + "for more details.");
+                    + ", see content of " + expectedLog + " for more details.");
         }
     }
 

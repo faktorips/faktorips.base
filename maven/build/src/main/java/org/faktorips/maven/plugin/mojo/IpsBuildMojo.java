@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -65,6 +67,7 @@ import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.LoggingEclipseRunMojo;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
+import org.faktorips.maven.plugin.mojo.internal.M2eIgnorePlugin;
 import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
@@ -417,6 +420,37 @@ public class IpsBuildMojo extends AbstractMojo {
     private Boolean gitFailBuild;
 
     /**
+     * List of Maven plugin executions that m2e should ignore during Eclipse project import/refresh.
+     * By default, the SpotBugs plugin is ignored because it requires Groovy classes that are not
+     * available in the m2e ClassRealm.
+     * <p>
+     * When this parameter is configured it <strong>replaces</strong> the default SpotBugs entry
+     * entirely. To keep SpotBugs ignored while adding another plugin, include the SpotBugs entry
+     * explicitly:
+     *
+     * <pre>
+     * {@code
+     * <m2eIgnorePlugins>
+     *   <m2eIgnorePlugin>
+     *     <groupId>com.github.spotbugs</groupId>
+     *     <artifactId>spotbugs-maven-plugin</artifactId>
+     *     <versionRange>[4,)</versionRange>
+     *     <goals>spotbugs,check</goals>
+     *   </m2eIgnorePlugin>
+     *   <m2eIgnorePlugin>
+     *     <groupId>com.example</groupId>
+     *     <artifactId>my-maven-plugin</artifactId>
+     *     <versionRange>[1,)</versionRange>
+     *     <goals>generate</goals>
+     *   </m2eIgnorePlugin>
+     * </m2eIgnorePlugins>
+     * }
+     * </pre>
+     */
+    @Parameter
+    private List<M2eIgnorePlugin> m2eIgnorePlugins;
+
+    /**
      * Whether to only start the {@code IpsBuilder} or all configured builders. The default is to
      * use only the {@code IpsBuilder} as it creates the Java source files before the Maven compiler
      * plugin compiles the entire project.
@@ -741,6 +775,8 @@ public class IpsBuildMojo extends AbstractMojo {
 
             copyMavenToolchains();
 
+            writeM2eLifecycleMappingOverrides();
+
             executePlatform();
 
             failBuildForAntStatusError(statusFile);
@@ -927,7 +963,7 @@ public class IpsBuildMojo extends AbstractMojo {
     private void executePlatform() throws MojoExecutionException, MojoFailureException {
         // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
         boolean clearWorkspaceBeforeLaunch = false;
-        EclipseRunMojo eclipseRunMojo = null;
+        EclipseRunMojo eclipseRunMojo;
 
         if (isInDebugMode() || LoggingMode.original == loggingMode) {
             eclipseRunMojo = createOriginalEclipseRunMojo(clearWorkspaceBeforeLaunch);
@@ -937,7 +973,21 @@ public class IpsBuildMojo extends AbstractMojo {
 
         removeIncompatibleTychoProjectsFromContextCache();
 
-        eclipseRunMojo.execute();
+        // Two-level locking: JVM-synchronized prevents OverlappingFileLockException within one
+        // JVM; FileLock blocks separate OS processes from sharing the same workspace concurrently.
+        File lockFile = WorkingDirectory.lockFileFor(work);
+        lockFile.getParentFile().mkdirs();
+        synchronized (WorkingDirectory.jvmLockFor(work)) {
+            try (FileChannel lockChannel = FileChannel.open(lockFile.toPath(),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                    FileLock ignored = lockChannel.lock()) {
+                eclipseRunMojo.execute();
+            } catch (MojoExecutionException | MojoFailureException e) {
+                throw e;
+            } catch (IOException e) {
+                throw new MojoExecutionException("Error while acquiring workspace lock", e);
+            }
+        }
     }
 
     private void removeIncompatibleTychoProjectsFromContextCache() {
@@ -1077,6 +1127,7 @@ public class IpsBuildMojo extends AbstractMojo {
             writeProperties(settingsDir, "org.eclipse.core.resources.prefs", p -> {
                 p.put("refresh.enabled", "true");
                 p.put("description.autobuilding", "false");
+                p.put("missingNatureMarkerSeverity", "-1");
             });
 
         } catch (IOException e) {
@@ -1100,6 +1151,67 @@ public class IpsBuildMojo extends AbstractMojo {
             }
             jvmArgs.add("-Dmaven.conf=" + copyUserSettingsDirPath);
         }
+    }
+
+    /**
+     * Writes a workspace-level m2e lifecycle-mapping override file that tells the embedded Maven
+     * inside Eclipse to ignore configured plugin executions during project import/refresh.
+     */
+    private void writeM2eLifecycleMappingOverrides() throws MojoExecutionException {
+        List<M2eIgnorePlugin> effectiveIgnores = resolveM2eIgnorePlugins();
+        try {
+            File m2eDir = new File(work, "data/.metadata/.plugins/org.eclipse.m2e.core").getAbsoluteFile();
+            FileUtils.forceMkdir(m2eDir);
+            File mappingFile = new File(m2eDir, "lifecycle-mapping-metadata.xml");
+            List<String> lines = new ArrayList<>();
+            lines.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            lines.add("<lifecycleMappingMetadata>");
+            lines.add("  <pluginExecutions>");
+            for (M2eIgnorePlugin plugin : effectiveIgnores) {
+                lines.add("    <pluginExecution>");
+                lines.add("      <pluginExecutionFilter>");
+                lines.add("        <groupId>" + plugin.getGroupId() + "</groupId>");
+                lines.add("        <artifactId>" + plugin.getArtifactId() + "</artifactId>");
+                lines.add("        <versionRange>" + plugin.getVersionRange() + "</versionRange>");
+                lines.add("        <goals>");
+                for (String goal : plugin.getGoals().split(",")) {
+                    lines.add("          <goal>" + goal.strip() + "</goal>");
+                }
+                lines.add("        </goals>");
+                lines.add("      </pluginExecutionFilter>");
+                lines.add("      <action><ignore/></action>");
+                lines.add("    </pluginExecution>");
+            }
+            lines.add("  </pluginExecutions>");
+            lines.add("</lifecycleMappingMetadata>");
+            Files.write(mappingFile.toPath(), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Could not write m2e lifecycle-mapping-metadata.xml", e);
+        }
+    }
+
+    private List<M2eIgnorePlugin> resolveM2eIgnorePlugins() throws MojoExecutionException {
+        if (m2eIgnorePlugins == null || m2eIgnorePlugins.isEmpty()) {
+            M2eIgnorePlugin spotbugs = new M2eIgnorePlugin();
+            spotbugs.setGroupId("com.github.spotbugs");
+            spotbugs.setArtifactId("spotbugs-maven-plugin");
+            spotbugs.setVersionRange("[4,)");
+            spotbugs.setGoals("spotbugs,check");
+            try {
+                spotbugs.validate();
+            } catch (IllegalArgumentException e) {
+                throw new MojoExecutionException(e.getMessage());
+            }
+            return List.of(spotbugs);
+        }
+        for (M2eIgnorePlugin plugin : m2eIgnorePlugins) {
+            try {
+                plugin.validate();
+            } catch (IllegalArgumentException e) {
+                throw new MojoExecutionException(e.getMessage());
+            }
+        }
+        return m2eIgnorePlugins;
     }
 
     private void writeProperties(File settingsDir, String propertyFileName, Consumer<Properties> properties) {

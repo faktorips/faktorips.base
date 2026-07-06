@@ -19,7 +19,11 @@ import java.util.function.Supplier;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -148,7 +152,7 @@ public abstract class AbstractIpsTask extends Task {
         System.out.println("waiting for OSGi service: " + serviceName);
         long deadline = System.currentTimeMillis() + timeoutMs;
         int attempts = 0;
-        while (System.currentTimeMillis() < deadline) {
+        while (true) {
             T value = supplier.get();
             attempts++;
             if (value != null) {
@@ -159,6 +163,9 @@ public abstract class AbstractIpsTask extends Task {
             }
             System.out.println(
                     "service " + serviceName + " not yet available (attempt " + attempts + "), retrying in 500ms...");
+            if (System.currentTimeMillis() >= deadline) {
+                break;
+            }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -177,5 +184,26 @@ public abstract class AbstractIpsTask extends Task {
      * @throws Exception checked exceptions can just be delegated within this method
      */
     protected abstract void executeInternal() throws Exception;
+
+    /**
+     * Waits for parallel build/refresh jobs to finish
+     */
+    protected void waitForBuildJobs() throws InterruptedException, CoreException {
+        System.out.println("waiting for build jobs to finish");
+        // Join builds before refreshes: a build job may schedule follow-up refresh jobs,
+        // so refreshes must be awaited after builds to avoid missing those follow-ups.
+        Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_BUILD, new NullProgressMonitor());
+        Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, new NullProgressMonitor());
+        Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_REFRESH, new NullProgressMonitor());
+        Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_REFRESH, new NullProgressMonitor());
+        // Flush pending WorkspaceJobs (e.g. m2e project configuration jobs) by acquiring the
+        // workspace lock. All queued WorkspaceJob instances must finish before this runnable runs.
+        long start = System.currentTimeMillis();
+        System.out.println("Waiting for workspace job lock");
+        ResourcesPlugin.getWorkspace().run((IWorkspaceRunnable)m -> {
+            System.out.println("In workspace job lock");
+        }, new NullProgressMonitor());
+        System.out.println("Acquired workspace job lock after " + (System.currentTimeMillis() - start) + " ms");
+    }
 
 }
