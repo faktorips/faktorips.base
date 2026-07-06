@@ -10,9 +10,14 @@
 
 package org.faktorips.devtools.ant;
 
+import java.util.Map;
+
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
@@ -115,15 +120,32 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
         IProjectConfigurationManager pm = waitForService(
                 MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", SERVICE_TIMEOUT_MS);
         System.out.println("calling updateProjectConfiguration");
-        ((org.eclipse.m2e.core.internal.project.ProjectConfigurationManager)pm).updateProjectConfiguration(
-                mavenUpdateRequest,
-                isUpdateConfiguration(),
-                isCleanProjects(),
-                isRefreshFromFilesystem(),
-                new NullProgressMonitor());
+        Map<String, IStatus> updateProjectStatus = ((org.eclipse.m2e.core.internal.project.ProjectConfigurationManager)pm)
+                .updateProjectConfiguration(
+                        mavenUpdateRequest,
+                        isUpdateConfiguration(),
+                        isCleanProjects(),
+                        isRefreshFromFilesystem(),
+                        new NullProgressMonitor());
+        System.out.println("updateProject status:");
+        updateProjectStatus.forEach((p, s) -> System.out.println(p + ": " + s));
 
-        System.out.println("waiting for build jobs to finish");
-        Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_BUILD, new NullProgressMonitor());
-        Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, new NullProgressMonitor());
+        waitForBuildJobs();
+
+        checkForImportErrors();
+    }
+
+    private void checkForImportErrors() throws Exception {
+        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            IMarker[] markers = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+            for (IMarker marker : markers) {
+                Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
+                if (severity != null && severity == IMarker.SEVERITY_ERROR) {
+                    fail("Import/Refresh of project " + project.getName() + " resulted in errors: "
+                            + marker.getAttribute(IMarker.MESSAGE, "unknown error"));
+                    return;
+                }
+            }
+        }
     }
 }

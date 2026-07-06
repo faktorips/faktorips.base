@@ -12,6 +12,9 @@ package org.faktorips.maven.plugin.mojo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.file.StandardOpenOption;
 
 import javax.inject.Inject;
 
@@ -63,12 +66,19 @@ public class IpsCleanMojo extends AbstractMojo {
 
         File workDir = work.getAbsoluteFile();
         if (workDir.exists()) {
-            try {
-                getLog().info("Deleting " + workDir.toString());
-                FileUtils.deleteDirectory(workDir);
-            } catch (IOException e) {
-                throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),
-                        e);
+            File lockFile = WorkingDirectory.lockFileFor(workDir);
+            lockFile.getParentFile().mkdirs();
+            synchronized (WorkingDirectory.jvmLockFor(workDir)) {
+                try (FileChannel lockChannel = FileChannel.open(lockFile.toPath(),
+                        StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                        FileLock ignored = lockChannel.lock()) {
+                    getLog().info("Deleting " + workDir);
+                    FileUtils.deleteDirectory(workDir);
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),
+                            e);
+                }
+                lockFile.delete();
             }
         }
     }

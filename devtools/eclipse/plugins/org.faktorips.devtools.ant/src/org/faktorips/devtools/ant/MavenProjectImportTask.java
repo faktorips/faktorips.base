@@ -12,6 +12,7 @@ package org.faktorips.devtools.ant;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectImportResult;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
@@ -28,8 +28,6 @@ import org.eclipse.m2e.core.project.MavenProjectInfo;
 import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 
 public class MavenProjectImportTask extends AbstractIpsTask {
-
-    private static final long SERVICE_TIMEOUT_MS = 5 * 60 * 1000L;
 
     private String projectDir;
     private long timeout = 5 * 60 * 1000L;
@@ -69,11 +67,11 @@ public class MavenProjectImportTask extends AbstractIpsTask {
 
         if (new File(getDir(), "pom.xml").exists()) {
             IProjectConfigurationManager projectConfigManager = waitForService(
-                    MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", SERVICE_TIMEOUT_MS);
+                    MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", timeout);
             LocalProjectScanner scanner = new LocalProjectScanner(
                     List.of(getDir()),
                     false,
-                    waitForService(MavenPlugin::getMavenModelManager, "IMavenModelManager", SERVICE_TIMEOUT_MS));
+                    waitForService(MavenPlugin::getMavenModelManager, "IMavenModelManager", timeout));
             System.out.println("running ProjectScanner");
             scanner.run(monitor);
 
@@ -97,22 +95,43 @@ public class MavenProjectImportTask extends AbstractIpsTask {
                 }
             }
 
-            Set<String> mavenProjectNames = projectSet.stream()
+            Set<String> importedProjectNames = projectSet.stream()
                     .map(p -> p.getModel().getArtifactId())
                     .collect(Collectors.toSet());
+            Set<String> pendingProjectNames = new HashSet<>(importedProjectNames);
             long startTime = System.currentTimeMillis();
-            while (!mavenProjectNames.isEmpty() && startTime + timeout > System.currentTimeMillis()) {
-                System.out.println("Waiting for project(s) to be present in workspace: " + mavenProjectNames);
+            while (!pendingProjectNames.isEmpty() && startTime + timeout > System.currentTimeMillis()) {
+                System.out.println("Waiting for project(s) to be present in workspace: " + pendingProjectNames);
                 Set<String> projectNamesInWorkspace = Arrays
                         .stream(ResourcesPlugin.getWorkspace().getRoot().getProjects())
                         .map(IProject::getName)
                         .collect(Collectors.toSet());
-                mavenProjectNames.removeAll(projectNamesInWorkspace);
+                pendingProjectNames.removeAll(projectNamesInWorkspace);
+                if (!pendingProjectNames.isEmpty()) {
+                    Thread.sleep(200);
+                }
+            }
+            if (!pendingProjectNames.isEmpty()) {
+                System.out.println("WARNING: Timed out waiting for projects: " + pendingProjectNames);
             }
 
-            System.out.println("waiting for build jobs to finish");
-            Job.getJobManager().join(ResourcesPlugin.FAMILY_MANUAL_BUILD, new NullProgressMonitor());
-            Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, new NullProgressMonitor());
+            waitForBuildJobs();
+
+            openClosedProjects(importedProjectNames);
         }
+    }
+
+    /**
+     * After m2e import, projects can be registered in the workspace but still in a closed state
+     * (e.g. when a previous build was aborted). Opens any such projects explicitly.
+     */
+    private void openClosedProjects(Set<String> projectNames) throws Exception {
+        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            if (projectNames.contains(project.getName()) && project.exists() && !project.isOpen()) {
+                System.out.println("project in workspace but not open, opening: " + project.getName());
+                project.open(new NullProgressMonitor());
+            }
+        }
+        waitForBuildJobs();
     }
 }

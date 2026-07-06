@@ -115,7 +115,16 @@ public class ProjectImportTask extends AbstractIpsTask {
 
         // check if project already exists in current workspace
         if (project.exists()) {
-            System.out.println("already in workspace: " + project.getName());
+            if (!project.isOpen()) {
+                // Workspace metadata is inconsistent (e.g. from a previously aborted build):
+                // the project is registered but was never opened cleanly. Remove from metadata
+                // only (NEVER_DELETE_PROJECT_CONTENT) and re-create to get a clean state.
+                System.out.println("project in workspace but not open, re-importing: " + project.getName());
+                project.delete(IResource.NEVER_DELETE_PROJECT_CONTENT, monitor);
+                project.create(description, monitor);
+            } else {
+                System.out.println("already in workspace: " + project.getName());
+            }
         } else {
             System.out.println("importing: " + project.getName());
             project.create(description, monitor);

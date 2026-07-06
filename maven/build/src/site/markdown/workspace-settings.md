@@ -68,6 +68,50 @@ The parameter `debug` starts the build in debug mode and pauses it until a remot
 If Maven is started with the debug option (-X or --debug) Eclipse will be started with a platform debug tracing facility file. If for some reason the standard trace settings are not suitable, a separate tracing options file can be specified with the parameter `<debugLogOptions>/path/to/trace_file</debugLogOptions>`. For more information how to write your own trace file see: [FAQ How do I use the platform debug tracing facility](https://wiki.eclipse.org/FAQ_How_do_I_use_the_platform_debug_tracing_facility)
 
 
+### m2eIgnorePlugins
+
+During parallel Maven builds (`-T`), m2e can run plugin executions as build participants when Eclipse imports or refreshes a project. This can cause failures when dependency JARs are still being written by a concurrent job.
+
+By default, the plugin suppresses the **SpotBugs** execution in the embedded m2e runtime, because SpotBugs requires Groovy classes that are not available in the m2e ClassRealm.
+
+To suppress additional plugin executions, configure `<m2eIgnorePlugins>`. **Important:** configuring this parameter _replaces_ the SpotBugs default entirely. Include the SpotBugs entry explicitly if you want to keep it.
+
+Each `<m2eIgnorePlugin>` entry requires:
+
+| Element | Description | Example |
+|---|---|---|
+| `groupId` | Maven group ID of the plugin | `com.github.spotbugs` |
+| `artifactId` | Maven artifact ID of the plugin | `spotbugs-maven-plugin` |
+| `versionRange` | Maven version range (see below) | `[4,)` |
+| `goals` | Comma-separated list of goals to suppress | `spotbugs,check` |
+
+The `versionRange` follows standard [Maven version range syntax](https://maven.apache.org/enforcer/enforcer-rules/versionRanges.html), e.g. `[1.0,)`, `(,2.0)`, `[1.0,2.0]`.
+
+#### Example: keep SpotBugs and suppress an additional plugin
+
+```xml
+<plugin>
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-maven-plugin</artifactId>
+    <configuration>
+        <m2eIgnorePlugins>
+            <m2eIgnorePlugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <versionRange>[4,)</versionRange>
+                <goals>spotbugs,check</goals>
+            </m2eIgnorePlugin>
+            <m2eIgnorePlugin>
+                <groupId>com.example</groupId>
+                <artifactId>my-maven-plugin</artifactId>
+                <versionRange>[1,)</versionRange>
+                <goals>generate</goals>
+            </m2eIgnorePlugin>
+        </m2eIgnorePlugins>
+    </configuration>
+</plugin>
+```
+
 ### antScriptPath
 To correctly import and build the Faktor-IPS project in Eclipse, the plugin uses a Ant script, performing the necessary steps. If no path is specified, a new script is generated based on the configuration.
 
