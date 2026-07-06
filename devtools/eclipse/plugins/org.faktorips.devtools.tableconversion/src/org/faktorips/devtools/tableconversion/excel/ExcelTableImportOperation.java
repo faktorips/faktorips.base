@@ -48,10 +48,11 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
      */
     private ITableRows targetGeneration;
 
+    // CSOFF: ParameterNumber
     public ExcelTableImportOperation(ITableStructure structure, String sourceFile, ITableRows targetGeneration,
             ExcelTableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list,
             boolean importIntoExisting) {
-
+        // CSON: ParameterNumber
         super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
         this.structure = structure;
         this.targetGeneration = targetGeneration;

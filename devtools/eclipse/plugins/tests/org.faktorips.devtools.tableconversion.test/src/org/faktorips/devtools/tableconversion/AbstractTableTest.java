@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,6 +27,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -41,8 +43,10 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.values.LocalizedString;
 
 /**
  * Base class for all table / enumeration import and export test cases. Contains factory methods to
@@ -663,6 +667,111 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             Row row = sheet.getRow(rowIndex);
             return row.getCell(cellIndex).getStringCellValue();
         }
+    }
+
+    /**
+     * Creates an enum type with a regular String attribute (id) and a multilingual attribute
+     * (description). The project is configured with two supported languages: de and en. Two enum
+     * values are created with both languages populated.
+     */
+    protected IEnumType createMultilingualEnumTypeWithValues(IIpsProject ipsProject) {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.addSupportedLanguage(Locale.GERMAN);
+        props.addSupportedLanguage(Locale.ENGLISH);
+        props.setDefaultLanguage(Locale.GERMAN);
+        ipsProject.setProperties(props);
+
+        IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "MultiLangEnum");
+        enumType.setAbstract(false);
+        enumType.setExtensible(false);
+        enumType.newEnumLiteralNameAttribute();
+
+        IEnumAttribute idAttr = enumType.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setIdentifier(true);
+        idAttr.setUnique(true);
+        idAttr.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumAttribute descAttr = enumType.newEnumAttribute();
+        descAttr.setName("description");
+        descAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        descAttr.setMultilingual(true);
+
+        IEnumValue value1 = enumType.newEnumValue();
+        List<IEnumAttributeValue> attrs1 = value1.getEnumAttributeValues();
+        attrs1.get(0).setValue(ValueFactory.createStringValue("VAL1"));
+        attrs1.get(1).setValue(ValueFactory.createStringValue("id1"));
+        IValue<?> intStringValue1 = ValueFactory.createValue(true, null);
+        IInternationalString intString1 = (IInternationalString)intStringValue1.getContent();
+        intString1.add(new LocalizedString(Locale.GERMAN, "Beschreibung1"));
+        intString1.add(new LocalizedString(Locale.ENGLISH, "Description1"));
+        attrs1.get(2).setValue(intStringValue1);
+
+        IEnumValue value2 = enumType.newEnumValue();
+        List<IEnumAttributeValue> attrs2 = value2.getEnumAttributeValues();
+        attrs2.get(0).setValue(ValueFactory.createStringValue("VAL2"));
+        attrs2.get(1).setValue(ValueFactory.createStringValue("id2"));
+        IValue<?> intStringValue2 = ValueFactory.createValue(true, null);
+        IInternationalString intString2 = (IInternationalString)intStringValue2.getContent();
+        intString2.add(new LocalizedString(Locale.GERMAN, "Beschreibung2"));
+        intString2.add(new LocalizedString(Locale.ENGLISH, "Description2"));
+        attrs2.get(2).setValue(intStringValue2);
+
+        return enumType;
+    }
+
+    /**
+     * Creates an enum content with multilingual attribute for testing. The enum type is extensible.
+     */
+    protected IEnumContent createMultilingualEnumContentWithValues(IIpsProject ipsProject) {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.addSupportedLanguage(Locale.GERMAN);
+        props.addSupportedLanguage(Locale.ENGLISH);
+        props.setDefaultLanguage(Locale.GERMAN);
+        ipsProject.setProperties(props);
+
+        IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "MultiLangEnum");
+        enumType.setAbstract(false);
+        enumType.setExtensible(true);
+        enumType.newEnumLiteralNameAttribute();
+        enumType.setEnumContentName("MultiLangEnumContent");
+
+        IEnumAttribute idAttr = enumType.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttr.setIdentifier(true);
+        idAttr.setUnique(true);
+        idAttr.setUsedAsNameInFaktorIpsUi(true);
+
+        IEnumAttribute descAttr = enumType.newEnumAttribute();
+        descAttr.setName("description");
+        descAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        descAttr.setMultilingual(true);
+
+        IEnumContent enumContent = (IEnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT,
+                "MultiLangEnumContent");
+        enumContent.setEnumType("MultiLangEnum");
+
+        IEnumValue value1 = enumContent.newEnumValue();
+        List<IEnumAttributeValue> attrs1 = value1.getEnumAttributeValues();
+        attrs1.get(0).setValue(ValueFactory.createStringValue("id1"));
+        IValue<?> intStringValue1 = ValueFactory.createValue(true, null);
+        IInternationalString intString1 = (IInternationalString)intStringValue1.getContent();
+        intString1.add(new LocalizedString(Locale.GERMAN, "Deutsch1"));
+        intString1.add(new LocalizedString(Locale.ENGLISH, "English1"));
+        attrs1.get(1).setValue(intStringValue1);
+
+        IEnumValue value2 = enumContent.newEnumValue();
+        List<IEnumAttributeValue> attrs2 = value2.getEnumAttributeValues();
+        attrs2.get(0).setValue(ValueFactory.createStringValue("id2"));
+        IValue<?> intStringValue2 = ValueFactory.createValue(true, null);
+        IInternationalString intString2 = (IInternationalString)intStringValue2.getContent();
+        intString2.add(new LocalizedString(Locale.GERMAN, "Deutsch2"));
+        intString2.add(new LocalizedString(Locale.ENGLISH, "English2"));
+        attrs2.get(1).setValue(intStringValue2);
+
+        return enumContent;
     }
 
 }

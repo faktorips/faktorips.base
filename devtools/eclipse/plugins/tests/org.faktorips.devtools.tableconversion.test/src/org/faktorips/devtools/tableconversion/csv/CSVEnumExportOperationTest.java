@@ -10,18 +10,20 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
@@ -39,11 +41,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        ipsProject = newIpsProject("test");
-        IIpsProjectProperties props = ipsProject.getProperties();
-        String[] datatypes = getColumnDatatypes();
-        props.setPredefinedDatatypesUsed(datatypes);
-        ipsProject.setProperties(props);
+        ipsProject = initializeIpsProject("test");
 
         format = new CSVTableFormat();
         format.setDefaultExtension(".csv");
@@ -73,7 +71,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertTrue(ml.toString(), ml.isEmpty());
+        assertThat(ml.isEmpty(), is(true));
     }
 
     @Test
@@ -83,7 +81,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         AbstractTableExportOperation op = new CSVEnumExportOperation(enumContent, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
-        assertTrue(ml.toString(), ml.isEmpty());
+        assertThat(ml.isEmpty(), is(true));
     }
 
     @Test
@@ -120,6 +118,48 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
         AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertEquals(8, ml.size());
+    }
+
+    @Test
+    public void testExportMultilingual_HeaderContainsLocaleColumns() throws Exception {
+        IEnumType enumType = createMultilingualEnumTypeWithValues(ipsProject);
+
+        MessageList ml = new MessageList();
+        AbstractTableExportOperation op = new CSVEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        assertThat(ml.isEmpty(), is(true));
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String headerLine = reader.readLine();
+            // Header should contain locale-suffixed columns for multilingual attribute
+            // Format: "literalName","id","description[de]","description[en]"
+            assertThat(headerLine.contains("description[de]"), is(true));
+            assertThat(headerLine.contains("description[en]"), is(true));
+
+            String dataLine1 = reader.readLine();
+            assertThat(dataLine1.contains("Beschreibung1"), is(true));
+            assertThat(dataLine1.contains("Description1"), is(true));
+        }
+    }
+
+    @Test
+    public void testExportMultilingual_EnumContent() throws Exception {
+        IEnumContent enumContent = createMultilingualEnumContentWithValues(ipsProject);
+
+        MessageList ml = new MessageList();
+        AbstractTableExportOperation op = new CSVEnumExportOperation(enumContent, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        assertThat(ml.isEmpty(), is(true));
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String headerLine = reader.readLine();
+            assertThat(headerLine.contains("description[de]"), is(true));
+            assertThat(headerLine.contains("description[en]"), is(true));
+
+            String dataLine1 = reader.readLine();
+            assertThat(dataLine1.contains("Deutsch1"), is(true));
+            assertThat(dataLine1.contains("English1"), is(true));
+        }
     }
 
 }

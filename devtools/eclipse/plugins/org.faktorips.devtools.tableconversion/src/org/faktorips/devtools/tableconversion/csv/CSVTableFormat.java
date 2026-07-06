@@ -76,10 +76,12 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                     this, nullRepresentationString, exportColumnHeaderRow, list);
             tableExportOperation.run(new NullProgressMonitor());
             return true;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.log(e);
             return false;
         }
+        // CSON: IllegalCatch
     }
 
     @Override
@@ -121,10 +123,12 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.log(e);
             return false;
         }
+        // CSON: IllegalCatch
     }
 
     @Override
@@ -224,6 +228,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
     }
 
+    // CSOFF: CyclomaticComplexity
     @SuppressWarnings("unchecked")
     private List<String[]> getPreviewInternal(Datatype[] datatypes,
             IPath filename,
@@ -273,5 +278,6 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         }
         return result;
     }
+    // CSON: CyclomaticComplexity
 
 }

@@ -16,18 +16,22 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Locale;
 
 import com.opencsv.CSVWriter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.model.IInternationalString;
+import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
@@ -35,7 +39,6 @@ import org.junit.Test;
 
 public class CSVEnumImportOperationTest extends AbstractTableTest {
 
-    // private ITableRows importTarget;
     private CSVTableFormat format;
     private IIpsProject ipsProject;
 
@@ -46,11 +49,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        ipsProject = newIpsProject("test");
-        IIpsProjectProperties props = ipsProject.getProperties();
-        String[] datatypes = getColumnDatatypes();
-        props.setPredefinedDatatypesUsed(datatypes);
-        ipsProject.setProperties(props);
+        ipsProject = initializeIpsProject("test");
 
         format = new CSVTableFormat();
         format.setName("CSV");
@@ -95,7 +94,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImportEnumType(ml, false);
 
-        assertThat(4, equalTo(enumType.getEnumValuesCount()));
+        assertThat(enumType.getEnumValuesCount(), equalTo(4));
     }
 
     @Test
@@ -103,7 +102,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
         MessageList ml = new MessageList();
         IEnumType enumType = executeImportEnumType(ml, true);
 
-        assertThat(3, equalTo(enumType.getEnumValuesCount()));
+        assertThat(enumType.getEnumValuesCount(), equalTo(3));
     }
 
     @Test
@@ -117,7 +116,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
         op.run(new NullProgressMonitor());
 
         assertThat(ml, containsErrorMessage());
-        assertThat(6, equalTo(ml.size()));
+        assertThat(ml.size(), equalTo(6));
         assertThat(ml,
                 hasMessageThat(containsText("INVALID1").and(containsText("String")).and(containsText("Decimal"))));
         assertThat(ml,
@@ -143,7 +142,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
         CSVEnumImportOperation op = new CSVEnumImportOperation(enumType, file.getName(), format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
 
-        assertThat(3, equalTo(ml.size()));
+        assertThat(ml.size(), equalTo(3));
         assertThat(ml, containsNoErrorMessage());
         assertThat(ml.toString(), containsString("no value is set - imported NULL instead."));
     }
@@ -159,7 +158,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
         op.run(new NullProgressMonitor());
 
         assertThat(ml, containsErrorMessage());
-        assertThat(1, equalTo(ml.size()));
+        assertThat(ml.size(), equalTo(1));
         assertThat(ml.toString(), containsString("Row 2 did not match the expected format."));
     }
 
@@ -250,6 +249,98 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
         writer.writeNext(new String[] { "This", "is", "the", "header." });
         writer.writeNext(nullValueLine);
         writer.close();
+    }
+
+    @Test
+    public void testRoundtripMultilingual_AllLanguagesPreserved() throws Exception {
+        IEnumType enumType = createMultilingualEnumTypeWithValues(ipsProject);
+
+        MessageList exportMl = new MessageList();
+        CSVEnumExportOperation exportOp = new CSVEnumExportOperation(enumType, file.getName(),
+                format, "NULL", true, exportMl);
+        exportOp.run(new NullProgressMonitor());
+        assertThat(exportMl, containsNoErrorMessage());
+
+        enumType.clear();
+
+        MessageList importMl = new MessageList();
+        CSVEnumImportOperation importOp = new CSVEnumImportOperation(enumType, file.getName(),
+                format, "NULL", true, importMl);
+        importOp.run(new NullProgressMonitor());
+
+        assertThat(enumType.getEnumValuesCount(), is(2));
+
+        IEnumValue value1 = enumType.getEnumValues().get(0);
+        // attr 0 = literalName, attr 1 = id, attr 2 = description (multilingual)
+        IEnumAttributeValue descAttr1 = value1.getEnumAttributeValues().get(2);
+        IInternationalString intString1 = (IInternationalString)descAttr1.getValue().getContent();
+        assertThat(intString1.get(Locale.GERMAN).getValue(), is("Beschreibung1"));
+        assertThat(intString1.get(Locale.ENGLISH).getValue(), is("Description1"));
+
+        IEnumValue value2 = enumType.getEnumValues().get(1);
+        IEnumAttributeValue descAttr2 = value2.getEnumAttributeValues().get(2);
+        IInternationalString intString2 = (IInternationalString)descAttr2.getValue().getContent();
+        assertThat(intString2.get(Locale.GERMAN).getValue(), is("Beschreibung2"));
+        assertThat(intString2.get(Locale.ENGLISH).getValue(), is("Description2"));
+    }
+
+    @Test
+    public void testRoundtripMultilingual_EnumContent() throws Exception {
+        IEnumContent enumContent = createMultilingualEnumContentWithValues(ipsProject);
+
+        MessageList exportMl = new MessageList();
+        CSVEnumExportOperation exportOp = new CSVEnumExportOperation(enumContent, file.getName(),
+                format, "NULL", true, exportMl);
+        exportOp.run(new NullProgressMonitor());
+        assertThat(exportMl, containsNoErrorMessage());
+
+        enumContent.clear();
+
+        MessageList importMl = new MessageList();
+        CSVEnumImportOperation importOp = new CSVEnumImportOperation(enumContent, file.getName(),
+                format, "NULL", true, importMl);
+        importOp.run(new NullProgressMonitor());
+
+        assertThat(enumContent.getEnumValuesCount(), is(2));
+
+        IEnumValue value1 = enumContent.getEnumValues().get(0);
+        // attr 0 = id, attr 1 = description (multilingual) for content (no literalName)
+        IEnumAttributeValue descAttr1 = value1.getEnumAttributeValues().get(1);
+        IInternationalString intString1 = (IInternationalString)descAttr1.getValue().getContent();
+        assertThat(intString1.get(Locale.GERMAN).getValue(), is("Deutsch1"));
+        assertThat(intString1.get(Locale.ENGLISH).getValue(), is("English1"));
+
+        IEnumValue value2 = enumContent.getEnumValues().get(1);
+        IEnumAttributeValue descAttr2 = value2.getEnumAttributeValues().get(1);
+        IInternationalString intString2 = (IInternationalString)descAttr2.getValue().getContent();
+        assertThat(intString2.get(Locale.GERMAN).getValue(), is("Deutsch2"));
+        assertThat(intString2.get(Locale.ENGLISH).getValue(), is("English2"));
+    }
+
+    @Test
+    public void testImportMultilingual_WithoutHeader() throws Exception {
+        IEnumType enumType = createMultilingualEnumTypeWithValues(ipsProject);
+
+        MessageList exportMl = new MessageList();
+        CSVEnumExportOperation exportOp = new CSVEnumExportOperation(enumType, file.getName(),
+                format, "NULL", false, exportMl);
+        exportOp.run(new NullProgressMonitor());
+        assertThat(exportMl, containsNoErrorMessage());
+
+        enumType.clear();
+
+        MessageList importMl = new MessageList();
+        CSVEnumImportOperation importOp = new CSVEnumImportOperation(enumType, file.getName(),
+                format, "NULL", false, importMl);
+        importOp.run(new NullProgressMonitor());
+
+        assertThat(enumType.getEnumValuesCount(), is(2));
+
+        IEnumValue value1 = enumType.getEnumValues().get(0);
+        IEnumAttributeValue descAttr1 = value1.getEnumAttributeValues().get(2);
+        IInternationalString intString1 = (IInternationalString)descAttr1.getValue().getContent();
+        assertThat(intString1.get(Locale.GERMAN).getValue(), is("Beschreibung1"));
+        assertThat(intString1.get(Locale.ENGLISH).getValue(), is("Description1"));
     }
 
 }

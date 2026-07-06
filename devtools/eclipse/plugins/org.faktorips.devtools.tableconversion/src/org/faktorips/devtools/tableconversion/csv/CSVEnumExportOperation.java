@@ -15,37 +15,49 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.SequencedSet;
+import java.util.stream.Collectors;
 
 import com.opencsv.CSVWriterBuilder;
 import com.opencsv.ICSVWriter;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.tablecontents.Messages;
+import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.DatatypesHelper;
+import org.faktorips.devtools.tableconversion.MultilingualEnumHelper;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.values.LocalizedString;
 
 /**
- * Operation to export an Enum types or contents to an text-file (comma separated values).
- *
- * @author Roman Grutza
+ * Operation to export an Enum types or contents to a text-file (comma separated values) with
+ * support for multilingual attributes.
  */
 public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
-    private boolean includeLiteralName;
+    private final boolean includeLiteralName;
+    private final SequencedSet<Locale> locales;
+    private List<IEnumAttribute> enumAttributes;
 
     /**
      * @param typeToExport An <code>IEnumValueContainer</code> instance.
@@ -60,10 +72,21 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             String nullRepresentationString, boolean exportColumnHeaderRow, MessageList list) {
 
         super(typeToExport, filename, format, nullRepresentationString, exportColumnHeaderRow, list);
-        if (!(typeToExport instanceof IEnumValueContainer)) {
+        if (!(typeToExport instanceof IEnumValueContainer enumContainer)) {
             throw new IllegalArgumentException(
                     "The given IPS object is not supported. Expected IEnumValueContainer, but got '" //$NON-NLS-1$
                             + typeToExport.getClass().toString() + "'"); //$NON-NLS-1$
+        }
+
+        includeLiteralName = enumContainer instanceof IEnumType;
+
+        locales = enumContainer.getIpsProject().getReadOnlyProperties().getSupportedLanguages().stream()
+                .map(ISupportedLanguage::getLocale)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+
+        IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
+        if (structure != null) {
+            enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
         }
     }
 
@@ -74,24 +97,26 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             localMonitor = new NullProgressMonitor();
         }
 
-        IEnumValueContainer enumContainer = getEnum(getTypeToExport());
-        includeLiteralName = enumContainer instanceof IEnumType;
+        IEnumValueContainer enumContainer = (IEnumValueContainer)getTypeToExport();
 
         localMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + enumContainer.getEnumValuesCount());
 
-        // first of all, check if the environment allows an export...
+        // first of all, check if the environment allows an export..
         IEnumType structure = enumContainer.findEnumType(enumContainer.getIpsProject());
         if (structure == null) {
-            String text = Messages.TableExportOperation_errStructureNotFound;
+            String text = NLS.bind(Messages.TableExportOperation_errStructureNotFound,
+                    enumContainer.getQualifiedName());
             getMessageList().add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
+        enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
         localMonitor.worked(1);
 
         getMessageList().add(enumContainer.validate(enumContainer.getIpsProject()));
         if (getMessageList().containsErrorMsg()) {
             return;
         }
+        // if we have reached here, the environment is valid, so try to export the data
         localMonitor.worked(1);
 
         getMessageList().add(structure.validate(structure.getIpsProject()));
@@ -99,7 +124,6 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             return;
         }
 
-        // if we have reached here, the environment is valid, so try to export the data
         localMonitor.worked(1);
 
         if (!localMonitor.isCanceled()) {
@@ -107,14 +131,10 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             try (FileOutputStream out = new FileOutputStream(new File(getFilename()));
                     ICSVWriter writer = new CSVWriterBuilder(new BufferedWriter(new OutputStreamWriter(out)))
                             .withSeparator(fieldSeparatorChar).build()) {
-                // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
-                // Zielordner
-                exportHeader(writer, structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName),
-                        isExportColumnHeaderRow());
 
+                exportHeader(writer, isExportColumnHeaderRow());
                 localMonitor.worked(1);
-
-                exportDataCells(writer, enumContainer, structure, localMonitor, isExportColumnHeaderRow());
+                exportDataCells(writer, enumContainer, localMonitor);
             } catch (IOException e) {
                 IpsPlugin.log(e);
                 getMessageList().add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
@@ -122,76 +142,98 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         }
     }
 
-    private IEnumValueContainer getEnum(IIpsObject typeToExport) {
-        if (typeToExport instanceof IEnumValueContainer) {
-            return (IEnumValueContainer)typeToExport;
-        }
-        return null;
-    }
-
     /**
      * Writes the CSV header containing the names of the columns using the given CSV writer.
      *
      * @param writer A CSV writer instance
-     * @param list The enum type's attributes as a list
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
-    private void exportHeader(ICSVWriter writer, List<IEnumAttribute> list, boolean exportColumnHeaderRow) {
-        if (exportColumnHeaderRow) {
-            String[] header = new String[list.size()];
-            for (int i = 0; i < header.length; i++) {
-                header[i] = list.get(i).getName();
-            }
-            writer.writeNext(header);
+    private void exportHeader(ICSVWriter writer, boolean exportColumnHeaderRow) {
+        if (!exportColumnHeaderRow) {
+            return;
         }
+
+        List<String> headerFields = new ArrayList<>();
+        for (IEnumAttribute attribute : enumAttributes) {
+            if (attribute.isMultilingual()) {
+                for (Locale locale : locales) {
+                    headerFields.add(attribute.getName() + MultilingualEnumHelper.formatLocaleTag(locale));
+                }
+            } else {
+                headerFields.add(attribute.getName());
+            }
+        }
+        writer.writeNext(headerFields.toArray(new String[0]));
     }
 
     /**
      * Create the cells for the export
      *
      * @param writer A CSV writer instance.
-     * @param structure The structure the content is bound to.
      * @param monitor The monitor to display the progress.
-     * @param exportColumnHeaderRow column header names included or not.
      *
      * @throws IpsException thrown if an error occurs during the search for the data types of the
      *             structure.
      */
-    private void exportDataCells(ICSVWriter writer,
-            IEnumValueContainer enumContainer,
-            IEnumType structure,
-            IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) {
-
+    // CSOFF: CyclomaticComplexity
+    private void exportDataCells(ICSVWriter writer, IEnumValueContainer enumContainer, IProgressMonitor monitor) {
         Datatype[] datatypes = DatatypesHelper.findEnumAttributeDatatypes(enumContainer, includeLiteralName);
 
         for (IEnumValue value : enumContainer.getEnumValues()) {
-            int numberOfAttributes = value.getEnumAttributeValuesCount();
-            String[] fieldsToExport = new String[numberOfAttributes];
-            for (int j = 0; j < numberOfAttributes; j++) {
-                IEnumAttributeValue attributeValue = value.getEnumAttributeValues().get(j);
-                Object obj = getFormat().getExternalValue(
-                        attributeValue.getValue().getDefaultLocalizedContent(attributeValue.getIpsProject()),
-                        datatypes[j], getMessageList());
+            List<String> fieldsToExport = new ArrayList<>();
 
-                String csvField;
-                try {
-                    csvField = (obj == null) ? getNullRepresentationString() : (String)obj;
-                } catch (NumberFormatException e) {
-                    // Null Object for Decimal Datatype returned, see Null-Object Pattern
-                    csvField = getNullRepresentationString();
+            for (int j = 0; j < enumAttributes.size(); j++) {
+                IEnumAttribute attribute = enumAttributes.get(j);
+                IEnumAttributeValue attributeValue = value.getEnumAttributeValue(attribute);
+
+                if (attributeValue == null) {
+                    if (attribute.isMultilingual()) {
+                        for (@SuppressWarnings("unused")
+                        Locale locale : locales) {
+                            fieldsToExport.add(getNullRepresentationString());
+                        }
+                    } else {
+                        fieldsToExport.add(getNullRepresentationString());
+                    }
+                    continue;
                 }
 
-                fieldsToExport[j] = csvField;
+                if (attribute.isMultilingual()) {
+                    IValue<?> attrValue = attributeValue.getValue();
+                    for (Locale locale : locales) {
+                        String cellValue = null;
+                        if (attrValue != null && attrValue.getContent() instanceof IInternationalString intString) {
+                            LocalizedString localizedString = intString.get(locale);
+                            cellValue = localizedString != null ? localizedString.getValue() : null;
+                        }
+                        fieldsToExport.add(toCsvField(
+                                getFormat().getExternalValue(cellValue, datatypes[j], getMessageList())));
+                    }
+                } else {
+                    IValue<?> attrValue = attributeValue.getValue();
+                    String content = attrValue != null
+                            ? attrValue.getDefaultLocalizedContent(attributeValue.getIpsProject())
+                            : null;
+                    fieldsToExport.add(toCsvField(
+                            getFormat().getExternalValue(content, datatypes[j], getMessageList())));
+                }
             }
 
-            writer.writeNext(fieldsToExport);
+            writer.writeNext(fieldsToExport.toArray(new String[0]));
 
             if (monitor.isCanceled()) {
                 return;
             }
-
             monitor.worked(1);
+        }
+    }
+    // CSON: CyclomaticComplexity
+
+    private String toCsvField(Object obj) {
+        try {
+            return (obj == null) ? getNullRepresentationString() : (String)obj;
+        } catch (ClassCastException e) {
+            return getNullRepresentationString();
         }
     }
 
