@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -60,10 +60,10 @@ public class YearsTest extends FunctionAbstractTest {
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
 
         assertEquals(
-                "Integer.valueOf(Period.between(LocalDate.of(2014, 02, 01), LocalDate.of(2014, 03, 08)).getYears())",
+                "Integer.valueOf((int) ChronoUnit.YEARS.between(LocalDate.of(2014, 02, 01), LocalDate.of(2014, 03, 08)))",
                 compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("java.time.LocalDate"));
-        assertThat(imports, hasItem("java.time.Period"));
+        assertThat(imports, hasItem("java.time.temporal.ChronoUnit"));
     }
 
 }
