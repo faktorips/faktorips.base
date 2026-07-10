@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,8 +20,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IMemento;
 import org.faktorips.devtools.core.ui.search.IpsElementsSearchViewPage;
 import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
+import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.util.AlphaNumericComparator;
 
 public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
 
@@ -98,10 +100,12 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
 
     /**
      * Sorting the search result. Test cases will be sorted on the end of the result list.
-     * 
+     *
      * @author Joerg Ortmann
      */
     public class ReferenceViewerSorter extends ViewerComparator {
+
+        private static final AlphaNumericComparator ALPHA_NUMERIC_COMPARATOR = new AlphaNumericComparator();
 
         @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
@@ -109,6 +113,9 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
             IIpsSrcFile src2 = getCorrespondingIpsSrcFile(e2);
 
             if (src1 == null || src2 == null) {
+                if (e1 instanceof IIpsElement el1 && e2 instanceof IIpsElement el2) {
+                    return ALPHA_NUMERIC_COMPARATOR.compare(el1.getName(), el2.getName());
+                }
                 return 0;
             }
 
@@ -121,7 +128,7 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
                 return -1;
             }
 
-            return src1.getName().compareToIgnoreCase(src2.getName());
+            return ALPHA_NUMERIC_COMPARATOR.compare(src1.getName(), src2.getName());
         }
 
         private boolean isTestCase(IpsObjectType ipsObjectType) {
