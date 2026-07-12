@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.value.ValueUtil;
@@ -31,7 +32,7 @@ import org.faktorips.values.LocalizedString;
  * map for every column of the enum. The cache is cleared on every change event concerning the
  * corresponding enum container. The performance for validating a single value is still more than
  * enough.
- * 
+ *
  * @author dirmeier
  */
 class UniqueIdentifierValidator {
@@ -52,7 +53,8 @@ class UniqueIdentifierValidator {
         container.getIpsModel().addChangeListener(event -> {
             if (isRelevantChangeEvent(event)) {
                 IIpsObjectPartContainer part = event.getPart();
-                if (part instanceof IEnumAttributeValue enumAttributeValue) {
+                if (part instanceof IEnumAttributeValue enumAttributeValue
+                        && enumAttributeValue.getEnumValue().getEnumValueContainer() == container) {
                     int index = getEnumAttributeIndex(enumAttributeValue);
                     columnAttributeValues.remove(index);
                 } else {
@@ -65,15 +67,14 @@ class UniqueIdentifierValidator {
     private boolean isRelevantChangeEvent(ContentChangeEvent event) {
         if (event.isAffected(container)) {
             return true;
-        } else {
-            if (!(container instanceof IEnumType)) {
-                if (enumType == null) {
-                    getEnumType();
-                }
-                return enumType != null ? event.isAffected(enumType) : false;
-            }
         }
-        return false;
+        if (container instanceof IEnumType) {
+            return false;
+        }
+        if (enumType == null) {
+            getEnumType();
+        }
+        return enumType != null && event.isAffected(enumType);
     }
 
     private void getEnumType() {
@@ -111,16 +112,39 @@ class UniqueIdentifierValidator {
     }
 
     private AttributeValues createAttributeValues(int columnIndex) {
-        AttributeValues attributeValues = new AttributeValues();
-        List<IEnumValue> aggregatedEnumValues = container.findAggregatedEnumValues();
+        final AttributeValues attributeValues = new AttributeValues();
+        final List<IEnumValue> aggregatedEnumValues = container.findAggregatedEnumValues();
+        final int literalNameIndex = getLiteralNameIndex();
         for (IEnumValue value : aggregatedEnumValues) {
-            IEnumAttributeValue enumAttributeValue = value.getEnumAttributeValues().get(columnIndex);
-            Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
+            final int adjustedIndex = getAdjustedIndex(columnIndex, literalNameIndex, value);
+            if (adjustedIndex < 0 || adjustedIndex >= value.getEnumAttributeValues().size()) {
+                continue;
+            }
+            final IEnumAttributeValue enumAttributeValue = value.getEnumAttributeValues().get(adjustedIndex);
+            final Set<LocalizedString> localizedIdentifyerList = getLocalizedIdentifiers(enumAttributeValue);
             for (LocalizedString localizedString : localizedIdentifyerList) {
                 attributeValues.addIdentifier(localizedString);
             }
         }
         return attributeValues;
+    }
+
+    private int getAdjustedIndex(int columnIndex, int literalNameIndex, IEnumValue value) {
+        if (literalNameIndex < 0) {
+            return columnIndex;
+        }
+        if (container instanceof IEnumContent && value.getEnumValueContainer() instanceof IEnumType) {
+            return columnIndex >= literalNameIndex ? columnIndex + 1 : columnIndex;
+        }
+        return columnIndex;
+    }
+
+    private int getLiteralNameIndex() {
+        final IEnumType type = container.findEnumType(container.getIpsProject());
+        if (type != null) {
+            return type.getIndexOfEnumLiteralNameAttribute();
+        }
+        return -1;
     }
 
     private int getEnumAttributeIndex(IEnumAttributeValue enumAttributeValue) {
