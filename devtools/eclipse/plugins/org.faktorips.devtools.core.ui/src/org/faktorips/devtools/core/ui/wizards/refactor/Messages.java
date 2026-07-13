@@ -56,11 +56,10 @@ public class Messages extends NLS {
     public static String UpdateValidFromSourcePage_sourceGroup;
     public static String UpdateValidFromSourcePage_emptyValidFomDateError;
     public static String UpdateValidFromSourcePage_emptyVersionIdError;
-    public static String UpdateValidFromSourcePage_missingStructureError;
     public static String UpdateValidFromSourcePage_changeGenerationIDCheckbox;
     public static String UpdateValidFromSourcePage_ChangeAttributesCheckbox;
     public static String UpdateValidFromSourcePage_ValidFromDateFormatError;
-    public static String UpdateValidFromSourcePage_ValidFromAfterFirstGenerationError;
+    public static String UpdateValidFromSourcePage_ValidFromMovedPastNextGeneration;
 
     public static String UpdateValidFromPreviewPage_description;
     public static String UpdateValidFromPreviewPage_validFrom;

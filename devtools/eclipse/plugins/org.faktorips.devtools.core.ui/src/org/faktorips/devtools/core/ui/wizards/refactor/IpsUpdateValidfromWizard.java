@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -372,7 +373,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         }
 
         for (int i = 0; i < configured.getValues().length; i++) {
-            if (StringUtils.equals(configured.getValue(i), oldValidFromDate)) {
+            if (Strings.CS.equals(configured.getValue(i), oldValidFromDate)) {
                 configured.setValue(i, newDate);
                 if (defaultValue != null) {
                     defaultValue.setValue(newDate);

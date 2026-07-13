@@ -12,13 +12,9 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -29,7 +25,6 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -54,7 +49,6 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.faktorips.runtime.MessageList;
 
 /**
  * Wizard page allowing users to update the "Valid-From" date and optionally change generation IDs
@@ -306,83 +300,23 @@ public class UpdateValidFromSourcePage extends WizardPage {
     }
 
     /** Validates user inputs and sets error message if necessary. */
-    private void validate() {
+    // CSOFF: CyclomaticComplexity
+    void validate() {
         setErrorMessage(null);
         setMessage(null);
 
         UpdateValidfromPresentationModel model = getPresentationModel();
 
-        if (model.getNewValidFrom() == null) {
-            setErrorMessage(Messages.UpdateValidFromSourcePage_emptyValidFomDateError);
-            return;
-        }
+        var messageList = model.validate();
 
-        if (model.isChangeGenerationId() && StringUtils.isBlank(model.getNewVersionId())) {
-            setErrorMessage(Messages.UpdateValidFromSourcePage_emptyVersionIdError);
-            return;
-        }
-
-        if (model.getStructure() == null) {
-            setErrorMessage(Messages.UpdateValidFromSourcePage_missingStructureError);
-            return;
-        }
-        validateWorkingDate();
-        if (getErrorMessage() != null) {
-            return;
-        }
-
-        IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
-        if (namingStrategy != null && namingStrategy.supportsVersionId() && model.isChangeGenerationId()) {
-            MessageList validation = namingStrategy.validateVersionId(model.getNewVersionId());
-            if (validation.containsErrorMsg()) {
-                setErrorMessage(validation.getMessage(0).getText());
-                return;
-            }
-        }
-
-        validateAdjustments();
-        if (getErrorMessage() != null) {
+        if (messageList.containsErrorMsg()) {
+            setErrorMessage(messageList.getText());
             return;
         }
 
         setPageComplete(true);
     }
-
-    private void validateAdjustments() {
-        IProductCmpt productCmpt = getPresentationModel().getProductCmpt();
-        DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-        if (productCmpt.allowGenerations()) {
-            GregorianCalendar firstGenValidFrom = productCmpt.getFirstGeneration().getValidFrom();
-            GregorianCalendar newValidFrom = getPresentationModel().getNewValidFrom();
-            if (firstGenValidFrom != null && productCmpt.getFirstGeneration().getValidFrom()
-                    .before(getPresentationModel().getNewValidFrom())) {
-                setErrorMessage(
-                        NLS.bind(Messages.UpdateValidFromSourcePage_ValidFromAfterFirstGenerationError,
-                                new Object[] {
-                                        format.format(newValidFrom.getTime()),
-                                        IpsPlugin.getDefault().getIpsPreferences()
-                                                .getChangesOverTimeNamingConvention()
-                                                .getGenerationConceptNameSingular(true),
-                                        format.format(firstGenValidFrom.getTime())
-                                }));
-            }
-        }
-    }
-
-    /** Validates format of the entered date. */
-    private void validateWorkingDate() {
-        Calendar calendar = getPresentationModel().getNewValidFrom();
-        if (calendar == null) {
-            String pattern;
-            DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-            if (dateFormat instanceof SimpleDateFormat) {
-                pattern = ((SimpleDateFormat)dateFormat).toLocalizedPattern();
-            } else {
-                pattern = "\"" + dateFormat.format(new GregorianCalendar().getTime()) + "\""; // NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            setErrorMessage(NLS.bind(Messages.UpdateValidFromSourcePage_ValidFromDateFormatError, pattern));
-        }
-    }
+    // CSON: CyclomaticComplexity
 
     private IProductCmptNamingStrategy getNamingStrategy() {
         if (getPresentationModel() == null) {
@@ -438,8 +372,8 @@ public class UpdateValidFromSourcePage extends WizardPage {
      * @return true if the node or any of its children are grayed.
      */
     private boolean updateCheckedAndGrayStatus(IProductCmptStructureReference ref) {
-        if (ref instanceof IProductCmptTypeAssociationReference assocRef &&
-                (assocRef.getChildren().length == 0 || assocRef.getAssociation().isAssoziation())) {
+        if (ref instanceof IProductCmptTypeAssociationReference assocRef
+                && (assocRef.getChildren().length == 0 || assocRef.getAssociation().isAssoziation())) {
             return false;
         }
 
