@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -46,6 +46,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Deleted;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.MovedTo;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Unchanged;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
@@ -62,6 +65,7 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
@@ -73,7 +77,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
  * A wizard that guides the user through the process of updating the "Valid From" date and
  * optionally the generation ID for a product component and its structure.
  */
-public class IpsUpdateValidfromWizard extends ResizableWizard {
+public class IpsUpdateValidFromWizard extends ResizableWizard {
 
     private static final int DEFAULT_WIDTH = 800;
     private static final int DEFAULT_HEIGHT = 800;
@@ -97,7 +101,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
      *
      * @param product the product component to update
      */
-    public IpsUpdateValidfromWizard(IProductCmpt product) {
+    public IpsUpdateValidFromWizard(IProductCmpt product) {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         presentationModel = new UpdateValidfromPresentationModel(product);
@@ -108,8 +112,14 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
 
     }
 
-    public void setAsyncExecutor(AsyncExecutor executor) {
+    void setAsyncExecutor(AsyncExecutor executor) {
         asyncExecutor = executor;
+    }
+
+    @Override
+    public void dispose() {
+        presentationModel.dispose();
+        super.dispose();
     }
 
     @Override
@@ -180,7 +190,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
             @Override
             protected void execute(IProgressMonitor monitor) throws IpsException {
-                runValidFromUpdateOperation(selectedItems, newValidFrom, monitor);
+                updateValidFrom(selectedItems, newValidFrom, monitor);
             }
 
         };
@@ -198,15 +208,18 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         }
     }
 
-    private void runValidFromUpdateOperation(Set<IProductCmptStructureReference> selectedItems,
+    private void updateValidFrom(Set<IProductCmptStructureReference> selectedItems,
             GregorianCalendar newValidFrom,
             IProgressMonitor monitor) throws IpsException {
+
+        for (IProductCmpt template : presentationModel.getAffectedTemplates()) {
+            template.setValidFrom(newValidFrom);
+            template.getIpsSrcFile().save(monitor);
+        }
 
         for (IProductCmptStructureReference ref : selectedItems) {
             IIpsObject object = ref.getWrappedIpsObject();
             if (object instanceof IProductCmpt productCmpt) {
-                productCmpt.getValidFrom();
-                updateValidFromOperation(newValidFrom, monitor, productCmpt);
                 if (getPresentationModel().isChangeAttributes()) {
                     updateProductAttributesOperation(newValidFrom, productCmpt);
                     IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(getIpsProject());
@@ -214,6 +227,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
                         updatePolicyAttributes(newValidFrom, policyCmptType, productCmpt);
                     }
                 }
+                updateValidFrom(newValidFrom, productCmpt);
                 productCmpt.getIpsSrcFile().save(monitor);
             }
         }
@@ -309,7 +323,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         boolean isLocalDateTime = "LocalDateTime".equals(datatype);
         boolean isDate = "LocalDate".equals(datatype) || "GregorianCalendar".equals(datatype);
 
-        if (!isLocalDateTime && !isDate) {
+        if ((!isLocalDateTime && !isDate) || configured.containsValue(newValidFromDate, getIpsProject())) {
             return;
         }
 
@@ -367,14 +381,14 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
             IConfiguredDefault defaultValue,
             String newDate) {
 
-        if (!model.containsValue(newDate, getIpsProject())) {
+        if (!model.containsValue(newDate, getIpsProject()) || configured.containsValue(newDate, getIpsProject())) {
             return;
         }
 
         for (int i = 0; i < configured.getValues().length; i++) {
-            if (StringUtils.equals(configured.getValue(i), oldValidFromDate)) {
+            if (Strings.CS.equals(configured.getValue(i), oldValidFromDate)) {
                 configured.setValue(i, newDate);
-                if (defaultValue != null) {
+                if (defaultValue != null && Objects.equals(defaultValue.getValue(), oldValidFromDate)) {
                     defaultValue.setValue(newDate);
                 }
             }
@@ -385,21 +399,21 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
             EnumValueSet configured,
             IConfiguredDefault defaultValue,
             String newDate) {
-        model.getValuesAsList().stream()
+        List<String> valuesWithNewDate = configured.getValuesAsList().stream()
                 .filter(v -> extractDatePart(v).equals(newDate))
-                .findFirst()
-                .ifPresent(v -> {
-                    for (int i = 0; i < configured.getValues().length; i++) {
-                        String old = configured.getValue(i);
-                        if (extractDatePart(old).equals(oldValidFromDate)) {
-                            String updated = updateLocalDateTimeAttribute(old, newDate);
-                            configured.setValue(i, updated);
-                            if (defaultValue != null) {
-                                defaultValue.setValue(updated);
-                            }
-                        }
+                .toList();
+        for (int i = 0; i < configured.getValues().length; i++) {
+            String old = configured.getValue(i);
+            if (extractDatePart(old).equals(oldValidFromDate)) {
+                String updated = updateLocalDateTimeAttribute(old, newDate);
+                if (!valuesWithNewDate.contains(updated) && model.getValuesAsList().contains(updated)) {
+                    configured.setValue(i, updated);
+                    if (defaultValue != null && Objects.equals(defaultValue.getValue(), old)) {
+                        defaultValue.setValue(updated);
                     }
-                });
+                }
+            }
+        }
     }
 
     /**
@@ -505,7 +519,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
             GregorianCalendar newValidFrom,
             String newValidFromDate) {
 
-        if (containsDate(valueSet, dataType, newValidFromDate)) {
+        if (containsDate(valueSet, dataType, oldValidFromDate) && !containsDate(valueSet, dataType, newValidFromDate)) {
             updateMultiValue(newValidFrom, attributeValue, dataType);
         }
 
@@ -548,12 +562,27 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
      * Updates the valid-from date of the given product component if it's different from the new
      * one.
      */
-    private void updateValidFromOperation(GregorianCalendar newValidFrom,
-            IProgressMonitor monitor,
-            IProductCmpt productCmpt) {
+    private void updateValidFrom(GregorianCalendar newValidFrom, IProductCmpt productCmpt) {
         if (!Objects.equals(productCmpt.getValidFrom(), newValidFrom)) {
-            productCmpt.setValidFrom(newValidFrom);
-            productCmpt.getIpsSrcFile().save(monitor);
+            if (productCmpt.allowGenerations()) {
+                var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+                IIpsObjectGeneration[] generationsOrderedByValidDate = productCmpt.getGenerationsOrderedByValidDate();
+                for (var generation : generationsOrderedByValidDate) {
+                    switch (generationsAfterChange.get(generation.getValidFrom())) {
+                        case Unchanged() -> {
+                            // nothing to do here
+                        }
+                        case Deleted() -> {
+                            generation.delete();
+                        }
+                        case MovedTo(var newValidFromForGeneration) -> {
+                            generation.setValidFrom(newValidFromForGeneration);
+                        }
+                    }
+                }
+            } else {
+                productCmpt.setValidFrom(newValidFrom);
+            }
         }
     }
 
@@ -565,10 +594,21 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         String datePart = extractDatePart(currentValue);
         Date currentDate = getDateFormat().parse(datePart);
 
-        if (currentDate.equals(getDateFormat().parse(getOldValidFrom()))) {
+        if (valueEqualsOldValueFrom(currentDate)
+                || valueEqualsMovedGenerationsValidFrom(attributeValue, currentDate)) {
             String newValue = updateLocalDateTimeAttribute(currentValue, newValidFromValue);
             attributeValue.setValueHolder(new SingleValueHolder(attributeValue, newValue));
         }
+    }
+
+    private boolean valueEqualsOldValueFrom(Date currentDate) throws ParseException {
+        return currentDate.equals(getDateFormat().parse(getOldValidFrom()));
+    }
+
+    private boolean valueEqualsMovedGenerationsValidFrom(IAttributeValue attributeValue, Date currentDate) {
+        return attributeValue.getParent() instanceof IProductCmptGeneration gen
+                && gen.getValidFrom().before(getPresentationModel().getNewValidFrom())
+                && currentDate.equals(gen.getValidFrom().getTime());
     }
 
     /**
@@ -608,7 +648,9 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         String replacement;
         if ("LocalDateTime".equals(dataType)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            replacement = LocalDateTime.of(LocalDate.parse(newValidFromDate), LocalTime.now().withNano(0))
+            replacement = LocalDateTime
+                    .of(LocalDate.parse(newValidFromDate),
+                            LocalDateTime.parse(match.getStringValue(), formatter).toLocalTime())
                     .format(formatter);
         } else {
             replacement = newValidFromDate;
@@ -625,9 +667,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
     /**
      * Initiates asynchronous generation ID updates after the valid-from update.
      */
-    private void applyNewGenerationIdsAsync(Set<IProductCmptStructureReference> selectedItems,
-            String newVersionId) {
-
+    private void applyNewGenerationIdsAsync(Set<IProductCmptStructureReference> selectedItems, String newVersionId) {
         asyncExecutor.execute(() -> {
             IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
             if (namingStrategy == null || !namingStrategy.supportsVersionId()) {
