@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.ui.actions.IpsUpdateValidfromAction;
+import org.faktorips.devtools.core.ui.actions.IpsUpdateValidFromAction;
 import org.faktorips.devtools.core.ui.commands.IpsAbstractHandler;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
@@ -31,7 +31,7 @@ public class IpsUpdateValidfromHandler extends IpsAbstractHandler {
         Shell activeShell = HandlerUtil.getActiveShell(event);
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
         if (currentSelection instanceof IStructuredSelection) {
-            new IpsUpdateValidfromAction(activeShell, null)
+            new IpsUpdateValidFromAction(activeShell, null)
                     .run((IStructuredSelection)currentSelection);
         }
 

@@ -10,9 +10,13 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
+import static org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.getProductCmpt;
+
+import java.text.DateFormat;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -22,9 +26,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyContentProvider;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 
 /**
@@ -67,25 +74,7 @@ public class UpdateValidFromPreviewPage extends WizardPage {
 
         treeViewer.setContentProvider(new DeepCopyContentProvider(true, false));
 
-        treeViewer.setLabelProvider(new UpdateValidFromLabelProvider(getPresentationModel()) {
-            @Override
-            public void update(ViewerCell cell) {
-                Object element = cell.getElement();
-
-                String newId = getGenerationID(element);
-                String oldId = getOldName(element);
-                boolean changed = StringUtils.isNotBlank(newId) && !newId.equals(oldId);
-
-                String mainText = changed ? newId : oldId;
-                StyledString styled = new StyledString(mainText);
-
-                styled.append(getValidFromSuffix(element));
-
-                cell.setText(styled.getString());
-                cell.setStyleRanges(styled.getStyleRanges());
-                cell.setImage(getObjectImage(element, true));
-            }
-        });
+        treeViewer.setLabelProvider(new PreviewLabelProvider());
 
         treeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
@@ -114,7 +103,7 @@ public class UpdateValidFromPreviewPage extends WizardPage {
      * Gets the current presentation model from the wizard.
      */
     private UpdateValidfromPresentationModel getPresentationModel() {
-        return ((IpsUpdateValidfromWizard)getWizard()).getPresentationModel();
+        return ((IpsUpdateValidFromWizard)getWizard()).getPresentationModel();
     }
 
     /**
@@ -122,5 +111,69 @@ public class UpdateValidFromPreviewPage extends WizardPage {
      */
     private IProductCmptTreeStructure getStructure() {
         return getPresentationModel().getStructure();
+    }
+
+    private final class PreviewLabelProvider extends StyledCellLabelProvider {
+        private final DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+
+        @Override
+        public void update(ViewerCell cell) {
+            Object element = cell.getElement();
+            var presentationModel = getPresentationModel();
+
+            String newId = presentationModel.getGenerationID(element);
+            String oldId = UpdateValidfromPresentationModel.getOldName(element);
+            boolean changed = StringUtils.isNotBlank(newId) && !newId.equals(oldId);
+
+            String mainText = changed ? newId : oldId;
+            StyledString styled = new StyledString(mainText);
+
+            styled.append(getValidFromSuffix(element));
+
+            cell.setText(styled.getString());
+            cell.setStyleRanges(styled.getStyleRanges());
+            cell.setImage(presentationModel.getObjectImage(element, true));
+        }
+
+        /**
+         * Returns a styled suffix showing the change from old valid-from to new valid-from. The
+         * text is styled in gray and small font.
+         *
+         * @param element The element to extract dates from.
+         * @return A styled string in the format [old → new] or empty if not applicable.
+         */
+        public StyledString getValidFromSuffix(Object element) {
+            if (!(element instanceof IProductCmptStructureReference ref)) {
+                return new StyledString();
+            }
+
+            UpdateValidfromPresentationModel model = getPresentationModel();
+
+            if (!model.getTreeStatus().isChecked(ref)) {
+                return new StyledString();
+            }
+
+            IProductCmpt productCmpt = getProductCmpt(ref.getWrappedIpsObject());
+            if (productCmpt == null || productCmpt.getValidFrom() == null) {
+                return new StyledString();
+            }
+
+            GregorianCalendar oldDate = productCmpt.getValidFrom();
+            GregorianCalendar newDate = model.getNewValidFrom();
+
+            if (newDate == null) {
+                return new StyledString();
+            }
+
+            String formattedOld = dateFormat.format(oldDate.getTime());
+            String formattedNew = dateFormat.format(newDate.getTime());
+
+            if (formattedOld.equals(formattedNew)) {
+                return new StyledString();
+            }
+
+            String suffix = "  [" + formattedOld + " → " + formattedNew + "]";
+            return new StyledString(suffix, StyledString.DECORATIONS_STYLER);
+        }
     }
 }

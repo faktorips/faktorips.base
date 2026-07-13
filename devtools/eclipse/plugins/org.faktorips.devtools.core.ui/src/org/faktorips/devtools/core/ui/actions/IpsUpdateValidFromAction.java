@@ -16,14 +16,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
-import org.faktorips.devtools.core.ui.wizards.refactor.IpsUpdateValidfromWizard;
+import org.faktorips.devtools.core.ui.wizards.refactor.IpsUpdateValidFromWizard;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 
-public class IpsUpdateValidfromAction extends IpsAction {
+public class IpsUpdateValidFromAction extends IpsAction {
 
     private Shell shell;
 
-    public IpsUpdateValidfromAction(Shell shell, ISelectionProvider selectionProvider) {
+    public IpsUpdateValidFromAction(Shell shell, ISelectionProvider selectionProvider) {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.IpsUpdateValidFromAction_name);
@@ -37,7 +37,7 @@ public class IpsUpdateValidfromAction extends IpsAction {
                     1);
             if (typedSelection.getElement().getAdapter(IProductCmpt.class) != null) {
                 IProductCmpt root = typedSelection.getElement().getAdapter(IProductCmpt.class);
-                IpsUpdateValidfromWizard dcw = new IpsUpdateValidfromWizard(root);
+                IpsUpdateValidFromWizard dcw = new IpsUpdateValidFromWizard(root);
                 WizardDialog wd = new WizardDialog(shell, dcw);
                 wd.setBlockOnOpen(true);
                 wd.open();
