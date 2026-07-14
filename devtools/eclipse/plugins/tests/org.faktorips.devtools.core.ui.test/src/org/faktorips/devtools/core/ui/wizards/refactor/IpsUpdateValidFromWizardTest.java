@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -78,34 +79,39 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
             });
         });
 
-        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "dummy1");
+        IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProductType");
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        productCmptType.setChangingOverTime(true);
 
-        IPolicyCmptType policyCmptTypeTarget = newPolicyAndProductCmptType(ipsProject, "TestTarget", "dummy2");
+        IPolicyCmptType policyCmptTypeTarget = newPolicyAndProductCmptType(ipsProject, "TestTarget", "TestTargetType");
         IProductCmptType productCmptTypeTarget = policyCmptTypeTarget.findProductCmptType(ipsProject);
+        productCmptTypeTarget.setChangingOverTime(true);
 
         IPolicyCmptType policyCmptTypeSharedTarget = newPolicyAndProductCmptType(ipsProject, "TestSharedTarget",
-                "dummy23");
+                "TestSharedTargetType");
         IProductCmptType productCmptTypeSharedTarget = policyCmptTypeSharedTarget.findProductCmptType(ipsProject);
 
         association = productCmptType.newProductCmptTypeAssociation();
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTargetRoleSingular("TestRelation");
+        association.setTargetRolePlural("TestRelations");
         association.setTarget(productCmptTypeTarget.getQualifiedName());
 
         productCmpt = newProductCmpt(productCmptType, "products.TestProduct 2025-01");
-        productCmpt.setValidFrom(new GregorianCalendar(2025, 0, 1));
+        productCmpt.setValidFrom(new GregorianCalendar(2025, Calendar.JANUARY, 1));
 
         productCmptGen = productCmpt.getProductCmptGeneration(0);
 
         IProductCmptTypeAssociation sharedTargetAssociation = productCmptTypeTarget.newProductCmptTypeAssociation();
         sharedTargetAssociation.setAssociationType(AssociationType.AGGREGATION);
         sharedTargetAssociation.setTargetRoleSingular("TestTargetRelation");
+        sharedTargetAssociation.setTargetRolePlural("TestTargetRelations");
         sharedTargetAssociation.setTarget(productCmptTypeSharedTarget.getQualifiedName());
 
         productCmptTarget = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget 2025-01");
         productCmptTarget2 = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget2 2025-01");
-        productCmptSharedTarget = newProductCmpt(productCmptTypeTarget, "products.TestProductSharedTarget 2025-01");
+        productCmptSharedTarget = newProductCmpt(productCmptTypeSharedTarget,
+                "products.TestProductSharedTarget 2025-01");
 
         productCmptTarget.setValidFrom(new GregorianCalendar(2025, 0, 1));
         productCmptTarget2.setValidFrom(new GregorianCalendar(2025, 0, 1));
@@ -173,12 +179,18 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         // Unrestricted configured Enum
         createUnrestrictedAttributepPolicyConfiguredEnum(policyCmptType, "LocalDate", oldDate);
         createUnrestrictedAttributepPolicyConfiguredEnum(policyCmptType, "GregorianCalendar", oldDate);
-        createUnrestrictedAttributepPolicyConfiguredEnum(policyCmptType, "LocalDateTime", oldDate);
+        createUnrestrictedAttributepPolicyConfiguredEnum(policyCmptType, "LocalDateTime", oldDateTime);
 
+        policyCmptType.getIpsSrcFile().save(null);
+        productCmptType.getIpsSrcFile().save(null);
+        policyCmptTypeTarget.getIpsSrcFile().save(null);
+        productCmptTypeTarget.getIpsSrcFile().save(null);
+        policyCmptTypeSharedTarget.getIpsSrcFile().save(null);
+        productCmptTypeSharedTarget.getIpsSrcFile().save(null);
     }
 
     @Test
-    public void testPerform_withoutAttributeChange() {
+    public void testPerform_WithoutAttributeChange() {
 
         // to avoid testing the whole eclipse refactoring in this unit test
         IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt) {
@@ -190,9 +202,10 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
             }
         };
 
+        // to avoid having to wait for background work
         wizard.setAsyncExecutor(Runnable::run);
 
-        GregorianCalendar newValue = new GregorianCalendar(2028, 1, 1);
+        GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
         wizard.getPresentationModel().setNewVersionId("2028-01");
         wizard.getPresentationModel().setChangeGenerationId(true);
@@ -215,11 +228,11 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPerform_withAttributeChange() {
+    public void testPerform_WithAttributeChange() {
 
         IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
 
-        GregorianCalendar newValue = new GregorianCalendar(2028, 0, 1);
+        GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
         wizard.getPresentationModel().setNewVersionId("2028-01");
         wizard.getPresentationModel().setChangeGenerationId(false);
@@ -295,6 +308,158 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
+    public void testPerform_WithSingleGeneration() {
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+
+        GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2028-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        productCmpt = ipsProject.findProductCmptByRuntimeId("TestProduct 2028-01");
+        productCmptTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget 2028-01");
+        productCmptTarget2 = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget2 2028-01");
+        productCmptSharedTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductSharedTarget 2028-01");
+
+        assertThat(productCmpt.getValidFrom(), is(newValue));
+        assertThat(productCmpt.getRuntimeId(), is("TestProduct 2028-01"));
+        assertThat(productCmpt.getProductCmptGeneration(0).getValidFrom(), is(newValue));
+
+        assertThat(productCmptTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget.getRuntimeId(), is("TestProductTarget 2028-01"));
+
+        assertThat(productCmptTarget2.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget2.getRuntimeId(), is("TestProductTarget2 2028-01"));
+
+        assertThat(productCmptSharedTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptSharedTarget.getRuntimeId(), is("TestProductSharedTarget 2028-01"));
+    }
+
+    @Test
+    public void testPerform_Backwards() {
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+
+        GregorianCalendar newValue = new GregorianCalendar(2020, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2020-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        productCmpt = ipsProject.findProductCmptByRuntimeId("TestProduct 2020-01");
+        productCmptTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget 2020-01");
+        productCmptTarget2 = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget2 2020-01");
+        productCmptSharedTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductSharedTarget 2020-01");
+
+        assertThat(productCmpt.getValidFrom(), is(newValue));
+        assertThat(productCmpt.getRuntimeId(), is("TestProduct 2020-01"));
+        assertThat(productCmpt.getProductCmptGeneration(0).getValidFrom(), is(newValue));
+
+        assertThat(productCmptTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget.getRuntimeId(), is("TestProductTarget 2020-01"));
+
+        assertThat(productCmptTarget2.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget2.getRuntimeId(), is("TestProductTarget2 2020-01"));
+
+        assertThat(productCmptSharedTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptSharedTarget.getRuntimeId(), is("TestProductSharedTarget 2020-01"));
+    }
+
+    @Test
+    public void testPerform_PastSecondGenerationsValidFrom() {
+        var secondGenValidFrom = new GregorianCalendar(2026, Calendar.JANUARY, 1);
+        productCmpt.newGeneration(secondGenValidFrom);
+        var thirdGenValidFrom = new GregorianCalendar(2030, Calendar.JANUARY, 1);
+        productCmpt.newGeneration(thirdGenValidFrom);
+        productCmpt.getIpsSrcFile().save(null);
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+
+        GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2028-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        productCmpt = ipsProject.findProductCmptByRuntimeId("TestProduct 2028-01");
+        productCmptTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget 2028-01");
+        productCmptTarget2 = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget2 2028-01");
+        productCmptSharedTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductSharedTarget 2028-01");
+
+        assertThat(productCmpt.getValidFrom(), is(newValue));
+        assertThat(productCmpt.getRuntimeId(), is("TestProduct 2028-01"));
+        assertThat(productCmpt.getNumOfGenerations(), is(2));
+        assertThat(productCmpt.getProductCmptGeneration(0).getValidFrom(), is(newValue));
+        assertThat(productCmpt.getProductCmptGeneration(1).getValidFrom(), is(thirdGenValidFrom));
+
+        assertThat(productCmptTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget.getRuntimeId(), is("TestProductTarget 2028-01"));
+
+        assertThat(productCmptTarget2.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget2.getRuntimeId(), is("TestProductTarget2 2028-01"));
+
+        assertThat(productCmptSharedTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptSharedTarget.getRuntimeId(), is("TestProductSharedTarget 2028-01"));
+    }
+
+    @Test
+    public void testPerform_PastMultipleGenerationsValidFrom() {
+        var secondGenValidFrom = new GregorianCalendar(2026, Calendar.JANUARY, 1);
+        productCmpt.newGeneration(secondGenValidFrom);
+        var thirdGenValidFrom = new GregorianCalendar(2027, Calendar.JANUARY, 1);
+        productCmpt.newGeneration(thirdGenValidFrom);
+        var fourthGenValidFrom = new GregorianCalendar(2030, Calendar.JANUARY, 1);
+        productCmpt.newGeneration(fourthGenValidFrom);
+        productCmpt.getIpsSrcFile().save(null);
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+
+        GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2028-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        productCmpt = ipsProject.findProductCmptByRuntimeId("TestProduct 2028-01");
+        productCmptTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget 2028-01");
+        productCmptTarget2 = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductTarget2 2028-01");
+        productCmptSharedTarget = (ProductCmpt)ipsProject.findProductCmptByRuntimeId("TestProductSharedTarget 2028-01");
+
+        assertThat(productCmpt.getValidFrom(), is(newValue));
+        assertThat(productCmpt.getRuntimeId(), is("TestProduct 2028-01"));
+        assertThat(productCmpt.getNumOfGenerations(), is(2));
+        assertThat(productCmpt.getProductCmptGeneration(0).getValidFrom(), is(newValue));
+        assertThat(productCmpt.getProductCmptGeneration(1).getValidFrom(), is(fourthGenValidFrom));
+
+        assertThat(productCmptTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget.getRuntimeId(), is("TestProductTarget 2028-01"));
+
+        assertThat(productCmptTarget2.getValidFrom(), is(newValue));
+        assertThat(productCmptTarget2.getRuntimeId(), is("TestProductTarget2 2028-01"));
+
+        assertThat(productCmptSharedTarget.getValidFrom(), is(newValue));
+        assertThat(productCmptSharedTarget.getRuntimeId(), is("TestProductSharedTarget 2028-01"));
+    }
+
     private void createUnrestrictedAttributeProduct(IProductCmptType type,
             IProductCmptGeneration productCmptGen,
             String dataType,
@@ -307,6 +472,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         attr.setDatatype(dataType);
         attr.setValueSetType(ValueSetType.UNRESTRICTED);
         attr.setMultiValueAttribute(isMultiAttribute);
+        type.getIpsSrcFile().save(null);
 
         if (isMultiAttribute) {
             IAttributeValue attrVal = productCmptGen.newAttributeValue(attr);
@@ -338,6 +504,8 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
         attr.setDefaultValue(value.get(0));
 
+        type.getIpsSrcFile().save(null);
+
         if (isMultiAttribute) {
             IAttributeValue attrVal = productCmptGen.newAttributeValue(attr);
             attrVal.setValueHolder(new MultiValueHolder(attrVal, List.of(new SingleValueHolder(attrVal, value.get(0)),
@@ -358,8 +526,10 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         attr.setDatatype(dataType);
         attr.setValueSetType(ValueSetType.UNRESTRICTED);
         attr.setValueSetConfiguredByProduct(true);
+        attr.setChangingOverTime(true);
 
         attr.setDefaultValue(value);
+        type.getIpsSrcFile().save(null);
 
         IConfiguredValueSet configuredValueSet = productCmptGen.newPropertyValue(attr, IConfiguredValueSet.class);
         configuredValueSet.setValueSetType(ValueSetType.UNRESTRICTED);
@@ -386,11 +556,10 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         enumSet.addValues(value);
 
         attr.setDefaultValue(value.get(0));
+        type.getIpsSrcFile().save(null);
 
         IConfiguredValueSet configuredValueSet = productCmptGen.newPropertyValue(attr, IConfiguredValueSet.class);
         configuredValueSet.setValueSetType(ValueSetType.ENUM);
-        EnumValueSet valueSet = (EnumValueSet)configuredValueSet.getValueSet();
-        valueSet.addValues(value);
 
         IConfiguredDefault configuredDefault = productCmptGen.newPropertyValue(attr, IConfiguredDefault.class);
         configuredDefault.setValue(value.get(0));
@@ -406,8 +575,10 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         attr.setDatatype(dataType);
         attr.setValueSetType(ValueSetType.UNRESTRICTED);
         attr.setValueSetConfiguredByProduct(true);
+        attr.setChangingOverTime(true);
 
         attr.setDefaultValue(value);
+        type.getIpsSrcFile().save(null);
 
         IConfiguredValueSet configuredValueSet = productCmptGen.newPropertyValue(attr, IConfiguredValueSet.class);
         configuredValueSet.setValueSetType(ValueSetType.ENUM);

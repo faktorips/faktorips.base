@@ -47,6 +47,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Deleted;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.MovedTo;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Unchanged;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
@@ -109,8 +112,14 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
 
     }
 
-    public void setAsyncExecutor(AsyncExecutor executor) {
+    void setAsyncExecutor(AsyncExecutor executor) {
         asyncExecutor = executor;
+    }
+
+    @Override
+    public void dispose() {
+        presentationModel.dispose();
+        super.dispose();
     }
 
     @Override
@@ -181,7 +190,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
             @Override
             protected void execute(IProgressMonitor monitor) throws IpsException {
-                runValidFromUpdateOperation(selectedItems, newValidFrom, monitor);
+                updateValidFrom(selectedItems, newValidFrom, monitor);
             }
 
         };
@@ -199,7 +208,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
         }
     }
 
-    private void runValidFromUpdateOperation(Set<IProductCmptStructureReference> selectedItems,
+    private void updateValidFrom(Set<IProductCmptStructureReference> selectedItems,
             GregorianCalendar newValidFrom,
             IProgressMonitor monitor) throws IpsException {
 
@@ -207,7 +216,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
             IIpsObject object = ref.getWrappedIpsObject();
             if (object instanceof IProductCmpt productCmpt) {
                 productCmpt.getValidFrom();
-                updateValidFromOperation(newValidFrom, monitor, productCmpt);
+                updateValidFrom(newValidFrom, productCmpt);
                 if (getPresentationModel().isChangeAttributes()) {
                     updateProductAttributesOperation(newValidFrom, productCmpt);
                     IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(getIpsProject());
@@ -549,12 +558,27 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
      * Updates the valid-from date of the given product component if it's different from the new
      * one.
      */
-    private void updateValidFromOperation(GregorianCalendar newValidFrom,
-            IProgressMonitor monitor,
-            IProductCmpt productCmpt) {
+    private void updateValidFrom(GregorianCalendar newValidFrom, IProductCmpt productCmpt) {
         if (!Objects.equals(productCmpt.getValidFrom(), newValidFrom)) {
-            productCmpt.setValidFrom(newValidFrom);
-            productCmpt.getIpsSrcFile().save(monitor);
+            if (productCmpt.allowGenerations()) {
+                var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+                IIpsObjectGeneration[] generationsOrderedByValidDate = productCmpt.getGenerationsOrderedByValidDate();
+                for (var generation : generationsOrderedByValidDate) {
+                    switch (generationsAfterChange.get(generation.getValidFrom())) {
+                        case Unchanged() -> {
+                            // nothing to do here
+                        }
+                        case Deleted() -> {
+                            generation.delete();
+                        }
+                        case MovedTo(var newValidFromForGeneration) -> {
+                            generation.setValidFrom(newValidFromForGeneration);
+                        }
+                    }
+                }
+            } else {
+                productCmpt.setValidFrom(newValidFrom);
+            }
         }
     }
 
@@ -626,9 +650,7 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
     /**
      * Initiates asynchronous generation ID updates after the valid-from update.
      */
-    private void applyNewGenerationIdsAsync(Set<IProductCmptStructureReference> selectedItems,
-            String newVersionId) {
-
+    private void applyNewGenerationIdsAsync(Set<IProductCmptStructureReference> selectedItems, String newVersionId) {
         asyncExecutor.execute(() -> {
             IProductCmptNamingStrategy namingStrategy = getNamingStrategy();
             if (namingStrategy == null || !namingStrategy.supportsVersionId()) {

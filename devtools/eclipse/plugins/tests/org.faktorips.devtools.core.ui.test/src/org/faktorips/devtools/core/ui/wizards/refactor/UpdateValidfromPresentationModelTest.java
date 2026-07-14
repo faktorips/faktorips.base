@@ -14,6 +14,7 @@ import static org.faktorips.testsupport.IpsMatchers.containsNoErrorMessage;
 import static org.faktorips.testsupport.IpsMatchers.hasErrorMessage;
 import static org.faktorips.testsupport.IpsMatchers.hasWarningMessage;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.GregorianCalendar;
 
@@ -21,6 +22,9 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Deleted;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.MovedTo;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Unchanged;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -36,6 +40,11 @@ import org.junit.Test;
 
 public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest {
 
+    private static final GregorianCalendar VALID_FROM_2024_1_1 = new GregorianCalendar(2024, 0, 1);
+    private static final GregorianCalendar VALID_FROM_2025_1_1 = new GregorianCalendar(2025, 0, 1);
+    private static final GregorianCalendar VALID_FROM_2026_1_1 = new GregorianCalendar(2026, 0, 1);
+    private static final GregorianCalendar VALID_FROM_2027_1_1 = new GregorianCalendar(2027, 0, 1);
+    private static final GregorianCalendar VALID_FROM_2029_1_1 = new GregorianCalendar(2029, 0, 1);
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration productCmptGen;
@@ -79,13 +88,13 @@ public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest 
         association.setTarget(productCmptTypeTarget.getQualifiedName());
 
         productCmpt = newProductCmpt(productCmptType, "products.TestProduct 2025-01");
-        productCmpt.setValidFrom(new GregorianCalendar(2025, 0, 1));
+        productCmpt.setValidFrom(VALID_FROM_2025_1_1);
 
         productCmptGen = productCmpt.getProductCmptGeneration(0);
 
         productCmptTarget = newProductCmpt(productCmptTypeTarget, "products.TestProductTarget 2025-01");
 
-        productCmptTarget.setValidFrom(new GregorianCalendar(2025, 0, 1));
+        productCmptTarget.setValidFrom(VALID_FROM_2025_1_1);
 
         IProductCmptLink link = productCmptGen.newLink(association.getName());
         link.setTarget(productCmptTarget.getQualifiedName());
@@ -104,7 +113,7 @@ public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest 
     @Test
     public void testValidate_NoNewVersionId() {
         var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
-        presentationModel.setNewValidFrom(new GregorianCalendar(2026, 0, 1));
+        presentationModel.setNewValidFrom(VALID_FROM_2026_1_1);
 
         var messageList = presentationModel.validate();
 
@@ -114,7 +123,7 @@ public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest 
     @Test
     public void testValidate_MovingOnlyGeneration() {
         var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
-        presentationModel.setNewValidFrom(new GregorianCalendar(2026, 0, 1));
+        presentationModel.setNewValidFrom(VALID_FROM_2026_1_1);
         presentationModel.setNewVersionId("2026-01");
 
         var messageList = presentationModel.validate();
@@ -124,15 +133,140 @@ public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest 
 
     @Test
     public void testValidate_MovingFirstGenerationPastSecond() {
-        productCmpt.newGeneration(new GregorianCalendar(2026, 0, 1));
+        productCmpt.newGeneration(VALID_FROM_2026_1_1);
         var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
-        presentationModel.setNewValidFrom(new GregorianCalendar(2027, 0, 1));
+        presentationModel.setNewValidFrom(VALID_FROM_2027_1_1);
         presentationModel.setNewVersionId("2027-01");
 
         var messageList = presentationModel.validate();
 
         assertThat(messageList,
                 hasWarningMessage(UpdateValidfromPresentationModel.MSG_CODE_VALID_FROM_MOVED_PAST_NEXT_GENERATION));
+    }
+
+    @Test
+    public void testValidate_MovingFirstGenerationOfTargetPastSecond() {
+        productCmptTarget.newGeneration(VALID_FROM_2026_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2027_1_1);
+        presentationModel.setNewVersionId("2027-01");
+
+        var messageList = presentationModel.validate();
+
+        assertThat(messageList,
+                hasWarningMessage(UpdateValidfromPresentationModel.MSG_CODE_VALID_FROM_MOVED_PAST_NEXT_GENERATION));
+    }
+
+    @Test
+    public void testValidate_MovingToSecondGeneration() {
+        productCmpt.newGeneration(VALID_FROM_2027_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2027_1_1);
+        presentationModel.setNewVersionId("2027-01");
+
+        var messageList = presentationModel.validate();
+
+        assertThat(messageList,
+                hasWarningMessage(UpdateValidfromPresentationModel.MSG_CODE_VALID_FROM_MOVED_PAST_NEXT_GENERATION));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_MovingBack() {
+        productCmpt.newGeneration(VALID_FROM_2026_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2024_1_1);
+        presentationModel.setNewVersionId("2024-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(2));
+        assertThat(generationsAfterChange.get(VALID_FROM_2025_1_1), is(new MovedTo(VALID_FROM_2024_1_1)));
+        assertThat(generationsAfterChange.get(VALID_FROM_2026_1_1), is(new Unchanged()));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_MovingForward() {
+        productCmpt.newGeneration(VALID_FROM_2027_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2026_1_1);
+        presentationModel.setNewVersionId("2026-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(2));
+        assertThat(generationsAfterChange.get(VALID_FROM_2025_1_1), is(new MovedTo(VALID_FROM_2026_1_1)));
+        assertThat(generationsAfterChange.get(VALID_FROM_2027_1_1), is(new Unchanged()));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_NotMoving() {
+        productCmpt.newGeneration(VALID_FROM_2027_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2025_1_1);
+        presentationModel.setNewVersionId("2025-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(2));
+        assertThat(generationsAfterChange.get(VALID_FROM_2025_1_1), is(new Unchanged()));
+        assertThat(generationsAfterChange.get(VALID_FROM_2027_1_1), is(new Unchanged()));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_NoGenerations() {
+        productCmptType.setChangingOverTime(false);
+        productCmptType.getIpsSrcFile().save(null);
+        productCmpt.computeDeltaToModel(ipsProject).fixAllDifferencesToModel();
+        productCmpt.getIpsSrcFile().save(null);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2026_1_1);
+        presentationModel.setNewVersionId("2026-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(0));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_NoNewValidFrom() {
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewVersionId("2026-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(0));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_MovingForwardToSecondGenerationsValidFrom() {
+        productCmpt.newGeneration(VALID_FROM_2026_1_1);
+        productCmpt.newGeneration(VALID_FROM_2027_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2026_1_1);
+        presentationModel.setNewVersionId("2026-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(3));
+        assertThat(generationsAfterChange.get(VALID_FROM_2025_1_1), is(new Deleted()));
+        assertThat(generationsAfterChange.get(VALID_FROM_2026_1_1), is(new Unchanged()));
+        assertThat(generationsAfterChange.get(VALID_FROM_2027_1_1), is(new Unchanged()));
+    }
+
+    @Test
+    public void testGetGenerationsAfterChange_MovingForwardPastSecondGenerationsValidFrom() {
+        productCmpt.newGeneration(VALID_FROM_2026_1_1);
+        productCmpt.newGeneration(VALID_FROM_2029_1_1);
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2027_1_1);
+        presentationModel.setNewVersionId("2027-01");
+
+        var generationsAfterChange = presentationModel.getGenerationsAfterChange(productCmpt);
+
+        assertThat(generationsAfterChange.size(), is(3));
+        assertThat(generationsAfterChange.get(VALID_FROM_2025_1_1), is(new Deleted()));
+        assertThat(generationsAfterChange.get(VALID_FROM_2026_1_1), is(new MovedTo(VALID_FROM_2027_1_1)));
+        assertThat(generationsAfterChange.get(VALID_FROM_2029_1_1), is(new Unchanged()));
     }
 
 }

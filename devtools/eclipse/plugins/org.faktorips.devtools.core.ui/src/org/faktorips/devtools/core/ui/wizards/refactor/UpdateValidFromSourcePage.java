@@ -12,23 +12,31 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.function.Consumer;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.resource.JFaceColors;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -44,11 +52,16 @@ import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyContentProvider;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyTreeStatus;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Deleted;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.MovedTo;
+import org.faktorips.devtools.core.ui.wizards.refactor.UpdateValidfromPresentationModel.Unchanged;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Wizard page allowing users to update the "Valid-From" date and optionally change generation IDs
@@ -59,8 +72,11 @@ public class UpdateValidFromSourcePage extends WizardPage {
     static final String PAGE_ID = "updateValidFrom.sourcePage"; //$NON-NLS-1$
     private static final String PAGE_TITLE = Messages.UpdateValidFromSourcePage_pageTitle;
     private static final int COLUMN_WIDTH_NAME = 300;
-    private static final int COLUMN_WIDTH_VALID_FROM = 200;
-    private static final int COLUMN_WIDTH_GENERATION_ID = 200;
+    private static final int COLUMN_WIDTH_VALID_FROM = 100;
+    private static final int COLUMN_WIDTH_GENERATION_ID = 120;
+    private static final int COLUMN_WIDTH_CHANGES_TO_GENERATIONS = 400;
+
+    private final DateFormat dateFormat;
 
     private DateControl newValidFromControl;
     private Text newVersionIdField;
@@ -77,6 +93,7 @@ public class UpdateValidFromSourcePage extends WizardPage {
         super(pageName);
         setTitle(PAGE_TITLE);
         setDescription(Messages.UpdateValidFromSourcePage_description);
+        dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
     }
 
     @Override
@@ -182,34 +199,34 @@ public class UpdateValidFromSourcePage extends WizardPage {
     private void createColumns() {
         ColumnViewerToolTipSupport.enableFor(treeViewer);
 
-        addColumn(Messages.UpdateValidFromSourcePage_productComponent, COLUMN_WIDTH_NAME, cell -> {
-            var labelProvider = new UpdateValidFromLabelProvider(getPresentationModel());
-            cell.setText(labelProvider.getOldName(cell.getElement()));
-            cell.setImage(labelProvider.getObjectImage(cell.getElement(), false));
-        });
+        addColumn(Messages.UpdateValidFromSourcePage_productComponent, COLUMN_WIDTH_NAME,
+                labelProvider(cell -> {
+                    cell.setText(UpdateValidfromPresentationModel.getOldName(cell.getElement()));
+                    cell.setImage(getPresentationModel().getObjectImage(cell.getElement(), false));
+                }));
 
-        addColumn(Messages.UpdateValidFromSourcePage_validFrom, COLUMN_WIDTH_VALID_FROM, cell -> {
-            var labelProvider = new UpdateValidFromLabelProvider(getPresentationModel());
-            cell.setText(labelProvider.getValidFrom(cell.getElement()));
-        });
+        addColumn(Messages.UpdateValidFromSourcePage_validFrom, COLUMN_WIDTH_VALID_FROM,
+                labelProvider(cell -> {
+                    cell.setText(getPresentationModel().getValidFrom(cell.getElement(), dateFormat));
+                }));
 
-        addColumn(Messages.UpdateValidFromSourcePage_generationID, COLUMN_WIDTH_GENERATION_ID, cell -> {
-            var labelProvider = new UpdateValidFromLabelProvider(getPresentationModel());
-            cell.setText(labelProvider.getGenerationID(cell.getElement()));
-        });
+        addColumn(Messages.UpdateValidFromSourcePage_generationID, COLUMN_WIDTH_GENERATION_ID,
+                labelProvider(cell -> {
+                    cell.setText(getPresentationModel().getGenerationID(cell.getElement()));
+                }));
+
+        addColumn(IpsPlugin.getDefault().getIpsPreferences()
+                .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(),
+                COLUMN_WIDTH_CHANGES_TO_GENERATIONS,
+                new ChangesToGenerationsLabelProvider());
     }
 
     /** Helper to abstract TreeViewer column creation. */
-    private void addColumn(String title, int width, Consumer<ViewerCell> updater) {
+    private void addColumn(String title, int width, CellLabelProvider labelProvider) {
         TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
         column.getColumn().setText(title);
         column.getColumn().setWidth(width);
-        column.setLabelProvider(new ColumnLabelProvider() {
-            @Override
-            public void update(ViewerCell cell) {
-                updater.accept(cell);
-            }
-        });
+        column.setLabelProvider(labelProvider);
     }
 
     /** Triggers after property updates. Controls whether page is complete. */
@@ -312,6 +329,12 @@ public class UpdateValidFromSourcePage extends WizardPage {
         if (messageList.containsErrorMsg()) {
             setErrorMessage(messageList.getText());
             return;
+        }
+
+        if (!messageList
+                .getMessagesByCode(UpdateValidfromPresentationModel.MSG_CODE_VALID_FROM_MOVED_PAST_NEXT_GENERATION)
+                .isEmpty()) {
+            setMessage(messageList.getText(), IMessageProvider.WARNING);
         }
 
         setPageComplete(true);
@@ -438,6 +461,25 @@ public class UpdateValidFromSourcePage extends WizardPage {
         return (IpsUpdateValidfromWizard)super.getWizard();
     }
 
+    private static SimpleLabelProvider labelProvider(Consumer<ViewerCell> cellUpdater) {
+        return new SimpleLabelProvider(cellUpdater);
+    }
+
+    private static class SimpleLabelProvider extends StyledCellLabelProvider {
+
+        private final Consumer<ViewerCell> cellUpdater;
+
+        SimpleLabelProvider(Consumer<ViewerCell> cellUpdater) {
+            this.cellUpdater = cellUpdater;
+        }
+
+        @Override
+        public void update(ViewerCell cell) {
+            cellUpdater.accept(cell);
+            super.update(cell);
+        }
+    }
+
     /**
      * Listener that reacts to changes in the presentation model and triggers UI updates
      * accordingly.
@@ -465,4 +507,57 @@ public class UpdateValidFromSourcePage extends WizardPage {
             }
         }
     }
+
+    private class ChangesToGenerationsLabelProvider extends StyledCellLabelProvider {
+
+        @Override
+        public void update(ViewerCell cell) {
+            if (!(cell.getElement() instanceof IProductCmptReference productRef)
+                    || !productRef.getProductCmpt().allowGenerations()) {
+                cell.setText(IpsStringUtils.EMPTY);
+                cell.setStyleRanges(new StyleRange[0]);
+            } else {
+                var display = Display.getCurrent();
+                StringBuilder text = new StringBuilder();
+                List<StyleRange> styles = new ArrayList<>();
+                var generationsAfterChange = getPresentationModel()
+                        .getGenerationsAfterChange(productRef.getProductCmpt());
+                generationsAfterChange.forEach((originalValidFrom, change) -> {
+                    String originalValidFromText = dateFormat.format(originalValidFrom.getTime());
+                    if (!text.isEmpty()) {
+                        text.append(", ");
+                    }
+                    int start = text.length();
+                    int length = originalValidFromText.length();
+                    text.append(originalValidFromText);
+                    switch (change) {
+                        case Deleted d -> {
+                            var styleRange = new StyleRange(start, length,
+                                    display.getSystemColor(SWT.COLOR_WIDGET_DISABLED_FOREGROUND),
+                                    display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+                            styleRange.strikeout = true;
+                            styleRange.strikeoutColor = JFaceColors.getErrorText(display);
+                            styles.add(styleRange);
+                        }
+                        case MovedTo(var newValidFrom) -> {
+                            var styleRange = new StyleRange(start, length,
+                                    display.getSystemColor(SWT.COLOR_WIDGET_DISABLED_FOREGROUND),
+                                    display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+                            styles.add(styleRange);
+                            text.append(" → ");
+                            text.append(dateFormat.format(newValidFrom.getTime()));
+                        }
+                        case Unchanged $ -> {
+                            // no special styling
+                        }
+                    }
+                });
+
+                cell.setText(text.toString());
+                cell.setStyleRanges(styles.toArray(StyleRange[]::new));
+            }
+            super.update(cell);
+        }
+    }
+
 }
