@@ -418,6 +418,91 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     }
 
     @Test
+
+    public void testPerform_BackwardsWithTemplate_AdjustsTemplateValidFrom() {
+        IProductCmpt template = newProductTemplate(productCmptType, "products.TestTemplate 2025-01");
+        template.setValidFrom(new GregorianCalendar(2025, Calendar.JANUARY, 1));
+        template.getIpsSrcFile().save(null);
+        productCmpt.setTemplate(template.getQualifiedName());
+        productCmpt.getIpsSrcFile().save(null);
+
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        GregorianCalendar newValue = new GregorianCalendar(2020, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2020-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        assertThat(template.getValidFrom(), is(newValue));
+    }
+
+    @Test
+    public void testPerform_BackwardsWithTransitiveTemplateChain() {
+        IProductCmpt template2025 = newProductTemplate(productCmptType, "products.TestTemplate 2025-01");
+        template2025.setValidFrom(new GregorianCalendar(2025, Calendar.JANUARY, 1));
+        template2025.getIpsSrcFile().save(null);
+
+        IProductCmpt template2026 = newProductTemplate(productCmptType, "products.TestTemplate 2026-01");
+        template2026.setValidFrom(new GregorianCalendar(2026, Calendar.JANUARY, 1));
+        template2026.setTemplate(template2025.getQualifiedName());
+        template2026.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(template2026.getQualifiedName());
+        productCmpt.getIpsSrcFile().save(null);
+
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        GregorianCalendar newValue = new GregorianCalendar(2020, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2020-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        assertThat(template2026.getValidFrom(), is(newValue));
+        assertThat(template2025.getValidFrom(), is(newValue));
+    }
+
+    @Test
+    public void testPerform_BackwardsWithOlderParentTemplate() {
+        IProductCmpt template2010 = newProductTemplate(productCmptType, "products.TestTemplate 2010-01");
+        GregorianCalendar template2010ValidFrom = new GregorianCalendar(2010, Calendar.JANUARY, 1);
+        template2010.setValidFrom(template2010ValidFrom);
+        template2010.getIpsSrcFile().save(null);
+
+        IProductCmpt template2025 = newProductTemplate(productCmptType, "products.TestTemplate 2025-01");
+        template2025.setValidFrom(new GregorianCalendar(2025, Calendar.JANUARY, 1));
+        template2025.setTemplate(template2010.getQualifiedName());
+        template2025.getIpsSrcFile().save(null);
+
+        productCmpt.setTemplate(template2025.getQualifiedName());
+        productCmpt.getIpsSrcFile().save(null);
+
+        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        GregorianCalendar newValue = new GregorianCalendar(2024, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2024-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(false);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        assertThat(template2025.getValidFrom(), is(newValue));
+        assertThat(template2010.getValidFrom(), is(template2010ValidFrom));
+    }
+
+    @Test
     public void testPerform_PastMultipleGenerationsValidFrom() {
         var secondGenValidFrom = new GregorianCalendar(2026, Calendar.JANUARY, 1);
         productCmpt.newGeneration(secondGenValidFrom);

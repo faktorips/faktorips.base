@@ -269,4 +269,39 @@ public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest 
         assertThat(generationsAfterChange.get(VALID_FROM_2029_1_1), is(new Unchanged()));
     }
 
+    @Test
+    public void testValidate_TemplateValidFromAdjustedWarning() {
+        IProductCmpt template = newProductTemplate(productCmptType, "products.TestTemplate 2025-01");
+        template.setValidFrom(VALID_FROM_2025_1_1);
+        productCmpt.setTemplate(template.getQualifiedName());
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+        presentationModel.setNewValidFrom(VALID_FROM_2024_1_1);
+        presentationModel.setNewVersionId("2024-01");
+
+        var messageList = presentationModel.validate();
+
+        assertThat(messageList,
+                hasWarningMessage(UpdateValidfromPresentationModel.MSG_CODE_TEMPLATES_WILL_BE_BACKDATED));
+    }
+
+    @Test
+    public void testValidate_NoWarningWhenTemplateValidFromNotAfterNewDate() {
+        IProductCmpt template = newProductTemplate(productCmptType, "products.TestTemplate 2024-01");
+        template.setValidFrom(VALID_FROM_2024_1_1);
+        productCmpt.setTemplate(template.getQualifiedName());
+        var presentationModel = new UpdateValidfromPresentationModel(productCmpt);
+
+        // equal: template validFrom == new date
+        presentationModel.setNewValidFrom(VALID_FROM_2024_1_1);
+        presentationModel.setNewVersionId("2024-01");
+        assertThat(presentationModel.validate().getMessagesByCode(
+                UpdateValidfromPresentationModel.MSG_CODE_TEMPLATES_WILL_BE_BACKDATED).isEmpty(), is(true));
+
+        // before: template validFrom < new date
+        presentationModel.setNewValidFrom(VALID_FROM_2026_1_1);
+        presentationModel.setNewVersionId("2026-01");
+        assertThat(presentationModel.validate().getMessagesByCode(
+                UpdateValidfromPresentationModel.MSG_CODE_TEMPLATES_WILL_BE_BACKDATED).isEmpty(), is(true));
+    }
+
 }

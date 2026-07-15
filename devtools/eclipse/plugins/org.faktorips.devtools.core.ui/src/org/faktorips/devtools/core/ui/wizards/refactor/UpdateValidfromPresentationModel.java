@@ -15,8 +15,10 @@ import java.text.DateFormat;
 import java.util.GregorianCalendar;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.SequencedMap;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -65,6 +67,7 @@ public class UpdateValidfromPresentationModel extends PresentationModelObject {
     public static final String MSG_CODE_EMPTY_NEW_VALID_FROM = "empty_" + NEW_VALID_FROM; //$NON-NLS-1$
     public static final String MSG_CODE_EMPTY_NEW_VERSION_ID = "empty_" + NEW_VERSION_ID; //$NON-NLS-1$
     public static final String MSG_CODE_VALID_FROM_MOVED_PAST_NEXT_GENERATION = "validFromMovedPastNextGeneration"; //$NON-NLS-1$
+    public static final String MSG_CODE_TEMPLATES_WILL_BE_BACKDATED = "templatesWillBeBackdated"; //$NON-NLS-1$
 
     private final IProductCmpt productCmpt;
     private final LocalResourceManager resourceManager;
@@ -80,6 +83,7 @@ public class UpdateValidfromPresentationModel extends PresentationModelObject {
 
     private boolean changeGenerationId = true;
     private boolean changeAttributes = false;
+    private Set<IProductCmpt> affectedTemplatesCache = null;
 
     public UpdateValidfromPresentationModel(IProductCmpt productCmpt) {
         treeStatus = new DeepCopyTreeStatus();
@@ -122,6 +126,9 @@ public class UpdateValidfromPresentationModel extends PresentationModelObject {
     public void setNewValidFrom(GregorianCalendar newValue) {
         GregorianCalendar oldValue = newValidFrom;
         newValidFrom = newValue;
+
+        affectedTemplatesCache = null;
+
         generationsAfterChangeCache.clear();
         notifyListeners(new PropertyChangeEvent(this, NEW_VALID_FROM, oldValue, newValue));
     }
@@ -154,6 +161,76 @@ public class UpdateValidfromPresentationModel extends PresentationModelObject {
         boolean oldValue = changeAttributes;
         changeAttributes = newValue;
         notifyListeners(new PropertyChangeEvent(this, CHANGE_ATTRIBUTES, oldValue, newValue));
+    }
+
+    void invalidateTemplatesCache() {
+        affectedTemplatesCache = null;
+    }
+
+    /**
+     * Returns all templates in the product structure whose valid-from date is after the new
+     * valid-from date, meaning they must be backdated alongside the products that use them.
+     * <p>
+     *
+     * The result is cached and invalidated whenever {@link #setNewValidFrom(GregorianCalendar)} is
+     * called or the tree selection changes.
+     *
+     * @return an ordered set of affected templates, empty if none require backdating
+     */
+    public Set<IProductCmpt> getAffectedTemplates() {
+        if (newValidFrom == null) {
+            return Set.of();
+        }
+        if (affectedTemplatesCache == null) {
+            Set<IProductCmpt> result = new LinkedHashSet<>();
+            getTreeStatus().getAllEnabledElements(CopyOrLink.COPY, getStructure(), false).stream()
+                    .map(IProductCmptStructureReference::getWrappedIpsObject)
+                    .filter(IProductCmpt.class::isInstance).map(IProductCmpt.class::cast)
+                    .forEach(p -> collectAffectedTemplates(p, result));
+            affectedTemplatesCache = result;
+        }
+        return affectedTemplatesCache;
+    }
+
+    /**
+     * Returns the subset of {@link #getAffectedTemplates()} that lies in the template chain of the
+     * given product component.
+     *
+     * @param productCmpt the product component whose template chain is inspected
+     * @return an ordered set of affected templates for this product, empty if none are affected
+     */
+    public Set<IProductCmpt> getAffectedTemplatesFor(IProductCmpt productCmpt) {
+        Set<IProductCmpt> allAffected = getAffectedTemplates();
+        if (allAffected.isEmpty()) {
+            return Set.of();
+        }
+        Set<IProductCmpt> result = new LinkedHashSet<>();
+        IProductCmpt current = productCmpt;
+        while (current.isUsingTemplate()) {
+            IProductCmpt template = current.findTemplate(current.getIpsProject());
+            if (template == null) {
+                break;
+            }
+            if (allAffected.contains(template)) {
+                result.add(template);
+            }
+            current = template;
+        }
+        return result;
+    }
+
+    private void collectAffectedTemplates(IProductCmpt productCmpt, Set<IProductCmpt> result) {
+        if (!productCmpt.isUsingTemplate()) {
+            return;
+        }
+        IProductCmpt template = productCmpt.findTemplate(productCmpt.getIpsProject());
+        if (template == null || result.contains(template)) {
+            return;
+        }
+        if (template.getValidFrom().after(newValidFrom)) {
+            result.add(template);
+        }
+        collectAffectedTemplates(template, result);
     }
 
     public IProductCmptTreeStructure getStructure() {
@@ -223,14 +300,22 @@ public class UpdateValidfromPresentationModel extends PresentationModelObject {
                         NLS.bind(Messages.UpdateValidFromSourcePage_ValidFromMovedPastNextGeneration,
                                 new Object[] {
                                         dateFormat.format(newValidFrom.getTime()),
-                                        changesOverTimeNamingConvention
-                                                .getGenerationConceptNameSingular(true),
+                                        changesOverTimeNamingConvention.getGenerationConceptNameSingular(true),
                                         dateFormat.format(secondGenValidFrom.getTime()),
-                                        changesOverTimeNamingConvention
-                                                .getGenerationConceptNamePlural(true)
+                                        changesOverTimeNamingConvention.getGenerationConceptNamePlural(true)
                                 }),
                         new ObjectProperty(this, NEW_VALID_FROM));
             }
+        }
+        Set<IProductCmpt> affectedTemplates = getAffectedTemplates();
+        if (!affectedTemplates.isEmpty()) {
+            messageList.newWarning(MSG_CODE_TEMPLATES_WILL_BE_BACKDATED,
+                    NLS.bind(Messages.UpdateValidFromSourcePage_TemplatesWillBeBackdated,
+                            new Object[] {
+                                    affectedTemplates.size(),
+                                    dateFormat.format(newValidFrom.getTime())
+                            }),
+                    new ObjectProperty(this, NEW_VALID_FROM));
         }
     }
 

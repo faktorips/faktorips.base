@@ -212,10 +212,14 @@ public class IpsUpdateValidfromWizard extends ResizableWizard {
             GregorianCalendar newValidFrom,
             IProgressMonitor monitor) throws IpsException {
 
+        for (IProductCmpt template : presentationModel.getAffectedTemplates()) {
+            template.setValidFrom(newValidFrom);
+            template.getIpsSrcFile().save(monitor);
+        }
+
         for (IProductCmptStructureReference ref : selectedItems) {
             IIpsObject object = ref.getWrappedIpsObject();
             if (object instanceof IProductCmpt productCmpt) {
-                productCmpt.getValidFrom();
                 updateValidFrom(newValidFrom, productCmpt);
                 if (getPresentationModel().isChangeAttributes()) {
                     updateProductAttributesOperation(newValidFrom, productCmpt);

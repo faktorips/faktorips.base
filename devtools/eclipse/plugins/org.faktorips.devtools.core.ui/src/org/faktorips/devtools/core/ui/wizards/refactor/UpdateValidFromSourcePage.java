@@ -16,7 +16,9 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.resource.JFaceColors;
@@ -74,7 +76,8 @@ public class UpdateValidFromSourcePage extends WizardPage {
     private static final int COLUMN_WIDTH_NAME = 300;
     private static final int COLUMN_WIDTH_VALID_FROM = 100;
     private static final int COLUMN_WIDTH_GENERATION_ID = 120;
-    private static final int COLUMN_WIDTH_CHANGES_TO_GENERATIONS = 400;
+    private static final int COLUMN_WIDTH_CHANGES_TO_GENERATIONS = 250;
+    private static final int COLUMN_WIDTH_TEMPLATE = 200;
 
     private final DateFormat dateFormat;
 
@@ -219,6 +222,10 @@ public class UpdateValidFromSourcePage extends WizardPage {
                 .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(),
                 COLUMN_WIDTH_CHANGES_TO_GENERATIONS,
                 new ChangesToGenerationsLabelProvider());
+
+        addColumn(Messages.UpdateValidFromSourcePage_template, COLUMN_WIDTH_TEMPLATE,
+                new TemplateLabelProvider(getPresentationModel()));
+
     }
 
     /** Helper to abstract TreeViewer column creation. */
@@ -501,7 +508,10 @@ public class UpdateValidFromSourcePage extends WizardPage {
                     refreshTreeColumnGenerationId();
                     refreshPageAfterValueChange();
                 }
-                case LinkStatus.CHECKED -> refreshPageAfterValueChange();
+                case LinkStatus.CHECKED -> {
+                    getPresentationModel().invalidateTemplatesCache();
+                    refreshPageAfterValueChange();
+                }
                 default -> {
                     /* other properties not handled */ }
             }
@@ -539,7 +549,9 @@ public class UpdateValidFromSourcePage extends WizardPage {
                             styleRange.strikeoutColor = JFaceColors.getErrorText(display);
                             styles.add(styleRange);
                         }
-                        case MovedTo(var newValidFrom) -> {
+                        case
+
+                                MovedTo(var newValidFrom) -> {
                             var styleRange = new StyleRange(start, length,
                                     display.getSystemColor(SWT.COLOR_WIDGET_DISABLED_FOREGROUND),
                                     display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
@@ -557,6 +569,31 @@ public class UpdateValidFromSourcePage extends WizardPage {
                 cell.setStyleRanges(styles.toArray(StyleRange[]::new));
             }
             super.update(cell);
+        }
+    }
+
+    private static class TemplateLabelProvider extends StyledCellLabelProvider {
+
+        private final UpdateValidfromPresentationModel presentationModel;
+
+        public TemplateLabelProvider(UpdateValidfromPresentationModel presentationModel) {
+            this.presentationModel = Objects.requireNonNull(presentationModel);
+        }
+
+        @Override
+        public void update(ViewerCell cell) {
+            cell.setText(getTemplateNames(cell.getElement()));
+            super.update(cell);
+        }
+
+        private String getTemplateNames(Object element) {
+            if (!(element instanceof IProductCmptReference productRef)) {
+                return IpsStringUtils.EMPTY;
+            }
+            return presentationModel.getAffectedTemplatesFor(productRef.getProductCmpt())
+                    .stream()
+                    .map(IProductCmpt::getName)
+                    .collect(Collectors.joining(", ")); //$NON-NLS-1$
         }
     }
 

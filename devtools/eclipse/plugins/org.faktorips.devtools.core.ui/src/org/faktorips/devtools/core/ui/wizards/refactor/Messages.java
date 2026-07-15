@@ -60,6 +60,8 @@ public class Messages extends NLS {
     public static String UpdateValidFromSourcePage_ChangeAttributesCheckbox;
     public static String UpdateValidFromSourcePage_ValidFromDateFormatError;
     public static String UpdateValidFromSourcePage_ValidFromMovedPastNextGeneration;
+    public static String UpdateValidFromSourcePage_TemplatesWillBeBackdated;
+    public static String UpdateValidFromSourcePage_template;
 
     public static String UpdateValidFromPreviewPage_description;
     public static String UpdateValidFromPreviewPage_validFrom;
