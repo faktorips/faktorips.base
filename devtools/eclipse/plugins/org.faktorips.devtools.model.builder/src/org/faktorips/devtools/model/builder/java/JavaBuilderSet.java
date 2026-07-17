@@ -207,6 +207,18 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
      */
     public static final String CONFIG_PROPERTY_GENERATE_GET_EFFECTIVE_FROM_AS_CALENDAR = "generateGetEffectiveFromAsCalendar"; //$NON-NLS-1$
 
+    /**
+     * Configuration property that defines the tag inserted before generated code sections. Must be
+     * set together with {@link #CONFIG_PROPERTY_GENERATED_END_TAG}. Leave empty to disable.
+     */
+    public static final String CONFIG_PROPERTY_GENERATED_START_TAG = "generatedStartTag"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that defines the tag inserted after generated code sections. Must be
+     * set together with {@link #CONFIG_PROPERTY_GENERATED_START_TAG}. Leave empty to disable.
+     */
+    public static final String CONFIG_PROPERTY_GENERATED_END_TAG = "generatedEndTag"; //$NON-NLS-1$
+
     private ModelService modelService;
 
     private GeneratorModelContext generatorModelContext;

@@ -20,6 +20,8 @@ public class Messages extends NLS {
 
     public static String ChangesOverTimeNamingConventionPropertyDef_msgDerivedPropertySetManually;
 
+    public static String GeneratedTagPropertyDef_onlyOneTagSet;
+
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -268,6 +268,24 @@
             name="generateGetEffectiveFromAsCalendar"
             type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+            class="org.faktorips.devtools.model.builder.propertydef.GeneratedTagPropertyDef$StartTag"
+            defaultValue=""
+            description="%generatedStartTagDescription"
+            disableValue=""
+            label="%generatedStartTagLabel"
+            name="generatedStartTag"
+            type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+            class="org.faktorips.devtools.model.builder.propertydef.GeneratedTagPropertyDef$EndTag"
+            defaultValue=""
+            description="%generatedEndTagDescription"
+            disableValue=""
+            label="%generatedEndTagLabel"
+            name="generatedEndTag"
+            type="string">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

@@ -268,6 +268,24 @@ public class GeneratorConfig {
         return getStringProperty(JavaBuilderSet.CONFIG_PROPERTY_RETAIN_ANNOTATIONS, IpsStringUtils.EMPTY);
     }
 
+    /**
+     * Returns the configured start tag that is inserted before generated code sections.
+     *
+     * @since 27.1
+     */
+    public String getGeneratedStartTag() {
+        return getStringProperty(JavaBuilderSet.CONFIG_PROPERTY_GENERATED_START_TAG, IpsStringUtils.EMPTY);
+    }
+
+    /**
+     * Returns the configured end tag that is inserted after generated code sections.
+     *
+     * @since 27.1
+     */
+    public String getGeneratedEndTag() {
+        return getStringProperty(JavaBuilderSet.CONFIG_PROPERTY_GENERATED_END_TAG, IpsStringUtils.EMPTY);
+    }
+
     private String getStringProperty(String propertyKey, String defaultValue) {
         String propertyValueAsString = config.getPropertyValueAsString(propertyKey);
         return propertyValueAsString == null ? defaultValue : propertyValueAsString;
