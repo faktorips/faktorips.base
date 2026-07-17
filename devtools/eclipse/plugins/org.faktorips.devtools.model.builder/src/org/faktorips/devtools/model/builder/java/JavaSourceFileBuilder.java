@@ -834,9 +834,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder impl
     /**
      * Returns the AFile for the provided IIpsSrcFile.
      */
-    /**
-     * Returns the AFile for the provided IIpsSrcFile.
-     */
     public AFile getJavaFile(IIpsSrcFile ipsSrcFile) {
         APackageFragmentRoot destinationFolder = getArtefactDestination(ipsSrcFile);
 
@@ -880,7 +877,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder impl
                             builderSet.getAdditionalImportsForFields(),
                             builderSet.getAdditionalAnnotationsForFields(),
                             builderSet.getAdditionalAnnotationsLocation(),
-                            builderSet.getRetainedAnnotations()));
+                            builderSet.getRetainedAnnotations(),
+                            builderSet.getGeneratedStartTag(),
+                            builderSet.getGeneratedEndTag()));
         } catch (Exception e) {
             throw new IpsException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
         }

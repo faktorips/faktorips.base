@@ -25,6 +25,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 public abstract class GeneratedTagPropertyDef extends IpsBuilderSetPropertyDef {
 
     public static final String MSGCODE_ONLY_ONE_TAG_SET = MSGCODE_PREFIX + "OnlyOneTagSet"; //$NON-NLS-1$
+    public static final String MSGCODE_TAG_STARTS_WITH_SLASHES = MSGCODE_PREFIX + "TagStartsWithSlashes"; //$NON-NLS-1$
 
     /**
      * Returns the name of the sibling property (e.g. {@link StartTag} returns the end-tag property
@@ -47,11 +48,16 @@ public abstract class GeneratedTagPropertyDef extends IpsBuilderSetPropertyDef {
         if (IpsStringUtils.isEmpty(value)) {
             return null;
         }
+        if (value.startsWith("//")) { //$NON-NLS-1$
+            return Message.newError(MSGCODE_TAG_STARTS_WITH_SLASHES,
+                    Messages.bind(Messages.GeneratedTagPropertyDef_tagStartsWithSlashes, value));
+        }
         String siblingValue = ipsProject.getIpsArtefactBuilderSet().getConfig()
                 .getPropertyValueAsString(getSiblingPropertyName());
         if (IpsStringUtils.isEmpty(siblingValue)) {
             return Message.newError(MSGCODE_ONLY_ONE_TAG_SET,
-                    Messages.bind(Messages.GeneratedTagPropertyDef_onlyOneTagSet, messageArgs(value, siblingValue)));
+                    Messages.bind(Messages.GeneratedTagPropertyDef_onlyOneTagSet,
+                            messageArgs(value, siblingValue != null ? siblingValue : IpsStringUtils.EMPTY)));
         }
         return null;
     }

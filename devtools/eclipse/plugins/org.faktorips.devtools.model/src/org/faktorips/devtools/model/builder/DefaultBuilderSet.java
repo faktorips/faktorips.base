@@ -264,4 +264,24 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public List<String> getRetainedAnnotations() {
         return retainedAnnotations;
     }
+
+    /**
+     * Returns the configured start-tag inserted before each {@code @generated} member, or an empty
+     * string if not configured. Override in subclasses that support this feature.
+     *
+     * @since 27.1
+     */
+    public String getGeneratedStartTag() {
+        return IpsStringUtils.EMPTY;
+    }
+
+    /**
+     * Returns the configured end-tag inserted after each {@code @generated} member, or an empty
+     * string if not configured. Override in subclasses that support this feature.
+     *
+     * @since 27.1
+     */
+    public String getGeneratedEndTag() {
+        return IpsStringUtils.EMPTY;
+    }
 }

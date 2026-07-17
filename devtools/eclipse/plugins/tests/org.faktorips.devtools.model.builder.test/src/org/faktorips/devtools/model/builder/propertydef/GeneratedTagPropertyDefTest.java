@@ -140,4 +140,21 @@ public class GeneratedTagPropertyDefTest {
 
         assertThat(message, is(nullValue()));
     }
+
+    @Test
+    public void testStartTag_valueStartsWithSlashes_returnsError() {
+        Message message = startTag.validateValue(ipsProject, "//@START@");
+
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(GeneratedTagPropertyDef.MSGCODE_TAG_STARTS_WITH_SLASHES));
+        assertThat(message.getText(), containsString("//"));
+    }
+
+    @Test
+    public void testEndTag_valueStartsWithSlashes_returnsError() {
+        Message message = endTag.validateValue(ipsProject, "//@END@");
+
+        assertThat(message.getSeverity(), is(Message.ERROR));
+        assertThat(message.getCode(), is(GeneratedTagPropertyDef.MSGCODE_TAG_STARTS_WITH_SLASHES));
+    }
 }

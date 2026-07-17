@@ -21,6 +21,7 @@ public class Messages extends NLS {
     public static String ChangesOverTimeNamingConventionPropertyDef_msgDerivedPropertySetManually;
 
     public static String GeneratedTagPropertyDef_onlyOneTagSet;
+    public static String GeneratedTagPropertyDef_tagStartsWithSlashes;
 
     static {
         // initialize resource bundle

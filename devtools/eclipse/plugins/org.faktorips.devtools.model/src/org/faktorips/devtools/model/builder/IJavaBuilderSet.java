@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A {@link IIpsArtefactBuilderSet} that generates Java code.
@@ -50,5 +51,25 @@ public interface IJavaBuilderSet extends IJavaPackageStructure, IIpsArtefactBuil
      * @since 24.7
      */
     String getJavaClassName(Datatype datatype, boolean interfaces);
+
+    /**
+     * Returns the configured start-tag that is inserted as a line comment before each
+     * {@code @generated} member, or an empty string if not configured.
+     *
+     * @since 27.1
+     */
+    default String getGeneratedStartTag() {
+        return IpsStringUtils.EMPTY;
+    }
+
+    /**
+     * Returns the configured end-tag that is inserted as a line comment after each
+     * {@code @generated} member, or an empty string if not configured.
+     *
+     * @since 27.1
+     */
+    default String getGeneratedEndTag() {
+        return IpsStringUtils.EMPTY;
+    }
 
 }

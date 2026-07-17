@@ -398,6 +398,14 @@ public class JMerger {
                 }
             }
         }
+        if (annotationGenerationSettings != null) {
+            String startTag = annotationGenerationSettings.generatedStartTag();
+            String endTag = annotationGenerationSettings.generatedEndTag();
+            if (!startTag.isEmpty() && !endTag.isEmpty()) {
+                result = new GeneratedMemberMarkerInjector(startTag, endTag,
+                        getFacadeHelper().getJavaCoreOptions()).inject(result);
+            }
+        }
         return result;
     }
 

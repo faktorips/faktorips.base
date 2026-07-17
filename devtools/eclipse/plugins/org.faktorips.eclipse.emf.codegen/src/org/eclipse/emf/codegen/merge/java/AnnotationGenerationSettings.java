@@ -21,12 +21,17 @@ import org.eclipse.emf.codegen.AdditionalAnnotationsLocation;
  * {@code @restrainedmodifiable} are excluded when {@link AdditionalAnnotationsLocation#OnlyGenerated}
  * is set. Annotations already present on the corresponding elements in the previous code are only
  * retained if they are included in the list of retained annotations.
+ * <p>
+ * If both {@code generatedStartTag} and {@code generatedEndTag} are non-empty, a
+ * {@link GeneratedMemberMarkerInjector} will wrap each {@code @generated} member with those markers
+ * in the final source output. Both must be set together or both left empty.
  *
  * @since 24.1
  */
 public record AnnotationGenerationSettings(List<String> additionalImports, List<String> additionalAnnotations,
         List<String> additionalImportsForFields, List<String> additionalAnnotationsForFields,
-        AdditionalAnnotationsLocation additionalAnnotationsLocation, List<String> retainedAnnotations) {
+        AdditionalAnnotationsLocation additionalAnnotationsLocation, List<String> retainedAnnotations,
+        String generatedStartTag, String generatedEndTag) {
 
     public AnnotationGenerationSettings {
         additionalImports = List.copyOf(additionalImports);
@@ -34,15 +39,18 @@ public record AnnotationGenerationSettings(List<String> additionalImports, List<
         additionalImportsForFields = List.copyOf(additionalImportsForFields);
         additionalAnnotationsForFields = List.copyOf(additionalAnnotationsForFields);
         retainedAnnotations = List.copyOf(retainedAnnotations);
+        generatedStartTag = generatedStartTag != null ? generatedStartTag : "";
+        generatedEndTag = generatedEndTag != null ? generatedEndTag : "";
     }
 
     public AnnotationGenerationSettings(List<String> additionalImports, List<String> additionalAnnotations,
             List<String> additionalImportsForFields, List<String> additionalAnnotationsForFields,
-            String additionalAnnotationsLocation, List<String> retainedAnnotations) {
+            String additionalAnnotationsLocation, List<String> retainedAnnotations,
+            String generatedStartTag, String generatedEndTag) {
         this(additionalImports, additionalAnnotations,
                 additionalImportsForFields, additionalAnnotationsForFields,
                 AdditionalAnnotationsLocation.fromString(additionalAnnotationsLocation),
-                retainedAnnotations);
+                retainedAnnotations, generatedStartTag, generatedEndTag);
     }
 
 }

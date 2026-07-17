@@ -281,6 +281,16 @@ public abstract class JavaBuilderSet extends DefaultBuilderSet implements IJavaB
         return generatorModelContext.getBaseGeneratorConfig().getConfiguredRetainedAnnotations();
     }
 
+    @Override
+    public String getGeneratedStartTag() {
+        return generatorModelContext.getBaseGeneratorConfig().getGeneratedStartTag();
+    }
+
+    @Override
+    public String getGeneratedEndTag() {
+        return generatorModelContext.getBaseGeneratorConfig().getGeneratedEndTag();
+    }
+
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
         return generatorModelContext.getValidationMessageBundleBaseName(entry);
     }
