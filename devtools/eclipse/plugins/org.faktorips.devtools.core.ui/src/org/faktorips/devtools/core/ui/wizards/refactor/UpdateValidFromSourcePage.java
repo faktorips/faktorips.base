@@ -464,8 +464,8 @@ public class UpdateValidFromSourcePage extends WizardPage {
     }
 
     @Override
-    public IpsUpdateValidfromWizard getWizard() {
-        return (IpsUpdateValidfromWizard)super.getWizard();
+    public IpsUpdateValidFromWizard getWizard() {
+        return (IpsUpdateValidFromWizard)super.getWizard();
     }
 
     private static SimpleLabelProvider labelProvider(Consumer<ViewerCell> cellUpdater) {

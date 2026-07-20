@@ -103,7 +103,7 @@ public class UpdateValidFromPreviewPage extends WizardPage {
      * Gets the current presentation model from the wizard.
      */
     private UpdateValidfromPresentationModel getPresentationModel() {
-        return ((IpsUpdateValidfromWizard)getWizard()).getPresentationModel();
+        return ((IpsUpdateValidFromWizard)getWizard()).getPresentationModel();
     }
 
     /**

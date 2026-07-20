@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 import java.text.SimpleDateFormat;
@@ -42,6 +43,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.AssociationType;
+import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,6 +142,9 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         String newDate = "2028-01-01";
         String newDateTime = "2028-01-01T12:00:00";
 
+        String otherDate = "2030-01-01";
+        String otherDateTime = "2030-01-01T12:00:00";
+
         // PRODUCT ATTRIBUTES
 
         // Single/Unrestricted
@@ -167,9 +173,9 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         // POLICY ATTRIBUTES
 
         // Enums
-        createEnumAttributePolicy(policyCmptType, "LocalDate", List.of(oldDate, newDate));
-        createEnumAttributePolicy(policyCmptType, "GregorianCalendar", List.of(oldDate, newDate));
-        createEnumAttributePolicy(policyCmptType, "LocalDateTime", List.of(oldDateTime, newDateTime));
+        createEnumAttributePolicy(policyCmptType, "LocalDate", List.of(oldDate, newDate), otherDate);
+        createEnumAttributePolicy(policyCmptType, "GregorianCalendar", List.of(oldDate, newDate), otherDate);
+        createEnumAttributePolicy(policyCmptType, "LocalDateTime", List.of(oldDateTime, newDateTime), otherDateTime);
 
         // Unrestricted
         createUnrestrictedAttributepPolicy(policyCmptType, "LocalDate", oldDate);
@@ -193,7 +199,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     public void testPerform_WithoutAttributeChange() {
 
         // to avoid testing the whole eclipse refactoring in this unit test
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt) {
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt) {
             @Override
             protected void performRenameRefactoring(IIpsObjectPartContainer target, String newName) {
                 if (target instanceof IProductCmpt product) {
@@ -230,7 +236,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     @Test
     public void testPerform_WithAttributeChange() {
 
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
 
         GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
@@ -268,23 +274,23 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         assertThat(
                 productCmptGen.getAttributeValue("attr_LocalDate_ENUM_MULTI").getValueHolder().getValueList().get(0)
                         .getContentAsString(),
-                is(expectedDate));
+                is("2025-01-01"));
 
         assertThat(productCmptGen.getAttributeValue("attr_LocalDateTime_ENUM_MULTI")
-                .getValueHolder().getValueList().get(0).getContentAsString(), startsWith(expectedDate));
+                .getValueHolder().getValueList().get(0).getContentAsString(), startsWith("2025-01-01"));
 
         assertThat(productCmptGen.getPropertyValue("attr_LocalDate_ENUM_POLICY", IConfiguredDefault.class).getValue(),
-                is(expectedDate));
+                is("2025-01-01"));
 
         assertThat(
                 productCmptGen.getPropertyValue("attr_GregorianCalendar_ENUM_POLICY", IConfiguredDefault.class)
                         .getValue(),
-                is(expectedDate));
+                is("2025-01-01"));
 
         assertThat(
                 productCmptGen.getPropertyValue("attr_LocalDateTime_ENUM_POLICY", IConfiguredDefault.class)
                         .getValue(),
-                startsWith(expectedDate));
+                startsWith("2025-01-01"));
 
         assertThat(
                 productCmptGen.getPropertyValue("attr_LocalDateTime_UNRESTRICTED_POLICY", IConfiguredDefault.class)
@@ -309,8 +315,79 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testPerform_WithAttributeChangeOnMovedGeneration() {
+        var secondGenValidFrom = new GregorianCalendar(2026, Calendar.JANUARY, 1);
+        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration(secondGenValidFrom);
+        setSingleValue(gen2, "attr_LocalDate_UNRESTRICTED", "2026-01-01");
+        var thirdGenValidFrom = new GregorianCalendar(2030, Calendar.JANUARY, 1);
+        IProductCmptGeneration gen3 = (IProductCmptGeneration)productCmpt.newGeneration(thirdGenValidFrom);
+        setSingleValue(gen3, "attr_LocalDate_UNRESTRICTED", "2030-01-01");
+        ((EnumValueSet)gen3.getConfiguredValueSet("attr_LocalDate_ENUM_POLICY").getValueSet()).setValue(1,
+                "2030-01-01");
+        ((EnumValueSet)gen3.getConfiguredValueSet("attr_LocalDateTime_ENUM_POLICY").getValueSet()).setValue(1,
+                "2030-01-01T12:00:00");
+        productCmpt.getIpsSrcFile().save(null);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
+
+        GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
+        wizard.getPresentationModel().setNewValidFrom(newValue);
+        wizard.getPresentationModel().setNewVersionId("2028-01");
+        wizard.getPresentationModel().setChangeGenerationId(true);
+        wizard.getPresentationModel().setChangeAttributes(true);
+
+        // to avoid having to wait for background work
+        wizard.setAsyncExecutor(Runnable::run);
+
+        wizard.performFinish();
+
+        productCmpt = ipsProject.findProductCmptByRuntimeId("TestProduct 2028-01");
+
+        assertThat(productCmpt.getValidFrom(), is(newValue));
+        assertThat(productCmpt.getRuntimeId(), is("TestProduct 2028-01"));
+        assertThat(productCmpt.getNumOfGenerations(), is(2));
+        assertThat(productCmpt.getProductCmptGeneration(0).getValidFrom(), is(newValue));
+        assertThat(productCmpt.getProductCmptGeneration(0).getAttributeValue("attr_LocalDate_UNRESTRICTED")
+                .getValueHolder().getStringValue(), is("2028-01-01"));
+        assertThat(productCmpt.getProductCmptGeneration(1).getValidFrom(), is(thirdGenValidFrom));
+        assertThat(productCmpt.getProductCmptGeneration(1).getAttributeValue("attr_LocalDate_UNRESTRICTED")
+                .getValueHolder().getStringValue(), is("2030-01-01"));
+        assertThat(productCmpt.getProductCmptGeneration(0).getAttributeValue("attr_LocalDateTime_ENUM_MULTI")
+                .getValueHolder().getValueList().stream().map(IValue::getContentAsString).toList(),
+                contains("2025-01-01T12:00:00", "2028-01-01T12:00:00"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(0)
+                .getConfiguredValueSet("attr_LocalDate_ENUM_POLICY")
+                .getValueSet()).getValuesAsList(), contains("2025-01-01", "2028-01-01"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(1)
+                .getConfiguredValueSet("attr_LocalDate_ENUM_POLICY")
+                .getValueSet()).getValuesAsList(), contains("2028-01-01", "2030-01-01"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(0)
+                .getConfiguredValueSet("attr_LocalDateTime_ENUM_POLICY")
+                .getValueSet()).getValuesAsList(), contains("2025-01-01T12:00:00", "2028-01-01T12:00:00"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(1)
+                .getConfiguredValueSet("attr_LocalDateTime_ENUM_POLICY")
+                .getValueSet()).getValuesAsList(), contains("2028-01-01T12:00:00", "2030-01-01T12:00:00"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(0)
+                .getConfiguredValueSet("attr_LocalDate_UNRESTRICTED_POLICY_ENUM")
+                .getValueSet()).getValuesAsList(), contains("2028-01-01"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(1)
+                .getConfiguredValueSet("attr_LocalDate_UNRESTRICTED_POLICY_ENUM")
+                .getValueSet()).getValuesAsList(), contains("2028-01-01"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(0)
+                .getConfiguredValueSet("attr_LocalDateTime_UNRESTRICTED_POLICY_ENUM")
+                .getValueSet()).getValuesAsList(), contains("2028-01-01T12:00:00"));
+        assertThat(((EnumValueSet)productCmpt.getProductCmptGeneration(1)
+                .getConfiguredValueSet("attr_LocalDateTime_UNRESTRICTED_POLICY_ENUM")
+                .getValueSet()).getValuesAsList(), contains("2028-01-01T12:00:00"));
+    }
+
+    private void setSingleValue(IProductCmptGeneration gen, String attribute, String value) {
+        ((SingleValueHolder)gen.getAttributeValue(attribute).getValueHolder())
+                .setValue(ValueFactory.createStringValue(value));
+    }
+
+    @Test
     public void testPerform_WithSingleGeneration() {
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
 
         GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
@@ -344,7 +421,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
     @Test
     public void testPerform_Backwards() {
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
 
         GregorianCalendar newValue = new GregorianCalendar(2020, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
@@ -383,7 +460,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         var thirdGenValidFrom = new GregorianCalendar(2030, Calendar.JANUARY, 1);
         productCmpt.newGeneration(thirdGenValidFrom);
         productCmpt.getIpsSrcFile().save(null);
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
 
         GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
@@ -426,7 +503,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate(template.getQualifiedName());
         productCmpt.getIpsSrcFile().save(null);
 
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
         GregorianCalendar newValue = new GregorianCalendar(2020, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
         wizard.getPresentationModel().setNewVersionId("2020-01");
@@ -455,7 +532,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate(template2026.getQualifiedName());
         productCmpt.getIpsSrcFile().save(null);
 
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
         GregorianCalendar newValue = new GregorianCalendar(2020, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
         wizard.getPresentationModel().setNewVersionId("2020-01");
@@ -486,7 +563,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate(template2025.getQualifiedName());
         productCmpt.getIpsSrcFile().save(null);
 
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
         GregorianCalendar newValue = new GregorianCalendar(2024, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
         wizard.getPresentationModel().setNewVersionId("2024-01");
@@ -511,7 +588,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         var fourthGenValidFrom = new GregorianCalendar(2030, Calendar.JANUARY, 1);
         productCmpt.newGeneration(fourthGenValidFrom);
         productCmpt.getIpsSrcFile().save(null);
-        IpsUpdateValidfromWizard wizard = new IpsUpdateValidfromWizard(productCmpt);
+        IpsUpdateValidFromWizard wizard = new IpsUpdateValidFromWizard(productCmpt);
 
         GregorianCalendar newValue = new GregorianCalendar(2028, Calendar.JANUARY, 1);
         wizard.getPresentationModel().setNewValidFrom(newValue);
@@ -626,7 +703,8 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
     private void createEnumAttributePolicy(IPolicyCmptType type,
             String dataType,
-            List<String> value) {
+            List<String> values,
+            String otherDate) {
         String name = "attr_" + dataType + "_ENUM_POLICY";
 
         IPolicyCmptTypeAttribute attr = type.newPolicyCmptTypeAttribute(name);
@@ -638,16 +716,21 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         EnumValueSet enumSet = (EnumValueSet)attr.getValueSet();
 
         enumSet.setContainsNull(false);
-        enumSet.addValues(value);
+        values.stream().filter(v -> !enumSet.containsValue(v, ipsProject)).forEach(enumSet::addValue);
+        if (!enumSet.containsValue(otherDate, ipsProject)) {
+            enumSet.addValue(otherDate);
+        }
 
-        attr.setDefaultValue(value.get(0));
+        attr.setDefaultValue(values.get(0));
         type.getIpsSrcFile().save(null);
 
         IConfiguredValueSet configuredValueSet = productCmptGen.newPropertyValue(attr, IConfiguredValueSet.class);
         configuredValueSet.setValueSetType(ValueSetType.ENUM);
+        EnumValueSet valueSet = (EnumValueSet)configuredValueSet.getValueSet();
+        valueSet.removeValue(otherDate);
 
         IConfiguredDefault configuredDefault = productCmptGen.newPropertyValue(attr, IConfiguredDefault.class);
-        configuredDefault.setValue(value.get(0));
+        configuredDefault.setValue(values.get(0));
 
     }
 
@@ -668,7 +751,9 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
         IConfiguredValueSet configuredValueSet = productCmptGen.newPropertyValue(attr, IConfiguredValueSet.class);
         configuredValueSet.setValueSetType(ValueSetType.ENUM);
         EnumValueSet valueSet = (EnumValueSet)configuredValueSet.getValueSet();
-        valueSet.addValues(List.of(value));
+        if (!valueSet.containsValue(value, ipsProject)) {
+            valueSet.addValue(value);
+        }
 
         IConfiguredDefault configuredDefault = productCmptGen.newPropertyValue(attr, IConfiguredDefault.class);
         configuredDefault.setValue(value);
