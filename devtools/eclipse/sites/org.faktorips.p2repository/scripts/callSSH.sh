@@ -1,4 +1,7 @@
 #!/bin/bash
+# DEPRECATED: no longer called by release.Jenkinsfile since FIPS-14918 replaced the
+# buildComposites.sh approach. This file will be removed after the first successful v27.1 release.
+#
 # executes a local script on a given ssh server
 # $1: URL of ssh server name@host
 # $2: Qualified name of the script (local)

@@ -172,4 +172,29 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- FIPS-14736: validate OSGi Require-Bundle constraints against the baseline using tycho-baseline-plugin -->
+        <profile>
+            <id>check-dependencies</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-baseline-plugin</artifactId>
+                        <version>${tycho.version}</version>
+                        <executions>
+                            <execution>
+                                <id>check-deps</id>
+                                <goals><goal>check-dependencies</goal></goals>
+                                <configuration>
+                                    <applySuggestions>false</applySuggestions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

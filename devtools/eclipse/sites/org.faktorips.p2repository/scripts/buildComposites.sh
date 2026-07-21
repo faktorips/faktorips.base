@@ -1,4 +1,10 @@
 #!/bin/bash
+# DEPRECATED: replaced by the Maven profile 'update-composite' in
+# devtools/eclipse/sites/pom.xml (faktorips-devtools-eclipse-sites) which uses
+# tycho-p2-repository-plugin:modify-composite-repository.
+# The release.Jenkinsfile no longer calls this script.
+# This file will be removed after the first successful v27.1 release. See FIPS-14918.
+#
 # creates a composite repository
 # $1: the name of the highest directory where the composite should start, e.g. /var/update/faktorips/v3_12/3.12.1-rfinal
 # $2: the name of the lowest directory where the composite should end, e.g. /var/update/faktorips/

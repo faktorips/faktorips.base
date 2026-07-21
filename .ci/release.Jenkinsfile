@@ -168,12 +168,39 @@ pipeline {
                             ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${params.RELEASE_VERSION}'
                             scp -r ${p2RepositoryFolder}/target/repository/* ${p2Server}:${ps2DeployDir}/${params.RELEASE_VERSION}
                         """
-                        // create a composite, let eclipse see all versions in a sub dir e.g.: In v22_12 there could be 22.12.0-m01, 22.12.0-rc01 & 22.12.0-rfinal
-                        // execute local script with stdin of ssh command
-                        sh """
-                            echo "create update site composite"
-                            bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${params.RELEASE_VERSION}
-                        """
+                        // update the minor composite (v27_1 etc.) so Eclipse users see all patch releases within the minor line.
+                        // the root composite is static (points only to 'latest') and is never touched by the build —
+                        // including historical minor lines there caused Eclipse to offer Luna-compatible bundles to current users.
+
+                        // Workaround for Tycho 5.0.3 cold-start bug: modify-composite-repository re-throws
+                        // ProvisionException(code=1000) instead of creating a fresh composite when the remote
+                        // URL returns 404 (first release of a new minor line). Pre-create empty composite files
+                        // on the server so Tycho can load and then modify them.
+                        def compositeExists = sh(
+                            script: "ssh ${p2Server} '[ -f ${ps2DeployDir}/compositeContent.xml ]'",
+                            returnStatus: true
+                        ) == 0
+                        if (!compositeExists) {
+                            sh "mkdir -p ${p2RepositoryFolder}/target/composite-init"
+                            writeFile file: "${p2RepositoryFolder}/target/composite-init/compositeContent.xml", text: """\
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeMetadataRepository version='1.0.0'?>
+<repository name='Faktor-IPS ${major}.${minor} Updates' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
+  <properties size='1'><property name='p2.timestamp' value='0'/></properties>
+  <children size='0'/>
+</repository>"""
+                            writeFile file: "${p2RepositoryFolder}/target/composite-init/compositeArtifacts.xml", text: """\
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeArtifactRepository version='1.0.0'?>
+<repository name='Faktor-IPS ${major}.${minor} Updates' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
+  <properties size='1'><property name='p2.timestamp' value='0'/></properties>
+  <children size='0'/>
+</repository>"""
+                            sh "scp ${p2RepositoryFolder}/target/composite-init/composite*.xml ${p2Server}:${ps2DeployDir}/"
+                        }
+
+                        sh "mvn -P update-composite -pl :faktorips-devtools-eclipse-sites -Dmajor=${major} -Dminor=${minor} -Drelease.version=${params.RELEASE_VERSION} --no-transfer-progress generate-resources"
+                        sh "scp ${p2RepositoryFolder}/target/composite-out/v${major}_${minor}/composite*.xml ${p2RepositoryFolder}/target/composite-out/v${major}_${minor}/p2.index ${p2Server}:${ps2DeployDir}/"
                         def isMainBranch = env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main'
                         def isUpdateLatest = isMainBranch && isRelease
                         if(isUpdateLatest) {
