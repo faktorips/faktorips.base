@@ -90,6 +90,8 @@ public class UpdateValidFromSourcePage extends WizardPage {
     private CheckboxTreeViewer treeViewer;
     private DeepCopyContentProvider contentProvider;
 
+    private TreeViewerColumn adjustmentsColumn;
+
     private BindingContext bindingContext;
 
     public UpdateValidFromSourcePage(String pageName) {
@@ -218,7 +220,7 @@ public class UpdateValidFromSourcePage extends WizardPage {
                     cell.setText(getPresentationModel().getGenerationID(cell.getElement()));
                 }));
 
-        addColumn(IpsPlugin.getDefault().getIpsPreferences()
+        adjustmentsColumn = addColumn(IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(),
                 COLUMN_WIDTH_CHANGES_TO_GENERATIONS,
                 new ChangesToGenerationsLabelProvider());
@@ -229,11 +231,12 @@ public class UpdateValidFromSourcePage extends WizardPage {
     }
 
     /** Helper to abstract TreeViewer column creation. */
-    private void addColumn(String title, int width, CellLabelProvider labelProvider) {
+    private TreeViewerColumn addColumn(String title, int width, CellLabelProvider labelProvider) {
         TreeViewerColumn column = new TreeViewerColumn(treeViewer, SWT.NONE);
         column.getColumn().setText(title);
         column.getColumn().setWidth(width);
         column.setLabelProvider(labelProvider);
+        return column;
     }
 
     /** Triggers after property updates. Controls whether page is complete. */
@@ -296,6 +299,9 @@ public class UpdateValidFromSourcePage extends WizardPage {
                 newValidFromControl.setFocus();
                 refreshPageAfterValueChange();
                 treeViewer.refresh(true);
+                adjustmentsColumn.getColumn().pack();
+                adjustmentsColumn.getColumn().setWidth(
+                        Math.max(COLUMN_WIDTH_CHANGES_TO_GENERATIONS, adjustmentsColumn.getColumn().getWidth()));
             }
         });
     }
