@@ -14,7 +14,15 @@
 
     <name>Faktor-IPS Devtools Parent</name>
     <description>Defines versions for and configures Maven plugins used to build the Faktor-IPS design-time libraries</description>
-    
+
+    <properties>
+        <bsh.version>2.0b4</bsh.version>
+        <apache-extras-bsh.version>2.0b6</apache-extras-bsh.version>
+        <commons-io.version>2.17.0</commons-io.version>
+        <osgi-framework.version>1.9.0</osgi-framework.version>
+        <osgi-util-tracker.version>1.5.4</osgi-util-tracker.version>
+    </properties>
+
     <modules>
         <module>bom/eclipse-platform-dependencies</module>
         <module>bom</module>
@@ -33,6 +41,13 @@
         <dependencies>
             <dependency>
                 <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-runtime-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-devtools-bom</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
@@ -44,6 +59,31 @@
                 <version>${faktorips.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.beanshell</groupId>
+                <artifactId>bsh</artifactId>
+                <version>${bsh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache-extras.beanshell</groupId>
+                <artifactId>bsh</artifactId>
+                <version>${apache-extras-bsh.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.framework</artifactId>
+                <version>${osgi-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.util.tracker</artifactId>
+                <version>${osgi-util-tracker.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

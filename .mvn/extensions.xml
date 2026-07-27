@@ -3,7 +3,7 @@
     <extension>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-build</artifactId>
-        <version>3.0.5</version>
-        <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the pom.xml -->
+        <version>${tycho.version}</version>
+        <!-- defined in maven.config for both .mvn/extensions.xml && pom.xml -->
     </extension>
 </extensions>

@@ -5,7 +5,16 @@
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def p2Server = 'hudson@update.faktorzehn.org'
-def(major, minor, patch, kind, isAlpha) = parseVersion()
+def(major, minor, patch, kind, isAlpha, isRelease, releasePattern) = parseVersion()
+
+def setVersionForPlatformBoms(String oldVersion, String newVersion) {
+    sh """
+        for boms in \$(find devtools/common/bom/ -type d -name "*-platform-dependencies");
+        do
+            sed -i "s|<version>${oldVersion}</version>|<version>${newVersion}</version>|" \$boms/pom.xml;
+        done
+    """
+}
 
 def configureRelease() {
     withMaven(publisherStrategy: 'EXPLICIT') {
@@ -13,6 +22,7 @@ def configureRelease() {
         sh "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.RELEASE_VERSION} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${params.RELEASE_VERSION}/' {} \\;"
+        setVersionForPlatformBoms(oldVersion, params.RELEASE_VERSION)
         // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
         // must be installed before enforcer plugin is executed
         sh "mvn -U -V -fae -e clean install -f codequality-config"
@@ -29,6 +39,7 @@ def configureDevelopment() {
         }
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${params.RELEASE_VERSION}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
+        setVersionForPlatformBoms(params.RELEASE_VERSION, "${params.DEVELOPMENT_VERSION}-SNAPSHOT")
     }
 }
 
@@ -36,7 +47,8 @@ def parseVersion() {
     def releasePattern = /^(?<major>\d+)\.(?<minor>\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/
     def (_, major, minor, patch, kind) = (params.RELEASE_VERSION =~ releasePattern)[0]
     def isAlpha = kind =~ /a\d{8}-\d\d$/
-    return [major, minor, patch, kind, isAlpha.find()]
+    def isRelease = kind == 'release'
+    return [major, minor, patch, kind, isAlpha.find(), isRelease, releasePattern]
 }
 
 pipeline {
@@ -48,7 +60,7 @@ pipeline {
     }
 
     environment {
-        REFERENCE_JOB = 'FaktorIPS_hotfix_25.7'
+        REFERENCE_JOB = 'FaktorIPS_CI'
         MAVEN_OPTS = '-Xmx4g'
         DISPLAY = ':0'
     }
@@ -81,7 +93,7 @@ pipeline {
                     withMaven(publisherStrategy: 'EXPLICIT') {
                         sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
                         if (isAlpha) {
-                            sh "mvn -U -V -T 8 -P nexusRelease clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
+                            sh "mvn -U -V -T 8 clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
                         } else {
                             // gpg signing of artifacts for maven central
                             sh "mvn -U -V -T 8 -P mavenCentralRelease clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore"
@@ -126,7 +138,7 @@ pipeline {
                     uploadRelease() {
                         if (isAlpha) {
                             withMaven(publisherStrategy: 'EXPLICIT') {
-                                sh "mvn -V deploy -P nexusRelease -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
+                                sh "mvn -V deploy -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
                             }
                         } else {
                             deployToMavenCentral(
@@ -136,6 +148,7 @@ pipeline {
                         def archiveZipFile = "org.faktorips.p2repository-${params.RELEASE_VERSION}.zip"
                         def archiveDeployDir = "/var/www/update.faktorzehn.org/faktorips/v${major}_${minor}/downloads/faktorips-${major}.${minor}"
                         def ps2DeployDir = "/var/www/update.faktorzehn.org/faktorips/v${major}_${minor}"
+                        def oomphDeployDir = "/var/www/update.faktorzehn.org/oomph/faktorips"
                         // add license to zipped repository (archive download) using zip from the shell
                         // create zip at root of repository
                         // each sh starts at root of git checkout, so no need to cd back
@@ -161,13 +174,21 @@ pipeline {
                             echo "create update site composite"
                             bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${params.RELEASE_VERSION}
                         """
-                        // set latest symlink
-                        sh "ssh ${p2Server} \'cd /var/www/update.faktorzehn.org/faktorips; rm latest; ls -1v | grep -E \"^v[0-9_]+\" | tail -1 | xargs -i ln -s {} latest\'"
-
+                        def isMainBranch = env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main'
+                        def isUpdateLatest = isMainBranch && isRelease
+                        if(isUpdateLatest) {
+                            // set latest symlink
+                            sh "ssh ${p2Server} \'cd /var/www/update.faktorzehn.org/faktorips; rm latest; ls -1v | grep -E \"^v[0-9_]+\" | tail -1 | xargs -i ln -s {} latest\'"
+                        }
+                        // deploy oomph setup file
+                        sh """
+                            echo "copy oomph setup file to update server"
+                            ssh ${p2Server} 'mkdir -p ${oomphDeployDir}/${params.RELEASE_VERSION}'
+                            scp .oomph/* ${p2Server}:${oomphDeployDir}/${params.RELEASE_VERSION}
+                        """
                         // deploy maven plugin doc
                         withMaven(publisherStrategy: 'EXPLICIT') {
-                            def isMainBranch = env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main'
-                            uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: isMainBranch, legacyMode: true, legacyUser: 'jenkins-fips-legacy'                            // SNAPSHOT versions should also publish to major.minor
+                            uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: isUpdateLatest, legacyMode: true, legacyUser: 'jenkins-fips-legacy' // SNAPSHOT versions should also publish to major.minor
                             uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', updateLatest: false, releasePattern: releasePattern, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                         }
                     }

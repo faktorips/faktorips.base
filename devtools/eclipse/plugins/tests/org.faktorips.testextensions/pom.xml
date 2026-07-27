@@ -11,11 +11,11 @@
     <artifactId>org.faktorips.testextensions</artifactId>
 
     <packaging>eclipse-plugin</packaging>
-    
+
     <properties>
         <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -26,5 +26,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

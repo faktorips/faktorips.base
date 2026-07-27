@@ -93,7 +93,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    <requires>
       <import plugin="org.faktorips.runtime"/>
       <import plugin="org.faktorips.valuetypes"/>
-      <import plugin="groovy" version="3.0.9" match="greaterOrEqual"/>
+      <import plugin="groovy" version="4.0.26" match="greaterOrEqual"/>
    </requires>
 
    <plugin

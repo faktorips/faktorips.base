@@ -1,5 +1,5 @@
-library 'fips-jenkins-library@main'
- 
+library 'f10-jenkins-library@1.1_patches'
+
 def p2Server = 'hudson@update.faktorzehn.org'
 def ps2MirrorDir = '/var/www/update.faktorzehn.org/p2repositories'
 def pomString = """<?xml version="1.0" encoding="UTF-8"?>
@@ -56,7 +56,7 @@ pipeline {
     agent any
 
     parameters {
-        string description: 'Eclipse Version z.B: 2023-12', name: 'eclipseVersion'
+        string description: 'Eclipse Version z.B: 2024-09', name: 'eclipseVersion'
     }
 
     tools {
@@ -84,8 +84,13 @@ pipeline {
 
         stage('Copy Mirror') {
             steps {
-                sshagent(credentials: ['hudson.jenkins-f10org'], ignoreMissing: true) {
-                    replaceOnServer server:p2Server, port:'22', localFolder:"/tmp/mirror/${eclipseVersion}", remoteFolder:"${ps2MirrorDir}/${eclipseVersion}"
+                script {
+                    def localFolder="/tmp/mirror/${eclipseVersion}"
+                    def remoteFolder="${ps2MirrorDir}/${eclipseVersion}"
+                    sh "echo 'save replace files on server'"
+                    sh "scp -P 22 -r ${localFolder} ${p2Server}:${remoteFolder}_deploy"
+                    // a non existing folder would stop the script therefore make it or ignore it (-p)
+                    sh "ssh -p 22 ${p2Server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
                 }
             }
         }

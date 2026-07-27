@@ -15,9 +15,6 @@
     <properties>
         <commons-codec.version>1.17.1</commons-codec.version>
         <commons-io.version>2.17.0</commons-io.version>
-        <!-- plugins -->
-        <tycho-maven-plugin.version>${tycho.version}</tycho-maven-plugin.version>
-        <skip-publish>false</skip-publish>
     </properties>
 
     <dependencies>
@@ -31,8 +28,8 @@
             <version>${maven-shared-utils.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.tycho.extras</groupId>
-            <artifactId>tycho-eclipserun-plugin</artifactId>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>tycho-eclipse-plugin</artifactId>
             <version>${tycho-maven-plugin.version}</version>
         </dependency>
         <dependency>
@@ -80,5 +77,11 @@
                 </includes>
             </testResource>
         </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

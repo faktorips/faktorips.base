@@ -31,7 +31,17 @@
             "code": "java.method.addedToInterface",
             "new": "method void org.faktorips.devtools.model.productcmpt.IConfiguredValueSet::setRelevance(org.faktorips.devtools.model.productcmpt.AttributeRelevance)",
             "justification": "FIPS-13827: Validation of Relevance should also be displayed on the field, therefor it must be available as a bound property"
-          }
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method boolean org.apache.maven.execution.MavenExecutionRequest::isIgnoreTransitiveRepositories()",
+            "justification": "Update build"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method org.apache.maven.execution.MavenExecutionRequest org.apache.maven.execution.MavenExecutionRequest::setIgnoreTransitiveRepositories(boolean)",
+            "justification": "Update build"
+          }    
         ]
       }
     }

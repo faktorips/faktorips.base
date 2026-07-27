@@ -15,10 +15,6 @@
     <description>Value type runtime library for Faktor-IPS.
     When using the JAXB support use either faktorips-runtime-jakarta-xml or faktorips-runtime-javax-xml as dependency.</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
     <dependencies>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
@@ -129,6 +125,10 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

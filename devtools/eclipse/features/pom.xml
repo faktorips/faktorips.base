@@ -62,5 +62,9 @@
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-abstraction-plainjava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-model-plainjava</artifactId>
+        </dependency>
     </dependencies>
 </project>

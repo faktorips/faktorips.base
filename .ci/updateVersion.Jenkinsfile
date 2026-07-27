@@ -1,7 +1,4 @@
-@Library('f10-jenkins-library@1.1_patches')
-@Library('fips-jenkins-library@main')
-
-import org.faktorips.jenkins.MavenProjectVersion
+library 'f10-jenkins-library@1.1_patches'
 
 pipeline {
     agent any
@@ -36,9 +33,10 @@ pipeline {
                     ])
 
                     LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
-                    
-                    def xmlfile = readFile 'pom.xml'
-                    oldVersion = MavenProjectVersion.fromPom(xmlfile)
+
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        oldVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                    }
                     newVersion = params.NEW_VERSION+'-SNAPSHOT'
                 }
             }
@@ -48,6 +46,13 @@ pipeline {
             steps {
                 withMaven(publisherStrategy: 'EXPLICIT') {
                     sh "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
+                    // add Target-Platforms-BOMs here
+                    sh """
+                        for boms in \$(find devtools/common/bom/ -type d -name "*-platform-dependencies");
+                        do
+                            sed -i "s|<version>${oldVersion}</version>|<version>${newVersion}</version>|" \$boms/pom.xml;
+                        done
+                    """
                 }
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${newVersion}/' {} \\;"

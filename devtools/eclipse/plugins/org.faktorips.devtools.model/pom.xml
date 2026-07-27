@@ -14,10 +14,6 @@
     <name>Faktor-IPS Model</name>
     <description>Model for the Faktor-IPS design time tools</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -118,9 +114,6 @@
             <plugin>
                 <groupId>org.revapi</groupId>
                 <artifactId>revapi-maven-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -150,12 +143,18 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>false</skip>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>

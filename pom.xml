@@ -10,7 +10,9 @@
 <!-- restrictions as well as the possibility of alternative license terms. -->
 <!-- -->
 <!-- ########################################################################### -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" child.project.url.inherit.append.path="false">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         child.project.url.inherit.append.path="false">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
@@ -40,37 +42,43 @@
             <name>GNU Affero General Public License Version 3 with additional permissions</name>
             <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
             <distribution>repo</distribution>
-            <comments>The following additional permissions and restrictions are 
-stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL: 
+            <comments>The following additional permissions and restrictions are
+                stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL:
 
-If you modify the Program or any covered work, by linking or 
-combining it with libraries of the namespace org.eclipse.* and 
-org.junit (including dependencies or a modified version of
-these libraries), thus containing parts covered by the terms of 
-Eclipse Public License Version 1.0 (EPL), the licensors of this 
-Program grant you the additional permission to convey the 
-resulting work.
+                If you modify the Program or any covered work, by linking or
+                combining it with libraries of the namespace org.eclipse.* and
+                org.junit (including dependencies or a modified version of
+                these libraries), thus containing parts covered by the terms of
+                Eclipse Public License Version 1.0 (EPL), the licensors of this
+                Program grant you the additional permission to convey the
+                resulting work.
 
-If you modify the Program or any covered work, without changing 
-its source code, only by linking or combining some or all 
-bundles of the Program with separate works covered by AGPL-
-incompatible license terms, the licensors of this Program grant
-you the additional permission to convey the resulting work.
+                If you modify the Program or any covered work, without changing
+                its source code, only by linking or combining some or all
+                bundles of the Program with separate works covered by AGPL-
+                incompatible license terms, the licensors of this Program grant
+                you the additional permission to convey the resulting work.
 
-You are not allowed to remove or alter any legal notices in the
-covered work or in the Appropriate Legal Notices.</comments>
+                You are not allowed to remove or alter any legal notices in the
+                covered work or in the Appropriate Legal Notices.
+            </comments>
         </license>
         <license>
             <name>Alternative Faktor-IPS License</name>
             <distribution>repo</distribution>
-            <comments>If AGPL licensing 
-is incompatible with your use of Faktor-IPS, alternative 
-license terms are available from Faktor Zehn GmbH.</comments>
+            <comments>If AGPL licensing
+                is incompatible with your use of Faktor-IPS, alternative
+                license terms are available from Faktor Zehn GmbH.
+            </comments>
         </license>
     </licenses>
 
     <properties>
         <faktorips.version>${project.version}</faktorips.version>
+        <!-- 
+            The minimum supported eclipse version. 
+        -->
+        <target-platform>eclipse-2023-12</target-platform>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <git.user>${user.name}</git.user>
@@ -78,11 +86,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <skip-publish>true</skip-publish>
         <!-- plugin versions -->
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
-        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
         <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
@@ -92,7 +99,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
         <maven-plugin-dependency-commons-collections.version>3.2.2</maven-plugin-dependency-commons-collections.version>
         <maven-plugin-dependency-commons-pool2.version>2.12.1</maven-plugin-dependency-commons-pool2.version>
-        <central-publishing-maven-plugin.version>0.7.0</central-publishing-maven-plugin.version>
+        <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
         <!-- Code quality -->
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
         <checkstyle.version>10.21.4</checkstyle.version>
@@ -100,15 +107,12 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <spotbugs-maven-plugin.version>4.9.2.0</spotbugs-maven-plugin.version>
         <spotbugs.version>4.9.2</spotbugs.version>
         <!-- Tycho & Eclipse-->
-        <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
-        <tycho.version>3.0.5</tycho.version>
+        <!-- tycho.version is defined in maven.config for both .mvn/extensions.xml && pom.xml -->
         <xtend-maven-plugin.version>2.38.0</xtend-maven-plugin.version>
         <!-- Others -->
         <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
-        <flatten-maven-plugin.version>1.7.0</flatten-maven-plugin.version>
+        <flatten-maven-plugin.version>1.7.2</flatten-maven-plugin.version>
         <auto-service.version>1.1.1</auto-service.version>
-        <dependency-check-plugin.version>9.1.0</dependency-check-plugin.version>
-        <dependency-check-postgres.version>42.7.3</dependency-check-postgres.version>
         <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
         <revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
         <revapi-java.version>0.28.1</revapi-java.version>
@@ -141,7 +145,8 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <module>faktorips-coverage</module>
     </modules>
 
-    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false"
+         child.scm.url.inherit.append.path="false">
         <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
         <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
         <url>https://github.com/faktorips/faktorips.base</url>
@@ -162,6 +167,16 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${maven-checkstyle-plugin.version}</version>
+                    <configuration>
+                        <configLocation>checkstyle/fips_checks.xml</configLocation>
+                        <suppressionsLocation>checkstyle/fips_suppressions.xml</suppressionsLocation>
+                        <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                        <headerLocation>checkstyle/fips.java.header</headerLocation>
+                        <propertyExpansion>config_loc=/checkstyle/</propertyExpansion>
+                    </configuration>
+                    <executions>
+
+                    </executions>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
@@ -181,7 +196,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${maven-deploy-plugin.version}</version>
                     <configuration>
-                        <skip>${skip-publish}</skip>
+                        <skip>true</skip>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -292,6 +307,18 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>spotbugs</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>spotbugs</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
+                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>com.github.spotbugs</groupId>
@@ -376,7 +403,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         <!-- enable flattening -->
                         <execution>
                             <id>flatten</id>
-                            <phase>process-resources</phase>
+                            <phase>prepare-package</phase>
                             <goals>
                                 <goal>flatten</goal>
                             </goals>
@@ -488,9 +515,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <extensions>true</extensions>
                     <configuration>
                         <publishingServerId>central</publishingServerId>
-                        <skipPublishing>${skip-publish}</skipPublishing>
                         <deploymentName>Faktor-IPS ${project.version}</deploymentName>
-                        <excludeArtifacts>faktorips-abstraction-testsetup,faktorips-devtools-parent,faktorips-maven,faktorips-model-test,faktorips-runtime-parent,targets</excludeArtifacts>
+                        <excludeArtifacts>
+                            faktorips-abstraction-testsetup,faktorips-devtools-parent,faktorips-maven,faktorips-model-test,faktorips-runtime-parent,targets
+                        </excludeArtifacts>
                     </configuration>
                 </plugin>
             </plugins>
@@ -507,6 +535,9 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <legacyMode>true</legacyMode>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -551,12 +582,12 @@ license terms are available from Faktor Zehn GmbH.</comments>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.revapi</groupId>
-                <artifactId>revapi-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
@@ -573,63 +604,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     </reportSet>
                 </reportSets>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>checkstyle/fips_checks.xml</configLocation>
-                    <suppressionsLocation>checkstyle/fips_suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                    <headerLocation>checkstyle/fips.java.header</headerLocation>
-                    <propertyExpansion>config_loc=/checkstyle/</propertyExpansion>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <configuration>
-                    <excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
-                </configuration>
-            </plugin>
         </plugins>
     </reporting>
-    <profiles>
-        <profile>
-            <id>DependencyCheck</id>
-            <build>
-                <plugins>
-                    <plugin>
-                      <groupId>org.owasp</groupId>
-                      <artifactId>dependency-check-maven</artifactId>
-                      <version>${dependency-check-plugin.version}</version>
-                      <dependencies>
-                            <dependency>
-                                <groupId>org.postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${dependency-check-postgres.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>commons-collections</groupId>
-                                <artifactId>commons-collections</artifactId>
-                                <version>${maven-plugin-dependency-commons-collections.version}</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.commons</groupId>
-                                <artifactId>commons-pool2</artifactId>
-                                <version>${maven-plugin-dependency-commons-pool2.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <databaseDriverName>org.postgresql.Driver</databaseDriverName>
-                            <!-- DB config must be set via parameters  -->
-                            <autoUpdate>false</autoUpdate>
-                            <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
-                            <nodeAuditAnalyzerEnabled>false</nodeAuditAnalyzerEnabled>
-                            <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
-                      </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

@@ -37,32 +37,23 @@ pipeline {
                 }
             }
         }
-        stage('Dependency-Check') {
-            steps {
-                dir('runtime') {
-                    withMaven(publisherStrategy: 'EXPLICIT') {
-                        dependencyCheck outputFile: 'dependency-check-runtime-report.html'
-                    }
-                }
-                dir('devtools/common') {
-                    withMaven(publisherStrategy: 'EXPLICIT') {
-                        dependencyCheck outputFile: 'dependency-check-devtools-report.html'
-                    }
-                }
-                rtp parserName: 'HTML', nullAction: '1', stableText: """
-                    <h2>Dependency-Check</h2>
-                    <ul><li><a href='${env.BUILD_URL}artifact/dependency-check-runtime-report.html' target='_blank'>Dependency-Check Runtime Report</a></li>
-                    <li><a href='${env.BUILD_URL}artifact/dependency-check-devtools-report.html' target='_blank'>Dependency-Check Devtools Common Report</a></li></ul>
-                  """
-            }
-        }
-
         stage('Deploy Additional Artifacts') {
             steps {
                 withMaven(publisherStrategy: 'EXPLICIT') {
                     uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: false, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
                     // SNAPSHOT versions should also publish to major.minor
                     uploadDocumentation project: 'schema/faktor-ips', folder: 'devtools/common/faktorips-schemas/src/main/resources', updateLatest: false, releasePattern: /(?<major>\d+)\.(?<minor>\d+)\.(\d+)(-SNAPSHOT)?/, legacyMode: true, legacyUser: 'jenkins-fips-legacy'
+
+                    script {
+                        def p2Server = 'hudson@update.faktorzehn.org'
+                        def oomphDeployDir = '/var/www/update.faktorzehn.org/oomph/faktorips'
+                        def projectVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                        sh """
+                            echo "copy oomph setup file to update server"
+                            ssh ${p2Server} 'mkdir -p ${oomphDeployDir}/${projectVersion}'
+                            scp .oomph/* ${p2Server}:${oomphDeployDir}/${projectVersion}
+                        """
+                    }
                 }
             }
         }

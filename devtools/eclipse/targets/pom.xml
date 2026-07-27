@@ -22,14 +22,21 @@
         <module>2025-03</module>
         <module>2025-06</module>
     </modules>
-    
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>

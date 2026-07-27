@@ -47,6 +47,12 @@
                     <type>jar</type>
                 </dependency>
                 <dependency>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                    <version>3.2.2</version>
+                    <type>jar</type>
+                </dependency>
+                <dependency>
                     <groupId>javax.xml.bind</groupId>
                     <artifactId>jaxb-api</artifactId>
                     <version>2.4.0-b180830.0359</version>
@@ -113,7 +119,7 @@
                 <dependency>
                     <groupId>org.apache.groovy</groupId>
                     <artifactId>groovy</artifactId>
-                    <version>4.0.26</version>
+                    <version>5.0.1</version>
                     <type>jar</type>
                 </dependency>
                 <dependency>
@@ -190,6 +196,17 @@
                     <groupId>org.eclipse.birt.runtime</groupId>
                     <artifactId>org.w3c.css.sac</artifactId>
                     <version>1.3.1.v200903091627</version>
+                </dependency>
+                <!-- javax for product files -->
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                    <version>4.0.1</version>
+                </dependency>
+                <dependency>
+                    <groupId>javax.annotation</groupId>
+                    <artifactId>javax.annotation-api</artifactId>
+                    <version>1.3.2</version>
                 </dependency>
             </dependencies>
         </location>

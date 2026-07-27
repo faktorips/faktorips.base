@@ -14,10 +14,6 @@
     <name>Faktor-IPS Valuetypes for Joda-Time</name>
     <description>JODA Valuetypes library for Faktor-IPS</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>joda-time</groupId>
@@ -109,6 +105,10 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.revapi</groupId>
+                <artifactId>revapi-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

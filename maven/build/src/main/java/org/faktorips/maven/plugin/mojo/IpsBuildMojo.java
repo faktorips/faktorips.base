@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.io.IOUtils;
@@ -44,7 +45,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -54,15 +54,15 @@ import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.FileUtils;
-import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
 import org.eclipse.tycho.ReactorProject;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
-import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.core.resolver.P2ResolverFactory;
+import org.eclipse.tycho.eclipserun.EclipseRunMojo;
+import org.eclipse.tycho.eclipserun.Repository;
 import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
-import org.eclipse.tycho.osgi.TychoServiceFactory;
-import org.eclipse.tycho.plugins.p2.extras.Repository;
+import org.eclipse.tycho.p2.target.facade.TargetPlatformFactory;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
 import org.faktorips.maven.plugin.mojo.internal.WorkingDirectory;
@@ -215,14 +215,14 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code
      * <repositories>
      *  <repository>
-     *   <id>faktor-ips-25-1</id>
+     *   <id>faktor-ips-25-7</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/v25_1/</url>
+     *   <url>https://update.faktorzehn.org/faktorips/v25_7/</url>
      *  </repository>
      *  <repository>
      *   <id>eclipse-2023-12</id>
      *   <layout>p2</layout>
-     *   <url>http://download.eclipse.org/eclipse/updates/4.30/</url>
+     *   <url>https://download.eclipse.org/releases/2023-12/</url>
      *  </repository>
      * </repositories>
      * }
@@ -244,7 +244,7 @@ public class IpsBuildMojo extends AbstractMojo {
      *  <repository>
      *   <id>productvariants</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/productvariants/25.1</url>
+     *   <url>https://update.faktorzehn.org/faktorips/productvariants/25.7</url>
      *  </repository>
      * </additionalRepositories>
      * }
@@ -460,29 +460,32 @@ public class IpsBuildMojo extends AbstractMojo {
      */
     private List<String> exceptionTexts;
 
-    @Component
+    @Inject
     private MavenProject project;
 
-    @Component
+    @Inject
     private EquinoxInstallationFactory installationFactory;
 
-    @Component
+    @Inject
     private EquinoxLauncher launcher;
 
-    @Component
+    @Inject
     private ToolchainProvider toolchainProvider;
 
-    @Component(hint = TychoServiceFactory.HINT)
-    private EquinoxServiceFactory equinox;
+    @Inject
+    private P2ResolverFactory equinox;
 
-    @Component
+    @Inject
     private Logger logger;
 
-    @Component
+    @Inject
     private ToolchainManager toolchainManager;
 
-    @Component
-    private PluginDescriptor pluginDescriptor;
+    @Parameter
+    private File installation;
+
+    @Inject
+    private TargetPlatformFactory platformFactory;
 
     /**
      * Returns the name of the project in a way that it can be used in the ant script. It should be
@@ -960,7 +963,8 @@ public class IpsBuildMojo extends AbstractMojo {
                     "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator\\/bundles\\.info \\(No such file or directory\\)",
                     /* see https://github.com/eclipse-m2e/m2e-core/issues/1210 */
                     "java\\.lang\\.Exception: stack trace\\R(?:\\s+at org\\.apache\\.felix.*)",
-                    "java.lang.IllegalStateException: m2e is shut down!");
+                    "java.lang.IllegalStateException: m2e is shut down!",
+                    "java\\.lang\\.UnsupportedOperationException: The Security Manager is deprecated and will be removed in a future release");
         } else {
             // perThread
             exceptionTexts = List.of();
@@ -987,7 +991,9 @@ public class IpsBuildMojo extends AbstractMojo {
                 toolchainManager,
                 getProjectName(),
                 getLog(),
-                exceptionTexts);
+                exceptionTexts,
+                platformFactory,
+                installation);
     }
 
     private EclipseRunMojo createOriginalEclipseRunMojo(boolean clearWorkspaceBeforeLaunch) {
@@ -1010,7 +1016,9 @@ public class IpsBuildMojo extends AbstractMojo {
                 toolchainProvider,
                 equinox,
                 logger,
-                toolchainManager);
+                toolchainManager,
+                platformFactory,
+                installation);
     }
 
     private boolean isGitStatusPorcelain() {
@@ -1069,6 +1077,7 @@ public class IpsBuildMojo extends AbstractMojo {
             writeProperties(settingsDir, "org.eclipse.core.resources.prefs", p -> {
                 p.put("refresh.enabled", "true");
                 p.put("description.autobuilding", "false");
+                p.put("missingNatureMarkerSeverity", "-1");
             });
 
         } catch (IOException e) {

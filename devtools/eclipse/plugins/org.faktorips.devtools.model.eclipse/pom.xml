@@ -13,10 +13,13 @@
     <name>Faktor-IPS Model for Eclipse</name>
     <description>Eclipse Module for the Faktor-IPS design time model</description>
 
-    <properties>
-        <skip-publish>false</skip-publish>
-    </properties>
-    
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -77,8 +80,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.revapi</groupId>
-                <artifactId>revapi-maven-plugin</artifactId>
+                <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
                     <skip>false</skip>
                 </configuration>
@@ -116,7 +118,7 @@
     </build>
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <build>
                 <plugins>
                     <plugin>

@@ -35,6 +35,7 @@ org.eclipse.jdt.core.compiler.debug.lineNumber=generate
 org.eclipse.jdt.core.compiler.debug.localVariable=generate
 org.eclipse.jdt.core.compiler.debug.sourceFile=generate
 org.eclipse.jdt.core.compiler.doc.comment.support=enabled
+org.eclipse.jdt.core.compiler.ignoreUnnamedModuleForSplitPackage=enabled
 org.eclipse.jdt.core.compiler.maxProblemPerUnit=100
 org.eclipse.jdt.core.compiler.problem.APILeak=warning
 org.eclipse.jdt.core.compiler.problem.annotatedTypeArgumentToUnannotated=info
