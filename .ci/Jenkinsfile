@@ -69,7 +69,7 @@ pipeline {
 
         stage('Build Integrationtest'){
             steps {
-                build quietPeriod: 10, job: 'FaktorIPS_Integrationtest'
+                build quietPeriod: 10, job: 'FaktorIPS_hotfix_26.1_Integrationtest'
             }
         }
     }
