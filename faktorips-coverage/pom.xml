@@ -5,7 +5,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-coverage</artifactId>
-    <version>26.7.1.release</version>
+    <version>26.7.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
