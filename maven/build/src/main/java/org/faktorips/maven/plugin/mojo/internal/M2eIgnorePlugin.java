@@ -76,6 +76,7 @@ public class M2eIgnorePlugin {
      *
      * @throws IllegalArgumentException if any field is missing or invalid
      */
+    // CSOFF: CyclomaticComplexity
     public void validate() {
         if (groupId == null || groupId.isBlank()) {
             throw new IllegalArgumentException(
@@ -106,4 +107,5 @@ public class M2eIgnorePlugin {
                     "m2eIgnorePlugin: <versionRange> '" + versionRange + "' is not a valid Maven version range");
         }
     }
+    // CSON: CyclomaticComplexity
 }
