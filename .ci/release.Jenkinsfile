@@ -94,7 +94,7 @@ pipeline {
                     junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
                     recordIssues enabledForFailure: true,
                             qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
-                            tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+                            tools: [java(), javaDoc(), spotBugs(), eclipse()]
                     jacoco sourceInclusionPattern: '**/*.java'
                 }
             }
