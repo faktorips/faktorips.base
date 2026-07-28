@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Faktor-IPS German language pack
+Bundle-Name: Faktor-IPS Builder German language pack
 Bundle-SymbolicName: org.faktorips.nls.devtools.model.builder.nl1;singleton:=true
 Bundle-Version: 27.1.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH

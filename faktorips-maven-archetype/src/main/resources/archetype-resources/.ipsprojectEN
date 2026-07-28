@@ -146,6 +146,12 @@
 
    <!--Enables the generation of the getter method getEffectiveFromAsCalendar(). Only works with the setting "Base class of policy components".-->
    <Property name="generateGetEffectiveFromAsCalendar" value="true"/>
+
+   <!--Defines the tag inserted before generated code sections. Must be set together with the end tag. Leave empty to disable.-->
+   <Property name="generatedStartTag" value=""/>
+
+   <!--Defines the tag inserted after generated code sections. Must be set together with the start tag. Leave empty to disable.-->
+   <Property name="generatedEndTag" value=""/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 

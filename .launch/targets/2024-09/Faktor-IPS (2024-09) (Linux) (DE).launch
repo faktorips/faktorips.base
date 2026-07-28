@@ -593,6 +593,7 @@
         <setEntry value="org.faktorips.m2e@default:default"/>
         <setEntry value="org.faktorips.nls.devtools.core.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:false"/>
+        <setEntry value="org.faktorips.nls.devtools.model.builder.nl1@default:default"/>
         <setEntry value="org.faktorips.nls.devtools.model.decorators.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.model.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>

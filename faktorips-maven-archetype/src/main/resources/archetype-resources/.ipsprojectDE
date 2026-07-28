@@ -146,6 +146,12 @@
    
    <!--Legt fest ob die Methode getEffectiveFromAsCalendar() generiert werden soll. Funktioniert nur in Kombination mit der Einstellung "Basisklasse für Vertragsklassen".-->
    <Property name="generateGetEffectiveFromAsCalendar" value="true"/>
+
+   <!--Legt den Tag fest, der vor generierten Code-Bereichen eingefügt wird. Muss zusammen mit dem End-Tag gesetzt werden. Leer lassen zum Deaktivieren.-->
+   <Property name="generatedStartTag" value=""/>
+
+   <!--Legt den Tag fest, der nach generierten Code-Bereichen eingefügt wird. Muss zusammen mit dem Start-Tag gesetzt werden. Leer lassen zum Deaktivieren.-->
+   <Property name="generatedEndTag" value=""/>
   </IpsArtefactBuilderSetConfig>
  </IpsArtefactBuilderSet>
 
