@@ -4,7 +4,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-runtime-bom</artifactId>
-    <version>25.7.4.release</version>
+    <version>25.7.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Faktor-IPS Runtime Bill of Materials</name>
