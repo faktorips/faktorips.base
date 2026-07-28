@@ -180,12 +180,6 @@ pipeline {
                             // set latest symlink
                             sh "ssh ${p2Server} \'cd /var/www/update.faktorzehn.org/faktorips; rm latest; ls -1v | grep -E \"^v[0-9_]+\" | tail -1 | xargs -i ln -s {} latest\'"
                         }
-                        // deploy oomph setup file
-                        sh """
-                            echo "copy oomph setup file to update server"
-                            ssh ${p2Server} 'mkdir -p ${oomphDeployDir}/${params.RELEASE_VERSION}'
-                            scp .oomph/* ${p2Server}:${oomphDeployDir}/${params.RELEASE_VERSION}
-                        """
                         // deploy maven plugin doc
                         withMaven(publisherStrategy: 'EXPLICIT') {
                             uploadDocumentation project: 'faktorips-maven-plugin', folder: 'maven/faktorips-maven-plugin', updateLatest: isUpdateLatest, legacyMode: true, legacyUser: 'jenkins-fips-legacy' // SNAPSHOT versions should also publish to major.minor

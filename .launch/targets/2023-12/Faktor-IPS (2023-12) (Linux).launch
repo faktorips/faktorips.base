@@ -86,7 +86,7 @@
         <setEntry value="org.apache.batik.util@default:default"/>
         <setEntry value="org.apache.commons.cli@default:default"/>
         <setEntry value="org.apache.commons.codec@default:default"/>
-        <setEntry value="org.apache.commons.collections@default:default"/>
+        <setEntry value="org.apache.commons.collections*3.2.2.v201511171945@default:default"/>
         <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
@@ -284,7 +284,6 @@
         <setEntry value="org.eclipse.m2e.core.ui@default:default"/>
         <setEntry value="org.eclipse.m2e.core@default:default"/>
         <setEntry value="org.eclipse.m2e.discovery@default:default"/>
-        <setEntry value="org.eclipse.m2e.editor.lemminx@default:default"/>
         <setEntry value="org.eclipse.m2e.editor@default:default"/>
         <setEntry value="org.eclipse.m2e.jdt.ui@default:default"/>
         <setEntry value="org.eclipse.m2e.jdt@default:default"/>
@@ -347,7 +346,6 @@
         <setEntry value="org.eclipse.ui@default:default"/>
         <setEntry value="org.eclipse.update.configurator@default:default"/>
         <setEntry value="org.eclipse.urischeme@default:default"/>
-        <setEntry value="org.eclipse.wildwebdeveloper.xml@default:default"/>
         <setEntry value="org.eclipse.wst.common.core@default:default"/>
         <setEntry value="org.eclipse.wst.common.emf@default:default"/>
         <setEntry value="org.eclipse.wst.common.environment@default:default"/>
