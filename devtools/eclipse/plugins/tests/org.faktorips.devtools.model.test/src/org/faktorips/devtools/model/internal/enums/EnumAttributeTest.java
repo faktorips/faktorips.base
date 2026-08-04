@@ -170,6 +170,22 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testSetInherited_CopiesMultilingualFromSuper() {
+        var superEnumType = newEnumType(ipsProject, "SuperEnumType");
+        superEnumType.setAbstract(true);
+        genderEnumType.setSuperEnumType("SuperEnumType");
+
+        var superAttr = superEnumType.newEnumAttribute();
+        superAttr.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
+        superAttr.setDatatype(Datatype.STRING.getQualifiedName());
+        superAttr.setMultilingual(true);
+
+        genderEnumAttributeName.setInherited(true);
+
+        assertTrue(genderEnumAttributeName.isMultilingual());
+    }
+
+    @Test
     public void testGetSetIsUniqueIdentifier() {
         assertTrue(genderEnumAttributeId.isUnique());
         genderEnumAttributeId.setUnique(false);

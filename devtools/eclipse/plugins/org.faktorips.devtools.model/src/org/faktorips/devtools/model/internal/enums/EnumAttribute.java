@@ -360,12 +360,14 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
                 setMandatory(false);
                 setIdentifier(false);
                 setUsedAsNameInFaktorIpsUi(false);
+                setMultilingual(false);
             } else {
                 setDatatype(superEnumAttribute.getDatatype());
                 setUnique(superEnumAttribute.isUnique());
                 setMandatory(superEnumAttribute.isMandatory());
                 setIdentifier(superEnumAttribute.isIdentifier());
                 setUsedAsNameInFaktorIpsUi(superEnumAttribute.isUsedAsNameInFaktorIpsUi());
+                setMultilingual(superEnumAttribute.isMultilingual());
             }
         }
     }
