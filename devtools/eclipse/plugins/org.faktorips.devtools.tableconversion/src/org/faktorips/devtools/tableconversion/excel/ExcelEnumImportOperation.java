@@ -185,7 +185,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             Cell cell = row.getCell(i);
             if (cell != null && cell.getCellType() != CellType.BLANK) {
                 String stringValue = cell.toString();
-                if (stringValue != null && !stringValue.trim().isEmpty()) {
+                if (stringValue != null && !stringValue.isBlank()) {
                     return false;
                 }
             }

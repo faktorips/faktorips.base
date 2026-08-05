@@ -31,7 +31,7 @@ class IpsObjectTypesParser {
     }
 
     static IpsObjectType[] getIpsObjectTypes(String ipsObjectTypes, IpsObjectType[] allIpsObjectTypes) {
-        if (ipsObjectTypes == null || ipsObjectTypes.trim().isEmpty()
+        if (ipsObjectTypes == null || ipsObjectTypes.isBlank()
                 || "All".equalsIgnoreCase(ipsObjectTypes.trim())) {
             return allIpsObjectTypes;
         }

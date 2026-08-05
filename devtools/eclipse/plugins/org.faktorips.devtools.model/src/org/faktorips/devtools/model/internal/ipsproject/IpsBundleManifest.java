@@ -568,7 +568,7 @@ public class IpsBundleManifest {
 
         Map<String, String> namedSections = new TreeMap<>(new SourceFolderOrderComparator(srcFolderEntries));
         for (String section : sections) {
-            if (section.trim().isEmpty()) {
+            if (section.isBlank()) {
                 continue;
             }
             int nameEnd = section.indexOf('\n');
