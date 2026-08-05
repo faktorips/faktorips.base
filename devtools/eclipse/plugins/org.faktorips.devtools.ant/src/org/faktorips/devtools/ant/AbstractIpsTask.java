@@ -57,6 +57,10 @@ public abstract class AbstractIpsTask extends Task {
         this.statusFile = statusFile;
     }
 
+    public boolean isDebug() {
+        return "DEBUG".equals(System.getProperty("eclipse.log.level", "INFO"));
+    }
+
     /**
      * Executes the Ant task
      *
@@ -205,5 +209,4 @@ public abstract class AbstractIpsTask extends Task {
         }, new NullProgressMonitor());
         System.out.println("Acquired workspace job lock after " + (System.currentTimeMillis() - start) + " ms");
     }
-
 }

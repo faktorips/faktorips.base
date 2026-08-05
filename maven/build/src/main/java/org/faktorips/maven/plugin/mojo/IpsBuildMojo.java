@@ -947,13 +947,13 @@ public class IpsBuildMojo extends AbstractMojo {
         if (exportHtml) {
             addDependency("org.faktorips.devtools.htmlexport");
         }
-        if (importAsMavenProject) {
-            addDependency("org.eclipse.m2e.core");
-            addDependency("org.eclipse.m2e.jdt");
-            addDependency("org.eclipse.m2e.maven.runtime");
-            addDependency("org.eclipse.m2e.workspace.cli");
-            addDependency("org.faktorips.m2e");
-        }
+        // if (importAsMavenProject) {
+        addDependency("org.eclipse.m2e.core");
+        addDependency("org.eclipse.m2e.jdt");
+        addDependency("org.eclipse.m2e.maven.runtime");
+        addDependency("org.eclipse.m2e.workspace.cli");
+        addDependency("org.faktorips.m2e");
+        // }
         if (isGitStatusPorcelain()) {
             addDependency("org.eclipse.egit.core");
         }

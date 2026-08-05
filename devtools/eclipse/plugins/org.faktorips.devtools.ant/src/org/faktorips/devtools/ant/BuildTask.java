@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,6 +31,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.m2e.core.MavenPlugin;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.IpsBuilder;
@@ -117,26 +121,16 @@ public class BuildTask extends AbstractIpsTask {
                         System.out.println();
                     }
                     try {
+                        // for debugging FIPS-15125
+                        if (isDebug() || !isDebug()) {
+                            logDebugInfo();
+                        }
                         if (fullBuild) {
                             System.out.println("Perform full build");
-                            if (ipsOnly) {
-                                project.build(IncrementalProjectBuilder.FULL_BUILD,
-                                        IpsBuilder.BUILDER_ID,
-                                        Collections.emptyMap(),
-                                        null);
-                            } else {
-                                project.build(IncrementalProjectBuilder.FULL_BUILD, null);
-                            }
+                            buildProject(project, IncrementalProjectBuilder.FULL_BUILD);
                         } else {
                             System.out.println("Perform incremental build");
-                            if (ipsOnly) {
-                                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
-                                        IpsBuilder.BUILDER_ID,
-                                        Collections.emptyMap(),
-                                        null);
-                            } else {
-                                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-                            }
+                            buildProject(project, IncrementalProjectBuilder.INCREMENTAL_BUILD);
                         }
                     } catch (CoreException e) {
                         throw new IpsException(e);
@@ -145,12 +139,64 @@ public class BuildTask extends AbstractIpsTask {
                 } else {
                     logProblem(project, IMarker.SEVERITY_WARNING, "Unable to locate the project " + project.getName()
                             + "within the workspace. The project will be skipped.");
-
                 }
             }
         }
         return existingProjects.toArray(new IProject[existingProjects.size()]);
 
+    }
+
+    private void buildProject(IProject project, int buildType) throws CoreException {
+        if (ipsOnly) {
+            project.build(buildType,
+                    IpsBuilder.BUILDER_ID,
+                    Collections.emptyMap(),
+                    null);
+        } else {
+            project.build(buildType, null);
+        }
+    }
+
+    private void logDebugInfo() throws CoreException {
+        for (IProject projectDebug : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            System.out.print("Markers for ");
+            System.out.print(projectDebug.getName());
+            System.out.println(":");
+            IMarker[] markers = projectDebug.findMarkers(null /* all */, true,
+                    IResource.DEPTH_INFINITE);
+            for (IMarker marker : markers) {
+                Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
+                if (severity != null) {
+                    logProblem(projectDebug, severity, marker.getAttribute(IMarker.MESSAGE, "unknown error"));
+                }
+            }
+            if (markers.length == 0) {
+                System.out.print("No Markers found for ");
+                System.out.println(projectDebug.getName());
+            }
+            IMavenProjectFacade projectFacade = MavenPlugin.getMavenProjectRegistry()
+                    .getProject(projectDebug);
+            if (projectFacade != null) {
+                MavenProject m = projectFacade.getMavenProject(null);
+                System.out.print("Dependencies of ");
+                printDependency(m.getGroupId(), m.getArtifactId(), m.getVersion());
+                System.out.println(":");
+                Set<Artifact> artifacts = m.getArtifacts();
+                for (Artifact a : artifacts) {
+                    System.out.print("\t");
+                    printDependency(a.getGroupId(), a.getArtifactId(), a.getVersion());
+                    System.out.println();
+                }
+            }
+        }
+    }
+
+    private void printDependency(String groupId, String artifactId, String version) {
+        System.out.print(groupId);
+        System.out.print(":");
+        System.out.print(artifactId);
+        System.out.print(":");
+        System.out.print(version);
     }
 
     private void logProblem(IProject project, Integer severity, String text) {
