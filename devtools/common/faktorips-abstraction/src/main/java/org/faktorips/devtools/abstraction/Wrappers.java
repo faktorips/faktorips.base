@@ -132,7 +132,7 @@ public class Wrappers {
                     ? null
                     : Arrays.stream(wrappers)
                             .map(p -> (T)p.unwrap())
-                            .collect(Collectors.toList());
+                            .toList();
         }
     }
 

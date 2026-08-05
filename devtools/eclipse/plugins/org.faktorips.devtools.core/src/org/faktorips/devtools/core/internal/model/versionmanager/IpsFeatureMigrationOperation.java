@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -209,7 +208,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         return operations.stream()
                 .map(AbstractIpsProjectMigrationOperation::getOptions)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

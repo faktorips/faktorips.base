@@ -81,7 +81,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
     private List<String> convertedValues() {
         return oldValues.stream().map(
                 input -> converter.convert(input, getPropertyValue().getIpsProject()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -90,7 +90,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
      */
     public static List<DatatypeMismatchEntry> forEachMismatch(List<? extends IPropertyValue> values) {
         return values.stream().map(DatatypeMismatchEntry::createPossibleMismatch).filter(Optional::isPresent)
-                .map(Optional::get).collect(Collectors.toList());
+                .map(Optional::get).toList();
     }
 
     private static Optional<DatatypeMismatchEntry> createPossibleMismatch(final IPropertyValue propertyValue) {
@@ -171,7 +171,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         @Override
         public List<String> getValues() {
             List<IValue<?>> valueList = getPropertyValue().getValueHolder().getValueList();
-            return valueList.stream().map(IValue::getContentAsString).collect(Collectors.toList());
+            return valueList.stream().map(IValue::getContentAsString).toList();
         }
 
         @Override

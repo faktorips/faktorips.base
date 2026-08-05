@@ -685,7 +685,7 @@ public class IpsBuildMojo extends AbstractMojo {
             return upstreamProjects.stream()
                     .filter(p -> p.getPackaging().equalsIgnoreCase("jar"))
                     .filter(p -> new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists())
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return List.of();
     }

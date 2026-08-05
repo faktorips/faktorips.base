@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -98,7 +97,7 @@ public class SortAlphabetically extends AbstractHandler {
         List<IProductCmptLink> links = container.getLinksAsList(association.getName());
         List<IProductCmptLink> sortedLinks = links.stream().sorted(
                 (x, y) -> x.findTarget(ipsProject).getName().compareToIgnoreCase(y.findTarget(ipsProject).getName()))
-                .collect(Collectors.toList());
+                .toList();
         if (!links.equals(sortedLinks)) {
             for (int i = 0; i < sortedLinks.size(); i++) {
                 IProductCmptLink expectedLink = sortedLinks.get(i);

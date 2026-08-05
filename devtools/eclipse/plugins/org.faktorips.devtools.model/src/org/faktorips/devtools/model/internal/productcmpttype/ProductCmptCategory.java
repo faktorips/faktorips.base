@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -574,7 +573,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         ProductCmptPropertyComparator(IProductCmptType productCmptType) {
             this.productCmptType = productCmptType;
             categories = productCmptType.getCategories().stream().map(IProductCmptCategory::getName)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         @Override

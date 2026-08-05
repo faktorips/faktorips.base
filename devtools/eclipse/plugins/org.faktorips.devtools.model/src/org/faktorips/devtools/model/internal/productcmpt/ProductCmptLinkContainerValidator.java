@@ -14,7 +14,6 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -88,7 +87,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
         List<IProductCmptLink> relations = linkContainer.getLinksAsList(association.getTargetRoleSingular())
                 .stream()
                 .filter(relation -> relation.getTemplateValueStatus() != TemplateValueStatus.UNDEFINED)
-                .collect(Collectors.toList());
+                .toList();
         addMessageIfAssociationHasValidationMessages(association, list);
         addMessageIfDuplicateTargetPresent(association, relations, list);
         addMessageIfLessLinksThanMinCard(association, relations, list);

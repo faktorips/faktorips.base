@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -153,7 +152,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     public Collection<ITemplatedValue> getInheritingTemplatedValues() {
         if (hasData()) {
             return findTemplatedValuesBasedOnTemplate().stream().filter(valueStatus(TemplateValueStatus.INHERITED))
-                    .collect(Collectors.toList());
+                    .toList();
         } else {
             return Collections.emptyList();
         }
@@ -207,7 +206,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     protected Collection<ITemplatedValue> getDefiningTemplatedValues() {
         return findTemplatedValuesBasedOnTemplate().stream()
                 .filter(valueStatus(TemplateValueStatus.DEFINED, TemplateValueStatus.UNDEFINED))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -233,7 +232,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     private List<ITemplatedValue> findTemplatedValuesBasedOnTemplate(Node<ITemplatedValueContainer> node) {
         List<ITemplatedValue> result = new ArrayList<>();
         result.addAll(getContainerNodes(node).stream().map(n -> findTemplatedValue(nonNull(n).getElement()))
-                .filter(Objects::nonNull).collect(Collectors.toList()));
+                .filter(Objects::nonNull).toList());
 
         List<Node<ITemplatedValueContainer>> templateNodes = getTemplateNodes(node);
         for (Node<ITemplatedValueContainer> templateNode : templateNodes) {
@@ -261,12 +260,12 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * "normal" product components or generations).
      */
     private List<Node<ITemplatedValueContainer>> getContainerNodes(Node<ITemplatedValueContainer> node) {
-        return node.getChildren().stream().filter(isTemplate.negate()).collect(Collectors.toList());
+        return node.getChildren().stream().filter(isTemplate.negate()).toList();
     }
 
     /** Returns the children of the given node that hold product templates. */
     private List<Node<ITemplatedValueContainer>> getTemplateNodes(Node<ITemplatedValueContainer> node) {
-        return node.getChildren().stream().filter(isTemplate).collect(Collectors.toList());
+        return node.getChildren().stream().filter(isTemplate).toList();
     }
 
     /** Returns the identifier for the templated values used in this PMO. */

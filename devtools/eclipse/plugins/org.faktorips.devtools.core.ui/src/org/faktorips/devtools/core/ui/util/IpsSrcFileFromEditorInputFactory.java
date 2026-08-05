@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.util;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -203,7 +202,7 @@ public class IpsSrcFileFromEditorInputFactory {
         IIpsProject[] allProjects = IIpsModel.get().getIpsProjects();
         List<String> projectNames = Arrays.stream(allProjects)
                 .map(IIpsProject::getName)
-                .collect(Collectors.toList());
+                .toList();
         String[] segments = fullPath.segments();
         for (int i = 0; i < segments.length; i++) {
             if (projectNames.contains(segments[i])) {

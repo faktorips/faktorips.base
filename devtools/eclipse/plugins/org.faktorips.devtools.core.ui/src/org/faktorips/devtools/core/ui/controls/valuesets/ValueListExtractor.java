@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
@@ -38,7 +37,7 @@ public class ValueListExtractor {
         if (includeNull) {
             return listOfValues;
         }
-        return listOfValues.stream().filter(item -> item != null).collect(Collectors.toList());
+        return listOfValues.stream().filter(item -> item != null).toList();
     }
 
 }

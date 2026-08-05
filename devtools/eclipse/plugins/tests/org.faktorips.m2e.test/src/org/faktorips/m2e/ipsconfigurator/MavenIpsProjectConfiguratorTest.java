@@ -483,7 +483,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         List<Resource> resources = build.getResources();
         List<Resource> sourceFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(sourceFolderName))
-                .collect(Collectors.toList());
+                .toList();
         assertThat(sourceFolderResources.size(), is(1));
         Resource sourceFolderResource = sourceFolderResources.get(0);
         assertThat(sourceFolderResource.getTargetPath(), is(sourceFolderName));
@@ -496,7 +496,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         List<Resource> resources = build.getResources();
         List<Resource> resourcesFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(resourceDirectory))
-                .collect(Collectors.toList());
+                .toList();
         assertThat(resourcesFolderResources.size(), is(1));
         Resource resourcesFolderResource = resourcesFolderResources.get(0);
         List<String> includes = resourcesFolderResource.getIncludes();

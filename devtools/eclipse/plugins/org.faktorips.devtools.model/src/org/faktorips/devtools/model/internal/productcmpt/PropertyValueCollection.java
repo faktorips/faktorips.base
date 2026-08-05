@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.faktorips.util.ClassToInstancesMap;
 /**
  * Class for holding {@link IPropertyValue}s for a {@link IPropertyValueContainer}. An instance of
  * this class holds property values of different {@link ProductCmptPropertyType}'s at the same time.
- * 
+ *
  * @author Stefan Widmaier
  * @since 3.4
  */
@@ -39,9 +39,9 @@ public class PropertyValueCollection {
 
     /**
      * Creates a new {@link PropertyValueCollection}.
-     * 
+     *
      * @param propertyValueContainer the container using this collection
-     * 
+     *
      */
     public PropertyValueCollection(IPropertyValueContainer propertyValueContainer) {
         this.propertyValueContainer = propertyValueContainer;
@@ -54,7 +54,7 @@ public class PropertyValueCollection {
      * The property value is searched by the property name. If there are multiple property values
      * with the same name, the first one is returned. Property values returned by this method may be
      * safely casted to the {@link IProductCmptProperty}'s value class.
-     * 
+     *
      * @param property the product component property a {@link IPropertyValue} is requested for
      * @param type the expected type of the property value, needs to be the interface type!
      * @return the {@link IPropertyValue} for the indicated property. Returns <code>null</code> if
@@ -81,7 +81,7 @@ public class PropertyValueCollection {
      * <p>
      * The property value is searched by the property name. If there are multiple property values
      * with the same name, the first one is returned.
-     * 
+     *
      * @param propertyName the name of the requested property value
      * @param type the type of {@link IPropertyValue} that is requested
      * @return the {@link IPropertyValue} for the indicated type and name. Returns <code>null</code>
@@ -103,7 +103,7 @@ public class PropertyValueCollection {
      * <p>
      * Note that a safe cast can not be guaranteed as {@link IPropertyValue}s of a different
      * class/type may have the same property name.
-     * 
+     *
      * @param propertyName the name of the requested {@link IPropertyValue}
      * @return a list of {@link IPropertyValue} with the given name. Returns an empty list if the
      *             given Property name is <code>null</code> or if no property with the indicated
@@ -117,7 +117,7 @@ public class PropertyValueCollection {
     /**
      * Searches the given list for properties with the given name. Returns an empty list if no
      * element can be found, or if one of the arguments is <code>null</code>.
-     * 
+     *
      * @param valueList the list to search
      * @param propertyName the name of the property
      * @return the first element with the given name in the list.
@@ -140,7 +140,7 @@ public class PropertyValueCollection {
 
     /**
      * Returns all {@link IPropertyValue}s of the given type this value container contains.
-     * 
+     *
      * @param clazz the class type of the properties you want to get
      * @return a list of property values of the indicated type, or an empty list if none exist.
      */
@@ -151,7 +151,7 @@ public class PropertyValueCollection {
     /**
      * Creates and returns all necessary property values for a given {@link IProductCmptProperty}
      * and add the new values to the {@link IPropertyValueContainer}.
-     * 
+     *
      * @param container the container that should be the parent of the new {@link IPropertyValue}
      * @param property the {@link IProductCmptProperty} the values are created for
      * @param partId the new part's id
@@ -171,10 +171,10 @@ public class PropertyValueCollection {
 
     /**
      * Creates a new part for the given XML tag adds it to this holder and returns it.
-     * 
+     *
      * @param xmlTagName the XML tag a {@link IPropertyValue} should be created for
      * @param partId the new part's id
-     * 
+     *
      * @return the newly created part or <code>null</code> if the given XML tag corresponds to no
      *             {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
      */
@@ -190,15 +190,15 @@ public class PropertyValueCollection {
 
     /**
      * Creating a property value for the given class type.
-     * 
+     *
      * Caution: This Method creates an {@link IPropertyValue} without initializing it properly and
      * thereby setting the property name to "". Use
      * {@link #newPropertyValue(IProductCmptProperty, String, Class)} in all cases an
      * {@link IProductCmptProperty} is available.
-     * 
+     *
      * @param partId the part id for the new property value
      * @param type the type of the property value you want to create
-     * 
+     *
      * @param <T> The type of the property value you want to create
      * @return the created property value
      */
@@ -210,7 +210,7 @@ public class PropertyValueCollection {
      * Creating a new {@link IPropertyValue} and initialize it with the given parameters. The clazz
      * specifying the type of the container. The caller have to make sure that the given
      * {@link IProductCmptProperty} is of the correct type.
-     * 
+     *
      * @param property the {@link IProductCmptProperty} the {@link IPropertyValue} is created for
      * @param partId the new part's id
      * @param clazz the class parameter is used to get a type safe return value.
@@ -226,7 +226,7 @@ public class PropertyValueCollection {
     /**
      * Adds the given property value to this holder. Note that all #newPropertyValue() methods add
      * the newly created part automatically.
-     * 
+     *
      * @param value the value to be added
      */
     public boolean addPropertyValue(IPropertyValue value) {
@@ -241,7 +241,7 @@ public class PropertyValueCollection {
 
     /**
      * Removes the given property value from this {@link PropertyValueCollection}.
-     * 
+     *
      * @param value the value to be removed
      * @return <code>true</code> if the given value was removed from this holder, <code>false</code>
      *             otherwise.
@@ -257,7 +257,7 @@ public class PropertyValueCollection {
      * @return all property values this container manages.
      */
     public List<IPropertyValue> getAllPropertyValues() {
-        return classToInstancesMap.values().stream().sorted(COMPARATOR).collect(Collectors.toList());
+        return classToInstancesMap.values().stream().sorted(COMPARATOR).toList();
     }
 
     /**

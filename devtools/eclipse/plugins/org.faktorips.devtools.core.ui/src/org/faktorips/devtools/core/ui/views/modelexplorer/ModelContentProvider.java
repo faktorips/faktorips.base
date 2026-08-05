@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -464,7 +463,6 @@ public class ModelContentProvider implements ITreeContentProvider {
                 } else {
                     // return all kind of projects (ips- and no ips projects)
                     Object[] nonIpsProjects = model.getNonIpsProjects().stream().map(p -> (IProject)p.unwrap())
-                            .collect(Collectors.toList())
                             .toArray();
                     return concatenate(model.getIpsProjects(), nonIpsProjects);
                 }

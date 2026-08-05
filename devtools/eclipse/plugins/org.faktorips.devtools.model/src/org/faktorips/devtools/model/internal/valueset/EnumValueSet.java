@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
@@ -338,7 +337,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
                     .getDatatypeFormatter();
             List<String> formattedValues = values.stream()
                     .map(value -> datatypeFormatter.formatValue(type, value))
-                    .collect(Collectors.toList());
+                    .toList();
 
             return ENUM_VALUESET_START + StringUtils.join(formattedValues, ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE)
                     + ENUM_VALUESET_END;

@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -79,7 +78,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
         this.propertyValueHistograms = propertyValueHistograms;
         productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
         generationLinkHistograms = ProductCmptLinkHistograms
-                .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
+                .createFor(productCmpts.stream().map(LATEST_GENERATION).toList());
     }
 
     public InferTemplateProcessor(IProductCmptGeneration templateGeneration, List<IProductCmpt> productCmpts) {
@@ -88,7 +87,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
         propertyValueHistograms = PropertyValueHistograms.createFor(productCmpts);
         productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
         generationLinkHistograms = ProductCmptLinkHistograms
-                .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
+                .createFor(productCmpts.stream().map(LATEST_GENERATION).toList());
     }
 
     @Override

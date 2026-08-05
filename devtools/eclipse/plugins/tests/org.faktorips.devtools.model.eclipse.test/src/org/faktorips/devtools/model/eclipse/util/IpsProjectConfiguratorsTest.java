@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
@@ -54,7 +53,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
                     Arrays.asList(standardJavaProjectConfigurator, nonApplicableIpsProjectConfigurator));
 
             List<IIpsProjectConfigurator> applicableConfigurators = IpsProjectConfigurators.applicableTo(javaProject)
-                    .collect(Collectors.toList());
+                    .toList();
 
             assertThat(applicableConfigurators, hasItem(standardJavaProjectConfigurator));
             assertThat(applicableConfigurators, not(hasItem(nonApplicableIpsProjectConfigurator)));

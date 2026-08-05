@@ -11,7 +11,6 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -207,7 +206,7 @@ public class FilterDescriptionsByTypeDialog extends CheckedTreeSelectionDialog {
      * @return The parts which were selected and were saved in store
      */
     public List<Class<? extends ITypePart>> getSavedParts() {
-        return POSSIBLE_SELECTIONS.stream().filter(this::isPartInStore).collect(Collectors.toList());
+        return POSSIBLE_SELECTIONS.stream().filter(this::isPartInStore).toList();
     }
 
     private boolean isPartInStore(Class<? extends ITypePart> part) {

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
@@ -163,7 +162,7 @@ public class TypeValidations {
                 .computeIfAbsent(ipsObjectType, ot -> Arrays.stream(IIpsModel.get().getIpsObjectTypes())
                         .filter(t -> !ot.equals(t))
                         .filter(t -> SAME_QNAME_ALLOWED.stream().noneMatch(s -> s.contains(ot) && s.contains(t)))
-                        .collect(Collectors.toList()))
+                        .toList())
                 .stream()
                 .map(t -> ipsProject.findIpsSrcFile(t, qualifiedName))
                 .filter(f -> f != null)

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,7 +23,7 @@ import org.faktorips.util.collections.ListComparator;
  * <p>
  * This holder just contains a list of {@link ISingleValueHolder}. The list validation and XML
  * handling is delegated to the internal string value holders.
- * 
+ *
  * @since 3.7
  * @author dirmeier
  */

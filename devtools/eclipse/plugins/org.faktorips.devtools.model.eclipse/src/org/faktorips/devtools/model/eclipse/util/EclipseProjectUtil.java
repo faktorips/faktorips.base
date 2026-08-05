@@ -16,7 +16,6 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -540,7 +539,7 @@ public class EclipseProjectUtil {
         boolean isExtensionResponsible = false;
         for (IIpsProjectConfigurator configurator : IpsProjectConfigurators
                 .applicableTo(ipsProject.getJavaProject())
-                .collect(Collectors.toList())) {
+                .toList()) {
             isExtensionResponsible = true;
             configurator.configureIpsProject(ipsProject, creationProperties);
         }

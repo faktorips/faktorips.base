@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -147,7 +146,7 @@ public class ExtensionPoints {
         return Arrays.stream(getExtension(pointId)).flatMap(
                 extension -> createAndInitialize(elementName, propertyName, expectedType, initializer, extension)
                         .stream())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static <T> List<T> createAndInitialize(String elementName,

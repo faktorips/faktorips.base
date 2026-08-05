@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -61,7 +60,7 @@ public class ProductCmptLinkCollection {
     public List<IProductCmptLink> getLinks(String associationName) {
         return links.stream()
                 .filter(l -> associationName.equals(l.getAssociation()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
