@@ -21,7 +21,6 @@ import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -592,7 +591,7 @@ public class IpsBuildMojo extends AbstractMojo {
     private void createAntScript() {
         try {
             antScriptPath = project.getBuild().getDirectory() + "/importProjects.xml";
-            Files.deleteIfExists(Paths.get(antScriptPath));
+            Files.deleteIfExists(Path.of(antScriptPath));
             FileUtils.forceMkdir(new File(project.getBuild().getDirectory()));
 
             List<String> lines = new ArrayList<>();
@@ -606,7 +605,7 @@ public class IpsBuildMojo extends AbstractMojo {
             lines.add("  </target>");
             lines.add("</project>");
 
-            Files.write(Paths.get(antScriptPath), lines, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+            Files.write(Path.of(antScriptPath), lines, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
         } catch (IOException e) {
             getLog().error("Can't create ant script in " + antScriptPath, e);
         }
@@ -1080,7 +1079,7 @@ public class IpsBuildMojo extends AbstractMojo {
 
         // add path to localRepository to user settings if maven.repo.local is set
         if (localRepository != null) {
-            if (!Paths.get(localRepository).isAbsolute()) {
+            if (!Path.of(localRepository).isAbsolute()) {
                 localRepository = separatorsToSystem(
                         session.getSystemProperties().get("user.dir") + "\\" + localRepository)
                                 .replace("\\", "\\\\");
@@ -1103,7 +1102,7 @@ public class IpsBuildMojo extends AbstractMojo {
                             + "<\\/localRepository>");
                 }
 
-                Files.writeString(Paths.get(copyUserSettingsPath), userSettings, StandardOpenOption.CREATE,
+                Files.writeString(Path.of(copyUserSettingsPath), userSettings, StandardOpenOption.CREATE,
                         StandardOpenOption.WRITE);
 
                 userSettingsPath = copyUserSettingsPath;
@@ -1238,7 +1237,7 @@ public class IpsBuildMojo extends AbstractMojo {
                 List<String> loggingOptions = IOUtils.readLines(getClass().getResourceAsStream("/debug_trace"),
                         StandardCharsets.UTF_8);
 
-                Files.write(Paths.get(path), loggingOptions, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                Files.write(Path.of(path), loggingOptions, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 
                 return path;
             } catch (IOException e) {
