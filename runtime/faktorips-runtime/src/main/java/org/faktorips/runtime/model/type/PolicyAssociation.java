@@ -263,11 +263,11 @@ public class PolicyAssociation extends Association {
                     return getSuperAssociation().addTargetObjects(source, targets);
                 } else {
                     throw new IllegalArgumentException(
-                            String.format("The association %s on source object %s does not allow %s target objects%s.",
-                                    getName(), source, isToOneAssociation() ? "setting" : "adding",
-                                    isDerivedUnion() ? " because it is a derived union"
-                                            : ("; make sure a method annotated with @"
-                                                    + IpsAssociationAdder.class.getSimpleName() + " exists")));
+                            "The association %s on source object %s does not allow %s target objects%s."
+                                    .formatted(getName(), source, isToOneAssociation() ? "setting" : "adding",
+                                            isDerivedUnion() ? " because it is a derived union"
+                                                    : ("; make sure a method annotated with @"
+                                                            + IpsAssociationAdder.class.getSimpleName() + " exists")));
                 }
             }
         }

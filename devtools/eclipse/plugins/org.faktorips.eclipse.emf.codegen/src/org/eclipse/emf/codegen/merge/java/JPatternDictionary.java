@@ -527,7 +527,7 @@ public class JPatternDictionary extends FacadeVisitor {
             for (Field field : fields) {
                 if (field.getName().endsWith("Map") && Map.class.isAssignableFrom(field.getType())) {
                     Map<?, ?> map = (Map<?, ?>)field.get(this);
-                    String mapString = String.format("%s = %s\n", field.getName(), dumpMap("\t", map));
+                    String mapString = "%s = %s\n".formatted(field.getName(), dumpMap("\t", map));
                     System.out.print(mapString);
                 }
             }
@@ -553,10 +553,10 @@ public class JPatternDictionary extends FacadeVisitor {
                     sb.append("\n");
                     Collection<?> values = (Collection<?>)entry.getValue();
                     for (Object element : values) {
-                        sb.append(String.format("%s%<s%s\n", lineIndent, element.toString()));
+                        sb.append("%s%<s%s\n".formatted(lineIndent, element.toString()));
                     }
                 } else {
-                    sb.append(String.format("%s\n", entry.getValue()));
+                    sb.append("%s\n".formatted(entry.getValue()));
                 }
             }
             return sb.toString();

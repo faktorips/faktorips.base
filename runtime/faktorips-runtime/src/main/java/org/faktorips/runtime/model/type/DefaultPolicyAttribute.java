@@ -86,8 +86,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
             if (isOverriding()) {
                 getSuperAttribute().setValue(modelObject, value);
             } else {
-                throw new IllegalArgumentException(String.format("There is no setter for attribute %s in type %s.",
-                        getName(), getType().getName()));
+                throw new IllegalArgumentException("There is no setter for attribute %s in type %s."
+                        .formatted(getName(), getType().getName()));
             }
         } else {
             invokeMethod(setter, modelObject, value);

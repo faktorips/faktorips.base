@@ -40,7 +40,7 @@ public class MavenVersionFormatter {
         }
         if (mavenVersion.isEmpty()) {
             throw new IllegalArgumentException(
-                    String.format("The passed version \"%s\" is invalid. Use the format X.X.X[.qualifier].", version));
+                    "The passed version \"%s\" is invalid. Use the format X.X.X[.qualifier].".formatted(version));
         }
         if (version.endsWith(".qualifier")) {
             mavenVersion += "-SNAPSHOT";

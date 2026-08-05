@@ -243,7 +243,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             throws CoreException {
         IMavenProjectFacade facade = MavenPlugin.getMavenProjectRegistry().getProject(project);
         if (facade == null) {
-            String message = String.format("The project \"%s\" is not a Maven project", project.getName());
+            String message = "The project \"%s\" is not a Maven project".formatted(project.getName());
             IpsStatus status = new IpsStatus(message);
             throw new CoreException(status);
         }
@@ -253,7 +253,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         MavenProject mavenProject = facade.getMavenProject(new NullProgressMonitor());
         Model mavenModel = mavenProject.getOriginalModel();
         if (mavenModel == null) {
-            String message = String.format("The project \"%s\" is not a valid Maven project", project.getName());
+            String message = "The project \"%s\" is not a valid Maven project".formatted(project.getName());
             IpsStatus status = new IpsStatus(message);
             throw new CoreException(status);
         }
@@ -313,7 +313,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      *            about the required dependencies
      */
     private void addMavenDependencies(Model mavenModel, IpsProjectCreationProperties creationProperties) {
-        String ipsVersion = String.format("${%s}", MAVEN_PROPERTY_IPS_VERSION);
+        String ipsVersion = "${%s}".formatted(MAVEN_PROPERTY_IPS_VERSION);
 
         Set<String> dependencies = mavenModel.getDependencies().stream()
                 .map(Dependency::getArtifactId)
@@ -399,8 +399,8 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                     break;
                 default:
                     throw new IpsException(new IpsStatus(
-                            String.format("The selected persistence support \"%s\" is not supported.",
-                                    creationProperties.getPersistenceSupport())));
+                            "The selected persistence support \"%s\" is not supported."
+                                    .formatted(creationProperties.getPersistenceSupport())));
             }
         }
     }

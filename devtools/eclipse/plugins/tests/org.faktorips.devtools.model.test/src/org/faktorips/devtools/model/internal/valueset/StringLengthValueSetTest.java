@@ -192,7 +192,7 @@ public class StringLengthValueSetTest extends AbstractIpsPluginTest {
                 is(NLS.bind(Messages.StringLength_canonicalDesc, Messages.StringLength_unlimitedLength)));
         assertThat(sl3.getCanonicalString(),
                 is(NLS.bind(Messages.StringLength_canonicalDesc, "0")
-                        + String.format(" (%1$s)", NLS.bind(Messages.ValueSet_includingNull,
+                        + " (%1$s)".formatted(NLS.bind(Messages.ValueSet_includingNull,
                                 IIpsModelExtensions.get().getModelPreferences().getNullPresentation()))));
     }
 

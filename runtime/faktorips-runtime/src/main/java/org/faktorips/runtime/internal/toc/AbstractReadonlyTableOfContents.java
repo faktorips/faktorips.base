@@ -131,7 +131,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         String[] split = mga.split(":");
         String groupId = split[1];
         String artifactId = split[2];
-        String pomPropertiesResourceName = String.format("META-INF/maven/%s/%s/pom.properties", groupId, artifactId);
+        String pomPropertiesResourceName = "META-INF/maven/%s/%s/pom.properties".formatted(groupId, artifactId);
         try (InputStream is = classLoader.getResourceAsStream(pomPropertiesResourceName)) {
             if (is != null) {
                 Properties p = new Properties();

@@ -66,7 +66,7 @@ public class DateUtil {
         if (calendar == null) {
             return "";
         }
-        return String.format("%tF", calendar);
+        return "%tF".formatted(calendar);
     }
 
     /**
@@ -89,7 +89,7 @@ public class DateUtil {
         if (date == null) {
             return "";
         }
-        return String.format("%1$tFT%1$tT", date);
+        return "%1$tFT%1$tT".formatted(date);
     }
 
     /**
@@ -99,7 +99,7 @@ public class DateUtil {
         if (date == null) {
             return "";
         }
-        return String.format("%tT", date);
+        return "%tT".formatted(date);
     }
 
     /**

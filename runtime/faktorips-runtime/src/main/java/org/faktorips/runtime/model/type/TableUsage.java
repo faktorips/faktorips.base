@@ -96,8 +96,8 @@ public class TableUsage extends TypePart {
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new IllegalArgumentException(
-                    String.format("Could not get table name for table usage %s on product component %s.",
-                            getName(), productComponent),
+                    "Could not get table name for table usage %s on product component %s."
+                            .formatted(getName(), productComponent),
                     e);
         }
         return tableName;
@@ -146,10 +146,10 @@ public class TableUsage extends TypePart {
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException e) {
             throw new IllegalArgumentException(
-                    String.format("Could not set table name for table usage %s on product component %s.",
-                            getName(),
-                            productObject instanceof IProductComponentGeneration gen ? gen.getProductComponent()
-                                    : productObject),
+                    "Could not set table name for table usage %s on product component %s."
+                            .formatted(getName(),
+                                    productObject instanceof IProductComponentGeneration gen ? gen.getProductComponent()
+                                            : productObject),
                     e);
         }
     }
@@ -229,7 +229,7 @@ public class TableUsage extends TypePart {
 
     private IllegalArgumentException getterError(IProductComponent source, Exception e) {
         return new IllegalArgumentException(
-                String.format("Could not get table %s on product component %s.", getName(), source), e);
+                "Could not get table %s on product component %s.".formatted(getName(), source), e);
     }
 
     @Override

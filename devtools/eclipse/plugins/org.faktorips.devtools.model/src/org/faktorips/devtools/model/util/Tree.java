@@ -67,7 +67,7 @@ public class Tree<T> {
 
     @Override
     public String toString() {
-        return String.format("Tree [root=%s]", root); //$NON-NLS-1$
+        return "Tree [root=%s]".formatted(root); //$NON-NLS-1$
     }
 
     /** Returns a new empty tree. */
@@ -134,7 +134,7 @@ public class Tree<T> {
 
         @Override
         public String toString() {
-            return String.format("Node [element=%s]", element); //$NON-NLS-1$
+            return "Node [element=%s]".formatted(element); //$NON-NLS-1$
         }
 
         private boolean addChild(Node<T> child) {

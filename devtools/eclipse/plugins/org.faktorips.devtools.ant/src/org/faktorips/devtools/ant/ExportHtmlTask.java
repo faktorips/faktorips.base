@@ -88,7 +88,7 @@ public class ExportHtmlTask extends AbstractIpsTask {
             }
         }
         throw new BuildException(
-                String.format("Locale %s is not supported by the project %s.", locale, ipsProjectName));
+                "Locale %s is not supported by the project %s.".formatted(locale, ipsProjectName));
     }
 
     public String getIpsProjectName() {

@@ -165,8 +165,8 @@ public abstract class ModelElement {
             Object[] args,
             Throwable e) {
         String methodName = method != null ? method.getName() : "<unknown method>";
-        return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
-                methodName, IpsStringUtils.join(args), source), e);
+        return new IllegalArgumentException("Could not call %s(%s) on source object %s."
+                .formatted(methodName, IpsStringUtils.join(args), source), e);
     }
 
     protected static Object invokeField(Field field, Object source) {
@@ -179,7 +179,7 @@ public abstract class ModelElement {
 
     private static IllegalArgumentException createFieldError(Object source, Field field, Exception e) {
         return new IllegalArgumentException(
-                String.format("Could not get value of %s on source object %s.", field.getName(), source), e);
+                "Could not get value of %s on source object %s.".formatted(field.getName(), source), e);
     }
 
     /**

@@ -67,18 +67,18 @@ public class SingletonMockHelper {
         for (Field field : fields) {
             if (field.getType().isAssignableFrom(clazz) && Modifier.isStatic(field.getModifiers())) {
                 if (singletonField != null) {
-                    throw new IllegalArgumentException(String.format(
-                            "The class %s has more than one field of it's type, so the field to be set for the singleton pattern could not be determined.",
-                            clazz.getName()));
+                    throw new IllegalArgumentException(
+                            "The class %s has more than one field of it's type, so the field to be set for the singleton pattern could not be determined."
+                                    .formatted(clazz.getName()));
                 } else {
                     singletonField = field;
                 }
             }
         }
         if (singletonField == null) {
-            throw new IllegalArgumentException(String.format(
-                    "The class %s has no field of it's type, so the field to be set for the singleton pattern could not be determined.",
-                    clazz.getName()));
+            throw new IllegalArgumentException(
+                    "The class %s has no field of it's type, so the field to be set for the singleton pattern could not be determined."
+                            .formatted(clazz.getName()));
         }
         try {
             singletonField.setAccessible(true);
@@ -90,12 +90,12 @@ public class SingletonMockHelper {
             singletonField.setAccessible(false);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(
-                    String.format("Could not set the field %s on class %s.", singletonField.getName(), clazz.getName()),
+                    "Could not set the field %s on class %s.".formatted(singletonField.getName(), clazz.getName()),
                     e);
         } catch (SecurityException e) {
             throw new IllegalArgumentException(
-                    String.format("Could not change accessibility for the field %s on class %s.",
-                            singletonField.getName(), clazz.getName()),
+                    "Could not change accessibility for the field %s on class %s."
+                            .formatted(singletonField.getName(), clazz.getName()),
                     e);
         }
     }
@@ -111,12 +111,12 @@ public class SingletonMockHelper {
                 singletonField.set(null, entry.getValue());
                 singletonField.setAccessible(false);
             } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException(String.format("Could not set the field %s on class %s.",
-                        singletonField.getName(), singletonField.getClass().getName()), e);
+                throw new IllegalArgumentException("Could not set the field %s on class %s."
+                        .formatted(singletonField.getName(), singletonField.getClass().getName()), e);
             } catch (SecurityException e) {
                 throw new IllegalArgumentException(
-                        String.format("Could not change accessibility for the field %s on class %s.",
-                                singletonField.getName(), singletonField.getClass().getName()),
+                        "Could not change accessibility for the field %s on class %s."
+                                .formatted(singletonField.getName(), singletonField.getClass().getName()),
                         e);
             }
         }

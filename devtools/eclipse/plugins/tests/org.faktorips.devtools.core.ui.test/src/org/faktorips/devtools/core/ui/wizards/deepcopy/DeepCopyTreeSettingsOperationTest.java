@@ -284,8 +284,8 @@ public class DeepCopyTreeSettingsOperationTest extends AbstractIpsPluginTest {
             public void describeMismatch(Object item, Description description) {
                 if (item instanceof LinkStatus link) {
                     description.appendText(
-                            String.format("was ipsObjectPart \"%s\", target \"%s\", checked \"%s\", copyOrLink \"%s\"",
-                                    link.getIpsObjectPart(), link.getTarget(), link.isChecked(), link.getCopyOrLink()));
+                            "was ipsObjectPart \"%s\", target \"%s\", checked \"%s\", copyOrLink \"%s\""
+                                    .formatted(link.getIpsObjectPart(), link.getTarget(), link.isChecked(), link.getCopyOrLink()));
                 } else {
                     description.appendText("was no a Linkstatus \"" + String.valueOf(item) + "\"");
                 }
@@ -295,6 +295,6 @@ public class DeepCopyTreeSettingsOperationTest extends AbstractIpsPluginTest {
 
     private File readJson(String fileName) {
         String packageFolder = this.getClass().getPackageName().replace('.', '/');
-        return new File(String.format("./src/%s/%s", packageFolder, fileName));
+        return new File("./src/%s/%s".formatted(packageFolder, fileName));
     }
 }

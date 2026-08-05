@@ -411,7 +411,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
             IStringLengthValueSet stringy = (IStringLengthValueSet)getAttribute().getValueSet();
             result = new JavaCodeFragment("new ");
             result.appendClassName(StringLengthValueSet.class);
-            result.append(String.format("(%1$s, %2$s)", stringy.getMaximumLength(), stringy.isContainsNull()));
+            result.append("(%1$s, %2$s)".formatted(stringy.getMaximumLength(), stringy.isContainsNull()));
         } else if (isValueSetDerived()) {
             return newDerivedValueSetInstance();
         } else {
