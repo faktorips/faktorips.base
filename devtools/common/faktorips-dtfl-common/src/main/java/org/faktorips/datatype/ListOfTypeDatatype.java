@@ -35,8 +35,8 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     public ListOfTypeDatatype(Datatype basicType) {
         super();
         ArgumentCheck.notNull(basicType);
-        if (basicType.isPrimitive() && basicType instanceof ValueDatatype) {
-            this.basicType = ((ValueDatatype)basicType).getWrapperType();
+        if (basicType.isPrimitive() && basicType instanceof ValueDatatype valueDatatype) {
+            this.basicType = valueDatatype.getWrapperType();
         } else {
             this.basicType = basicType;
         }

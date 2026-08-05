@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,7 +29,7 @@ import org.faktorips.values.NullObjectSupport;
  * this class (or more precisely of one of it's subclasses) is used.
  * <p>
  * This allows to defined a datatype based on a Java class by declaring it, instead of writing code.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class GenericValueDatatype implements ValueDatatype {
@@ -154,11 +154,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (nullObjectDefined) {
             try {
                 Object value = getValue(nullObjectId);
-                if (value instanceof NullObjectSupport) {
-                    if (!((NullObjectSupport)value).isNull()) {
-                        String text = "The string " + nullObjectId + " does not represent the special null value."; //$NON-NLS-1$ //$NON-NLS-2$
-                        list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL, text));
-                    }
+                if (value instanceof NullObjectSupport possiblyNullValue && possiblyNullValue.isNotNull()) {
+                    String text = "The string " + nullObjectId + " does not represent the special null value."; //$NON-NLS-1$ //$NON-NLS-2$
+                    list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL, text));
                 }
                 // CSOFF: Illegal Catch
             } catch (RuntimeException e) {
@@ -267,8 +265,8 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         Object result = getAllValuesMethod()
                 .invokeStatic("to get all values"); //$NON-NLS-1$
         Object[] values;
-        if (result instanceof Collection) {
-            values = ((Collection<?>)result).toArray(Object[]::new);
+        if (result instanceof Collection<?> collection) {
+            values = collection.toArray(Object[]::new);
         } else {
             values = (Object[])result;
         }

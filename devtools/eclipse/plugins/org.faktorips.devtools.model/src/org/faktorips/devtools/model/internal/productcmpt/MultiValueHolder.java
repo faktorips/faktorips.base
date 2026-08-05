@@ -140,13 +140,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
     @Override
     public void initFromXml(Element element) {
         NodeList multiValueElementList = element.getElementsByTagName(AttributeValueType.MULTI_VALUE.getXmlTypeName());
-        if (multiValueElementList.getLength() > 0 && multiValueElementList.item(0) instanceof Element) {
-            Element multiValueElement = (Element)multiValueElementList.item(0);
+        if (multiValueElementList.getLength() > 0 && multiValueElementList.item(0) instanceof Element multiValueElement) {
             values = new ArrayList<>();
             NodeList childNodes = multiValueElement.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
-                if (childNodes.item(i) instanceof Element) {
-                    Element child = (Element)childNodes.item(i);
+                if (childNodes.item(i) instanceof Element child) {
                     SingleValueHolder stringValueHolder = new SingleValueHolder(getParent());
                     stringValueHolder.initFromXml(child);
                     values.add(stringValueHolder);
@@ -273,8 +271,8 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
         public IValueHolder<List<ISingleValueHolder>> createValueHolder(IAttributeValue parent,
                 IValue<?> defaultValue) {
             ArrayList<ISingleValueHolder> values;
-            if (defaultValue instanceof StringValue) {
-                values = splitMultiDefaultValues(parent, (StringValue)defaultValue);
+            if (defaultValue instanceof StringValue stringValue) {
+                values = splitMultiDefaultValues(parent, stringValue);
             } else {
                 values = new ArrayList<>();
                 if (defaultValue.getContent() != null) {

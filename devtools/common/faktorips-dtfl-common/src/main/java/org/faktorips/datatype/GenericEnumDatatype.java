@@ -131,8 +131,8 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         Object result = getAllValuesMethod()
                 .invokeStatic("to get all values"); //$NON-NLS-1$
         Object[] values;
-        if (result instanceof Collection) {
-            values = ((Collection<?>)result).toArray(Object[]::new);
+        if (result instanceof Collection<?> collection) {
+            values = collection.toArray(Object[]::new);
         } else {
             values = (Object[])result;
         }
