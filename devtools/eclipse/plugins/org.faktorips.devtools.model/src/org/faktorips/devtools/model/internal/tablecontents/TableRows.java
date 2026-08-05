@@ -150,8 +150,8 @@ public class TableRows extends IpsObjectPart implements ITableRows {
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IRow) {
-            rows.add((Row)part);
+        if (part instanceof Row row) {
+            rows.add(row);
             return true;
         }
         return false;
@@ -163,8 +163,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
      */
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof IRow) {
-            Row row = (Row)part;
+        if (part instanceof Row row) {
             int delIndex = rows.indexOf(row);
             if (delIndex != -1) {
                 rows.remove(delIndex);

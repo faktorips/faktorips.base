@@ -37,8 +37,8 @@ public class Date extends AbstractFlFunction {
         JavaCodeFragment day = argResults[2].getCodeFragment();
         Datatype datatype = getType();
         DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
-        if (datatypeHelper instanceof ILocalDateHelper) {
-            JavaCodeFragment fragment = ((ILocalDateHelper)datatypeHelper).getDateInitialization(year, month, day);
+        if (datatypeHelper instanceof ILocalDateHelper localDateHelper) {
+            JavaCodeFragment fragment = localDateHelper.getDateInitialization(year, month, day);
             return new CompilationResultImpl(fragment, datatype);
         } else {
             String code = ExprCompiler.PREFIX + AbstractPeriodFunction.NO_PERIOD_SUPPORT;

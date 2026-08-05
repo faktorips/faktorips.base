@@ -30,17 +30,16 @@ public class DoubleValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof Double) {
+        if (externalDataValue instanceof Double d) {
             // format double values without decimal places to int string representation
             // maybe an import from excel returns a string formated cells (with numeric value
             // inside)
             // as double (e.g. 1 will be 1.0)
-            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
+            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces(d);
         }
-        if (externalDataValue instanceof BigDecimal) {
+        if (externalDataValue instanceof BigDecimal bd) {
             // format converted double value of BigDecimal
-            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces(((BigDecimal)externalDataValue)
-                    .doubleValue());
+            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces(bd.doubleValue());
         }
         messageList
                 .add(ExtSystemsMessageUtil

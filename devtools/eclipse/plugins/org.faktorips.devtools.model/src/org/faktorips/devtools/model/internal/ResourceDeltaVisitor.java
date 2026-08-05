@@ -83,8 +83,8 @@ public class ResourceDeltaVisitor implements AResourceDeltaVisitor {
 
     private void handleRemoved(AResource resource) {
         IIpsElement ipsElement = ipsModel.getIpsElement(resource);
-        if (ipsElement instanceof IIpsSrcFile) {
-            ipsModel.removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
+        if (ipsElement instanceof IIpsSrcFile srcFile) {
+            ipsModel.removeIpsSrcFileContent(srcFile);
         }
     }
 

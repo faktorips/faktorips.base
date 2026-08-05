@@ -63,9 +63,9 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
     }
 
     private void checkForOpenOfficeFormat(Workbook workbook) {
-        if (workbook instanceof POIDocument) {
-            if (((POIDocument)workbook).getSummaryInformation() == null
-                    || IpsStringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
+        if (workbook instanceof POIDocument poiDocument) {
+            if (poiDocument.getSummaryInformation() == null
+                    || IpsStringUtils.isBlank(poiDocument.getSummaryInformation().getApplicationName())) {
                 mightBeOpenOffice = true;
             }
         }

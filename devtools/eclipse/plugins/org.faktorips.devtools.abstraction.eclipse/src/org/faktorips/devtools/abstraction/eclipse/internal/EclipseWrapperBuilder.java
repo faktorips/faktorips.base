@@ -70,35 +70,35 @@ public class EclipseWrapperBuilder extends WrapperBuilder {
         }
         if (AContainer.class.isAssignableFrom(aClass)) {
             IContainer container = (IContainer)original;
-            if (container instanceof IWorkspaceRoot) {
-                return (A)new EclipseWorkspaceRoot((IWorkspaceRoot)container);
+            if (container instanceof IWorkspaceRoot root) {
+                return (A)new EclipseWorkspaceRoot(root);
             }
-            if (container instanceof IProject) {
-                return (A)new EclipseProject((IProject)container);
+            if (container instanceof IProject project) {
+                return (A)new EclipseProject(project);
             }
-            if (container instanceof IFolder) {
-                return (A)new EclipseFolder((IFolder)container);
+            if (container instanceof IFolder folder) {
+                return (A)new EclipseFolder(folder);
             }
         }
         if (AResource.class.isAssignableFrom(aClass)) {
             IResource resource = (IResource)original;
-            if (resource instanceof IWorkspaceRoot) {
-                return (A)new EclipseWorkspaceRoot((IWorkspaceRoot)resource);
-            } else if (resource instanceof IProject) {
-                return (A)new EclipseProject((IProject)resource);
-            } else if (resource instanceof IFolder) {
-                return (A)new EclipseFolder((IFolder)resource);
-            } else if (resource instanceof IFile) {
-                return (A)new EclipseFile((IFile)resource);
+            if (resource instanceof IWorkspaceRoot root) {
+                return (A)new EclipseWorkspaceRoot(root);
+            } else if (resource instanceof IProject project) {
+                return (A)new EclipseProject(project);
+            } else if (resource instanceof IFolder folder) {
+                return (A)new EclipseFolder(folder);
+            } else if (resource instanceof IFile file) {
+                return (A)new EclipseFile(file);
             } else {
                 throw new IllegalArgumentException(
                         "Don't know how to wrap a " + resource.getClass().getName() + " as a " + aClass.getName()); //$NON-NLS-1$//$NON-NLS-2$
             }
         }
         if (AJavaProject.class.isAssignableFrom(aClass)) {
-            if (original instanceof EclipseProject) {
+            if (original instanceof EclipseProject eclipseProject) {
                 return (A)new EclipseJavaProject(JavaCore.create(ResourcesPlugin.getWorkspace().getRoot())
-                        .getJavaProject(((EclipseProject)original).getName()));
+                        .getJavaProject(eclipseProject.getName()));
             } else {
                 return (A)new EclipseJavaProject((IJavaProject)original);
             }

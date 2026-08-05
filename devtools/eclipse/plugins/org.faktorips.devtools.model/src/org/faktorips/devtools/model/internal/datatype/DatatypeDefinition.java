@@ -41,12 +41,12 @@ public class DatatypeDefinition {
         }
         Object datatypeObj = ExtensionPoints.createExecutableExtension(extension, configElement, DATATYPE_CLASS,
                 Datatype.class);
-        if (datatypeObj instanceof Datatype) {
-            datatype = (Datatype)datatypeObj;
+        if (datatypeObj instanceof Datatype d) {
+            datatype = d;
             Object helperObj = ExtensionPoints.createExecutableExtension(extension, configElement, HELPER_CLASS,
                     DatatypeHelper.class);
-            if (helperObj instanceof DatatypeHelper) {
-                helper = (DatatypeHelper)helperObj;
+            if (helperObj instanceof DatatypeHelper h) {
+                helper = h;
                 helper.setDatatype(datatype);
             } else {
                 helper = null;

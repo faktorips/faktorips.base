@@ -56,8 +56,7 @@ public class PlainJavaIpsModel extends IpsModel {
 
     private void resourceChanged(PlainJavaResourceChange change) {
         PlainJavaResource resource = change.getChangedResource();
-        if (resource instanceof PlainJavaProject) {
-            AProject project = (AProject)resource;
+        if (resource instanceof PlainJavaProject project) {
             projectChanged(project);
         } else if (resource instanceof PlainJavaFile) {
             AProject project = resource.getProject();

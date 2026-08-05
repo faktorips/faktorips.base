@@ -110,8 +110,8 @@ public class TestValue extends TestObject implements ITestValue {
             return null;
         }
         ITestParameter param = testCaseType.getTestParameterByName(testValueParameter);
-        if (param instanceof ITestValueParameter) {
-            return (ITestValueParameter)param;
+        if (param instanceof ITestValueParameter valueParameter) {
+            return valueParameter;
         }
         return null;
     }

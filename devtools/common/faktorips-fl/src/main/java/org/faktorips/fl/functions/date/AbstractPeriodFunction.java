@@ -40,8 +40,8 @@ public abstract class AbstractPeriodFunction extends AbstractFlFunction {
         ArgumentCheck.length(argResults, 2);
         Datatype datatype = getArgTypes()[0];
         DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
-        if (datatypeHelper instanceof ILocalDateHelper) {
-            JavaCodeFragment fragment = ((ILocalDateHelper)datatypeHelper).getPeriodCode(
+        if (datatypeHelper instanceof ILocalDateHelper localDateHelper) {
+            JavaCodeFragment fragment = localDateHelper.getPeriodCode(
                     argResults[0].getCodeFragment(), argResults[1].getCodeFragment(), period);
             return new CompilationResultImpl(fragment, getType());
         } else {

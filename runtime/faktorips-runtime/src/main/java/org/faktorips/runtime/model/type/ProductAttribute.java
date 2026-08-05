@@ -256,10 +256,10 @@ public class ProductAttribute extends Attribute {
     }
 
     private static <T> boolean contains(T value, ValueSet<T> valueSet) {
-        if (value instanceof List) {
-            @SuppressWarnings({ "rawtypes", "unchecked" })
-            List<T> values = (List)value;
-            return values.stream().allMatch(valueSet::contains);
+        if (value instanceof List<?> values) {
+            @SuppressWarnings("unchecked")
+            List<T> typedValues = (List<T>)values;
+            return typedValues.stream().allMatch(valueSet::contains);
         }
         return valueSet.contains(value);
     }
@@ -280,8 +280,7 @@ public class ProductAttribute extends Attribute {
     }
 
     private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type, boolean primitive) {
-        if (type instanceof Class) {
-            Class<?> clazz = (Class<?>)type;
+        if (type instanceof Class<?> clazz) {
             if (primitive && !clazz.isPrimitive()) {
                 // multi-value primitive attributes have type List<Wrapper-Type>, so get the
                 // primitive type from the wrapper class

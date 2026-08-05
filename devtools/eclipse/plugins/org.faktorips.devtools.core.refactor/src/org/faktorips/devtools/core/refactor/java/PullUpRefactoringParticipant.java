@@ -121,8 +121,8 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
         private List<IMethod> determineDeletedMethods(IMember[] membersToMove) {
             List<IMethod> deletedMethods = new ArrayList<>(membersToMove.length);
             for (IMember member : membersToMove) {
-                if (member instanceof IMethod) {
-                    deletedMethods.add((IMethod)member);
+                if (member instanceof IMethod method) {
+                    deletedMethods.add(method);
                 }
             }
             return deletedMethods;

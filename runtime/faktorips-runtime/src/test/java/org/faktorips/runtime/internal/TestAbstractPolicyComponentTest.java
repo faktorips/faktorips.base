@@ -185,8 +185,8 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
          */
         @Override
         public void notifyChangeListeners(PropertyChangeEvent event) {
-            if (event instanceof AssociationChangedEvent) {
-                propertyChangeSupport.fireAssociationChange((AssociationChangedEvent)event);
+            if (event instanceof AssociationChangedEvent associationEvent) {
+                propertyChangeSupport.fireAssociationChange(associationEvent);
             } else {
                 propertyChangeSupport.firePropertyChange(event);
             }

@@ -152,8 +152,8 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof TestPolicyCmpt) {
-            targetChild = (TestPolicyCmpt)part;
+        if (part instanceof TestPolicyCmpt policyCmpt) {
+            targetChild = policyCmpt;
             return true;
         }
         return false;

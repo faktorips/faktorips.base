@@ -125,8 +125,8 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
     }
 
     private NumericDatatype getAndValidateNumericDatatype(ValueDatatype datatype, MessageList list) {
-        if (datatype instanceof NumericDatatype) {
-            return (NumericDatatype)datatype;
+        if (datatype instanceof NumericDatatype numericDatatype) {
+            return numericDatatype;
         }
 
         String text = Messages.RangeValueSet_msgDatatypeNotNumeric;

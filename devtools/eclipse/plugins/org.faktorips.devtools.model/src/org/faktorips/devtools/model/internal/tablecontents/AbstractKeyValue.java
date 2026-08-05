@@ -50,8 +50,8 @@ public abstract class AbstractKeyValue {
         IKeyItem[] keyItems = uniqueKey.getKeyItems();
         List<IKeyItem> result = new ArrayList<>(keyItems.length);
         for (IKeyItem keyItem : keyItems) {
-            if (keyItem instanceof IColumnRange) {
-                if (ColumnRangeType.TWO_COLUMN_RANGE.equals(((IColumnRange)keyItem).getColumnRangeType())) {
+            if (keyItem instanceof IColumnRange columnRange) {
+                if (ColumnRangeType.TWO_COLUMN_RANGE.equals(columnRange.getColumnRangeType())) {
                     continue;
                 }
             }
@@ -67,11 +67,11 @@ public abstract class AbstractKeyValue {
         IKeyItem[] keyItems = uniqueKey.getKeyItems();
         List<ColumnRange> columnRanges = new ArrayList<>();
         for (IKeyItem keyItem : keyItems) {
-            if (keyItem instanceof ColumnRange) {
-                if (!ColumnRangeType.TWO_COLUMN_RANGE.equals(((ColumnRange)keyItem).getColumnRangeType())) {
+            if (keyItem instanceof ColumnRange columnRange) {
+                if (!ColumnRangeType.TWO_COLUMN_RANGE.equals(columnRange.getColumnRangeType())) {
                     continue;
                 }
-                columnRanges.add((ColumnRange)keyItem);
+                columnRanges.add(columnRange);
             }
         }
         return columnRanges;

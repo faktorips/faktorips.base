@@ -26,11 +26,11 @@ public class CodeGenUtil {
     }
 
     public static final JavaCodeFragment convertPrimitiveToWrapper(Datatype type, JavaCodeFragment expression) {
-        if (type instanceof PrimitiveBooleanDatatype) {
-            return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)type).toWrapper(expression);
+        if (type instanceof PrimitiveBooleanDatatype pbd) {
+            return new PrimitiveBooleanHelper(pbd).toWrapper(expression);
         }
-        if (type instanceof PrimitiveIntegerDatatype) {
-            return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)type).toWrapper(expression);
+        if (type instanceof PrimitiveIntegerDatatype pid) {
+            return new PrimitiveIntegerHelper(pid).toWrapper(expression);
         }
         throw new IllegalArgumentException("Can't convert dataype " + type); //$NON-NLS-1$
     }

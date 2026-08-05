@@ -1068,8 +1068,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     @Override
     public void delete(IIpsElement toDelete) {
-        if (toDelete instanceof IIpsObjectPart) {
-            ((IIpsObjectPart)toDelete).delete();
+        if (toDelete instanceof IIpsObjectPart part) {
+            part.delete();
         }
     }
 

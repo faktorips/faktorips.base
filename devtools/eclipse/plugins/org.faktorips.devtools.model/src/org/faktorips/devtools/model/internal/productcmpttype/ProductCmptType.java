@@ -1469,8 +1469,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         private boolean isPartOfPolicyTypeOrProductTypeChangingOverTime(Object object) {
-            if (object instanceof ITypePart) {
-                IType type = ((ITypePart)object).getType();
+            if (object instanceof ITypePart typePart) {
+                IType type = typePart.getType();
                 boolean policyType = type instanceof IPolicyCmptType;
                 boolean productTypeChangingOverTime = type instanceof IProductCmptType
                         && ((IProductCmptType)type).isChangingOverTime();

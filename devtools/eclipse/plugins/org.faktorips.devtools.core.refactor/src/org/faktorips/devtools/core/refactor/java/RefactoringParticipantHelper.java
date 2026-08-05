@@ -93,9 +93,9 @@ public abstract class RefactoringParticipantHelper {
             }
 
             // Ignore constructors as they will not be refactored
-            if (originalJavaElement instanceof IMethod) {
+            if (originalJavaElement instanceof IMethod method) {
                 try {
-                    if (((IMethod)originalJavaElement).isConstructor()) {
+                    if (method.isConstructor()) {
                         continue;
                     }
                 } catch (JavaModelException e) {
@@ -170,8 +170,8 @@ public abstract class RefactoringParticipantHelper {
                 }
 
                 // Do not refactor constructors
-                if (originalJavaElement instanceof IMethod) {
-                    if (((IMethod)originalJavaElement).isConstructor()) {
+                if (originalJavaElement instanceof IMethod method) {
+                    if (method.isConstructor()) {
                         continue;
                     }
                 }
@@ -301,8 +301,8 @@ public abstract class RefactoringParticipantHelper {
      * Initialize the Java elements that will be generated after the current refactoring.
      */
     private void initializeTargetJavaElements(IpsRefactoringProcessor processor, IJavaBuilderSet javaBuilderSet) {
-        if (processor instanceof IIpsMoveRenameIpsObjectProcessor) {
-            targetJavaElements = ((IIpsMoveRenameIpsObjectProcessor)processor).getTargetJavaElements();
+        if (processor instanceof IIpsMoveRenameIpsObjectProcessor moveRenameProcessor) {
+            targetJavaElements = moveRenameProcessor.getTargetJavaElements();
         } else {
             IpsRefactoringModificationSet modificationSet = null;
             try {

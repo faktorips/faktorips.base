@@ -177,8 +177,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
 
     private boolean isOnePropertyInThisType(IType currentType, ObjectProperty[] duplicateObjectProperties) {
         for (ObjectProperty objectProperty : duplicateObjectProperties) {
-            if (objectProperty.getObject() instanceof IIpsObjectPartContainer) {
-                IIpsObjectPartContainer part = (IIpsObjectPartContainer)objectProperty.getObject();
+            if (objectProperty.getObject() instanceof IIpsObjectPartContainer part) {
                 if (part.getIpsObject().equals(currentType)) {
                     return true;
                 }

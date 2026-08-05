@@ -182,8 +182,8 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
     }
 
     private IRangeValueSet getRangeDelegate() {
-        if (delegate instanceof IRangeValueSet) {
-            return (IRangeValueSet)delegate;
+        if (delegate instanceof IRangeValueSet rangeValueSet) {
+            return rangeValueSet;
         } else {
             throw new IllegalStateException("DelegatingValueSet is not a range"); //$NON-NLS-1$
         }
@@ -205,8 +205,8 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
     }
 
     private EnumValueSet getEnumDelegate() {
-        if (delegate instanceof EnumValueSet) {
-            return (EnumValueSet)delegate;
+        if (delegate instanceof EnumValueSet enumValueSet) {
+            return enumValueSet;
         } else {
             throw new IllegalStateException("DelegatingValueSet is not a enum"); //$NON-NLS-1$
         }
@@ -295,8 +295,8 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
     }
 
     private StringLengthValueSet getStringLengthDelegate() {
-        if (delegate instanceof StringLengthValueSet) {
-            return (StringLengthValueSet)delegate;
+        if (delegate instanceof StringLengthValueSet stringLengthValueSet) {
+            return stringLengthValueSet;
         } else {
             throw new IllegalStateException("DelegatingValueSet is not a StringLengthValueSet"); //$NON-NLS-1$
         }

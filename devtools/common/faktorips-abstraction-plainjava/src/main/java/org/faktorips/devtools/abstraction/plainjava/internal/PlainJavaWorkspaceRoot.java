@@ -137,8 +137,8 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     PlainJavaFile file(Path path) {
         PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
                 p -> (PlainJavaFile)wrap(p.toFile()).as(AFile.class));
-        if (resource instanceof PlainJavaFile) {
-            return (PlainJavaFile)resource;
+        if (resource instanceof PlainJavaFile file) {
+            return file;
         }
         throw new IllegalArgumentException(path + " is not a file"); //$NON-NLS-1$
     }
@@ -146,8 +146,8 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
     PlainJavaFolder folder(Path path) {
         PlainJavaResource resource = resources.computeIfAbsent(path.toAbsolutePath(),
                 p -> (PlainJavaFolder)wrap(p.toFile()).as(AFolder.class));
-        if (resource instanceof PlainJavaFolder) {
-            return (PlainJavaFolder)resource;
+        if (resource instanceof PlainJavaFolder folder) {
+            return folder;
         }
         throw new IllegalArgumentException(path + " is not a folder"); //$NON-NLS-1$
     }
@@ -156,11 +156,11 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
         Path absolutePath = path.toAbsolutePath();
         PlainJavaResource resource = resources.computeIfAbsent(absolutePath,
                 p -> (PlainJavaProject)wrap(p.toFile()).as(AProject.class));
-        if (resource instanceof PlainJavaProject) {
-            return (PlainJavaProject)resource;
+        if (resource instanceof PlainJavaProject plainJavaProject) {
+            return plainJavaProject;
         }
-        if (resource instanceof PlainJavaFolder) {
-            PlainJavaProject project = (PlainJavaProject)wrap(((PlainJavaFolder)resource).directory())
+        if (resource instanceof PlainJavaFolder folder) {
+            PlainJavaProject project = (PlainJavaProject)wrap(folder.directory())
                     .as(AProject.class);
             resources.put(absolutePath, project);
             return project;

@@ -250,12 +250,12 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
                 sb.append(format(msgKey, lowerBound, upperBound, stepLabel));
             }
         }
-        if (valueSet instanceof StringLengthValueSet) {
+        if (valueSet instanceof StringLengthValueSet stringLengthValueSet) {
             sb.append(' ');
             String value = policyAttribute.getValue(modelObject).toString();
             String shortenedValue = (value.length() > 20) ? value.substring(0, 15) + "(...)" : value;
             sb.append(format(MSG_KEY_VALUE_IN_STRING_LENGTH_VALUE_SET_INVALID, shortenedValue,
-                    ((StringLengthValueSet)valueSet).getMaximumLength()));
+                    stringLengthValueSet.getMaximumLength()));
         }
         return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.ValueNotInValueSet,
                 definingModelObjectClass, sb.toString());

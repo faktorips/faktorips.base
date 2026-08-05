@@ -27,8 +27,8 @@ public class BooleanValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof Boolean) {
-            return ((Boolean)externalDataValue).toString();
+        if (externalDataValue instanceof Boolean b) {
+            return b.toString();
         } else {
             String dataValue = String.valueOf(externalDataValue);
             if ("true".equalsIgnoreCase(dataValue) || "1".equalsIgnoreCase(dataValue)) { //$NON-NLS-1$ //$NON-NLS-2$

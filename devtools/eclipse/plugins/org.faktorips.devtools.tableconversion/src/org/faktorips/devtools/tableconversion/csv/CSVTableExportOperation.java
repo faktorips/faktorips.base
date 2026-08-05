@@ -181,8 +181,8 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
     }
 
     private ITableContents getTableContents(IIpsObject typeToExport) {
-        if (typeToExport instanceof ITableContents) {
-            return (ITableContents)typeToExport;
+        if (typeToExport instanceof ITableContents tableContents) {
+            return tableContents;
         }
         return null;
     }

@@ -98,8 +98,8 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof ITestObject) {
-            removeTestObject((ITestObject)part);
+        if (part instanceof ITestObject testObject) {
+            removeTestObject(testObject);
             return true;
         }
         return false;

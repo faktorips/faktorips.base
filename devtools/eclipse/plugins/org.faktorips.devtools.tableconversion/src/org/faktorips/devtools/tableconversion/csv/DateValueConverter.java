@@ -53,13 +53,13 @@ public class DateValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof Date) {
-            return DateUtil.dateToIsoDateString((Date)externalDataValue);
+        if (externalDataValue instanceof Date date) {
+            return DateUtil.dateToIsoDateString(date);
         }
-        if (externalDataValue instanceof String) {
+        if (externalDataValue instanceof String s) {
             try {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
-                Date parseDate = DateUtils.parseDate((String)externalDataValue, dateFormat);
+                Date parseDate = DateUtils.parseDate(s, dateFormat);
                 return DateUtil.dateToIsoDateString(parseDate);
                 // CSOFF: Empty Statement
             } catch (ParseException ignored) {

@@ -44,10 +44,9 @@ public abstract class AbstractProductCmptCollector {
     }
 
     protected IProductCmptGeneration getOriginGeneration() {
-        if (getExpression() instanceof IFormula) {
-            IFormula formula = (IFormula)getExpression();
-            if (formula.getPropertyValueContainer() instanceof IProductCmptGeneration) {
-                return (IProductCmptGeneration)formula.getPropertyValueContainer();
+        if (getExpression() instanceof IFormula formula) {
+            if (formula.getPropertyValueContainer() instanceof IProductCmptGeneration generation) {
+                return generation;
             }
         }
         return null;

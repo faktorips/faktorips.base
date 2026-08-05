@@ -100,21 +100,21 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
      */
     protected void fillCell(Cell cell, String ipsValue, Datatype datatype) {
         Object obj = getFormat().getExternalValue(ipsValue, datatype, getMessageList());
-        if (obj instanceof Date) {
-            cell.setCellValue((Date)obj);
+        if (obj instanceof Date date) {
+            cell.setCellValue(date);
             cell.setCellStyle(dateStyle);
             return;
         }
-        if (obj instanceof Number) {
+        if (obj instanceof Number number) {
             try {
-                cell.setCellValue(((Number)obj).doubleValue());
+                cell.setCellValue(number.doubleValue());
             } catch (NullPointerException npe) {
                 cell.setCellValue(getNullRepresentationString());
             }
             return;
         }
-        if (obj instanceof Boolean) {
-            cell.setCellValue(((Boolean)obj).booleanValue());
+        if (obj instanceof Boolean bool) {
+            cell.setCellValue(bool.booleanValue());
             return;
         }
         if (obj != null) {

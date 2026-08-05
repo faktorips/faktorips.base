@@ -209,16 +209,16 @@ public abstract class AbstractIdentifierNodeParser {
     }
 
     protected String getName(IIpsElement ipsElement, IMultiLanguageSupport multiLanguageSupport) {
-        if (ipsElement instanceof ILabeledElement) {
-            return multiLanguageSupport.getLocalizedLabel((ILabeledElement)ipsElement);
+        if (ipsElement instanceof ILabeledElement labeledElement) {
+            return multiLanguageSupport.getLocalizedLabel(labeledElement);
         } else {
             return ipsElement.getName();
         }
     }
 
     protected String getDescription(IIpsElement ipsElement, IMultiLanguageSupport multiLanguageSupport) {
-        if (ipsElement instanceof IDescribedElement) {
-            return multiLanguageSupport.getLocalizedDescription((IDescribedElement)ipsElement);
+        if (ipsElement instanceof IDescribedElement describedElement) {
+            return multiLanguageSupport.getLocalizedDescription(describedElement);
         } else {
             return null;
         }

@@ -32,8 +32,8 @@ public abstract class NumberValueConverter extends AbstractValueConverter {
     protected DecimalFormat getDecimalFormat(ITableFormat tableFormat) {
         DecimalFormat decimalFormat = new DecimalFormat();
 
-        if (tableFormat != null && tableFormat instanceof CSVTableFormat) {
-            String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
+        if (tableFormat instanceof CSVTableFormat csvTableFormat) {
+            String decimalSeparator = csvTableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
             String decimalGrouping = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_GROUPING_CHAR);
 
             DecimalFormatSymbols decimalFormatSymbols = decimalFormat.getDecimalFormatSymbols();

@@ -253,8 +253,8 @@ public class StandardBuilderSet extends ModelBuilderSet {
         List<IJavaElement> javaElements = new ArrayList<>();
         for (IIpsArtefactBuilder builder : getArtefactBuilders()) {
             IIpsArtefactBuilder builderTemp = builder;
-            if (builderTemp instanceof ProductCmptBuilder) {
-                builderTemp = ((ProductCmptBuilder)builder).getGenerationBuilder();
+            if (builderTemp instanceof ProductCmptBuilder productCmptBuilder) {
+                builderTemp = productCmptBuilder.getGenerationBuilder();
             }
             if (!(builderTemp instanceof JavaSourceFileBuilder javaBuilder)) {
                 continue;

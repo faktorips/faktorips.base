@@ -38,8 +38,8 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractLocalizedPr
                 .getSupportedLanguages()) {
             ValidationRuleMessagesGenerator messagesGenerator = getMessagesGenerator(ipsSrcFile, supportedLanguage);
             IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-            if (ipsObject instanceof IPolicyCmptType) {
-                messagesGenerator.generate((IPolicyCmptType)ipsObject);
+            if (ipsObject instanceof IPolicyCmptType policyCmptType) {
+                messagesGenerator.generate(policyCmptType);
             }
         }
     }

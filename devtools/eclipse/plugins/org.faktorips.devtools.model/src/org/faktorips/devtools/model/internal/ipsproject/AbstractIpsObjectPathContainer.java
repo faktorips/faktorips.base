@@ -62,8 +62,8 @@ public abstract class AbstractIpsObjectPathContainer implements IIpsObjectPathCo
      */
     public IpsObjectPath getIpsObjectPath() {
         IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
-        if (ipsObjectPath instanceof IpsObjectPath) {
-            return (IpsObjectPath)ipsObjectPath;
+        if (ipsObjectPath instanceof IpsObjectPath path) {
+            return path;
         } else {
             return null;
         }

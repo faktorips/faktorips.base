@@ -131,8 +131,8 @@ public class StdBuilderPlugin extends Plugin {
      */
     public static final void log(IpsException e) {
         Throwable cause = e.getCause();
-        if (cause instanceof CoreException) {
-            log(((CoreException)cause).getStatus());
+        if (cause instanceof CoreException coreException) {
+            log(coreException.getStatus());
         } else {
             log(new IpsStatus(e));
         }

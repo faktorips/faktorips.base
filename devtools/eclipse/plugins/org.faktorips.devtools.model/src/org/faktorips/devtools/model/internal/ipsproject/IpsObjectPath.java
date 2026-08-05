@@ -113,8 +113,8 @@ public class IpsObjectPath implements IIpsObjectPath {
                 return i;
             }
             i++;
-            if (anEntry instanceof IIpsContainerEntry) {
-                List<IIpsObjectPathEntry> resolvedEntries = ((IIpsContainerEntry)anEntry).resolveEntries();
+            if (anEntry instanceof IIpsContainerEntry containerEntry) {
+                List<IIpsObjectPathEntry> resolvedEntries = containerEntry.resolveEntries();
                 int indexInContainer = getIndexIn(entry, resolvedEntries);
                 if (indexInContainer > -1) {
                     return i + indexInContainer;

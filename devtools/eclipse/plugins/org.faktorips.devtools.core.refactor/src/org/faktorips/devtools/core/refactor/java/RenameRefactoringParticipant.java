@@ -138,8 +138,8 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
                 currentAttribute = currentAttribute.findOverwrittenAttribute(attribute.getIpsProject());
                 result.addAll(builderSet.getGeneratedJavaElements(currentAttribute));
             }
-            if (attribute instanceof IPolicyCmptTypeAttribute) {
-                IValidationRule valueSetRule = ((IPolicyCmptTypeAttribute)attribute)
+            if (attribute instanceof IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
+                IValidationRule valueSetRule = policyCmptTypeAttribute
                         .findValueSetRule(attribute.getIpsProject());
                 if (valueSetRule != null) {
                     result.addAll(builderSet.getGeneratedJavaElements(valueSetRule));

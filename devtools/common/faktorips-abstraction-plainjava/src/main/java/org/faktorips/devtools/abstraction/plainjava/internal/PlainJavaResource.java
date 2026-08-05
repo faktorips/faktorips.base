@@ -131,8 +131,8 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
 
     void refreshParent() {
         AContainer parent = getParent();
-        if (parent instanceof PlainJavaContainer) {
-            ((PlainJavaContainer)parent).refreshInternal();
+        if (parent instanceof PlainJavaContainer container) {
+            container.refreshInternal();
         }
     }
 
@@ -256,8 +256,8 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
     @Override
     public AProject getProject() {
         for (AResource resource = this; resource != null; resource = resource.getParent()) {
-            if (resource instanceof AProject) {
-                return (AProject)resource;
+            if (resource instanceof AProject project) {
+                return project;
             }
         }
         return null;

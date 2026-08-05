@@ -435,8 +435,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) {
         IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
-        if (unionAss instanceof IPolicyCmptTypeAssociation) {
-            checkForDerivedUnionInverseAssociationMismatch((IPolicyCmptTypeAssociation)unionAss, list, ipsProject);
+        if (unionAss instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
+            checkForDerivedUnionInverseAssociationMismatch(policyCmptTypeAssociation, list, ipsProject);
         }
     }
 
@@ -758,8 +758,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IPersistentAssociationInfo) {
-            persistenceAssociationInfo = (IPersistentAssociationInfo)part;
+        if (part instanceof IPersistentAssociationInfo info) {
+            persistenceAssociationInfo = info;
             return true;
         }
         return false;

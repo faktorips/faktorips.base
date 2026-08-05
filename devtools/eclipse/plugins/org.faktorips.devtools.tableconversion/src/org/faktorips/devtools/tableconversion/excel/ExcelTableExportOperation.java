@@ -97,8 +97,8 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
     }
 
     private ITableContents getTableContents(IIpsObject ipsObject) {
-        if (ipsObject instanceof ITableContents) {
-            return (ITableContents)ipsObject;
+        if (ipsObject instanceof ITableContents tableContents) {
+            return tableContents;
         }
         return null;
     }

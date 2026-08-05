@@ -115,8 +115,8 @@ public class TestRule extends TestObject implements ITestRule {
             return null;
         }
         ITestParameter param = testCaseType.getTestParameterByName(testRuleParameter);
-        if (param instanceof ITestRuleParameter) {
-            return (ITestRuleParameter)param;
+        if (param instanceof ITestRuleParameter ruleParameter) {
+            return ruleParameter;
         }
         return null;
     }

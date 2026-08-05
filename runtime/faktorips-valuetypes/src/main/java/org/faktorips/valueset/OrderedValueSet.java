@@ -250,15 +250,15 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
     @SuppressWarnings("unchecked")
     @SuppressFBWarnings(value = "BC_BAD_CAST_TO_CONCRETE_COLLECTION", justification = "clone is only public in concrete collections, not the interfaces")
     private Set<E> cloneSetInternal() {
-        if (set instanceof TreeSet) {
-            return (Set<E>)((TreeSet<E>)set).clone();
+        if (set instanceof TreeSet<E> treeSet) {
+            return (Set<E>)treeSet.clone();
         }
         return (Set<E>)((HashSet<E>)set).clone();
     }
 
     private Set<E> unmodifiable(Set<E> set) {
-        if (set instanceof SortedSet) {
-            return Collections.unmodifiableSortedSet((SortedSet<E>)set);
+        if (set instanceof SortedSet<E> sortedSet) {
+            return Collections.unmodifiableSortedSet(sortedSet);
         }
         return Collections.unmodifiableSet(set);
     }
@@ -412,10 +412,9 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
             return true;
         }
         return otherDatatype.flatMap(d -> datatype.filter(Predicate.isEqual(d))).map(d -> {
-            if (otherValueSet instanceof OrderedValueSet) {
-                return (otherValueSet.containsNull() || !containsNull())
-                        && (getValues().stream()
-                                .allMatch(value -> ((OrderedValueSet<E>)otherValueSet).contains(value)));
+            if (otherValueSet instanceof OrderedValueSet<E> ovs) {
+                return (ovs.containsNull() || !containsNull())
+                        && getValues().stream().allMatch(ovs::contains);
             }
             if (otherValueSet instanceof Range) {
                 return (otherValueSet.containsNull() || !containsNull())

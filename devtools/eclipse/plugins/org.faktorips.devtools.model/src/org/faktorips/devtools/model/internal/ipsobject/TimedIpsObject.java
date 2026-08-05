@@ -195,8 +195,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof IIpsObjectGeneration) {
-            generations.add((IIpsObjectGeneration)part);
+        if (part instanceof IIpsObjectGeneration generation) {
+            generations.add(generation);
             return true;
         }
         return false;
@@ -313,8 +313,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     public static String getDefaultDateFormat() {
         DateFormat dateFormat = IIpsModelExtensions.get().getModelPreferences().getDateFormat();
         String formatDescription = dateFormat.format(new GregorianCalendar().getTime());
-        if (dateFormat instanceof SimpleDateFormat) {
-            formatDescription = ((SimpleDateFormat)dateFormat).toPattern();
+        if (dateFormat instanceof SimpleDateFormat simpleDateFormat) {
+            formatDescription = simpleDateFormat.toPattern();
         }
         return formatDescription;
     }

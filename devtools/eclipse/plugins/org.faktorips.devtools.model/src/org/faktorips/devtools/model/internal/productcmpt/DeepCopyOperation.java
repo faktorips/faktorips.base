@@ -337,8 +337,8 @@ public class DeepCopyOperation implements ICoreRunnable {
 
         IProductCmptStructureReference parent = productCmptStructureReference.getParent();
         IProductCmpt productCmpt = (productCmptStructureReference).getProductCmpt();
-        if (parent instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociation productCmptTypeAssociationOld = ((IProductCmptTypeAssociationReference)parent)
+        if (parent instanceof IProductCmptTypeAssociationReference assocRef) {
+            IProductCmptTypeAssociation productCmptTypeAssociationOld = assocRef
                     .getAssociation();
             IProductCmpt parentProductCmpt = ((IProductCmptReference)parent
                     .getParent()).getProductCmpt();

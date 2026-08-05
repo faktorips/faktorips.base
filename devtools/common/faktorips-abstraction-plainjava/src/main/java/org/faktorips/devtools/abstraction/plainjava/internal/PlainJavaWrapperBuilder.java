@@ -58,15 +58,15 @@ public class PlainJavaWrapperBuilder extends WrapperBuilder {
                     .get(originalFolder.toPath());
         }
         if (AJavaProject.class.isAssignableFrom(aClass)) {
-            if (original instanceof PlainJavaProject) {
-                return (A)new PlainJavaJavaProject(((PlainJavaProject)original).unwrap());
+            if (original instanceof PlainJavaProject project) {
+                return (A)new PlainJavaJavaProject(project.unwrap());
             } else {
                 return (A)new PlainJavaJavaProject((java.io.File)original);
             }
         }
         if (APackageFragmentRoot.class.isAssignableFrom(aClass)) {
-            if (original instanceof AFolder) {
-                return (A)new PlainJavaPackageFragmentRoot(((AFolder)original).unwrap());
+            if (original instanceof AFolder folder) {
+                return (A)new PlainJavaPackageFragmentRoot(folder.unwrap());
             } else {
                 return (A)new PlainJavaPackageFragmentRoot((java.io.File)original);
             }

@@ -27,8 +27,8 @@ public class StringValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof Double) {
-            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
+        if (externalDataValue instanceof Double d) {
+            return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces(d);
         }
         return externalDataValue == null ? null : externalDataValue.toString().trim();
     }

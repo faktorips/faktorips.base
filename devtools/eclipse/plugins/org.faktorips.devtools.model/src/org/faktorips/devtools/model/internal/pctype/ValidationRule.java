@@ -321,8 +321,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         validatedAttributes.clear();
         markers.clear();
         for (int i = 0; i < nl.getLength(); i++) {
-            if (nl.item(i) instanceof Element) {
-                Element subElement = (Element)nl.item(i);
+            if (nl.item(i) instanceof Element subElement) {
                 initChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
                 initChildrenForMarkers(subElement);
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
@@ -342,8 +341,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
         if (subElement.getNodeName().equals(XML_TAG_MARKERS)) {
             NodeList childNodes = subElement.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
-                if (childNodes.item(i) instanceof Element) {
-                    initChildrenFor(XML_TAG_MARKER, markers, (Element)childNodes.item(i));
+                if (childNodes.item(i) instanceof Element element) {
+                    initChildrenFor(XML_TAG_MARKER, markers, element);
                 }
             }
         }

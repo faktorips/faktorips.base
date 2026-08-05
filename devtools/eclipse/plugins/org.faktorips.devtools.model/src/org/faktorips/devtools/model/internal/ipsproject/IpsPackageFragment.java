@@ -433,8 +433,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
 
         public void set(Comparator<IIpsElement> newChildOrderComparator) {
-            if (newChildOrderComparator instanceof DefinedOrderComparator) {
-                ((DefinedOrderComparator)newChildOrderComparator).persistTo(IpsPackageFragment.this);
+            if (newChildOrderComparator instanceof DefinedOrderComparator definedOrder) {
+                definedOrder.persistTo(IpsPackageFragment.this);
                 sortOrderFile = getSortOrderFile();
                 lastModification = sortOrderFile.getModificationStamp();
             } else {

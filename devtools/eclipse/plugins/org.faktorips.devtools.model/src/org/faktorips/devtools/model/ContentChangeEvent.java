@@ -236,8 +236,8 @@ public class ContentChangeEvent {
             if (potentialParent.equals(parent)) {
                 return true;
             } else {
-                if (parent instanceof IIpsObjectPart) {
-                    return isChildOf((IIpsObjectPart)parent, potentialParent);
+                if (parent instanceof IIpsObjectPart part) {
+                    return isChildOf(part, potentialParent);
                 }
             }
         }

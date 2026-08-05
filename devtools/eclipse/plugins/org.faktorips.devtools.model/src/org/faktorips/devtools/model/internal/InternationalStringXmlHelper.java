@@ -73,8 +73,7 @@ public final class InternationalStringXmlHelper {
     public static void initFromXml(IInternationalString internationalString, Element element) {
         NodeList childNodes = element.getElementsByTagName(InternationalString.XML_TAG);
         for (int j = 0; j < childNodes.getLength(); j++) {
-            if (childNodes.item(j) instanceof Element) {
-                Element internationalStringElement = (Element)childNodes.item(j);
+            if (childNodes.item(j) instanceof Element internationalStringElement) {
                 internationalString.initFromXml(internationalStringElement);
                 break;
             }

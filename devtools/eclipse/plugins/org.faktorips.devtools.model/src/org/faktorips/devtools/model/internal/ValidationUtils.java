@@ -157,8 +157,8 @@ public class ValidationUtils {
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
-        if (datatype instanceof ValueDatatype) {
-            list.add(((ValueDatatype)datatype).checkReadyToUse(), new ObjectProperty(part, propertyName), true);
+        if (datatype instanceof ValueDatatype valueDatatype) {
+            list.add(valueDatatype.checkReadyToUse(), new ObjectProperty(part, propertyName), true);
         }
         if (datatype.isVoid() && !voidAllowed) {
             String text = Messages.ValidationUtils_msgVoidNotAllowed;
