@@ -946,6 +946,7 @@ public class IpsBuildMojo extends AbstractMojo {
         if (exportHtml) {
             addDependency("org.faktorips.devtools.htmlexport");
         }
+        // for debugging FIPS-15125
         // if (importAsMavenProject) {
         addDependency("org.eclipse.m2e.core");
         addDependency("org.eclipse.m2e.jdt");

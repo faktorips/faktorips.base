@@ -56,6 +56,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -285,6 +286,11 @@ public class BaseTocFileBuilder extends AbstractArtefactBuilder {
         try {
             object = ipsSrcFile.getIpsObject();
             if (!object.isValid(getIpsProject())) {
+                // FIPS-15125: Logging zum Einkreisen des flaky Verhaltens
+                IpsLog.log(new IpsStatus(
+                        "FIPS-15125: Skipping TOC build for '%s' (isValid=false, severity=%s)" //$NON-NLS-1$
+                                .formatted(object.getQualifiedName(),
+                                        object.validate(getIpsProject()).getSeverity())));
                 return;
             }
             List<TocEntryObject> entries = buildTocEntries(object);

@@ -308,8 +308,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
     }
 
+    // FIPS-15125: Logging zum Einkreisen des flaky Verhaltens
     private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) {
-        if (containsDifferenceToModel(ipsProject)) {
+        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
+        if (!delta.isEmpty()) {
+            IpsLog.log(new IpsStatus(
+                    "FIPS-15125: ProductCmpt '%s' has delta entries: %s" //$NON-NLS-1$
+                            .formatted(getName(),
+                                    Arrays.stream(delta.getEntries())
+                                            .map(e -> e.getDeltaType() + "(" + e + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                                            .collect(Collectors.joining(", ")))));  //$NON-NLS-1$
             list.newError(MSGCODE_DIFFERENCES_TO_MODEL, Messages.ProductCmpt_Error_DifferencesToModel0, this);
         }
     }
