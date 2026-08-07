@@ -7,11 +7,11 @@ def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def p2Server = 'hudson@update.faktorzehn.org'
 def(major, minor, patch, kind, isAlpha, isRelease, releasePattern) = parseVersion()
 
-def setVersionForPlatformBoms(String oldVersion, String newVersion) {
+def setVersionForPlatformBoms(String newVersion) {
     sh """
         for boms in \$(find devtools/common/bom/ -type d -name "*-platform-dependencies");
         do
-            sed -i "s|<version>${oldVersion}</version>|<version>${newVersion}</version>|" \$boms/pom.xml;
+            mvn -f \$boms/pom.xml versions:update-parent -DparentVersion=${newVersion} -DgenerateBackupPoms=false -DallowSnapshots=true -DskipResolution=true;
         done
     """
 }
@@ -22,10 +22,10 @@ def configureRelease() {
         sh "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.RELEASE_VERSION} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${params.RELEASE_VERSION}/' {} \\;"
-        setVersionForPlatformBoms(oldVersion, params.RELEASE_VERSION)
         // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
         // must be installed before enforcer plugin is executed
         sh "mvn -U -V -fae -e clean install -f codequality-config"
+        setVersionForPlatformBoms(params.RELEASE_VERSION)
     }
 }
 
@@ -39,7 +39,7 @@ def configureDevelopment() {
         }
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${params.RELEASE_VERSION}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
-        setVersionForPlatformBoms(params.RELEASE_VERSION, "${params.DEVELOPMENT_VERSION}-SNAPSHOT")
+        setVersionForPlatformBoms("${params.DEVELOPMENT_VERSION}-SNAPSHOT")
     }
 }
 
