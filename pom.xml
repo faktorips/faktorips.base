@@ -84,6 +84,7 @@
         <git.user>${user.name}</git.user>
         <!-- java and compiler options -->
         <java.version>21</java.version>
+        <required.maven.version>3.9.14</required.maven.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <!-- plugin versions -->
@@ -96,6 +97,7 @@
         <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
         <maven-plugin-dependency-commons-collections.version>3.2.2</maven-plugin-dependency-commons-collections.version>
         <maven-plugin-dependency-commons-pool2.version>2.12.1</maven-plugin-dependency-commons-pool2.version>
@@ -189,6 +191,29 @@
                             <version>${faktorips.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-versions</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireJavaVersion>
+                                        <version>${java.version}</version>
+                                    </requireJavaVersion>
+                                    <requireMavenVersion>
+                                        <version>${required.maven.version}</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <!-- currently default deployment is switched off. Deployment is triggered using profiles or custom scripts -->
@@ -580,6 +605,10 @@
                         <phase>validate</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
