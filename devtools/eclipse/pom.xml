@@ -38,7 +38,7 @@
             </dependency>
             <dependency>
                 <groupId>org.faktorips</groupId>
-                <artifactId>eclipse-platform-dependencies</artifactId>
+                <artifactId>${target-platform}-platform-dependencies</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
