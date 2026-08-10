@@ -650,7 +650,8 @@ public class IpsBuildMojo extends AbstractMojo {
         }
 
         lines.add(
-                "    <faktorips.build fullBuild=\"${fullBuild}\" ipsOnly=\"${build.ipsOnly}\" statusFile=\"${status.file}\">");
+                "    <faktorips.build fullBuild=\"${fullBuild}\" ipsOnly=\"${build.ipsOnly}\" importAsMavenProject=\""
+                        + importAsMavenProject + "\" statusFile=\"${status.file}\">");
         lines.add("      <EclipseProject name=\"${projectName}\" />");
         lines.add("    </faktorips.build>");
         if (exportHtml) {
@@ -946,14 +947,13 @@ public class IpsBuildMojo extends AbstractMojo {
         if (exportHtml) {
             addDependency("org.faktorips.devtools.htmlexport");
         }
-        // for debugging FIPS-15125
-        // if (importAsMavenProject) {
-        addDependency("org.eclipse.m2e.core");
-        addDependency("org.eclipse.m2e.jdt");
-        addDependency("org.eclipse.m2e.maven.runtime");
-        addDependency("org.eclipse.m2e.workspace.cli");
-        addDependency("org.faktorips.m2e");
-        // }
+        if (importAsMavenProject) {
+            addDependency("org.eclipse.m2e.core");
+            addDependency("org.eclipse.m2e.jdt");
+            addDependency("org.eclipse.m2e.maven.runtime");
+            addDependency("org.eclipse.m2e.workspace.cli");
+            addDependency("org.faktorips.m2e");
+        }
         if (isGitStatusPorcelain()) {
             addDependency("org.eclipse.egit.core");
         }

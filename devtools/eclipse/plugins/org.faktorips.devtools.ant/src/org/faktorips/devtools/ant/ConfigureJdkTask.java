@@ -67,7 +67,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * Executes the Ant task.
      */
     @Override
-    public void executeInternal() throws Exception {
+    protected void executeInternal() throws Exception {
         checkDir();
         IVMInstall vm = findVM();
         System.out.println("Found VM " + toString(vm));

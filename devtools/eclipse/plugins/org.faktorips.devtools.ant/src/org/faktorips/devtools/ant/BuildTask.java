@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
+import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,10 +30,12 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.IpsBuilder;
@@ -49,9 +52,12 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class BuildTask extends AbstractIpsTask {
 
+    private static final long DEPENDENCY_RESOLUTION_TIMEOUT_MS = 5 * 60 * 1000L;
+
     private List<EclipseProject> eclipseProjects = new ArrayList<>();
     private boolean fullBuild = true;
     private boolean ipsOnly = false;
+    private boolean importAsMavenProject = false;
 
     public BuildTask() {
         super("BuildTask");
@@ -77,11 +83,22 @@ public class BuildTask extends AbstractIpsTask {
         this.ipsOnly = ipsOnly;
     }
 
+    public boolean isImportAsMavenProject() {
+        return importAsMavenProject;
+    }
+
+    public void setImportAsMavenProject(boolean importAsMavenProject) {
+        this.importAsMavenProject = importAsMavenProject;
+    }
+
     /**
      * Excecutes the Ant task.
      */
     @Override
-    public void executeInternal() throws Exception {
+    protected void executeInternal() throws Exception {
+        if (importAsMavenProject) {
+            waitForMavenDependenciesResolved();
+        }
         WorkspaceJob job = new WorkspaceJob("build") {
             @Override
             public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
@@ -121,10 +138,6 @@ public class BuildTask extends AbstractIpsTask {
                         System.out.println();
                     }
                     try {
-                        // for debugging FIPS-15125
-                        if (isDebug() || !isDebug()) {
-                            logDebugInfo();
-                        }
                         if (fullBuild) {
                             System.out.println("Perform full build");
                             buildProject(project, IncrementalProjectBuilder.FULL_BUILD);
@@ -157,46 +170,63 @@ public class BuildTask extends AbstractIpsTask {
         }
     }
 
-    private void logDebugInfo() throws CoreException {
-        for (IProject projectDebug : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-            System.out.print("Markers for ");
-            System.out.print(projectDebug.getName());
-            System.out.println(":");
-            IMarker[] markers = projectDebug.findMarkers(null /* all */, true,
-                    IResource.DEPTH_INFINITE);
-            for (IMarker marker : markers) {
-                Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
-                if (severity != null) {
-                    logProblem(projectDebug, severity, marker.getAttribute(IMarker.MESSAGE, "unknown error"));
+    /**
+     * Waits until all projects in the m2e registry have their Maven dependencies resolved (i.e.
+     * getArtifacts() is non-empty). This guards against the race condition where m2e's async
+     * dependency-resolution jobs finish after waitForBuildJobs() returns, leaving projects with an
+     * empty classpath when the IPS builder runs.
+     */
+    private void waitForMavenDependenciesResolved() throws CoreException, InterruptedException {
+        IMavenProjectRegistry registry = waitForService(
+                MavenPlugin::getMavenProjectRegistry, "IMavenProjectRegistry",
+                DEPENDENCY_RESOLUTION_TIMEOUT_MS);
+        long deadline = System.currentTimeMillis() + DEPENDENCY_RESOLUTION_TIMEOUT_MS;
+        while (System.currentTimeMillis() < deadline) {
+            boolean allResolved = true;
+            for (IMavenProjectFacade facade : registry.getProjects()) {
+                MavenProject mp = facade.getMavenProject(new NullProgressMonitor());
+                // mp == null: project not yet loaded by m2e.
+                // getDependencies() empty with getArtifacts() empty means the project is a BOM or
+                // aggregator/parent with no <dependencies> — those are never waiting for
+                // resolution.
+                // getDependencies() non-empty with getArtifacts() empty means resolution is still
+                // running and the classpath is not yet populated.
+                if (mp == null || (!mp.getDependencies().isEmpty() && mp.getArtifacts().isEmpty())) {
+                    allResolved = false;
+                    System.out.println("Waiting for Maven dependencies to be resolved for: "
+                            + facade.getProject().getName());
+                    break;
                 }
             }
-            if (markers.length == 0) {
-                System.out.print("No Markers found for ");
-                System.out.println(projectDebug.getName());
+            if (allResolved) {
+                return;
             }
-            IMavenProjectFacade projectFacade = MavenPlugin.getMavenProjectRegistry()
-                    .getProject(projectDebug);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new BuildException(
+                        "Interrupted while waiting for Maven dependencies to be resolved", e);
+            }
+        }
+        logMavenDebugInfo(registry);
+        throw new BuildException("Timed out waiting for Maven dependencies to be resolved");
+    }
+
+    private void logMavenDebugInfo(IMavenProjectRegistry registry) throws CoreException {
+        for (IProject projectDebug : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            IMavenProjectFacade projectFacade = registry.getProject(projectDebug);
             if (projectFacade != null) {
-                MavenProject m = projectFacade.getMavenProject(null);
-                System.out.print("Dependencies of ");
-                printDependency(m.getGroupId(), m.getArtifactId(), m.getVersion());
-                System.out.println(":");
-                Set<Artifact> artifacts = m.getArtifacts();
-                for (Artifact a : artifacts) {
-                    System.out.print("\t");
-                    printDependency(a.getGroupId(), a.getArtifactId(), a.getVersion());
-                    System.out.println();
+                MavenProject m = projectFacade.getMavenProject(new NullProgressMonitor());
+                if (m != null) {
+                    System.out.println("Dependencies of " + m.getGroupId() + ":" + m.getArtifactId() + ":"
+                            + m.getVersion() + ":");
+                    for (Artifact a : m.getArtifacts()) {
+                        System.out.println("\t" + a.getGroupId() + ":" + a.getArtifactId() + ":" + a.getVersion());
+                    }
                 }
             }
         }
-    }
-
-    private void printDependency(String groupId, String artifactId, String version) {
-        System.out.print(groupId);
-        System.out.print(":");
-        System.out.print(artifactId);
-        System.out.print(":");
-        System.out.print(version);
     }
 
     private void logProblem(IProject project, Integer severity, String text) {
