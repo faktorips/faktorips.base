@@ -550,7 +550,28 @@ public class ProductCmptType extends Type implements IProductCmptType {
     public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) {
         FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
         finder.start(this);
-        return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);
+        return (IProductCmptTypeMethod)(!finder.getMethods().isEmpty() ? finder.getMethods().get(0) : null);
+    }
+
+    @Override
+    public List<IMethod> overrideMethods(List<IMethod> methods) {
+        List<IMethod> newMethods = super.overrideMethods(methods);
+        for (int i = 0; i < methods.size(); i++) {
+            IMethod source = methods.get(i);
+            IMethod override = newMethods.get(i);
+            if (source instanceof IProductCmptTypeMethod sourceMethod
+                    && override instanceof IProductCmptTypeMethod overrideMethod
+                    && sourceMethod.isFormulaSignatureDefinition()) {
+                overrideMethod.setFormulaSignatureDefinition(true);
+                overrideMethod.setFormulaName(sourceMethod.getFormulaName());
+                overrideMethod.setOverloadsFormula(true);
+                overrideMethod.setChangingOverTime(sourceMethod.isChangingOverTime());
+                overrideMethod.setFormulaMandatory(sourceMethod.isFormulaMandatory());
+            } else if (override instanceof IProductCmptTypeMethod overrideMethod) {
+                overrideMethod.setFormulaSignatureDefinition(false);
+            }
+        }
+        return newMethods;
     }
 
     @Override

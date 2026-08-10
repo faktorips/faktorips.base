@@ -3195,4 +3195,125 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.setDescriptionText(Locale.ENGLISH, "overwritten description");
         assertEquals("overwritten description", productCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
     }
+
+    @Test
+    public void testOverrideMethods_FormulaPropertiesCopied() {
+        IProductCmptTypeMethod formulaMethod = superProductCmptType.newProductCmptTypeMethod();
+        formulaMethod.setName("computePremium");
+        formulaMethod.setDatatype(Datatype.DECIMAL.toString());
+        formulaMethod.setFormulaSignatureDefinition(true);
+        formulaMethod.setFormulaName("Premium");
+        formulaMethod.setModifier(Modifier.PUBLIC);
+        formulaMethod.setChangingOverTime(true);
+        formulaMethod.setFormulaMandatory(false);
+        formulaMethod.newParameter(Datatype.STRING.toString(), "param1");
+
+        List<IMethod> overridden = productCmptType.overrideMethods(List.of(formulaMethod));
+
+        assertThat(overridden.size(), is(1));
+        IProductCmptTypeMethod override = (IProductCmptTypeMethod)overridden.get(0);
+        assertThat(override.getName(), is("computePremium"));
+        assertThat(override.getDatatype(), is(Datatype.DECIMAL.toString()));
+        assertThat(override.isFormulaSignatureDefinition(), is(true));
+        assertThat(override.getFormulaName(), is("Premium"));
+        assertThat(override.isOverloadsFormula(), is(true));
+        assertThat(override.isChangingOverTime(), is(true));
+        assertThat(override.isFormulaMandatory(), is(false));
+        assertThat(override.isAbstract(), is(false));
+        assertThat(override.getParameters().length, is(1));
+        assertThat(override.getParameters()[0].getName(), is("param1"));
+    }
+
+    @Test
+    public void testOverrideMethods_NonFormulaMethodUnchanged() {
+        IProductCmptTypeMethod plainMethod = superProductCmptType.newProductCmptTypeMethod();
+        plainMethod.setName("doSomething");
+        plainMethod.setDatatype(Datatype.STRING.toString());
+        plainMethod.setFormulaSignatureDefinition(false);
+        plainMethod.setModifier(Modifier.PUBLIC);
+
+        List<IMethod> overridden = productCmptType.overrideMethods(List.of(plainMethod));
+
+        assertThat(overridden.size(), is(1));
+        IProductCmptTypeMethod override = (IProductCmptTypeMethod)overridden.get(0);
+        assertThat(override.getName(), is("doSomething"));
+        assertThat(override.isFormulaSignatureDefinition(), is(false));
+        assertThat(override.isOverloadsFormula(), is(false));
+        assertThat(override.getFormulaName(), is(""));
+        assertThat(override.isAbstract(), is(false));
+    }
+
+    @Test
+    public void testOverrideMethods_MixedFormulaAndNonFormula() {
+        IProductCmptTypeMethod formulaMethod = superProductCmptType.newProductCmptTypeMethod();
+        formulaMethod.setName("computePremium");
+        formulaMethod.setDatatype(Datatype.DECIMAL.toString());
+        formulaMethod.setFormulaSignatureDefinition(true);
+        formulaMethod.setFormulaName("Premium");
+        formulaMethod.setModifier(Modifier.PUBLIC);
+        formulaMethod.setChangingOverTime(true);
+
+        IProductCmptTypeMethod plainMethod = superProductCmptType.newProductCmptTypeMethod();
+        plainMethod.setName("doSomething");
+        plainMethod.setDatatype(Datatype.STRING.toString());
+        plainMethod.setFormulaSignatureDefinition(false);
+        plainMethod.setModifier(Modifier.PUBLIC);
+
+        List<IMethod> overridden = productCmptType.overrideMethods(List.of(formulaMethod, plainMethod));
+
+        assertThat(overridden.size(), is(2));
+
+        IProductCmptTypeMethod formulaOverride = (IProductCmptTypeMethod)overridden.get(0);
+        assertThat(formulaOverride.getFormulaName(), is("Premium"));
+        assertThat(formulaOverride.isOverloadsFormula(), is(true));
+        assertThat(formulaOverride.isFormulaSignatureDefinition(), is(true));
+
+        IProductCmptTypeMethod plainOverride = (IProductCmptTypeMethod)overridden.get(1);
+        assertThat(plainOverride.isFormulaSignatureDefinition(), is(false));
+        assertThat(plainOverride.isOverloadsFormula(), is(false));
+    }
+
+    @Test
+    public void testOverrideMethods_EmptyList() {
+        List<IMethod> overridden = productCmptType.overrideMethods(List.of());
+
+        assertThat(overridden.size(), is(0));
+    }
+
+    @Test
+    public void testOverrideMethods_FormulaPropertiesCopied_InverseValues() {
+        IProductCmptTypeMethod formulaMethod = superProductCmptType.newProductCmptTypeMethod();
+        formulaMethod.setName("computeDiscount");
+        formulaMethod.setDatatype(Datatype.DECIMAL.toString());
+        formulaMethod.setFormulaSignatureDefinition(true);
+        formulaMethod.setFormulaName("Discount");
+        formulaMethod.setModifier(Modifier.PUBLIC);
+        formulaMethod.setChangingOverTime(false);
+        formulaMethod.setFormulaMandatory(true);
+
+        List<IMethod> overridden = productCmptType.overrideMethods(List.of(formulaMethod));
+
+        IProductCmptTypeMethod override = (IProductCmptTypeMethod)overridden.get(0);
+        assertThat(override.getFormulaName(), is("Discount"));
+        assertThat(override.isOverloadsFormula(), is(true));
+        assertThat(override.isChangingOverTime(), is(false));
+        assertThat(override.isFormulaMandatory(), is(true));
+    }
+
+    @Test
+    public void testOverrideMethods_GenericIMethodNotAffected() {
+        IMethod policyMethod = superPolicyCmptType.newMethod();
+        policyMethod.setName("validate");
+        policyMethod.setDatatype(Datatype.BOOLEAN.toString());
+        policyMethod.setModifier(Modifier.PUBLIC);
+
+        List<IMethod> overridden = productCmptType.overrideMethods(List.of(policyMethod));
+
+        assertThat(overridden.size(), is(1));
+        IProductCmptTypeMethod override = (IProductCmptTypeMethod)overridden.get(0);
+        assertThat(override.getName(), is("validate"));
+        assertThat(override.isFormulaSignatureDefinition(), is(false));
+        assertThat(override.isOverloadsFormula(), is(false));
+        assertThat(override.getFormulaName(), is(""));
+    }
 }
