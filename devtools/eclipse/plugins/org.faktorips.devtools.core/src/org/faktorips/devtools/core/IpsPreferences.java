@@ -116,6 +116,13 @@ public class IpsPreferences implements IIpsModelPreferences {
     public static final String AUTO_VALIDATE_TABLES = IpsPlugin.PLUGIN_ID + ".autoValidateTables"; //$NON-NLS-1$
 
     /**
+     * Preference key: synchronize the expand/collapse state of associations in the links section
+     * across product components of the same type. Default: {@code false}.
+     */
+    public static final String SYNC_ASSOCIATION_EXPANSION_STATE = IpsPlugin.PLUGIN_ID
+            + ".syncAssociationExpansionState"; //$NON-NLS-1$
+
+    /**
      * Constant that identifies the number of sections in type editors preference.
      */
     public static final String SECTIONS_IN_TYPE_EDITORS = IpsPlugin.PLUGIN_ID + ".sectionsInTypeEditors"; //$NON-NLS-1$
@@ -202,6 +209,7 @@ public class IpsPreferences implements IIpsModelPreferences {
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
         prefStore.setDefault(AUTO_VALIDATE_TABLES, true);
+        prefStore.setDefault(SYNC_ASSOCIATION_EXPANSION_STATE, false);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(CHANGE_EVENT_DELAY_TIME, DEFAULT_DELAY_TIME);
         prefStore.setDefault(COPY_WIZARD_MODE, COPY_WIZARD_MODE_SMARTMODE);
@@ -469,6 +477,14 @@ public class IpsPreferences implements IIpsModelPreferences {
      */
     public void setAutoValidateTables(boolean enabled) {
         prefStore.setValue(AUTO_VALIDATE_TABLES, enabled);
+    }
+
+    public boolean isSyncAssociationExpansionState() {
+        return prefStore.getBoolean(SYNC_ASSOCIATION_EXPANSION_STATE);
+    }
+
+    public void setSyncAssociationExpansionState(boolean enabled) {
+        prefStore.setValue(SYNC_ASSOCIATION_EXPANSION_STATE, enabled);
     }
 
     /**

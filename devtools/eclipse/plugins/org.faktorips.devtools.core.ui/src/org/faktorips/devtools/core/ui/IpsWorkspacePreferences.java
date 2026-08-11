@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ public class IpsWorkspacePreferences {
         preferencesService = Platform.getPreferencesService();
     }
 
-    IpsWorkspacePreferences(IPreferencesService preferencesService) {
+    public IpsWorkspacePreferences(IPreferencesService preferencesService) {
         this.preferencesService = preferencesService;
     }
 
@@ -49,5 +49,19 @@ public class IpsWorkspacePreferences {
     public void putBoolean(String preferenceId, boolean b) {
         IEclipsePreferences node = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
         node.putBoolean(preferenceId, b);
+    }
+
+    /**
+     * Return the String value stored in the preferences with the given id. Returns {@code ""} if no
+     * value is stored.
+     */
+    public String getString(String preferenceId) {
+        return preferencesService.getString(PLUGIN_ID, preferenceId, "", null); //$NON-NLS-1$
+    }
+
+    /** Stores the given String with the given id in the preferences. */
+    public void putString(String preferenceId, String value) {
+        IEclipsePreferences node = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
+        node.put(preferenceId, value);
     }
 }

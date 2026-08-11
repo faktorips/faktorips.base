@@ -11,8 +11,11 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IAdaptable;
@@ -28,8 +31,10 @@ import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.ToolTip;
@@ -124,6 +129,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     private final IpsWorkspacePreferences preferences = new IpsWorkspacePreferences();
 
+    private final LinksSectionExpansionStateManager expansionStateManager = new LinksSectionExpansionStateManager();
+
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
      *
@@ -190,7 +197,12 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         createTreeMessageHoverService(createLabelProvider());
 
         treeViewer.setInput(generation);
-        treeViewer.expandAll();
+        if (isExpansionSyncEnabled()) {
+            treeViewer.getTree().getDisplay().asyncExec(this::restoreExpansionState);
+            registerExpansionStateListener();
+        } else {
+            treeViewer.expandAll();
+        }
     }
 
     private void buildGridLayout(Composite relationRootPanel) {
@@ -349,6 +361,55 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     private void storeFilterEmptyAssociations(boolean exclude) {
         preferences.putBoolean(ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS, exclude);
+    }
+
+    private boolean isExpansionSyncEnabled() {
+        return IpsPlugin.getDefault().getIpsPreferences().isSyncAssociationExpansionState();
+    }
+
+    private String getProductCmptTypeQName() {
+        return generation.getProductCmpt().getProductCmptType();
+    }
+
+    private void restoreExpansionState() {
+        if (treeViewer.getTree().isDisposed()) {
+            return;
+        }
+        if (!expansionStateManager.hasExpansionState(getProductCmptTypeQName())) {
+            return;
+        }
+        Set<String> expandedNames = expansionStateManager.loadExpansionState(getProductCmptTypeQName());
+        Arrays.stream(treeViewer.getTree().getItems())
+                .map(item -> item.getData())
+                .filter(AbstractAssociationViewItem.class::isInstance)
+                .map(AbstractAssociationViewItem.class::cast)
+                .forEach(assocItem -> treeViewer.setExpandedState(assocItem,
+                        expandedNames.contains(assocItem.getAssociationName())));
+    }
+
+    private void saveCurrentExpansionState() {
+        if (treeViewer.getTree().isDisposed()) {
+            return;
+        }
+        Set<String> expandedNames = Arrays.stream(treeViewer.getExpandedElements())
+                .filter(AbstractAssociationViewItem.class::isInstance)
+                .map(e -> ((AbstractAssociationViewItem)e).getAssociationName())
+                .collect(Collectors.toSet());
+        expansionStateManager.saveExpansionState(getProductCmptTypeQName(), expandedNames);
+    }
+
+    private void registerExpansionStateListener() {
+        treeViewer.addTreeListener(new ITreeViewerListener() {
+            @Override
+            public void treeExpanded(TreeExpansionEvent event) {
+                treeViewer.getTree().getDisplay().asyncExec(LinksSection.this::saveCurrentExpansionState);
+            }
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event) {
+                treeViewer.getTree().getDisplay().asyncExec(LinksSection.this::saveCurrentExpansionState);
+            }
+        });
     }
 
     private void openLink(IProductCmptLink link) {

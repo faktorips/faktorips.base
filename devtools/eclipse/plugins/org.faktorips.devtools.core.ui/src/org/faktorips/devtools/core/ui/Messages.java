@@ -114,6 +114,10 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_CopyWizardModeSmartMode;
 
+    public static String FaktorIpsPreferencePage_syncAssociationExpansionState;
+
+    public static String FaktorIpsPreferencePage_tooltipSyncAssociationExpansionState;
+
     public static String IpsClasspathContainerPage_description;
 
     public static String IpsClasspathContainerPage_includeJoda;

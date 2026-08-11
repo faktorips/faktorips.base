@@ -46,6 +46,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createAdvancedTeamFunctionInProductDefExplorerField();
         createEasyContextMenuField();
         createAutoValidateTableField();
+        createSyncAssociationExpansionStateField();
 
         createWorkingModeField();
         createSectionsInTypeEditorsField();
@@ -135,6 +136,15 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
                 Messages.FaktorIpsPreferencePage_autoValidationTables, getFieldEditorParent());
         Control descriptionControl = field.getDescriptionControl(getFieldEditorParent());
         descriptionControl.setToolTipText(Messages.FaktorIpsPreferencePage_tooltipAutoValidationTables);
+        addField(field);
+    }
+
+    private void createSyncAssociationExpansionStateField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.SYNC_ASSOCIATION_EXPANSION_STATE,
+                Messages.FaktorIpsPreferencePage_syncAssociationExpansionState, getFieldEditorParent());
+        Control descriptionControl = field.getDescriptionControl(getFieldEditorParent());
+        descriptionControl.setToolTipText(
+                Messages.FaktorIpsPreferencePage_tooltipSyncAssociationExpansionState);
         addField(field);
     }
 
