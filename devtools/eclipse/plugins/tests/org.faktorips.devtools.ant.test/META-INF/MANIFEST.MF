@@ -15,4 +15,6 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.ipsobject,
  org.faktorips.devtools.model.ipsproject,
- org.junit
+ org.junit,
+ org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)"

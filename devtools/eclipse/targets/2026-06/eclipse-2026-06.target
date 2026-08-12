@@ -56,6 +56,13 @@
             <unit id="jakarta.inject.jakarta.inject-api" version="1.0.5"/>
             <unit id="jakarta.inject.jakarta.inject-api" version="2.0.1"/>
             <unit id="jaxen" version="0.0.0"/>
+            <unit id="junit-platform-commons" version="0.0.0"/>
+            <unit id="junit-platform-engine" version="0.0.0"/>
+            <unit id="junit-platform-launcher" version="0.0.0"/>
+            <unit id="junit-platform-runner" version="0.0.0"/>
+            <unit id="junit-platform-suite-api" version="0.0.0"/>
+            <unit id="junit-platform-suite-commons" version="0.0.0"/>
+            <unit id="junit-platform-suite-engine" version="0.0.0"/>
             <unit id="org.apache.batik.constants" version="0.0.0"/>
             <unit id="org.apache.batik.css" version="0.0.0"/>
             <unit id="org.apache.batik.i18n" version="0.0.0"/>
@@ -119,6 +126,7 @@
             <unit id="org.sat4j.core" version="0.0.0"/>
             <unit id="org.sat4j.pb" version="0.0.0"/>
             <unit id="org.yaml.snakeyaml" version="0.0.0"/>
+            <unit id="org.eclipse.jdt.junit6.runtime" version="0.0.0"/>
             <repository location="https://update.faktorzehn.org/p2repositories/2026-06/"/>
         </location>
         <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">

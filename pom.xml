@@ -520,6 +520,10 @@
                                             <matcher>java-package</matcher>
                                             <match>/org\.eclipse(\..*)?/</match>
                                         </item>
+                                        <item>
+                                            <matcher>java-package</matcher>
+                                            <match>/org\.junit(\..*)?/</match>
+                                        </item>
                                     </exclude>
                                 </elements>
                             </revapi.filter>
