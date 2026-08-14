@@ -14,10 +14,11 @@ import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -60,9 +61,9 @@ import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.runtime.MessageList;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
 
@@ -77,7 +78,7 @@ public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
     private static String minRequiredVersionTemplate;
     private static String supportedLanguage;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() {
         if (Abstractions.isEclipseRunning()) {
             IIpsModel ipsModel = IIpsModel.get();
@@ -96,7 +97,7 @@ public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if (Abstractions.isEclipseRunning()) {
             super.setUp();
@@ -153,16 +154,18 @@ public class EclipseProjectUtilTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Test(expected = CoreException.class)
+        @Test
     public void testCreateIpsProject_missingCreationProperties() throws CoreException {
-        if (Abstractions.isEclipseRunning()) {
-            creationProperties = mock(IpsProjectCreationProperties.class);
-            when(creationProperties.validate(wrap(javaProject).as(AJavaProject.class)))
-                    .thenReturn(MessageList.ofErrors("error"));
-            EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
-        } else {
-            throw new CoreException(new IpsStatus(""));
-        }
+        assertThrows(CoreException.class, () -> {
+            if (Abstractions.isEclipseRunning()) {
+                creationProperties = mock(IpsProjectCreationProperties.class);
+                when(creationProperties.validate(wrap(javaProject).as(AJavaProject.class)))
+                        .thenReturn(MessageList.ofErrors("error"));
+                EclipseProjectUtil.createIpsProject(javaProject, creationProperties);
+            } else {
+                throw new CoreException(new IpsStatus(""));
+            }
+        });
     }
 
     @Test

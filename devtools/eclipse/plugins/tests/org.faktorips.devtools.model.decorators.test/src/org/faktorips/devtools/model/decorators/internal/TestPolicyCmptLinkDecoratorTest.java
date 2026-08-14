@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPolicyCmptLinkDecoratorTest extends AbstractIpsPluginTest {
 

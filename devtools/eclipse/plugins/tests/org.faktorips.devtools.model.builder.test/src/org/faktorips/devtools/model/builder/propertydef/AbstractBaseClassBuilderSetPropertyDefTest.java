@@ -26,7 +26,7 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AbstractBaseClassBuilderSetPropertyDefTest {
 

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,8 +24,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,7 +43,7 @@ public class IpsPluginTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         pref = IpsPlugin.getDefault().getIpsPreferences();

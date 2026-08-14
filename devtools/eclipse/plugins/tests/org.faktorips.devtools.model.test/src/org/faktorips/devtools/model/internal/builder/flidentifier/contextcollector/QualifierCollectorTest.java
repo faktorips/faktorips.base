@@ -12,20 +12,20 @@ package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollec
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class QualifierCollectorTest {
     @Mock
     private ContextProductCmptFinder finder;

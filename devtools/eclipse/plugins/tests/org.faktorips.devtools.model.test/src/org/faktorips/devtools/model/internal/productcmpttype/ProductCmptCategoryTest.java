@@ -12,10 +12,11 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -38,8 +39,8 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -56,7 +57,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
     private ProductCmptCategory category;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -632,9 +633,11 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * <strong>Expected Outcome:</strong><br>
      * An {@link IndexOutOfBoundsException} should be thrown.
      */
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testMoveProductCmptProperties_InvalidIndexesGiven() {
-        category.moveProductCmptProperties(new int[] { 1 }, true, productType);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            category.moveProductCmptProperties(new int[] { 1 }, true, productType);
+        });
     }
 
     /**

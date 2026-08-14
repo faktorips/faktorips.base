@@ -26,12 +26,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
 public class NestedEclipseProjectFileUtilTest extends AbstractIpsPluginTest {
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testGetFile_createdInSubproject() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
@@ -56,7 +54,6 @@ public class NestedEclipseProjectFileUtilTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testGetFile_createdInParentProjectsSubFolder() throws CoreException {
         if (Abstractions.isEclipseRunning()) {

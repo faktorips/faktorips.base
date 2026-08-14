@@ -13,10 +13,11 @@ package org.faktorips.runtime;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Collections;
@@ -27,7 +28,7 @@ import java.util.Set;
 
 import org.faktorips.runtime.Message.Builder;
 import org.faktorips.values.Money;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageTest extends XmlAbstractTestCase {
 
@@ -206,9 +207,11 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("pB", op2.get(1).getProperty());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testMessage_NPE() {
-        Message.error("text").invalidObjectWithProperties((Object)null);
+        assertThrows(NullPointerException.class, () -> {
+            Message.error("text").invalidObjectWithProperties((Object)null);
+        });
     }
 
     @Test

@@ -11,7 +11,7 @@
     <artifactId>org.faktorips.devtools.core.refactor.test</artifactId>
 
     <packaging>eclipse-test-plugin</packaging>
-    
+
     <build>
         <plugins>
             <plugin>

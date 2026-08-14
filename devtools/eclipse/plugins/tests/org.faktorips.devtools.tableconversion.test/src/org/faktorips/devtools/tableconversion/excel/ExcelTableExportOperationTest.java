@@ -12,7 +12,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 
@@ -23,8 +23,8 @@ import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.testsupport.IpsMatchers;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExcelTableExportOperationTest extends AbstractTableTest {
 
@@ -33,7 +33,7 @@ public class ExcelTableExportOperationTest extends AbstractTableTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

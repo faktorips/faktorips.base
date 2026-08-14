@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.functions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
@@ -22,8 +22,8 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.values.Decimal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
     }

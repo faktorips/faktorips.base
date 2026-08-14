@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 

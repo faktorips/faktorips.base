@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsPackageFragmentDecoratorTest {
 

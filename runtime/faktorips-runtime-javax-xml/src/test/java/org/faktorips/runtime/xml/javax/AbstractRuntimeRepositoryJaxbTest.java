@@ -12,7 +12,7 @@ package org.faktorips.runtime.xml.javax;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -41,7 +41,7 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
 public class AbstractRuntimeRepositoryJaxbTest {

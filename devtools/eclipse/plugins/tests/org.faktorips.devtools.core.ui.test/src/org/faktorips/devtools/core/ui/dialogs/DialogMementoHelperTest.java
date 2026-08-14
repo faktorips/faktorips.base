@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -21,9 +21,9 @@ import org.eclipse.jface.window.Window;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.memento.Memento;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -46,7 +46,7 @@ public class DialogMementoHelperTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
 
@@ -62,7 +62,7 @@ public class DialogMementoHelperTest {
         };
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

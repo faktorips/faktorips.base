@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testcase to test some simple GUI-functions like opening an editor.
@@ -33,7 +33,7 @@ import org.junit.Test;
 public class SimpleDialogTest extends AbstractIpsPluginTest implements ALogListener {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IpsLog.get().addLogListener(this);

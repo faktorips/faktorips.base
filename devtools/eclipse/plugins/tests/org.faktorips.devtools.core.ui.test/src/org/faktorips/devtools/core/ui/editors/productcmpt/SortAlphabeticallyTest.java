@@ -10,8 +10,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SortAlphabeticallyTest extends AbstractIpsPluginTest {
 
@@ -36,7 +36,7 @@ public class SortAlphabeticallyTest extends AbstractIpsPluginTest {
 
     private IProductCmptTypeAssociation association;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

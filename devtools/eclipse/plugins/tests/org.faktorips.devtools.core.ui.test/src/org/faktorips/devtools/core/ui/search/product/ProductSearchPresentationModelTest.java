@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.beans.PropertyChangeListener;
@@ -28,8 +28,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
 
@@ -40,7 +40,7 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
     private String FILE_PATTERN = "srcFilePattern";
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         mock(PropertyChangeListener.class);

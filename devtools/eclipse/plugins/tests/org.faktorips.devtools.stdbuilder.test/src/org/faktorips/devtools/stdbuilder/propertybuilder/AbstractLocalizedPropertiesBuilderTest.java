@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.propertybuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTest {
 

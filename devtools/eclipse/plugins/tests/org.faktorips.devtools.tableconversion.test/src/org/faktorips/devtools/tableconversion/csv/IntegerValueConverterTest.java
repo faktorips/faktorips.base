@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.tableconversion.IValueConverter;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for Conversion of an arbitrary CSV-Integer representation to IPS Integer Datatype and vice

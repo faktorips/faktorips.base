@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.enums;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -27,13 +27,16 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UniqueIdentifierValidatorTest {
 
     @Mock
@@ -44,7 +47,7 @@ public class UniqueIdentifierValidatorTest {
 
     private UniqueIdentifierValidator uniqueIdentifierValidator;
 
-    @Before
+    @BeforeEach
     public void createUniqueIdentifierValidator() throws Exception {
         when(container.getIpsModel()).thenReturn(ipsModel);
         uniqueIdentifierValidator = new UniqueIdentifierValidator(container);

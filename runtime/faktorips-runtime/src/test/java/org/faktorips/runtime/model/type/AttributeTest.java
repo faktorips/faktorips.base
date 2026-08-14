@@ -13,9 +13,9 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import java.util.Locale;
@@ -30,7 +30,7 @@ import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsConfiguredAttribute;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AttributeTest {
 

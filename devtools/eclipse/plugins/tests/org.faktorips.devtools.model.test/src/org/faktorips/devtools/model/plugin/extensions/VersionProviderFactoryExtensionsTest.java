@@ -26,13 +26,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class VersionProviderFactoryExtensionsTest {
 
     private static final String MY_VERSION_PROVIDER_ID = "myVersionProviderId";
@@ -58,7 +61,7 @@ public class VersionProviderFactoryExtensionsTest {
     @Mock
     private IVersionProvider<?> versionProvider;
 
-    @Before
+    @BeforeEach
     public void setUpExtensionRegistry() throws Exception {
         when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
                 VersionProviderFactoryExtensions.EXTENSION_POINT_ID_VERSION_PROVIDER))

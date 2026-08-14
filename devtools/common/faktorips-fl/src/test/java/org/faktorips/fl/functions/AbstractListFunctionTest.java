@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.functions;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +24,16 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.Message;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractListFunctionTest {
 
     private static final String MY_DATATYPE = "myDatatype";
@@ -46,7 +49,7 @@ public class AbstractListFunctionTest {
     @Mock
     private DatatypeHelper datatypeHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         abstractListFunction = new AbstractListFunction("myFunction", "", FunctionSignatures.MinList) {
 

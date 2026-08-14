@@ -21,7 +21,7 @@ import java.util.Set;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectTypesParserTest {
 

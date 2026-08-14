@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -38,8 +38,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
@@ -77,7 +77,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation policyAssociationToC;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

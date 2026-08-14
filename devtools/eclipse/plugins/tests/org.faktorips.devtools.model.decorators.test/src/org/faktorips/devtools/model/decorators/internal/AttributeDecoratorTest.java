@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AttributeDecoratorTest {
 

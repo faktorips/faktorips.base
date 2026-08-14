@@ -10,13 +10,13 @@
 
 package org.faktorips.runtime.formula.groovy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.internal.ProductComponent;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class FormulaEvaluationTest extends XmlAbstractTestCase {
@@ -25,7 +25,7 @@ public class FormulaEvaluationTest extends XmlAbstractTestCase {
     private ProductComponent pc;
     private TestProductCmptGeneration gen;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         repository = new InMemoryRuntimeRepository();
         repository.setFormulaEvaluatorFactory(new GroovyFormulaEvaluatorFactory());

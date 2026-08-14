@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.views.instanceexplorer;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author dirmeier
@@ -33,7 +33,7 @@ public class InstanceContentProvideTest extends AbstractIpsPluginTest {
     private IIpsProject leaveProject2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

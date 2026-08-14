@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 
@@ -31,8 +31,8 @@ import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrate
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DeepCopyPreviewTest extends AbstractIpsPluginTest {
 
@@ -53,7 +53,7 @@ public class DeepCopyPreviewTest extends AbstractIpsPluginTest {
     private ProductCmpt bSuper;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         subIpsProject = newIpsProject("SuperProject");

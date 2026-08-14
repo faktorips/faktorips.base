@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.faktorips.devtools.core.ui.IpsWorkspacePreferences;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LinksSectionExpansionStateManagerTest {
 
@@ -32,7 +32,7 @@ public class LinksSectionExpansionStateManagerTest {
     private LinksSectionExpansionStateManager manager;
     private IpsWorkspacePreferences preferences;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         IPreferencesService preferencesService = mock(IPreferencesService.class);
         preferences = new IpsWorkspacePreferences(preferencesService);

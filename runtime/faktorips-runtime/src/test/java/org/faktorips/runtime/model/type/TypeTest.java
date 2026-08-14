@@ -13,8 +13,9 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 import java.util.Locale;
@@ -34,7 +35,7 @@ import org.faktorips.runtime.model.annotation.IpsInverseAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypeTest {
 
@@ -87,9 +88,11 @@ public class TypeTest {
         assertThat(targetAssociations.size(), is(2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFakeAnnotation() throws Exception {
-        IpsModel.getType(Faker.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IpsModel.getType(Faker.class);
+        });
     }
 
     @Test

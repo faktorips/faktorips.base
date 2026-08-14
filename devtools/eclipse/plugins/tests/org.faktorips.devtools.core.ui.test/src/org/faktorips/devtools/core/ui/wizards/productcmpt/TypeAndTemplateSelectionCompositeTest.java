@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest {
 

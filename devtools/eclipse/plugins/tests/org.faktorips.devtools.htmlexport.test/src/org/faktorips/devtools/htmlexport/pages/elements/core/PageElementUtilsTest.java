@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PageElementUtilsTest extends AbstractHtmlExportPluginTest {
     private static final TargetType TARGET = TargetType.CONTENT;

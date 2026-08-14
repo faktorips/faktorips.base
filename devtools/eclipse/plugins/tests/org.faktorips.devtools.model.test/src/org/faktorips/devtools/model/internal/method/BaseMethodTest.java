@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.internal.method;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class BaseMethodTest extends AbstractIpsPluginTest {
@@ -36,7 +36,7 @@ public class BaseMethodTest extends AbstractIpsPluginTest {
     private IBaseMethod method;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

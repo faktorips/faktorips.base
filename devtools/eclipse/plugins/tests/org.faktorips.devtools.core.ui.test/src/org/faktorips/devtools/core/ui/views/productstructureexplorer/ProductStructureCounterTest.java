@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptRefere
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductStructureCounterTest extends AbstractIpsPluginTest {
 

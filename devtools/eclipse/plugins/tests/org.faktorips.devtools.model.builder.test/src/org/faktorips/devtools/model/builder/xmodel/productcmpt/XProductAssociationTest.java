@@ -28,14 +28,17 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class XProductAssociationTest {
 
     @Mock
@@ -64,7 +67,7 @@ public class XProductAssociationTest {
 
     private XProductAssociation xProductAssociation;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(association.getIpsProject()).thenReturn(ipsProject);
@@ -74,7 +77,7 @@ public class XProductAssociationTest {
         when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
     }
 
-    @Before
+    @BeforeEach
     public void createXProductAssociation() {
         xProductAssociation = new XProductAssociation(association, modelContext, modelService);
     }

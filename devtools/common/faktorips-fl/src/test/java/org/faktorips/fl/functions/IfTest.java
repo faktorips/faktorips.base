@@ -10,11 +10,13 @@
 
 package org.faktorips.fl.functions;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import bsh.TargetError;
 
@@ -24,16 +26,16 @@ import bsh.TargetError;
 public class IfTest extends FunctionAbstractTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new If("IF", ""));
     }
 
-    @Test(expected = TargetError.class)
+    @Test
     public void testNull() throws Exception {
         registerFunction(new BooleanFct("NULLOBJ", null));
-        execAndTestSuccessfull("IF(NULLOBJ(); 2.1; 3.2)", Decimal.valueOf("3.2"), Datatype.DECIMAL);
+        assertThrows(TargetError.class, () -> execAndTestSuccessfull("IF(NULLOBJ(); 2.1; 3.2)", Decimal.valueOf("3.2"), Datatype.DECIMAL));
     }
 
     @Test

@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.pctype;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.devtools.model.ipsobject.Modifier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ModifierTest {
 

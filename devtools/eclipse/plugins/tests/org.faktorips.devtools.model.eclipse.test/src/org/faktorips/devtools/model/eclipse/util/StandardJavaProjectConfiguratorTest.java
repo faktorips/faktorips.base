@@ -26,15 +26,15 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private IJavaProject javaProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         AProject platformProject = newPlatformProject("TestProject");

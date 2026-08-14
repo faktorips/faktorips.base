@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptKindTest extends AbstractIpsPluginTest {
 

@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +31,14 @@ import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
     private AJavaProject javaProject;
 
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

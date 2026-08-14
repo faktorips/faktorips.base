@@ -16,14 +16,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ListElementMoverTest {
     List<String> content;
     ListElementMover<String> mover;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         content = new ArrayList<>();
         content.add("a");

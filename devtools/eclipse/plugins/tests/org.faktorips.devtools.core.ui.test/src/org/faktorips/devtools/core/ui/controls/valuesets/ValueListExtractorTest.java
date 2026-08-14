@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.EnumDatatype;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ValueListExtractorTest {
 

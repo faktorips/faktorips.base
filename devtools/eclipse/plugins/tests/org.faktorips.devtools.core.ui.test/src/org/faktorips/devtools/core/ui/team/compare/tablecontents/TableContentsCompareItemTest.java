@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
 
@@ -46,7 +46,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     private IIpsProject proj;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

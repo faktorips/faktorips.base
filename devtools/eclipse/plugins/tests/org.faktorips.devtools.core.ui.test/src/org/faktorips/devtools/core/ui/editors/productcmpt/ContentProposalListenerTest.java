@@ -17,13 +17,16 @@ import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ContentProposalListenerTest {
 
     @Mock
@@ -40,7 +43,7 @@ public class ContentProposalListenerTest {
 
     ContentProposalListener listener;
 
-    @Before
+    @BeforeEach
     public void initMocks() {
         when(contentProposalAdapter.getControl()).thenReturn(textControl);
         when(contentProposalAdapter.getControlContentAdapter()).thenReturn(controlContentAdapter);

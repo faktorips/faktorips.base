@@ -10,11 +10,12 @@
 
 package org.faktorips.values;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MoneyNullTest {
 
@@ -23,9 +24,11 @@ public class MoneyNullTest {
     // especially interesting, as Money.NULL has also the value 0;
     private static final Money ZERO = Money.euro(0);
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCompareTo_null() {
-        Money.NULL.compareTo(null);
+        assertThrows(NullPointerException.class, () -> {
+            Money.NULL.compareTo(null);
+        });
     }
 
     @Test

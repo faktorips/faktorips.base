@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -25,13 +25,16 @@ import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class FixTableContentStrategyTest extends AbstractIpsPluginTest {
 
     @Mock
@@ -43,7 +46,7 @@ public class FixTableContentStrategyTest extends AbstractIpsPluginTest {
     private ITableStructure structure;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StructuredSelectionHelperTest extends AbstractIpsPluginTest {
 
@@ -31,7 +31,7 @@ public class StructuredSelectionHelperTest extends AbstractIpsPluginTest {
     private IProductCmptType prodType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject ipsProject = newIpsProject("TestProject");

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
@@ -45,7 +45,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     private ITableContents table;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject(new ArrayList<>());
@@ -566,8 +566,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         }
 
         MessageList messageList = table.validate(project);
-        assertEquals(testName, collision,
-                messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION) != null);
+        assertEquals(collision,
+                messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION) != null, testName);
 
         tearDownPerformanceTest();
     }
@@ -640,8 +640,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(3, "" + to2);
 
         MessageList messageList = table.validate(project);
-        assertEquals(testName, collision,
-                messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION) != null);
+        assertEquals(collision,
+                messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION) != null, testName);
         tearDownPerformanceTest();
     }
 

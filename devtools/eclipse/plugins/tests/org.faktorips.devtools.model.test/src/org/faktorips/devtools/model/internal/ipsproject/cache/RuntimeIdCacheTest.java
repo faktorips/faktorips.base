@@ -31,8 +31,8 @@ import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
 
@@ -42,7 +42,7 @@ public class RuntimeIdCacheTest extends AbstractIpsPluginTest {
     private RuntimeIdCache runtimeIdCache;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)newIpsProject();

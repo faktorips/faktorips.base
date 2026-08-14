@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -37,9 +37,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.runtime.MessageList;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -64,7 +64,7 @@ public class IpsRefactoringProcessorTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         when(ipsElement.exists()).thenReturn(true);
@@ -73,7 +73,7 @@ public class IpsRefactoringProcessorTest {
         testProcessorSpy = spy(testProcessor);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

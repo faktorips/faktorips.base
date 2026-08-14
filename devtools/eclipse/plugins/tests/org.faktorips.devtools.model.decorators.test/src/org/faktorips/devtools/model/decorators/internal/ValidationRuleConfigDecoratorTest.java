@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Stefan Widmaier
@@ -37,7 +37,7 @@ public class ValidationRuleConfigDecoratorTest extends AbstractIpsPluginTest {
     private ValidationRuleConfigDecorator decorator;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         config = mock(IValidationRuleConfig.class);

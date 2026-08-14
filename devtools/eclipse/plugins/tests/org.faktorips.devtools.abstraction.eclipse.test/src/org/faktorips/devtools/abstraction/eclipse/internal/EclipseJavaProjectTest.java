@@ -38,9 +38,9 @@ import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.testsupport.Wait;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
 
@@ -48,7 +48,7 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     private AProject aProject;
     private IJavaProject javaProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         aProject = newSimpleIpsProject("TestProject");
         aJavaProject = toJavaProject(aProject);
@@ -116,7 +116,7 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testGetReferencedJavaProjects() throws CoreException {
         AProject refProject = newSimpleIpsProject("refProject");
         IPath path = ((IProject)refProject.unwrap()).getLocation();

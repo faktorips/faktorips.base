@@ -11,13 +11,13 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OrTest extends FunctionAbstractTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new Or("OR", ""));

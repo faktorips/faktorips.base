@@ -25,7 +25,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPolicyCmptDecoratorTest extends AbstractIpsPluginTest {
 

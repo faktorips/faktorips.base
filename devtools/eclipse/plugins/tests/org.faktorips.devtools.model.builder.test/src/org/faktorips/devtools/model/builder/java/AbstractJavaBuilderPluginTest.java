@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public class AbstractJavaBuilderPluginTest extends AbstractIpsPluginTest {
 
@@ -38,7 +38,7 @@ public class AbstractJavaBuilderPluginTest extends AbstractIpsPluginTest {
     protected TestArtefactBuilderSetInfo testArtefactBuilderSetInfo;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

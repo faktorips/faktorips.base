@@ -26,8 +26,8 @@ import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -42,7 +42,7 @@ public class DeprecationTest extends AbstractIpsPluginTest {
     private PolicyCmptTypeAttribute attribute;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

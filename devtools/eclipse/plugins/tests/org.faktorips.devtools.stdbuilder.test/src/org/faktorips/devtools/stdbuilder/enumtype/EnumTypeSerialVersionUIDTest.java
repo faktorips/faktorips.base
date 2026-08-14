@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumTypeBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests that the generated {@code serialVersionUID} in extensible enum classes is {@code 3L}
@@ -36,7 +36,7 @@ public class EnumTypeSerialVersionUIDTest extends AbstractStdBuilderTest {
     private IEnumType enumType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         enumType = newEnumType(ipsProject, ENUM_TYPE_NAME);

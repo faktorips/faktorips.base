@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnumAttributeDecoratorTest {
 

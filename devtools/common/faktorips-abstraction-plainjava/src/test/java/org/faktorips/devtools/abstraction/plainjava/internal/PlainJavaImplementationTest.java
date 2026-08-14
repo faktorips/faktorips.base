@@ -35,8 +35,8 @@ import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.abstraction.AVersion;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class PlainJavaImplementationTest {
 
@@ -98,7 +98,7 @@ public class PlainJavaImplementationTest {
     }
 
     @Test
-    @Ignore(value = "read from Manifest")
+    @Disabled("read from Manifest")
     public void testGetVersion() {
         assertThat(PlainJavaImplementation.get().getVersion(), is(AVersion.parse("22.12"))); //$NON-NLS-1$
     }

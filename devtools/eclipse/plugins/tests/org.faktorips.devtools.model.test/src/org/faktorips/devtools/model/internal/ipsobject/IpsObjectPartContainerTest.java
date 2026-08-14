@@ -22,13 +22,14 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -86,8 +87,8 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.memento.Memento;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -118,7 +119,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     private PolicyCmptType containerParent;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -1462,9 +1463,11 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(container.xml, source.copyXml);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCopyFromIllegalSourceClass() {
-        container.copyFrom(mock(IIpsObjectPartContainer.class));
+        assertThrows(IllegalArgumentException.class, () -> {
+            container.copyFrom(mock(IIpsObjectPartContainer.class));
+        });
     }
 
     @Test

@@ -10,13 +10,16 @@
 
 package org.faktorips.values;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DecimalNullTest {
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testCompareTo_ShouldThrowException() {
-        Decimal.NULL.compareTo(Decimal.NULL);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Decimal.NULL.compareTo(Decimal.NULL);
+        });
     }
 
 }

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,14 +20,14 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FolderExplorerTest {
 
     private FolderExplorer indexer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         indexer = new FolderExplorer();
     }

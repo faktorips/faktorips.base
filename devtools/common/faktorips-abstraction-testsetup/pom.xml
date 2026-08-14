@@ -24,8 +24,8 @@
             <artifactId>org.eclipse.equinox.common</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -47,7 +47,7 @@
                             org.faktorips.*,
                             org.apache.commons.io;version="2.11.0",
                             org.hamcrest.*,
-                            org.junit*
+                            org.junit.jupiter.api.*;version="[5.0,7)"
                         </Import-Package>
                         <Export-Package>
                             org.faktorips.devtools.abstraction.testsetup

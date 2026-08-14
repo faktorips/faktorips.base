@@ -27,9 +27,9 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class AbstractValueHolderTest {
@@ -40,7 +40,7 @@ public class AbstractValueHolderTest {
     private IpsSrcFileContent mockContent;
     private IAttributeValue parentMock;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         singletonMockHelper = new SingletonMockHelper();
         mockModel = mock(IpsModel.class);
@@ -59,7 +59,7 @@ public class AbstractValueHolderTest {
         when(mockObject.getIpsSrcFile()).thenReturn(mockIpsSrcFile);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         singletonMockHelper.reset();
     }

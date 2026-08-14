@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsIterableContaining.hasItem;
 import static org.hamcrest.core.IsIterableContaining.hasItems;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,10 +44,10 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
@@ -59,7 +59,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
     private List<IResourceChangeListener> listeners = new ArrayList<>();
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -67,7 +67,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // avoid NPEs by removing our listeners before calling super#tearDown
         for (var iterator = listeners.iterator(); iterator.hasNext();) {

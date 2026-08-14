@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URL;
 
@@ -27,7 +27,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 

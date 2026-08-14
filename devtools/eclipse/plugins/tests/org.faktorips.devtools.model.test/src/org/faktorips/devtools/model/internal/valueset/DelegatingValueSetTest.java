@@ -12,7 +12,8 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,15 +29,15 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class DelegatingValueSetTest {
 
     private static final String ANY_VALUE = "anyValue";
@@ -77,14 +78,18 @@ public class DelegatingValueSetTest {
         verifyNoInteractions(element);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValuesOf() throws Exception {
-        delegatingValueSet.setValuesOf(source);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setValuesOf(source);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetAbstract() throws Exception {
-        delegatingValueSet.setAbstract(true);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setAbstract(true);
+        });
     }
 
     @Test
@@ -94,69 +99,95 @@ public class DelegatingValueSetTest {
         assertThat(delegatingValueSet.copy(parent, ANY_VALUE), is(source));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetContainsNull() throws Exception {
-        delegatingValueSet.setContainsNull(false);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setContainsNull(false);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetLowerBound() throws Exception {
-        delegatingValueSet.setLowerBound("123");
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setLowerBound("123");
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetStep() throws Exception {
-        delegatingValueSet.setStep("1");
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setStep("1");
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetUpperBound() throws Exception {
-        delegatingValueSet.setUpperBound("1234");
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setUpperBound("1234");
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetEmpty() throws Exception {
-        delegatingValueSet.setEmpty(true);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setEmpty(true);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddValue() throws Exception {
-        delegatingValueSet.addValue("asd");
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.addValue("asd");
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddValues() throws Exception {
-        delegatingValueSet.addValues(Arrays.asList("asd"));
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.addValues(Arrays.asList("asd"));
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testRemoveValueInt() throws Exception {
-        delegatingValueSet.removeValue(1);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.removeValue(1);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testRemoveValueString() throws Exception {
-        delegatingValueSet.removeValue("1");
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.removeValue("1");
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testRemoveValues() throws Exception {
-        delegatingValueSet.removeValues(Arrays.asList("asd"));
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.removeValues(Arrays.asList("asd"));
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValue() throws Exception {
-        delegatingValueSet.setValue(0, "asd");
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.setValue(0, "asd");
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddValuesFromDatatype() throws Exception {
-        delegatingValueSet.addValuesFromDatatype(enumDatatype);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.addValuesFromDatatype(enumDatatype);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testMove() throws Exception {
-        delegatingValueSet.move(Arrays.asList(0), false);
+        assertThrows(IllegalStateException.class, () -> {
+            delegatingValueSet.move(Arrays.asList(0), false);
+        });
     }
 
     @Test

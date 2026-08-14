@@ -36,7 +36,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MigrationForChangedAttributeTest extends AbstractIpsPluginTest {
 
@@ -44,6 +45,7 @@ public class MigrationForChangedAttributeTest extends AbstractIpsPluginTest {
 
     private IIpsFeatureVersionManager versionManager;
 
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

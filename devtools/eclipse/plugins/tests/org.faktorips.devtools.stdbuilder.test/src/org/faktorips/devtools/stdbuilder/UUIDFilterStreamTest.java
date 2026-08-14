@@ -17,8 +17,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class UUIDFilterStreamTest {
 
@@ -150,7 +150,7 @@ public class UUIDFilterStreamTest {
 
     // ignored because checking if we actually are within an XML tag's values would be too much
     // effort
-    @Ignore
+    @Disabled
     @Test
     public void testRead_ignoreNotAttribute() throws Exception {
         byte[] input = "<Value> id=\"d09e8d9a-748a-48e1-a2cd-905bd7124106\"</Value>\n".getBytes("UTF-8");

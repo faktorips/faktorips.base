@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.eclipse.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -18,7 +18,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer.IpsClasspathContainer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsClasspathContainerInitializerTest {
 

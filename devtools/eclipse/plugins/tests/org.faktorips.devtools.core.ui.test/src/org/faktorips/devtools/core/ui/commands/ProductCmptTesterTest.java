@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptTesterTest {
 

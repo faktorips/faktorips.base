@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsStatusTest {
 

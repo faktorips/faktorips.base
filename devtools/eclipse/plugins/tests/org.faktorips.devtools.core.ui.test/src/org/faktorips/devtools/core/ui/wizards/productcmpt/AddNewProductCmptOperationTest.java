@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,9 +32,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AddNewProductCmptOperationTest extends AbstractIpsPluginTest {
 
@@ -45,14 +45,14 @@ public class AddNewProductCmptOperationTest extends AbstractIpsPluginTest {
     private SingletonMockHelper singletonMockHelper;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
         singletonMockHelper = new SingletonMockHelper();
     }
 
-    @After
+    @AfterEach
     @Override
     public void tearDown() throws Exception {
         super.tearDown();

@@ -12,11 +12,12 @@ package org.faktorips.devtools.model.internal.ipsproject.properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -80,11 +81,13 @@ public class IpsFeatureConfigurationTest extends AbstractIpsPluginTest {
         assertThat(featureConfiguration.get("foo"), is(nullValue()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSet_NameNull() {
-        IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
+        assertThrows(NullPointerException.class, () -> {
+            IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
 
-        featureConfiguration.set(null, "bar");
+            featureConfiguration.set(null, "bar");
+        });
     }
 
     @Test

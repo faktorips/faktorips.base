@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.builder.base;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,8 +42,8 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -54,7 +54,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
 
     private TableOfContent toc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         toc = new TableOfContent(AbstractTocEntryFactory.getBaseTocEntryFactories());
     }

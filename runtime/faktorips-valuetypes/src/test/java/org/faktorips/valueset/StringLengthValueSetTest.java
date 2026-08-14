@@ -15,10 +15,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StringLengthValueSetTest {
 
@@ -103,11 +104,13 @@ public class StringLengthValueSetTest {
         assertThat(sl1.getValues(false).isEmpty(), is(true));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValues_notEmpty() {
-        StringLengthValueSet sl1 = new StringLengthValueSet(null, false);
+        assertThrows(IllegalStateException.class, () -> {
+            StringLengthValueSet sl1 = new StringLengthValueSet(null, false);
 
-        sl1.getValues(false).isEmpty();
+            sl1.getValues(false).isEmpty();
+        });
     }
 
     @Test

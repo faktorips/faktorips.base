@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
@@ -26,8 +26,8 @@ import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValueSetTest extends AbstractIpsPluginTest {
 
@@ -36,7 +36,7 @@ public class ValueSetTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute owner2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

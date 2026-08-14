@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.beans.PropertyChangeEvent;
@@ -28,7 +28,7 @@ import java.util.Locale;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

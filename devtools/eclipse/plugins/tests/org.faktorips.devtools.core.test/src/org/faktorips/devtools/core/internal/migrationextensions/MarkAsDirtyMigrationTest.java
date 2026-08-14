@@ -11,8 +11,8 @@ package org.faktorips.devtools.core.internal.migrationextensions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
 

@@ -12,8 +12,9 @@ package org.faktorips.m2e.version;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MavenVersionFormatterTest {
 
@@ -62,15 +63,15 @@ public class MavenVersionFormatterTest {
         assertThat(MavenVersionFormatter.formatVersion(versionWithQualifier), is("1.0.0"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFormatVersionInvalidFormat() {
         String invalidVersion = "a1.0.0.randomQualifier";
-        MavenVersionFormatter.formatVersion(invalidVersion);
+        assertThrows(IllegalArgumentException.class, () -> MavenVersionFormatter.formatVersion(invalidVersion));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testFormatVersionNoVersion() {
         String randomString = "randomString";
-        MavenVersionFormatter.formatVersion(randomString);
+        assertThrows(IllegalArgumentException.class, () -> MavenVersionFormatter.formatVersion(randomString));
     }
 }

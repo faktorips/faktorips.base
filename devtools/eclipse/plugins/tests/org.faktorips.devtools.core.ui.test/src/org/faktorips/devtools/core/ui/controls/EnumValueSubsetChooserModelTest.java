@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -39,7 +40,7 @@ import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnumValueSubsetChooserModelTest {
 
@@ -249,13 +250,15 @@ public class EnumValueSubsetChooserModelTest {
         assertEquals("4", sourceValueIDs.get(3).getValue());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetSourceValueIDs_Exception() throws Exception {
-        IEnumValueSet sourceValueSet = mockValueSet(true, true);
-        IEnumValueSet targetValueSet = mockEmptyValueSet();
-        DecimalDatatype datatype = mock(DecimalDatatype.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IEnumValueSet sourceValueSet = mockValueSet(true, true);
+            IEnumValueSet targetValueSet = mockEmptyValueSet();
+            DecimalDatatype datatype = mock(DecimalDatatype.class);
 
-        new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+            new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        });
     }
 
     protected EnumDatatype mockDatatype() {

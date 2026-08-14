@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("restriction")
 // suppress the warning because of using WorkspaceRoot
@@ -66,7 +66,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     private IIpsPackageFragment defaultPackage;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         proj = newIpsProject("Testprojekt");

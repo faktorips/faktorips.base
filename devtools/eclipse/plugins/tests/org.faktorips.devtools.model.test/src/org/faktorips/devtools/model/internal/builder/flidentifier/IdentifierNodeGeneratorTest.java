@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -24,14 +24,17 @@ import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdentifierNodeGeneratorTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
@@ -48,7 +51,7 @@ public class IdentifierNodeGeneratorTest {
 
     private InvalidIdentifierNode invalidNode;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(new TextRegion("anyIdentifierPart", 0, 17),
                 ipsProject);

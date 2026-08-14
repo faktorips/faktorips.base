@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.productcmpt;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptAssociationAnnGenTest {
 

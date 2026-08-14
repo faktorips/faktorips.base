@@ -1,30 +1,30 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DateValueConverterTest {
     private MessageList ml;
     private DateValueConverter converter;
     private ITableFormat tableFormat;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ml = new MessageList();
         tableFormat = new CSVTableFormat();
@@ -36,8 +36,8 @@ public class DateValueConverterTest {
     public void testGetIpsValueUsingCustomDateFormat() {
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "dd.MM.yyyy");
         String value = converter.getIpsValue("08.10.2009", ml);
-        assertTrue(ml.toString(), ml.isEmpty());
-        assertTrue(value, '-' == value.charAt(4) && '-' == value.charAt(7));
+        assertTrue(ml.isEmpty(), ml.toString());
+        assertTrue('-' == value.charAt(4) && '-' == value.charAt(7), value);
 
         // now use only the year field
         tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, "yyyy");

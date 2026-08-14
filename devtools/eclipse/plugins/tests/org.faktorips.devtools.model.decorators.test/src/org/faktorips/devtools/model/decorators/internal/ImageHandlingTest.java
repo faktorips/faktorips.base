@@ -9,15 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.decorators.internal;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ImageHandlingTest {
 

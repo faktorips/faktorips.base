@@ -12,9 +12,10 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -35,7 +36,7 @@ import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.values.Decimal;
 import org.faktorips.valueset.OrderedValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConstantPolicyAttributeTest {
 
@@ -61,13 +62,15 @@ public class ConstantPolicyAttributeTest {
         assertEquals(ConstPolicy.ATTR, policyAttribute.getValue(policy));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetValue() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.setValue(policy, 4711);
+            policyAttribute.setValue(policy, 4711);
+        });
     }
 
     @Test
@@ -79,50 +82,60 @@ public class ConstantPolicyAttributeTest {
         assertEquals(ConstPolicy.ATTR, policyAttribute.getDefaultValue(policy));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetDefaultValueIProductComponentCalendar() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.getDefaultValue(policy.getProductComponent(), effectiveDate);
+            policyAttribute.getDefaultValue(policy.getProductComponent(), effectiveDate);
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetDefaultValueIConfigurableModelObject() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.setDefaultValue(policy, "foo");
+            policyAttribute.setDefaultValue(policy, "foo");
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetDefaultValueIProductComponentCalendar() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.setDefaultValue(policy.getProductComponent(), effectiveDate, "foo");
+            policyAttribute.setDefaultValue(policy.getProductComponent(), effectiveDate, "foo");
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetValueSetIConfigurableModelObject() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.setValueSet(policy, new OrderedValueSet<>(false, null, 1, 2, 3));
+            policyAttribute.setValueSet(policy, new OrderedValueSet<>(false, null, 1, 2, 3));
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetValueSetIProductComponentCalendar() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.setValueSet(policy.getProductComponent(), effectiveDate,
-                new OrderedValueSet<>(false, null, 1, 2, 3));
+            policyAttribute.setValueSet(policy.getProductComponent(), effectiveDate,
+            new OrderedValueSet<>(false, null, 1, 2, 3));
+        });
     }
 
     @Test
@@ -152,13 +165,15 @@ public class ConstantPolicyAttributeTest {
         assertEquals(new OrderedValueSet<>(true, Decimal.NULL), policyAttribute.getValueSet(policy, null));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetValueSetIProductComponentCalendarIValidationContext() throws Exception {
-        ConstPolicy policy = new ConstPolicy();
-        PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
-        PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ConstPolicy policy = new ConstPolicy();
+            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
+            PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_ATTR);
 
-        policyAttribute.getValueSet(policy.getProductComponent(), effectiveDate);
+            policyAttribute.getValueSet(policy.getProductComponent(), effectiveDate);
+        });
     }
 
     @Test

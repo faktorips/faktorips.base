@@ -28,8 +28,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -43,7 +43,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
     private IColumn column;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();

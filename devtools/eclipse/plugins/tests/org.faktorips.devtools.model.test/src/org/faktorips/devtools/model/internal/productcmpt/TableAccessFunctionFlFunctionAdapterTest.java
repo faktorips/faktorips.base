@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +24,16 @@ import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableAccessFunctionFlFunctionAdapterTest {
 
     private static final String MY_DATATYPE = "myDatatype";
@@ -61,7 +64,7 @@ public class TableAccessFunctionFlFunctionAdapterTest {
 
     private TableAccessFunctionFlFunctionAdapter tableAccessFunctionFlFunctionAdapter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ITableStructure tableStructure = mock(ITableStructure.class);
         when(key.getTableStructure()).thenReturn(tableStructure);

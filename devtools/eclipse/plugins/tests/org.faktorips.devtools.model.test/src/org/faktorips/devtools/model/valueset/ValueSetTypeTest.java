@@ -10,23 +10,23 @@
 
 package org.faktorips.devtools.model.valueset;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.devtools.model.internal.valueset.DerivedValueSet;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class ValueSetTypeTest {
 
     private static final String MY_ID = "myId";

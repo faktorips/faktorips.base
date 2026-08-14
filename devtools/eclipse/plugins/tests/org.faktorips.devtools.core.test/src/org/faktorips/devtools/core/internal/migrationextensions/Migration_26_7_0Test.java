@@ -40,14 +40,14 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Migration_26_7_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject project;
 
-    @Before
+    @BeforeEach
     public void setup() {
         project = newIpsProject("Migration_26_7_0Test");
 

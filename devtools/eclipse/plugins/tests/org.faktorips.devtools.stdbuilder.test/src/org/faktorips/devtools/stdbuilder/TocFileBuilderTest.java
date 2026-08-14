@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -47,9 +47,9 @@ import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
 /**
@@ -63,7 +63,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     private GregorianCalendar validFrom;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         tableBuilder = builderSet.getTableBuilder();
@@ -364,7 +364,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
                 builderToc.getEntry(new QualifiedNameType("motor.RateTableContent", IpsObjectType.TABLE_CONTENTS)));
     }
 
-    @Ignore
+    @Disabled
     // not supported at the moment
     @Test
     public void testIfIdenticalTocFileIsNotWrittenAfterFullBuild() {

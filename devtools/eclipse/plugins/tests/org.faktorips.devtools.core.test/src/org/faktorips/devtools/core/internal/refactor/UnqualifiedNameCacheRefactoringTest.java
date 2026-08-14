@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
@@ -26,8 +26,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UnqualifiedNameCacheRefactoringTest extends AbstractCoreIpsPluginTest {
 
@@ -38,7 +38,7 @@ public class UnqualifiedNameCacheRefactoringTest extends AbstractCoreIpsPluginTe
     private UnqualifiedNameCache unqualifiedNameCache;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();

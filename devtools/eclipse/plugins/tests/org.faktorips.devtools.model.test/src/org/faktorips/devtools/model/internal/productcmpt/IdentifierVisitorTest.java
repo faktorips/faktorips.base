@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,13 +46,16 @@ import org.faktorips.fl.parser.ASTStringNode;
 import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdentifierVisitorTest {
 
     private static final int TOKEN_1_COL = 2;
@@ -127,12 +130,12 @@ public class IdentifierVisitorTest {
 
     private IdentifierVisitor identifierVisitor;
 
-    @Before
+    @BeforeEach
     public void setUpIdentifierVisitor() {
         identifierVisitor = new IdentifierVisitor("my expression", identifierParser);
     }
 
-    @Before
+    @BeforeEach
     public void setUpNodes() {
         aSTIdentifierNode1 = spy(new ASTIdentifierNode(0));
         aSTIdentifierNode2 = spy(new ASTIdentifierNode(0));

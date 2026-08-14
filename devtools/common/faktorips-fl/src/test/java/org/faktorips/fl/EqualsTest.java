@@ -13,7 +13,7 @@ package org.faktorips.fl;
 import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

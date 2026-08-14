@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.tableconversion.IValueConverter;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public abstract class NumberValueConverterTest {
 

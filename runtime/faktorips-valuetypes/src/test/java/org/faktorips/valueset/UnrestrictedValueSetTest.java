@@ -16,7 +16,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.values.Money;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UnrestrictedValueSetTest {
 
@@ -66,9 +67,11 @@ public class UnrestrictedValueSetTest {
         assertThat(new UnrestrictedValueSet<Money>(true).containsNull(), is(true));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValues() throws Exception {
-        new UnrestrictedValueSet<Integer>(false).getValues(true);
+        assertThrows(IllegalStateException.class, () -> {
+            new UnrestrictedValueSet<Integer>(false).getValues(true);
+        });
     }
 
     @Test

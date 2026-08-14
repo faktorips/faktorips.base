@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.search.product;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,13 +31,16 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductSearchQueryConditionMatcherTest {
 
     @Mock
@@ -77,7 +80,7 @@ public class ProductSearchQueryConditionMatcherTest {
 
     private Set<IIpsSrcFile> matchingFiles;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         searchOperators = Arrays.asList(searchOperatorHit);
         matchingFiles = new HashSet<>(Arrays.asList(srcFileMiss, srcFileHit, srcFileGenerationHit));
@@ -122,7 +125,7 @@ public class ProductSearchQueryConditionMatcherTest {
 
         Set<IProductPartsContainer> results = matcher.getResults(matchingFiles);
 
-        assertTrue(results.toString(), results.isEmpty());
+        assertTrue(results.isEmpty(), results.toString());
     }
 
     @Test

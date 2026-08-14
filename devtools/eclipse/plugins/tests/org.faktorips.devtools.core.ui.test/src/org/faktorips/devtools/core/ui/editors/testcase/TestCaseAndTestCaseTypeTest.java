@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
@@ -28,8 +28,8 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -45,7 +45,7 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
     private String pathToTestPolicyCmptInput;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = super.newIpsProject("TestProject");

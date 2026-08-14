@@ -10,9 +10,10 @@
 
 package org.faktorips.runtime.productdataprovider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,9 +28,9 @@ import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -47,7 +48,7 @@ public class DetachedContentRuntimeRepositoryTest {
 
     private AutoCloseable mocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mocks = MockitoAnnotations.openMocks(this);
 
@@ -55,7 +56,7 @@ public class DetachedContentRuntimeRepositoryTest {
                 productDataProvider, formulaEvaluatorFactory);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         mocks.close();
     }
@@ -77,12 +78,14 @@ public class DetachedContentRuntimeRepositoryTest {
         assertEquals(mockElement, repository.getDocumentElement(mockTocEntry));
     }
 
-    @Test(expected = DataModifiedRuntimeException.class)
+    @Test
     public void testGetDocumentElementProductCmptTocEntryDataModifiedExceptionThrown() throws DataModifiedException {
-        ProductCmptTocEntry mockTocEntry = mock(ProductCmptTocEntry.class);
-        when(productDataProvider.getProductCmptData(mockTocEntry)).thenThrow(new DataModifiedException("", "", ""));
+        assertThrows(DataModifiedRuntimeException.class, () -> {
+            ProductCmptTocEntry mockTocEntry = mock(ProductCmptTocEntry.class);
+            when(productDataProvider.getProductCmptData(mockTocEntry)).thenThrow(new DataModifiedException("", "", ""));
 
-        repository.getDocumentElement(mockTocEntry);
+            repository.getDocumentElement(mockTocEntry);
+        });
     }
 
     @Test
@@ -94,13 +97,15 @@ public class DetachedContentRuntimeRepositoryTest {
         assertEquals(mockElement, repository.getDocumentElement(mockTocEntry));
     }
 
-    @Test(expected = DataModifiedRuntimeException.class)
+    @Test
     public void testGetDocumentElementGenerationTocEntryDataModifiedExceptionThrown() throws DataModifiedException {
-        GenerationTocEntry mockTocEntry = mock(GenerationTocEntry.class);
-        when(productDataProvider.getProductCmptGenerationData(mockTocEntry)).thenThrow(
-                new DataModifiedException("", "", ""));
+        assertThrows(DataModifiedRuntimeException.class, () -> {
+            GenerationTocEntry mockTocEntry = mock(GenerationTocEntry.class);
+            when(productDataProvider.getProductCmptGenerationData(mockTocEntry)).thenThrow(
+            new DataModifiedException("", "", ""));
 
-        repository.getDocumentElement(mockTocEntry);
+            repository.getDocumentElement(mockTocEntry);
+        });
     }
 
     @Test
@@ -112,12 +117,14 @@ public class DetachedContentRuntimeRepositoryTest {
         assertEquals(mockElement, repository.getDocumentElement(mockTocEntry));
     }
 
-    @Test(expected = DataModifiedRuntimeException.class)
+    @Test
     public void testGetDocumentElementTestCaseTocEntryDataModifiedExceptionThrown() throws DataModifiedException {
-        TestCaseTocEntry mockTocEntry = mock(TestCaseTocEntry.class);
-        when(productDataProvider.getTestcaseElement(mockTocEntry)).thenThrow(new DataModifiedException("", "", ""));
+        assertThrows(DataModifiedRuntimeException.class, () -> {
+            TestCaseTocEntry mockTocEntry = mock(TestCaseTocEntry.class);
+            when(productDataProvider.getTestcaseElement(mockTocEntry)).thenThrow(new DataModifiedException("", "", ""));
 
-        repository.getDocumentElement(mockTocEntry);
+            repository.getDocumentElement(mockTocEntry);
+        });
     }
 
     @Test
@@ -152,12 +159,14 @@ public class DetachedContentRuntimeRepositoryTest {
         assertEquals(mockInputStream, repository.getXmlAsStream(mockTocEntry));
     }
 
-    @Test(expected = DataModifiedRuntimeException.class)
+    @Test
     public void testGetXmlAsStreamEnumContentDataModifiedExceptionThrown() throws DataModifiedException {
-        EnumContentTocEntry mockTocEntry = mock(EnumContentTocEntry.class);
-        when(productDataProvider.getEnumContentAsStream(mockTocEntry)).thenThrow(new DataModifiedException("", "", ""));
+        assertThrows(DataModifiedRuntimeException.class, () -> {
+            EnumContentTocEntry mockTocEntry = mock(EnumContentTocEntry.class);
+            when(productDataProvider.getEnumContentAsStream(mockTocEntry)).thenThrow(new DataModifiedException("", "", ""));
 
-        repository.getXmlAsStream(mockTocEntry);
+            repository.getXmlAsStream(mockTocEntry);
+        });
     }
 
     @Test
@@ -169,13 +178,15 @@ public class DetachedContentRuntimeRepositoryTest {
         assertEquals(mockInputStream, repository.getXmlAsStream(mockTocEntry));
     }
 
-    @Test(expected = DataModifiedRuntimeException.class)
+    @Test
     public void testGetXmlAsStreamTableContentDataModifiedExceptionThrown() throws DataModifiedException {
-        TableContentTocEntry mockTocEntry = mock(TableContentTocEntry.class);
-        when(productDataProvider.getTableContentAsStream(mockTocEntry))
-                .thenThrow(new DataModifiedException("", "", ""));
+        assertThrows(DataModifiedRuntimeException.class, () -> {
+            TableContentTocEntry mockTocEntry = mock(TableContentTocEntry.class);
+            when(productDataProvider.getTableContentAsStream(mockTocEntry))
+            .thenThrow(new DataModifiedException("", "", ""));
 
-        repository.getXmlAsStream(mockTocEntry);
+            repository.getXmlAsStream(mockTocEntry);
+        });
     }
 
     @Test

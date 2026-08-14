@@ -14,12 +14,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DatatypeHelperFactoryDefinitionTest {
 
@@ -41,14 +42,16 @@ public class DatatypeHelperFactoryDefinitionTest {
         assertThat(definition.getFactory(), is(factory));
     }
 
-    @Test(expected = IllegalStateException.class)
+        @Test
     public void testDatatypeDefinition_WrongConfigElement() {
-        IExtension extension = mock(IExtension.class);
-        IConfigurationElement configElement = mock(IConfigurationElement.class);
+        assertThrows(IllegalStateException.class, () -> {
+            IExtension extension = mock(IExtension.class);
+            IConfigurationElement configElement = mock(IConfigurationElement.class);
 
-        when(configElement.getName()).thenReturn("That's Not My Name");
+            when(configElement.getName()).thenReturn("That's Not My Name");
 
-        new DatatypeHelperFactoryDefinition(extension, configElement);
+            new DatatypeHelperFactoryDefinition(extension, configElement);
+        });
     }
 
 }

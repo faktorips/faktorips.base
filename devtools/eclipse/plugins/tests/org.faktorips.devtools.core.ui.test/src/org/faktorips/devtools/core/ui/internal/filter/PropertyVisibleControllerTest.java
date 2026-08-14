@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.core.ui.internal.filter;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -23,9 +24,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -38,13 +39,13 @@ public class PropertyVisibleControllerTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         controller = new PropertyVisibleController();
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
@@ -156,10 +157,12 @@ public class PropertyVisibleControllerTest {
         verify(control2).setVisible(false);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddPropertyControlMapping_NoControlProvided() {
-        IProductCmptProperty property = mock(IProductCmptProperty.class);
-        controller.addPropertyControlMapping(outerControl, property);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IProductCmptProperty property = mock(IProductCmptProperty.class);
+            controller.addPropertyControlMapping(outerControl, property);
+        });
     }
 
     /**
@@ -171,13 +174,15 @@ public class PropertyVisibleControllerTest {
      * An {@link IllegalArgumentException} should be thrown as only controls using {@link GridData}
      * can be fully excluded from the UI.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddPropertyControlMapping_ControlWithNoGridDataProvided() {
-        IProductCmptProperty property = mock(IProductCmptProperty.class);
-        Control c1 = mockControl(null, new GridData());
-        Control c2 = mockControl(null, new RowData());
+        assertThrows(IllegalArgumentException.class, () -> {
+            IProductCmptProperty property = mock(IProductCmptProperty.class);
+            Control c1 = mockControl(null, new GridData());
+            Control c2 = mockControl(null, new RowData());
 
-        controller.addPropertyControlMapping(outerControl, property, c1, c2);
+            controller.addPropertyControlMapping(outerControl, property, c1, c2);
+        });
     }
 
     @Test

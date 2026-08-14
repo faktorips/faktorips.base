@@ -10,9 +10,10 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,7 @@ import org.faktorips.values.ListUtil;
 import org.faktorips.values.LocalizedString;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -61,16 +62,20 @@ public class MultiValueXmlHelperTest extends XmlAbstractTestCase {
         return (Element)getTestDocument().getDocumentElement().getElementsByTagName("ConfigElement").item(index);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void readValuesFromXML_missingOuterValueTag() {
-        Element configElement = getConfigElement(1);
-        MultiValueXmlHelper.getValuesFromXML(configElement);
+        assertThrows(NullPointerException.class, () -> {
+            Element configElement = getConfigElement(1);
+            MultiValueXmlHelper.getValuesFromXML(configElement);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void readValuesFromXML_missingMultiValueTag() {
-        Element configElement = getConfigElement(2);
-        MultiValueXmlHelper.getValuesFromXML(configElement);
+        assertThrows(NullPointerException.class, () -> {
+            Element configElement = getConfigElement(2);
+            MultiValueXmlHelper.getValuesFromXML(configElement);
+        });
     }
 
     @Test

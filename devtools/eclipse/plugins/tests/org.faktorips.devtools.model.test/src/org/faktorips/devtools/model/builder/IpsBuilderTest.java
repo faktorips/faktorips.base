@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -25,6 +25,7 @@ import org.eclipse.core.internal.resources.Marker;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.junit.jupiter.api.Tag;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.ABuilder;
@@ -45,9 +46,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * A common base class for builder tests.
@@ -55,12 +55,12 @@ import org.junit.experimental.categories.Category;
  * @author Jan Ortmann
  */
 @SuppressWarnings("restriction")
+@Tag("EclipseImplementation")
 // IMPORTANT: in the test methods the test builder set has to be set to the model after the
 // properties have been set otherwise the builder set will be removed since the setProperties method
 // causes a clean to the builder set map of the ips model. Hence when the model is requested
 // for the builder set it will look registered builder sets at the extension point and
 // won't find the test builder set
-@Category(EclipseImplementation.class)
 public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -71,7 +71,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();

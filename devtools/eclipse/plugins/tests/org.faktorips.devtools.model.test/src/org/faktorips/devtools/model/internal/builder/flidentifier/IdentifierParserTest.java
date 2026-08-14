@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,13 +51,16 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdentifierParserTest {
 
     private static final String MY_PARAMETER = "anyParameter";
@@ -138,7 +141,7 @@ public class IdentifierParserTest {
     @Mock
     private ISupportedLanguage supportetLanguage;
 
-    @Before
+    @BeforeEach
     public void createIdentifierParser() throws Exception {
         mockEnum();
         identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
@@ -150,7 +153,7 @@ public class IdentifierParserTest {
         when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
     }
 
-    @Before
+    @BeforeEach
     public void mockExpression() throws Exception {
         when(expression.findProductCmptType(ipsProject)).thenReturn(productCmptType);
         when(expression.findFormulaSignature(ipsProject)).thenReturn(formulaMethod);
@@ -284,7 +287,7 @@ public class IdentifierParserTest {
 
         String input = MY_PARAMETER + '.' + MY_ASSOCIATION + "1[\".";
         List<IdentifierProposal> proposals = identifierParser.getProposals(input);
-        assertTrue(String.valueOf(proposals.size()), proposals.isEmpty());
+        assertTrue(proposals.isEmpty(), String.valueOf(proposals.size()));
     }
 
     /**

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,7 +22,6 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-import org.junit.Assert;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
@@ -56,7 +55,7 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
     protected void assertContains(String html, String... containments) {
         for (String string : containments) {
-            Assert.assertTrue("Nicht enthalten: " + string, html.contains(string)); //$NON-NLS-1$
+            assertTrue("Nicht enthalten: " + string, html.contains(string)); //$NON-NLS-1$
         }
     }
 

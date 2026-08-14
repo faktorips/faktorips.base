@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NewWizardUtilTest extends AbstractIpsPluginTest {
 

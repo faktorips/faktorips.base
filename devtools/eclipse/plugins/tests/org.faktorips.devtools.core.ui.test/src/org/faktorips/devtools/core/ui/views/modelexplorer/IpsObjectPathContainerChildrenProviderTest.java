@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,8 +23,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.model.ipsproject.bundle.IIpsBundleEntry;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectPathContainerChildrenProviderTest {
 
@@ -34,7 +34,7 @@ public class IpsObjectPathContainerChildrenProviderTest {
     private IIpsObjectPathContainer container;
     private LibraryIpsPackageFragmentRoot jarBundleFragmentRoot;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         childrenProvider = new IpsObjectPathContainerChildrenProvider();
 

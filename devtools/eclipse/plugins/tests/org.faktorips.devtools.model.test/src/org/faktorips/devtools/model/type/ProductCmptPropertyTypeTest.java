@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptPropertyTypeTest extends AbstractIpsPluginTest {
 
@@ -42,7 +42,7 @@ public class ProductCmptPropertyTypeTest extends AbstractIpsPluginTest {
     private IAttributeValue templateValue;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

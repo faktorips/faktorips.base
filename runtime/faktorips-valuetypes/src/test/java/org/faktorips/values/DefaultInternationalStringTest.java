@@ -10,9 +10,10 @@
 
 package org.faktorips.values;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,8 +28,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DefaultInternationalStringTest {
 
@@ -42,7 +43,7 @@ public class DefaultInternationalStringTest {
     private LocalizedString germanLocalizedString;
     private LocalizedString koreanLocalizedString;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         englishLocalizedString = new LocalizedString(Locale.ENGLISH, ENGLISH_TEXT);
         germanLocalizedString = new LocalizedString(Locale.GERMAN, GERMAN_TEXT);
@@ -144,18 +145,20 @@ public class DefaultInternationalStringTest {
         assertEquals(internationalString, readObject);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testUnmodifiableMap() throws Exception {
-        Object readObject = serializeAndDeserialize();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Object readObject = serializeAndDeserialize();
 
-        Field internalField = readObject.getClass().getDeclaredField("localizedStringMap");
-        assertNotNull(internalField);
-        internalField.setAccessible(true);
-        @SuppressWarnings("unchecked")
-        // We know that international strings use a map of locales and localized Strings.
-        Map<Locale, LocalizedString> internalMap = (Map<Locale, LocalizedString>)internalField.get(readObject);
-        assertNotNull(internalMap);
-        assertEquals(2, internalMap.size());
-        internalMap.put(Locale.CHINESE, new LocalizedString(Locale.CHINESE, "abc"));
+            Field internalField = readObject.getClass().getDeclaredField("localizedStringMap");
+            assertNotNull(internalField);
+            internalField.setAccessible(true);
+            @SuppressWarnings("unchecked")
+            // We know that international strings use a map of locales and localized Strings.
+            Map<Locale, LocalizedString> internalMap = (Map<Locale, LocalizedString>)internalField.get(readObject);
+            assertNotNull(internalMap);
+            assertEquals(2, internalMap.size());
+            internalMap.put(Locale.CHINESE, new LocalizedString(Locale.CHINESE, "abc"));
+        });
     }
 }

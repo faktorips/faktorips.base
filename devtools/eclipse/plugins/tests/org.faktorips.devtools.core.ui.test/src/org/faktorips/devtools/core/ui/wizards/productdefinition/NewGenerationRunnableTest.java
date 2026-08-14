@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -64,7 +64,7 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     private AutoCloseable openMocks;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         when(timedIpsObject1.getIpsSrcFile()).thenReturn(ipsSrcFile1);
@@ -75,13 +75,13 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
         runnable = new NewGenerationRunnable(pmo, timedIpsObjects);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // nothing to tear down
     }

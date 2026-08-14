@@ -10,7 +10,7 @@
 
 package org.faktorips.codegen.dthelpers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,13 +19,16 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ListOfValueDatatypeHelperTest {
 
     @Mock
@@ -39,7 +42,7 @@ public class ListOfValueDatatypeHelperTest {
 
     private ListOfValueDatatypeHelper listOfValueDatatypeHelper;
 
-    @Before
+    @BeforeEach
     public void createListOfValueDatatypeHelper() throws Exception {
         when(elementDatatypeHelper.getDatatype()).thenReturn(elementDatatype);
         listOfValueDatatypeHelper = new ListOfValueDatatypeHelper(elementDatatypeHelper);

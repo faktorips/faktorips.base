@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,15 +31,15 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseResourceTest extends EclipseAbstractionTestSetup {
 
     private AProject testProject1;
     private IProject eclipseProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject1 = newSimpleIpsProject("testProject");
         eclipseProject = testProject1.unwrap();

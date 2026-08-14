@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectGenerationDecoratorTest {
 

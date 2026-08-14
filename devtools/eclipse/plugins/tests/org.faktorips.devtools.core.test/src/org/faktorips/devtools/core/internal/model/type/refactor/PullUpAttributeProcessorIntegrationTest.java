@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
@@ -20,7 +20,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PullUpAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {
 

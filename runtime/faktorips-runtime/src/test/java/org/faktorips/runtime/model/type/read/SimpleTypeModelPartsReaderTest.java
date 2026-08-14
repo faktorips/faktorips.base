@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,12 +29,12 @@ import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementC
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class SimpleTypeModelPartsReaderTest {
 
     @Mock

@@ -10,13 +10,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MethodAccessTest {
 
@@ -31,34 +32,34 @@ public class MethodAccessTest {
         assertThat(MethodAccess.of(MethodAccessTest.class, "not a method"), is(notNullValue()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testOf_ThrowsNPEifBothParametersAreNull() {
-        MethodAccess.of(null, null);
+        assertThrows(NullPointerException.class, () -> MethodAccess.of(null, null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testOf_ThrowsNPEifClassIsNull() {
-        MethodAccess.of(null, "foo");
+        assertThrows(NullPointerException.class, () -> MethodAccess.of(null, "foo"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testOf_ThrowsNPEifNameIsNull() {
-        MethodAccess.of(MethodAccessTest.class, null);
+        assertThrows(NullPointerException.class, () -> MethodAccess.of(MethodAccessTest.class, null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testOf_ThrowsNPEifParameterIsNull() {
-        MethodAccess.of(MethodAccessTest.class, "foo", String.class, null, Integer.class);
+        assertThrows(NullPointerException.class, () -> MethodAccess.of(MethodAccessTest.class, "foo", String.class, null, Integer.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOf_ThrowsIAEifMethodNameIsEmpty() {
-        MethodAccess.of(MethodAccessTest.class, "");
+        assertThrows(IllegalArgumentException.class, () -> MethodAccess.of(MethodAccessTest.class, ""));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOf_ThrowsIAEifMethodNameIsBlank() {
-        MethodAccess.of(MethodAccessTest.class, "  ");
+        assertThrows(IllegalArgumentException.class, () -> MethodAccess.of(MethodAccessTest.class, "  "));
     }
 
     @Test
@@ -288,18 +289,18 @@ public class MethodAccessTest {
         assertThat(methodAccess.check(new MessageList(), "PRE"), is(notNullValue()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCheck_ThrowsNPEifMessageListIsNull() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "foo");
 
-        methodAccess.check(null, "PRE");
+        assertThrows(NullPointerException.class, () -> methodAccess.check(null, "PRE"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCheck_ThrowsNPEifPrefixIsNull() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "foo");
 
-        methodAccess.check(new MessageList(), null);
+        assertThrows(NullPointerException.class, () -> methodAccess.check(new MessageList(), null));
     }
 
     @Test

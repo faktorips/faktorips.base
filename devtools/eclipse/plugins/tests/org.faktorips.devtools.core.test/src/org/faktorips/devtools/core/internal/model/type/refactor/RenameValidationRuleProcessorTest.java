@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -27,7 +27,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.testcase.ITestRule;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTest {
 
@@ -37,6 +38,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     private static final String OLD_NAME = "oldName";
     private ITestRule testRule;
 
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

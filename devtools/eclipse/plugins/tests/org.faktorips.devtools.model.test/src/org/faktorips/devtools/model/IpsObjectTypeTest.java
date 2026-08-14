@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectTypeTest extends AbstractIpsPluginTest {
 

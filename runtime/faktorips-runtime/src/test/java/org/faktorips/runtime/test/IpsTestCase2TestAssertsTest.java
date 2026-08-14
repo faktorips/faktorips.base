@@ -10,11 +10,11 @@
 
 package org.faktorips.runtime.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.values.Decimal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -57,7 +57,7 @@ public class IpsTestCase2TestAssertsTest {
     private IpsTestCaseAssert test;
     private IpsTestResult result;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         listener = new MyListener();
         test = new IpsTestCaseAssert();

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.ant;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.apache.tools.ant.BuildException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProjectImportTaskTest {
 

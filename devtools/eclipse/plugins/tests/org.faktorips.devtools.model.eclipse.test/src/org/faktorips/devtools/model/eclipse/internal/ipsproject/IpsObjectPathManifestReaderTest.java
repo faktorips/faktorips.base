@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.eclipse.internal.ipsproject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,14 +23,16 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathManifestReader;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleException;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectPathManifestReaderTest {
 
     @Mock
@@ -50,7 +52,7 @@ public class IpsObjectPathManifestReaderTest {
 
     private IpsObjectPathManifestReader objectPathReader;
 
-    @Before
+    @BeforeEach
     public void createIpsObjectPathManifestReader() {
         objectPathReader = new IpsObjectPathManifestReader(bundleManifest, ipsProject);
     }

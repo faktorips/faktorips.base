@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
 
@@ -41,7 +41,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

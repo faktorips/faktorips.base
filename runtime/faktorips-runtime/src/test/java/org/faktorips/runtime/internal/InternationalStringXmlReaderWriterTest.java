@@ -24,7 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

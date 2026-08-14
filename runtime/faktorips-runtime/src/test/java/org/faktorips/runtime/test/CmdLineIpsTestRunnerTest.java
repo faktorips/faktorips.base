@@ -10,7 +10,7 @@
 
 package org.faktorips.runtime.test;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

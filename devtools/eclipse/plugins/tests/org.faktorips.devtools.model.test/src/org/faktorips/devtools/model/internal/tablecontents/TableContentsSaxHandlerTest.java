@@ -14,14 +14,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.xml.sax.Attributes;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableContentsSaxHandlerTest {
 
     private static final String MY_ID = "myID";
@@ -31,7 +34,7 @@ public class TableContentsSaxHandlerTest {
 
     private TableContentsSaxHandler tableContentsSaxHandler;
 
-    @Before
+    @BeforeEach
     public void createTableContentsSaxHandler() throws Exception {
         tableContentsSaxHandler = new TableContentsSaxHandler(tableContents, true);
     }

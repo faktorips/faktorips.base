@@ -10,9 +10,10 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -26,15 +27,18 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryLookup;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductConfigurationTest {
 
     private static final String PODUCT_COMPONENT_ID = "My_PC-ID";
@@ -56,7 +60,7 @@ public class ProductConfigurationTest {
 
     private final Calendar calendar = Calendar.getInstance(ProductConfiguration.TIME_ZONE);
 
-    @Before
+    @BeforeEach
     public void createAbstractConfigurableModelObject() throws Exception {
         when(productCmpt.getId()).thenReturn(PODUCT_COMPONENT_ID);
         when(productCmpt.getRepository()).thenReturn(repository);
@@ -171,11 +175,13 @@ public class ProductConfigurationTest {
         assertNotNull(productConfiguration.getProductCmptGeneration(calendar));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSerialization_noLookup() throws Exception {
-        ProductConfiguration productConfiguration = initForSerialization();
+        assertThrows(IllegalStateException.class, () -> {
+            ProductConfiguration productConfiguration = initForSerialization();
 
-        serializeProductConfiguration(productConfiguration);
+            serializeProductConfiguration(productConfiguration);
+        });
     }
 
     @Test

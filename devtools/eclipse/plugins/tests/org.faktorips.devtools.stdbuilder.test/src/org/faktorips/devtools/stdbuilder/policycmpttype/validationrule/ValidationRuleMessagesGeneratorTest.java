@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -39,8 +39,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
@@ -56,7 +56,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
     private ValidationRuleMessagesPropertiesBuilder builder;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

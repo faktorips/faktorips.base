@@ -25,8 +25,8 @@ import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseWorkspaceRootTest extends EclipseAbstractionTestSetup {
 
@@ -38,7 +38,7 @@ public class EclipseWorkspaceRootTest extends EclipseAbstractionTestSetup {
     private AProject testProject2;
     private AWorkspace workspace;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject1 = newSimpleIpsProject(TEST_PROJECT1);
         testProject2 = newSimpleIpsProject(TEST_PROJECT2);

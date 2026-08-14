@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.internal.generationdate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
 
@@ -41,7 +41,7 @@ public class GenerationDateContentProviderTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation association;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

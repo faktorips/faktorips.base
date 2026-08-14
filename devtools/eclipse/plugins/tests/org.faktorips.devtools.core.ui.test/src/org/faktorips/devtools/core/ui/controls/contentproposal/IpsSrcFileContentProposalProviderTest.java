@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,7 +18,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileContentProposalProviderTest {
 

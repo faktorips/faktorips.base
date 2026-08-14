@@ -19,12 +19,11 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+@ExtendWith(MockitoExtension.class)
 public class AbstractDateHelperFactoryTest {
 
     @Mock

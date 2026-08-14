@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.plainjava.internal;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.plugin.IpsStatus;

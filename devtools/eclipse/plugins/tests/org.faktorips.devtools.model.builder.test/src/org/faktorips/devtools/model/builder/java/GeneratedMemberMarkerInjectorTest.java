@@ -12,10 +12,11 @@ package org.faktorips.devtools.model.builder.java;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.emf.codegen.merge.java.GeneratedMemberMarkerInjector;
 import org.eclipse.jdt.core.JavaCore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link GeneratedMemberMarkerInjector}.
@@ -578,14 +579,18 @@ public class GeneratedMemberMarkerInjectorTest {
         assertThat(injector(START, END).inject(source), is(source));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEmptyStartTag_throwsIllegalArgumentException() {
-        injector("", END); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> {
+            injector("", END); //$NON-NLS-1$
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testEmptyEndTag_throwsIllegalArgumentException() {
-        injector(START, ""); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> {
+            injector(START, ""); //$NON-NLS-1$
+        });
     }
 
     @Test

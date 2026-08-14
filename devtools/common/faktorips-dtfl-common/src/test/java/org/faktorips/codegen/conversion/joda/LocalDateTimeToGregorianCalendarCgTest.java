@@ -10,17 +10,17 @@
 
 package org.faktorips.codegen.conversion.joda;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.codegen.conversion.AbstractSingleConversionCgTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeToGregorianCalendarCgTest extends AbstractSingleConversionCgTest {
 
     private LocalDateTimeToGregorianCalendarCg converter;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         converter = new LocalDateTimeToGregorianCalendarCg();
     }

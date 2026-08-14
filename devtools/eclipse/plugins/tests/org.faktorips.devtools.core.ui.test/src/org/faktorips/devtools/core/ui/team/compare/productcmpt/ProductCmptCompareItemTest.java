@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,8 +44,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
 
@@ -73,7 +73,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
     private IProductCmptLink relation2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject(new ArrayList<>());

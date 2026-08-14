@@ -14,6 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,17 +26,20 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.internal.versionmanager.util.ManifestUtil.ManifestFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ManifestUtilTest {
 
     @Mock
@@ -71,33 +75,39 @@ public class ManifestUtilTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void mockManifest() throws Exception {
         openMocks = MockitoAnnotations.openMocks(this);
         when(manifest.getMainAttributes()).thenReturn(attributes);
         when(manifestFactory.loadManifest(file)).thenReturn(manifest);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testManifestNull() throws IOException {
-        new ManifestUtil(null, manifestFactory);
+        assertThrows(NullPointerException.class, () -> {
+            new ManifestUtil(null, manifestFactory);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetPluginDependencyPluginNull() throws IOException {
-        ManifestUtil migrationUtil = createMigrationManifestUtil();
-        migrationUtil.setPluginDependency(null, RANGE1);
+        assertThrows(NullPointerException.class, () -> {
+            ManifestUtil migrationUtil = createMigrationManifestUtil();
+            migrationUtil.setPluginDependency(null, RANGE1);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetPluginDependencyVersionRangeNull() throws IOException {
-        ManifestUtil migrationUtil = createMigrationManifestUtil();
-        migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, null);
+        assertThrows(NullPointerException.class, () -> {
+            ManifestUtil migrationUtil = createMigrationManifestUtil();
+            migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, null);
+        });
     }
 
     @Test

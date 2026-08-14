@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.InputStream;
 
@@ -31,9 +31,9 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private ClassLoaderProvider provider;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
@@ -128,14 +128,14 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
      * 
      * Jan Ortmann, 6.10.2010
      */
-    @Ignore
+    @Disabled
     @Test
     public void test_DemoDeleteProblem() throws Exception {
         createJarFileAndAppendToClasspath();
         deleteJarFile();
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void testListenerMechnism_JarFile() throws Exception {
         createJarFileAndAppendToClasspath();

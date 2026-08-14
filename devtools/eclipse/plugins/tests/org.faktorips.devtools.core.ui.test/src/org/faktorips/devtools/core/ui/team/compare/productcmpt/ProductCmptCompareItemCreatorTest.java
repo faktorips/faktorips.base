@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.team.compare.productcmpt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,8 +30,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
 
@@ -53,7 +53,7 @@ public class ProductCmptCompareItemCreatorTest extends AbstractIpsPluginTest {
     private IProductCmptLink staticLink2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject(new ArrayList<>());

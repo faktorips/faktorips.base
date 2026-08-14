@@ -28,8 +28,8 @@ import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectPro
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.fl.FunctionResolver;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionFunctionResolversCacheTest {
 
@@ -43,7 +43,7 @@ public class ExtensionFunctionResolversCacheTest {
     private IIpsProject ipsProject;
     private Locale locale;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ipsProject = mock(IIpsProject.class);
         IIpsModel ipsModel = mock(IIpsModel.class);

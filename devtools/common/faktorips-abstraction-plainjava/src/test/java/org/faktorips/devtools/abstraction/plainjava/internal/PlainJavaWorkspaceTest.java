@@ -24,8 +24,8 @@ import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.testsupport.Wait;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class PlainJavaWorkspaceTest extends PlainJavaAbstractionTestSetup {
 
@@ -60,7 +60,7 @@ public class PlainJavaWorkspaceTest extends PlainJavaAbstractionTestSetup {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testBuild() {
         Abstractions.getWorkspace().getRoot().getProject("TestProject"); //$NON-NLS-1$
 

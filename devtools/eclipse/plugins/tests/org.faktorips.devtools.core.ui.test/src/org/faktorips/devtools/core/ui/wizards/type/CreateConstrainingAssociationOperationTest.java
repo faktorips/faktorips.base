@@ -12,11 +12,12 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -32,8 +33,8 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CreateConstrainingAssociationOperationTest extends AbstractIpsPluginTest {
     private IPolicyCmptType targetPolicy;
@@ -49,7 +50,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -241,45 +242,57 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         assertErrorFreeness();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateConstrainingAssociation_illegalArguments_typeDifferent() {
-        setUpMatchingAssociations();
-        setUpInverseAssociation();
+        assertThrows(IllegalArgumentException.class, () -> {
+            setUpMatchingAssociations();
+            setUpInverseAssociation();
 
-        new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, subTargetPolicy);
+            new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, subTargetPolicy);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateConstrainingAssociation_illegalArgument_associationWrongClass() {
-        setUpMatchingAssociations();
-        setUpInverseAssociation();
+        assertThrows(IllegalArgumentException.class, () -> {
+            setUpMatchingAssociations();
+            setUpInverseAssociation();
 
-        new CreateConstrainingAssociationOperation(subSourceProduct, policyAssociation, subTargetProduct);
+            new CreateConstrainingAssociationOperation(subSourceProduct, policyAssociation, subTargetProduct);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateConstrainingAssociation_illegalArgument_targetTypeMismatch() {
-        IProductCmptType otherProductClass = newProductCmptType(ipsProject, "OtherProduct");
+        assertThrows(IllegalArgumentException.class, () -> {
+            IProductCmptType otherProductClass = newProductCmptType(ipsProject, "OtherProduct");
 
-        setUpMatchingAssociations();
-        setUpInverseAssociation();
+            setUpMatchingAssociations();
+            setUpInverseAssociation();
 
-        new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, otherProductClass);
+            new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, otherProductClass);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateConstrainingAssociation_illegalArgument_null1() {
-        new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CreateConstrainingAssociationOperation(subSourceProduct, productAssociation, null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateConstrainingAssociation_illegalArgument_null2() {
-        new CreateConstrainingAssociationOperation(subSourceProduct, null, subTargetProduct);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CreateConstrainingAssociationOperation(subSourceProduct, null, subTargetProduct);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateConstrainingAssociation_illegalArgument_null3() {
-        new CreateConstrainingAssociationOperation(null, productAssociation, subTargetProduct);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new CreateConstrainingAssociationOperation(null, productAssociation, subTargetProduct);
+        });
     }
 
     private void assertErrorFreeness() {

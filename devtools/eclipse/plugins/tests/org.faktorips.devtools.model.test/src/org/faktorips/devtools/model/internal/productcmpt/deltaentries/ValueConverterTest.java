@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +19,7 @@ import java.util.Locale;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ValueConverterTest {
 

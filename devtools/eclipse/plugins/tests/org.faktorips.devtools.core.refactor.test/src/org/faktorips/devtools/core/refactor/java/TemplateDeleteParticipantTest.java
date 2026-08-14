@@ -25,7 +25,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TemplateDeleteParticipantTest extends AbstractStdBuilderTest {
 

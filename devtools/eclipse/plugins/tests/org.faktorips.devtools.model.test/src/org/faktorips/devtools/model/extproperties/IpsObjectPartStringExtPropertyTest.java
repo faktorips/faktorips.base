@@ -11,14 +11,14 @@
 package org.faktorips.devtools.model.extproperties;
 
 import static org.faktorips.runtime.internal.XmlUtil.getDocumentBuilder;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.naming.directory.Attribute;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,7 +30,7 @@ public class IpsObjectPartStringExtPropertyTest {
 
     private StringExtensionPropertyDefinition property;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         property = new StringExtensionPropertyDefinition();
         property.setPropertyId("id");

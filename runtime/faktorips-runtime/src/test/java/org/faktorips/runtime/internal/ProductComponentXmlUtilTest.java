@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {

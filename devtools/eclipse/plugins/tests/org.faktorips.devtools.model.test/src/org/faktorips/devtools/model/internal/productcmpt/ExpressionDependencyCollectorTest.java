@@ -14,9 +14,9 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,13 +40,16 @@ import org.faktorips.fl.parser.ASTIntegerNode;
 import org.faktorips.fl.parser.ASTStart;
 import org.faktorips.fl.parser.Node;
 import org.faktorips.fl.parser.SimpleNode;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExpressionDependencyCollectorTest {
 
     private static final String MY_EXPRESSION = "1 + 2";
@@ -88,24 +91,24 @@ public class ExpressionDependencyCollectorTest {
 
     private ExpressionDependencyCollector expressionDependencyCollector;
 
-    @Before
+    @BeforeEach
     public void setUpIdentifierVisitor() {
         identifiers = new HashMap<>();
         when(identifierVisitor.getIdentifiers()).thenReturn(identifiers);
     }
 
-    @Before
+    @BeforeEach
     public void setUpExpression() {
         when(expression.getIpsObject()).thenReturn(ipsObject);
         when(ipsObject.getQualifiedNameType()).thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
     }
 
-    @Before
+    @BeforeEach
     public void createExpressionDependencyCollector() throws Exception {
         expressionDependencyCollector = new ExpressionDependencyCollector(expression, identifierVisitor);
     }
 
-    @Before
+    @BeforeEach
     public void setUpQualifiedNodes() {
         when(qualifierNode.getProductCmpt()).thenReturn(targetProductCmpt);
         when(targetProductCmpt.getQualifiedNameType()).thenReturn(

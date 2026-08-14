@@ -10,8 +10,9 @@
 
 package org.faktorips.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.GregorianCalendar;
 
@@ -20,7 +21,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.MonthDay;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JodaUtilTest {
     @Test
@@ -65,14 +66,18 @@ public class JodaUtilTest {
         assertEquals(new LocalDateTime(2010, 3, 5, 8, 4, 10), JodaUtil.toLocalDateTime("2010-03-05T08:04:10"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testToLocalDateTime_WrongISOFormatWithMissingT() {
-        JodaUtil.toLocalDateTime("2010-03-05 08:04:10");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JodaUtil.toLocalDateTime("2010-03-05 08:04:10");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testToLocalDateTime_NonDateTimeString() {
-        JodaUtil.toLocalDateTime("not a date time");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JodaUtil.toLocalDateTime("not a date time");
+        });
     }
 
     @Test
@@ -95,24 +100,32 @@ public class JodaUtilTest {
         assertEquals(new MonthDay(1, 4), JodaUtil.toMonthDay("--01-04"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testToMonthDay_MissingLeadingDashes() {
-        JodaUtil.toMonthDay("01-04");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JodaUtil.toMonthDay("01-04");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testToMonthDay_AmericanStyle() {
-        JodaUtil.toMonthDay("01/04/");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JodaUtil.toMonthDay("01/04/");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testToMonthDay_GermanStyle() {
-        JodaUtil.toMonthDay("04.01.");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JodaUtil.toMonthDay("04.01.");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testToMonthDay_InvalidDayAndMonth() {
-        JodaUtil.toMonthDay("--86-98");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JodaUtil.toMonthDay("--86-98");
+        });
     }
 
 }

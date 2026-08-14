@@ -24,13 +24,13 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -77,7 +77,6 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersionProvider;
@@ -123,14 +122,16 @@ import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOp
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private static final String ROOT_NAME = "myRootName";
@@ -148,7 +149,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     private IIpsPackageFragmentRoot root3;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject();
@@ -355,7 +356,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testValidate_JavaCodeContainsError() {
         if (Abstractions.isEclipseRunning()) {
@@ -370,7 +370,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testIsJavaProjectErrorFree_OnlyThisProject() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
@@ -418,7 +417,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testIsJavaProjectErrorFree_WithRefToOtherProjects() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
@@ -1580,7 +1578,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testGetNonIpsResources() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
@@ -2099,7 +2096,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         cmpt3.setRuntimeId("Egon");
         cmpt2.setRuntimeId("Egon");
         ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
-        assertEquals(ml.toString(), 2, ml.size());
+        assertEquals(2, ml.size(), ml.toString());
         assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         // test that linked projects will be checked against each other
@@ -2107,7 +2104,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         objectPath.newIpsProjectRefEntry(ipsProject);
         prj.setIpsObjectPath(objectPath);
         ml = prj.checkForDuplicateRuntimeIds(prj.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT));
-        assertEquals(ml.toString(), 6, ml.size());
+        assertEquals(6, ml.size(), ml.toString());
         assertThat(ml, hasMessageCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
 
         ml = prj.checkForDuplicateRuntimeIds(cmpt3.getIpsSrcFile());

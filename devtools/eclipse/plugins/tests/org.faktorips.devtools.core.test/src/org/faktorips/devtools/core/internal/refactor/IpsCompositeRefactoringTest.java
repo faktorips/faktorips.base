@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -38,9 +39,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -75,7 +76,7 @@ public class IpsCompositeRefactoringTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         when(ipsElement1.getIpsProject()).thenReturn(ipsProject);
@@ -86,22 +87,26 @@ public class IpsCompositeRefactoringTest {
                 ipsElement1, ipsElement2)));
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+        @Test
     public void testIllegalArgumentExceptionIfEmptyElementSetGiven() {
-        new TestIpsCompositeRefactoring(new HashSet<>());
+        assertThrows(IllegalArgumentException.class, () -> {
+            new TestIpsCompositeRefactoring(new HashSet<>());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+        @Test
     public void testIllegalArgumentExceptionIfDifferentTypesOfElementsGiven() {
-        Set<IIpsElement> elements = new LinkedHashSet<>();
-        elements.add(mock(IIpsObject.class));
-        elements.add(mock(IIpsObjectPart.class));
-        new TestIpsCompositeRefactoring(elements);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Set<IIpsElement> elements = new LinkedHashSet<>();
+            elements.add(mock(IIpsObject.class));
+            elements.add(mock(IIpsObjectPart.class));
+            new TestIpsCompositeRefactoring(elements);
+        });
     }
 
     @Test

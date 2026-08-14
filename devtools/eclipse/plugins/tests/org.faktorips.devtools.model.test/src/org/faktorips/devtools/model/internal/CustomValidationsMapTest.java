@@ -11,9 +11,10 @@
 package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,11 +32,11 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.Is;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class CustomValidationsMapTest {
     private ICustomValidation<Attribute> attributeValidation = new ValidationOnAttribute("AttributeValidation");
     private ICustomValidation<PolicyCmptTypeAttribute> pcTypeAttributeValidation = new ValidationOnPolicyCmptType(
@@ -59,9 +60,11 @@ public class CustomValidationsMapTest {
         assertEquals(1, validationsMap.get(Attribute.class).size());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testPut_wrongType() {
-        validationsMap.put(Attribute.class, pcTypeAttributeValidation);
+        assertThrows(RuntimeException.class, () -> {
+            validationsMap.put(Attribute.class, pcTypeAttributeValidation);
+        });
     }
 
     @Test
@@ -96,13 +99,15 @@ public class CustomValidationsMapTest {
         assertTrue(validationsMap.containsValidationsFor(PolicyCmptTypeAttribute.class));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testPutAll_wrongType() {
-        Collection<ICustomValidation<?>> validationsToPut = new ArrayList<>();
-        validationsToPut.add(attributeValidation);
-        validationsToPut.add(pcTypeAttributeValidation);
+        assertThrows(RuntimeException.class, () -> {
+            Collection<ICustomValidation<?>> validationsToPut = new ArrayList<>();
+            validationsToPut.add(attributeValidation);
+            validationsToPut.add(pcTypeAttributeValidation);
 
-        validationsMap.putAll(Attribute.class, validationsToPut);
+            validationsMap.putAll(Attribute.class, validationsToPut);
+        });
     }
 
     @Test

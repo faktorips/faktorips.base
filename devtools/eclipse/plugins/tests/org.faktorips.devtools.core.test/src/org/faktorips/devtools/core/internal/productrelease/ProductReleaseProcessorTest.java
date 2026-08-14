@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.internal.productrelease;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -48,8 +48,8 @@ import org.faktorips.devtools.model.productrelease.ITargetSystem;
 import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
 
@@ -61,7 +61,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
     private ObservableProgressMessages observableMessages;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,9 +14,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -51,8 +51,8 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAs
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
 
@@ -67,7 +67,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
     private String mode;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
@@ -417,9 +417,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
                 int number = Integer.parseInt(reference.getWrappedIpsObject().getName());
                 boolean isInSamePackageRoot = number % 2 == 0;
                 if (isInSamePackageRoot) {
-                    assertEquals(number + " should be copied", CopyOrLink.COPY, copyOrLink);
+                    assertEquals(CopyOrLink.COPY, copyOrLink, number + " should be copied");
                 } else {
-                    assertEquals(number + " should be linked", CopyOrLink.LINK, copyOrLink);
+                    assertEquals(CopyOrLink.LINK, copyOrLink, number + " should be linked");
                 }
             }
         }
@@ -457,9 +457,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
                 boolean isInSamePackageRoot = number % 2 == 0;
                 boolean isInSameProject = number < 3;
                 if (isInSamePackageRoot && isInSameProject) {
-                    assertEquals(number + " should be copied", CopyOrLink.COPY, copyOrLink);
+                    assertEquals(CopyOrLink.COPY, copyOrLink, number + " should be copied");
                 } else {
-                    assertEquals(number + " should be linked", CopyOrLink.LINK, copyOrLink);
+                    assertEquals(CopyOrLink.LINK, copyOrLink, number + " should be linked");
                 }
             }
         }

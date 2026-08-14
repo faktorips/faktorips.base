@@ -12,15 +12,15 @@ package org.faktorips.devtools.model.builder;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
     private EExtendsC e;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         a = new A();

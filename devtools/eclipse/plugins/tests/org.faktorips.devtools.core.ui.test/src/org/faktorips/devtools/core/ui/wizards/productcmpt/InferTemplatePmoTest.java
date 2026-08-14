@@ -23,7 +23,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InferTemplatePmoTest extends AbstractIpsPluginTest {
 

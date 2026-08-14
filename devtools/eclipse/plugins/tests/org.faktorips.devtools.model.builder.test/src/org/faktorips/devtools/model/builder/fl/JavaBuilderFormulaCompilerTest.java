@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -49,7 +49,7 @@ public class JavaBuilderFormulaCompilerTest extends XmlAbstractTestCase {
     private Element element;
     private JavaBuilderFormulaCompiler compiler;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         builderSet = mock(JavaBuilderSet.class);
         ipsProject = mock(IIpsProject.class);

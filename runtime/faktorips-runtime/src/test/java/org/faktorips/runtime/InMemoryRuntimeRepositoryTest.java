@@ -15,11 +15,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
@@ -62,8 +63,8 @@ import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class InMemoryRuntimeRepositoryTest {
@@ -73,7 +74,7 @@ public class InMemoryRuntimeRepositoryTest {
     private ProductComponent b;
     private ProductComponent c;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         repository = new InMemoryRuntimeRepository();
         a = new TestProductComponent(repository, "a", "aKind", "aVersion");
@@ -430,37 +431,47 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(t1, repository.getTable(TestSingleContentTable.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetTable_class_MultiContentTable() {
-        assertNull(repository.getTable("motor.RateTable"));
-        TestTable t1 = new TestTable("motor.RateTable");
-        repository.putTable(t1);
-        repository.getTable(TestTable.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            assertNull(repository.getTable("motor.RateTable"));
+            TestTable t1 = new TestTable("motor.RateTable");
+            repository.putTable(t1);
+            repository.getTable(TestTable.class);
 
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRemoveTable_NullTable() {
-        repository.removeTable(null);
+        assertThrows(NullPointerException.class, () -> {
+            repository.removeTable(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveTable_NameIsBlank_BlankString() {
-        TestTable t = new TestTable("");
-        repository.removeTable(t);
+        assertThrows(IllegalArgumentException.class, () -> {
+            TestTable t = new TestTable("");
+            repository.removeTable(t);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveTable_NameIsBlank_WhiteSpaceOnly() {
-        TestTable t = new TestTable(" ");
-        repository.removeTable(t);
+        assertThrows(IllegalArgumentException.class, () -> {
+            TestTable t = new TestTable(" ");
+            repository.removeTable(t);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveTable_NameIsBlank_NullString() {
-        String s = null;
-        TestTable t = new TestTable(s);
-        repository.removeTable(t);
+        assertThrows(IllegalArgumentException.class, () -> {
+            String s = null;
+            TestTable t = new TestTable(s);
+            repository.removeTable(t);
+        });
     }
 
     @Test
@@ -582,13 +593,15 @@ public class InMemoryRuntimeRepositoryTest {
         repository.putProductCmptGeneration(gen1);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testPutProductComponentGenerationValidFromNullPointer() {
-        TestProductCmptGeneration gen1 = new TestProductCmptGeneration(a);
-        TestProductCmptGeneration gen2 = new TestProductCmptGeneration(a);
+        assertThrows(NullPointerException.class, () -> {
+            TestProductCmptGeneration gen1 = new TestProductCmptGeneration(a);
+            TestProductCmptGeneration gen2 = new TestProductCmptGeneration(a);
 
-        repository.putProductCmptGeneration(gen1);
-        repository.putProductCmptGeneration(gen2);
+            repository.putProductCmptGeneration(gen1);
+            repository.putProductCmptGeneration(gen2);
+        });
     }
 
     @Test
@@ -603,19 +616,25 @@ public class InMemoryRuntimeRepositoryTest {
         repository.putProductCmptGeneration(gen2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRemoveProductComponent_Null() {
-        repository.removeProductComponent(null);
+        assertThrows(NullPointerException.class, () -> {
+            repository.removeProductComponent(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveProductComponent_NullId() {
-        repository.removeProductComponent(mock(IProductComponent.class));
+        assertThrows(IllegalArgumentException.class, () -> {
+            repository.removeProductComponent(mock(IProductComponent.class));
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveProductComponent_NoId() {
-        repository.removeProductComponent(new TestProductComponent(repository, "", "", ""));
+        assertThrows(IllegalArgumentException.class, () -> {
+            repository.removeProductComponent(new TestProductComponent(repository, "", "", ""));
+        });
     }
 
     @Test
@@ -627,31 +646,37 @@ public class InMemoryRuntimeRepositoryTest {
         assertFalse(repository.removeProductComponent(productComponent));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRemoveProductCmptGeneration_Null() {
-        repository.removeProductCmptGeneration(null);
+        assertThrows(NullPointerException.class, () -> {
+            repository.removeProductCmptGeneration(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveProductCmptGeneration_NullId() {
-        IProductComponent productComponent = mock(IProductComponent.class);
-        when(productComponent.getId()).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IProductComponent productComponent = mock(IProductComponent.class);
+            when(productComponent.getId()).thenReturn(null);
 
-        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
-        when(generation.getProductComponent()).thenReturn(productComponent);
+            IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+            when(generation.getProductComponent()).thenReturn(productComponent);
 
-        repository.removeProductCmptGeneration(generation);
+            repository.removeProductCmptGeneration(generation);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveProductCmptGeneration_NoId() {
-        IProductComponent productComponent = mock(IProductComponent.class);
-        when(productComponent.getId()).thenReturn("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            IProductComponent productComponent = mock(IProductComponent.class);
+            when(productComponent.getId()).thenReturn("");
 
-        IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
-        when(generation.getProductComponent()).thenReturn(productComponent);
+            IProductComponentGeneration generation = mock(IProductComponentGeneration.class);
+            when(generation.getProductComponent()).thenReturn(productComponent);
 
-        repository.removeProductCmptGeneration(generation);
+            repository.removeProductCmptGeneration(generation);
+        });
     }
 
     @Test
@@ -680,23 +705,29 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(2, repository.getAllIpsTestCases(repository).size());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRemoveIpsTestCase_Null() {
-        repository.removeIpsTestCase(null);
+        assertThrows(NullPointerException.class, () -> {
+            repository.removeIpsTestCase(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveIpsTestCase_EmptyQualifiedName() {
-        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
-        when(testCase.getQualifiedName()).thenReturn("");
-        repository.removeIpsTestCase(testCase);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+            when(testCase.getQualifiedName()).thenReturn("");
+            repository.removeIpsTestCase(testCase);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveIpsTestCase_NullQualifiedName() {
-        IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
-        when(testCase.getQualifiedName()).thenReturn(null);
-        repository.removeIpsTestCase(testCase);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IpsTestCaseBase testCase = mock(IpsTestCaseBase.class);
+            when(testCase.getQualifiedName()).thenReturn(null);
+            repository.removeIpsTestCase(testCase);
+        });
     }
 
     @Test
@@ -1041,9 +1072,9 @@ public class InMemoryRuntimeRepositoryTest {
 
     private void assertIpsTestCasesStartingWith(String qNamePrefix, IpsTestCase2[] testCasesExpected) {
         List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
-        assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
+        assertEquals(testCasesExpected.length, result.size(), "Unexpected number of test cases");
         for (IpsTestCase2 element : testCasesExpected) {
-            assertTrue("Missing test case: " + element, result.contains(element));
+            assertTrue(result.contains(element), "Missing test case: " + element);
         }
     }
 

@@ -24,7 +24,7 @@ import java.util.Locale;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.values.LocalizedString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InternationalStringPresentationObjectTest {
 

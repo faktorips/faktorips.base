@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.eclipse.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -33,8 +34,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
 
@@ -61,13 +61,15 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
         assertEquals(1, factory.getNumOfRegisteredTypes());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+        @Test
     public void testRegisterContainerType_throwIllegalArgumentExWhenDifferentTypeWithSameIdIsRegistered() {
-        IIpsObjectPathContainerType type1 = newType("MAVEN");
-        IIpsObjectPathContainerType type2 = newType("MAVEN");
+        assertThrows(IllegalArgumentException.class, () -> {
+            IIpsObjectPathContainerType type1 = newType("MAVEN");
+            IIpsObjectPathContainerType type2 = newType("MAVEN");
 
-        factory.registerContainerType(type1);
-        factory.registerContainerType(type2);
+            factory.registerContainerType(type1);
+            factory.registerContainerType(type2);
+        });
     }
 
     @Test
@@ -80,11 +82,13 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
         assertFalse(factory.isRegistered(type));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+        @Test
     public void testUnregisterContainerType_throwIllegalArgumentWhenTryingToUnregisterATypeNotBeenRegistered() {
-        IIpsObjectPathContainerType type = newType("MAVEN");
+        assertThrows(IllegalArgumentException.class, () -> {
+            IIpsObjectPathContainerType type = newType("MAVEN");
 
-        factory.unregisterContainerType(type);
+            factory.unregisterContainerType(type);
+        });
     }
 
     @Test
@@ -129,8 +133,6 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
 
         assertNull(factory.newContainer(new IpsProject(), "SOMETHING", "optionalPath"));
     }
-
-    @Category(EclipseImplementation.class)
     @Test
     public void testGetContainerType_createNewFactoryBasedOnExtensions() {
         if (Abstractions.isEclipseRunning()) {

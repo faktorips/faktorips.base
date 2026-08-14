@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -24,12 +24,12 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertyValueTypeTest {
 
     private static final String ANY_VALUE = "anyValue";

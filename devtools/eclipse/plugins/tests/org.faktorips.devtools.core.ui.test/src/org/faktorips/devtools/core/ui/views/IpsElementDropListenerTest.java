@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +37,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
 

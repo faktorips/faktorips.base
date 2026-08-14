@@ -16,8 +16,8 @@ import java.util.Collections;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
 
@@ -32,7 +32,7 @@ public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         String generateText = layouter.generateText();
 
-        Assert.assertEquals(0, generateText.length());
+        assertEquals(0, generateText.length());
     }
 
     @Test

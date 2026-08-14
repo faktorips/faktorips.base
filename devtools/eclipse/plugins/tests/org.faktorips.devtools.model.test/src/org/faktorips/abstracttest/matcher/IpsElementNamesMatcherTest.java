@@ -10,8 +10,8 @@
 
 package org.faktorips.abstracttest.matcher;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,8 +21,8 @@ import java.util.Collections;
 
 import org.faktorips.devtools.model.IIpsElement;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This is the test for {@link IpsElementNamesMatcher}. It is in devtools-core because we do not
@@ -36,7 +36,7 @@ public class IpsElementNamesMatcherTest {
     private IIpsElement ipsElement2;
     private IIpsElement ipsElement3;
 
-    @Before
+    @BeforeEach
     public void sutUp() {
         ipsElement1 = mock(IIpsElement.class);
         when(ipsElement1.getName()).thenReturn("ipsElement1");

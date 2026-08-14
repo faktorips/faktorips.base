@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.ILinkSectionViewItem;
@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
 
@@ -47,7 +47,7 @@ public class LinksContentProviderPluginTest extends AbstractIpsPluginTest {
 
     private LinksContentProvider linksContentProvider;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

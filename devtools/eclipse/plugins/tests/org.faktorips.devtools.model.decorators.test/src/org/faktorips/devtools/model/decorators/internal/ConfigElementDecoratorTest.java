@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConfigElementDecoratorTest {
 

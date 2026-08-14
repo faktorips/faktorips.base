@@ -34,8 +34,8 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CSVEnumImportOperationTest extends AbstractTableTest {
 
@@ -45,7 +45,7 @@ public class CSVEnumImportOperationTest extends AbstractTableTest {
     private File file;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

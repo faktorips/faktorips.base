@@ -16,11 +16,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.values.ListUtil;
 import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.IntegerRange;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PolicyAssociationTest {
 
@@ -251,21 +252,25 @@ public class PolicyAssociationTest {
         assertEquals(0, source.getTargets1toN().size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddTargetObjects_To1_MultipleObjects() {
-        Source source = new Source();
-        Target target = new Target();
-        Target target2 = new Target();
+        assertThrows(IllegalArgumentException.class, () -> {
+            Source source = new Source();
+            Target target = new Target();
+            Target target2 = new Target();
 
-        association0To1.addTargetObjects(source, Arrays.<IModelObject> asList(target, target2));
+            association0To1.addTargetObjects(source, Arrays.<IModelObject> asList(target, target2));
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddTargetObjects_NoMethod() {
-        Source source = new Source();
-        Target target = new Target();
+        assertThrows(IllegalArgumentException.class, () -> {
+            Source source = new Source();
+            Target target = new Target();
 
-        association1To10.addTargetObjects(source, target);
+            association1To10.addTargetObjects(source, target);
+        });
     }
 
     @Test
@@ -280,13 +285,15 @@ public class PolicyAssociationTest {
         assertEquals(1, subSource.getTargets1toN().size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddTargetObjects_ToN_Overridden_WrongType() {
-        SubSource subSource = new SubSource();
-        Target wrongTarget = new Target();
+        assertThrows(IllegalArgumentException.class, () -> {
+            SubSource subSource = new SubSource();
+            Target wrongTarget = new Target();
 
-        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource).getAssociation("targets1toN");
-        overridingAssociation.addTargetObjects(subSource, wrongTarget);
+            PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource).getAssociation("targets1toN");
+            overridingAssociation.addTargetObjects(subSource, wrongTarget);
+        });
     }
 
     @Test
@@ -302,14 +309,16 @@ public class PolicyAssociationTest {
         assertEquals(1, subSource.getMoreTargets1toN().size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddTargetObjects_ToN_Overridden_WrongType_WithListenerSupport() {
-        SubSource subSource = new SubSource();
-        Target wrongTarget = new Target();
+        assertThrows(IllegalArgumentException.class, () -> {
+            SubSource subSource = new SubSource();
+            Target wrongTarget = new Target();
 
-        PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource)
-                .getAssociation("moreTargets1toN");
-        overridingAssociation.addTargetObjects(subSource, wrongTarget);
+            PolicyAssociation overridingAssociation = IpsModel.getPolicyCmptType(subSource)
+            .getAssociation("moreTargets1toN");
+            overridingAssociation.addTargetObjects(subSource, wrongTarget);
+        });
     }
 
     @Test
@@ -412,22 +421,26 @@ public class PolicyAssociationTest {
         assertEquals(0, source.getTargets1toN().size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveTargetObjects_To1_MultipleObjects() {
-        Source source = new Source();
-        Target target = new Target();
-        Target target2 = new Target();
+        assertThrows(IllegalArgumentException.class, () -> {
+            Source source = new Source();
+            Target target = new Target();
+            Target target2 = new Target();
 
-        association0To1.removeTargetObjects(source, Arrays.<IModelObject> asList(target, target2));
+            association0To1.removeTargetObjects(source, Arrays.<IModelObject> asList(target, target2));
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testRemoveTargetObjects_NoMethod() {
-        Source source = new Source();
-        Target target = new Target();
-        source.setTarget(target);
+        assertThrows(IllegalArgumentException.class, () -> {
+            Source source = new Source();
+            Target target = new Target();
+            source.setTarget(target);
 
-        association1To10.removeTargetObjects(source, target);
+            association1To10.removeTargetObjects(source, target);
+        });
     }
 
     @Test

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.eclipse.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest {
 

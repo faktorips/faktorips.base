@@ -12,8 +12,9 @@ package org.faktorips.runtime.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,17 +32,20 @@ import org.faktorips.values.Decimal;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  *
  * @author Peter Erzberger
  */
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableTest extends XmlAbstractTestCase {
 
     private TestTable table;
@@ -49,7 +53,7 @@ public class TableTest extends XmlAbstractTestCase {
     @Mock
     private TableContentTocEntry tocEntry;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         table = new TestTable();
         when(tocEntry.getIpsObjectId()).thenReturn(getClass().getName());
@@ -112,10 +116,12 @@ public class TableTest extends XmlAbstractTestCase {
         assertThat(table.getDescription(Locale.GERMAN), is("Desc DE"));
     }
 
-    @Test(expected = IllegalRepositoryModificationException.class)
+    @Test
     public void testSetDescription_ReadOnlyRepositoryThrows() {
-        IRuntimeRepository readOnlyRepo = mock(IRuntimeRepository.class);
-        when(readOnlyRepo.isModifiable()).thenReturn(false);
-        table.setDescription(Locale.ENGLISH, "New Desc", readOnlyRepo);
+        assertThrows(IllegalRepositoryModificationException.class, () -> {
+            IRuntimeRepository readOnlyRepo = mock(IRuntimeRepository.class);
+            when(readOnlyRepo.isModifiable()).thenReturn(false);
+            table.setDescription(Locale.ENGLISH, "New Desc", readOnlyRepo);
+        });
     }
 }

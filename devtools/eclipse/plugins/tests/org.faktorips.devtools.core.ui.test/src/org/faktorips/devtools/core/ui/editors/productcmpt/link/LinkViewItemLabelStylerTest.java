@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
 

@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink.LinkIdentifier;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptLinkHistogramsTest {
 

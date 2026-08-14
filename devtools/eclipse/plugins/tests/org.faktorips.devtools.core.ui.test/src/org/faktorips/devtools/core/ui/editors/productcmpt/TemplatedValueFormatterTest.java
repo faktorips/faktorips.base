@@ -14,16 +14,19 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TemplatedValueFormatterTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testFormat_ThrowsExceptionForNullValue() {
-        TemplatedValueFormatter.format(null);
+        assertThrows(NullPointerException.class, () -> {
+            TemplatedValueFormatter.format(null);
+        });
     }
 
     @Test

@@ -1,21 +1,21 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,14 +39,17 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
 
     private PropertyValueCollection valueContainer;
@@ -61,7 +64,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     private ProductCmpt parent;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         when(parent.getIpsObject()).thenReturn(ipsObject);
@@ -141,7 +144,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         IPropertyValue value = valueContainer.getPropertyValue(property, IAttributeValue.class);
         assertNotNull(value);
         IPropertyValue value2 = valueContainer.getPropertyValue("AV1", IAttributeValue.class);
-        assertSame("Parts", value, value2);
+        assertSame(value, value2, "Parts");
 
         ProductCmptTypeAttribute illegalTypeAttr = mock(ProductCmptTypeAttribute.class);
         when(illegalTypeAttr.getPropertyName()).thenReturn("AVIllegal");
@@ -160,7 +163,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         assertAttributesSize(4);
 
         IPropertyValue value2 = valueContainer.getPropertyValue("AV5", IAttributeValue.class);
-        assertSame("Parts", value, value2);
+        assertSame(value, value2, "Parts");
     }
 
     @Test
@@ -175,7 +178,7 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         assertSize(4);
 
         IPropertyValue value2 = valueContainer.getPropertyValue("Method1", IFormula.class);
-        assertSame("Parts", formula, value2);
+        assertSame(formula, value2, "Parts");
     }
 
     @Test

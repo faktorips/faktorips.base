@@ -10,8 +10,9 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -20,13 +21,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class SearchStructureTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
@@ -52,25 +53,31 @@ public class SearchStructureTest {
         assertEquals(expectedObject, unique);
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testGetUnique_getNone() throws Exception {
-        setUpResultSet();
+        assertThrows(NoSuchElementException.class, () -> {
+            setUpResultSet();
 
-        structure.getUnique();
+            structure.getUnique();
+        });
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testGetUnique_getNonUnique() throws Exception {
-        setUpResultSet(mock(Object.class), mock(Object.class));
+        assertThrows(AssertionError.class, () -> {
+            setUpResultSet(mock(Object.class), mock(Object.class));
 
-        structure.getUnique();
+            structure.getUnique();
+        });
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testGetUniqueWithDefault_getNonUnique() throws Exception {
-        setUpResultSet(mock(Object.class), mock(Object.class));
+        assertThrows(AssertionError.class, () -> {
+            setUpResultSet(mock(Object.class), mock(Object.class));
 
-        structure.getUnique(null);
+            structure.getUnique(null);
+        });
     }
 
     private void setUpResultSet(Object... expectedObject) {

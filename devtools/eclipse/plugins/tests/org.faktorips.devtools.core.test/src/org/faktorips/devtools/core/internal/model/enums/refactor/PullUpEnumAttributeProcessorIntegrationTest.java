@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PullUpEnumAttributeProcessorIntegrationTest extends AbstractIpsRefactoringTest {
 

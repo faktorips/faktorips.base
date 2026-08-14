@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -42,7 +42,7 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.type.IMethod;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * @author Alexander Weickmann
@@ -52,7 +52,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
     protected IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

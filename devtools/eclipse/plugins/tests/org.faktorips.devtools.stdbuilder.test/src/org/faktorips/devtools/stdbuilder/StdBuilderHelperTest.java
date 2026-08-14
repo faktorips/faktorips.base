@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,7 +19,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.builder.java.util.ParamUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StdBuilderHelperTest extends AbstractStdBuilderTest {
 

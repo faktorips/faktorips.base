@@ -23,7 +23,7 @@ import java.util.Locale;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TableContentUsageDecoratorTest {
 

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.model.versionmanager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -25,8 +25,8 @@ import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExtendableVersionManagerTest {
 
@@ -36,7 +36,7 @@ public class ExtendableVersionManagerTest {
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation1;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         extendableVersionManager = new ExtendableVersionManager() {
 

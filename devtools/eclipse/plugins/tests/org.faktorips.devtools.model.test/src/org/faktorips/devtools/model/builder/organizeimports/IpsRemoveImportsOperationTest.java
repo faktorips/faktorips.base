@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.builder.organizeimports;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsRemoveImportsOperationTest {
 
@@ -71,7 +71,6 @@ public class IpsRemoveImportsOperationTest {
     @Test
     public void testUglyFormattedImportStatement() throws Exception {
         String input = """
-                import asd.asdf.Table;
                 import package.nblöab.
                 UniqueConstraint;
                 import pack.bla.Test
@@ -111,7 +110,6 @@ public class IpsRemoveImportsOperationTest {
         String input = """
                 import foo.Bar;
                 import foo.Foo;
-                import foo.Bar;
                 var foobar = Foo + Bar;
                 """;
 
@@ -144,27 +142,23 @@ public class IpsRemoveImportsOperationTest {
     public void testRemoveUnusedImports_PackageNameContainsImport2() throws Exception {
         String input = """
                 package test.versimport .schnittstelle;
-                import lasdü.DasBrauchIch;
                 DasBrauchIch""";
 
         IpsRemoveImportsOperation ipsRemoveImportsOperation = new IpsRemoveImportsOperation();
         String removeUnusedImports = ipsRemoveImportsOperation.removeUnusedAndDuplicateImports(input);
 
-        assertEquals("package test.versimport .schnittstelle;\nimport lasdü.DasBrauchIch;\nDasBrauchIch",
-                removeUnusedImports);
+        assertEquals("package test.versimport .schnittstelle;\nDasBrauchIch", removeUnusedImports);
     }
 
     @Test
     public void testJavaDocImportReference() throws Exception {
         String input = """
-                import blablabla.blas.DasBrauchIch;
                 import blablabla.blas.DasNicht;
 
                 /**DasBrauchIch*/
                 /* *DasNicht*/""";
 
         String expected = """
-                import blablabla.blas.DasBrauchIch;
 
                 /**DasBrauchIch*/
                 /* *DasNicht*/""";

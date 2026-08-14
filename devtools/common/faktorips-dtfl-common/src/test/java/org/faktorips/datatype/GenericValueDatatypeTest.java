@@ -19,11 +19,12 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -32,8 +33,8 @@ import static org.mockito.Mockito.verify;
 
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.MethodAccess;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -41,7 +42,7 @@ public class GenericValueDatatypeTest {
 
     private DefaultGenericValueDatatype datatype;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         datatype = new DefaultGenericValueDatatype(PaymentMode.class);
     }
@@ -341,14 +342,14 @@ public class GenericValueDatatypeTest {
         verify(datatype, times(2)).getValue(anyString());
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void shouldNotCompareValuesOfDifferentClasses() {
         datatype = spy(new DefaultGenericValueDatatype());
 
         doReturn(Integer.valueOf(5)).when(datatype).getValue("5"); //$NON-NLS-1$
         doReturn(Double.valueOf(0)).when(datatype).getValue("0"); //$NON-NLS-1$
         doReturn(true).when(datatype).supportsCompare();
-        datatype.compare("5", "0"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThrows(ClassCastException.class, () -> datatype.compare("5", "0")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private static class InvalidType extends GenericValueDatatype {

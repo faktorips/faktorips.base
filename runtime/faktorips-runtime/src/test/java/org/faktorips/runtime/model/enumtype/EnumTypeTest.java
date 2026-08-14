@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -38,7 +38,7 @@ import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
 import org.faktorips.runtime.model.enumtype.EnumAttributeTest.MyEnumForMandatoryTests;
 import org.faktorips.runtime.model.type.Deprecation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnumTypeTest {
 
@@ -125,9 +125,11 @@ public class EnumTypeTest {
         assertEquals(List.of(RealEnum.values()), enumValues);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetIdAttribute_noneFound() {
-        new EnumType(Bar.class).getIdAttribute().getName();
+        assertThrows(IllegalStateException.class, () -> {
+            new EnumType(Bar.class).getIdAttribute().getName();
+        });
     }
 
     @Test
@@ -135,9 +137,11 @@ public class EnumTypeTest {
         assertThat(new EnumType(Foo.class).getDisplayNameAttribute().getName(), is(equalTo("y")));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetDisplayNameAttribute_noneFound() {
-        new EnumType(Bar.class).getDisplayNameAttribute().getName();
+        assertThrows(IllegalStateException.class, () -> {
+            new EnumType(Bar.class).getDisplayNameAttribute().getName();
+        });
     }
 
     @Test

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 
@@ -26,8 +26,8 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.valueset.IValueSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValueSetSearchOperatorTest extends AbstractIpsPluginTest {
 
@@ -38,7 +38,7 @@ public class ValueSetSearchOperatorTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         valueDatatype = new IntegerDatatype();

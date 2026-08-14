@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileDecoratorTest {
 

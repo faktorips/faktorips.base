@@ -16,7 +16,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsValidatedBy;
 import org.faktorips.runtime.model.annotation.IpsValidationRule;
 import org.faktorips.runtime.model.annotation.IpsValidationRules;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PolicyCmptTypeTest {
 
@@ -77,9 +78,11 @@ public class PolicyCmptTypeTest {
         assertThat(policyCmptType.getProductCmptType().getName(), is("MyProduct"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetProductCmptType_NPE_NotConfigured() throws Exception {
-        assertThat(superPolicyCmptType.getProductCmptType().getName(), is(nullValue()));
+        assertThrows(NullPointerException.class, () -> {
+            assertThat(superPolicyCmptType.getProductCmptType().getName(), is(nullValue()));
+        });
     }
 
     @Test
@@ -135,9 +138,11 @@ public class PolicyCmptTypeTest {
         assertThat(superAssoInSuper.getNamePlural(), is("supAssos"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetDeclaredAssociation_thowsException() {
-        policyCmptType.getDeclaredAssociation("supAsso");
+        assertThrows(IllegalArgumentException.class, () -> {
+            policyCmptType.getDeclaredAssociation("supAsso");
+        });
     }
 
     @Test
@@ -281,9 +286,11 @@ public class PolicyCmptTypeTest {
         assertThat(declaredValidationRule.getSeverity(), is(Severity.ERROR));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetDeclaredValidationRule_RuleFromSuperClassNotPresent() {
-        policyCmptType.getDeclaredValidationRule("superRule");
+        assertThrows(IllegalArgumentException.class, () -> {
+            policyCmptType.getDeclaredValidationRule("superRule");
+        });
     }
 
     @Test

@@ -16,11 +16,12 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,8 +49,8 @@ import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrate
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -64,7 +65,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     private static final String ANOTHER_MARKER = "ANOTHER_MARKER";
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
@@ -580,9 +581,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRemoveSupportedLanguageNullPointer() {
-        properties.removeSupportedLanguage((ISupportedLanguage)null);
+        assertThrows(NullPointerException.class, () -> {
+            properties.removeSupportedLanguage((ISupportedLanguage)null);
+        });
     }
 
     @Test
@@ -592,9 +595,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testRemoveSupportedLanguageUsingLocaleNullPointer() {
-        properties.removeSupportedLanguage((Locale)null);
+        assertThrows(NullPointerException.class, () -> {
+            properties.removeSupportedLanguage((Locale)null);
+        });
     }
 
     @Test
@@ -605,9 +610,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(englishLanguage, properties.getDefaultLanguage());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetDefaultLanguageNullPointer() {
-        properties.setDefaultLanguage((ISupportedLanguage)null);
+        assertThrows(NullPointerException.class, () -> {
+            properties.setDefaultLanguage((ISupportedLanguage)null);
+        });
     }
 
     @Test
@@ -616,14 +623,18 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(properties.getSupportedLanguage(Locale.ENGLISH), properties.getDefaultLanguage());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetDefaultLanguageUsingLocaleNullPointer() {
-        properties.setDefaultLanguage((Locale)null);
+        assertThrows(NullPointerException.class, () -> {
+            properties.setDefaultLanguage((Locale)null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetDefaultLanguageUsingLocaleIllegalLocale() {
-        properties.setDefaultLanguage(Locale.TAIWAN);
+        assertThrows(IllegalArgumentException.class, () -> {
+            properties.setDefaultLanguage(Locale.TAIWAN);
+        });
     }
 
     @Test
@@ -633,9 +644,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertFalse(properties.isSupportedLanguage(Locale.JAPANESE));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testIsSupportedLanguageNullPointer() {
-        properties.isSupportedLanguage(null);
+        assertThrows(NullPointerException.class, () -> {
+            properties.isSupportedLanguage(null);
+        });
     }
 
     @Test

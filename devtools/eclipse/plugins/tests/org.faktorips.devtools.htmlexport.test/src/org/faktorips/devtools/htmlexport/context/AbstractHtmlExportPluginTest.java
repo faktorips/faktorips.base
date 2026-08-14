@@ -38,7 +38,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest {
 
@@ -52,7 +52,7 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

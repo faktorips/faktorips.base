@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Migration_25_7_0Test extends AbstractStdBuilderTest {
 

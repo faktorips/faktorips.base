@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileContentTest extends AbstractIpsPluginTest {
 

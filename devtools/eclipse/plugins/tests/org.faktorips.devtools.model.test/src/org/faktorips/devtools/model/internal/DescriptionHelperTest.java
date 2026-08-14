@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

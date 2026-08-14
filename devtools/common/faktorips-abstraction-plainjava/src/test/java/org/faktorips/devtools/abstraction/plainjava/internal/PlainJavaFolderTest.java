@@ -20,15 +20,16 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlainJavaFolderTest extends PlainJavaAbstractionTestSetup {
 
     private AProject testProject;
     private AFolder testFolder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject = newSimpleIpsProject("TestProject"); //$NON-NLS-1$
         testFolder = testProject.getFolder("TestFolder"); //$NON-NLS-1$
@@ -79,14 +80,14 @@ public class PlainJavaFolderTest extends PlainJavaAbstractionTestSetup {
         assertThat(testFolder.getLocation().resolve("SubFolder").toFile().exists(), is(true)); //$NON-NLS-1$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetFolder_notAFolder() {
         AFolder testFolder = testProject.getFolder("SubFolder"); //$NON-NLS-1$
         testFolder.create(null);
         testFolder.getFile("SubSubFile") //$NON-NLS-1$
                 .create(writeTo("Content"), null); //$NON-NLS-1$
 
-        testFolder.getFolder("SubSubFile"); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> testFolder.getFolder("SubSubFile")); //$NON-NLS-1$
     }
 
     @Test
@@ -101,13 +102,13 @@ public class PlainJavaFolderTest extends PlainJavaAbstractionTestSetup {
                 is(wrapperOf(testProject.getLocation().resolve("SubFileFolder").resolve("SubFile").toFile()))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetFile_notAFile() {
         AFolder testFolder = testProject.getFolder("SubFileFolder"); //$NON-NLS-1$
         testFolder.create(null);
         AFolder subFileAsFolder = testFolder.getFolder("SubFolder"); //$NON-NLS-1$
         subFileAsFolder.create(null);
 
-        testFolder.getFile("SubFolder"); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> testFolder.getFile("SubFolder")); //$NON-NLS-1$
     }
 }

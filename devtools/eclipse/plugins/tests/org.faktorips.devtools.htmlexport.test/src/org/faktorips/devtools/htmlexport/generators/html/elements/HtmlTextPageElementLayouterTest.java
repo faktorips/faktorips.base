@@ -13,8 +13,8 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
     private static final String TESTTEXT = "Ich bin der Testtext";
@@ -27,7 +27,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        Assert.assertEquals(TESTTEXT, layouter.generateText());
+        assertEquals(TESTTEXT, layouter.generateText());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        Assert.assertEquals("<span class=\"BOLD\">" + TESTTEXT + "</span>", layouter.generateText());
+        assertEquals("<span class=\"BOLD\">" + TESTTEXT + "</span>", layouter.generateText());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        Assert.assertEquals("<h4>" + TESTTEXT + "</h4>", layouter.generateText());
+        assertEquals("<h4>" + TESTTEXT + "</h4>", layouter.generateText());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        Assert.assertEquals("<h3 class=\"ITALIC\">" + TESTTEXT + "</h3>", layouter.generateText());
+        assertEquals("<h3 class=\"ITALIC\">" + TESTTEXT + "</h3>", layouter.generateText());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         elementLayouter.layout();
 
-        Assert.assertEquals("<a id=\"anker\"/>" + TESTTEXT, layouter.generateText());
+        assertEquals("<a id=\"anker\"/>" + TESTTEXT, layouter.generateText());
     }
 
 }

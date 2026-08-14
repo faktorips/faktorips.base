@@ -10,13 +10,13 @@
 
 package org.faktorips.fl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.runtime.Message;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

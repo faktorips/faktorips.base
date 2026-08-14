@@ -15,15 +15,15 @@ import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  */
 public class SumDecimalTest extends FunctionAbstractTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
     }

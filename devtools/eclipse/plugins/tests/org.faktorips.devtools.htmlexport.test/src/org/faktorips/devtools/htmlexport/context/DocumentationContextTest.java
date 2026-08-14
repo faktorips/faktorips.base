@@ -13,8 +13,8 @@ package org.faktorips.devtools.htmlexport.context;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +28,7 @@ import org.faktorips.devtools.htmlexport.MockPluginResourcesFacade;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DocumentationContextTest extends AbstractIpsPluginTest {
 

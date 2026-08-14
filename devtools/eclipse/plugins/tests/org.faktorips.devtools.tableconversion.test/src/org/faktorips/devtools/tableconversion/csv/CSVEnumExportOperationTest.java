@@ -12,8 +12,8 @@ package org.faktorips.devtools.tableconversion.csv;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.AbstractTableExportOperation;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CSVEnumExportOperationTest extends AbstractTableTest {
 
@@ -37,7 +37,7 @@ public class CSVEnumExportOperationTest extends AbstractTableTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

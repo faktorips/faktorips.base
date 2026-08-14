@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.context;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Set;
 
@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPluginTest {
 

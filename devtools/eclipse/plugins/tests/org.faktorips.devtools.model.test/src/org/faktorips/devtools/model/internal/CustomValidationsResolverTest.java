@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -30,8 +30,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CustomValidationsResolverTest {
 
@@ -41,7 +41,7 @@ public class CustomValidationsResolverTest {
     private ValidationOnPolicyCmptType validationOnPolicyCmptType = new ValidationOnPolicyCmptType();
     private ValidationOnIPolicyCmptType validationOnIPolicyCmptType = new ValidationOnIPolicyCmptType();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         allValidations = new ArrayList<>();
         allValidations.add(validationOnIAttribute);

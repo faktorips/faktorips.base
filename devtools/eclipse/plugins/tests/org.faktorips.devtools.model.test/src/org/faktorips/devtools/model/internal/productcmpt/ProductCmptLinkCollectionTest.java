@@ -13,11 +13,12 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -34,8 +35,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
 
@@ -47,7 +48,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     private IProductCmptLink link5;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         linkCollection = new ProductCmptLinkCollection();
@@ -557,9 +558,11 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
         assertTrue(linkAdded);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAddLink_disallowNull() {
-        linkCollection.addLink(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            linkCollection.addLink(null);
+        });
     }
 
     @Test

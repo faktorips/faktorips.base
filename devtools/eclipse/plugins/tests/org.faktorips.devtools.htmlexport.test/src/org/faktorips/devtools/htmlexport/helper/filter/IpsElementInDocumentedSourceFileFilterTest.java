@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.helper.filter;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,7 +24,7 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsElementInDocumentedSourceFileFilterTest {
 

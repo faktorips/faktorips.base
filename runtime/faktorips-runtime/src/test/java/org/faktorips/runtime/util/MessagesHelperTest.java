@@ -10,26 +10,29 @@
 
 package org.faktorips.runtime.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Locale;
 
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class MessagesHelperTest {
 
     private final Locale defaultLocale = Locale.ENGLISH;
 
     private ClassLoader loader;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         loader = getClass().getClassLoader();
     }

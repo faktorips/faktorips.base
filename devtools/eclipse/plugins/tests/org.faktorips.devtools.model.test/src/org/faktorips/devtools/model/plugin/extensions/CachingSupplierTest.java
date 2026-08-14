@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CachingSupplierTest {
 

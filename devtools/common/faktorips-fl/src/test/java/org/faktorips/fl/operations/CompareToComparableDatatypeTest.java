@@ -12,7 +12,7 @@ package org.faktorips.fl.operations;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 
@@ -23,13 +23,15 @@ import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
 import org.faktorips.fl.functions.date.Date;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CompareToComparableDatatypeTest extends FunctionAbstractTest {
 
     private Date date;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         date = new Date("DATE", "");

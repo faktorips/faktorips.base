@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TestCaseBuilderTest extends AbstractStdBuilderTest {
 
@@ -38,7 +38,7 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
     private IPolicyCmptType newPolicyCmptType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType");

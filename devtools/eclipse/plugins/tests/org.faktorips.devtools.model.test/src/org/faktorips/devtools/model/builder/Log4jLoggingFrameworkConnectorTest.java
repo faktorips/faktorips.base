@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @Deprecated(since = "21.12")
 public class Log4jLoggingFrameworkConnectorTest {
@@ -25,7 +25,7 @@ public class Log4jLoggingFrameworkConnectorTest {
     private Log4jLoggingFrameworkConnector connector;
     private List<String> usedClasses;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         usedClasses = new ArrayList<>();
         connector = new Log4jLoggingFrameworkConnector();

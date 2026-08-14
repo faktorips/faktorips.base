@@ -43,7 +43,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
 

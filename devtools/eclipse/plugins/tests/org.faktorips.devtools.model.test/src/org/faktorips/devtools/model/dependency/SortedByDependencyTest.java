@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class SortedByDependencyTest extends AbstractIpsPluginTest {
     @Test
@@ -191,7 +191,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
      * <strong>Expected Outcome:</strong><br>
      * The product component comes after the templates
      */
-    @Ignore
+    @Disabled
     @Test
     public void testSortByInstanceOf_WithDependencyToCycle() {
         IIpsProject ipsProject1 = newIpsProject();
@@ -219,7 +219,7 @@ public class SortedByDependencyTest extends AbstractIpsPluginTest {
      * 
      * The time for the sort algorithm is about 100 ms
      */
-    @Ignore
+    @Disabled
     @Test
     public void testSortByInstanceOf_PerformanceHint() {
         int size = 10000;

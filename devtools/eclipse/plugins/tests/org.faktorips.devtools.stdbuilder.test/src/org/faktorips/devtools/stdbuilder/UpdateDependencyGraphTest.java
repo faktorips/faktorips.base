@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
@@ -18,7 +18,7 @@ import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

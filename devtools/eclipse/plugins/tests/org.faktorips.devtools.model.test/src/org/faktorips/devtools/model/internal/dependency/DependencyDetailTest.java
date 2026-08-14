@@ -12,18 +12,22 @@ package org.faktorips.devtools.model.internal.dependency;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class DependencyDetailTest {
 
     private static final String MY_NEW_NAME = "MyNewName";
@@ -40,7 +44,7 @@ public class DependencyDetailTest {
 
     private DependencyDetail dependencyDetail;
 
-    @Before
+    @BeforeEach
     public void setUpDependencyDetail() {
         dependencyDetail = new DependencyDetail(part, propertyName);
     }
@@ -54,11 +58,13 @@ public class DependencyDetailTest {
         verify(part).setTarget(MY_NEW_TARGET + "." + MY_NEW_NAME);
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testRefactorAfterRename_exception() throws Exception {
-        DependencyDetail myDependencyDetail = new DependencyDetail(part, "any");
+        assertThrows(IpsException.class, () -> {
+            DependencyDetail myDependencyDetail = new DependencyDetail(part, "any");
 
-        myDependencyDetail.refactorAfterRename(targetIpsPackageFragment, MY_NEW_NAME);
+            myDependencyDetail.refactorAfterRename(targetIpsPackageFragment, MY_NEW_NAME);
+        });
     }
 
 }

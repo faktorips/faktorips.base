@@ -21,15 +21,15 @@ import org.faktorips.devtools.htmlexport.pages.standard.PolicyCmptTypeContentPag
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
     private IPolicyCmptType policy;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         policy = newPolicyCmptType(ipsProject, "Vertrag");

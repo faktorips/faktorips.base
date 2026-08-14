@@ -10,7 +10,7 @@
 
 package org.faktorips.runtime.formula.groovy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,8 +21,8 @@ import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testing the {@link GroovyFormulaEvaluator}
@@ -35,7 +35,7 @@ public class GroovyFormulaEvaluatorTest {
     private MyCmptGeneration testGen;
     private Map<String, String> expressions;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         expressions = new LinkedHashMap<>();
         String formulaMethod = """

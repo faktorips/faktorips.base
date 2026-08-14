@@ -12,10 +12,11 @@ package org.faktorips.devtools.model.builder.xmodel;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.jdt.core.Signature;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MethodParameterTest {
 
@@ -57,8 +58,10 @@ public class MethodParameterTest {
         assertThat(methodParameters.length, is(0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testArrayOf_Odd() {
-        MethodParameter.arrayOf("String", "foo", "bar");
+        assertThrows(IllegalArgumentException.class, () -> {
+            MethodParameter.arrayOf("String", "foo", "bar");
+        });
     }
 }

@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.test
 Bundle-Version: 27.1.0.qualifier
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.stdbuilder
-Require-Bundle: org.hamcrest;bundle-version="2.2"
+Require-Bundle: org.hamcrest;bundle-version="3.0",
+ org.mockito.junit-jupiter
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.faktorips.abstracttest,
@@ -86,6 +87,10 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.values,
  org.junit;version="4.13.0",
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
+ org.mockito.junit.jupiter,
+ org.mockito.quality,
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
  org.junit.function;version="4.13.2",
  org.junit.runner;version="4.13.0",

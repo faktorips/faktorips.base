@@ -7,7 +7,8 @@ Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Fragment-Host: org.faktorips.devtools.ant
 Require-Bundle: org.apache.ant,
- org.hamcrest;bundle-version="2.2"
+ org.hamcrest;bundle-version="3.0",
+ org.mockito.junit-jupiter
 Bundle-ClassPath: .
 Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.abstraction,
@@ -17,4 +18,5 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.model.ipsproject,
  org.junit,
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)"

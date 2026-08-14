@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -141,7 +141,7 @@ public class ExtensionPropertyAnnGenTest {
                 + "@IpsExtensionProperty(id = \"foo\", value = \"bar\")" + ")" + LINE_SEPARATOR)));
     }
 
-    @Ignore("Complex XML is not supported at the moment")
+    @Disabled("Complex XML is not supported at the moment")
     @Test
     public void testCreateAnnotation_xml() {
         AbstractGeneratorModelNode modelNode = modelNode(

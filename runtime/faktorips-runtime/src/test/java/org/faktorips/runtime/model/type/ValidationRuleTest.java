@@ -13,8 +13,8 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
@@ -27,7 +27,7 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsValidationRule;
 import org.faktorips.runtime.model.annotation.IpsValidationRules;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ValidationRuleTest {
 

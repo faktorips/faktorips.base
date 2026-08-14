@@ -46,8 +46,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.values.Decimal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PropertyValueHistogramsTest extends AbstractIpsPluginTest {
 
@@ -74,7 +74,7 @@ public class PropertyValueHistogramsTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

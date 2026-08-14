@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContaine
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
 

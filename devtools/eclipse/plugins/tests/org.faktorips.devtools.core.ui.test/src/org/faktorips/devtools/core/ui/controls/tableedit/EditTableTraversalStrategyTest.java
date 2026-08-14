@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.controls.tableedit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -21,8 +21,8 @@ import java.util.List;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel;
 import org.faktorips.devtools.core.ui.dialogs.MultiValueTableModel.SingleValueViewItem;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EditTableTraversalStrategyTest {
 
@@ -38,7 +38,7 @@ public class EditTableTraversalStrategyTest {
     private EditTableTraversalStrategy<SingleValueViewItem> strat;
     private List<SingleValueViewItem> list;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         list = new ArrayList<>();
         MultiValueTableModel model = mock(MultiValueTableModel.class);

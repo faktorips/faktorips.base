@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultRangeTest {
 

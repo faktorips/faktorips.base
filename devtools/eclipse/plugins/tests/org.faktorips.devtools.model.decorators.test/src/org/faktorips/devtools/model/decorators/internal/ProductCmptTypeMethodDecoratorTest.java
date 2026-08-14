@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptTypeMethodDecoratorTest extends AbstractIpsPluginTest {
 

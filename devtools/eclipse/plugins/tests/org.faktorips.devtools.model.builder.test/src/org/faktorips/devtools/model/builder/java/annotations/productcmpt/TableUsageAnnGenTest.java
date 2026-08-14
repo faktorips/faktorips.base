@@ -21,12 +21,12 @@ import java.util.Collections;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XTableUsage;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class TableUsageAnnGenTest {
 
     @Mock

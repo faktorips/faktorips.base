@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal.ipsproject.cache;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,13 +37,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableContentsStructureCacheUpdaterTest {
 
     private static final String TABLE_STRUCTURE = "myTableStructure";
@@ -95,7 +98,7 @@ public class TableContentsStructureCacheUpdaterTest {
 
     private TableContentsStructureCacheUpdater tableContentUpdaterC;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(ipsProjectA.getIpsModel()).thenReturn(ipsModel);
         when(ipsProjectC.getIpsModel()).thenReturn(ipsModel);

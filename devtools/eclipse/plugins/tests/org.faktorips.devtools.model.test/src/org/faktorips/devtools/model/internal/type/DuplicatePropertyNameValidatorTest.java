@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.type;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
@@ -34,8 +34,8 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
@@ -60,7 +60,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     private PolicyCmptType policyCmptTypeV;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

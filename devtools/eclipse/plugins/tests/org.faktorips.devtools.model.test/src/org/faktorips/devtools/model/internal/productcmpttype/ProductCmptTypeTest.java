@@ -17,13 +17,14 @@ import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,9 +91,8 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.util.memento.Memento;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 /**
@@ -120,7 +120,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     private IProductCmptType superSuperProductCmptType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -2392,13 +2392,15 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertTrue(getLastContentChangeEvent().isAffected(category3));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testMoveCategories_CategoryFromForeignProductCmptType() {
-        deleteAllCategories(productCmptType, superProductCmptType);
+        assertThrows(IllegalArgumentException.class, () -> {
+            deleteAllCategories(productCmptType, superProductCmptType);
 
-        IProductCmptCategory superCategory = superProductCmptType.newCategory();
+            IProductCmptCategory superCategory = superProductCmptType.newCategory();
 
-        productCmptType.moveCategories(Arrays.asList(superCategory), true);
+            productCmptType.moveCategories(Arrays.asList(superCategory), true);
+        });
     }
 
     /**
@@ -2740,7 +2742,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * The {@link IProductCmptProperty} should not be moved to the other
      * {@link IProductCmptCategory}.
      */
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeCategoryAndDeferPolicyChange_DoNotAddPolicyChangeToPendingChangesIfPolicySrcFileImmutable()
             throws CoreException {
@@ -2854,7 +2855,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
      * <strong>Expected Outcome:</strong><br>
      * All category changes for the {@link IPolicyCmptType} should be reverted.
      */
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeCategoryAndDeferPolicyChange_ClearPendingPolicyChangesUponSaveEvenIfPolicySrcFileIsImmutable()
             throws CoreException {

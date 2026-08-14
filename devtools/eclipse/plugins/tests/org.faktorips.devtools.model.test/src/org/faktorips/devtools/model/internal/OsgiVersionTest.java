@@ -12,11 +12,12 @@ package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OsgiVersionTest {
 
@@ -27,9 +28,11 @@ public class OsgiVersionTest {
         assertEquals("1.2.3.asd", osgiVersion.asString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOsgiVersion_invalidVersionFormat() throws Exception {
-        new OsgiVersion("asd");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new OsgiVersion("asd");
+        });
     }
 
     @Test

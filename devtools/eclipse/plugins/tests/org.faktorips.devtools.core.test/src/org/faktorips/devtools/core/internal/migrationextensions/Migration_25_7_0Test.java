@@ -27,7 +27,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Migration_25_7_0Test extends AbstractIpsPluginTest {
 

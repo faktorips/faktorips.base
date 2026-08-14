@@ -18,9 +18,9 @@ import static org.hamcrest.Matchers.startsWith;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseIniUtilTest {
 
@@ -31,13 +31,13 @@ public class EclipseIniUtilTest {
     private String originalVmArgs;
     private String originalExitData;
 
-    @Before
+    @BeforeEach
     public void saveProperties() {
         originalVmArgs = System.getProperty(ECLIPSE_VMARGS);
         originalExitData = System.getProperty(EXIT_DATA_PROPERTY);
     }
 
-    @After
+    @AfterEach
     public void restoreProperties() {
         restoreProperty(ECLIPSE_VMARGS, originalVmArgs);
         restoreProperty(EXIT_DATA_PROPERTY, originalExitData);

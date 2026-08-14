@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -25,13 +25,16 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BooleanValueSetFieldTest {
 
     @Mock
@@ -62,7 +65,7 @@ public class BooleanValueSetFieldTest {
 
     private BooleanValueSetField field;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(control.getTrueCheckBox()).thenReturn(trueBox);
         when(control.getFalseCheckBox()).thenReturn(falseBox);

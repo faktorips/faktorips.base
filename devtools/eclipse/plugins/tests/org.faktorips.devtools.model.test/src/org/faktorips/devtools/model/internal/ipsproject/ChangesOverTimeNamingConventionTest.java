@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Locale;
 
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -28,7 +28,7 @@ public class ChangesOverTimeNamingConventionTest {
     private ChangesOverTimeNamingConvention vaa;
     private ChangesOverTimeNamingConvention pm;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         vaa = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.VAA);
         pm = new ChangesOverTimeNamingConvention(IChangesOverTimeNamingConvention.PM);

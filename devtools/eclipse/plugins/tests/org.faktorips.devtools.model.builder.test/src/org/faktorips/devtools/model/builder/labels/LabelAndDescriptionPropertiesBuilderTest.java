@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.builder.java.TestJavaBuilderSet;
 import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LabelAndDescriptionPropertiesBuilderTest {
 

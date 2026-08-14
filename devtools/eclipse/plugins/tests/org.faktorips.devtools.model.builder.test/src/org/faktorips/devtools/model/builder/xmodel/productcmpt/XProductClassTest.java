@@ -41,13 +41,16 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.runtime.IConfigurableModelObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class XProductClassTest {
 
     @Mock
@@ -106,13 +109,13 @@ public class XProductClassTest {
 
     private XProductClass xProductClass;
 
-    @Before
+    @BeforeEach
     public void initModelContext() {
         when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
     }
 
-    @Before
+    @BeforeEach
     public void createProductClass() {
         // need this because XProductClass is abstract
         xProductClass = mock(XProductClass.class, CALLS_REAL_METHODS);
@@ -121,12 +124,12 @@ public class XProductClassTest {
         when(xProductClass.getIpsObjectPartContainer()).thenReturn(type);
     }
 
-    @Before
+    @BeforeEach
     public void createTypes() {
         when(type.getIpsProject()).thenReturn(ipsProject);
     }
 
-    @Before
+    @BeforeEach
     public void setUpAssociations() {
         List<IProductCmptTypeAssociation> assocList = new ArrayList<>();
         IProductCmptTypeAssociation assoc1 = mock(IProductCmptTypeAssociation.class);
@@ -146,7 +149,7 @@ public class XProductClassTest {
         when(modelService.getModelNode(assoc3, XProductAssociation.class, modelContext)).thenReturn(assocNode3);
     }
 
-    @Before
+    @BeforeEach
     public void setUpAttributes() {
         List<IProductCmptTypeAttribute> attrList = new ArrayList<>();
         IProductCmptTypeAttribute attr1 = mock(IProductCmptTypeAttribute.class);

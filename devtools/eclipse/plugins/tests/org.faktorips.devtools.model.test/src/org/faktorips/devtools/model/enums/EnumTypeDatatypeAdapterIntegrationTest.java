@@ -13,11 +13,11 @@ package org.faktorips.devtools.model.enums;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +26,8 @@ import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPluginTest {
 
@@ -35,7 +35,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     private EnumTypeDatatypeAdapter paymentModeAdapter;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         genderAdapter = new EnumTypeDatatypeAdapter(genderEnumType, null);

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 
@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests a common case when overriding attributes while using enum types as datatypes.
@@ -47,7 +47,7 @@ public class ContainsValueSetEnumDatatpeTest extends AbstractIpsPluginTest {
     private EnumContent enumContent;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         baseProject = super.newIpsProject("BaseProject");

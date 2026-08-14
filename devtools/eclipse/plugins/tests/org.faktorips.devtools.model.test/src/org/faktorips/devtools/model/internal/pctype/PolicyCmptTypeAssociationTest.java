@@ -14,11 +14,11 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,8 +41,8 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -55,7 +55,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation implementationAssociation;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -451,8 +451,8 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         compositBasePart.setDerivedUnion(true);
 
         messageList = inversePart.validate(ipsProject);
-        assertNull(messageList.toString(),
-                messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID));
+        assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_SHARED_ASSOCIATION_INVALID),
+                messageList.toString());
 
     }
 
@@ -942,10 +942,10 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         MessageList ml = pcType.validate(ipsProject);
         assertThat(ml, hasMessageCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
         // assume that the duplicate property is the only error
-        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME,
-                ml.getMessagesFor(association2).getFirstMessage(Message.ERROR));
-        assertNotNull(IType.MSGCODE_DUPLICATE_PROPERTY_NAME,
-                ml.getMessagesFor(association2).getFirstMessage(Message.ERROR));
+        assertNotNull(ml.getMessagesFor(association2).getFirstMessage(Message.ERROR),
+                IType.MSGCODE_DUPLICATE_PROPERTY_NAME);
+        assertNotNull(ml.getMessagesFor(association2).getFirstMessage(Message.ERROR),
+                IType.MSGCODE_DUPLICATE_PROPERTY_NAME);
 
         association2.setTargetRoleSingular("b");
         association2.setTargetRolePlural("");
@@ -986,7 +986,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         setOptionalConstraintSharedAssociation(true);
 
         IPolicyCmptTypeAssociation host = association.findSharedAssociationHost(ipsProject);
-        assertNull("should find no shared association host", host);
+        assertNull(host, "should find no shared association host");
 
         PolicyCmptType superType = newPolicyCmptType(ipsProject, "superType");
         pcType.setSupertype(superType.getQualifiedName());
@@ -994,11 +994,11 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         associationHost.setTargetRoleSingular(association.getTargetRoleSingular());
 
         host = association.findSharedAssociationHost(ipsProject);
-        assertNull("should find no shared association host", host);
+        assertNull(host, "should find no shared association host");
 
         associationHost.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
         host = association.findSharedAssociationHost(ipsProject);
-        assertNull("should find no shared association host", host);
+        assertNull(host, "should find no shared association host");
 
         associationHost.setTarget(association.getTarget());
         host = association.findSharedAssociationHost(ipsProject);

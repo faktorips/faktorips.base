@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -34,7 +34,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MultiValueHolderValidatorTest {
 

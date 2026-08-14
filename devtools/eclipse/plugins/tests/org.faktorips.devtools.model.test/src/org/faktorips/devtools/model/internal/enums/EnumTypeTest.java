@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,8 +53,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class EnumTypeTest extends AbstractIpsEnumPluginTest {
@@ -771,7 +771,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
      * The time to validate the identifier violations should be less than 3 second. In fact it
      * should be very much faster but three seconds is the maximum for slow test machines!
      */
-    @Ignore("fails if build slave has a high load")
+    @Disabled("fails if build slave has a high load")
     @Test
     public void testValidate_performance() throws Exception {
         EnumType enumType = newEnumType(ipsProject, "PerformanceTestEnum");

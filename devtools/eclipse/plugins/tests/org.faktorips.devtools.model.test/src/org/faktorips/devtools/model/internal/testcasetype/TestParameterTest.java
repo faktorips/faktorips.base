@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -35,7 +35,7 @@ public class TestParameterTest extends AbstractIpsPluginTest {
     private IIpsProject project;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");

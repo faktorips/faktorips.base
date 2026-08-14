@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -20,13 +20,16 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class StdBuilderIdentifierNodeGeneratorTest {
     @Mock
     JavaBuilderIdentifierNodeGenerator generator;
@@ -37,7 +40,7 @@ public class StdBuilderIdentifierNodeGeneratorTest {
     Datatype listDatatype = new ListOfTypeDatatype(elementDatatype);
 
     @SuppressWarnings("unchecked")
-    @Before
+    @BeforeEach
     public void setUp() {
         when(generator.isListDatatypeContext(any(CompilationResult.class))).thenCallRealMethod();
     }

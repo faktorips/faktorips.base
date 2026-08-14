@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -31,13 +31,16 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumParserTest extends AbstractParserTest {
 
     private static final String MY_LABEL = "myLabel";
@@ -64,7 +67,7 @@ public class EnumParserTest extends AbstractParserTest {
 
     private EnumParser enumParser;
 
-    @Before
+    @BeforeEach
     public void createEnumParser() throws Exception {
         when(getExpression().getEnumDatatypesAllowedInFormula()).thenReturn(
                 new EnumDatatype[] { enumDatatype, enumDatatypeAdapter });

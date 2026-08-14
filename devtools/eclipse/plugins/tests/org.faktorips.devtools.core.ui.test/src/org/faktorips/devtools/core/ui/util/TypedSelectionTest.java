@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -33,7 +33,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the class {@link TypedSelection}.
@@ -77,83 +77,84 @@ public class TypedSelectionTest {
 
         TypedSelection<String> validator = TypedSelection.create(String.class, new StructuredSelection(), 1,
                 TypedSelection.INFINITY);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
     }
 
     /**
      * Checks whether we correctly identify a selection of String elements (any count).
-     * 
+     *
      * @param selectionInput the selection to validate
      */
     public void assertAnyCountInSelection(final String[] selectionInput) {
         StructuredSelection selection = new StructuredSelection(selectionInput);
 
         TypedSelection<String> validator = TypedSelection.create(String.class, selection, 1, TypedSelection.INFINITY);
-        assertTrue(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertTrue(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         validator = TypedSelection.createAnyCount(String.class, selection);
-        assertTrue(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertTrue(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
     }
 
     /**
      * Checks whether we correctly identify a selection of two elements.
-     * 
+     *
      * @throws Exception in case of an unexpected error during the test
      */
     @Test
     public void testCorrectSelectionOfTwo() throws Exception {
         StructuredSelection selection = new StructuredSelection(new String[] { TEST_STRING, SECOND_TEST_STRING });
         TypedSelection<String> validator = TypedSelection.create(String.class, selection, 2);
-        assertTrue(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertTrue(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING, validator.getFirstElement());
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, SECOND_TEST_STRING, validator.getSecondElement());
+        assertEquals(TEST_STRING, validator.getFirstElement(), WRONG_ELEMENT_IN_SELECTION);
+        assertEquals(SECOND_TEST_STRING, validator.getSecondElement(), WRONG_ELEMENT_IN_SELECTION);
 
         Collection<String> elements = validator.getElements();
-        assertEquals(WRONG_NUMBER_OF_ELEMENTS, 2, elements.size());
-        assertEquals(WRONG_NUMBER_OF_ELEMENTS, 2, validator.getElementCount());
+        assertEquals(2, elements.size(), WRONG_NUMBER_OF_ELEMENTS);
+        assertEquals(2, validator.getElementCount(), WRONG_NUMBER_OF_ELEMENTS);
         Iterator<String> iterator = elements.iterator();
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING, iterator.next());
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, SECOND_TEST_STRING, iterator.next());
+        assertEquals(TEST_STRING, iterator.next(), WRONG_ELEMENT_IN_SELECTION);
+        assertEquals(SECOND_TEST_STRING, iterator.next(), WRONG_ELEMENT_IN_SELECTION);
     }
 
     /**
      * Checks whether we correctly identify a selection of one element.
-     * 
+     *
      * @throws Exception in case of an unexpected error during the test
      */
     @Test
     public void testCorrectSingleSelection() throws Exception {
         StructuredSelection selection = new StructuredSelection(new String[] { TEST_STRING });
         TypedSelection<String> validator = TypedSelection.create(String.class, selection);
-        assertTrue(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertTrue(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING, validator.getElement());
+        assertEquals(TEST_STRING, validator.getElement(), WRONG_ELEMENT_IN_SELECTION);
 
         Collection<String> elements = validator.getElements();
-        assertEquals(WRONG_NUMBER_OF_ELEMENTS, 1, elements.size());
-        assertEquals(WRONG_NUMBER_OF_ELEMENTS, 1, validator.getElementCount());
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING, elements.iterator().next());
+        assertEquals(1, elements.size(), WRONG_NUMBER_OF_ELEMENTS);
+        assertEquals(1, validator.getElementCount(), WRONG_NUMBER_OF_ELEMENTS);
+        assertEquals(TEST_STRING, elements.iterator().next(), WRONG_ELEMENT_IN_SELECTION);
     }
 
     /**
      * Checks whether we correctly identify a selection containing sub types.
-     * 
+     *
      * @throws Exception in case of an unexpected error during the test
      */
     @Test
     public void testSubTypes() throws Exception {
         StructuredSelection selection = new StructuredSelection(new Number[] { INTEGER_VALUE, LONG_VALUE });
         TypedSelection<Number> validator = TypedSelection.create(Number.class, selection, 2);
-        assertTrue(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertTrue(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, INTEGER_VALUE, validator.getFirstElement());
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, LONG_VALUE, validator.getSecondElement());
+        assertEquals(INTEGER_VALUE, validator.getFirstElement(), WRONG_ELEMENT_IN_SELECTION);
+        assertEquals(LONG_VALUE, validator.getSecondElement(), WRONG_ELEMENT_IN_SELECTION);
     }
 
     /**
      * Checks whether we correctly decline a selection of invalid elements.
-     * 
+     *
      * @throws Exception in case of an unexpected error during the test
      */
     @Test
@@ -161,30 +162,30 @@ public class TypedSelectionTest {
         StructuredSelection selection = new StructuredSelection();
 
         TypedSelection<String> validator = TypedSelection.create(String.class, selection, 2, 2);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         selection = new StructuredSelection(new String[] { TEST_STRING });
         validator = new TypedSelection<>(String.class, selection, 2, 2);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         selection = new StructuredSelection(new Object[] { TEST_STRING, TEST_STRING, INTEGER_VALUE });
         validator = new TypedSelection<>(String.class, selection, 2, 2);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         selection = new StructuredSelection(new Object[] { TEST_STRING, INTEGER_VALUE });
         validator = new TypedSelection<>(String.class, selection, 2, 2);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         selection = new StructuredSelection(new Object[] { INTEGER_VALUE, INTEGER_VALUE });
         validator = new TypedSelection<>(String.class, selection, 2, 2);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         selection = new StructuredSelection(new String[] { TEST_STRING, TEST_STRING, TEST_STRING });
         validator = new TypedSelection<>(String.class, selection, 2, 2);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
 
         validator = new TypedSelection<>(String.class, new TextSelection(0, 0), 1);
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
     }
 
     /**
@@ -195,7 +196,7 @@ public class TypedSelectionTest {
         TypedSelection<Object> validator = TypedSelection.create(Object.class,
                 new StructuredSelection(Collections.emptyList()));
 
-        assertFalse(WRONG_VALID_STATE_EVALUATION, validator.isValid());
+        assertFalse(validator.isValid(), WRONG_VALID_STATE_EVALUATION);
     }
 
     /**
@@ -209,7 +210,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue(NO_EXCEPTION_IS_THROWN, isThrown);
+        assertTrue(isThrown, NO_EXCEPTION_IS_THROWN);
 
         isThrown = false;
         try {
@@ -217,7 +218,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue(NO_EXCEPTION_IS_THROWN, isThrown);
+        assertTrue(isThrown, NO_EXCEPTION_IS_THROWN);
     }
 
     /**
@@ -232,13 +233,13 @@ public class TypedSelectionTest {
 
         model.add(TEST_STRING);
 
-        assertFalse(WRONG_EQUALS_EVALUATION, TypedSelection.isEqual(selection, model));
-        assertTrue(WRONG_EQUALS_EVALUATION, TypedSelection.isNotEqual(selection, model));
+        assertFalse(TypedSelection.isEqual(selection, model), WRONG_EQUALS_EVALUATION);
+        assertTrue(TypedSelection.isNotEqual(selection, model), WRONG_EQUALS_EVALUATION);
 
         model.remove(TEST_STRING);
 
-        assertTrue(WRONG_EQUALS_EVALUATION, TypedSelection.isEqual(selection, model));
-        assertFalse(WRONG_EQUALS_EVALUATION, TypedSelection.isNotEqual(selection, model));
+        assertTrue(TypedSelection.isEqual(selection, model), WRONG_EQUALS_EVALUATION);
+        assertFalse(TypedSelection.isNotEqual(selection, model), WRONG_EQUALS_EVALUATION);
 
         model.add(TEST_STRING);
         model.add(NO_EXCEPTION_IS_THROWN);
@@ -247,8 +248,8 @@ public class TypedSelectionTest {
         selectionModel.add(NO_EXCEPTION_IS_THROWN);
         selectionModel.add(TEST_STRING);
 
-        assertFalse(WRONG_EQUALS_EVALUATION, model.equals(selectionModel));
-        assertTrue(WRONG_EQUALS_EVALUATION, TypedSelection.isEqual(new StructuredSelection(selectionModel), model));
+        assertFalse(model.equals(selectionModel), WRONG_EQUALS_EVALUATION);
+        assertTrue(TypedSelection.isEqual(new StructuredSelection(selectionModel), model), WRONG_EQUALS_EVALUATION);
     }
 
     /**
@@ -262,15 +263,15 @@ public class TypedSelectionTest {
 
         Collection<String> collection = TypedSelection.convert(String.class, selection);
 
-        assertEquals(WRONG_NUMBER_OF_ELEMENTS, 1, collection.size());
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING, collection.iterator().next());
+        assertEquals(1, collection.size(), WRONG_NUMBER_OF_ELEMENTS);
+        assertEquals(TEST_STRING, collection.iterator().next(), WRONG_ELEMENT_IN_SELECTION);
 
         selectionModel.add(NO_EXCEPTION_IS_THROWN);
 
         selection = new StructuredSelection(selectionModel);
         collection = TypedSelection.convert(String.class, selection);
 
-        assertEquals(WRONG_NUMBER_OF_ELEMENTS, 2, collection.size());
+        assertEquals(2, collection.size(), WRONG_NUMBER_OF_ELEMENTS);
     }
 
     /**
@@ -282,32 +283,32 @@ public class TypedSelectionTest {
         selectionModel.add(TEST_STRING);
         StructuredSelection selection = new StructuredSelection(selectionModel);
 
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING,
-                TypedSelection.convertSingleElement(String.class, selection));
+        assertEquals(TEST_STRING,
+                TypedSelection.convertSingleElement(String.class, selection), WRONG_ELEMENT_IN_SELECTION);
     }
 
     @Test
     public void testSingleElement() {
         ISelection emptySelection = new StructuredSelection(Collections.emptyList());
-        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(String.class, emptySelection)
-                .isPresent());
-        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(Integer.class, emptySelection)
-                .isPresent());
+        assertFalse(TypedSelection.singleElement(String.class, emptySelection)
+                .isPresent(), UNEXPECTED_ELEMENT_IN_SELECTION);
+        assertFalse(TypedSelection.singleElement(Integer.class, emptySelection)
+                .isPresent(), UNEXPECTED_ELEMENT_IN_SELECTION);
 
         StructuredSelection singleSelection = new StructuredSelection(Arrays.asList(TEST_STRING));
 
-        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(Integer.class, singleSelection)
-                .isPresent());
-        assertTrue(NO_ELEMENT_IN_SELECTION, TypedSelection.singleElement(String.class, singleSelection).isPresent());
-        assertEquals(WRONG_ELEMENT_IN_SELECTION, TEST_STRING,
-                TypedSelection.singleElement(String.class, singleSelection).get());
+        assertFalse(TypedSelection.singleElement(Integer.class, singleSelection)
+                .isPresent(), UNEXPECTED_ELEMENT_IN_SELECTION);
+        assertTrue(TypedSelection.singleElement(String.class, singleSelection).isPresent(), NO_ELEMENT_IN_SELECTION);
+        assertEquals(TEST_STRING,
+                TypedSelection.singleElement(String.class, singleSelection).get(), WRONG_ELEMENT_IN_SELECTION);
 
         StructuredSelection multiSelection = new StructuredSelection(Arrays.asList(TEST_STRING, TEST_STRING));
 
-        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(Integer.class, multiSelection)
-                .isPresent());
-        assertFalse(UNEXPECTED_ELEMENT_IN_SELECTION, TypedSelection.singleElement(String.class, multiSelection)
-                .isPresent());
+        assertFalse(TypedSelection.singleElement(Integer.class, multiSelection)
+                .isPresent(), UNEXPECTED_ELEMENT_IN_SELECTION);
+        assertFalse(TypedSelection.singleElement(String.class, multiSelection)
+                .isPresent(), UNEXPECTED_ELEMENT_IN_SELECTION);
     }
 
     /**
@@ -321,7 +322,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue(NO_EXCEPTION_ON_EMPTY, isThrown);
+        assertTrue(isThrown, NO_EXCEPTION_ON_EMPTY);
     }
 
     /**
@@ -335,7 +336,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue("No exception is thrown: Selection with two elements is ignored.", isThrown); //$NON-NLS-1$
+        assertTrue(isThrown, "No exception is thrown: Selection with two elements is ignored."); //$NON-NLS-1$
     }
 
     /**
@@ -353,7 +354,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue(NO_EXCEPTION_ON_WRONG_TYPE, isThrown);
+        assertTrue(isThrown, NO_EXCEPTION_ON_WRONG_TYPE);
     }
 
     /**
@@ -370,7 +371,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue(NO_EXCEPTION_ON_WRONG_TYPE, isThrown);
+        assertTrue(isThrown, NO_EXCEPTION_ON_WRONG_TYPE);
     }
 
     /**
@@ -388,7 +389,7 @@ public class TypedSelectionTest {
         } catch (IllegalArgumentException exception) {
             isThrown = true;
         }
-        assertTrue(NO_EXCEPTION_ON_WRONG_TYPE, isThrown);
+        assertTrue(isThrown, NO_EXCEPTION_ON_WRONG_TYPE);
     }
 
     /**

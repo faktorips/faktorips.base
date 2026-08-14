@@ -13,8 +13,8 @@ package org.faktorips.devtools.htmlexport.helper.html;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
 
@@ -24,7 +24,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         TextPageElement pageElement = new TextPageElement(text, getContext());
         pageElement.addStyles(Style.BOLD);
 
-        Assert.assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -33,7 +33,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         TextPageElement pageElement = new TextPageElement(text, getContext());
         pageElement.addStyles(Style.ITALIC);
 
-        Assert.assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -43,7 +43,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         pageElement.addStyles(Style.ITALIC);
         pageElement.addStyles(Style.BOLD);
 
-        Assert.assertTrue(layout(pageElement).matches("<span class=\"(ITALIC BOLD|BOLD ITALIC)\">" + text + "</span>")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(layout(pageElement).matches("<span class=\"(ITALIC BOLD|BOLD ITALIC)\">" + text + "</span>")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -52,6 +52,6 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK, getContext());
         pageElement.addStyles(Style.CENTER);
 
-        Assert.assertEquals("<div class=\"CENTER\">" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("<div class=\"CENTER\">" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

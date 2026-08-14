@@ -10,8 +10,8 @@
 
 package org.faktorips.fl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
@@ -19,7 +19,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Contains all tests for the unary plus (+) operator that as defined by the default unary

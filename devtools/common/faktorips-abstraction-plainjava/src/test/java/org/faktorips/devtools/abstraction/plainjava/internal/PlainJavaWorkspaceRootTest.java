@@ -13,7 +13,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.Matchers.hasItems;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +28,8 @@ import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PlainJavaWorkspaceRootTest extends PlainJavaAbstractionTestSetup {
 
@@ -42,7 +42,7 @@ public class PlainJavaWorkspaceRootTest extends PlainJavaAbstractionTestSetup {
     private AProject testProject2;
     private AWorkspace workspace;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject1 = newSimpleIpsProject(TEST_PROJECT1);
         testProject2 = newSimpleIpsProject(TEST_PROJECT2);

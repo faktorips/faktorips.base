@@ -12,7 +12,7 @@ package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.JavaExprCompilerAbstractTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NotEqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
     @Test

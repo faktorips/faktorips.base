@@ -12,7 +12,7 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectContentPageTest extends AbstractXmlUnitHtmlExportTest {
 

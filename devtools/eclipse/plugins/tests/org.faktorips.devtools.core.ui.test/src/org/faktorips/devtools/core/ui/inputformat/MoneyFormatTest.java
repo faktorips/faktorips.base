@@ -10,22 +10,23 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Currency;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MoneyFormatTest extends AbstractIpsPluginTest {
 
     private MoneyFormat moneyFormat;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         moneyFormat = new MoneyFormat(Currency.getInstance("EUR"));
@@ -235,9 +236,11 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
         assertEquals(Currency.getInstance("EUR"), moneyFormat.getCurrency());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testUpdateCurrentCurrency_IAE() {
-        moneyFormat.updateCurrentCurrency("illegalValue");
+        assertThrows(IllegalArgumentException.class, () -> {
+            moneyFormat.updateCurrentCurrency("illegalValue");
+        });
     }
 
     @Test

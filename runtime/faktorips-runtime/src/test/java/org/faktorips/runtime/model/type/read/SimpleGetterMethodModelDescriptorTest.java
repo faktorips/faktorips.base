@@ -19,13 +19,13 @@ import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
 import org.faktorips.runtime.util.MessagesHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class SimpleGetterMethodModelDescriptorTest {
 
     @Mock

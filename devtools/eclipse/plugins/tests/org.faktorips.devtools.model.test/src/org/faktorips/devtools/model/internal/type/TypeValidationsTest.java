@@ -42,8 +42,8 @@ import org.faktorips.runtime.MessageList;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TypeValidationsTest extends AbstractIpsPluginTest {
 
@@ -59,7 +59,7 @@ public class TypeValidationsTest extends AbstractIpsPluginTest {
     private TestCase testCase;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("p");

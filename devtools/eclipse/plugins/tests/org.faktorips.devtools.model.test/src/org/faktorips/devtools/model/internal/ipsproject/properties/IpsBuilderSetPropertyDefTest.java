@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -41,8 +41,7 @@ import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 
 public class IpsBuilderSetPropertyDefTest {
 
@@ -258,7 +257,6 @@ public class IpsBuilderSetPropertyDefTest {
         assertSame(ownDefClass, propertyDef);
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testValidateAvailability() {
         if (Abstractions.isEclipseRunning()) {

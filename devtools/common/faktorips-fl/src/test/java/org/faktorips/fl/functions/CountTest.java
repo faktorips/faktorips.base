@@ -10,8 +10,8 @@
 
 package org.faktorips.fl.functions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -19,13 +19,13 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.DefaultIdentifierResolver;
 import org.faktorips.fl.ExprCompiler;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CountTest extends FunctionAbstractTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new Count("COUNT", ""));

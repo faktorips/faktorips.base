@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -23,13 +23,16 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class NamedDatatypeInputFormatTest {
 
     @Mock
@@ -40,13 +43,13 @@ public class NamedDatatypeInputFormatTest {
 
     private NamedDatatypeInputFormat NamedDatatypeInputFormat;
 
-    @Before
+    @BeforeEach
     public void createInputFormat() {
         doReturn(Locale.GERMANY).when(ipsPreferences).getDatatypeFormattingLocale();
         NamedDatatypeInputFormat = new NamedDatatypeInputFormat(enumDatatype, ipsPreferences);
     }
 
-    @Before
+    @BeforeEach
     public void setUpEnumDatatype() {
 
         when(enumDatatype.getValueByName(eq("nameA"), any(Locale.class))).thenReturn("a");

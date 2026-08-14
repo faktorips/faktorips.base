@@ -18,13 +18,16 @@ import java.beans.PropertyChangeListener;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectPartPmoTest {
     @Mock
     private IIpsObjectPartContainer ipsObjectPartContainer;
@@ -40,7 +43,7 @@ public class IpsObjectPartPmoTest {
 
     private IpsObjectPartPmo ipsObjectPartPmo;
 
-    @Before
+    @BeforeEach
     public void setUpIpsObjectPartPmo() {
         ipsObjectPartPmo = new IpsObjectPartPmo(part);
     }

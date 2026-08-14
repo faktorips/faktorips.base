@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ComponentNodeTest extends AbstractIpsPluginTest {
 
@@ -85,11 +86,13 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         assertTrue(encapsulateComponentTypes.isEmpty());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testEncapsulateComponentTypes_NullListInput() {
-        IIpsProject project = newIpsProject();
+        assertThrows(NullPointerException.class, () -> {
+            IIpsProject project = newIpsProject();
 
-        ComponentNode.encapsulateComponentTypes(null, null, project);
+            ComponentNode.encapsulateComponentTypes(null, null, project);
+        });
     }
 
     @Test
@@ -105,13 +108,15 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
         assertEquals(type, encapsulatedComponentTypes.get(0).getValue());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testEncapsulateComponentTypes_NullProjectAndNonEmptyListInput() {
-        IIpsProject project = newIpsProject();
-        ArrayList<IType> components = new ArrayList<>();
-        components.add(newPolicyCmptTypeWithoutProductCmptType(project, "Component"));
+        assertThrows(NullPointerException.class, () -> {
+            IIpsProject project = newIpsProject();
+            ArrayList<IType> components = new ArrayList<>();
+            components.add(newPolicyCmptTypeWithoutProductCmptType(project, "Component"));
 
-        ComponentNode.encapsulateComponentTypes(components, null, null);
+            ComponentNode.encapsulateComponentTypes(components, null, null);
+        });
     }
 
     @Test

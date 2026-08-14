@@ -13,10 +13,10 @@ package org.faktorips.runtime;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
@@ -43,8 +43,8 @@ import org.faktorips.runtime.testrepository.motor.MotorProductGen;
 import org.faktorips.runtime.testrepository.motor.RateTable;
 import org.faktorips.runtime.testrepository.motor.RateTableSingle;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test case operates on the org.faktorips.runtime.testrepository.
@@ -55,7 +55,7 @@ public class ClassloaderRuntimeRepositoryTest {
 
     private ClassloaderRuntimeRepository repository;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // The repository loading the empty TOC to include testing referenced repositories
         repository = ClassloaderRuntimeRepository
@@ -289,7 +289,7 @@ public class ClassloaderRuntimeRepositoryTest {
 
     private void assertIpsTestCasesStartingWith(String qNamePrefix, String[] testCasesExpected) {
         List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
-        assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
+        assertEquals(testCasesExpected.length, result.size(), "Unexpected number of test cases");
         for (String element : testCasesExpected) {
             boolean found = false;
             for (IpsTest2 ipsTest2 : result) {
@@ -300,7 +300,7 @@ public class ClassloaderRuntimeRepositoryTest {
                 }
 
             }
-            assertTrue("Missing test case: " + element, found);
+            assertTrue(found, "Missing test case: " + element);
         }
     }
 

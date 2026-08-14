@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -42,13 +42,16 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AttributeParserTest extends AbstractParserTest {
 
     private static final String MY_ATTRIBUTE = "myAttribute";
@@ -86,12 +89,12 @@ public class AttributeParserTest extends AbstractParserTest {
 
     private AttributeParser attributeParser;
 
-    @Before
+    @BeforeEach
     public void createAttributeParser() throws Exception {
         attributeParser = new AttributeParser(getParsingContext(), identifierFilter);
     }
 
-    @Before
+    @BeforeEach
     public void mockAttribute() throws Exception {
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);

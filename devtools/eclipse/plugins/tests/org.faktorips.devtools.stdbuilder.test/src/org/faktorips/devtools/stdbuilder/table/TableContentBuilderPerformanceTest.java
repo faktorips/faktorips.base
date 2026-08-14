@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.table;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
@@ -20,8 +20,8 @@ import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
 
@@ -29,7 +29,7 @@ public class TableContentBuilderPerformanceTest extends AbstractStdBuilderTest {
     private static final int ROWS = 50000;
     private static final int COLUMNS = 20;
 
-    @Ignore
+    @Disabled
     @Test
     public void testBuildBigTable() throws CoreException {
         ITableStructure tableStructure = newTableStructure(ipsProject, "TS");

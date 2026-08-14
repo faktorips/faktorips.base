@@ -32,7 +32,7 @@ import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.values.InternationalString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

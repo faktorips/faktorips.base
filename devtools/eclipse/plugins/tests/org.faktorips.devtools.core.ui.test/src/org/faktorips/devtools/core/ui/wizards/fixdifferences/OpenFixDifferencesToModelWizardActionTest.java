@@ -33,8 +33,8 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPluginTest {
 
@@ -47,7 +47,7 @@ public class OpenFixDifferencesToModelWizardActionTest extends AbstractIpsPlugin
     private ProductCmpt productCmpt2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         openFixDifferencesToModelWizardAction = new OpenFixDifferencesToModelWizardAction();

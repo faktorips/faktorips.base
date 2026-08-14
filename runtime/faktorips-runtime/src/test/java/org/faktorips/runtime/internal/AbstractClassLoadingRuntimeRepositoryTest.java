@@ -13,8 +13,8 @@ package org.faktorips.runtime.internal;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,8 +40,8 @@ import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -50,7 +50,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     private AbstractClassLoadingRuntimeRepository repo;
     private ProductComponent loadedProdCmpt;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         loadedProdCmpt = mock(ProductComponent.class);
         repo = new ClassloaderRuntimeRepository(getClass().getClassLoader(), "",

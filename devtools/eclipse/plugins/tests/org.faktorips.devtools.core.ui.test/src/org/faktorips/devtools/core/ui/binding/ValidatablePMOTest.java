@@ -10,15 +10,15 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValidatablePMOTest {
 
@@ -44,7 +44,7 @@ public class ValidatablePMOTest {
         }
     };
 
-    @Before
+    @BeforeEach
     public void testSetUp() {
         creatingObjectProperties();
         createMessageList();

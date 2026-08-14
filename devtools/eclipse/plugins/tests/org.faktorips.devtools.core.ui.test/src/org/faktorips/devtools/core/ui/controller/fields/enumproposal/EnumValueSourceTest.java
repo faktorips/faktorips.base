@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -21,13 +21,16 @@ import java.util.List;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumValueSourceTest {
 
     @Mock
@@ -38,7 +41,7 @@ public class EnumValueSourceTest {
     private EnumDatatype datatype;
     private EnumValueSource enumValueSource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         enumValueSource = new EnumValueSource(valueSetOwner, datatype);
 

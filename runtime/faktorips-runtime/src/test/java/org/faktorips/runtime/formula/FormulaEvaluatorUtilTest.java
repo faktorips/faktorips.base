@@ -10,11 +10,11 @@
 
 package org.faktorips.runtime.formula;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,8 +29,8 @@ import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AssociationToManyHelpe
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.AttributeAccessorHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.ExistsHelper;
 import org.faktorips.runtime.formula.FormulaEvaluatorUtil.FunctionWithListAsArgumentHelper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link FormulaEvaluatorUtil}.
@@ -51,7 +51,7 @@ public class FormulaEvaluatorUtilTest {
         Integer getValue();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         tree = mock(ITree.class);
         treePC = mock(IProductComponent.class);

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Testet die Ausgabe der Labels und Descriptions in Html, die prinzipielle Funktion testet der

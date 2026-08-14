@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.commands;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,8 +31,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Methods this class test, whether the target type of the selected element is present and valid.
@@ -48,7 +48,7 @@ public class AbstractAddAndNewProductCmptCommandTest {
 
     private IWorkbenchWindow activeWorkbenchWindow;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         testCommand = new TestCommand();

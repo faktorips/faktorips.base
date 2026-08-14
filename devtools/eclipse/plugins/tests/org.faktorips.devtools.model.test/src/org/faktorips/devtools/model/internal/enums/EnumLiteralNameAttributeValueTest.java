@@ -13,9 +13,9 @@ package org.faktorips.devtools.model.internal.enums;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -25,15 +25,15 @@ import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnumLiteralNameAttributeValueTest extends AbstractIpsEnumPluginTest {
 
     private IEnumLiteralNameAttributeValue literalNameAttributeValue;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         literalNameAttributeValue = paymentMode.getEnumValues().get(0).getEnumLiteralNameAttributeValue();

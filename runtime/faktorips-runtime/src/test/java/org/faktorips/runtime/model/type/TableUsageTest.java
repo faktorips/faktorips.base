@@ -20,7 +20,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,12 +48,12 @@ import org.faktorips.runtime.model.annotation.IpsTableUsage;
 import org.faktorips.runtime.model.annotation.IpsTableUsages;
 import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.table.TableStructureKind;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class TableUsageTest {
 
     @Mock
@@ -95,10 +96,12 @@ public class TableUsageTest {
         assertThat((FooTable)childTableUsage.getTable(product, null), is(product.TABLE3));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetTableUsage_UnkownName() {
-        ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
-        productCmptType.getTableUsage("unkown");
+        assertThrows(IllegalArgumentException.class, () -> {
+            ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
+            productCmptType.getTableUsage("unkown");
+        });
     }
 
     @SuppressWarnings("rawtypes")
@@ -260,10 +263,12 @@ public class TableUsageTest {
         assertThat((BarTable)table2.getTable(product, null), is(product.TABLE2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetDeclaredTableUsage_UnknownName() {
-        ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
-        productCmptType.getDeclaredTableUsage("undefined");
+        assertThrows(IllegalArgumentException.class, () -> {
+            ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
+            productCmptType.getDeclaredTableUsage("undefined");
+        });
     }
 
     @Test
@@ -347,13 +352,15 @@ public class TableUsageTest {
         assertThat(product.getTable3Name(), is("NotFoo"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetTableName_withGeneration_exception() {
-        Product product = new Product();
-        ProductGen gen = new ProductGen(product);
-        TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("tableGen");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Product product = new Product();
+            ProductGen gen = new ProductGen(product);
+            TableUsage tableUsage = IpsModel.getProductCmptType(product).getTableUsage("tableGen");
 
-        tableUsage.setTableName("SomeName", gen);
+            tableUsage.setTableName("SomeName", gen);
+        });
     }
 
     @Test

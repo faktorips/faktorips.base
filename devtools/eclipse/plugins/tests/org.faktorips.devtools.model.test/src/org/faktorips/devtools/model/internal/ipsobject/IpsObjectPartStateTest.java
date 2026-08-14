@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -21,8 +21,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IMethod;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
 
@@ -30,7 +30,7 @@ public class IpsObjectPartStateTest extends AbstractIpsPluginTest {
     PolicyCmptType pcType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

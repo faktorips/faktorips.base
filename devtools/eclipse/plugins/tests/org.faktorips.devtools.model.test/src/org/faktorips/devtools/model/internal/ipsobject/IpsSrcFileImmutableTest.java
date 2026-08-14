@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,8 +33,8 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
 
@@ -44,7 +45,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     private AFile file;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -187,9 +188,11 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
         assertEquals("", qnt.getPackageName());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testDelete() {
-        srcFileImmutable.delete();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            srcFileImmutable.delete();
+        });
     }
 
 }

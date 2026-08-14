@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
 
@@ -18,8 +18,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AlphaNumericSimpleNameComparatorTest extends AbstractIpsPluginTest {
 
@@ -29,7 +29,7 @@ public class AlphaNumericSimpleNameComparatorTest extends AbstractIpsPluginTest 
     private Comparator<IIpsElement> comparator;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

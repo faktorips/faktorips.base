@@ -10,17 +10,17 @@
 
 package org.faktorips.devtools.htmlexport.context.messages;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 import java.util.Properties;
 
 import org.faktorips.devtools.htmlexport.MockPluginResourcesFacade;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MessagesManagerTest {
     private static final String MESSAGE_DE = "Projekt";
@@ -28,7 +28,7 @@ public class MessagesManagerTest {
     private DocumentationContext context;
     private static final String KEY = "ProjectOverviewPageElement_project";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MockPluginResourcesFacade pluginResources = new MockPluginResourcesFacade();
         Properties enMessages = new Properties();
@@ -83,8 +83,8 @@ public class MessagesManagerTest {
 
         MessagesManager manager = new MessagesManager(context);
 
-        assertTrue(context.getExportStatus().getMessage(), context.getExportStatus().isOK());
+        assertTrue(context.getExportStatus().isOK(), context.getExportStatus().getMessage());
         assertEquals(wrongKey, manager.getMessage(wrongKey));
-        assertFalse(context.getExportStatus().getMessage(), context.getExportStatus().isOK());
+        assertFalse(context.getExportStatus().isOK(), context.getExportStatus().getMessage());
     }
 }

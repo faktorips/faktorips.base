@@ -20,15 +20,16 @@ import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlainJavaMarkerTest extends PlainJavaAbstractionTestSetup {
 
     private static final String MARKER_TYPE = "TestMarker"; //$NON-NLS-1$
     private AProject testProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject = newSimpleIpsProject("TestProject"); //$NON-NLS-1$
     }
@@ -88,25 +89,26 @@ public class PlainJavaMarkerTest extends PlainJavaAbstractionTestSetup {
         assertThat(marker.getAttribute("Name2", true), is(false)); //$NON-NLS-1$
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetAttributes_NullAttributes() {
         AMarker marker = testProject.createMarker(MARKER_TYPE);
 
-        marker.setAttributes(null, null);
+        assertThrows(NullPointerException.class, () -> marker.setAttributes(null, null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetAttributes_NullValues() {
         AMarker marker = testProject.createMarker(MARKER_TYPE);
 
-        marker.setAttributes(new String[] { "Key1" }, null); //$NON-NLS-1$
+        assertThrows(NullPointerException.class, () -> marker.setAttributes(new String[] { "Key1" }, null)); //$NON-NLS-1$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetAttributes_MissmatchAttributesToValues() {
         AMarker marker = testProject.createMarker(MARKER_TYPE);
 
-        marker.setAttributes(new String[] { "Key1" }, new Object[] { "Val1", "Val2" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        assertThrows(IllegalArgumentException.class,
+                () -> marker.setAttributes(new String[] { "Key1" }, new Object[] { "Val1", "Val2" })); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Test

@@ -13,12 +13,12 @@ package org.faktorips.valueset;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Set;
 
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DecimalRangeTest {
 

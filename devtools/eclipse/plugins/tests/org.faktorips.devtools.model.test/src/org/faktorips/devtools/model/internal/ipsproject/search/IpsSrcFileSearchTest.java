@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.search;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +21,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileSearchTest extends AbstractIpsPluginTest {
 

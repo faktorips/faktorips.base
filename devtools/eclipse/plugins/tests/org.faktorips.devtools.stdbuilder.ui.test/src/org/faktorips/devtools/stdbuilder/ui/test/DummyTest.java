@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder.ui.test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Delete this dummy test if there is at least one real test case. The build job needs to find at

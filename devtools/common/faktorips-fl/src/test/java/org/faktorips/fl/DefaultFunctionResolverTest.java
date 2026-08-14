@@ -10,14 +10,14 @@
 
 package org.faktorips.fl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.functions.AbstractFlFunction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -26,7 +26,7 @@ public class DefaultFunctionResolverTest {
 
     private DefaultFunctionResolver<JavaCodeFragment> resolver;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         resolver = new DefaultFunctionResolver<>();
     }

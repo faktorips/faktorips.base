@@ -4,7 +4,8 @@ Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport.test;singleton:=true
 Bundle-Version: 27.1.0.qualifier
 Fragment-Host: org.faktorips.devtools.htmlexport
-Require-Bundle: org.hamcrest;bundle-version="2.2"
+Require-Bundle: org.hamcrest;bundle-version="3.0",
+ org.mockito.junit-jupiter
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: junit.framework,
  org.faktorips.abstracttest,
@@ -30,6 +31,10 @@ Import-Package: junit.framework,
  org.faktorips.values,
  org.junit;version="4.13.0",
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
+ org.mockito.junit.jupiter,
+ org.mockito.quality,
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
  org.junit.runner;version="4.13.0",
  org.mockito,

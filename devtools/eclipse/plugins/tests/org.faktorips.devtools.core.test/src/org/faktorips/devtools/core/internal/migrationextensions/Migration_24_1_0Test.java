@@ -30,14 +30,14 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Migration_24_1_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject project;
 
-    @Before
+    @BeforeEach
     public void setup() {
         project = newIpsProject("TooOldIpsProject");
 

@@ -16,12 +16,12 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class MissingTemplateLinkEntryTest {
 
     private static final String TARGET = "Target";

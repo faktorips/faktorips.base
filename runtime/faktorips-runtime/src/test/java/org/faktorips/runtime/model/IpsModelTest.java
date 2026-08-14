@@ -18,9 +18,10 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -65,7 +66,7 @@ import org.faktorips.runtime.model.type.ProductCmptTypeTest.TargetProduct;
 import org.faktorips.runtime.model.type.Type;
 import org.faktorips.values.InternationalString;
 import org.faktorips.valueset.StringLengthValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsModelTest {
 
@@ -121,9 +122,11 @@ public class IpsModelTest {
                 is(sameInstance(IpsModel.getPolicyCmptType(IMyPolicy.class))));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetPolicyCmptType_noAnnotation() {
-        IpsModel.getPolicyCmptType(TestPolicyWithoutAnnotation.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IpsModel.getPolicyCmptType(TestPolicyWithoutAnnotation.class);
+        });
     }
 
     @Test
@@ -155,9 +158,11 @@ public class IpsModelTest {
                 is(sameInstance(IpsModel.getProductCmptType(IMyProduct.class))));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetProductCmptType_noAnnotation() {
-        IpsModel.getProductCmptType(TestProductWithoutAnnotation.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IpsModel.getProductCmptType(TestProductWithoutAnnotation.class);
+        });
     }
 
     @Test
@@ -174,9 +179,11 @@ public class IpsModelTest {
         assertThat(model, is(instanceOf(ProductCmptType.class)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetType_noType() {
-        IpsModel.getType(String.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            IpsModel.getType(String.class);
+        });
     }
 
     @Test

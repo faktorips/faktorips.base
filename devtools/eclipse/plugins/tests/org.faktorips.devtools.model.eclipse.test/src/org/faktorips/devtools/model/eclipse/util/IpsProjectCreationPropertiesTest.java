@@ -17,7 +17,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,15 +37,15 @@ import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.Messages;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
     private IpsProjectCreationProperties properties;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         properties = new IpsProjectCreationProperties();

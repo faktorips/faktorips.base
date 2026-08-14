@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.faktorips.devtools.core.ui.test
 Bundle-Version: 27.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Fragment-Host: org.faktorips.devtools.core.ui
+Require-Bundle: org.mockito.junit-jupiter
 Import-Package: org.faktorips.abstracttest,
  org.faktorips.abstracttest.matcher,
  org.faktorips.devtools.abstraction,
@@ -60,10 +61,14 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.util,
  org.faktorips.util.memento,
  org.faktorips.values,
- org.hamcrest;version="2.2",
- org.hamcrest.core;version="2.2",
+ org.hamcrest;version="3.0",
+ org.hamcrest.core;version="3.0",
  org.junit;version="4.13.0",
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
+ org.mockito.junit.jupiter,
+ org.mockito.quality,
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
  org.junit.rules;version="[4.13.0,5.0.0)",
  org.junit.runner;version="4.13.0",

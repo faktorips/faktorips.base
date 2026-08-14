@@ -13,7 +13,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -28,16 +28,19 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 import org.faktorips.devtools.model.internal.DefaultVersion;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractIpsObjectPartsContainerTablePageElementTest {
 
     private static final String SINCE_VERSION = "Since Version";
@@ -59,7 +62,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
 
     private List<IIpsObjectPartContainer> objectParts;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         objectParts = new ArrayList<>();
         doReturn(objectParts).when(pageElement).getObjectParts();

@@ -27,8 +27,9 @@ import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.valueset.IntegerRange;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -39,7 +40,7 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
     private ProductComponent pc;
     private TestProductCmptGeneration gen;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         repository = new InMemoryRuntimeRepository();
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
@@ -136,20 +137,24 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         assertThat(gen.getValidFrom(), is(new DateTime(2010, 1, 1)));
     }
 
-    @Test(expected = IllegalRepositoryModificationException.class)
+    @Test
     public void testSetValidFrom_throwExceptionIfRepositoryNotModifiable() {
-        IRuntimeRepository repository = mock(IRuntimeRepository.class);
-        when(repository.isModifiable()).thenReturn(false);
+        assertThrows(IllegalRepositoryModificationException.class, () -> {
+            IRuntimeRepository repository = mock(IRuntimeRepository.class);
+            when(repository.isModifiable()).thenReturn(false);
 
-        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
-        gen = new TestProductCmptGeneration(pc);
+            pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+            gen = new TestProductCmptGeneration(pc);
 
-        gen.setValidFrom(new DateTime(2010, 1, 1));
+            gen.setValidFrom(new DateTime(2010, 1, 1));
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
-        gen.setValidFrom(null);
+        assertThrows(NullPointerException.class, () -> {
+            gen.setValidFrom(null);
+        });
     }
 
     @Test

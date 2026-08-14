@@ -23,8 +23,8 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.test.IpsTestResult;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
@@ -42,7 +42,7 @@ public class TestCaseTypeClassBuilderTest extends AbstractStdBuilderTest {
     private IIpsProject projectDependsIpsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

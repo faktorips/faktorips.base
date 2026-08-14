@@ -10,12 +10,12 @@
 
 package org.faktorips.codegen.dthelpers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ArrayOfValueDatatypeHelperTest {
 

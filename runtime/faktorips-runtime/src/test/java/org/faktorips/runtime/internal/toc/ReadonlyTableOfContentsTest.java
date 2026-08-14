@@ -15,9 +15,10 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 import org.faktorips.runtime.DummyTocEntryFactory;
 import org.faktorips.runtime.DummyTocEntryFactory.DummyTypedTocEntryObject;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -99,12 +100,14 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
         assertEquals("b.Product", entries.get(5).getIpsObjectQualifiedName());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testInternalRemoveEntry_NotModifiable() {
-        ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
-        toc.initFromXml(getTestDocument().getDocumentElement());
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ReadonlyTableOfContents toc = new ReadonlyTableOfContents();
+            toc.initFromXml(getTestDocument().getDocumentElement());
 
-        toc.internalRemoveEntry(toc.getProductCmptTocEntry("motor.MotorProduct2005"));
+            toc.internalRemoveEntry(toc.getProductCmptTocEntry("motor.MotorProduct2005"));
+        });
     }
 
     @Test
@@ -163,24 +166,26 @@ public class ReadonlyTableOfContentsTest extends XmlAbstractTestCase {
         assertFalse(toc.internalRemoveEntry(customTocEntry));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInternalRemoveEntry_UnknownEntryType() {
-        ReadonlyTableOfContents toc = new ReadonlyTableOfContents() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            ReadonlyTableOfContents toc = new ReadonlyTableOfContents() {
             @Override
             protected boolean isModifiable() {
-                return true;
+            return true;
             }
-        };
-        toc.initFromXml(getTestDocument().getDocumentElement());
-        TocEntryObject unknownTocEntryType = new TocEntryObject("id", "qName", "xml", "class") {
+            };
+            toc.initFromXml(getTestDocument().getDocumentElement());
+            TocEntryObject unknownTocEntryType = new TocEntryObject("id", "qName", "xml", "class") {
 
             @Override
             protected String getXmlElementTag() {
-                return "X";
+            return "X";
             }
-        };
+            };
 
-        toc.internalRemoveEntry(unknownTocEntryType);
+            toc.internalRemoveEntry(unknownTocEntryType);
+        });
     }
 
     private <T extends TocEntryObject> Map<String, T> asMap(Set<T> tocEntries) {

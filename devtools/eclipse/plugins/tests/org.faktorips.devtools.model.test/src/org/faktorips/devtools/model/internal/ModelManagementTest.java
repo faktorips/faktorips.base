@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -31,9 +31,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for threading issues (we hopefully once HAD).
@@ -45,7 +44,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ICoreRunnable action = $ -> {
@@ -104,7 +103,6 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeDirectlyOnDiskWithoutUsingTheEclipseApi() throws Exception {
         if (Abstractions.isEclipseRunning()) {

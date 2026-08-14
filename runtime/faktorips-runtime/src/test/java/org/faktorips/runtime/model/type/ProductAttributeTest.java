@@ -18,6 +18,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -63,14 +65,13 @@ import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class ProductAttributeTest {
 
     @Mock
@@ -157,7 +158,7 @@ public class ProductAttributeTest {
 
             try {
                 attribute.getValue(productComponent, effectiveDate);
-                Assert.fail("Expected IllegalStateException");
+                fail("Expected IllegalStateException");
             } catch (IllegalStateException e) {
                 assertThat(e.getMessage(), containsString("Getter for"));
                 assertThat(e.getMessage(), containsString("ProductXYZ"));
@@ -280,12 +281,14 @@ public class ProductAttributeTest {
         assertThat(attribute.getValue(productComponent, null), is(1));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValue_NoSetterAndNoSuperAttribute() {
-        Produkt productComponent = new Produkt(repository);
-        ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
-        ProductAttribute attribute = cmptType.getAttribute("multiEnum");
-        attribute.setValue(productComponent, null, List.of());
+        assertThrows(IllegalStateException.class, () -> {
+            Produkt productComponent = new Produkt(repository);
+            ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
+            ProductAttribute attribute = cmptType.getAttribute("multiEnum");
+            attribute.setValue(productComponent, null, List.of());
+        });
     }
 
     @Test
@@ -327,14 +330,16 @@ public class ProductAttributeTest {
         assertThat(attribute.getValue(productComponent, effectiveDate), is(equalTo((Object)30)));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValue_WithGeneration_NoSetterAndNoSuperAttribute() {
-        Produkt productComponent = new Produkt(repository);
-        ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
-        ProductAttribute attribute = cmptType.getAttribute("multiEnum");
-        IProductComponentGeneration generation = productComponent.getLatestProductComponentGeneration();
+        assertThrows(IllegalStateException.class, () -> {
+            Produkt productComponent = new Produkt(repository);
+            ProductCmptType cmptType = IpsModel.getProductCmptType(Produkt.class);
+            ProductAttribute attribute = cmptType.getAttribute("multiEnum");
+            IProductComponentGeneration generation = productComponent.getLatestProductComponentGeneration();
 
-        attribute.setValue(generation, List.of());
+            attribute.setValue(generation, List.of());
+        });
     }
 
     @Test

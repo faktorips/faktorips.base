@@ -10,15 +10,15 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.search;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProjectSearchTest {
 

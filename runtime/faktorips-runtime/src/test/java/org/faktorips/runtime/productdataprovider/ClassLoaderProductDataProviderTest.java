@@ -10,8 +10,9 @@
 
 package org.faktorips.runtime.productdataprovider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -29,9 +30,9 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -52,7 +53,7 @@ public class ClassLoaderProductDataProviderTest {
 
     private AutoCloseable mocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mocks = MockitoAnnotations.openMocks(this);
 
@@ -62,7 +63,7 @@ public class ClassLoaderProductDataProviderTest {
         productDataProvider = createProductDataProvider(true);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         mocks.close();
     }
@@ -99,13 +100,15 @@ public class ClassLoaderProductDataProviderTest {
         assertEquals(mockRootElement, productDataProvider.getProductCmptData(tocEntry));
     }
 
-    @Test(expected = DataModifiedException.class)
+    @Test
     public void testGetProductCmptDataRepositoryModified() throws DataModifiedException {
-        ProductCmptTocEntry tocEntry = createProductCmptTocEntry("XmlResourceName", true);
+        assertThrows(DataModifiedException.class, () -> {
+            ProductCmptTocEntry tocEntry = createProductCmptTocEntry("XmlResourceName", true);
 
-        modifyRepository();
+            modifyRepository();
 
-        productDataProvider.getProductCmptData(tocEntry);
+            productDataProvider.getProductCmptData(tocEntry);
+        });
     }
 
     @Test
@@ -131,13 +134,15 @@ public class ClassLoaderProductDataProviderTest {
         assertEquals(mockRootElement, productDataProvider.getTestcaseElement(tocEntry));
     }
 
-    @Test(expected = DataModifiedException.class)
+    @Test
     public void testGetTestcaseElementRepositoryModified() throws DataModifiedException {
-        TestCaseTocEntry tocEntry = createTestCaseTocEntry("XmlResourceName", true);
+        assertThrows(DataModifiedException.class, () -> {
+            TestCaseTocEntry tocEntry = createTestCaseTocEntry("XmlResourceName", true);
 
-        modifyRepository();
+            modifyRepository();
 
-        productDataProvider.getTestcaseElement(tocEntry);
+            productDataProvider.getTestcaseElement(tocEntry);
+        });
     }
 
     @Test
@@ -173,44 +178,48 @@ public class ClassLoaderProductDataProviderTest {
         assertEquals(mockChild2, productDataProvider.getProductCmptGenerationData(generationTocEntry));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testGetProductCmptGenerationDataGenerationDoesNotExist() throws DataModifiedException {
-        String xmlResourceName = "foo";
-        DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
+        assertThrows(RuntimeException.class, () -> {
+            String xmlResourceName = "foo";
+            DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
 
-        ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
-        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
-                "");
+            ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
+            GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
+            "");
 
-        Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
-        NodeList mockChildrenList = mock(NodeList.class);
-        when(mockChildrenList.getLength()).thenReturn(2);
-        mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
-        mockGenerationChildElement(mockChildrenList, 1, DateTime.createDateOnly(new GregorianCalendar(2, 2, 2)));
-        when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
+            Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
+            NodeList mockChildrenList = mock(NodeList.class);
+            when(mockChildrenList.getLength()).thenReturn(2);
+            mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
+            mockGenerationChildElement(mockChildrenList, 1, DateTime.createDateOnly(new GregorianCalendar(2, 2, 2)));
+            when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
 
-        productDataProvider.getProductCmptGenerationData(generationTocEntry);
+            productDataProvider.getProductCmptGenerationData(generationTocEntry);
+        });
     }
 
-    @Test(expected = DataModifiedException.class)
+    @Test
     public void testGetProductCmptGenerationDataRepositoryModified() throws DataModifiedException {
-        String xmlResourceName = "foo";
-        DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
+        assertThrows(DataModifiedException.class, () -> {
+            String xmlResourceName = "foo";
+            DateTime generationValidFrom = DateTime.createDateOnly(new GregorianCalendar());
 
-        ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
-        GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
-                "");
+            ProductCmptTocEntry productCmptTocEntry = createProductCmptTocEntry(xmlResourceName, false);
+            GenerationTocEntry generationTocEntry = new GenerationTocEntry(productCmptTocEntry, generationValidFrom, "",
+            "");
 
-        Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
-        NodeList mockChildrenList = mock(NodeList.class);
-        when(mockChildrenList.getLength()).thenReturn(2);
-        mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
-        mockGenerationChildElement(mockChildrenList, 1, generationValidFrom);
-        when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
+            Element mockProductCmptElement = mockRootElementForResourcePath(xmlResourceName);
+            NodeList mockChildrenList = mock(NodeList.class);
+            when(mockChildrenList.getLength()).thenReturn(2);
+            mockGenerationChildElement(mockChildrenList, 0, DateTime.createDateOnly(new GregorianCalendar(1, 1, 1)));
+            mockGenerationChildElement(mockChildrenList, 1, generationValidFrom);
+            when(mockProductCmptElement.getChildNodes()).thenReturn(mockChildrenList);
 
-        modifyRepository();
+            modifyRepository();
 
-        productDataProvider.getProductCmptGenerationData(generationTocEntry);
+            productDataProvider.getProductCmptGenerationData(generationTocEntry);
+        });
     }
 
     @Test
@@ -249,16 +258,18 @@ public class ClassLoaderProductDataProviderTest {
         assertEquals(mockInputStream, productDataProvider.getTableContentAsStream(tocEntry));
     }
 
-    @Test(expected = DataModifiedException.class)
+    @Test
     public void testGetTableContentAsStreamRepositoryModified() throws DataModifiedException {
-        String xmlResourceName = "foo";
-        TableContentTocEntry tocEntry = new TableContentTocEntry("", "", xmlResourceName, "");
-        InputStream mockInputStream = mock(InputStream.class);
-        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+        assertThrows(DataModifiedException.class, () -> {
+            String xmlResourceName = "foo";
+            TableContentTocEntry tocEntry = new TableContentTocEntry("", "", xmlResourceName, "");
+            InputStream mockInputStream = mock(InputStream.class);
+            when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
 
-        modifyRepository();
+            modifyRepository();
 
-        productDataProvider.getTableContentAsStream(tocEntry);
+            productDataProvider.getTableContentAsStream(tocEntry);
+        });
     }
 
     @Test
@@ -288,16 +299,18 @@ public class ClassLoaderProductDataProviderTest {
         assertEquals(mockInputStream, productDataProvider.getEnumContentAsStream(tocEntry));
     }
 
-    @Test(expected = DataModifiedException.class)
+    @Test
     public void testGetEnumContentAsStreamRepositoryModified() throws DataModifiedException {
-        String xmlResourceName = "foo";
-        EnumContentTocEntry tocEntry = new EnumContentTocEntry("", "", xmlResourceName, "");
-        InputStream mockInputStream = mock(InputStream.class);
-        when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
+        assertThrows(DataModifiedException.class, () -> {
+            String xmlResourceName = "foo";
+            EnumContentTocEntry tocEntry = new EnumContentTocEntry("", "", xmlResourceName, "");
+            InputStream mockInputStream = mock(InputStream.class);
+            when(mockDataSource.getResourceAsStream(xmlResourceName)).thenReturn(mockInputStream);
 
-        modifyRepository();
+            modifyRepository();
 
-        productDataProvider.getEnumContentAsStream(tocEntry);
+            productDataProvider.getEnumContentAsStream(tocEntry);
+        });
     }
 
     @Test

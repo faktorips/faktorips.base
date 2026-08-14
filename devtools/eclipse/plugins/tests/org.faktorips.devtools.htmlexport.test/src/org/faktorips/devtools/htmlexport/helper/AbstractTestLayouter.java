@@ -22,9 +22,9 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AbstractTestLayouter extends Assert implements ILayouter {
+public abstract class AbstractTestLayouter implements ILayouter {
 
     @Override
     public void clear() {

@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.decorators.internal.test.TestSampleIpsElemen
 import org.faktorips.devtools.model.decorators.internal.test.UndecoratedIpsElement;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsDecoratorsTest {
 

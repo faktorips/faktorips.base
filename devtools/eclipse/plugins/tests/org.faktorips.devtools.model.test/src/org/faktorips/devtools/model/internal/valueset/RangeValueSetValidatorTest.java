@@ -25,14 +25,14 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class RangeValueSetValidatorTest {
 
     private static final String ANY_VALUE = "anyValue";

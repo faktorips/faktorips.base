@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.type.IMethod;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MethodDecoratorTest {
 

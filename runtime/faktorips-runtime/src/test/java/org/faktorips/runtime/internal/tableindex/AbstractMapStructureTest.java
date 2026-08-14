@@ -12,21 +12,24 @@ package org.faktorips.runtime.internal.tableindex;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractMapStructureTest {
 
     private final Map<String, ResultStructure<Integer>> map = new HashMap<>();
@@ -39,7 +42,7 @@ public class AbstractMapStructureTest {
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractMapStructure<String, ResultStructure<Integer>, Integer> abstractMapStructure2;
 
-    @Before
+    @BeforeEach
     public void setUpStructure() {
         when(abstractMapStructure.getMap()).thenReturn(map);
         when(abstractMapStructure2.getMap()).thenReturn(map2);

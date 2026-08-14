@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.IoUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

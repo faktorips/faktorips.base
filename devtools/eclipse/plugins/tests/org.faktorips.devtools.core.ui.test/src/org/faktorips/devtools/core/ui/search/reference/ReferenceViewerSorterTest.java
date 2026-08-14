@@ -26,14 +26,14 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ReferenceViewerSorterTest {
 
     private ReferenceViewerSorter sorter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sorter = new ReferenceSearchResultPage().new ReferenceViewerSorter();
     }

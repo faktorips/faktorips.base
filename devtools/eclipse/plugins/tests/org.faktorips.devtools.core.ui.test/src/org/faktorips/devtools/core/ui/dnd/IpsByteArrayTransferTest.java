@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.core.ui.dnd;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -32,32 +33,36 @@ import java.io.DataOutputStream;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.TransferData;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsByteArrayTransferTest {
 
     private TestTransfer transfer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         transfer = new TestTransfer();
     }
 
-    @Test(expected = SWTException.class)
+    @Test
     public void testJavaToNative_ThrowExceptionIfTransferTypeIsNotSupported() {
-        TestTransfer transferSpy = spy(transfer);
-        when(transferSpy.isSupportedType(any(TransferData.class))).thenReturn(false);
+        assertThrows(SWTException.class, () -> {
+            TestTransfer transferSpy = spy(transfer);
+            when(transferSpy.isSupportedType(any(TransferData.class))).thenReturn(false);
 
-        transfer.javaToNative(new Object(), new TransferData());
+            transfer.javaToNative(new Object(), new TransferData());
+        });
     }
 
-    @Test(expected = SWTException.class)
+    @Test
     public void testJavaToNative_ThrowExceptionIfValidateFails() {
-        TestTransfer transferSpy = spy(transfer);
-        when(transferSpy.validate(any())).thenReturn(false);
+        assertThrows(SWTException.class, () -> {
+            TestTransfer transferSpy = spy(transfer);
+            when(transferSpy.validate(any())).thenReturn(false);
 
-        transfer.javaToNative(new Object(), new TransferData());
+            transfer.javaToNative(new Object(), new TransferData());
+        });
     }
 
     @Test
@@ -167,26 +172,30 @@ public class IpsByteArrayTransferTest {
         assertEquals(writeInt, readInt);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testReadString_ThrowExceptionIfNextElementIsNotAString() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataOutputStream outputStream = new DataOutputStream(out);
-        transfer.writeInt(1, outputStream);
+        assertThrows(IllegalStateException.class, () -> {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            DataOutputStream outputStream = new DataOutputStream(out);
+            transfer.writeInt(1, outputStream);
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        DataInputStream readInputStream = new DataInputStream(in);
-        transfer.readString(readInputStream);
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            DataInputStream readInputStream = new DataInputStream(in);
+            transfer.readString(readInputStream);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testReadInt_ThrowExceptionIfNextElementIsNotAnInt() {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataOutputStream outputStream = new DataOutputStream(out);
-        transfer.writeString("foo", outputStream);
+        assertThrows(IllegalStateException.class, () -> {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            DataOutputStream outputStream = new DataOutputStream(out);
+            transfer.writeString("foo", outputStream);
 
-        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-        DataInputStream readInputStream = new DataInputStream(in);
-        transfer.readInt(readInputStream);
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            DataInputStream readInputStream = new DataInputStream(in);
+            transfer.readInt(readInputStream);
+        });
     }
 
     public static class TestTransfer extends IpsByteArrayTransfer<IIpsObjectPart> {

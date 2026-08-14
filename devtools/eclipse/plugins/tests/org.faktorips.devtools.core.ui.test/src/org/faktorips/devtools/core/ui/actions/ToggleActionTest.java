@@ -1,21 +1,21 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.databinding.observable.value.WritableValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ToggleActionTest {
 
@@ -37,12 +37,12 @@ public class ToggleActionTest {
         WritableValue<Boolean> observable = new WritableValue<>(startValue, Boolean.class);
         ToggleAction action = new ToggleAction("description", "icon", observable);
 
-        assertEquals(WRONG_ACTION_CHECKED_STATE, startValue, action.isChecked());
-        assertEquals(WRONG_OBSERVABLE_STATE, startValue, observable.getValue());
+        assertEquals(startValue, action.isChecked(), WRONG_ACTION_CHECKED_STATE);
+        assertEquals(startValue, observable.getValue(), WRONG_OBSERVABLE_STATE);
         action.run();
-        assertEquals(WRONG_OBSERVABLE_STATE, !startValue, observable.getValue());
+        assertEquals(!startValue, observable.getValue(), WRONG_OBSERVABLE_STATE);
         action.run();
-        assertEquals(WRONG_OBSERVABLE_STATE, startValue, observable.getValue());
+        assertEquals(startValue, observable.getValue(), WRONG_OBSERVABLE_STATE);
     }
 
     /**
@@ -53,8 +53,8 @@ public class ToggleActionTest {
         WritableValue<Boolean> observable = new WritableValue<>(true, Boolean.class);
         ToggleAction action = new ToggleAction("description", "icon", observable);
 
-        assertTrue(WRONG_ACTION_CHECKED_STATE, action.isChecked());
+        assertTrue(action.isChecked(), WRONG_ACTION_CHECKED_STATE);
         observable.setValue(false);
-        assertFalse(WRONG_ACTION_CHECKED_STATE, action.isChecked());
+        assertFalse(action.isChecked(), WRONG_ACTION_CHECKED_STATE);
     }
 }

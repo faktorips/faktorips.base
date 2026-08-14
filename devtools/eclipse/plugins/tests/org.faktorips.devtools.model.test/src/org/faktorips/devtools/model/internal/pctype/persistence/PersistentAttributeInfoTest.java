@@ -13,11 +13,11 @@ package org.faktorips.devtools.model.internal.pctype.persistence;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
@@ -32,8 +32,8 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -42,7 +42,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     private IPolicyCmptTypeAttribute pcAttribute;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

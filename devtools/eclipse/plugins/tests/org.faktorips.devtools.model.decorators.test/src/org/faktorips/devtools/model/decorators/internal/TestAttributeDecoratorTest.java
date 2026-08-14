@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestAttributeDecoratorTest extends AbstractIpsPluginTest {
 

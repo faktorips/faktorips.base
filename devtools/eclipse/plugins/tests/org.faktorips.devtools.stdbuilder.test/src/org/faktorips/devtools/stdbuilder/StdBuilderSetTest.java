@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class StdBuilderSetTest extends AbstractStdBuilderTest {
 
@@ -96,7 +96,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
     /*
      * Bug FS#1864 Heap performance test. Test runs about 200sec!
      */
-    @Ignore
+    @Disabled
     @Test
     public void testBuildPerformanceLongRun() {
         IIpsProject ipsProject = newIpsProject();

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 import java.util.ArrayList;
@@ -35,9 +35,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -76,7 +76,7 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
     private AutoCloseable openMocks;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         openMocks = MockitoAnnotations.openMocks(this);
@@ -93,7 +93,7 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
         internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, TEST_VALUE2));
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

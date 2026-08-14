@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -31,9 +31,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -50,7 +49,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     private IpsObjectPath path;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
@@ -103,7 +102,6 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertFalse(entry.isReexported());
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testValidate() {
         if (Abstractions.isEclipseRunning()) {

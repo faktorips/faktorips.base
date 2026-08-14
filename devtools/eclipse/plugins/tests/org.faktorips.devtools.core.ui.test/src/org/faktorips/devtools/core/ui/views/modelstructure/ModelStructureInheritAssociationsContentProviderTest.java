@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views.modelstructure;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ModelStructureInheritAssociationsContentProviderTest extends AbstractIpsPluginTest {
 

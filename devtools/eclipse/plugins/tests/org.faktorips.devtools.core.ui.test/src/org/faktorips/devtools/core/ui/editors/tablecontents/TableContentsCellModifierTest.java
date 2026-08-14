@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Shell;
@@ -24,8 +24,8 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
 
@@ -35,7 +35,7 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
     private TableContentsCellModifier cellModifier;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject("TableContentsLabelProviderProject");

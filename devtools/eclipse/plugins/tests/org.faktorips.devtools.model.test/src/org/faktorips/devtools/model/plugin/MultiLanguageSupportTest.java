@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Locale;
 
@@ -30,8 +30,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -69,7 +69,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     private TestContainer testContainer;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

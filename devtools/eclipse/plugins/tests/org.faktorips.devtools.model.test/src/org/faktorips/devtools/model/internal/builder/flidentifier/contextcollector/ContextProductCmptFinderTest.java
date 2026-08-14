@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -25,14 +25,17 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ContextProductCmptFinderTest {
     @Mock
     private IExpression expression;
@@ -50,12 +53,12 @@ public class ContextProductCmptFinderTest {
 
     private Set<IProductCmpt> myContextCmpts;
 
-    @Before
+    @BeforeEach
     public void setUpFinder() {
         contextProductCmptFinder = new ContextProductCmptFinder(nodes, expression, ipsProject);
     }
 
-    @Before
+    @BeforeEach
     public void setUpContextCmpts() {
         myContextCmpts = new HashSet<>();
         for (int i = 5; i > 0; i--) {

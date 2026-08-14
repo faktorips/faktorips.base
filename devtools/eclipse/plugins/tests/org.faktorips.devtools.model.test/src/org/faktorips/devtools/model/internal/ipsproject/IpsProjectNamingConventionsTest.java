@@ -13,10 +13,10 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -49,7 +49,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     private IIpsProjectNamingConventions namingConventions;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject("TestProject");
@@ -251,8 +251,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             List<String> validNames,
             List<String> invalidNames,
             List<String> invalidNamesMsgCodes) {
-        assertEquals("Wrong usage of assert method, each invalid name should have a message code", invalidNames.size(),
-                invalidNamesMsgCodes.size());
+        assertEquals(invalidNames.size(), invalidNamesMsgCodes.size(), "Wrong usage of assert method, each invalid name should have a message code");
 
         for (String validName : validNames) {
             MessageList ml = null;
@@ -261,7 +260,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             } else {
                 ml = namingConventions.validateUnqualifiedIpsObjectName(type, validName);
             }
-            assertEquals("\"" + validName + "\"" + " is invalid, expected was valid!", 0, ml.size());
+            assertEquals(0, ml.size(), "\"" + validName + "\"" + " is invalid, expected was valid!");
         }
 
         for (int i = 0; i < invalidNames.size(); i++) {
@@ -273,8 +272,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             } else {
                 ml = namingConventions.validateUnqualifiedIpsObjectName(type, invalidName);
             }
-            assertNotNull("\"" + invalidName + "\"" + " is valid against " + msgCode + ", expected was invalid!",
-                    ml.getMessageByCode(msgCode));
+            assertNotNull(ml.getMessageByCode(msgCode), "\"" + invalidName + "\"" + " is valid against " + msgCode + ", expected was invalid!");
         }
     }
 

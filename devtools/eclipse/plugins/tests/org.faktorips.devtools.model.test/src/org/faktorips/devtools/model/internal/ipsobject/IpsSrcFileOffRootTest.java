@@ -26,7 +26,8 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
 
@@ -34,6 +35,7 @@ public class IpsSrcFileOffRootTest extends AbstractIpsPluginTest {
     private AFile file;
     private IIpsSrcFile ipsSrcFile;
 
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

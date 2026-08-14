@@ -12,8 +12,8 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 
@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
 
@@ -51,7 +51,7 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
     private IProductCmptType productCmptType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         productCmptType = newProductCmptType(ipsProject, PRODUCT_TYPE);

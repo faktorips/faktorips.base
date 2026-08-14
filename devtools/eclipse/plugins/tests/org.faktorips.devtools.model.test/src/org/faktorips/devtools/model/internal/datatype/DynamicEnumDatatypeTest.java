@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal.datatype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -25,8 +25,8 @@ import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -38,7 +38,7 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
     private IDynamicEnumDatatype dataType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = (IpsProject)newIpsProject();

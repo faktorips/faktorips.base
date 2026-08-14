@@ -12,14 +12,14 @@ package org.faktorips.runtime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.Matchers.hasItems;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.runtime.data.TestDeckung;
 import org.faktorips.runtime.data.TestPolicy;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GenericVisitorSupportTest {
 

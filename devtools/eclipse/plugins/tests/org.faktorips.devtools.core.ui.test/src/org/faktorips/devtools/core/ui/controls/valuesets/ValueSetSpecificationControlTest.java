@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +36,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
@@ -48,7 +48,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

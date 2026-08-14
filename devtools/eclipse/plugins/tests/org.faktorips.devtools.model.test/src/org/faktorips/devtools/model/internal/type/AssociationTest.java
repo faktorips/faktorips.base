@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,12 +16,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
@@ -40,12 +40,12 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class AssociationTest extends AbstractIpsPluginTest {
@@ -74,7 +74,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     private IPolicyCmptType B;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -493,7 +493,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         subAssociation.setTargetRolePlural("BSubs");
 
         msgList = subAssociation.validate(ipsProject);
-        assertNotNull(msgList.toString(), msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND));
+        assertNotNull(msgList.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_PLURAL_NOT_FOUND), msgList.toString());
     }
 
     @Test

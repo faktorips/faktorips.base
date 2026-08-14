@@ -12,11 +12,11 @@ package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest {
 

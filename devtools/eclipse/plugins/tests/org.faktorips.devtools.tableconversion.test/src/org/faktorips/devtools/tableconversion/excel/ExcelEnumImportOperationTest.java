@@ -13,7 +13,7 @@ package org.faktorips.devtools.tableconversion.excel;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,8 +35,8 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ExcelEnumImportOperationTest extends AbstractTableTest {
 
@@ -46,7 +46,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     private File file;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

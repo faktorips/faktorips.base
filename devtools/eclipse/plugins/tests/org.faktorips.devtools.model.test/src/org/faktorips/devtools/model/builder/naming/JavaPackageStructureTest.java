@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.naming;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -18,9 +18,9 @@ import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -42,7 +42,7 @@ public class JavaPackageStructureTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         packageStructure = new JavaPackageStructure();
@@ -53,7 +53,7 @@ public class JavaPackageStructureTest {
         when(packageFragment.getName()).thenReturn("ubx");
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

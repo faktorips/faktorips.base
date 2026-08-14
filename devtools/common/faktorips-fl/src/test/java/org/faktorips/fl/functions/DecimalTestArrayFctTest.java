@@ -10,12 +10,12 @@
 
 package org.faktorips.fl.functions;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

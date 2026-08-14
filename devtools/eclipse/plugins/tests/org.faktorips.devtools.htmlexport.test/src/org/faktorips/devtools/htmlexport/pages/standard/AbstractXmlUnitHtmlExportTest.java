@@ -19,7 +19,7 @@ import org.faktorips.devtools.htmlexport.generators.IGenerator;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPluginTest {
 
@@ -30,7 +30,7 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPl
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), "");

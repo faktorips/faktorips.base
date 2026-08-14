@@ -23,7 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.productcmpt.DelegatingValueHolder;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AbstractSearchOperatorTest extends AbstractIpsPluginTest {
 

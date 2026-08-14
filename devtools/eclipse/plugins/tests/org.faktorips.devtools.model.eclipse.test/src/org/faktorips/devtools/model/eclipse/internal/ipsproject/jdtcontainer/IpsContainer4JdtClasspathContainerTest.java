@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,16 +30,16 @@ import org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer.Ips
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@Category(EclipseImplementation.class)
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsContainer4JdtClasspathContainerTest {
 
     private static final String MY_NAME = "myName";
@@ -66,7 +66,7 @@ public class IpsContainer4JdtClasspathContainerTest {
 
     private IpsContainer4JdtClasspathContainer ipsContainer4JdtClasspathContainer;
 
-    @Before
+    @BeforeEach
     public void createIpsContainer4JdtClasspathContainer() throws Exception {
         ipsContainer4JdtClasspathContainer = new IpsContainer4JdtClasspathContainer(optionalPath, ipsProject);
     }

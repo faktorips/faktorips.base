@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,16 +34,19 @@ import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UIDatatypeFormatterTest {
 
     @Mock
@@ -53,18 +56,18 @@ public class UIDatatypeFormatterTest {
 
     private UIDatatypeFormatter formatter;
 
-    @BeforeClass
+    @BeforeAll
     public static void saveLocale() {
         savedFormattingLocale = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         IpsPlugin.getDefault().getIpsPreferences().setDatatypeFormattingLocale(Locale.GERMAN);
         formatter = new UIDatatypeFormatter();
     }
 
-    @AfterClass
+    @AfterAll
     public static void cleanUp() {
         IpsPlugin.getDefault().getIpsPreferences().setDatatypeFormattingLocale(savedFormattingLocale);
     }

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExtensionPropertyDefinitionExtensionsTest {
 

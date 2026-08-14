@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -35,7 +35,7 @@ public class TableColumnReferenceTest extends AbstractIpsPluginTest {
     private IPartReference genderNameReference;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");

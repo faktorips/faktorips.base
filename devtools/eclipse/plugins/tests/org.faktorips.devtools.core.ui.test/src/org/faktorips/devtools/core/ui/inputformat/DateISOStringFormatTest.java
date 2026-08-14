@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -18,7 +18,7 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.Messages;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DateISOStringFormatTest extends AbstractIpsPluginTest {
 

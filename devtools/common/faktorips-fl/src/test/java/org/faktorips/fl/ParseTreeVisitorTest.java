@@ -10,10 +10,10 @@
 
 package org.faktorips.fl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -52,8 +52,8 @@ import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
 import org.faktorips.runtime.Message;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link ParseTreeVisitor}.
@@ -63,7 +63,7 @@ public class ParseTreeVisitorTest {
     private ParseTreeVisitor<CodeFragment> visitor;
     private ExprCompiler<CodeFragment> compiler;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         compiler = new DummyExprCompiler();
         compiler.setDatatypeHelperProvider(new DummyDatatypeHelperProvider());
@@ -248,7 +248,7 @@ public class ParseTreeVisitorTest {
         verify(lhsNode).jjtAccept(visitor, data);
         verify(rhsNode).jjtAccept(visitor, data);
         verify(operation).generate(lhs, rhs);
-        assertEquals("Not the expected compilation result", resultImpl, result);
+        assertEquals(resultImpl, result, "Not the expected compilation result");
     }
 
     private <T extends SimpleNode> void testVisitAstForUnaryMethod(Class<T> clazz, String operand) {
@@ -268,7 +268,7 @@ public class ParseTreeVisitorTest {
         }
         verify(childNode).jjtAccept(visitor, data);
         verify(operation).generate(arg);
-        assertEquals("Not the expected compilation result", resultImpl, result);
+        assertEquals(resultImpl, result, "Not the expected compilation result");
     }
 
     private SimpleNode mockChildNode(SimpleNode parentNode, int index, String data, Object compilationResult) {
@@ -380,7 +380,7 @@ public class ParseTreeVisitorTest {
         Object result = visitor.visit(node, data);
 
         verify(resolver).compile(data, compiler, Locale.KOREAN);
-        assertEquals("Not the expected compilation result", resultImpl, result);
+        assertEquals(resultImpl, result, "Not the expected compilation result");
     }
 
     private void mockToken(SimpleNode node, String data) {
@@ -400,8 +400,8 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertEquals("Not the expected data type", Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
-        assertEquals("Not the expected code", "CONSTANT " + data, result.getCodeFragment().getSourcecode());
+        assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype(), "Not the expected data type");
+        assertEquals("CONSTANT " + data, result.getCodeFragment().getSourcecode(), "Not the expected code");
     }
 
     @Test
@@ -414,8 +414,8 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertEquals("Not the expected data type", Datatype.PRIMITIVE_INT, result.getDatatype());
-        assertEquals("Not the expected code", "CONSTANT " + data, result.getCodeFragment().getSourcecode());
+        assertEquals(Datatype.PRIMITIVE_INT, result.getDatatype(), "Not the expected data type");
+        assertEquals("CONSTANT " + data, result.getCodeFragment().getSourcecode(), "Not the expected code");
     }
 
     @Test
@@ -428,8 +428,8 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertEquals("Not the expected data type", Datatype.DECIMAL, result.getDatatype());
-        assertEquals("Not the expected code", "CONSTANT " + data, result.getCodeFragment().getSourcecode());
+        assertEquals(Datatype.DECIMAL, result.getDatatype(), "Not the expected data type");
+        assertEquals("CONSTANT " + data, result.getCodeFragment().getSourcecode(), "Not the expected code");
     }
 
     @Test
@@ -442,8 +442,8 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertEquals("Not the expected data type", Datatype.STRING, result.getDatatype());
-        assertEquals("Not the expected code", data, result.getCodeFragment().getSourcecode());
+        assertEquals(Datatype.STRING, result.getDatatype(), "Not the expected data type");
+        assertEquals(data, result.getCodeFragment().getSourcecode(), "Not the expected code");
     }
 
     @Test
@@ -456,8 +456,8 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertEquals("Not the expected data type", Datatype.MONEY, result.getDatatype());
-        assertEquals("Not the expected code", "CONSTANT " + data, result.getCodeFragment().getSourcecode());
+        assertEquals(Datatype.MONEY, result.getDatatype(), "Not the expected data type");
+        assertEquals("CONSTANT " + data, result.getCodeFragment().getSourcecode(), "Not the expected code");
     }
 
     @Test
@@ -470,7 +470,7 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertTrue("Compilation should have failed", result.failed());
+        assertTrue(result.failed(), "Compilation should have failed");
     }
 
     @Test
@@ -483,7 +483,7 @@ public class ParseTreeVisitorTest {
         AbstractCompilationResult<CodeFragment> result = (AbstractCompilationResult<CodeFragment>)visitor.visit(node,
                 data);
 
-        assertTrue("Compilation should have failed", result.failed());
+        assertTrue(result.failed(), "Compilation should have failed");
     }
 
     @SuppressWarnings("unchecked")
@@ -510,7 +510,7 @@ public class ParseTreeVisitorTest {
 
         verify(childNode).jjtAccept(visitor, data);
         verify(function).compile(any(CompilationResult[].class));
-        assertEquals("Not the expected compilation result", resultImpl, result);
+        assertEquals(resultImpl, result, "Not the expected compilation result");
     }
 
     @SuppressWarnings("unchecked")
@@ -547,7 +547,7 @@ public class ParseTreeVisitorTest {
                 data);
 
         verify(childNode).jjtAccept(visitor, data);
-        assertTrue("Compilation should have failed", result.failed());
+        assertTrue(result.failed(), "Compilation should have failed");
     }
 
     @SuppressWarnings("unchecked")
@@ -569,10 +569,10 @@ public class ParseTreeVisitorTest {
         verify(childNode1).jjtAccept(visitor, data);
         verify(childNode2).jjtAccept(visitor, data);
         verify(childNode3).jjtAccept(visitor, data);
-        assertEquals("Not the expected compilation result array length", 3, result.length);
-        assertEquals("Not the expected compilation result at index 0", result1, result[0]);
-        assertEquals("Not the expected compilation result at index 1", result2, result[1]);
-        assertEquals("Not the expected compilation result at index 2", result3, result[2]);
+        assertEquals(3, result.length, "Not the expected compilation result array length");
+        assertEquals(result1, result[0], "Not the expected compilation result at index 0");
+        assertEquals(result2, result[1], "Not the expected compilation result at index 1");
+        assertEquals(result3, result[2], "Not the expected compilation result at index 2");
     }
 
 }

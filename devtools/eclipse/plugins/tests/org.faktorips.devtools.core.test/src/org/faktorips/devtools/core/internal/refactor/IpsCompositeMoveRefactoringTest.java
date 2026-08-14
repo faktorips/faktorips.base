@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -23,9 +24,9 @@ import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -47,7 +48,7 @@ public class IpsCompositeMoveRefactoringTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         when(ipsObject1.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
@@ -57,7 +58,7 @@ public class IpsCompositeMoveRefactoringTest {
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
@@ -100,9 +101,11 @@ public class IpsCompositeMoveRefactoringTest {
         // Test successful if no NPE has been thrown
     }
 
-    @Test(expected = NullPointerException.class)
+        @Test
     public void testSetTargetIpsPackageFragmentNullFragment() {
-        ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(null);
+        assertThrows(NullPointerException.class, () -> {
+            ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(null);
+        });
     }
 
 }

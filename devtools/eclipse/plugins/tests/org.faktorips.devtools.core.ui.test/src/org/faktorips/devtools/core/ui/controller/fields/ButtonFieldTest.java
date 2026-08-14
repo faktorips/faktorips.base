@@ -10,17 +10,17 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.swt.widgets.Button;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ButtonFieldTest {
 
@@ -29,7 +29,7 @@ public class ButtonFieldTest {
     private Button button1;
     private Button button2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         button1 = mock(Button.class);
         button2 = mock(Button.class);

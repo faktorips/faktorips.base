@@ -12,9 +12,9 @@ package org.faktorips.runtime.internal.tableindex;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -23,8 +23,8 @@ import org.faktorips.values.Decimal;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TwoColumnRangeStructureTest {
 
@@ -32,7 +32,7 @@ public class TwoColumnRangeStructureTest {
 
     private TwoColumnRangeStructure<Integer, ResultStructure<String>, String> structure2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         structure = TwoColumnRangeStructure.create();
         structure.put(0, 8, new ResultStructure<>("A"));

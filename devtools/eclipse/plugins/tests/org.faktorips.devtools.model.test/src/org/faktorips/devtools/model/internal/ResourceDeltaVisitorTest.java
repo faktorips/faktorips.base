@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -34,9 +34,8 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
 
@@ -49,7 +48,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
     private ProductCmptType productCmptType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if (Abstractions.isEclipseRunning()) {
             super.setUp();
@@ -60,7 +59,6 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeIpsProjectProperties() {
         if (Abstractions.isEclipseRunning()) {
@@ -74,7 +72,6 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeManifest() {
         if (Abstractions.isEclipseRunning()) {
@@ -91,7 +88,6 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeIpsSrcFile() throws JavaModelException {
         if (Abstractions.isEclipseRunning()) {
@@ -103,7 +99,6 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testChangeIpsSrcFileOffRoot() throws JavaModelException {
         if (Abstractions.isEclipseRunning()) {

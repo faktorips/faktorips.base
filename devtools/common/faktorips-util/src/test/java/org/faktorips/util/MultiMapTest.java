@@ -13,15 +13,16 @@ package org.faktorips.util;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MultiMapTest {
 
@@ -72,10 +73,12 @@ public class MultiMapTest {
         assertTrue(expectedCollection.contains("ten"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testPut_defenceCopyEmptyList() {
-        Collection<String> collection = multiMap.get(10);
-        collection.add("abc123");
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Collection<String> collection = multiMap.get(10);
+            collection.add("abc123");
+        });
     }
 
     @Test

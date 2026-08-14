@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.policycmpt;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PolicyCmptDeclClassAnnGenTest {
 

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,13 +26,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UiMessageTest {
 
     private static final String NAME1 = "name1";
@@ -56,7 +59,7 @@ public class UiMessageTest {
 
     private UiMessage uiMessage = new UiMessage(message);
 
-    @Before
+    @BeforeEach
     public void mockProjectAndObjects() {
         IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
         when(properties.getDefaultLanguage()).thenReturn(new SupportedLanguage(Locale.GERMAN));

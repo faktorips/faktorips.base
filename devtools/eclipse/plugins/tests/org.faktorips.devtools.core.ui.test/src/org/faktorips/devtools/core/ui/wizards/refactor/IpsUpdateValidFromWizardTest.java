@@ -46,8 +46,8 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
 
@@ -60,7 +60,7 @@ public class IpsUpdateValidFromWizardTest extends AbstractIpsPluginTest {
     private ProductCmpt productCmptTarget2;
     private ProductCmpt productCmptSharedTarget;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         ipsProject = this.newIpsProject("TestProject");

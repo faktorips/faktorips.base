@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
@@ -31,7 +31,7 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");

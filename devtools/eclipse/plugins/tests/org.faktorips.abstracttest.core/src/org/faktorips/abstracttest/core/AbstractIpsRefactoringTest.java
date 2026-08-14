@@ -41,7 +41,7 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Provides convenient methods to start Faktor-IPS refactorings and provides a basic model.
@@ -158,7 +158,7 @@ public abstract class AbstractIpsRefactoringTest extends AbstractCoreIpsPluginTe
     protected ITableContents tableContents;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

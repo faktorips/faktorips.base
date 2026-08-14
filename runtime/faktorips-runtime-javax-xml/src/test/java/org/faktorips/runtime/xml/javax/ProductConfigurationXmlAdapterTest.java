@@ -10,22 +10,25 @@
 
 package org.faktorips.runtime.xml.javax;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @SuppressWarnings("removal")
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductConfigurationXmlAdapterTest {
     @Mock
     IProductComponent productCmpt;
@@ -33,7 +36,7 @@ public class ProductConfigurationXmlAdapterTest {
     IRuntimeRepository repository;
     private ProductConfigurationXmlAdapter xmlAdapter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(productCmpt.getId()).thenReturn("someId");
         when(repository.getProductComponent("someId")).thenReturn(productCmpt);

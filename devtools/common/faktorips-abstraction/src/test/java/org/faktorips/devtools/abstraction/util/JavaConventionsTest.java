@@ -14,7 +14,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasWarningMessage;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JavaConventionsTest {
 

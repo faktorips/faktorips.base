@@ -45,8 +45,8 @@ import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -61,7 +61,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

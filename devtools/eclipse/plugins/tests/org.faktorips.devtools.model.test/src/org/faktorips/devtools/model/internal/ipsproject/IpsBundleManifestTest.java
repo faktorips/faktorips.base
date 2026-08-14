@@ -16,8 +16,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasKey;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -62,16 +62,18 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleException;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsBundleManifestTest {
 
     private static final String MANIFEST = """
@@ -132,7 +134,7 @@ public class IpsBundleManifestTest {
     @Mock
     private IpsProject ipsProject;
 
-    @Before
+    @BeforeEach
     public void createIpsBundleManifest() throws IOException {
         mockManifest();
         ipsBundleManifest = new IpsBundleManifest(manifest);
@@ -570,7 +572,6 @@ public class IpsBundleManifestTest {
                 "model;toc=\"faktorips-repository-toc.xml\";validation-messages=\"validation-messages\",foo;toc=\"faktorips-repository-toc.xml\";validation-messages=\"foo-validation-messages\""));
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testWriteBuilderSettingsWithOutputDefinedPerSrcFolder_SkipsTestFolders_Eclipse()
             throws IOException, JavaModelException {

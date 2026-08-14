@@ -19,8 +19,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test fuer das HTML-Layout
@@ -54,7 +54,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, getContext());
 
-        Assert.assertEquals(text, layout(pageElement));
+        assertEquals(text, layout(pageElement));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.INLINE, getContext());
 
-        Assert.assertEquals("<span>" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("<span>" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test
@@ -70,7 +70,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         String text = "text beispiel"; //$NON-NLS-1$
         TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK, getContext());
 
-        Assert.assertEquals("<div>" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals("<div>" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test

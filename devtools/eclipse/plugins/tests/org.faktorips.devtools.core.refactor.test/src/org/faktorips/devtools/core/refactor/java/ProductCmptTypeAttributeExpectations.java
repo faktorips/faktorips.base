@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.refactor.java;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getGenerationConceptNameAbbreviation;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getJavaType;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getPublishedInterfaceName;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 

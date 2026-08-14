@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InvalidGenerationsDeltaEntryTest extends AbstractIpsPluginTest {
 

@@ -14,6 +14,7 @@ import static org.faktorips.devtools.core.refactor.modules.RequiresTransitiveMat
 import static org.faktorips.devtools.core.refactor.modules.RequiresTransitiveMatcher.requiresTransitive;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ModulesTest extends AbstractIpsPluginTest {
 
@@ -76,12 +77,12 @@ public class ModulesTest extends AbstractIpsPluginTest {
         assertThat(javaProject, requiresTransitive("foo.bar"));
     }
 
-    @Test(expected = CoreException.class)
+    @Test
     public void testAddRequired_NoModule() throws Exception {
         AProject project = newPlatformProject("p");
         IJavaProject javaProject = addJavaCapabilities(project).unwrap();
 
-        Modules.addRequired(javaProject, false, List.of("foo.bar"));
+        assertThrows(CoreException.class, () -> Modules.addRequired(javaProject, false, List.of("foo.bar")));
     }
 
 }

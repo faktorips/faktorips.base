@@ -16,12 +16,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -69,8 +70,8 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.IntegerRange;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ProductAssociationTest {
 
@@ -87,7 +88,7 @@ public class ProductAssociationTest {
     private final ProductAssociation associationPolicy = productCmptType.getAssociation("policyAsso");
     private final ProductAssociation overriddenAsso = productCmptType.getAssociation("overriddenAsso");
 
-    @Before
+    @BeforeEach
     public void setUpRepository() {
         repository = new InMemoryRuntimeRepository();
     }
@@ -529,12 +530,14 @@ public class ProductAssociationTest {
         assertSame(productGen2.target2.getId(), linksGen2Iter.next().getTargetId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetLinks_NoMethod() {
-        Source source = new Source();
-        ProductAssociation association4 = productCmptType.getAssociation("asso4");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Source source = new Source();
+            ProductAssociation association4 = productCmptType.getAssociation("asso4");
 
-        association4.getLinks(source, effectiveDate);
+            association4.getLinks(source, effectiveDate);
+        });
     }
 
     @Test
@@ -595,12 +598,14 @@ public class ProductAssociationTest {
         assertSame(productGen2.target2.getId(), linkGen2.get().getTargetId());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetLink_NoMethod() {
-        Source source = new Source();
-        ProductAssociation association4 = productCmptType.getAssociation("asso4");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Source source = new Source();
+            ProductAssociation association4 = productCmptType.getAssociation("asso4");
 
-        association4.getLink(source, new Target(), effectiveDate);
+            association4.getLink(source, new Target(), effectiveDate);
+        });
     }
 
     @Test

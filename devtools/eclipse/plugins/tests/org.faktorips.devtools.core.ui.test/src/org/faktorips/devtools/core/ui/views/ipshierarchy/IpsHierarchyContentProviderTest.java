@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -23,8 +23,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     private IIpsProject pdProject;
@@ -36,7 +36,7 @@ public class IpsHierarchyContentProviderTest extends AbstractIpsPluginTest {
     private IPolicyCmptType supersupertype;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         pdProject = this.newIpsProject("TestProject");

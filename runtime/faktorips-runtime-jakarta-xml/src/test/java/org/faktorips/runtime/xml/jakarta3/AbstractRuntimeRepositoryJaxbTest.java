@@ -12,7 +12,7 @@ package org.faktorips.runtime.xml.jakarta3;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -34,7 +34,7 @@ import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.runtime.xml.jakarta.JaxbSupport;
 import org.faktorips.runtime.xml.jakarta.ProductConfigurationXmlAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
     private IRow rowValid;
@@ -36,7 +36,7 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
     private String nullPresentation = IpsStringUtils.EMPTY;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject proj = newIpsProject("TableContentsLabelProviderProject");

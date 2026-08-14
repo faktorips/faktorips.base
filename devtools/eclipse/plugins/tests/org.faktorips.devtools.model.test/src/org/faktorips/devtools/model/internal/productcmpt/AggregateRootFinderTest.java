@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     private AggregateRootFinder aggregateRootFinder;
@@ -37,6 +38,7 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAssociation genSelfReference;
     private IProductCmptTypeAssociation genAssociation;
 
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

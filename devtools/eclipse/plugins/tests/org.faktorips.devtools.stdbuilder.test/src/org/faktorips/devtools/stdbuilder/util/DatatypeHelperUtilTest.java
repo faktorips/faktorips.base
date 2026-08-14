@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.builder.java.util.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DatatypeHelperUtilTest extends AbstractStdBuilderTest {
 

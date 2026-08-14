@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
@@ -23,9 +23,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -53,12 +53,12 @@ public class ProductCmptReferenceTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.internal.pctype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +44,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.testsupport.IpsMatchers;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -57,7 +57,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -298,18 +298,18 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         policyCmptType.setConfigurableByProductCmptType(true);
         validationRule.setConfigurableByProductComponent(true);
-        assertTrue("Rule is supposed to be configurable", validationRule.isConfigurableByProductComponent());
+        assertTrue(validationRule.isConfigurableByProductComponent(), "Rule is supposed to be configurable");
 
         validationRule.setConfigurableByProductComponent(false);
-        assertFalse("Rule isn't supposed to be configurable", validationRule.isConfigurableByProductComponent());
+        assertFalse(validationRule.isConfigurableByProductComponent(), "Rule isn't supposed to be configurable");
 
         validationRule.setConfigurableByProductComponent(false);
         policyCmptType.setConfigurableByProductCmptType(false);
-        assertFalse("Rule isn't supposed to be configurable", validationRule.isConfigurableByProductComponent());
+        assertFalse(validationRule.isConfigurableByProductComponent(), "Rule isn't supposed to be configurable");
 
         validationRule.setConfigurableByProductComponent(true);
         policyCmptType.setConfigurableByProductCmptType(false);
-        assertFalse("Rule isn't supposed to be configurable", validationRule.isConfigurableByProductComponent());
+        assertFalse(validationRule.isConfigurableByProductComponent(), "Rule isn't supposed to be configurable");
     }
 
     @Test

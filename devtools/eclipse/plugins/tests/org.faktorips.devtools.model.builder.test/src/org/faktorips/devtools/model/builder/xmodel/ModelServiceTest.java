@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
@@ -20,9 +20,9 @@ import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -42,13 +42,13 @@ public class ModelServiceTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

@@ -13,8 +13,8 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
 
@@ -22,7 +22,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
     private static final String FILE_EXTENSION = ".html";
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         layouter.setPathToRoot(PATH_TO_ROOT);

@@ -23,7 +23,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.OrderedValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ModelObjectAttributesTest {
 

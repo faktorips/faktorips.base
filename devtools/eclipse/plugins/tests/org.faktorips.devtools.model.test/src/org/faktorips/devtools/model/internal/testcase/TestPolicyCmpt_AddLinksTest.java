@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.GregorianCalendar;
 import java.util.UUID;
@@ -34,8 +35,8 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for
@@ -47,7 +48,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -1018,21 +1019,23 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         assertSame(productCmpt3, child3.findProductCmpt(ipsProject));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddRequiredLinks_OnlyPossibleIfProductCmptAssigned() {
-        // Create model types
-        IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
+        assertThrows(IllegalStateException.class, () -> {
+            // Create model types
+            IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
 
-        // Create test case type
-        ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
-        ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
+            // Create test case type
+            ITestCaseType testCaseType = newTestCaseType(ipsProject, "MyTestCaseType");
+            ITestPolicyCmptTypeParameter rootParameter = createTestParameter(testCaseType, rootPolicyType, 1, 1);
 
-        // Create test case
-        ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
-        ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(rootParameter);
+            // Create test case
+            ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
+            ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)testCase).addRootTestPolicyCmpt(rootParameter);
 
-        // Execute
-        rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+            // Execute
+            rootTestPolicyCmpt.addRequiredLinks(ipsProject);
+        });
     }
 
     @Test

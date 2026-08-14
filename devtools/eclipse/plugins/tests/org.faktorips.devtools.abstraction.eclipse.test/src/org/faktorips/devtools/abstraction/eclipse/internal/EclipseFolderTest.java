@@ -22,8 +22,8 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseFolderTest extends EclipseAbstractionTestSetup {
 
@@ -31,7 +31,7 @@ public class EclipseFolderTest extends EclipseAbstractionTestSetup {
     private AFolder testFolder;
     private IFolder eclipseFolder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject = newSimpleIpsProject("TestProject");
         testFolder = testProject.getFolder("TestFolder");

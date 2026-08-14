@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -21,17 +21,17 @@ import java.util.LinkedHashSet;
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XAttribute;
 import org.faktorips.devtools.model.builder.xmodel.XType;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * This class is merely a String test. Functionality has to be additionally tested in integration
  * tests.
  */
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class AbstractTypeDeclClassAnnGenTest {
 
     private static final String ATTRIBUTE1 = "attribute1";

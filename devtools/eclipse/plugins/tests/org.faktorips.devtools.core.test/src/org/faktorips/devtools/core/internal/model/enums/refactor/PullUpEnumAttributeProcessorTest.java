@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,9 +22,9 @@ import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -51,7 +51,7 @@ public class PullUpEnumAttributeProcessorTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
@@ -65,7 +65,7 @@ public class PullUpEnumAttributeProcessorTest {
         pullUpEnumAttributeProcessor.setTarget(superEnumType);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

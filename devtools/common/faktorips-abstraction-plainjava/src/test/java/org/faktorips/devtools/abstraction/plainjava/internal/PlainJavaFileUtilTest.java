@@ -13,8 +13,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -29,21 +29,21 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PlainJavaFileUtilTest extends PlainJavaAbstractionTestSetup {
 
     private Path tmpDir;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         tmpDir = Files.createTempDirectory(PlainJavaFileUtilTest.class.getSimpleName());
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() {
         try {
             FileUtils.deleteDirectory(tmpDir.toFile());

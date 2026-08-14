@@ -14,9 +14,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -99,9 +99,8 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * A common base class for builder tests.
@@ -113,7 +112,6 @@ import org.junit.experimental.categories.Category;
 // causes a clean to the builder set map of the ips model. Hence when the model is requested
 // for the builder set it will look registered builder sets at the extension point and
 // won't find the test builder set
-@Category(EclipseImplementation.class)
 public class IpsBuilderTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -124,7 +122,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
@@ -642,7 +640,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             boolean isMessageThere = markers.stream()
                     .map(m -> (String)m.getAttribute(IMarker.MESSAGE))
                     .anyMatch(Predicate.isEqual(Messages.IpsBuilder_ipsSrcFileNotParsable));
-            assertTrue("The expected message could not be found", isMessageThere);
+            assertTrue(isMessageThere, "The expected message could not be found");
         }
     }
 
@@ -666,7 +664,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
                     .map(m -> (String)m.getAttribute(IMarker.MESSAGE))
                     .anyMatch(msg -> msg != null && msg.contains(
                             "cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://www.faktorzehn.org\":Foo}'."));
-            assertTrue("The expected message could not be found", isMessageThere);
+            assertTrue(isMessageThere, "The expected message could not be found");
         }
     }
 

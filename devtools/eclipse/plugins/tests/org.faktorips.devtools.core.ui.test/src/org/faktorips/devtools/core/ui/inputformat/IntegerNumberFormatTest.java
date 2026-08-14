@@ -10,19 +10,19 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IntegerNumberFormatTest {
 
     private IntegerNumberFormat numberFormat;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         numberFormat = new IntegerNumberFormat(ValueDatatype.LONG);
     }

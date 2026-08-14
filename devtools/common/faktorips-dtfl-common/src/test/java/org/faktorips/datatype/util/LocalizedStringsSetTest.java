@@ -10,20 +10,20 @@
 
 package org.faktorips.datatype.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LocalizedStringsSetTest {
 
     private LocalizedStringsSet set;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // in this case the class name is the set's name.
         set = new LocalizedStringsSet(this.getClass());

@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -26,9 +27,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -48,7 +49,7 @@ public class IpsPullUpProcessorTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
 
@@ -57,7 +58,7 @@ public class IpsPullUpProcessorTest {
         pullUpProcessor = new TestIpsPullUpProcessor(ipsObjectPart);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
@@ -86,11 +87,13 @@ public class IpsPullUpProcessorTest {
         assertTrue(status.isOK());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+        @Test
     public void testSetTargetNotAllowedTargetType() {
-        TestIpsPullUpProcessor spyProcessor = spy(pullUpProcessor);
-        when(spyProcessor.isTargetTypeAllowed(any(IIpsObjectPartContainer.class))).thenReturn(false);
-        spyProcessor.setTarget(ipsObject);
+        assertThrows(IllegalArgumentException.class, () -> {
+            TestIpsPullUpProcessor spyProcessor = spy(pullUpProcessor);
+            when(spyProcessor.isTargetTypeAllowed(any(IIpsObjectPartContainer.class))).thenReturn(false);
+            spyProcessor.setTarget(ipsObject);
+        });
     }
 
     // Public so Mockito can spy the class

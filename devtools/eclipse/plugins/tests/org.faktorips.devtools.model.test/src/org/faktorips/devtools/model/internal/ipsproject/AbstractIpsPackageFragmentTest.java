@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
@@ -27,13 +27,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractIpsPackageFragmentTest {
 
     private static final String MY_PACKAGE = "myPackage";
@@ -45,7 +48,7 @@ public class AbstractIpsPackageFragmentTest {
 
     private AbstractIpsPackageFragment abstractIpsPackageFragment;
 
-    @Before
+    @BeforeEach
     public void createAbstractIpsPackageFragment() throws Exception {
         abstractIpsPackageFragment = mock(AbstractIpsPackageFragment.class, CALLS_REAL_METHODS);
         when(abstractIpsPackageFragment.getRoot()).thenReturn(ipsPackageFragmentRoot);

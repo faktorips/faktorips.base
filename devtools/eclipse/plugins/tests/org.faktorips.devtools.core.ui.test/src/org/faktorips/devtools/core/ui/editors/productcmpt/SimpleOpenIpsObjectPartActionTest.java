@@ -22,7 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SimpleOpenIpsObjectPartActionTest {
 

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.search.reference;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
@@ -37,9 +37,9 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -116,7 +116,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void initSrcFilesSetUp() {
         openMocks = MockitoAnnotations.openMocks(this);
 
@@ -141,7 +141,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
         when(prodCmptGeneration2.getIpsObject()).thenReturn(object1);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

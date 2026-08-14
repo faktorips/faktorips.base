@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.model.plugin;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -20,9 +21,9 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -42,13 +43,13 @@ public class IpsValidationTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         ipsValidation = new IpsValidation();
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
@@ -94,14 +95,18 @@ public class IpsValidationTest {
         verify(validationTask2, never()).execute(ipsProject);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldThrowNullPointerExceptionTryingToValidateGivenNullAsContextProject() {
-        ipsValidation.validate(null);
+        assertThrows(NullPointerException.class, () -> {
+            ipsValidation.validate(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldThrowNullPointerExceptionWhenTryingToAddNullAsTask() {
-        ipsValidation.addTask(null);
+        assertThrows(NullPointerException.class, () -> {
+            ipsValidation.addTask(null);
+        });
     }
 
     private void addTask(IpsValidationTask task, boolean continueOnError) {

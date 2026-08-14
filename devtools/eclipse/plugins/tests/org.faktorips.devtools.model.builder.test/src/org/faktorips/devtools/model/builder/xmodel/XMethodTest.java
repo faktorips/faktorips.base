@@ -10,22 +10,25 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Modifier;
 
 import org.faktorips.devtools.model.builder.java.JavaBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class XMethodTest {
 
     @Mock
@@ -42,7 +45,7 @@ public class XMethodTest {
 
     private XMethod xMethod;
 
-    @Before
+    @BeforeEach
     public void createXMethod() throws Exception {
         xMethod = new XMethod(method, context, modelService);
         when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);

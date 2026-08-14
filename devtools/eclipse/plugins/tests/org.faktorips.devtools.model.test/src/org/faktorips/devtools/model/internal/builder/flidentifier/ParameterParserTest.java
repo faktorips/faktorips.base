@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,13 +30,16 @@ import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ParameterParserTest extends AbstractParserTest {
 
     private static final String ANY_PARAMETER = "noParameter";
@@ -58,12 +61,12 @@ public class ParameterParserTest extends AbstractParserTest {
     @Mock
     private IType type;
 
-    @Before
+    @BeforeEach
     public void createParameterParser() throws Exception {
         parameterParser = new ParameterParser(getParsingContext());
     }
 
-    @Before
+    @BeforeEach
     public void mockFormulaSignature() throws Exception {
         when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(formulaSignature);
         when(formulaSignature.getParameters()).thenReturn(new IParameter[] { parameter });

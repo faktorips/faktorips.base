@@ -12,13 +12,13 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
 
@@ -29,7 +29,7 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
     private IEnumType enumType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

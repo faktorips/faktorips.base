@@ -14,7 +14,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -39,8 +40,8 @@ import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.sample.model.TestAbstractEnum;
 import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.faktorips.sample.model.TestConcreteJavaEnum;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -71,7 +72,7 @@ public class AbstractRuntimeRepositoryTest {
     private TestProductComponent validToPc;
     private TestProductCmptGeneration validToPcGen;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         mainRepository = new InMemoryRuntimeRepository();
         inBetweenRepositoryA = new InMemoryRuntimeRepository();
@@ -486,9 +487,11 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(mainRepository.getEnumValue(null, null), is(nullValue()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetEnumValueWithoutLookup_WithAbstractBaseEnum_() {
-        baseRepository.getEnumValue(TestAbstractEnum.class, TestConcreteExtensibleEnum.CLASS_VALUE_2.getId());
+        assertThrows(IllegalArgumentException.class, () -> {
+            baseRepository.getEnumValue(TestAbstractEnum.class, TestConcreteExtensibleEnum.CLASS_VALUE_2.getId());
+        });
     }
 
     @Test
@@ -533,17 +536,21 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(mainRepository.getEnumValue(null, null), is(nullValue()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetExistingEnumValueFromLookup_NoLookupService() {
-        Lookup lookup = new Lookup();
-        baseRepository.getExistingEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId());
+        assertThrows(IllegalArgumentException.class, () -> {
+            Lookup lookup = new Lookup();
+            baseRepository.getExistingEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetExistingEnumValueFromLookup_Missing() {
-        Lookup lookup = new Lookup();
-        baseRepository.addEnumValueLookupService(lookup);
-        baseRepository.getExistingEnumValue(TestEnumValue.class, "unkownId");
+        assertThrows(IllegalArgumentException.class, () -> {
+            Lookup lookup = new Lookup();
+            baseRepository.addEnumValueLookupService(lookup);
+            baseRepository.getExistingEnumValue(TestEnumValue.class, "unkownId");
+        });
     }
 
     @Test

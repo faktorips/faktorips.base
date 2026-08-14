@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest {
 
@@ -43,7 +43,7 @@ public class MoveIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTest 
     private IIpsPackageFragment originalIpsPackageFragment;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel.enums;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -23,8 +23,8 @@ import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XEnumTypeTest extends AbstractJavaBuilderPluginTest {
 
@@ -47,7 +47,7 @@ public class XEnumTypeTest extends AbstractJavaBuilderPluginTest {
     private XEnumType xenumType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RegexTablePageElementLayoutTest {
 

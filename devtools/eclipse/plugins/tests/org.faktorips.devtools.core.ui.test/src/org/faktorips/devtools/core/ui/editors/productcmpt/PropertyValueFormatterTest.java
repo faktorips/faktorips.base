@@ -11,20 +11,25 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyValueFormatterTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testFormatNPE() {
-        PropertyValueFormatter.format(null);
+        assertThrows(NullPointerException.class, () -> {
+            PropertyValueFormatter.format(null);
+        });
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testFormatIllegalStateException() {
-        IPropertyValue pv = mock(IPropertyValue.class);
-        PropertyValueFormatter.format(pv);
+        assertThrows(IllegalStateException.class, () -> {
+            IPropertyValue pv = mock(IPropertyValue.class);
+            PropertyValueFormatter.format(pv);
+        });
     }
 }

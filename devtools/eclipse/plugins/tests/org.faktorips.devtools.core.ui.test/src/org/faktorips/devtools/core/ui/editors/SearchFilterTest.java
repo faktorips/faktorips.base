@@ -24,9 +24,9 @@ import org.faktorips.devtools.core.ui.editors.SearchBar.SearchFilter;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class SearchFilterTest {
 
@@ -36,7 +36,7 @@ public class SearchFilterTest {
     private Object parentElement = "table";
     private Object element = "row";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         tableViewer = new TableViewer(new Shell());
         Table table = tableViewer.getTable();
@@ -76,7 +76,7 @@ public class SearchFilterTest {
         assertThat("foo?", matchesRow("", "foob", "bar"));
     }
 
-    @Ignore("Eclipse's SearchPattern does not appear to take the Javadoc of SearchPattern.RULE_PATTERN_MATCH seriously and treats ? like * when it's at the end of the search term")
+    @Disabled("Eclipse's SearchPattern does not appear to take the Javadoc of SearchPattern.RULE_PATTERN_MATCH seriously and treats ? like * when it's at the end of the search term")
     @Test
     public void testFilterDoesNotMatchPartiallyWithSingleWildcardAtTheEnd() {
         assertThat("foo?", doesNotMatchRow("", "foobar", "bar"));

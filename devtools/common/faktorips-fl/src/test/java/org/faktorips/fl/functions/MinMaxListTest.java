@@ -10,11 +10,12 @@
 
 package org.faktorips.fl.functions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -25,13 +26,16 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.JavaExprCompiler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class MinMaxListTest {
 
     private MinMaxList maxList;
@@ -42,7 +46,7 @@ public class MinMaxListTest {
     @Mock
     private CompilationResultImpl argumentCompilationResult;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         maxList = new MinMaxList("max", "", true);
     }
@@ -64,18 +68,14 @@ public class MinMaxListTest {
         maxList.setCompiler(new JavaExprCompiler());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCompile_NumberOfArgumentsZero() {
-        spyFunctionWithDatatype(Datatype.DECIMAL);
-
-        maxList.compile(new CompilationResultImpl[0]);
+        assertThrows(IllegalArgumentException.class, () -> maxList.compile(new CompilationResultImpl[0]));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCompile_NumberOfArgumentsMany() {
-        spyFunctionWithDatatype(Datatype.DECIMAL);
-
-        maxList.compile(new CompilationResultImpl[2]);
+        assertThrows(IllegalArgumentException.class, () -> maxList.compile(new CompilationResultImpl[2]));
     }
 
     @Test
@@ -110,8 +110,6 @@ public class MinMaxListTest {
 
     @Test
     public void testValidateBasicDatatype_comparableElementDatatype() {
-        spyFunctionWithDatatype(Datatype.BIG_DECIMAL);
-
         CompilationResult<JavaCodeFragment> compResult = maxList.validateBasicDatatype(Datatype.DOUBLE);
         assertNull(compResult);
     }

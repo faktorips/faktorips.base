@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.tableconversion;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileInputStream;
 import java.math.BigDecimal;
@@ -447,7 +447,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
 
     protected void assertRow(String[] stringRow, IRow row) {
         for (int i = 0; i < stringRow.length; i++) {
-            assertEquals("column " + i + " mismatched", stringRow[i], row.getValue(i));
+            assertEquals(stringRow[i], row.getValue(i), "column " + i + " mismatched");
         }
     }
 

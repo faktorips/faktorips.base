@@ -67,8 +67,8 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -83,7 +83,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     private IConfiguredValueSet configuredValueSet;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

@@ -15,10 +15,11 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -50,9 +51,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
@@ -67,7 +68,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     private NewProductCmptPMO pmo = new NewProductCmptPMO();
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() {
         ipsProject = spy(newIpsProject());
         IpsPlugin ipsPlugin = mock(IpsPlugin.class);
@@ -158,10 +159,12 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         assertEquals(2, pmo.getSubtypes().size());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetCopyProductCmpt_IpsProjectNotSet() {
-        singletonMockHelper.reset();
-        pmo.setCopyProductCmpt(mock(IProductCmpt.class));
+        assertThrows(IllegalStateException.class, () -> {
+            singletonMockHelper.reset();
+            pmo.setCopyProductCmpt(mock(IProductCmpt.class));
+        });
     }
 
     @Test
@@ -866,7 +869,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() {
         singletonMockHelper.reset();
     }

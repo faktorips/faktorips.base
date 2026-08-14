@@ -14,9 +14,9 @@ import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasSize;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.beans.PropertyDescriptor;
 import java.io.BufferedReader;
@@ -125,9 +125,9 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.util.StringUtil;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 
 /**
@@ -157,7 +157,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         contentsChangeListener = new TestChangeListener();
     }
 
-    @Before
+    @BeforeEach
     @SuppressWarnings("deprecation")
     public void setUp() throws Exception {
         IpsLog.setSuppressLoggingDuringTest(false);
@@ -189,7 +189,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         getIpsModel().addChangeListener(contentsChangeListener);
     }
 
-    @After
+    @AfterEach
     @SuppressWarnings("deprecation")
     public void tearDown() throws Exception {
         if (Abstractions.isEclipseRunning()) {
@@ -207,7 +207,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         tearDownExtension();
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownAfterClass() {
         if (!Abstractions.isEclipseRunning()) {
             File workspace = Abstractions.getWorkspace().getRoot().unwrap();
@@ -1303,10 +1303,10 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             prop.getWriteMethod().invoke(object, testValueToSet);
             writeOk = true;
             Object retValue = prop.getReadMethod().invoke(object);
-            assertEquals("Getter method for property " + propertyName + " of class " + clazz.getName()
-                    + " does not return the expected value", testValueToSet, retValue);
-            assertNotNull("Setter method for property " + propertyName + " of class " + clazz.getName()
-                    + " hasn't triggered a change event", getLastContentChangeEvent());
+            assertEquals(testValueToSet, retValue, "Getter method for property " + propertyName + " of class " + clazz.getName()
+                    + " does not return the expected value");
+            assertNotNull(getLastContentChangeEvent(), "Setter method for property " + propertyName + " of class " + clazz.getName()
+                    + " hasn't triggered a change event");
         } catch (Exception e) {
             if (writeOk) {
                 fail("An exception occured while reading property " + propertyName + " of class " + clazz.getName());
@@ -1319,17 +1319,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected void testPropertyAccessWriteOnly(Class<?> clazz, String propertyName) {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         Method writeMethod = prop.getWriteMethod();
-        assertNotNull("Class " + clazz.getName() + " hasn't got a write method for property " + propertyName,
-                writeMethod);
-        assertEquals("Class " + clazz.getName() + ": Write method for property " + propertyName
-                + " must have exactly 1 argument", 1, writeMethod.getParameterTypes().length);
+        assertNotNull(writeMethod, "Class " + clazz.getName() + " hasn't got a write method for property " + propertyName);
+        assertEquals(1, writeMethod.getParameterTypes().length, "Class " + clazz.getName() + ": Write method for property " + propertyName
+                + " must have exactly 1 argument");
     }
 
     protected void testPropertyAccessReadOnly(Class<?> clazz, String propertyName) {
         PropertyDescriptor prop = BeanUtil.getPropertyDescriptor(clazz, propertyName);
         Method readMethod = prop.getReadMethod();
-        assertNotNull("Class " + clazz.getName() + " hasn't got a read method for property " + propertyName,
-                readMethod);
+        assertNotNull(readMethod, "Class " + clazz.getName() + " hasn't got a read method for property " + propertyName);
         assertEquals(0, readMethod.getParameterTypes().length);
     }
 

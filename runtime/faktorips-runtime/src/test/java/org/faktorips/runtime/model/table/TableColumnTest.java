@@ -12,8 +12,8 @@ package org.faktorips.runtime.model.table;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
@@ -22,7 +22,7 @@ import org.faktorips.runtime.internal.TestTableRow;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TableColumnTest {
 

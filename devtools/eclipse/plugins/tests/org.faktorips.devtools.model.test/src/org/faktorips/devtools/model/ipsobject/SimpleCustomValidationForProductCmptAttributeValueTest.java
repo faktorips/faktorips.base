@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SimpleCustomValidationForProductCmptAttributeValueTest extends AbstractIpsPluginTest {
 

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,14 +18,14 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.runtime.model.annotation.IpsPublishedInterface;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PublishedInterfaceAnnGenTest {
 
     private PublishedInterfaceAnnGen gen;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         gen = new PublishedInterfaceAnnGen();
     }

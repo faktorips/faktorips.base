@@ -14,8 +14,8 @@ import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getG
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getJavaType;
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getPublishedInterfaceName;
 import static org.faktorips.devtools.model.builder.java.util.ParamUtil.unresolvedParam;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;

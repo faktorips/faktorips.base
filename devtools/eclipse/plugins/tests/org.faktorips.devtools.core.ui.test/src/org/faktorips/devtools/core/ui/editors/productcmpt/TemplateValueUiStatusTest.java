@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.type.IAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TemplateValueUiStatusTest extends AbstractIpsPluginTest {
 

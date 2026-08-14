@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -23,8 +23,8 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ComponentPropertiesSec
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ComponentPropertiesSectionTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
@@ -35,7 +35,7 @@ public class ComponentPropertiesSectionTest extends AbstractIpsPluginTest {
     private ProductCmptType productCmptType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         january = new GregorianCalendar(2015, 0, 1);

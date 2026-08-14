@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -25,13 +25,15 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ValidationRuleMessagePropertiesTest {
 
     private static final String QNAME1 = "myQName";
@@ -59,7 +61,7 @@ public class ValidationRuleMessagePropertiesTest {
     @Mock
     private IValidationRule rule3;
 
-    @Before
+    @BeforeEach
     public void initPcType() {
         when(pcType1.getQualifiedName()).thenReturn(QNAME1);
         when(pcType2.getQualifiedName()).thenReturn(QNAME2);

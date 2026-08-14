@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,9 +22,9 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NewGenerationPMOTest {
 
@@ -36,7 +36,7 @@ public class NewGenerationPMOTest {
 
     private NewGenerationPMO pmo;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         defaultValidityDate = new GregorianCalendar(1986, 04, 16);
 
@@ -54,7 +54,7 @@ public class NewGenerationPMOTest {
         return pmo;
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         singletonHelper.reset();
     }

@@ -8,9 +8,10 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.17.100",
  org.eclipse.jdt.core;bundle-version="3.21.0",
  org.eclipse.jdt.launching;bundle-version="3.17.0",
  org.eclipse.ltk.core.refactoring;bundle-version="3.10.400",
- org.hamcrest;bundle-version="2.2",
+ org.hamcrest;bundle-version="3.0",
  org.faktorips.abstracttest,
- org.faktorips.valuetypes
+ org.faktorips.valuetypes,
+ org.mockito.junit-jupiter
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Faktor Zehn GmbH
@@ -38,9 +39,13 @@ Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.faktorips.runtime,
  org.faktorips.testsupport,
  org.faktorips.util,
- org.hamcrest;version="2.2",
+ org.hamcrest;version="3.0",
  org.junit;version="4.13.0",
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
+ org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
+ org.mockito.junit.jupiter,
+ org.mockito.quality,
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
  org.junit.experimental.categories;version="4.13.0",
  org.junit.runner;version="4.13.0",

@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -43,13 +43,16 @@ import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.hamcrest.CoreMatchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumAttributeTest {
 
     @Mock
@@ -67,7 +70,7 @@ public class EnumAttributeTest {
 
     private EnumAttribute attr = enumType2.getAttribute("attributeWithDescription");
 
-    @Before
+    @BeforeEach
     public void initModels() throws SecurityException, NoSuchMethodException {
         Method fooGetter = MyEnum.class.getMethod("getFoo");
         fooModel = new EnumAttribute(enumType, "foo", fooGetter);

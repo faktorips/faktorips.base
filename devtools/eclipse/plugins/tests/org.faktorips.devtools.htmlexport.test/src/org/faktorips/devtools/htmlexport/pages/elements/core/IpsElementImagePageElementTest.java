@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.swt.graphics.ImageData;
 import org.faktorips.devtools.htmlexport.context.AbstractHtmlExportPluginTest;
@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest {
 
@@ -97,7 +97,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
                 gleich &= imagePageElement.getPixel(x, y) == imagePageElementOhneEigenesBild.getPixel(x, y);
             }
         }
-        assertFalse("Bilder stimmen ueberein!", gleich);
+        assertFalse(gleich, "Bilder stimmen ueberein!");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
                 gleich &= imagePageElement.getPixel(x, y) == imagePageElementOhneEigenesBild.getPixel(x, y);
             }
         }
-        assertFalse("Bilder stimmen ueberein!", gleich);
+        assertFalse(gleich, "Bilder stimmen ueberein!");
     }
 
     @Test

@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.versionmanager;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsFeatureVersionManagerSorterTest {
 

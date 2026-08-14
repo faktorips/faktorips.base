@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 
 public class AbstractTestForGeneratorModelNodes {
@@ -21,7 +21,7 @@ public class AbstractTestForGeneratorModelNodes {
     @Mock
     private ModelService modelService;
 
-    @Before
+    @BeforeEach
     public void initTestObjects() {
         // nothing to do
     }

@@ -27,10 +27,10 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class BigModelPerformanceTest extends AbstractStdBuilderTest {
 
@@ -41,7 +41,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     private static final int NUMBER_OF_PRODUCTS_PER_PRODUCTCMPTTYPE = 10;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IPolicyCmptType[][] basePolicyCmptTypes = new IPolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
@@ -234,7 +234,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         // For manual tests, set a breakpoint here and copy the project from the junit-workspace.
         // Since the generated .ipsproject doesn't work with the created component types, it has
@@ -243,8 +243,8 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         super.tearDown();
     }
 
-    // Remove @Ignore for performance tests. We don't want it to run in the regular build.
-    @Ignore
+    // Remove @Disabled for performance tests. We don't want it to run in the regular build.
+    @Disabled
     @Test
     public void testPerformance() {
         int warmup = 3;

@@ -10,11 +10,11 @@
 
 package org.faktorips.runtime.productdataprovider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,8 +48,8 @@ import org.faktorips.runtime.testrepository.motor.MotorProductGen;
 import org.faktorips.runtime.testrepository.motor.RateTable;
 import org.faktorips.runtime.testrepository.motor.RateTableSingle;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class DetachedContentRuntimeRepositoryManagerTest {
@@ -61,7 +61,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
     private TestProductDataProvider directPdp;
     private MyFactory directPdpFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // the context class loader must be the class loader of the runtime bundle
         Thread.currentThread().setContextClassLoader(DetachedContentRuntimeRepositoryManager.class.getClassLoader());
@@ -367,7 +367,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
 
     private void assertIpsTestCasesStartingWith(String qNamePrefix, String[] testCasesExpected) {
         List<IpsTest2> result = repository.getIpsTestCasesStartingWith(qNamePrefix, repository);
-        assertEquals("Unexpected number of test cases", testCasesExpected.length, result.size());
+        assertEquals(testCasesExpected.length, result.size(), "Unexpected number of test cases");
         for (String element : testCasesExpected) {
             boolean found = false;
             for (IpsTest2 ipsTest2 : result) {
@@ -378,7 +378,7 @@ public class DetachedContentRuntimeRepositoryManagerTest {
                 }
 
             }
-            assertTrue("Missing test case: " + element, found);
+            assertTrue(found, "Missing test case: " + element);
         }
     }
 

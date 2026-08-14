@@ -31,7 +31,10 @@
                     <dependenciesToScan>
                         <dependency>org.faktorips:org.faktorips.devtools.model.test</dependency>
                     </dependenciesToScan>
-                    <excludedGroups>org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation</excludedGroups>
+                    <excludedTags>EclipseImplementation</excludedTags>
+                    <excludes>
+                        <exclude>**/IpsBuilderTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <!-- skip deploy -->
@@ -129,6 +132,10 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
         </dependency>
     </dependencies>
 </project>

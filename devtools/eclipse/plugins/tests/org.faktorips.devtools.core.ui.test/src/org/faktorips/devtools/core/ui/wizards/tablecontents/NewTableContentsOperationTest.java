@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
@@ -38,9 +39,9 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -58,7 +59,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     private AutoCloseable openMocks;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         openMocks = MockitoAnnotations.openMocks(this);
@@ -68,13 +69,13 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         tableContents.getIpsSrcFile().save(null);
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
         IpsPlugin.getDefault().getIpsPreferences().setWorkingMode(IpsPreferences.WORKING_MODE_EDIT);
@@ -234,17 +235,19 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         verify(tableUsage.getIpsSrcFile(), never()).save(monitor);
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testPostProcess_throwsIpsExceptionIfSavingThrowsCoreException() {
-        ITableContentUsage tableUsage = mockTableUsage(true);
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        when(ipsSrcFile.isDirty()).thenReturn(false);
-        doThrow(new IpsException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(monitor);
-        when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
-        pmo = mockPMO(tableUsage, true);
-        NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
+        assertThrows(IpsException.class, () -> {
+            ITableContentUsage tableUsage = mockTableUsage(true);
+            IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+            when(ipsSrcFile.isDirty()).thenReturn(false);
+            doThrow(new IpsException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(monitor);
+            when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
+            pmo = mockPMO(tableUsage, true);
+            NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
 
-        newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
+            newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
+        });
     }
 
     private IProductCmptGeneration newProductCmptGeneration() {

@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -45,9 +45,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for product component structure.
@@ -67,7 +67,7 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     private IValidationRule validationRule;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
@@ -186,7 +186,7 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
         // -> 3 table references: two different tables, with one in two different links
     }
 
-    @Ignore
+    @Disabled
     @Test
     /*
      * This test creates a large, strongly interconnected product to test the performance of the

@@ -12,14 +12,15 @@ package org.faktorips.devtools.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.value.IValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DelegatingValueHolderTest<T> {
 
@@ -40,9 +41,11 @@ public class DelegatingValueHolderTest<T> {
         assertThat(delegatingValueHolder.getValue(), is((Object)delegate.getValue()));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetValue() {
-        delegatingValueHolder.setValue(new StringValue("foo"));
+        assertThrows(UnsupportedOperationException.class, () -> {
+            delegatingValueHolder.setValue(new StringValue("foo"));
+        });
     }
 
     @Test

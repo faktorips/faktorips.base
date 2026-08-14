@@ -10,17 +10,17 @@
 
 package org.faktorips.devtools.ant;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RecursiveCopyTest {
 
@@ -30,7 +30,7 @@ public class RecursiveCopyTest {
     private File tmpDir3;
     private File tmpDir2;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         tmpDir = createTmpDir(null);
         tmpDir2 = createTmpDir(tmpDir);
@@ -60,10 +60,10 @@ public class RecursiveCopyTest {
             c.copyDir(tmpDir.toPath().toAbsolutePath(), tmpDir3.toPath().toAbsolutePath());
             File expectedDir = new File(tmpDir3, tmpDir2.getName());
             expectedDir.deleteOnExit();
-            assertTrue("expected directory does not exist", expectedDir.exists());
+            assertTrue(expectedDir.exists(), "expected directory does not exist");
             File expected = new File(expectedDir, tmpFile2.getName());
             expected.deleteOnExit();
-            assertTrue("recursive dircopy failed", expected.exists());
+            assertTrue(expected.exists(), "recursive dircopy failed");
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -97,9 +97,9 @@ public class RecursiveCopyTest {
                 File expectedCopy = new File(tmpDir, tmpFile.getName());
                 expectedCopy.deleteOnExit();
                 c.copyFile(tmpFile.toPath().toAbsolutePath(), expectedCopy.toPath().toAbsolutePath());
-                assertTrue("copied file doesn't exist", expectedCopy.exists());
-                assertEquals("filesize of copied file is incorrect. original:" + tmpFile.length() + " copy:"
-                        + expectedCopy.length(), tmpFile.length(), expectedCopy.length());
+                assertTrue(expectedCopy.exists(), "copied file doesn't exist");
+                assertEquals(tmpFile.length(), expectedCopy.length(), "filesize of copied file is incorrect. original:" + tmpFile.length() + " copy:"
+                        + expectedCopy.length());
             } catch (Exception e) {
                 fail(e.getMessage());
             }
@@ -110,7 +110,7 @@ public class RecursiveCopyTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         // just to be sure
         tmpFile.delete();

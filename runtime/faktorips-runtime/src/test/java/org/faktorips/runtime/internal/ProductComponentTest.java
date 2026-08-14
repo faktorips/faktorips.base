@@ -16,11 +16,12 @@ import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -46,9 +47,9 @@ import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.LocalizedString;
 import org.faktorips.valueset.IntegerRange;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
@@ -65,13 +66,13 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
     private AutoCloseable mocks;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mocks = MockitoAnnotations.openMocks(this);
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         mocks.close();
     }
@@ -246,12 +247,14 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertFalse(pc.isFormulaAvailable("notExistingFormula"));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetGenerationBase_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
-        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
-        when(cmpt.isChangingOverTime()).thenReturn(false);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
+            when(cmpt.isChangingOverTime()).thenReturn(false);
 
-        cmpt.getGenerationBase(new GregorianCalendar());
+            cmpt.getGenerationBase(new GregorianCalendar());
+        });
     }
 
     @Test
@@ -267,11 +270,13 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetLatestProductComponentGeneration_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
-        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
-        when(cmpt.isChangingOverTime()).thenReturn(false);
-        cmpt.getLatestProductComponentGeneration();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
+            when(cmpt.isChangingOverTime()).thenReturn(false);
+            cmpt.getLatestProductComponentGeneration();
+        });
     }
 
     @Test
@@ -305,19 +310,23 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertEquals(new DateTime(2010, 1, 1), pc.getValidFrom());
     }
 
-    @Test(expected = IllegalRepositoryModificationException.class)
+    @Test
     public void testSetValidFrom_throwExceptionIfRepositoryNotModifiable() {
-        when(repository.isModifiable()).thenReturn(false);
+        assertThrows(IllegalRepositoryModificationException.class, () -> {
+            when(repository.isModifiable()).thenReturn(false);
 
-        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+            pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
 
-        pc.setValidFrom(new DateTime(2010, 1, 1));
+            pc.setValidFrom(new DateTime(2010, 1, 1));
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
-        when(repository.isModifiable()).thenReturn(true);
-        pc.setValidFrom(null);
+        assertThrows(NullPointerException.class, () -> {
+            when(repository.isModifiable()).thenReturn(true);
+            pc.setValidFrom(null);
+        });
     }
 
     @Test
@@ -390,10 +399,12 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertThat(pc.getDescription(Locale.ENGLISH), is("Updated Description"));
     }
 
-    @Test(expected = IllegalRepositoryModificationException.class)
+    @Test
     public void testSetDescription_ThrowsIfReadOnlyRepository() {
-        pc = new TestProductComponent(repository, "id", "kind", "v1");
-        pc.setDescription(Locale.ENGLISH, "Should not be allowed");
+        assertThrows(IllegalRepositoryModificationException.class, () -> {
+            pc = new TestProductComponent(repository, "id", "kind", "v1");
+            pc.setDescription(Locale.ENGLISH, "Should not be allowed");
+        });
     }
 
     @Test
@@ -503,19 +514,21 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertNull(baseFromProduct);
     }
 
-    @Test(expected = IllegalRepositoryModificationException.class)
+    @Test
     public void testSetVariedBase_NotModifiable() {
-        String oldId = "oldId";
-        TestProductComponent oldBaseComponent = new TestProductComponent(repository, oldId, "old", "1.0");
-        when(repository.getProductComponent(oldId)).thenReturn(oldBaseComponent);
-        String newId = "newId";
-        TestProductComponent newBaseComponent = new TestProductComponent(repository, newId, "new", "1.0");
-        when(repository.getProductComponent(newId)).thenReturn(newBaseComponent);
-        Element element = getTestDocument().getDocumentElement();
-        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, oldId);
-        pc.initFromXml(element);
+        assertThrows(IllegalRepositoryModificationException.class, () -> {
+            String oldId = "oldId";
+            TestProductComponent oldBaseComponent = new TestProductComponent(repository, oldId, "old", "1.0");
+            when(repository.getProductComponent(oldId)).thenReturn(oldBaseComponent);
+            String newId = "newId";
+            TestProductComponent newBaseComponent = new TestProductComponent(repository, newId, "new", "1.0");
+            when(repository.getProductComponent(newId)).thenReturn(newBaseComponent);
+            Element element = getTestDocument().getDocumentElement();
+            element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, oldId);
+            pc.initFromXml(element);
 
-        pc.setVariedBase(newBaseComponent);
+            pc.setVariedBase(newBaseComponent);
+        });
     }
 
     @Test
@@ -581,23 +594,27 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertThat(range.getUpperBound(), is(Integer.MAX_VALUE));
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testParseCardinalityRange_invalidMaxCardinality() {
-        Document document = newDocument();
-        Element element = document.createElement("PolicyLinkCardinality");
-        element.setAttribute("minCardinality", "0");
-        element.setAttribute("maxCardinality", "abc");
+        assertThrows(NumberFormatException.class, () -> {
+            Document document = newDocument();
+            Element element = document.createElement("PolicyLinkCardinality");
+            element.setAttribute("minCardinality", "0");
+            element.setAttribute("maxCardinality", "abc");
 
-        ProductComponent.parseCardinalityRange(element);
+            ProductComponent.parseCardinalityRange(element);
+        });
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void testParseCardinalityRange_missingMinCardinality() {
-        Document document = newDocument();
-        Element element = document.createElement("PolicyLinkCardinality");
-        element.setAttribute("maxCardinality", "5");
+        assertThrows(NumberFormatException.class, () -> {
+            Document document = newDocument();
+            Element element = document.createElement("PolicyLinkCardinality");
+            element.setAttribute("maxCardinality", "5");
 
-        ProductComponent.parseCardinalityRange(element);
+            ProductComponent.parseCardinalityRange(element);
+        });
     }
 
     /**

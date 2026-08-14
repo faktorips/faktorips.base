@@ -37,7 +37,7 @@ import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.values.LocalizedString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CleanUpTranslationsActionTest extends AbstractIpsPluginTest {
 

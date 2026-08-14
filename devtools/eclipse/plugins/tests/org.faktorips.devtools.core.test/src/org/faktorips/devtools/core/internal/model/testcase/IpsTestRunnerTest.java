@@ -15,7 +15,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsTestRunnerTest extends AbstractIpsPluginTest {
 

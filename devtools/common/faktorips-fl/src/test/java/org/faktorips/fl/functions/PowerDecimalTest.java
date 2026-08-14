@@ -12,7 +12,7 @@ package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PowerDecimalTest extends FunctionAbstractTest {
 

@@ -14,7 +14,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -36,7 +37,7 @@ import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GenericRelevanceValidationTest {
 
@@ -84,10 +85,12 @@ public class GenericRelevanceValidationTest {
         assertThat(message.getText(), is("Das Feld \"Integer-Attribut\" muss einen Wert enthalten."));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testOf_AttributeNotFound() {
-        GenericRelevanceValidation.of(new TestPolicyWithVisitor(), TestPolicyWithVisitor.class, "Foobar",
-                new ValidationContext());
+        assertThrows(IllegalArgumentException.class, () -> {
+            GenericRelevanceValidation.of(new TestPolicyWithVisitor(), TestPolicyWithVisitor.class, "Foobar",
+            new ValidationContext());
+        });
     }
 
     @Test

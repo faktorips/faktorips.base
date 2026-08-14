@@ -19,15 +19,15 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.pctype.MessageSeverity;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RulesTablePageElementTest extends AbstractXmlUnitHtmlExportTest {
 
     private IPolicyCmptType policy;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         policy = newPolicyCmptType(ipsProject, "Vertrag");

@@ -25,8 +25,8 @@ import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.hamcrest.core.IsEqual;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseJavaElementTest extends EclipseAbstractionTestSetup {
 
@@ -34,7 +34,7 @@ public class EclipseJavaElementTest extends EclipseAbstractionTestSetup {
     private AProject aProject;
     private IJavaProject javaProject;
 
-    @Before
+    @BeforeEach
     public void setUp() throws CoreException {
         aProject = newSimpleIpsProject("TestProject");
         ((IProject)aProject.unwrap()).open(null);

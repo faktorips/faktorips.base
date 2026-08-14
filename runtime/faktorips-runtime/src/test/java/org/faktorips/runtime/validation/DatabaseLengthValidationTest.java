@@ -34,13 +34,13 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.data.TestDeckungWithVisitor;
 import org.faktorips.runtime.data.TestPolicyWithVisitor;
 import org.faktorips.values.Decimal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DatabaseLengthValidationTest {
     private TestPolicyWithVisitor testPolicy;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testPolicy = new TestPolicyWithVisitor();
     }

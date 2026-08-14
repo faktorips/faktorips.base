@@ -15,10 +15,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -68,7 +69,7 @@ import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultPolicyAttributeTest {
 
@@ -155,43 +156,51 @@ public class DefaultPolicyAttributeTest {
         assertEquals(new Date(1), subPolicy.overriddenAttr);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testSetValue_CannotModifyConstant() {
-        PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
-        PolicyAttribute constant = modelType.getAttribute("const");
-        PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
-        PolicyAttribute subConstant = subModelType.getAttribute("const");
-        Policy modelObject = new Policy();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
+            PolicyAttribute constant = modelType.getAttribute("const");
+            PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
+            PolicyAttribute subConstant = subModelType.getAttribute("const");
+            Policy modelObject = new Policy();
 
-        constant.setValue(modelObject, "asd");
-        subConstant.setValue(modelObject, "asd");
+            constant.setValue(modelObject, "asd");
+            subConstant.setValue(modelObject, "asd");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetValue_CannotDerivedAttribute() {
-        PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
-        PolicyAttribute attr2 = modelType.getAttribute("attr2");
-        Policy modelObject = new Policy();
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
+            PolicyAttribute attr2 = modelType.getAttribute("attr2");
+            Policy modelObject = new Policy();
 
-        attr2.setValue(modelObject, "asd");
+            attr2.setValue(modelObject, "asd");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetValue_CannotDerivedAttributeWithOverwritten() {
-        PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
-        PolicyAttribute subAttr2 = subModelType.getAttribute("attr2");
-        Policy modelObject = new Policy();
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType subModelType = IpsModel.getPolicyCmptType(SubPolicy.class);
+            PolicyAttribute subAttr2 = subModelType.getAttribute("attr2");
+            Policy modelObject = new Policy();
 
-        subAttr2.setValue(modelObject, "asd");
+            subAttr2.setValue(modelObject, "asd");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetValue_OnTheFly() {
-        PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
-        PolicyAttribute onTheFly = modelType.getAttribute("onTheFly");
-        Policy modelObject = new Policy();
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
+            PolicyAttribute onTheFly = modelType.getAttribute("onTheFly");
+            Policy modelObject = new Policy();
 
-        onTheFly.setValue(modelObject, "asd");
+            onTheFly.setValue(modelObject, "asd");
+        });
     }
 
     @Test
@@ -251,16 +260,18 @@ public class DefaultPolicyAttributeTest {
         assertEquals(new OrderedValueSet<>(false, null, "lorem", "ipsum"), valueSet);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValueSet_Product_ChangingOverTime_TooManyArgs() {
-        Produkt source = new Produkt(repository);
-        ProduktGen produktGen = new ProduktGen(source);
-        repository.putProductCmptGeneration(produktGen);
+        assertThrows(IllegalStateException.class, () -> {
+            Produkt source = new Produkt(repository);
+            ProduktGen produktGen = new ProduktGen(source);
+            repository.putProductCmptGeneration(produktGen);
 
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
-        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
-        attribute.getValueSet(source, effectiveDate, new ValidationContext());
+            PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
+            attribute.getValueSet(source, effectiveDate, new ValidationContext());
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -311,13 +322,15 @@ public class DefaultPolicyAttributeTest {
         assertEquals(new OrderedValueSet<>(false, null, "lorem", "ipsum"), valueSet);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValueSet_ModelObject_TooManyArgs() {
-        Policy policy = new Policy();
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+        assertThrows(IllegalStateException.class, () -> {
+            Policy policy = new Policy();
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
 
-        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
-        attribute.getValueSet(policy, new ValidationContext());
+            PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
+            attribute.getValueSet(policy, new ValidationContext());
+        });
     }
 
     @Test
@@ -484,13 +497,15 @@ public class DefaultPolicyAttributeTest {
         assertEquals(new OrderedValueSet<>(false, null, "lorem", "ipsum"), valueSet);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetValueSet_ModelObject_NotChangingOverTime_TooManyArgs() {
-        ConfVertrag vertrag = new ConfVertrag(repository);
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        assertThrows(IllegalStateException.class, () -> {
+            ConfVertrag vertrag = new ConfVertrag(repository);
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
-        PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
-        attribute.getValueSet(vertrag, new ValidationContext());
+            PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
+            attribute.getValueSet(vertrag, new ValidationContext());
+        });
     }
 
     @Test
@@ -505,12 +520,14 @@ public class DefaultPolicyAttributeTest {
         assertEquals(new DefaultRange<>("A", "Z"), valueSet);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetValueSet_Failing() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.getValueSet(new FailingProdukt(), null);
+            attribute.getValueSet(new FailingProdukt(), null);
+        });
     }
 
     @Test
@@ -562,12 +579,14 @@ public class DefaultPolicyAttributeTest {
         assertThat(attribute.getDefaultValue(new DummyVertrag()), is(nullValue()));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetDefaultValue_NotProductRelevant() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
-        PolicyAttribute attribute = policyModel.getAttribute("attr2");
-        attribute.getDefaultValue(new Produkt(repository), null);
+            PolicyAttribute attribute = policyModel.getAttribute("attr2");
+            attribute.getDefaultValue(new Produkt(repository), null);
+        });
     }
 
     @Test
@@ -598,20 +617,24 @@ public class DefaultPolicyAttributeTest {
         assertEquals("blub", defaultValue);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testGetDefaultValue_NotConfigured() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.getDefaultValue(new Produkt(repository), null);
+            attribute.getDefaultValue(new Produkt(repository), null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetDefaultValue_Failing() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.getDefaultValue(new FailingProdukt(), null);
+            attribute.getDefaultValue(new FailingProdukt(), null);
+        });
     }
 
     @Test
@@ -656,12 +679,14 @@ public class DefaultPolicyAttributeTest {
         assertEquals("new", produkt.getDefaultValueAttr1());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetDefaultValue_NotProductRelevant() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr2");
 
-        attribute.setDefaultValue(new Produkt(repository), null, "not product relevant");
+            attribute.setDefaultValue(new Produkt(repository), null, "not product relevant");
+        });
     }
 
     @Test
@@ -691,20 +716,24 @@ public class DefaultPolicyAttributeTest {
         assertEquals("new", gen.getDefaultValueAttrChangingOverTime());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetDefaultValue_NotConfigured() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setDefaultValue(new Produkt(repository), null, "new");
+            attribute.setDefaultValue(new Produkt(repository), null, "new");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetDefaultValue_Failing() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setDefaultValue(new FailingProdukt(), null, "new");
+            attribute.setDefaultValue(new FailingProdukt(), null, "new");
+        });
     }
 
     @Test
@@ -772,12 +801,14 @@ public class DefaultPolicyAttributeTest {
         }
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValueSet_NotProductRelevant() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr2");
 
-        attribute.setValueSet(new Produkt(repository), null, new UnrestrictedValueSet<>());
+            attribute.setValueSet(new Produkt(repository), null, new UnrestrictedValueSet<>());
+        });
     }
 
     @Test
@@ -809,20 +840,24 @@ public class DefaultPolicyAttributeTest {
         assertEquals(valueSet, gen.getSetOfAllowedValuesForAttrChangingOverTime(null));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValueSet_NotConfigured() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setValueSet(new Produkt(repository), null, new UnrestrictedValueSet<>());
+            attribute.setValueSet(new Produkt(repository), null, new UnrestrictedValueSet<>());
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetValueSet_Failing() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalArgumentException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setValueSet(new FailingProdukt(), null, new UnrestrictedValueSet<>());
+            attribute.setValueSet(new FailingProdukt(), null, new UnrestrictedValueSet<>());
+        });
     }
 
     @Test
@@ -886,15 +921,17 @@ public class DefaultPolicyAttributeTest {
         assertThat(gen.getDefaultValueAttrChangingOverTime(), is("newDefault"));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetDefaultValue_withGeneration_NotProductRelevant() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr2");
 
-        Produkt produkt = new Produkt(repository);
-        ProduktGen gen = new ProduktGen(produkt);
+            Produkt produkt = new Produkt(repository);
+            ProduktGen gen = new ProduktGen(produkt);
 
-        attribute.setDefaultValue(gen, "newValue");
+            attribute.setDefaultValue(gen, "newValue");
+        });
     }
 
     @Test
@@ -912,15 +949,17 @@ public class DefaultPolicyAttributeTest {
         assertThat(produkt.getSetOfAllowedValuesForAttr1(null), is(valueSet));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testSetValueSet_withGeneration_NotConfigured() {
-        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
-        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        assertThrows(IllegalStateException.class, () -> {
+            PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
+            PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        Produkt produkt = new Produkt(repository);
-        ProduktGen gen = new ProduktGen(produkt);
+            Produkt produkt = new Produkt(repository);
+            ProduktGen gen = new ProduktGen(produkt);
 
-        attribute.setValueSet(gen, new UnrestrictedValueSet<>());
+            attribute.setValueSet(gen, new UnrestrictedValueSet<>());
+        });
     }
 
     @Test
@@ -975,32 +1014,38 @@ public class DefaultPolicyAttributeTest {
         assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testValidate_NoMessageList() {
-        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt(repository);
+        assertThrows(NullPointerException.class, () -> {
+            PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+            Produkt product = new Produkt(repository);
 
-        defaultPolicyAttribute.validate(null, new ValidationContext(), product, null);
+            defaultPolicyAttribute.validate(null, new ValidationContext(), product, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testValidate_NoContext() {
-        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt(repository);
-        MessageList messageList = MessageLists.emptyMessageList();
+        assertThrows(NullPointerException.class, () -> {
+            PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+            Produkt product = new Produkt(repository);
+            MessageList messageList = MessageLists.emptyMessageList();
 
-        defaultPolicyAttribute.validate(messageList, null, product, null);
+            defaultPolicyAttribute.validate(messageList, null, product, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testValidate_NoProduct() {
-        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
-        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        MessageList messageList = MessageLists.emptyMessageList();
+        assertThrows(NullPointerException.class, () -> {
+            PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+            DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+            MessageList messageList = MessageLists.emptyMessageList();
 
-        defaultPolicyAttribute.validate(messageList, new ValidationContext(), null, null);
+            defaultPolicyAttribute.validate(messageList, new ValidationContext(), null, null);
+        });
     }
 
     @Test

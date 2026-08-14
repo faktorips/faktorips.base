@@ -20,7 +20,7 @@ import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileAdapterFactoryTest {
 

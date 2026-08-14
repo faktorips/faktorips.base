@@ -23,15 +23,16 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlainJavaJavaProjectTest extends PlainJavaAbstractionTestSetup {
 
     private AJavaProject javaProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         javaProject = toJavaProject(newSimpleIpsProject("TestProject")); //$NON-NLS-1$
     }
@@ -72,7 +73,7 @@ public class PlainJavaJavaProjectTest extends PlainJavaAbstractionTestSetup {
     }
 
     @Test
-    @Ignore
+    @Disabled
     // without maven all internal folders are java folders
     public void testIsJavaFolder_isNot() {
         AFolder nonJavaFolder = javaProject.getProject().getFolder("nonJavaResource"); //$NON-NLS-1$
@@ -89,15 +90,17 @@ public class PlainJavaJavaProjectTest extends PlainJavaAbstractionTestSetup {
         assertThat(pfr, is(wrapperOf(sourceFolder.getLocation().toFile())));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetPackageFragmentRoot_notDir() {
         AFolder sourceFolder = Abstractions.getWorkspace().getRoot().getFolder(javaProject.getOutputLocation());
 
-        javaProject.toPackageFragmentRoot(sourceFolder.getFile("File.java")); //$NON-NLS-1$
+        assertThrows(UnsupportedOperationException.class,
+                () -> javaProject.toPackageFragmentRoot(sourceFolder.getFile("File.java"))); //$NON-NLS-1$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetPackageFragmentRoot_notInternalDir() {
-        javaProject.toPackageFragmentRoot(new PlainJavaFolder(new File(System.getProperty("java.io.tmpdir")))); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class,
+                () -> javaProject.toPackageFragmentRoot(new PlainJavaFolder(new File(System.getProperty("java.io.tmpdir"))))); //$NON-NLS-1$
     }
 }

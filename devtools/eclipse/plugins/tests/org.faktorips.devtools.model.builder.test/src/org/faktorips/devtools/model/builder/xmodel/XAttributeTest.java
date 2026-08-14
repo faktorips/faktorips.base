@@ -33,13 +33,16 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class XAttributeTest {
 
     private static final String TEST_ANNOTATION = "@TestAnnotation";

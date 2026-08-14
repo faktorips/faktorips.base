@@ -11,7 +11,7 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.datatype.Datatype;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PowerIntTest extends FunctionAbstractTest {
 

@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 
 public class AbstractParserTest {
@@ -42,7 +42,7 @@ public class AbstractParserTest {
         super();
     }
 
-    @Before
+    @BeforeEach
     public void mockExpression() throws Exception {
         when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
         parsingContext = new ParsingContext(getExpression(), getIpsProject(), getMultiLanguageSupport());

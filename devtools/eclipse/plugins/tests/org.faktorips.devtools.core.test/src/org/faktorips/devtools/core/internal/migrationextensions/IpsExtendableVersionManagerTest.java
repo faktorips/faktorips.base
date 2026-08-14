@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,8 +30,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
 
@@ -41,7 +41,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

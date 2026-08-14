@@ -12,10 +12,11 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -27,13 +28,15 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AssociationDecoratorTest extends AbstractIpsPluginTest {
 
     private AssociationDecorator decorator;
@@ -51,7 +54,7 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute aPolicyCmptAttribute;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         decorator = new AssociationDecorator();
@@ -111,11 +114,13 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
                 imageDescriptor));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+        @Test
     public void testGetImageDescriptor_BaseNameUnknownType() throws Exception {
-        when(aProductAssociation.getAssociationType()).thenReturn(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            when(aProductAssociation.getAssociationType()).thenReturn(null);
 
-        decorator.getImageDescriptor(aProductAssociation);
+            decorator.getImageDescriptor(aProductAssociation);
+        });
     }
 
     @Test

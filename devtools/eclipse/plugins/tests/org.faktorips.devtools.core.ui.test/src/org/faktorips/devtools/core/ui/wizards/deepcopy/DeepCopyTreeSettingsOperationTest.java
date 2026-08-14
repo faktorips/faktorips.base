@@ -41,8 +41,8 @@ import org.faktorips.devtools.model.type.AssociationType;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DeepCopyTreeSettingsOperationTest extends AbstractIpsPluginTest {
 
@@ -61,7 +61,7 @@ public class DeepCopyTreeSettingsOperationTest extends AbstractIpsPluginTest {
     private TableContents tableContents;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("AProject");

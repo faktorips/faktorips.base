@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.GregorianCalendar;
 
@@ -25,15 +25,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class OpenProductCmptEditorTest extends AbstractIpsPluginTest {
 
     private IIpsObject ipsObject;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject();

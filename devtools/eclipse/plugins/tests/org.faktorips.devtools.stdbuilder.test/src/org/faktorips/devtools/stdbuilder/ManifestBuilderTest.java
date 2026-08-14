@@ -39,8 +39,8 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.util.StringUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.Preferences;
 
 public class ManifestBuilderTest extends AbstractStdBuilderTest {
@@ -48,7 +48,7 @@ public class ManifestBuilderTest extends AbstractStdBuilderTest {
     private ManifestBuilder manifestBuilder;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         manifestBuilder = builderSet.getBuilderById(BuilderKindIds.MANIFEST_FILE, ManifestBuilder.class);

@@ -14,7 +14,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class PersistenceIpsTest extends AbstractIpsPluginTest {
 
@@ -26,7 +26,7 @@ public abstract class PersistenceIpsTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newPersistentIpsProject();

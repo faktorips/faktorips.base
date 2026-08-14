@@ -20,12 +20,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class CardinalityTest {
 
     @Mock

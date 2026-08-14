@@ -15,15 +15,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CurrencyHelperTest {
 
     private CurrencyHelper helper;
     private ImportDeclaration importDecl;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         helper = new CurrencyHelper();
         importDecl = new ImportDeclaration();

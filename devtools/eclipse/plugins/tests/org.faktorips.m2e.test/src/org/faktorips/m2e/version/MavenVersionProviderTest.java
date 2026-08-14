@@ -23,8 +23,8 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.m2e.AbstractMavenIpsProjectTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MavenVersionProviderTest extends AbstractMavenIpsProjectTest {
 
@@ -45,7 +45,7 @@ public class MavenVersionProviderTest extends AbstractMavenIpsProjectTest {
     private IIpsProject ipsProject;
     private AProject project;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

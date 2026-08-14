@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.internal.type;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -32,8 +32,8 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TypeHierarchyPolicyCmptTypeTest extends AbstractIpsPluginTest {
 
@@ -46,7 +46,7 @@ public class TypeHierarchyPolicyCmptTypeTest extends AbstractIpsPluginTest {
     private IPolicyCmptType supersupertype;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         pdProject = newIpsProject();

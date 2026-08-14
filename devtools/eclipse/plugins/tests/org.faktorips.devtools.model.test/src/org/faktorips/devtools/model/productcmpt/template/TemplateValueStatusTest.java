@@ -21,13 +21,16 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TemplateValueStatusTest {
 
     @Mock
@@ -42,7 +45,7 @@ public class TemplateValueStatusTest {
     @Mock
     private IIpsProject ipsProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         doReturn(ipsProject).when(attributeValue).getIpsProject();
         doReturn(ipsProject).when(link).getIpsProject();

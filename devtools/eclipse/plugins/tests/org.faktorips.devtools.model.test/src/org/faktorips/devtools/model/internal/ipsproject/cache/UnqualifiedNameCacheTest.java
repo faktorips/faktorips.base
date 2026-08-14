@@ -13,9 +13,9 @@ package org.faktorips.devtools.model.internal.ipsproject.cache;
 import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
@@ -30,9 +30,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
 
@@ -43,7 +42,7 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
     private UnqualifiedNameCache unqualifiedNameCache;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject();
@@ -100,7 +99,6 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
         assertEquals(2, result.size());
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testNoResourceChangeForIpsSrcFileOffRoot() throws Exception {
         if (Abstractions.isEclipseRunning()) {

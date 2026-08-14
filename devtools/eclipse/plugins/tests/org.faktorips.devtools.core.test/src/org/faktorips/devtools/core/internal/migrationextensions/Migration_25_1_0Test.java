@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class Migration_25_1_0Test extends AbstractIpsPluginTest {
 

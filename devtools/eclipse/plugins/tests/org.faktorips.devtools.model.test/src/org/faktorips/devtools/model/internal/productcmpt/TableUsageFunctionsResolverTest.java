@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.fl.FlFunction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
 
@@ -44,7 +44,7 @@ public class TableUsageFunctionsResolverTest extends AbstractIpsPluginTest {
     final private String STRUCTURE_ROLENAME = "StructUsageRole";
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");

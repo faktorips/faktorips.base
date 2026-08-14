@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFileWrapperAdapterFactoryTest {
 

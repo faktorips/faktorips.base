@@ -13,10 +13,11 @@ package org.faktorips.devtools.model.internal.enums;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnumValueTest extends AbstractIpsEnumPluginTest {
 
@@ -125,9 +126,11 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getStringValue());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetEnumAttributeValueAttributeGiven_Null() {
-        genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, ValueFactory.createStringValue(""));
+        assertThrows(NullPointerException.class, () -> {
+            genderEnumValueMale.setEnumAttributeValue((IEnumAttribute)null, ValueFactory.createStringValue(""));
+        });
     }
 
     @Test
@@ -137,10 +140,11 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals("foo", genderEnumValueMale.getEnumAttributeValue(genderEnumAttributeName).getStringValue());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testSetEnumAttributeValueAttributeNameGiven_Null() {
-        genderEnumValueMale.setEnumAttributeValue((String)null, ValueFactory.createStringValue(""));
-
+        assertThrows(NullPointerException.class, () -> {
+            genderEnumValueMale.setEnumAttributeValue((String)null, ValueFactory.createStringValue(""));
+        });
     }
 
     @Test
@@ -149,14 +153,18 @@ public class EnumValueTest extends AbstractIpsEnumPluginTest {
         assertEquals("foo", genderEnumValueMale.getEnumAttributeValues().get(1).getStringValue());
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetEnumAttributeValueAttributeValueIndexGiven_Negative() {
-        genderEnumValueMale.setEnumAttributeValue(-1, ValueFactory.createStringValue(""));
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            genderEnumValueMale.setEnumAttributeValue(-1, ValueFactory.createStringValue(""));
+        });
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetEnumAttributeValueAttributeValueIndexGiven_TooHigh() {
-        genderEnumValueMale.setEnumAttributeValue(20, ValueFactory.createStringValue(""));
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            genderEnumValueMale.setEnumAttributeValue(20, ValueFactory.createStringValue(""));
+        });
     }
 
     @Test

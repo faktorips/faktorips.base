@@ -12,8 +12,9 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,13 +29,16 @@ import java.util.jar.Manifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsFolderBundle.IOFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsFolderBundleTest {
 
     @Mock
@@ -66,7 +70,7 @@ public class IpsFolderBundleTest {
 
     private IpsFolderBundle ipsFolderBundle;
 
-    @Before
+    @BeforeEach
     public void createIpsFolderBundle() throws Exception {
         ipsFolderBundle = new IpsFolderBundle(ipsProject, folder);
         ipsFolderBundle.setIOFactory(ioFactory);
@@ -81,12 +85,14 @@ public class IpsFolderBundleTest {
         assertNotNull(manifest);
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void testGetManifest_exception() throws Exception {
-        mockManifestFile();
-        when(ioFactory.createInputStream(manifestFile)).thenThrow(new FileNotFoundException());
+        assertThrows(IOException.class, () -> {
+            mockManifestFile();
+            when(ioFactory.createInputStream(manifestFile)).thenThrow(new FileNotFoundException());
 
-        ipsFolderBundle.getManifest();
+            ipsFolderBundle.getManifest();
+        });
     }
 
     @Test

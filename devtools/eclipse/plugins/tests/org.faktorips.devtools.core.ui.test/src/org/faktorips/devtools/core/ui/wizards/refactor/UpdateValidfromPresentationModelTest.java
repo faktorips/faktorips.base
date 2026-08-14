@@ -35,8 +35,8 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest {
 
@@ -52,7 +52,7 @@ public class UpdateValidfromPresentationModelTest extends AbstractIpsPluginTest 
     private IIpsProject ipsProject;
     private ProductCmpt productCmptTarget;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         ipsProject = this.newIpsProject("TestProject");

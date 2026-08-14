@@ -12,7 +12,7 @@ package org.faktorips.fl.functions;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 
@@ -22,11 +22,13 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.date.Date;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new MinMaxComparableDatatypes("MAX", "", true, Datatype.STRING));

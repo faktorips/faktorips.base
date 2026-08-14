@@ -21,9 +21,9 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.pctype.MessageSeverity;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -57,7 +57,7 @@ public class MsgCodePmoTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         openMocks = MockitoAnnotations.openMocks(this);
 
@@ -74,7 +74,7 @@ public class MsgCodePmoTest {
         generatedMsgCode = severity + DELIMITER + pcType + DELIMITER + nameOfRule;
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

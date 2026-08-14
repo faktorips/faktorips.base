@@ -141,6 +141,12 @@
         <location includeDependencyDepth="none" includeDependencyScopes="compile" includeSource="true" label="Maven Library Bundles" missingManifest="error" type="Maven">
             <dependencies>
                 <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-junit-jupiter</artifactId>
+                    <version>5.16.0</version>
+                    <type>jar</type>
+                </dependency>
+                <dependency>
                     <groupId>jakarta.servlet.jsp</groupId>
                     <artifactId>jakarta.servlet.jsp-api</artifactId>
                     <version>2.3.6</version>

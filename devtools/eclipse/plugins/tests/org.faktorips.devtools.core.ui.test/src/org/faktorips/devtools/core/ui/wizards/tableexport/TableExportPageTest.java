@@ -28,14 +28,17 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableExportPageTest {
     @Mock
     private IStructuredSelection selection;
@@ -51,7 +54,7 @@ public class TableExportPageTest {
     @InjectMocks
     private TableExportPage tableExportPage;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Field exportedIpsObjectControlField = IpsObjectExportPage.class.getDeclaredField("exportedIpsObjectControl");
         exportedIpsObjectControlField.setAccessible(true);

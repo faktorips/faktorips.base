@@ -12,9 +12,10 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +30,8 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SwitchTemplatedValueOperationTest extends AbstractIpsPluginTest {
 
@@ -65,7 +66,7 @@ public class SwitchTemplatedValueOperationTest extends AbstractIpsPluginTest {
     private IProductCmptType prodType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -120,13 +121,15 @@ public class SwitchTemplatedValueOperationTest extends AbstractIpsPluginTest {
         assertThat(SwitchTemplatedValueOperation.isValidSelection(selected), is(false));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCreateSwitchTemplatePropertyValueOperation_MissingTemplate_ExceptionOnCreate() throws Exception {
-        defProd1.setTemplate("Can't touch this");
-        defProd2.setTemplate("Oh-oh Oh Oh Oh-oh-oh");
-        List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
+        assertThrows(IllegalArgumentException.class, () -> {
+            defProd1.setTemplate("Can't touch this");
+            defProd2.setTemplate("Oh-oh Oh Oh Oh-oh-oh");
+            List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
 
-        SwitchTemplatedValueOperation.create(selected);
+            SwitchTemplatedValueOperation.create(selected);
+        });
     }
 
     @Test

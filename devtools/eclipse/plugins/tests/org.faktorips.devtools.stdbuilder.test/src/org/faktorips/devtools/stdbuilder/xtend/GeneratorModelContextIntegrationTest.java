@@ -45,7 +45,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GeneratorModelContextIntegrationTest extends AbstractStdBuilderTest {
 

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ColumnTablePageElementLayoutTest {
 

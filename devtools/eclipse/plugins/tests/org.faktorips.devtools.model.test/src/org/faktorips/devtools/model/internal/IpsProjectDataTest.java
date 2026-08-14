@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsProjectDataTest {
 

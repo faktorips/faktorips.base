@@ -10,21 +10,21 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Modifier;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JavaNamingConventionTest {
 
     private IJavaNamingConvention javaNamingConvention;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         javaNamingConvention = new JavaNamingConvention();
     }

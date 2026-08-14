@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RenameEnumLiteralNameAttributeValueProcessorTest extends AbstractIpsRefactoringTest {
 

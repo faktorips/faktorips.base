@@ -13,8 +13,9 @@ package org.faktorips.devtools.model.builder.java.util;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -24,7 +25,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EnumTypeDatatypeHelperTest extends AbstractJavaBuilderPluginTest {
 
@@ -73,9 +74,11 @@ public class EnumTypeDatatypeHelperTest extends AbstractJavaBuilderPluginTest {
         assertEquals(packageName + ".PaymentMode", enumHelper.getJavaClassName());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructor() {
-        new EnumTypeDatatypeHelper(null, null);
+        assertThrows(NullPointerException.class, () -> {
+            new EnumTypeDatatypeHelper(null, null);
+        });
     }
 
 }

@@ -18,11 +18,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -68,8 +69,8 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.tablestructure.TableStructureType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -82,7 +83,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     private IDependency structureDependency;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
@@ -279,17 +280,19 @@ public class TableContentsTest extends AbstractDependencyTest {
     /**
      * test invalid XML table content with extension properties inside generation node
      */
-    @Test(expected = IpsException.class)
+    @Test
     public void testgetTableRows_WithExtensionPropertiesError() {
-        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        when(ipsSrcFile.exists()).thenReturn(true);
-        table = spy(newTableContents(structure, "Tc"));
-        doReturn(ipsSrcFile).when(table).getIpsSrcFile();
-        doReturn(getClass().getResourceAsStream("TableContentsTest2.xml"))
-                .when(ipsSrcFile).getContentFromEnclosingResource();
+        assertThrows(IpsException.class, () -> {
+            IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+            when(ipsSrcFile.exists()).thenReturn(true);
+            table = spy(newTableContents(structure, "Tc"));
+            doReturn(ipsSrcFile).when(table).getIpsSrcFile();
+            doReturn(getClass().getResourceAsStream("TableContentsTest2.xml"))
+                    .when(ipsSrcFile).getContentFromEnclosingResource();
 
-        table.setTableRowsInternal(null);
-        table.getTableRows();
+            table.setTableRowsInternal(null);
+            table.getTableRows();
+        });
     }
 
     @Test
@@ -347,7 +350,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         IRow newRow = tableGen.newRow();
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
-        assertEquals(msgList.toString(), 2, msgList.size());
+        assertEquals(2, msgList.size(), msgList.toString());
 
         newRow.setValue(0, "1");
         msgList = table.validate(project);
@@ -469,12 +472,14 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals(structure.getIpsSrcFile(), typeSrcFile);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddPartThis() {
-        ITableRows rows = table.getTableRows();
-        assertNotNull(rows);
+        assertThrows(IllegalStateException.class, () -> {
+            ITableRows rows = table.getTableRows();
+            assertNotNull(rows);
 
-        table.addPartThis(rows);
+            table.addPartThis(rows);
+        });
     }
 
     @Test
@@ -494,13 +499,15 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertThat(table.getTableRows(), is(newTableRows));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testAddPartThis_WithTableRows_AlreadyInitialized() {
-        TableRows firstTableRows = new TableRows(table, "rows1");
-        table.addPartThis(firstTableRows);
+        assertThrows(IllegalStateException.class, () -> {
+            TableRows firstTableRows = new TableRows(table, "rows1");
+            table.addPartThis(firstTableRows);
 
-        TableRows secondTableRows = new TableRows(table, "rows2");
-        table.addPartThis(secondTableRows);
+            TableRows secondTableRows = new TableRows(table, "rows2");
+            table.addPartThis(secondTableRows);
+        });
     }
 
     @Test

@@ -16,25 +16,25 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.faktorips.values.NullObjectSupport;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class GenericEnumDatatypeTest {
 
     private DefaultGenericEnumDatatype datatype;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         datatype = new DefaultGenericEnumDatatype(PaymentMode.class);
     }

@@ -26,11 +26,11 @@ import org.faktorips.devtools.abstraction.Abstractions;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 public abstract class AbstractAbstractionTestSetup {
 
-    @After
+    @AfterEach
     public void tearDown() {
         Abstractions.getWorkspace().getRoot().getProjects()
                 .stream()

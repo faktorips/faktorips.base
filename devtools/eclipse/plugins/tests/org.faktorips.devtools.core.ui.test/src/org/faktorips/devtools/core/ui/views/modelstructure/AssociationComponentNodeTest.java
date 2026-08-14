@@ -10,14 +10,15 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
 
@@ -34,30 +35,34 @@ public class AssociationComponentNodeTest extends AbstractIpsPluginTest {
         AssociationComponentNode.newAssociationComponentNode(association, null, project);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testNewAssociationComponentNode_NullProjectNotAllowed() {
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
+        assertThrows(NullPointerException.class, () -> {
+            IIpsProject project = newIpsProject();
+            PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+            PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
 
-        IAssociation association = vertrag.newAssociation();
-        association.setTarget(deckung.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+            IAssociation association = vertrag.newAssociation();
+            association.setTarget(deckung.getQualifiedName());
+            association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(association, null, null);
+            AssociationComponentNode.newAssociationComponentNode(association, null, null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testNewAssociationComponentNode_NullAssociationNotAllowed() {
-        IIpsProject project = newIpsProject();
-        PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
-        PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
+        assertThrows(NullPointerException.class, () -> {
+            IIpsProject project = newIpsProject();
+            PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
+            PolicyCmptType deckung = newPolicyCmptTypeWithoutProductCmptType(project, "Deckung");
 
-        IAssociation association = vertrag.newAssociation();
-        association.setTarget(deckung.getQualifiedName());
-        association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+            IAssociation association = vertrag.newAssociation();
+            association.setTarget(deckung.getQualifiedName());
+            association.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
 
-        AssociationComponentNode.newAssociationComponentNode(null, null, project);
+            AssociationComponentNode.newAssociationComponentNode(null, null, project);
+        });
     }
 
     @Test

@@ -13,7 +13,7 @@ package org.faktorips.devtools.htmlexport.generators.html;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.AlternateRowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlLayoutAlternateRowTablePageElementLayoutTest extends AbstractHtmlLayouterTableTest {
 

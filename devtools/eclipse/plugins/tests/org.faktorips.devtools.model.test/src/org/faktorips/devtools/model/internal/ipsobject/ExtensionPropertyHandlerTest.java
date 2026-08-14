@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -36,12 +37,14 @@ import org.faktorips.devtools.model.internal.ipsobject.ExtensionPropertyHandler.
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,7 +52,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExtensionPropertyHandlerTest {
 
     private static final String MY_ID = "anyId";
@@ -103,7 +107,7 @@ public class ExtensionPropertyHandlerTest {
     @InjectMocks
     private ExtensionPropertyHandler extensionPropertyHandler;
 
-    @Before
+    @BeforeEach
     public void setUpExtPropDefAndPart() {
         doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
         doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID2);
@@ -117,7 +121,7 @@ public class ExtensionPropertyHandlerTest {
         when(extPropDef2.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE2);
     }
 
-    @Before
+    @BeforeEach
     public void setUpXmlElementAndDocument() {
         when(xmlRootElement.getOwnerDocument()).thenReturn(xmlDocument);
         when(xmlExtPropElement.getOwnerDocument()).thenReturn(xmlDocument);
@@ -162,11 +166,13 @@ public class ExtensionPropertyHandlerTest {
         assertEquals(MY_VALUE, propertyValue);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetExtPropertyValue_expectIllegalArgumentException() throws Exception {
-        doReturn(Arrays.asList()).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        assertThrows(IllegalArgumentException.class, () -> {
+            doReturn(Arrays.asList()).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
 
-        extensionPropertyHandler.getExtPropertyValue(MY_ID);
+            extensionPropertyHandler.getExtPropertyValue(MY_ID);
+        });
     }
 
     @Test
@@ -207,9 +213,11 @@ public class ExtensionPropertyHandlerTest {
         verify(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCheckExtProperty_fail() throws Exception {
-        extensionPropertyHandler.checkExtProperty(INVALID_ID);
+        assertThrows(IllegalArgumentException.class, () -> {
+            extensionPropertyHandler.checkExtProperty(INVALID_ID);
+        });
     }
 
     @Test

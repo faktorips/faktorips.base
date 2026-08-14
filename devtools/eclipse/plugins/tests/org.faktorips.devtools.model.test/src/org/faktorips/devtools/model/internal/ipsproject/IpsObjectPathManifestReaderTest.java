@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,14 +22,17 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.util.QNameUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleException;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectPathManifestReaderTest {
 
     private static final String MY_BAS_PACK = "myBasPack";
@@ -63,7 +66,7 @@ public class IpsObjectPathManifestReaderTest {
 
     private IpsObjectPathManifestReader objectPathReader;
 
-    @Before
+    @BeforeEach
     public void mockIpsProjectAndFolders() {
         AProject project = mock(AProject.class);
         when(ipsProject.getProject()).thenReturn(project);
@@ -73,7 +76,7 @@ public class IpsObjectPathManifestReaderTest {
         when(project.getFolder(MY_RESOURCE_OUT)).thenReturn(myResourceOut);
     }
 
-    @Before
+    @BeforeEach
     public void createIpsObjectPathManifestReader() {
         objectPathReader = new IpsObjectPathManifestReader(bundleManifest, ipsProject);
     }

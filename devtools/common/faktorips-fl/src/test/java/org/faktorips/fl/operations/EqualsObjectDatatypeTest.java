@@ -14,8 +14,8 @@ import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.JavaExprCompilerAbstractTest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -24,7 +24,7 @@ import org.junit.Test;
 public class EqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         getCompiler().setBinaryOperations(toArray(new EqualsObjectDatatype(AnyDatatype.INSTANCE)));

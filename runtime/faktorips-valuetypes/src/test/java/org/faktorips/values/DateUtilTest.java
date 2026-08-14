@@ -10,17 +10,18 @@
 
 package org.faktorips.values;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DateUtilTest {
 
@@ -96,9 +97,11 @@ public class DateUtilTest {
         assertEquals(date, DateUtil.parseIsoDateStringToGregorianCalendar("2005-10-10"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseIsoDateStringToGregorianCalendar_InvalidFormat() {
-        DateUtil.parseIsoDateStringToGregorianCalendar("10-10-10");
+        assertThrows(IllegalArgumentException.class, () -> {
+            DateUtil.parseIsoDateStringToGregorianCalendar("10-10-10");
+        });
     }
 
     @Test
@@ -112,9 +115,11 @@ public class DateUtilTest {
         assertEquals(date, DateUtil.parseIsoDateStringToDate("2005-10-10"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseIsoDateStringToDate_InvalidFormat() {
-        DateUtil.parseIsoDateStringToDate("10-10-10");
+        assertThrows(IllegalArgumentException.class, () -> {
+            DateUtil.parseIsoDateStringToDate("10-10-10");
+        });
     }
 
     @Test
@@ -139,9 +144,11 @@ public class DateUtilTest {
         assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10T20:02:03"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testParseIsoDateTimeStringToDate_InvalidFormat() {
-        DateUtil.parseIsoDateTimeStringToDate("10-10-10T20:02:03");
+        assertThrows(IllegalArgumentException.class, () -> {
+            DateUtil.parseIsoDateTimeStringToDate("10-10-10T20:02:03");
+        });
     }
 
     @Test

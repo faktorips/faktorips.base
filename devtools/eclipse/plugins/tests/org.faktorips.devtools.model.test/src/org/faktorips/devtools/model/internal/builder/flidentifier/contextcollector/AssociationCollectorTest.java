@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollec
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,14 +37,17 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AssociationCollectorTest {
 
     @Mock
@@ -94,7 +97,7 @@ public class AssociationCollectorTest {
     @Mock
     private IFormula expression;
 
-    @Before
+    @BeforeEach
     public void setUpFinderAndNode() {
         when(finder.createCollector()).thenReturn(otherCollector);
         when(finder.getIpsProject()).thenReturn(ipsProject);
@@ -102,7 +105,7 @@ public class AssociationCollectorTest {
         when(node.getAssociation()).thenReturn(association);
     }
 
-    @Before
+    @BeforeEach
     public void setUpProductCmpts() throws Exception {
         productCmptsFiles = new ArrayList<>();
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);

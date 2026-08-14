@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,9 +19,9 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -46,7 +46,7 @@ public class TypeSelectionFilterTest {
 
     private AutoCloseable openMocks;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         openMocks = MockitoAnnotations.openMocks(this);
         ILabelProvider labelProvider = mock(ILabelProvider.class);
@@ -55,7 +55,7 @@ public class TypeSelectionFilterTest {
         filter = new TypeSelectionFilter();
     }
 
-    @After
+    @AfterEach
     public void releaseMocks() throws Exception {
         openMocks.close();
     }

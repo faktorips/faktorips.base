@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.util.StringUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for threading issues (we hopefully once HAD).
@@ -40,7 +40,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ICoreRunnable action = $ -> {

@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
@@ -226,7 +226,7 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    @Ignore("Only performance messure, no real test")
+    @Disabled("Only performance messure, no real test")
     public void testUniqueIdentifierValidationPerformance() {
         IEnumType hugeEnumType = newEnumType(ipsProject, "HugeEnumType");
         hugeEnumType.setExtensible(false);

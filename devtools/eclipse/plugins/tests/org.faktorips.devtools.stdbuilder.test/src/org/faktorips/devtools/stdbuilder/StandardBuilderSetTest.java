@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.dthelper.LocalDateHelperVariant;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StandardBuilderSetTest extends AbstractStdBuilderTest {
 

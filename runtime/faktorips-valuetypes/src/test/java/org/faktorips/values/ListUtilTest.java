@@ -10,18 +10,19 @@
 
 package org.faktorips.values;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ListUtilTest {
 
     private List<Object> objectList;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         objectList = ListUtil.newList((Object)3, 5, 8);
     }
@@ -48,10 +49,12 @@ public class ListUtilTest {
         assertEquals(15, numberList.get(3).intValue());
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void testConvert_classCastException() {
-        objectList.add(Long.valueOf(15));
-        ListUtil.convert(objectList, Integer.class);
+        assertThrows(ClassCastException.class, () -> {
+            objectList.add(Long.valueOf(15));
+            ListUtil.convert(objectList, Integer.class);
+        });
     }
 
     private void assertListContent(List<? extends Number> integerList) {

@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.refactor.java;
 import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
 import static org.faktorips.devtools.core.refactor.java.RefactoringStatusOkMatcher.isOk;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the various Faktor-IPS "Move" refactorings with regard to the generated Java source code.
@@ -46,7 +46,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     private IIpsPackageFragment targetIpsPackageFragment;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

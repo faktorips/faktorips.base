@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -26,13 +26,16 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BundleVersionProviderTest {
     private static final String VERSION_STRING = "1.2.3.test";
 
@@ -57,7 +60,7 @@ public class BundleVersionProviderTest {
     @Mock
     private InputStream inputStream;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         doReturn(project).when(ipsProject).getProject();
         when(project.getFile(JarFile.MANIFEST_NAME)).thenReturn(file);

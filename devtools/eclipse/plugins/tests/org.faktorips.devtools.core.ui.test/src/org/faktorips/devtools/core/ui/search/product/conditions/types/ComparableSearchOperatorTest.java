@@ -10,18 +10,18 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class ComparableSearchOperatorTest {
 
     @Mock

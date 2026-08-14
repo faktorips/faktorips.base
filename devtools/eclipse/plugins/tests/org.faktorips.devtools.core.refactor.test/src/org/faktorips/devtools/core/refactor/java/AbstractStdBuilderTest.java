@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.refactor.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Abstract base class that can be used by tests for the standard builder.
@@ -48,7 +48,7 @@ public abstract class AbstractStdBuilderTest extends AbstractCoreIpsPluginTest {
     protected StandardBuilderSet builderSet;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 

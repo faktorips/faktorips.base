@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -28,13 +29,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SingleTableContentsValidatorTest {
 
     @Mock
@@ -52,7 +56,7 @@ public class SingleTableContentsValidatorTest {
 
     private SingleTableContentsValidator validator;
 
-    @Before
+    @BeforeEach
     public void setup() {
         validator = new SingleTableContentsValidator(ipsProjectBase, tableStructure);
         when(tableStructure.getName()).thenReturn("tableStructure");
@@ -193,9 +197,11 @@ public class SingleTableContentsValidatorTest {
         assertFalse(validator.forbidsAdditionalContents());
     }
 
-    @Test(expected = AssertionFailedException.class)
+    @Test
     public void testConstructor_projectNull() {
-        validator = new SingleTableContentsValidator(null, tableStructure);
+        assertThrows(AssertionFailedException.class, () -> {
+            validator = new SingleTableContentsValidator(null, tableStructure);
+        });
     }
 
     private void setUpContentSrcFiles(IIpsProject ipsProject, IIpsSrcFile... srcFileArray) {

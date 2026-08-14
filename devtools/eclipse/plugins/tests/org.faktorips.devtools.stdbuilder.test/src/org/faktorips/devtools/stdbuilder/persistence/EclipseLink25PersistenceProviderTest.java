@@ -10,21 +10,23 @@
 
 package org.faktorips.devtools.stdbuilder.persistence;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class EclipseLink25PersistenceProviderTest {
 
     private EclipseLink25PersistenceProvider provider;
@@ -32,7 +34,7 @@ public class EclipseLink25PersistenceProviderTest {
     @Mock
     private IPersistentAttributeInfo persistentAttributeInfo;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         provider = new EclipseLink25PersistenceProvider();
     }

@@ -38,7 +38,7 @@ import org.faktorips.valueset.DerivedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

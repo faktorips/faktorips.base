@@ -20,13 +20,16 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AddProductCmptLinkCommandTest {
 
     @Mock
@@ -41,7 +44,7 @@ public class AddProductCmptLinkCommandTest {
     IProductCmptTypeAssociation staticAssociation;
     private AddProductCmptLinkCommand command;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         command = mock(AddProductCmptLinkCommand.class, CALLS_REAL_METHODS);
 

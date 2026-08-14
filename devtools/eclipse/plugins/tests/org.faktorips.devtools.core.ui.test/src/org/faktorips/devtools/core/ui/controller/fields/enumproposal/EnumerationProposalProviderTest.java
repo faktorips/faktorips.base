@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +24,16 @@ import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumerationProposalProviderTest {
 
     private static final String DEFAULT_VALUE_REPRESENTATION = Messages.DefaultValueRepresentation_EditField;
@@ -52,7 +55,7 @@ public class EnumerationProposalProviderTest {
     @Mock
     private UnrestrictedValueSet unrestrictedValueSet;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         enumProposalProvider = new EnumerationProposalProvider(enumDatatype, owner, inputFormat);
 

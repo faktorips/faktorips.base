@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.core.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -25,14 +26,14 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class MenuCleanerTest {
 
     private MenuCleaner cleaner;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cleaner = new MenuCleaner();
     }
@@ -66,29 +67,39 @@ public class MenuCleanerTest {
         assertFalse(cleaner.isWhiteListMode());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorFilteredPrefixesNull() {
-        new MenuCleaner(null, new HashSet<>());
+        assertThrows(NullPointerException.class, () -> {
+            new MenuCleaner(null, new HashSet<>());
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorFilteredMenuGroupsNull() {
-        new MenuCleaner(new HashSet<>(), null);
+        assertThrows(NullPointerException.class, () -> {
+            new MenuCleaner(new HashSet<>(), null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorBothFilteredPrefixesAndMenuGroupsNull() {
-        new MenuCleaner(null, null);
+        assertThrows(NullPointerException.class, () -> {
+            new MenuCleaner(null, null);
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetFilteredPrefixesUnmodifiable() {
-        cleaner.getFilteredPrefixes().add("foo");
+        assertThrows(UnsupportedOperationException.class, () -> {
+            cleaner.getFilteredPrefixes().add("foo");
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetFilteredMenuGroupsUnmodifiable() {
-        cleaner.getFilteredMenuGroups().add("foo");
+        assertThrows(UnsupportedOperationException.class, () -> {
+            cleaner.getFilteredMenuGroups().add("foo");
+        });
     }
 
     @Test
@@ -105,9 +116,11 @@ public class MenuCleanerTest {
         assertFalse(cleaner.addFilteredMenuGroup("foo"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testAddFilteredPrefixNull() {
-        cleaner.addFilteredPrefix(null);
+        assertThrows(NullPointerException.class, () -> {
+            cleaner.addFilteredPrefix(null);
+        });
     }
 
     @Test
@@ -124,9 +137,11 @@ public class MenuCleanerTest {
         assertFalse(cleaner.addFilteredMenuGroup("foo"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testAddFilteredMenuGroupNull() {
-        cleaner.addFilteredMenuGroup(null);
+        assertThrows(NullPointerException.class, () -> {
+            cleaner.addFilteredMenuGroup(null);
+        });
     }
 
     /**

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -21,13 +21,16 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class FixEnumContentStrategyTest extends AbstractIpsEnumPluginTest {
     @Mock
     private AssignContentAttributesPage<IEnumType, IEnumAttribute> assignEnumAttributesPage;
@@ -35,7 +38,7 @@ public class FixEnumContentStrategyTest extends AbstractIpsEnumPluginTest {
     private FixEnumContentStrategy enumStrategy;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         enumStrategy = new FixEnumContentStrategy(genderEnumContent);

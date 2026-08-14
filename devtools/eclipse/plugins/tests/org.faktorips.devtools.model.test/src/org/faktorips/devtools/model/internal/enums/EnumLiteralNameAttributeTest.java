@@ -13,11 +13,11 @@ package org.faktorips.devtools.model.internal.enums;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -27,8 +27,8 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -37,7 +37,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     private IEnumLiteralNameAttribute literalNameAttribute;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         literalNameAttribute = paymentMode.getEnumLiteralNameAttribute();
@@ -152,7 +152,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         literalNameAttribute.setDefaultValueProviderAttribute("notUniqueProviderAttribute");
         getIpsModel().clearValidationCache();
         MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
-        assertTrue(validationMessageList.toString(), validationMessageList.isEmpty());
+        assertTrue(validationMessageList.isEmpty(), validationMessageList.toString());
     }
 
     @Test

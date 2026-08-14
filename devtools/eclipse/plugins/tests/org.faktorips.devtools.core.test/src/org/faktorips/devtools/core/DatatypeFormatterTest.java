@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.devtools.model.value.ValueFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DatatypeFormatterTest extends AbstractIpsPluginTest {
 

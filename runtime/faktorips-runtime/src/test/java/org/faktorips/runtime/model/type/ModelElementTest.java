@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -26,7 +26,7 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
 import org.faktorips.runtime.util.MessagesHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ModelElementTest {
 

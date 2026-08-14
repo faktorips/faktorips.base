@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.IAssociation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExportTest {
 

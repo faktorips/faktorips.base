@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.Locale;
@@ -36,8 +37,8 @@ import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
@@ -49,7 +50,7 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
     private IEnumAttributeValue maleNameAttributeValue;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -57,9 +58,11 @@ public class EnumAttributeValueTest extends AbstractIpsEnumPluginTest {
         maleNameAttributeValue = genderEnumValueMale.getEnumAttributeValues().get(1);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testFindEnumAttribute_failOnNull() {
-        maleIdAttributeValue.findEnumAttribute(null);
+        assertThrows(NullPointerException.class, () -> {
+            maleIdAttributeValue.findEnumAttribute(null);
+        });
     }
 
     @Test

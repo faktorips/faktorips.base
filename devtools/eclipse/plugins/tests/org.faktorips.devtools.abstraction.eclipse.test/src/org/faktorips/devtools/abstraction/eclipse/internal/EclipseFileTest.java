@@ -12,6 +12,7 @@ package org.faktorips.devtools.abstraction.eclipse.internal;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -22,15 +23,15 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseFileTest extends EclipseAbstractionTestSetup {
 
     private AProject testProject;
     private IProject eclipseProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject = newSimpleIpsProject("TestProject");
         eclipseProject = testProject.unwrap();
@@ -75,11 +76,11 @@ public class EclipseFileTest extends EclipseAbstractionTestSetup {
         assertThat(result, is("TestString"));
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testSetContents_doesNotExist() {
         AFile newFile = testProject.getFile("newFile");
 
-        newFile.setContents(writeTo("SomeOtherTestString"), false, new NullProgressMonitor());
+        assertThrows(IpsException.class, () -> newFile.setContents(writeTo("SomeOtherTestString"), false, new NullProgressMonitor()));
     }
 
     @Test

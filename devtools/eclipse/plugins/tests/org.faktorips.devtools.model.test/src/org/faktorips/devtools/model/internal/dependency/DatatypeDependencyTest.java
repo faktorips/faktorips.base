@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.dependency;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,15 +20,15 @@ import java.io.ObjectOutputStream;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DatatypeDependencyTest {
 
     private QualifiedNameType source;
     private DatatypeDependency dependency;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         source = new QualifiedNameType("a.b.c", IpsObjectType.POLICY_CMPT_TYPE);
         dependency = new DatatypeDependency(source, "a.b.e");

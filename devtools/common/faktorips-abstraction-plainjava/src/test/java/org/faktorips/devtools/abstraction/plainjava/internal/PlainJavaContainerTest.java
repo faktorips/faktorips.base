@@ -22,14 +22,14 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PlainJavaContainerTest extends PlainJavaAbstractionTestSetup {
 
     private AProject testProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject = newAbstractionProject("TestProject"); //$NON-NLS-1$
     }

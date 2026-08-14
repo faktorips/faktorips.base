@@ -39,8 +39,8 @@ import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -57,7 +57,7 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
     private Element node5;
     private Element node6;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         buildStatus = mock(MultiStatus.class);
         JavaBuilderSet builderSet = mock(JavaBuilderSet.class);

@@ -16,11 +16,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -51,9 +51,9 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavio
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
@@ -70,7 +70,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     private IExtensionRegistry oldRegistry;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
@@ -140,7 +140,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         super.tearDown();
         IpsUIPlugin.getDefault().setExtensionRegistry(oldRegistry);
@@ -150,9 +150,9 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     public void testGetExtensionPropertyEditFieldFactory() throws Exception {
         IExtensionPropertyEditFieldFactory resultFactory = IpsUIPlugin.getDefault()
                 .getExtensionPropertyEditFieldFactory("additionalProperty");
-        assertEquals("False factory for additionalProperty", editFieldFactory, resultFactory);
+        assertEquals(editFieldFactory, resultFactory, "False factory for additionalProperty");
         resultFactory = IpsUIPlugin.getDefault().getExtensionPropertyEditFieldFactory("additionalProperty2");
-        assertEquals("False factory for additionalProperty2", editFieldFactory2, resultFactory);
+        assertEquals(editFieldFactory2, resultFactory, "False factory for additionalProperty2");
     }
 
     @Test

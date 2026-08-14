@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

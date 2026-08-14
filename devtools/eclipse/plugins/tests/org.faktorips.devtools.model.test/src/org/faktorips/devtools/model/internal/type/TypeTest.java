@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,13 +13,13 @@ package org.faktorips.devtools.model.internal.type;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,11 +44,11 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class TypeTest extends AbstractIpsPluginTest {
@@ -63,7 +63,7 @@ public class TypeTest extends AbstractIpsPluginTest {
     private IPolicyCmptType constrains_subTargetPolicy;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -1103,7 +1103,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(constrainingAssociation.isConstrain());
         assertEquals(constrains_subTargetPolicy.getQualifiedName(), constrainingAssociation.getTarget());
         MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
-        assertFalse(validate.getMessagesBySeverity(Severity.ERROR).toString(), validate.containsErrorMsg());
+        assertFalse(validate.containsErrorMsg(), validate.getMessagesBySeverity(Severity.ERROR).toString());
     }
 
     @Test
@@ -1126,7 +1126,7 @@ public class TypeTest extends AbstractIpsPluginTest {
         assertTrue(constrainingAssociation.isConstrain());
         assertEquals(subTargetProduct.getQualifiedName(), constrainingAssociation.getTarget());
         MessageList validate = constrainingAssociation.validate(constrainingAssociation.getIpsProject());
-        assertFalse(validate.getMessagesBySeverity(Severity.ERROR).toString(), validate.containsErrorMsg());
+        assertFalse(validate.containsErrorMsg(), validate.getMessagesBySeverity(Severity.ERROR).toString());
     }
 
     @Test

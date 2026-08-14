@@ -9,13 +9,13 @@ package org.faktorips.runtime.xml.jakarta3;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import org.faktorips.runtime.xml.jakarta.LocalDateAdapter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateAdapterTest {
 

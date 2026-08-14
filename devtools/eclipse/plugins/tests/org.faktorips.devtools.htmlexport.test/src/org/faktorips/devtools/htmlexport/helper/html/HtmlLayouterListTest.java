@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,8 +16,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
 
@@ -51,7 +50,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
         ListPageElement liste = new ListPageElement(getContext());
 
         String xml = layout(liste);
-        Assert.assertTrue("Liste nicht leer: " + xml, IpsStringUtils.isEmpty(xml));
+        assertTrue("Liste nicht leer: " + xml, IpsStringUtils.isEmpty(xml));
 
     }
 

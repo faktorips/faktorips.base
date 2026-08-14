@@ -31,8 +31,8 @@ import org.faktorips.runtime.testrepository.testenum.produkt.ExtensibleEnum;
 import org.faktorips.runtime.testrepository.testenum.produkt.ExtensibleEnumWithModell;
 import org.faktorips.runtime.testrepository.testenum.produkt.SuperExtensibleEnum;
 import org.faktorips.runtime.testrepository.testenum.produkt.SuperExtensibleEnumWithModell;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,7 +41,7 @@ public class IpsEnumToXmlWriterTest {
     private DocumentBuilder builder;
     private ClassloaderRuntimeRepository repository;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         builder = XmlUtil.getDocumentBuilder();
 

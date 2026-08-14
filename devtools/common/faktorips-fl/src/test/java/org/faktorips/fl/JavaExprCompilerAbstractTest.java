@@ -10,9 +10,9 @@
 
 package org.faktorips.fl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -23,7 +23,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.runtime.Message;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  *
@@ -33,7 +33,7 @@ public abstract class JavaExprCompilerAbstractTest {
     private JavaExprCompiler compiler;
     private ExprEvaluator processor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         setCompiler(new JavaExprCompiler());
         Locale.setDefault(Locale.ENGLISH);
@@ -54,7 +54,7 @@ public abstract class JavaExprCompilerAbstractTest {
         if (result.failed()) {
             System.out.println(result);
         }
-        assertTrue(result.getMessages().toString(), result.successfull());
+        assertTrue(result.successfull(), result.getMessages().toString());
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression);
@@ -89,7 +89,7 @@ public abstract class JavaExprCompilerAbstractTest {
         if (result.failed()) {
             System.out.println(result);
         }
-        assertTrue(result.getMessages().toString(), result.successfull());
+        assertTrue(result.successfull(), result.getMessages().toString());
         assertEquals(expectedDatatype, result.getDatatype());
 
         Object value = processor.evaluate(expression, parameterNames, parameterValues);
@@ -118,7 +118,7 @@ public abstract class JavaExprCompilerAbstractTest {
         Object value = processor.evaluate(expression);
         if (!(value instanceof Boolean)) {
             System.out.println();
-            assertTrue(result + " ist keine Boolean!", value instanceof Boolean);
+            assertTrue(value instanceof Boolean, result + " ist keine Boolean!");
         }
         assertEquals(expectedValue, ((Boolean)value).booleanValue());
         return result;

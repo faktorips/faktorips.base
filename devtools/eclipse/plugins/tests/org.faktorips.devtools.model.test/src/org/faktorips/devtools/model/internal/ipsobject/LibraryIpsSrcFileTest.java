@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.file.Path;
 
@@ -27,8 +28,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -43,7 +44,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     private IPolicyCmptType originalType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
@@ -111,9 +112,11 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
         assertEquals(root.getCorrespondingResource(), srcFile.getEnclosingResource());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testDelete() {
-        srcFile.delete();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            srcFile.delete();
+        });
     }
 
 }

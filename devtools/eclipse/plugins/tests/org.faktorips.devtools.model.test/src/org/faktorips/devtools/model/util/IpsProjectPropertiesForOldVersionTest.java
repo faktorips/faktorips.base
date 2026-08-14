@@ -16,8 +16,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class IpsProjectPropertiesForOldVersionTest {
@@ -25,7 +25,7 @@ public class IpsProjectPropertiesForOldVersionTest {
     private IpsProjectProperties settings;
     private IpsProjectPropertiesForOldVersion oldVersion;
 
-    @Before
+    @BeforeEach
     public void setup() {
         settings = mock(IpsProjectProperties.class);
         when(settings.isValidateIpsSchema()).thenCallRealMethod();

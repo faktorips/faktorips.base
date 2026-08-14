@@ -26,15 +26,15 @@ import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeEditDialogRuleUIModelTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptTypeAttribute attribute;
     private RuleUIModel ruleUIModel;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();

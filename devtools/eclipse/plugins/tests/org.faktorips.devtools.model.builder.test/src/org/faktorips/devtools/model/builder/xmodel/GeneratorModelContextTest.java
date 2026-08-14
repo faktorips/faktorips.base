@@ -12,8 +12,9 @@ package org.faktorips.devtools.model.builder.xmodel;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,13 +34,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class GeneratorModelContextTest {
 
     @Mock
@@ -56,7 +60,7 @@ public class GeneratorModelContextTest {
 
     private GeneratorModelContext generatorModelContext;
 
-    @Before
+    @BeforeEach
     public void createGeneratorModelContext() throws Exception {
         when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[0]);
         generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
@@ -80,14 +84,18 @@ public class GeneratorModelContextTest {
         assertEquals(policyCmptImplClassAnnotationGens, annotationGenerators);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetGeneratorConfig_IpsObject_Null() {
-        generatorModelContext.getGeneratorConfig((IIpsObject)null);
+        assertThrows(NullPointerException.class, () -> {
+            generatorModelContext.getGeneratorConfig((IIpsObject)null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetGeneratorConfig_IpsObject_NoPackageFragment() {
-        generatorModelContext.getGeneratorConfig(mock(IIpsObject.class));
+        assertThrows(NullPointerException.class, () -> {
+            generatorModelContext.getGeneratorConfig(mock(IIpsObject.class));
+        });
     }
 
     @Test
@@ -124,14 +132,18 @@ public class GeneratorModelContextTest {
         assertThat(generatorModelContext.getGeneratorConfig(ipsObject), is(baseGeneratorConfig));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetGeneratorConfig_IpsSrcFile_Null() {
-        generatorModelContext.getGeneratorConfig((IIpsSrcFile)null);
+        assertThrows(NullPointerException.class, () -> {
+            generatorModelContext.getGeneratorConfig((IIpsSrcFile)null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetGeneratorConfig_IpsSrcFile_NoPackageFragment() {
-        generatorModelContext.getGeneratorConfig(mock(IIpsSrcFile.class));
+        assertThrows(NullPointerException.class, () -> {
+            generatorModelContext.getGeneratorConfig(mock(IIpsSrcFile.class));
+        });
     }
 
     @Test

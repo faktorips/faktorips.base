@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -24,14 +24,17 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectPartChangeRefreshHelperTest {
 
     @Mock
@@ -47,7 +50,7 @@ public class IpsObjectPartChangeRefreshHelperTest {
     private Control control;
     private static SingletonMockHelper singletonHelper = new SingletonMockHelper();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         singletonHelper.setSingletonInstance(IpsModel.class, ipsModel);
         when(viewer.getControl()).thenReturn(control);
@@ -101,7 +104,7 @@ public class IpsObjectPartChangeRefreshHelperTest {
         assertNotNull(IpsObjectPartChangeRefreshHelper.createAndInit(ipsObject, viewer));
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         singletonHelper.reset();
     }

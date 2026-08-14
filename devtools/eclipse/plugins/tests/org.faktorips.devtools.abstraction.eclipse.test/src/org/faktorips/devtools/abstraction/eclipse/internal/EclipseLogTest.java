@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseLogTest extends EclipseAbstractionTestSetup {
 
@@ -33,14 +33,14 @@ public class EclipseLogTest extends EclipseAbstractionTestSetup {
 
     private ALog logger;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         logger = Abstractions.getLog();
         logger.addLogListener(logListener);
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() {
         super.tearDown();
         logger.removeLogListener(logListener);

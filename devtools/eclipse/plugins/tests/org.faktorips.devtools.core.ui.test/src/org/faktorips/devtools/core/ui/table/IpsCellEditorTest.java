@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsCellEditorTest {
 

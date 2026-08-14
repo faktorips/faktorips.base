@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -31,9 +31,9 @@ import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipa
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -49,7 +49,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
     private AutoCloseable openMocks;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() {
         openMocks = MockitoAnnotations.openMocks(this);
         ipsProject = newIpsProject();
@@ -57,7 +57,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         singletonMockHelper.reset();
         openMocks.close();

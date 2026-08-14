@@ -24,7 +24,7 @@ import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EclipseWorkspaceTest extends EclipseAbstractionTestSetup {
 

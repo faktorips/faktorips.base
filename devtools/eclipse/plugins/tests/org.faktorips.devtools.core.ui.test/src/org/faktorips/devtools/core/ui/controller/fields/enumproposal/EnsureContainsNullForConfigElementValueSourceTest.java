@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +24,16 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnsureContainsNullForConfigElementValueSourceTest {
     @Mock
     private IValueSource valueSource;
@@ -41,7 +44,7 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
 
     private List<String> valueList;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         valueList = new ArrayList<>();
         valueList.add("eins");

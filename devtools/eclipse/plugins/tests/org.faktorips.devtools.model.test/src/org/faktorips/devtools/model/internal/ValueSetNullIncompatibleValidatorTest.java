@@ -10,20 +10,23 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ValueSetNullIncompatibleValidatorTest {
 
     @Mock
@@ -31,7 +34,7 @@ public class ValueSetNullIncompatibleValidatorTest {
     @Mock
     private IValueSet valueSetWithoutNull;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(valueSetWithNull.isContainsNull()).thenReturn(true);
         when(valueSetWithoutNull.isContainsNull()).thenReturn(false);

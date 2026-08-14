@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -27,9 +26,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest implements IIpsSrcFilesChangeListener {
     private IIpsProject pdProject;
@@ -42,7 +40,7 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
     private IpsSrcFilesChangedEvent event;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if (Abstractions.isEclipseRunning()) {
             super.setUp();
@@ -63,7 +61,6 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
         }
     }
 
-    @Category(EclipseImplementation.class)
     @Test
     public void testIpsSrcFilesChanged() throws InterruptedException {
         if (Abstractions.isEclipseRunning()) {

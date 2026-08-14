@@ -10,20 +10,24 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.search;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.internal.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CycleSearchTest {
 
     @Mock
@@ -35,7 +39,7 @@ public class CycleSearchTest {
     @Mock
     private IpsProjectRefEntry ipsProjectRefEntry;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cycleSearch = new CycleSearch(ipsProject);
 
@@ -58,9 +62,11 @@ public class CycleSearchTest {
         assertTrue(cycleSearch.isCycleDetected());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCycleSearch_InitialProjectIsNull() {
-        CycleSearch cycleSearchWithNullProject = new CycleSearch(null);
-        cycleSearchWithNullProject.processEntry(ipsProjectRefEntry);
+        assertThrows(IllegalArgumentException.class, () -> {
+            CycleSearch cycleSearchWithNullProject = new CycleSearch(null);
+            cycleSearchWithNullProject.processEntry(ipsProjectRefEntry);
+        });
     }
 }

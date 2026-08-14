@@ -76,7 +76,7 @@ import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
 import org.faktorips.valueset.ValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProductCmptTypeTest {
 
@@ -112,9 +112,11 @@ public class ProductCmptTypeTest {
         assertThat(productCmptType.getPolicyCmptType().getName(), is("MyPolicy"));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGetPolicyCmptType_NPE_NotConfigured() throws Exception {
-        superProductModel.getPolicyCmptType().getName();
+        assertThrows(NullPointerException.class, () -> {
+            superProductModel.getPolicyCmptType().getName();
+        });
     }
 
     @Test
@@ -232,9 +234,11 @@ public class ProductCmptTypeTest {
         assertThat(superAssoInSuperLowerCase, is(sameInstance(superAssoInSuper)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetDeclaredAssociation_withexception() {
-        productCmptType.getDeclaredAssociation("SupAsso");
+        assertThrows(IllegalArgumentException.class, () -> {
+            productCmptType.getDeclaredAssociation("SupAsso");
+        });
     }
 
     @Test

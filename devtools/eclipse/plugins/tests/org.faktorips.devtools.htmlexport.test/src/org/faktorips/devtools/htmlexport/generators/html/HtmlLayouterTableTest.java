@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,8 +14,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
@@ -23,7 +22,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
     public void testLeereTabelle() throws Exception {
         TablePageElement table = new TablePageElement(getContext());
 
-        Assert.assertTrue(IpsStringUtils.isEmpty(layout(table)));
+        assertTrue(IpsStringUtils.isEmpty(layout(table)));
     }
 
     @Test
@@ -34,7 +33,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         String layout = layout(table);
 
-        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(layout, IpsStringUtils.isEmpty(layout));
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -53,7 +52,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         String layout = layout(table);
 
-        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(layout, IpsStringUtils.isEmpty(layout));
 
         assertXpathExists(layout, "/table/tr[1][@class='" + Style.TABLE_HEADLINE.name() + "']");
         for (int row = 1; row < rows; row++) {
@@ -70,14 +69,14 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
         table.setBorder(true);
 
         String layout = layout(table);
-        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(layout, IpsStringUtils.isEmpty(layout));
         assertXpathExists(layout, "/table[@class='" + Style.BORDER.name() + "']");
 
         getLayouter().clear();
         table.setBorder(false);
 
         layout = layout(table);
-        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(layout, IpsStringUtils.isEmpty(layout));
         assertXpathExists(layout, "/table[not(@class='" + Style.BORDER.name() + "')]");
 
     }

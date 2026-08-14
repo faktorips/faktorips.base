@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKey;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class KeyDecoratorTest {
 

@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.model.type.DocumentationKind;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LabelAndDescriptionPropertiesTest extends AbstractIpsPluginTest {
 

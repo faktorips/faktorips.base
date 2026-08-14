@@ -14,7 +14,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -57,9 +58,9 @@ import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.m2e.AbstractMavenIpsProjectTest;
 import org.faktorips.m2e.version.MavenVersionFormatter;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest {
 
@@ -82,7 +83,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
 
     private IIpsProject ipsProject;
 
-    @BeforeClass
+    @BeforeAll
     public static void init() throws Exception {
         mavenIpsProjectConfigurator = new MavenIpsProjectConfigurator();
         pomScenario1 = readResource(POM_SCENARIO_1);
@@ -92,7 +93,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         faktorIpsVersion = MavenVersionFormatter.formatVersion(IpsModelActivator.getInstalledFaktorIpsVersion());
     }
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -119,28 +120,28 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         assertThat(mavenIpsProjectConfigurator.isGroovySupported(ipsProject.getJavaProject()), is(true));
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testConfigureIpsProjectMissingMergableOutputFolder() throws Exception {
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForMergableSources(null);
         ipsProject.setIpsObjectPath(objectPath);
 
-        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        assertThrows(IpsException.class, () -> mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties));
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testConfigureIpsProject_missingDerivedOutputFolder() throws Exception {
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForDerivedSources(null);
         ipsProject.setIpsObjectPath(objectPath);
 
-        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        assertThrows(IpsException.class, () -> mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties));
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testConfigureIpsProject_noMavenProject() throws Exception {
         ipsProject = newIpsProject();
-        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        assertThrows(IpsException.class, () -> mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties));
     }
 
     @Test
@@ -273,11 +274,11 @@ public class MavenIpsProjectConfiguratorTest extends AbstractMavenIpsProjectTest
         assertThat(jakarta30.get().getVersion(), is("3.0.0"));
     }
 
-    @Test(expected = IpsException.class)
+    @Test
     public void testConfigureIpsProject_persistenceMalformed() throws Exception {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport("Malformed name");
-        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        assertThrows(IpsException.class, () -> mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties));
     }
 
     @Test

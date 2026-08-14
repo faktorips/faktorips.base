@@ -16,7 +16,7 @@ import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -36,13 +36,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.runtime.MessageList;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ModuleIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private ModuleIpsProjectConfigurator moduleIpsProjectConfigurator;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         moduleIpsProjectConfigurator = new ModuleIpsProjectConfigurator();

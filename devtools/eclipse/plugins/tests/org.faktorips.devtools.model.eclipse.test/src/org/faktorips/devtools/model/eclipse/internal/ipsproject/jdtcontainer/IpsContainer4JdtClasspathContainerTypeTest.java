@@ -10,15 +10,15 @@
 
 package org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsContainer4JdtClasspathContainerTypeTest {
 

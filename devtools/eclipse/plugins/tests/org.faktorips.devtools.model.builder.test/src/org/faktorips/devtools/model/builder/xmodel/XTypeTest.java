@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.builder.xmodel;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -24,15 +24,18 @@ import java.util.LinkedHashSet;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class XTypeTest {
 
     @Mock
@@ -53,7 +56,7 @@ public class XTypeTest {
     @Mock
     private IIpsProject ipsProject;
 
-    @Before
+    @BeforeEach
     public void mockContext() {
         // addImport should always return the input parameter
         Answer<String> inputAnswer = invocation -> invocation.getArguments()[0].toString();
@@ -61,7 +64,7 @@ public class XTypeTest {
         doReturn(generatorConfig).when(xType).getGeneratorConfig();
     }
 
-    @Before
+    @BeforeEach
     public void createXType() {
         when(xType.getIpsObjectPartContainer()).thenReturn(type);
         doReturn(ipsProject).when(xType).getIpsProject();
@@ -69,7 +72,7 @@ public class XTypeTest {
         doReturn("myInterface").when(xType).getInterfaceName();
     }
 
-    @Before
+    @BeforeEach
     public void createXSuperType() {
         when(xSuperType.getContext()).thenReturn(context);
     }

@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,9 +26,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.values.DefaultInternationalString;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class EnumSaxHandlerTest {
@@ -37,14 +37,14 @@ public class EnumSaxHandlerTest {
     private SAXParser saxParser;
     private EnumSaxHandler handler;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         saxParser = factory.newSAXParser();
         handler = new EnumSaxHandler();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (is != null) {
             try {

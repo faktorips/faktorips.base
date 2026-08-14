@@ -44,8 +44,8 @@ import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
 
@@ -59,7 +59,7 @@ public class DatatypeMismatchEntryTest extends AbstractIpsPluginTest {
     private Consumer<List<String>> valueConsumer = result::addAll;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

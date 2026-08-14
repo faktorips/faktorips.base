@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
@@ -45,7 +45,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration generation;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
@@ -62,14 +62,14 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDefaultActivation() {
-        assertTrue("ValidationRule is supposed to be configured as active.", ruleConfig.isActive());
+        assertTrue(ruleConfig.isActive(), "ValidationRule is supposed to be configured as active.");
     }
 
     @Test
     public void testInitFromXml() {
         Element el = getTestDocument().getDocumentElement();
         ruleConfig.initFromXml(el);
-        assertTrue("ValidationRule is supposed to be configured as active.", ruleConfig.isActive());
+        assertTrue(ruleConfig.isActive(), "ValidationRule is supposed to be configured as active.");
         assertEquals("rule1", ruleConfig.getName());
     }
 
@@ -78,7 +78,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
         ruleConfig.setActive(false);
         Element el = ruleConfig.toXml(newDocument());
         ruleConfig.initFromXml(el);
-        assertTrue("ValidationRule is NOT supposed to be configured as active.", !ruleConfig.isActive());
+        assertTrue(!ruleConfig.isActive(), "ValidationRule is NOT supposed to be configured as active.");
         assertEquals("rule1", ruleConfig.getName());
     }
 

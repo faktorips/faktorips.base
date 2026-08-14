@@ -12,7 +12,7 @@ package org.faktorips.runtime.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -23,8 +23,8 @@ import java.util.Locale;
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,7 +38,7 @@ public class ProductComponentLinkTest extends XmlAbstractTestCase {
     private NodeList linkListInXml;
     private Element docElement;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ProductComponentGeneration generationMock = mock(ProductComponentGeneration.class);
         link = new ProductComponentLink<>(generationMock);

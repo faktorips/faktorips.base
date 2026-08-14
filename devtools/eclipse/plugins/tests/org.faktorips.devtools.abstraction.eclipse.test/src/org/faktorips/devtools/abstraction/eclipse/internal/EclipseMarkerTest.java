@@ -18,15 +18,15 @@ import org.eclipse.core.resources.IMarker;
 import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EclipseMarkerTest extends EclipseAbstractionTestSetup {
 
     private static final String MARKER_TYPE = "TestMarker";
     private AProject testProject;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject = newSimpleIpsProject("TestProject");
     }

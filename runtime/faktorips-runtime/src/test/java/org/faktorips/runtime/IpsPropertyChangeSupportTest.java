@@ -16,7 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ConcurrentModificationException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsPropertyChangeSupportTest {
 

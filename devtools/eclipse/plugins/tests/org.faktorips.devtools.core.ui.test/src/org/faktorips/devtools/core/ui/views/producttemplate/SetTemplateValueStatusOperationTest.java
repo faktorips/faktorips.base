@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SetTemplateValueStatusOperationTest extends AbstractIpsPluginTest {
 

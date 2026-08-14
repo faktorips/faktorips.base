@@ -5,11 +5,12 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsSame.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Currency;
 import java.util.Locale;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CurrencyDatatypeTest {
 
@@ -31,18 +32,18 @@ public class CurrencyDatatypeTest {
         assertThat(usd, is(nullValue()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetValue_WrongValue_TooLong() {
         CurrencyDatatype currencyType = new CurrencyDatatype();
 
-        currencyType.getValue("ABCDEFG"); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> currencyType.getValue("ABCDEFG")); //$NON-NLS-1$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetValue_WrongValue_Unknown() {
         CurrencyDatatype currencyType = new CurrencyDatatype();
 
-        currencyType.getValue("XYZ"); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> currencyType.getValue("XYZ")); //$NON-NLS-1$
     }
 
     @Test
@@ -106,11 +107,11 @@ public class CurrencyDatatypeTest {
         assertThat(usd, is(notNullValue()));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetValueByName_InValid() {
         CurrencyDatatype currencyType = new CurrencyDatatype();
 
-        currencyType.getValueByName("$", Locale.forLanguageTag("AUT")); //$NON-NLS-1$ //$NON-NLS-2$
+        assertThrows(IllegalArgumentException.class, () -> currencyType.getValueByName("$", Locale.forLanguageTag("AUT"))); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Test

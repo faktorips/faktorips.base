@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NullObjectsTest {
 

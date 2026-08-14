@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
@@ -23,8 +24,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.util.XmlUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
@@ -33,7 +34,7 @@ public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
     private IpsObjectPathXmlPersister persistor;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
@@ -141,13 +142,15 @@ public class IpsObjectPathXmlPersisterTest extends AbstractIpsPluginTest {
 
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testReadXmlUseManifest() {
-        Element docElement = getTestDocument().getDocumentElement();
+        assertThrows(IllegalStateException.class, () -> {
+            Element docElement = getTestDocument().getDocumentElement();
 
-        IIpsObjectPath path = persistor.read(ipsProject,
-                XmlUtil.getElement(docElement, IpsObjectPathXmlPersister.XML_TAG_NAME, 2));
-        assertTrue(path.isUsingManifest());
+            IIpsObjectPath path = persistor.read(ipsProject,
+                    XmlUtil.getElement(docElement, IpsObjectPathXmlPersister.XML_TAG_NAME, 2));
+            assertTrue(path.isUsingManifest());
+        });
     }
 
 }

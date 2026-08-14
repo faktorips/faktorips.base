@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doNothing;
@@ -42,8 +42,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 public class MultiValueAttributeHandlerTest {
@@ -53,7 +53,7 @@ public class MultiValueAttributeHandlerTest {
     private IIpsProject ipsProject;
     private IpsObjectPart valueSetOwner;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         ipsProject = mock(IIpsProject.class);
         shell = mock(Shell.class);

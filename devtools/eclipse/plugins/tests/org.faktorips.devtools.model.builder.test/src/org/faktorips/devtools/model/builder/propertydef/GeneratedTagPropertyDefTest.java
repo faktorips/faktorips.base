@@ -25,11 +25,13 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Tests for {@link GeneratedTagPropertyDef} and its inner classes {@link GeneratedTagPropertyDef.StartTag}
@@ -39,7 +41,8 @@ import org.mockito.junit.MockitoJUnitRunner;
  * tag must either both be set or both be empty, and that the error message arguments are ordered so
  * that {@code {0}} always refers to the start tag and {@code {1}} always refers to the end tag.
  */
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class GeneratedTagPropertyDefTest {
 
     @Mock
@@ -54,7 +57,7 @@ public class GeneratedTagPropertyDefTest {
     private final GeneratedTagPropertyDef.StartTag startTag = new GeneratedTagPropertyDef.StartTag();
     private final GeneratedTagPropertyDef.EndTag endTag = new GeneratedTagPropertyDef.EndTag();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Map<String, Object> properties = new HashMap<>();
         properties.put("type", "string"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 public class AttributeAllowedValuesSetterAnnGenTest {

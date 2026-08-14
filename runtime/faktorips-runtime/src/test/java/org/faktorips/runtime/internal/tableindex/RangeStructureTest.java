@@ -12,10 +12,11 @@ package org.faktorips.runtime.internal.tableindex;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -27,19 +28,23 @@ import org.faktorips.values.Decimal;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RangeStructureTest {
     private RangeStructure<Integer, ResultStructure<String>, String> structure;
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testGet_null() {
-        structure.get(null);
+        assertThrows(NullPointerException.class, () -> {
+            structure.get(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructor() {
-        createStructure(null);
+        assertThrows(NullPointerException.class, () -> {
+            createStructure(null);
+        });
     }
 
     @Test

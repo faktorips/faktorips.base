@@ -19,15 +19,15 @@ import org.faktorips.devtools.model.builder.java.AbstractJavaBuilderPluginTest;
 import org.faktorips.devtools.model.builder.xmodel.enumtype.XEnumType;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnumDeclClassAnnGenTest extends AbstractJavaBuilderPluginTest {
 
     private EnumDeclClassAnnGen enumDeclClassAnnGen;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         enumDeclClassAnnGen = new EnumDeclClassAnnGen();

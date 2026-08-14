@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.model.ipsproject.ILibraryIpsPackageFragmentRoot;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LibraryIpsPackageFragmentRootDecoratorTest {
 

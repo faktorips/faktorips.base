@@ -29,13 +29,13 @@ import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSet
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnumDeclClassJaxbAnnGenTest extends AbstractJavaBuilderPluginTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IpsBuilderSetPropertyDef propertyDef = newEnumPropertyDef(JavaBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT,

@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -21,8 +22,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 public class RowImplTest extends AbstractIpsPluginTest {
@@ -34,7 +35,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
     private Row row2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
@@ -63,9 +64,11 @@ public class RowImplTest extends AbstractIpsPluginTest {
         assertTrue(ipsSrcFile.isDirty());
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testSetValue_Exception() {
-        row.setValue(4, "newValue2");
+        assertThrows(RuntimeException.class, () -> {
+            row.setValue(4, "newValue2");
+        });
     }
 
     @Test

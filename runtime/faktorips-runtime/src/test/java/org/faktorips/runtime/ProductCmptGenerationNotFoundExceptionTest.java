@@ -12,7 +12,7 @@ package org.faktorips.runtime;
 
 import java.util.GregorianCalendar;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 

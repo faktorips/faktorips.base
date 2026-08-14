@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.context;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Locale;
 
@@ -22,7 +22,7 @@ import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.standard.StandardDocumentorScript;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
 

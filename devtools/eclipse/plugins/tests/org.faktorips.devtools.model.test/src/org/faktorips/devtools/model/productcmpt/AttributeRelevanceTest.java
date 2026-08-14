@@ -32,8 +32,8 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeRelevanceTest extends AbstractIpsPluginTest {
 
@@ -41,7 +41,7 @@ public class AttributeRelevanceTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAttribute attribute;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject ipsProject = newIpsProject();

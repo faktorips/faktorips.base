@@ -10,12 +10,13 @@
 
 package org.faktorips.values;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -23,7 +24,7 @@ import java.util.Currency;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MoneyTest {
 
@@ -234,10 +235,12 @@ public class MoneyTest {
         assertEquals(Money.usd(0), sum);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSum_WrongCurrency() {
-        Stream.of(Money.euro(10, 0), Money.usd(12, 43), Money.euro(4))
-                .collect(Money.sum(Money.EUR));
+        assertThrows(IllegalArgumentException.class, () -> {
+            Stream.of(Money.euro(10, 0), Money.usd(12, 43), Money.euro(4))
+            .collect(Money.sum(Money.EUR));
+        });
     }
 
     @Test
@@ -254,10 +257,12 @@ public class MoneyTest {
         assertFalse(sum.isPresent());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSumOptional_WrongCurrency() {
-        Stream.of(Money.euro(10, 0), Money.usd(12, 43), Money.euro(4))
-                .collect(Money.sum());
+        assertThrows(IllegalArgumentException.class, () -> {
+            Stream.of(Money.euro(10, 0), Money.usd(12, 43), Money.euro(4))
+            .collect(Money.sum());
+        });
     }
 
     @Test

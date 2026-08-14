@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.InputStream;
 
@@ -26,9 +26,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the listener support.
@@ -49,7 +49,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject();
@@ -151,7 +151,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     // So basically, we don't now how to test this!
     // Therefore we comment the whole test case until we have an idea, how we can test this.
     // TODO
-    @Ignore
+    @Disabled
     @Test
     public void testChangeCorrespondigResource() throws Exception {
         AFile ioFile = file.getCorrespondingFile();

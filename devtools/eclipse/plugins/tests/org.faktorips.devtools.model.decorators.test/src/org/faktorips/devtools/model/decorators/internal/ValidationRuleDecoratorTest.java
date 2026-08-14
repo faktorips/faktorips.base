@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.decorators.internal;
 import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.hasBaseImage;
 import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.hasOverlay;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,8 +29,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IValidationRule;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
 
@@ -39,7 +39,7 @@ public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
     private String[] overlays = new String[4];
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         rule = mock(IValidationRule.class);

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,14 +25,14 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.ShowInContext;
 import org.faktorips.devtools.core.ui.editors.IpsArchiveEditorInput;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AbstractShowInSupportingViewPartTest {
 
     private AbstractShowInSupportingViewPart viewPart;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         viewPart = new AbstractShowInSupportingViewPart() {
 

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,13 +22,16 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
 
     private static final String TESTARCHIVE_JAR = "testarchive.jar";
@@ -47,7 +50,7 @@ public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
 
     private IpsProject ipsProject;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -56,7 +59,7 @@ public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
         resource = ipsProject.getProject().getFile(TESTARCHIVE_JAR);
     }
 
-    @Before
+    @BeforeEach
     public void createOpenIpsObjectSelectionDialog() throws Exception {
         selectionHistory = new IpsObjectSelectionHistory();
     }

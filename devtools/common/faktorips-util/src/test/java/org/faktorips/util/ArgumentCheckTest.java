@@ -10,12 +10,13 @@
 
 package org.faktorips.util;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ArgumentCheckTest {
 
@@ -79,19 +80,19 @@ public class ArgumentCheckTest {
         ArgumentCheck.notNull(ids, this);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAtLeast_SizeTooSmallWithEmptyCollection() {
-        ArgumentCheck.atLeast(Collections.emptyList(), 1);
+        assertThrows(IllegalArgumentException.class, () -> ArgumentCheck.atLeast(Collections.emptyList(), 1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testAtLeast_SizeTooSmallWithNonEmptyCollection() {
-        ArgumentCheck.atLeast(Arrays.asList("A", "B"), 3);
+        assertThrows(IllegalArgumentException.class, () -> ArgumentCheck.atLeast(Arrays.asList("A", "B"), 3));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testAtLeast_NullCollection() {
-        ArgumentCheck.atLeast(null, 0);
+        assertThrows(NullPointerException.class, () -> ArgumentCheck.atLeast(null, 0));
     }
 
     @Test

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 
@@ -25,8 +25,8 @@ import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class NonIPSMoveOperationTest extends AbstractIpsPluginTest {
 
@@ -37,7 +37,7 @@ public class NonIPSMoveOperationTest extends AbstractIpsPluginTest {
     private IFile file2;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

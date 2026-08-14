@@ -15,8 +15,8 @@ import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getJ
 import static org.faktorips.devtools.core.refactor.java.RefactoringTestUtil.getPublishedInterfaceName;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.abstracttest.JavaProjectUtil;
@@ -37,7 +37,7 @@ import org.faktorips.devtools.model.value.ValueFactory;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Provides basic functionality for the refactoring participant tests of the standard builder.
@@ -47,7 +47,7 @@ import org.junit.Before;
 public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest {
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         configureBuilderSetToGenerateJaxbSupport();

@@ -14,7 +14,7 @@ import org.faktorips.devtools.htmlexport.AbstractHtmlExportXmlUnitLayouterTest;
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlExportXmlUnitLayouterTest {
 
@@ -26,7 +26,7 @@ public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlEx
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         layouter.clear();
     }

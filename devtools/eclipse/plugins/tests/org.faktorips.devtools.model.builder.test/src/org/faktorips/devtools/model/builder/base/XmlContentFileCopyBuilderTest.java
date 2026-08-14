@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.builder.base;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.nio.file.Path;
@@ -25,8 +25,8 @@ import org.faktorips.devtools.model.builder.java.AbstractJavaBuilderPluginTest;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class XmlContentFileCopyBuilderTest extends AbstractJavaBuilderPluginTest {
 
@@ -36,7 +36,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractJavaBuilderPluginTest
     private String filePath;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         builderSet.addBuilder(BuilderKindIds.TABLE, mock(ISourceFileBuilder.class));

@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -32,13 +32,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ValidationRuleMessagesPropertiesImporterTest {
 
     private static final String MSG_CODE = "MyMsgCode";
@@ -64,7 +67,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
     private ValidationRuleMessagesPropertiesImporter importer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(ipsSrcFile.isMutable()).thenReturn(true);
         List<IIpsSrcFile> srcFiles = new ArrayList<>();
@@ -118,7 +121,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         importer.setProperties(properties);
         IStatus result = importer.importContentMap();
 
-        assertTrue(result.toString(), result.isOK());
+        assertTrue(result.isOK(), result.toString());
         assertEquals(new LocalizedString(Locale.GERMAN, "TestMessage"), rule.getMessageText().get(Locale.GERMAN));
 
         verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
@@ -135,7 +138,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         importer.setProperties(properties);
         IStatus result = importer.importContentMap();
 
-        assertTrue(result.toString(), result.isOK());
+        assertTrue(result.isOK(), result.toString());
         assertEquals(new LocalizedString(Locale.GERMAN, "TestMessage"), rule.getMessageText().get(Locale.GERMAN));
 
         verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
@@ -161,7 +164,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         importer.setProperties(properties);
         IStatus result = importer.importContentMap();
 
-        assertTrue(result.toString(), result.isMultiStatus());
+        assertTrue(result.isMultiStatus(), result.toString());
         assertEquals(1, ((MultiStatus)result).getChildren().length);
         IStatus illegalMessageStatus = ((MultiStatus)result).getChildren()[0];
         assertEquals(ValidationRuleMessagesImportOperation.MSG_CODE_ILLEGAL_MESSAGE, illegalMessageStatus.getCode());
@@ -179,7 +182,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         IStatus result = importer.importContentMap();
 
-        assertTrue(result.toString(), result.isMultiStatus());
+        assertTrue(result.isMultiStatus(), result.toString());
         assertEquals(1, ((MultiStatus)result).getChildren().length);
         IStatus missingMessageStatus = ((MultiStatus)result).getChildren()[0];
         assertEquals(ValidationRuleMessagesImportOperation.MSG_CODE_MISSING_MESSAGE, missingMessageStatus.getCode());

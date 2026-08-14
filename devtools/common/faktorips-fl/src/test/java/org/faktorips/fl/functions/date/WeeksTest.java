@@ -12,7 +12,7 @@ package org.faktorips.fl.functions.date;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
 
@@ -20,7 +20,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class WeeksTest extends FunctionAbstractTest {
 

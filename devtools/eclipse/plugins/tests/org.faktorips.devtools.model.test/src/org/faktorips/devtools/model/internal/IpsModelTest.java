@@ -15,13 +15,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -84,8 +85,8 @@ import org.faktorips.util.StringUtil;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
 
@@ -97,7 +98,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
 
     @SuppressWarnings("deprecation")
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         model = IpsModel.get();
@@ -517,10 +518,9 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         model.runAndQueueChangeEvents(action, null);
 
         // Randomly failing test. Excessive message to try and understand it.
-        assertEquals("Expected 2 changed files (" + typeA.getIpsSrcFile() + ", " + typeB.getIpsSrcFile()
+        assertEquals(2, listener.changedFiles.size(), "Expected 2 changed files (" + typeA.getIpsSrcFile() + ", " + typeB.getIpsSrcFile()
                 + "), but found " + listener.changedFiles.size()
-                + listener.changedFiles.stream().map(IIpsSrcFile::toString).collect(Collectors.joining(", ", ")", ")")),
-                2, listener.changedFiles.size());
+                + listener.changedFiles.stream().map(IIpsSrcFile::toString).collect(Collectors.joining(", ", ")", ")")));
         assertChangedFileIn(typeA.getIpsSrcFile(), listener.changedFiles);
         assertChangedFileIn(typeB.getIpsSrcFile(), listener.changedFiles);
 
@@ -622,8 +622,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
             status = model.isCached(pcType.getIpsSrcFile());
             Thread.sleep(counter *= 10);
         }
-        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected",
-                status);
+        assertTrue(status, "The IpsSrcFile " + pcType.getIpsSrcFile() + " is not in the IpsModel cache as expected");
 
         pcType.getIpsSrcFile().getEnclosingResource().delete(null);
 
@@ -634,14 +633,16 @@ public class IpsModelTest extends AbstractIpsPluginTest {
             Thread.sleep(counter *= 10);
         }
 
-        assertTrue("The IpsSrcFile " + pcType.getIpsSrcFile()
+        assertTrue(status, "The IpsSrcFile " + pcType.getIpsSrcFile()
                 + " is in the IpsModel cache which is not expected since the resource changed listener "
-                + "should be triggered by now and have the cache cleared.", status);
+                + "should be triggered by now and have the cache cleared.");
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testDelete() {
-        IIpsModel.get().delete();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            IIpsModel.get().delete();
+        });
     }
 
     @Test

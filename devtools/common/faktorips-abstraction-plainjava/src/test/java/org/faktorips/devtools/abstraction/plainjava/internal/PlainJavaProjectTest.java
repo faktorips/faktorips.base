@@ -21,15 +21,16 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PlainJavaProjectTest extends PlainJavaAbstractionTestSetup {
 
     private AProject testProject1;
     private AProject testProject2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         testProject1 = newSimpleIpsProject("TestProject1"); //$NON-NLS-1$
         testProject2 = newAbstractionProject("TestProject2"); //$NON-NLS-1$
@@ -47,9 +48,9 @@ public class PlainJavaProjectTest extends PlainJavaAbstractionTestSetup {
         assertThat(aFile, is(wrapperOf(testProject1.getLocation().resolve(".ipsproject").toFile()))); //$NON-NLS-1$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetFile_aFolder() {
-        testProject1.getFile("productdef"); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> testProject1.getFile("productdef")); //$NON-NLS-1$
     }
 
     @Test
@@ -59,9 +60,9 @@ public class PlainJavaProjectTest extends PlainJavaAbstractionTestSetup {
         assertThat(aFolder, is(wrapperOf(testProject1.getLocation().resolve("productdef").toFile()))); //$NON-NLS-1$
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testGetFolder_aFile() {
-        testProject1.getFolder(".ipsproject"); //$NON-NLS-1$
+        assertThrows(IllegalArgumentException.class, () -> testProject1.getFolder(".ipsproject")); //$NON-NLS-1$
     }
 
     @Test

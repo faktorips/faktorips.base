@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.search.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,8 +46,8 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ModelSearchQueryTest {
 
@@ -58,7 +58,7 @@ public class ModelSearchQueryTest {
 
     private IIpsSearchScope scope;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         searchModel = mock(ModelSearchPresentationModel.class);
 
@@ -106,11 +106,11 @@ public class ModelSearchQueryTest {
     }
 
     protected void assertObjectMatched(IIpsElement object) {
-        assertNotSame("Object " + object + " is not matched", 0, searchResult.getMatchCount(object));
+        assertNotSame(0, searchResult.getMatchCount(object), "Object " + object + " is not matched");
     }
 
     protected void assertObjectNotMatched(Object object) {
-        assertEquals("Object " + object + " is matched, but should not.", 0, searchResult.getMatchCount(object));
+        assertEquals(0, searchResult.getMatchCount(object), "Object " + object + " is matched, but should not.");
     }
 
     @Test

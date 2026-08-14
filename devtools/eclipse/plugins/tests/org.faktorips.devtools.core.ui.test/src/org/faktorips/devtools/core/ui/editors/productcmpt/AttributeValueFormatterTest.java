@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -27,21 +27,21 @@ import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AttributeValueFormatterTest {
     private Locale formerLocale;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         formerLocale = ipsPreferences.getDatatypeFormattingLocale();
         ipsPreferences.setDatatypeFormattingLocale(Locale.GERMANY);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
         if (formerLocale != null) {

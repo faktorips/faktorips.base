@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.testcase.ITestAttributeValue;
 import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestAttributeValueDecoratorTest extends AbstractIpsPluginTest {
 

@@ -10,22 +10,22 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 @Deprecated(since = "21.12")
 public class JavaStandardLoggingLogStmtBuilderTest {
 
     private JavaUtilLoggingFrameworkConnector loggingFrameworkConnector;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         loggingFrameworkConnector = new JavaUtilLoggingFrameworkConnector();
     }

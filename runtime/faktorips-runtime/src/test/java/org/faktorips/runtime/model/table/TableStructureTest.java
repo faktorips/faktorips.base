@@ -12,9 +12,9 @@ package org.faktorips.runtime.model.table;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +29,14 @@ import org.faktorips.runtime.model.annotation.IpsTableColumn;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
 import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.values.Decimal;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class TableStructureTest {
 
     private TableStructure tableStructure;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         tableStructure = new TableStructure(TestTable.class);
     }

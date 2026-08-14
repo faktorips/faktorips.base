@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -31,8 +32,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * 
@@ -47,7 +48,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
     private IPolicyCmptType type;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject archiveProject = newIpsProject("ArchiveProject");
@@ -164,9 +165,11 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(1, result.size());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testDelete() {
-        root.delete();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            root.delete();
+        });
     }
 
     @Test

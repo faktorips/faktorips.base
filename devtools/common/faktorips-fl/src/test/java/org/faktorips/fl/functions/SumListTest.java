@@ -10,9 +10,10 @@
 
 package org.faktorips.fl.functions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -25,12 +26,12 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.JavaExprCompiler;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
 public class SumListTest {
     private SumList sumList = new SumList("sum", "");
     private JavaCodeFragment argumentFragment = new JavaCodeFragment("valueList");
@@ -44,14 +45,14 @@ public class SumListTest {
 
     private DatatypeHelper helper = new DecimalHelper();
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCompile_NumberOfArgumentsZero() {
-        sumList.compile(new CompilationResultImpl[0]);
+        assertThrows(IllegalArgumentException.class, () -> sumList.compile(new CompilationResultImpl[0]));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testCompile_NumberOfArgumentsMany() {
-        sumList.compile(new CompilationResultImpl[2]);
+        assertThrows(IllegalArgumentException.class, () -> sumList.compile(new CompilationResultImpl[2]));
     }
 
     @Test

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -43,14 +43,14 @@ import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class IpsRefactoringFactoryTest {
 
     private IpsRefactoringFactory ipsRefactoringFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ipsRefactoringFactory = new IpsRefactoringFactory();
     }

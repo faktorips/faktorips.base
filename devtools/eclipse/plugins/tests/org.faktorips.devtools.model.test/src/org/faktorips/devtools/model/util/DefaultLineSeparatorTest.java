@@ -20,7 +20,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultLineSeparatorTest {
 

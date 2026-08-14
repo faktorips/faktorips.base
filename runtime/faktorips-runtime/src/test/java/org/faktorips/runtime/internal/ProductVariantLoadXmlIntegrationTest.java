@@ -10,17 +10,17 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,7 +30,7 @@ public class ProductVariantLoadXmlIntegrationTest extends XmlAbstractTestCase {
     private ProductComponent pc;
     private TestProductCmptGeneration gen;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         repository = new InMemoryRuntimeRepository();
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");

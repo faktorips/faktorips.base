@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.enums;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -19,8 +19,8 @@ import org.faktorips.devtools.model.internal.enums.EnumTypeValidations;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
 
@@ -30,7 +30,7 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
     private IEnumType paymentMode;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");

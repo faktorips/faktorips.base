@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -51,8 +51,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -72,7 +72,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     private IPolicyCmptType motorPolicyType;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("ArchiveProject");
@@ -120,7 +120,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         project.getProject().refreshLocal(AResourceTreeTraversalDepth.INFINITE, null);
         String expPackage = motorPolicyType.getIpsSrcFile().getBasePackageNameForMergableArtefacts();
         MessageList msgList = project.validate();
-        assertFalse(msgList.toString(), msgList.containsErrorMsg());
+        assertFalse(msgList.containsErrorMsg(), msgList.toString());
         assertEquals(expPackage,
                 archive.getBasePackageNameForMergableArtefacts(motorPolicyType.getQualifiedNameType()));
     }
@@ -133,7 +133,7 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
         QualifiedNameType qualifiedNameType = motorPolicyType.getQualifiedNameType();
         assertNotNull(qualifiedNameType);
         MessageList msgList = project.validate();
-        assertFalse(msgList.toString(), msgList.containsErrorMsg());
+        assertFalse(msgList.containsErrorMsg(), msgList.toString());
         assertEquals(expPackage, archive.getBasePackageNameForDerivedArtefacts(qualifiedNameType));
     }
 

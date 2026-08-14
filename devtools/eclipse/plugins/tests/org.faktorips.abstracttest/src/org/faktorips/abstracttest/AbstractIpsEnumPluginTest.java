@@ -10,7 +10,7 @@
 
 package org.faktorips.abstracttest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ContentChangeEvent;
@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Base test for all enumeration tests providing a simple enumeration model with a gender
@@ -70,7 +70,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
     protected ContentsChangeCounter contentsChangeCounter;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();

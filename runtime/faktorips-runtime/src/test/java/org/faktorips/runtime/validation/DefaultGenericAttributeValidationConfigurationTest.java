@@ -29,7 +29,7 @@ import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.StringLengthValueSet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultGenericAttributeValidationConfigurationTest {
 

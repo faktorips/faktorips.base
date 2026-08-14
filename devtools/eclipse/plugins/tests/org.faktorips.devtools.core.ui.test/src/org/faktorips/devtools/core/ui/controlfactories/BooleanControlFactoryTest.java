@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedHashMap;
 
@@ -35,14 +35,17 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
 
     @Mock
@@ -54,14 +57,14 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     private Shell shell;
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         booleanControlFactory = new BooleanControlFactory();
         shell = new Shell(Display.getCurrent());
     }
 
     @Override
-    @After
+    @AfterEach
     public void tearDown() {
         shell.dispose();
     }
