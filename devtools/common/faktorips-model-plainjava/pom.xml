@@ -19,7 +19,6 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.model.builder</artifactId>
-            <version>${project.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.faktorips</groupId>
@@ -146,6 +145,10 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>

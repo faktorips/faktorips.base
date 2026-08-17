@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
 /**
  * Builds the Faktor-IPS project.
  * <p>
- * By default, the latest Faktor-IPS is used with an Eclipse 2024-09 runtime, all installed from
+ * By default, the latest Faktor-IPS is used with an Eclipse 2026-03 runtime, all installed from
  * <a href="https://faktorzehn.org">faktorzehn.org</a> update sites.
  * <p>
  * To change from where the plugins are installed, see {@link #additionalRepositories},
@@ -217,14 +217,14 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code
      * <repositories>
      *  <repository>
-     *   <id>faktor-ips-26-1</id>
+     *   <id>faktor-ips-27-1</id>
      *   <layout>p2</layout>
-     *   <url>https://update.faktorzehn.org/faktorips/v26_1/</url>
+     *   <url>https://update.faktorzehn.org/faktorips/v27_1/</url>
      *  </repository>
      *  <repository>
-     *   <id>eclipse-2024-09</id>
+     *   <id>eclipse-2026-03</id>
      *   <layout>p2</layout>
-     *   <url>https://download.eclipse.org/releases/2024-09/</url>
+     *   <url>https://download.eclipse.org/releases/2026-03/</url>
      *  </repository>
      * </repositories>
      * }
@@ -365,7 +365,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Path to the update site to install Eclipse.
      */
-    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/releases/2024-09/")
+    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/releases/2026-03/")
     private String eclipseRepository;
 
     /**

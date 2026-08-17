@@ -14,6 +14,939 @@
       }
     }
   ],
+  "27.1.0": [
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "criticality": "documented",
+        "differences": [
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method <A> A org.osgi.framework.ServiceReference<S>::adapt(java.lang.Class<A>)",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.builder.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.builder.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.enums.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.enums.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.enums.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.enums.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.enums.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.enums.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.enums.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.enums.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.builder.flidentifier.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.enums.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.fl.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsobject.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.bundle.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.method.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.method.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.method.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.method.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.method.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.method.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.method.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.method.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.pctype.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpt.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpt.deltaentries.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.productcmpttype.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.tablecontents.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.tablestructure.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.testcase.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.testcasetype.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.type.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.type.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.type.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.type.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.type.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.type.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.type.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.type.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.util.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.util.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.util.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.util.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.util.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.util.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.util.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.util.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.value.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.value.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.value.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.value.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.value.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.value.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.value.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.value.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.valueset.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.ipsobject.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.plugin.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.plugin.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.plugin.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.plugin.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.plugin.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.plugin.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.plugin.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.plugin.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.productcmpt.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.tablecontents.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.tablestructure.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.testcasetype.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.type.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.type.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.type.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.type.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.type.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.type.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.type.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.type.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.util.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.util.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.util.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.util.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.util.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.util.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.util.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.util.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.valueset.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.valueset.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.valueset.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.valueset.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.valueset.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.valueset.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.valueset.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.valueset.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.propertydef.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===java.lang.Object[]===) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "new": "parameter <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, ===T[]===) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "parameterIndex": "1",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.elementNowParameterized",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.generics.formalTypeParameterAdded",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "typeParameter": "T",
+            "justification": "Update to Eclipse 2026-03"
+          },
+          {
+            "code": "java.annotation.added",
+            "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.builder.xmodel.Messages",
+            "annotation": "@java.lang.SafeVarargs",
+            "justification": "Update to Eclipse 2026-03"
+          }
+        ]
+      }
+    }
+  ],
   "26.7.0": [
     {
       "extension": "revapi.differences",

@@ -78,7 +78,7 @@
         <!-- 
             The minimum supported eclipse version. 
         -->
-        <target-platform>eclipse-2024-09</target-platform>
+        <target-platform>eclipse-2026-03</target-platform>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <git.user>${user.name}</git.user>
