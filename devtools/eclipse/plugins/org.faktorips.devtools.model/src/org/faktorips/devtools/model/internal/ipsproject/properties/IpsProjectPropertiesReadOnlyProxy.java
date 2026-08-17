@@ -654,4 +654,24 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public void setMissingDatatypeSeverity(Severity missingDatatypeSeverity) {
         throw new RuntimeException(ERROR_READ_ONLY);
     }
+
+    @Override
+    public Severity getMissingLabelSeverity() {
+        return propertiesInternal.getMissingLabelSeverity();
+    }
+
+    @Override
+    public void setMissingLabelSeverity(Severity missingLabelSeverity) {
+        throw new RuntimeException(ERROR_READ_ONLY);
+    }
+
+    @Override
+    public Severity getMissingDescriptionSeverity() {
+        return propertiesInternal.getMissingDescriptionSeverity();
+    }
+
+    @Override
+    public void setMissingDescriptionSeverity(Severity missingDescriptionSeverity) {
+        throw new RuntimeException(ERROR_READ_ONLY);
+    }
 }

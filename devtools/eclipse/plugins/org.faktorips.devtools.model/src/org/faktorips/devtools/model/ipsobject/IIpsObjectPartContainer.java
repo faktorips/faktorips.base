@@ -44,6 +44,22 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
     String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that a model element has no label for a supported
+     * language.
+     *
+     * @since 27.1
+     */
+    String MSGCODE_MISSING_LABEL = MSGCODE_PREFIX + "MissingLabel"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a model element has no description for a supported
+     * language.
+     *
+     * @since 27.1
+     */
+    String MSGCODE_MISSING_DESCRIPTION = MSGCODE_PREFIX + "MissingDescription"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the entered version does not correspond to the valid
      * version format
      */

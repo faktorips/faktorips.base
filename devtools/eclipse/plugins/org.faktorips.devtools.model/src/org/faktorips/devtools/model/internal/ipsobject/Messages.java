@@ -28,6 +28,8 @@ public class Messages extends NLS {
     public static String IpsObjectPartContainer_msgInvalidDescriptionCount;
     public static String IpsObjectPartContainer_msgInvalidLabelCount;
     public static String IpsObjectPartContainer_msgInvalidVersionFormat;
+    public static String IpsObjectPartContainer_msgMissingLabel;
+    public static String IpsObjectPartContainer_msgMissingDescription;
 
     public static String IpsObject_msg_OtherIpsObjectAlreadyInPathAhead;
 

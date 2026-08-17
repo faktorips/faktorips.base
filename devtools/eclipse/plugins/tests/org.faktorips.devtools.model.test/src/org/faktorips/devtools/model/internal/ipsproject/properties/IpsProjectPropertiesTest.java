@@ -674,6 +674,45 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(Severity.ERROR, props.getMissingDatatypeSeverity());
     }
 
+    @Test
+    public void readMissingLabelSeverityFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertThat(props.getMissingLabelSeverity(), is(Severity.WARNING));
+    }
+
+    @Test
+    public void readMissingDescriptionSeverityFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertThat(props.getMissingDescriptionSeverity(), is(Severity.ERROR));
+    }
+
+    @Test
+    public void testMissingLabelSeverityDefault() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        assertThat(props.getMissingLabelSeverity(), is(Severity.NONE));
+    }
+
+    @Test
+    public void testMissingDescriptionSeverityDefault() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        assertThat(props.getMissingDescriptionSeverity(), is(Severity.NONE));
+    }
+
+    @Test
+    public void testMissingLabelSeverityRoundTrip() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        props.setMissingLabelSeverity(Severity.ERROR);
+        props.setMissingDescriptionSeverity(Severity.INFO);
+
+        Element xml = props.toXml(newDocument());
+
+        IpsProjectProperties readBack = new IpsProjectProperties(ipsProject);
+        readBack.initFromXml(ipsProject, xml);
+
+        assertThat(readBack.getMissingLabelSeverity(), is(Severity.ERROR));
+        assertThat(readBack.getMissingDescriptionSeverity(), is(Severity.INFO));
+    }
+
     protected IpsProjectProperties initPropertiesWithDocumentElement() {
         Element docEl = getTestDocument().getDocumentElement();
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);

@@ -783,4 +783,34 @@ public interface IIpsProjectProperties {
      */
     void setMissingDatatypeSeverity(Severity missingDatatypeSeverity);
 
+    /**
+     * Returns the severity for validation messages when a model element has no label for a
+     * supported language. Default: {@link Severity#NONE}.
+     *
+     * @since 27.1
+     */
+    Severity getMissingLabelSeverity();
+
+    /**
+     * @see #getMissingLabelSeverity()
+     *
+     * @since 27.1
+     */
+    void setMissingLabelSeverity(Severity missingLabelSeverity);
+
+    /**
+     * Returns the severity for validation messages when a model element has no description for a
+     * supported language. Default: {@link Severity#NONE}.
+     *
+     * @since 27.1
+     */
+    Severity getMissingDescriptionSeverity();
+
+    /**
+     * @see #getMissingDescriptionSeverity()
+     *
+     * @since 27.1
+     */
+    void setMissingDescriptionSeverity(Severity missingDescriptionSeverity);
+
 }

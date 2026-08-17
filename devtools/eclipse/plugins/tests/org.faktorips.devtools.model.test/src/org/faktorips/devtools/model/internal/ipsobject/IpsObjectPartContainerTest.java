@@ -10,10 +10,17 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasErrorMessage;
+import static org.faktorips.testsupport.IpsMatchers.hasInfoMessage;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasWarningMessage;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -68,6 +75,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -803,6 +812,296 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container.validate(superProject);
 
         verify(superProject, never()).getReadOnlyProperties();
+    }
+
+    @Test
+    public void testValidateMissingLabel_SeverityNone_NoMessage() {
+        usLabel.setValue("");
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingLabel_SeverityWarning_EmptyLabel() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        usLabel.setValue("");
+
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, hasWarningMessage(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingLabel_AllLabelsPresent_NoMessage() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingDescription_SeverityNone_NoMessage() {
+        usDescription.setText("");
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
+    }
+
+    @Test
+    public void testValidateMissingDescription_SeverityError_EmptyDescription() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.ERROR);
+        ipsProject.setProperties(properties);
+
+        usDescription.setText("");
+
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, hasErrorMessage(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
+    }
+
+    @Test
+    public void testValidateMissingDescription_AllDescriptionsPresent_NoMessage() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
+    }
+
+    @Test
+    public void testValidateMissingLabel_InheritedFromSuper_NoMessage() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperType");
+        IPolicyCmptType subType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubType");
+        subType.setSupertype(superType.getQualifiedName());
+
+        IPolicyCmptTypeAttribute superAttr = superType.newPolicyCmptTypeAttribute("myAttr");
+        superAttr.setDatatype("String");
+        superAttr.setLabelValue(Locale.US, "US label");
+        superAttr.setLabelValue(Locale.GERMAN, "German label");
+
+        IPolicyCmptTypeAttribute overridingAttr = subType.newPolicyCmptTypeAttribute("myAttr");
+        overridingAttr.setDatatype("String");
+        overridingAttr.setOverwrite(true);
+
+        MessageList result = overridingAttr.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingLabel_NoSuperToInheritFrom_MessageCreated() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.ERROR);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "RootType");
+        IPolicyCmptTypeAttribute attr = type.newPolicyCmptTypeAttribute("myAttr");
+        attr.setDatatype("String");
+
+        MessageList result = attr.validate(ipsProject);
+        assertThat(result, hasErrorMessage(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingLabel_SuperAlsoEmpty_MessageCreated() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperType2");
+        IPolicyCmptType subType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubType2");
+        subType.setSupertype(superType.getQualifiedName());
+
+        IPolicyCmptTypeAttribute superAttr = superType.newPolicyCmptTypeAttribute("myAttr");
+        superAttr.setDatatype("String");
+
+        IPolicyCmptTypeAttribute overridingAttr = subType.newPolicyCmptTypeAttribute("myAttr");
+        overridingAttr.setDatatype("String");
+        overridingAttr.setOverwrite(true);
+
+        MessageList result = overridingAttr.validate(ipsProject);
+        assertThat(result, hasMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingDescription_InheritedFromSuper_NoMessage() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperType3");
+        IPolicyCmptType subType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubType3");
+        subType.setSupertype(superType.getQualifiedName());
+
+        IPolicyCmptTypeAttribute superAttr = superType.newPolicyCmptTypeAttribute("myAttr");
+        superAttr.setDatatype("String");
+        superAttr.setDescriptionText(Locale.US, "US description");
+        superAttr.setDescriptionText(Locale.GERMAN, "German description");
+
+        IPolicyCmptTypeAttribute overridingAttr = subType.newPolicyCmptTypeAttribute("myAttr");
+        overridingAttr.setDatatype("String");
+        overridingAttr.setOverwrite(true);
+
+        MessageList result = overridingAttr.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
+    }
+
+    @Test
+    public void testValidateMissingDescription_SuperAlsoEmpty_MessageCreated() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperType4");
+        IPolicyCmptType subType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubType4");
+        subType.setSupertype(superType.getQualifiedName());
+
+        IPolicyCmptTypeAttribute superAttr = superType.newPolicyCmptTypeAttribute("myAttr");
+        superAttr.setDatatype("String");
+
+        IPolicyCmptTypeAttribute overridingAttr = subType.newPolicyCmptTypeAttribute("myAttr");
+        overridingAttr.setDatatype("String");
+        overridingAttr.setOverwrite(true);
+
+        MessageList result = overridingAttr.validate(ipsProject);
+        assertThat(result, hasMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
+    }
+
+    @Test
+    public void testValidateMissingDescription_NoSuperToInheritFrom_MessageCreated() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.ERROR);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "RootType2");
+        IPolicyCmptTypeAttribute attr = type.newPolicyCmptTypeAttribute("myAttr");
+        attr.setDatatype("String");
+
+        MessageList result = attr.validate(ipsProject);
+        assertThat(result, hasErrorMessage(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
+    }
+
+    @Test
+    public void testValidateMissingDescription_MultiLanguage_OnlyMissingLocaleReported() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "MultiLangType2");
+        IPolicyCmptTypeAttribute attr = type.newPolicyCmptTypeAttribute("myAttr");
+        attr.setDatatype("String");
+        attr.setDescriptionText(Locale.GERMAN, "German description");
+
+        MessageList result = attr.validate(ipsProject);
+        long count = result.stream()
+                .filter(msg -> IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION.equals(msg.getCode()))
+                .count();
+        assertThat(count, is(1L));
+    }
+
+    @Test
+    public void testValidateMissingLabel_SeverityInfo() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.INFO);
+        ipsProject.setProperties(properties);
+
+        usLabel.setValue("");
+
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, hasInfoMessage(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingLabel_SeverityError_EmptyLabel() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.ERROR);
+        ipsProject.setProperties(properties);
+
+        usLabel.setValue("");
+
+        MessageList result = container.validate(ipsProject);
+        assertThat(result, hasErrorMessage(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingLabel_MultiLanguage_OnlyMissingLocaleReported() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "MultiLangType");
+        IPolicyCmptTypeAttribute attr = type.newPolicyCmptTypeAttribute("myAttr");
+        attr.setDatatype("String");
+        attr.setLabelValue(Locale.GERMAN, "German label");
+
+        MessageList result = attr.validate(ipsProject);
+        long count = result.stream()
+                .filter(msg -> IIpsObjectPartContainer.MSGCODE_MISSING_LABEL.equals(msg.getCode()))
+                .count();
+        assertThat(count, is(1L));
+    }
+
+    @Test
+    public void testValidateMissingLabel_AssociationInheritedFromSuper_NoMessage() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingLabelSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperPolicy");
+        IPolicyCmptType subType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubPolicy");
+        IPolicyCmptType targetType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TargetType");
+        IPolicyCmptType subTargetType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubTargetType");
+        subType.setSupertype(superType.getQualifiedName());
+        subTargetType.setSupertype(targetType.getQualifiedName());
+
+        IPolicyCmptTypeAssociation superAssoc = superType.newPolicyCmptTypeAssociation();
+        superAssoc.setTargetRoleSingular("Coverage");
+        superAssoc.setTarget(targetType.getQualifiedName());
+        superAssoc.setLabelValue(Locale.US, "US assoc label");
+        superAssoc.setLabelValue(Locale.GERMAN, "German assoc label");
+
+        IPolicyCmptTypeAssociation subAssoc = subType.newPolicyCmptTypeAssociation();
+        subAssoc.setTargetRoleSingular("Coverage");
+        subAssoc.setTarget(subTargetType.getQualifiedName());
+        subAssoc.setConstrain(true);
+
+        MessageList result = subAssoc.validate(ipsProject);
+        assertThat(result, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL));
+    }
+
+    @Test
+    public void testValidateMissingDescription_AssociationInheritedFromSuper_NoMessage() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMissingDescriptionSeverity(Severity.WARNING);
+        ipsProject.setProperties(properties);
+
+        IPolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperPolicy2");
+        IPolicyCmptType subType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubPolicy2");
+        IPolicyCmptType targetType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TargetType2");
+        IPolicyCmptType subTargetType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SubTargetType2");
+        subType.setSupertype(superType.getQualifiedName());
+        subTargetType.setSupertype(targetType.getQualifiedName());
+
+        IPolicyCmptTypeAssociation superAssoc = superType.newPolicyCmptTypeAssociation();
+        superAssoc.setTargetRoleSingular("Coverage");
+        superAssoc.setTarget(targetType.getQualifiedName());
+        superAssoc.setDescriptionText(Locale.US, "US assoc description");
+        superAssoc.setDescriptionText(Locale.GERMAN, "German assoc description");
+
+        IPolicyCmptTypeAssociation subAssoc2 = subType.newPolicyCmptTypeAssociation();
+        subAssoc2.setTargetRoleSingular("Coverage");
+        subAssoc2.setTarget(subTargetType.getQualifiedName());
+        subAssoc2.setConstrain(true);
+
+        MessageList result2 = subAssoc2.validate(ipsProject);
+        assertThat(result2, lacksMessageCode(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION));
     }
 
     @Test

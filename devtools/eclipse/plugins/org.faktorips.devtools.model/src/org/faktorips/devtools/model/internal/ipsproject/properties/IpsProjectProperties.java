@@ -137,6 +137,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_MISSING_DATATYPE_SERVERITY = "missingDatatypeSeverity"; //$NON-NLS-1$
 
+    private static final String SETTING_MISSING_LABEL_SEVERITY = "missingLabelSeverity"; //$NON-NLS-1$
+
+    private static final String SETTING_MISSING_DESCRIPTION_SEVERITY = "missingDescriptionSeverity"; //$NON-NLS-1$
+
     private static final String SETTING_TABLE_CONTENT_FORMAT = "tableContentFormat"; //$NON-NLS-1$
 
     private static final String SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT = "generateValidatorClassDefault"; //$NON-NLS-1$
@@ -218,6 +222,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Severity duplicateProductComponentSeverity = Severity.WARNING;
     private Severity persistenceColumnSizeChecksSeverity = Severity.WARNING;
     private Severity missingDatatypeSeverity = Severity.WARNING;
+    private Severity missingLabelSeverity = Severity.NONE;
+    private Severity missingDescriptionSeverity = Severity.NONE;
 
     private TableContentFormat tableContentFormat = TableContentFormat.XML;
 
@@ -746,6 +752,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MISSING_DATATYPE_SERVERITY,
                 getMissingDatatypeSeverity().toString()));
 
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MISSING_LABEL_SEVERITY,
+                getMissingLabelSeverity().toString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MISSING_DESCRIPTION_SEVERITY,
+                getMissingDescriptionSeverity().toString()));
+
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_TABLE_CONTENT_FORMAT,
                 getTableContentFormat().name()));
 
@@ -1153,6 +1165,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             case SETTING_PERSISTENCE_COLUMN_SIZE_CHECKS_SERVERITY -> setPersistenceColumnSizeChecksSeverity(
                     Severity.valueOf(value));
             case SETTING_MISSING_DATATYPE_SERVERITY -> setMissingDatatypeSeverity(Severity.valueOf(value));
+            case SETTING_MISSING_LABEL_SEVERITY -> setMissingLabelSeverity(Severity.valueOf(value));
+            case SETTING_MISSING_DESCRIPTION_SEVERITY -> setMissingDescriptionSeverity(Severity.valueOf(value));
             case SETTING_TABLE_CONTENT_FORMAT -> setTableContentFormat(TableContentFormat.valueById(value));
             case SETTING_VALIDATE_IPS_SCHEMA -> setValidateIpsSchema(enabled);
         }
@@ -1565,6 +1579,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + "    <!-- Severity for validation messages when a custom datatype is used for an attribute but not listed in the <DataTypes> section." + System.lineSeparator() //$NON-NLS-1$
         + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + System.lineSeparator() //$NON-NLS-1$
         + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_MISSING_DATATYPE_SERVERITY + "\" value=\"ERROR\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        + System.lineSeparator()
+        + "    <!-- Severity for validation messages when a model element has no label for a supported language." + System.lineSeparator() //$NON-NLS-1$
+        + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + System.lineSeparator() //$NON-NLS-1$
+        + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_MISSING_LABEL_SEVERITY + "\" value=\"NONE\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        + System.lineSeparator()
+        + "    <!-- Severity for validation messages when a model element has no description for a supported language." + System.lineSeparator() //$NON-NLS-1$
+        + "        Possible values are ERROR, WARNING, INFO, and NONE. -->" + System.lineSeparator() //$NON-NLS-1$
+        + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_MISSING_DESCRIPTION_SEVERITY + "\" value=\"NONE\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         + System.lineSeparator()
         + "    <!-- Format for table content data." + System.lineSeparator() //$NON-NLS-1$
         + "        Possible values are XML and CSV, where XML is the Faktor-IPS standard and CSV is a more compact form optimised for large tables." + System.lineSeparator() //$NON-NLS-1$
@@ -2032,6 +2054,26 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setMissingDatatypeSeverity(Severity missingDatatypeSeverity) {
         this.missingDatatypeSeverity = missingDatatypeSeverity;
+    }
+
+    @Override
+    public Severity getMissingLabelSeverity() {
+        return missingLabelSeverity;
+    }
+
+    @Override
+    public void setMissingLabelSeverity(Severity missingLabelSeverity) {
+        this.missingLabelSeverity = missingLabelSeverity;
+    }
+
+    @Override
+    public Severity getMissingDescriptionSeverity() {
+        return missingDescriptionSeverity;
+    }
+
+    @Override
+    public void setMissingDescriptionSeverity(Severity missingDescriptionSeverity) {
+        this.missingDescriptionSeverity = missingDescriptionSeverity;
     }
 }
 // CSON: RegexpHeaderCheck

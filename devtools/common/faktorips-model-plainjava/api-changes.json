@@ -1,4 +1,34 @@
 {
+    "27.1.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method org.faktorips.runtime.Severity org.faktorips.devtools.model.ipsproject.IIpsProjectProperties::getMissingDescriptionSeverity()",
+                      "justification": "FIPS-9505: Configurable validation for missing descriptions on model elements"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method org.faktorips.runtime.Severity org.faktorips.devtools.model.ipsproject.IIpsProjectProperties::getMissingLabelSeverity()",
+                      "justification": "FIPS-9505: Configurable validation for missing labels on model elements"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.ipsproject.IIpsProjectProperties::setMissingDescriptionSeverity(org.faktorips.runtime.Severity)",
+                      "justification": "FIPS-9505: Configurable validation for missing descriptions on model elements"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.ipsproject.IIpsProjectProperties::setMissingLabelSeverity(org.faktorips.runtime.Severity)",
+                      "justification": "FIPS-9505: Configurable validation for missing labels on model elements"
+                    }
+                ]
+            }
+        }
+    ],
     "26.7.0": [
         {
             "extension": "revapi.differences",

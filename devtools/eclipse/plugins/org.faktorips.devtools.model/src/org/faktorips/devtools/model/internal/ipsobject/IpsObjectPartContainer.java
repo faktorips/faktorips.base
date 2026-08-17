@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -60,9 +61,12 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.type.IOverridableElement;
+import org.faktorips.devtools.model.type.IOverridableLabeledElement;
 import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlUtil;
@@ -731,12 +735,15 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         result = new MessageList();
 
-        int languageCount = getLanguageCount();
+        IIpsProjectProperties properties = getIpsProject().getReadOnlyProperties();
+        int languageCount = properties.getSupportedLanguages().size();
         if (this instanceof IDescribedElement) {
             validateDescriptionCount(result, languageCount);
+            validateMissingDescriptions(result, properties);
         }
         if (this instanceof ILabeledElement) {
             validateLabelCount(result, languageCount);
+            validateMissingLabels(result, properties);
         }
 
         validateThis(result, ipsProject);
@@ -746,17 +753,6 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         afterValidateThis(result, ipsProject);
         return result;
-    }
-
-    /**
-     * This method returns the number of supported languages which the <em>IpsProject</em> of this
-     * {@link IpsObjectPartContainer} supports.
-     *
-     * @return the number of supported languages.
-     */
-    private int getLanguageCount() {
-        IIpsProjectProperties properties = getIpsProject().getReadOnlyProperties();
-        return properties.getSupportedLanguages().size();
     }
 
     private void validateSinceVersionFormat(MessageList result) {
@@ -792,6 +788,51 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             Message message = Message.newWarning(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT, text, this);
             result.add(message);
         }
+    }
+
+    private void validateMissingLabels(MessageList result, IIpsProjectProperties properties) {
+        Severity severity = properties.getMissingLabelSeverity();
+        if (Severity.NONE.equals(severity)) {
+            return;
+        }
+        for (ISupportedLanguage lang : properties.getSupportedLanguages()) {
+            Locale locale = lang.getLocale();
+            if (IpsStringUtils.isEmpty(getLabelValue(locale)) && !isInheritedFromSuper(locale,
+                    IOverridableLabeledElement.class, IOverridableLabeledElement::getLabelValueFromThisOrSuper)) {
+                String text = MessageFormat.format(Messages.IpsObjectPartContainer_msgMissingLabel,
+                        lang.getLanguageName());
+                result.add(new Message(IIpsObjectPartContainer.MSGCODE_MISSING_LABEL, text, severity, this));
+            }
+        }
+    }
+
+    private void validateMissingDescriptions(MessageList result, IIpsProjectProperties properties) {
+        Severity severity = properties.getMissingDescriptionSeverity();
+        if (Severity.NONE.equals(severity)) {
+            return;
+        }
+        for (ISupportedLanguage lang : properties.getSupportedLanguages()) {
+            Locale locale = lang.getLocale();
+            if (IpsStringUtils.isEmpty(getDescriptionText(locale)) && !isInheritedFromSuper(locale,
+                    IOverridableElement.class, IOverridableElement::getDescriptionTextFromThisOrSuper)) {
+                String text = MessageFormat.format(Messages.IpsObjectPartContainer_msgMissingDescription,
+                        lang.getLanguageName());
+                result.add(new Message(IIpsObjectPartContainer.MSGCODE_MISSING_DESCRIPTION, text, severity, this));
+            }
+        }
+    }
+
+    private <T extends IOverridableElement> boolean isInheritedFromSuper(Locale locale, Class<T> type,
+            BiFunction<T, Locale, String> valueFromSuper) {
+        if (type.isInstance(this)) {
+            T overridable = type.cast(this);
+            @SuppressWarnings("unchecked")
+            T superElement = (T)overridable.findOverriddenElement(getIpsProject());
+            if (superElement != null) {
+                return IpsStringUtils.isNotEmpty(valueFromSuper.apply(superElement, locale));
+            }
+        }
+        return false;
     }
 
     private void execCustomValidations(MessageList result, IIpsProject ipsProject) {
