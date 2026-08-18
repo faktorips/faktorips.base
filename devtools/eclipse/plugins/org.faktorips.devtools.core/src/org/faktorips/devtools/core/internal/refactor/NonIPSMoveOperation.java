@@ -13,13 +13,14 @@ package org.faktorips.devtools.core.internal.refactor;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -27,7 +28,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
-import org.eclipse.ui.actions.MoveFilesAndFoldersOperation;
+import org.eclipse.ui.ide.undo.MoveResourcesOperation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -198,9 +199,9 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
                 pm.internalWorked(1);
                 Object toMove = sourceObjects[i];
                 if (toMove instanceof IFile) {
-                    moveNoneIpsElement((IFile)sourceObjects[i], targetNames[i], pm);
+                    moveNonIpsElement((IFile)sourceObjects[i], targetNames[i], pm);
                 } else if (toMove instanceof File) {
-                    moveNoneIpsElement((File)sourceObjects[i], targetNames[i], pm);
+                    moveNonIpsElement((File)sourceObjects[i], targetNames[i], pm);
                 }
             }
             pm.done();
@@ -213,7 +214,7 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
         }
     }
 
-    private void moveNoneIpsElement(File file, String targetName, IProgressMonitor pm) {
+    private void moveNonIpsElement(File file, String targetName, IProgressMonitor pm) {
         if (targetProject == null) {
             targetProject = targetRoot.getIpsProject().getProject().unwrap();
         }
@@ -224,13 +225,13 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
 
         IFile sourceFile = targetProject.getFile(fileName);
         if (sourceFile.exists()) {
-            moveNoneIpsElement(sourceFile, targetName, pm);
+            moveNonIpsElement(sourceFile, targetName, pm);
         } else {
-            copyNoneIpsElement(fileName, targetName, pm);
+            copyNonIpsElement(fileName, targetName, pm);
         }
     }
 
-    private void copyNoneIpsElement(final String fileName, final String targetName, final IProgressMonitor pm) {
+    private void copyNonIpsElement(final String fileName, final String targetName, final IProgressMonitor pm) {
         Display.getDefault().syncExec(() -> {
             IContainer targetFolder = getTargetContainer(targetName);
             CopyFilesAndFoldersOperation operation = new CopyFilesAndFoldersOperation(getShell());
@@ -238,12 +239,19 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
         });
     }
 
-    private void moveNoneIpsElement(final IFile sourceFile, final String targetName, final IProgressMonitor pm) {
-        Display.getDefault().syncExec(() -> {
-            final IContainer targetFolder = getTargetContainer(targetName);
-            MoveFilesAndFoldersOperation operation = new MoveFilesAndFoldersOperation(getShell());
-            operation.copyResourcesInCurrentThread(new IResource[] { sourceFile }, targetFolder, pm);
-        });
+    private void moveNonIpsElement(final IFile sourceFile, final String targetName, final IProgressMonitor pm) {
+        IContainer targetFolder = getTargetContainer(targetName);
+        IPath destination = targetFolder.getFullPath().append(sourceFile.getName());
+        // Workaround for regression in Eclipse 2026-09.ms02.
+        // Use MoveResourcesOperation instead of MoveFilesAndFoldersOperation
+        // see https://github.com/eclipse-platform/eclipse.platform.ui/issues/4253
+        MoveResourcesOperation operation = new MoveResourcesOperation(sourceFile, destination,
+                "Move"); //$NON-NLS-1$
+        try {
+            operation.execute(pm, null);
+        } catch (ExecutionException e) {
+            throw new IpsException(new IpsStatus(e));
+        }
     }
 
     private IContainer getTargetContainer(String targetName) {
