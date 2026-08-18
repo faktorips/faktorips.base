@@ -9,10 +9,6 @@ pipeline {
         maven 'maven 3.9'
     }
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
-    }
-
     stages {
         stage('Build and Test') {
 

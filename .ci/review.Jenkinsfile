@@ -16,10 +16,6 @@ pipeline {
         REFERENCE_JOB = 'FaktorIPS_CI'
     }
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14'))
-    }
-
     stages {
         stage('Build and Test') {
 

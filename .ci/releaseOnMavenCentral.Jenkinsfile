@@ -9,7 +9,6 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '30'))
         skipDefaultCheckout true
     }
 
