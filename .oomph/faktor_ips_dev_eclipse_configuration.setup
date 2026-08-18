@@ -8,8 +8,8 @@
       name="faktor.ips.dev.eclipse.installation"
       label="Eclipse IDE for developing Faktor-IPS">
     <productVersion
-        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.rcp']/@versions[name='2025-09']"/>
-    <description>Installation based on Eclipse IDE for RCP and RAP Developers 2025-09.</description>
+        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.rcp']/@versions[name='2026-06']"/>
+    <description>Installation based on Eclipse IDE for RCP and RAP Developers 2026-06.</description>
   </installation>
   <workspace
       name="faktor.ips.dev.eclipse.workspace"
@@ -18,5 +18,5 @@
         href="faktor_ips_dev_eclipse.setup#//@streams[name='main']"/>
     <description>Uses the Faktor-IPS-Dev-Eclipse.setup file to configure eclipse and workspace for the development of Faktor-IPS.</description>
   </workspace>
-  <description>Oomph configuration for Faktor-IPS development based on Eclipse IDE for Java Developers 2025-12</description>
+  <description>Oomph configuration for Faktor-IPS development based on Eclipse IDE for Java Developers 2026-06</description>
 </setup:Configuration>

@@ -120,7 +120,7 @@
     <setupTask
         xsi:type="setup:VariableTask"
         name="fips.update.site"
-        defaultValue="https://update.faktorzehn.org/faktorips/v26_7"
+        defaultValue="https://update.faktorzehn.org/faktorips/v27_1"
         storageURI="scope://Workspace"
         label="Faktor-IPS Update-Site">
       <description>

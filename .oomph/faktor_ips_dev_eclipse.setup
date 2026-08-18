@@ -390,13 +390,9 @@
       <sourceLocator
           rootFolder="${git.clone.faktorips.base.location}">
         <excludedPath>devtools/eclipse/sites/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2024-09/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2024-12/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2025-03/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2025-06/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2025-09/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2025-09-Java25/</excludedPath>
-        <excludedPath>devtools/eclipse/targets/2025-12/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2026-03/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2026-06/</excludedPath>
+        <excludedPath>devtools/eclipse/targets/2026-09/</excludedPath>
         <excludedPath>devtools/eclipse/targets/thirdparty/</excludedPath>
         <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.abstraction.eclipse/</excludedPath>
         <excludedPath>devtools/eclipse/plugins/org.faktorips.devtools.ant/</excludedPath>
@@ -552,16 +548,16 @@
           xsi:type="pde:TargetPlatformTask"
           id="target.platform.eclipse"
           predecessor="target.platform.thirdparty"
-          name="Target for Faktor-IPS Base (2024-09)">
-        <description>Activate the installed Eclipse 2024-09 target platform.</description>
+          name="Target for Faktor-IPS Base (2026-03)">
+        <description>Activate the installed Eclipse 2026-03 target platform.</description>
       </setupTask>
       <description>Activate the installed target platforms before PDE project import.</description>
     </setupTask>
     <setupTask
         xsi:type="pde:TargetPlatformTask"
         id="target.platform.reactivate.after.maven"
-        name="Target for Faktor-IPS Base (2024-09)">
-      <description>Reactivate the installed Eclipse 2024-09 target platform after the Maven build/import sequence.</description>
+        name="Target for Faktor-IPS Base (2026-03)">
+      <description>Reactivate the installed Eclipse 2026-03 target platform after the Maven build/import sequence.</description>
     </setupTask>
     <setupTask
         xsi:type="setup:PreferenceTask"
