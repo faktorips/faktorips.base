@@ -13,10 +13,6 @@ pipeline {
         DISPLAY = ':0'
     }
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
-    }
-
     stages {
         stage('Setup') {
             matrix {
