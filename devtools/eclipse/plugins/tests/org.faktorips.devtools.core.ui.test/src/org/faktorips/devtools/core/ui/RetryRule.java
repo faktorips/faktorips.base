@@ -10,53 +10,45 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-public class RetryRule implements TestRule {
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.junit.platform.commons.support.AnnotationSupport;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
 
-    private final int retryCount;
+public class RetryRule implements TestExecutionExceptionHandler {
 
-    public RetryRule(int retryCount) {
-        this.retryCount = retryCount;
-    }
+    private static final int DEFAULT_RETRY_COUNT = 3;
 
     @Override
-    public Statement apply(Statement base, Description description) {
-        return new StatementExtension(description, base);
-    }
+    public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+        Class<?> testClass = context.getRequiredTestClass();
+        Object testInstance = context.getRequiredTestInstance();
+        Method testMethod = context.getRequiredTestMethod();
 
-    private final class StatementExtension extends Statement {
-        private final Description description;
-        private final Statement base;
-
-        private StatementExtension(Description description, Statement base) {
-            this.description = description;
-            this.base = base;
-        }
-
-        @Override
-        public void evaluate() throws Throwable {
-            Throwable failure = null;
-
-            for (int i = 0; i < retryCount; i++) {
-                try {
-                    base.evaluate();
-                    return;
-                    // CSOFF: Illegal Catch
-                } catch (Throwable t) {
-                    // CSON: Illegal Catch
-                    failure = t;
-                    System.err.println("Retry " + (i + 1) + "/" + retryCount
-                            + " for test " + description.getDisplayName());
+        Throwable lastFailure = throwable;
+        for (int i = 1; i < DEFAULT_RETRY_COUNT; i++) {
+            try {
+                for (Method m : AnnotationSupport.findAnnotatedMethods(
+                        testClass, AfterEach.class, HierarchyTraversalMode.BOTTOM_UP)) {
+                    m.invoke(testInstance);
                 }
+                for (Method m : AnnotationSupport.findAnnotatedMethods(
+                        testClass, BeforeEach.class, HierarchyTraversalMode.TOP_DOWN)) {
+                    m.invoke(testInstance);
+                }
+                testMethod.invoke(testInstance);
+                return;
+            } catch (InvocationTargetException e) {
+                lastFailure = e.getCause() != null ? e.getCause() : e;
+                System.err.println("Retry " + i + "/" + (DEFAULT_RETRY_COUNT - 1)
+                        + " for test " + context.getDisplayName());
             }
-            if (failure != null) {
-                throw failure;
-            }
-            throw new RuntimeException(
-                    "RetryRule run out of tries (" + retryCount + "), but had no underlying Exception.");
         }
+        throw lastFailure;
     }
 }

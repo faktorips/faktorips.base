@@ -21,11 +21,6 @@ public abstract class AbstractHtmlPageElementLayouterTest extends AbstractHtmlEx
     protected HtmlLayouter layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), "",
             new TestUtil().createMockIoHandler());
 
-    public AbstractHtmlPageElementLayouterTest() {
-        super();
-    }
-
-    @Override
     @BeforeEach
     public void setUp() throws Exception {
         layouter.clear();

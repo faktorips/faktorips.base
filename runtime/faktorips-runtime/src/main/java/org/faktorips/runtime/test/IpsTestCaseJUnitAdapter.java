@@ -23,6 +23,7 @@ import junit.framework.TestCase;
  * 
  * @author Joerg Ortmann
  */
+@Deprecated(since = "27.1", forRemoval = true)
 public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener {
 
     // The ips test case this adapter works with

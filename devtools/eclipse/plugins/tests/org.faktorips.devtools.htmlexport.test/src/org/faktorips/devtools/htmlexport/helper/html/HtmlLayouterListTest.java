@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.helper.html;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Arrays;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -50,7 +52,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
         ListPageElement liste = new ListPageElement(getContext());
 
         String xml = layout(liste);
-        assertTrue("Liste nicht leer: " + xml, IpsStringUtils.isEmpty(xml));
+        assertTrue(IpsStringUtils.isEmpty(xml), "Liste nicht leer: " + xml);
 
     }
 

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IpsModelDependenciesTest {
 

@@ -32,17 +32,20 @@ import junit.framework.TestSuite;
  * </code>
  * </pre>
  */
-@SuppressWarnings("exports")
+@Deprecated(since = "27.1", forRemoval = true)
 public class IpsTestSuiteJUnitAdapter extends TestSuite {
 
+    @Deprecated(since = "27.1", forRemoval = true)
     public IpsTestSuiteJUnitAdapter() {
         super();
     }
 
+    @Deprecated(since = "27.1", forRemoval = true)
     public IpsTestSuiteJUnitAdapter(String name) {
         super(name);
     }
 
+    @Deprecated(since = "27.1", forRemoval = true)
     public IpsTestSuiteJUnitAdapter(IpsTestSuite suite) {
         super(suite.getName());
         for (IpsTest2 ipsTest : suite.getTests()) {
@@ -55,6 +58,7 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
      * this method, Eclpise's JUnit support would create a warning that his suite hasn't got any
      * tests.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     public void testDummy() {
         // do nothing
     }
@@ -62,6 +66,8 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
     /**
      * Creates an adapter test for the given ips test.
      */
+    @SuppressWarnings("removal")
+    @Deprecated(since = "27.1", forRemoval = true)
     public static Test createJUnitTest(IpsTest2 ipsTest) {
         if (ipsTest instanceof IpsTestCaseBase testCaseBase) {
             return new IpsTestCaseJUnitAdapter(testCaseBase);

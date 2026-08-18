@@ -46,13 +46,11 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(RetryRule.class)
 public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
-
-    @Rule
-    public RetryRule retryRule = new RetryRule(3);
 
     private IIpsProject ipsProject;
     private IIpsPackageFragmentRoot packRoot;

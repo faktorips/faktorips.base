@@ -11,32 +11,33 @@
 package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.custommonkey.xmlunit.XMLTestCase;
-import org.custommonkey.xmlunit.exceptions.XpathException;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
+public abstract class AbstractTestHtmlLayouter {
 
     private HtmlLayouter layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), ".resources"); //$NON-NLS-1$
 
-    public AbstractTestHtmlLayouter() {
-        super();
-    }
-
-    public AbstractTestHtmlLayouter(String name) {
-        super(name);
-    }
-
-    @Override
+    @BeforeEach
     protected void setUp() throws Exception {
         getLayouter().clear();
     }
@@ -55,42 +56,49 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
     protected void assertContains(String html, String... containments) {
         for (String string : containments) {
-            assertTrue("Nicht enthalten: " + string, html.contains(string)); //$NON-NLS-1$
+            if (!html.contains(string)) {
+                throw new AssertionError("Nicht enthalten: " + string); //$NON-NLS-1$
+            }
         }
     }
 
     protected String layout(IPageElement pageElement) {
         pageElement.acceptLayouter(getLayouter());
-        byte[] generate = getLayouter().generate();
-
-        String html;
-        try {
-            html = new String(generate, "UTF-8").trim(); //$NON-NLS-1$
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        return html;
+        return new String(getLayouter().generate(), StandardCharsets.UTF_8).trim();
     }
 
-    @Override
     public void assertXpathExists(String xml, String xPath) throws IOException, SAXException {
-        String xmlWithoutDoctypeDeclaration = prepareXml(xml);
-
+        String prepared = prepareXml(xml);
         try {
-            super.assertXpathExists(xPath, xmlWithoutDoctypeDeclaration);
-        } catch (XpathException e) {
+            NodeList nodes = (NodeList) XPathFactory.newInstance().newXPath()
+                    .evaluate(xPath, toDocument(prepared), XPathConstants.NODESET);
+            if (nodes.getLength() == 0) {
+                throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$
+            }
+        } catch (XPathExpressionException e) {
             throw new RuntimeException("Fehler bei XPath: " + xPath, e); //$NON-NLS-1$
         }
     }
 
-    @Override
     public void assertXpathNotExists(String xml, String xPath) throws IOException, SAXException {
-        String xmlWithoutDoctypeDeclaration = prepareXml(xml);
-
+        String prepared = prepareXml(xml);
         try {
-            super.assertXpathNotExists(xPath, xmlWithoutDoctypeDeclaration);
-        } catch (XpathException e) {
+            NodeList nodes = (NodeList) XPathFactory.newInstance().newXPath()
+                    .evaluate(xPath, toDocument(prepared), XPathConstants.NODESET);
+            if (nodes.getLength() > 0) {
+                throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$
+            }
+        } catch (XPathExpressionException e) {
             throw new RuntimeException("Fehler bei XPath: " + xPath, e); //$NON-NLS-1$
+        }
+    }
+
+    private Document toDocument(String xml) throws SAXException, IOException {
+        try {
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                    .parse(new InputSource(new StringReader(xml)));
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
         }
     }
 

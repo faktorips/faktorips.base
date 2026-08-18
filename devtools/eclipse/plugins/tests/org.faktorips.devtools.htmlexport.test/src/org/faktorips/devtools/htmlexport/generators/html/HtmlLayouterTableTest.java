@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.htmlexport.generators.html;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
@@ -33,7 +36,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         String layout = layout(table);
 
-        assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(IpsStringUtils.isEmpty(layout), layout);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -52,7 +55,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         String layout = layout(table);
 
-        assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(IpsStringUtils.isEmpty(layout), layout);
 
         assertXpathExists(layout, "/table/tr[1][@class='" + Style.TABLE_HEADLINE.name() + "']");
         for (int row = 1; row < rows; row++) {
@@ -69,14 +72,14 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
         table.setBorder(true);
 
         String layout = layout(table);
-        assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(IpsStringUtils.isEmpty(layout), layout);
         assertXpathExists(layout, "/table[@class='" + Style.BORDER.name() + "']");
 
         getLayouter().clear();
         table.setBorder(false);
 
         layout = layout(table);
-        assertFalse(layout, IpsStringUtils.isEmpty(layout));
+        assertFalse(IpsStringUtils.isEmpty(layout), layout);
         assertXpathExists(layout, "/table[not(@class='" + Style.BORDER.name() + "')]");
 
     }

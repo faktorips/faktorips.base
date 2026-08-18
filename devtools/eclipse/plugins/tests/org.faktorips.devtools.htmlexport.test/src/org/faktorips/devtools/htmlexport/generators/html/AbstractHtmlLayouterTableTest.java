@@ -18,14 +18,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 
 public abstract class AbstractHtmlLayouterTableTest extends AbstractTestHtmlLayouter {
 
-    public AbstractHtmlLayouterTableTest() {
-        super();
-    }
-
-    public AbstractHtmlLayouterTableTest(String name) {
-        super(name);
-    }
-
     protected TablePageElement createTable(int rows, int cols) {
         TablePageElement table = new TablePageElement(getContext());
 

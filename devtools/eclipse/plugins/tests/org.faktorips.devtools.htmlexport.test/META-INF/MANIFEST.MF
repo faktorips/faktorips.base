@@ -7,8 +7,7 @@ Fragment-Host: org.faktorips.devtools.htmlexport
 Require-Bundle: org.hamcrest;bundle-version="3.0",
  org.mockito.junit-jupiter
 Bundle-RequiredExecutionEnvironment: JavaSE-21
-Import-Package: junit.framework,
- org.faktorips.abstracttest,
+Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.enums,
  org.faktorips.devtools.model.extproperties,
@@ -29,17 +28,14 @@ Import-Package: junit.framework,
  org.faktorips.devtools.model.value,
  org.faktorips.runtime.internal;version="22.12.0",
  org.faktorips.values,
- org.junit;version="4.13.0",
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
  org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
  org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
  org.mockito.junit.jupiter,
  org.mockito.quality,
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
- org.junit.runner;version="4.13.0",
  org.mockito,
  org.mockito.junit,
  org.mockito.stubbing,
  org.mockito.verification
-Bundle-ClassPath: .,
- lib/xmlunit-1.3.jar
+Bundle-ClassPath: .

@@ -30,11 +30,13 @@ import junit.framework.TestCase;
  *
  * @author Jan Ortmann
  */
+@Deprecated(since = "27.1", forRemoval = true)
 public abstract class IpsTestCase extends TestCase {
 
     /**
      * Creates a new test case.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     public IpsTestCase(String name) {
         super(name);
     }
@@ -44,6 +46,7 @@ public abstract class IpsTestCase extends TestCase {
      * expected output) from the test's resource, executes the business functions and compares the
      * expected result with the actual result.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     @Override
     protected void runTest() throws Throwable {
         Document doc = getXmlDocument(getName());
@@ -67,10 +70,12 @@ public abstract class IpsTestCase extends TestCase {
         return getDocumentBuilder().parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
     }
 
+    @Deprecated(since = "27.1", forRemoval = true)
     protected void run(Document doc) throws Exception {
         run(doc.getDocumentElement());
     }
 
+    @Deprecated(since = "27.1", forRemoval = true)
     protected void run(Element testCaseEl) throws Exception {
         readInput(XmlUtil.getFirstElement(testCaseEl));
         execBusinessFcts();
@@ -81,11 +86,13 @@ public abstract class IpsTestCase extends TestCase {
     /**
      * Reads the input for the test from the given Xml element.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void readInput(Element inputEl);
 
     /**
      * Reads the expected result from the given Xml element.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void readExpectedResult(Element expResultEl);
 
     /**
@@ -93,13 +100,16 @@ public abstract class IpsTestCase extends TestCase {
      *
      * @throws Exception Any exception thrown by the business function is considered as an error.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void execBusinessFcts() throws Exception;
 
     /**
      * Compares the actual output (created by the business function) with the expected result.
      */
+    @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void execAsserts() throws Exception;
 
+    @Deprecated(since = "27.1", forRemoval = true)
     protected DocumentBuilder getDocumentBuilder() {
         return XmlUtil.getDocumentBuilder();
     }
