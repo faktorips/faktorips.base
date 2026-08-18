@@ -16,10 +16,6 @@ pipeline {
         REFERENCE_JOB = 'FaktorIPS_hotfix_25.7'
     }
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14'))
-    }
-
     stages {
         stage('Build and Test') {
 
