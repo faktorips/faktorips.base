@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -33,10 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AssociationDecoratorTest extends AbstractIpsPluginTest {
 
     private AssociationDecorator decorator;
@@ -58,8 +56,8 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         decorator = new AssociationDecorator();
-        when(aProductAssociation.isChangingOverTime()).thenReturn(true);
-        when(aProductAssociation.isConstrain()).thenReturn(false);
+        lenient().when(aProductAssociation.isChangingOverTime()).thenReturn(true);
+        lenient().when(aProductAssociation.isConstrain()).thenReturn(false);
     }
 
     @Test

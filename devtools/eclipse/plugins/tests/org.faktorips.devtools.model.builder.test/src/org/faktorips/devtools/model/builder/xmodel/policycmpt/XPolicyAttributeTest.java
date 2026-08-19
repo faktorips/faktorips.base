@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -51,11 +52,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XPolicyAttributeTest {
 
     @Mock
@@ -87,28 +85,28 @@ public class XPolicyAttributeTest {
 
     @BeforeEach
     public void createXPolicyAttribute() {
-        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
-        when(attribute.getIpsProject()).thenReturn(ipsProject);
-        when(attribute.getDatatype()).thenReturn(ValueDatatype.BOOLEAN.getQualifiedName());
+        lenient().when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+        lenient().when(attribute.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attribute.getDatatype()).thenReturn(ValueDatatype.BOOLEAN.getQualifiedName());
         datatypeHelper = mock(DatatypeHelper.class);
-        when(ipsProject.findDatatypeHelper(anyString())).thenReturn(datatypeHelper);
-        when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.BOOLEAN);
+        lenient().when(ipsProject.findDatatypeHelper(anyString())).thenReturn(datatypeHelper);
+        lenient().when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.BOOLEAN);
 
         IPolicyCmptType polType = mock(IPolicyCmptType.class);
-        when(attribute.getPolicyCmptType()).thenReturn(polType);
-        when(attribute.getIpsObject()).thenReturn(polType);
-        when(polType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attribute.getPolicyCmptType()).thenReturn(polType);
+        lenient().when(attribute.getIpsObject()).thenReturn(polType);
+        lenient().when(polType.getIpsProject()).thenReturn(ipsProject);
         JavaBuilderSet builderSet = mock(JavaBuilderSet.class);
-        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
-        when(builderSet.getGeneratorModelContext()).thenReturn(modelContext);
+        lenient().when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        lenient().when(builderSet.getGeneratorModelContext()).thenReturn(modelContext);
 
         policyClass = mock(XPolicyCmptClass.class);
-        when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
+        lenient().when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
-        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
+        lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
 
-        when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
+        lenient().when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
 
         xPolicyAttribute = new XPolicyAttribute(attribute, modelContext, modelService);
     }

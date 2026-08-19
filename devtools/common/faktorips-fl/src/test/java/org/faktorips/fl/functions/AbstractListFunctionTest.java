@@ -11,6 +11,7 @@
 package org.faktorips.fl.functions;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,11 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractListFunctionTest {
 
     private static final String MY_DATATYPE = "myDatatype";
@@ -59,7 +57,7 @@ public class AbstractListFunctionTest {
             }
         };
         abstractListFunction.setCompiler(compiler);
-        when(datatype.getName()).thenReturn(MY_DATATYPE);
+        lenient().when(datatype.getName()).thenReturn(MY_DATATYPE);
     }
 
     @Test
@@ -85,8 +83,8 @@ public class AbstractListFunctionTest {
 
     private AbstractCompilationResult<JavaCodeFragment> mockDelegateFunction(
             CompilationResult<JavaCodeFragment> delegateResult) {
-        when(compiler.getDatatypeHelper(datatype)).thenReturn(datatypeHelper);
-        when(datatypeHelper.getJavaClassName()).thenReturn("MyJavaClass");
+        lenient().when(compiler.getDatatypeHelper(datatype)).thenReturn(datatypeHelper);
+        lenient().when(datatypeHelper.getJavaClassName()).thenReturn("MyJavaClass");
         AbstractCompilationResult<JavaCodeFragment> listArgument = mock(CompilationResultImpl.class);
         ListOfTypeDatatype listDatatype = new ListOfTypeDatatype(datatype);
         when(listArgument.getDatatype()).thenReturn(listDatatype);
@@ -95,7 +93,7 @@ public class AbstractListFunctionTest {
         when(
                 compiler.getMatchingFunctionUsingConversion(new CompilationResultImpl[] { arg1Result, arg2Result },
                         new Datatype[] { datatype, datatype }, "myFunction")).thenReturn(delegateResult);
-        when(listArgument.getCodeFragment()).thenReturn(new JavaCodeFragment("argumentCode"));
+        lenient().when(listArgument.getCodeFragment()).thenReturn(new JavaCodeFragment("argumentCode"));
         return listArgument;
     }
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -21,14 +22,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExtensionPropertyValueTest {
 
     private String ID = "myId";
@@ -61,8 +59,8 @@ public class ExtensionPropertyValueTest {
 
     @BeforeEach
     public void setUpElement() {
-        when(extPropertiesEl.getOwnerDocument()).thenReturn(document);
-        when(document.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(valueElement);
+        lenient().when(extPropertiesEl.getOwnerDocument()).thenReturn(document);
+        lenient().when(document.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(valueElement);
     }
 
     @Test

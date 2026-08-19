@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.search.product;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,11 +37,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductSearchQueryConditionMatcherTest {
 
     @Mock
@@ -85,23 +83,23 @@ public class ProductSearchQueryConditionMatcherTest {
         searchOperators = Arrays.asList(searchOperatorHit);
         matchingFiles = new HashSet<>(Arrays.asList(srcFileMiss, srcFileHit, srcFileGenerationHit));
 
-        when(srcFileHit.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
-        when(srcFileMiss.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
-        when(srcFileGenerationHit.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
+        lenient().when(srcFileHit.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
+        lenient().when(srcFileMiss.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
+        lenient().when(srcFileGenerationHit.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
 
-        when(srcFileHit.getIpsObject()).thenReturn(productCmptHit);
-        when(srcFileMiss.getIpsObject()).thenReturn(productCmptMiss);
-        when(srcFileGenerationHit.getIpsObject()).thenReturn(productCmptGenerationHit);
+        lenient().when(srcFileHit.getIpsObject()).thenReturn(productCmptHit);
+        lenient().when(srcFileMiss.getIpsObject()).thenReturn(productCmptMiss);
+        lenient().when(srcFileGenerationHit.getIpsObject()).thenReturn(productCmptGenerationHit);
 
-        when(productCmptGenerationHit.getProductCmptGenerations()).thenReturn(
+        lenient().when(productCmptGenerationHit.getProductCmptGenerations()).thenReturn(
                 Arrays.asList(generationMiss, generationHit));
 
-        when(searchOperatorHit.check(productCmptHit)).thenReturn(true);
-        when(searchOperatorHit.check(generationHit)).thenReturn(true);
-        when(searchOperatorHit.check(productCmptMiss)).thenReturn(false);
+        lenient().when(searchOperatorHit.check(productCmptHit)).thenReturn(true);
+        lenient().when(searchOperatorHit.check(generationHit)).thenReturn(true);
+        lenient().when(searchOperatorHit.check(productCmptMiss)).thenReturn(false);
 
-        when(searchOperatorMiss.check(productCmptHit)).thenReturn(false);
-        when(searchOperatorMiss.check(generationHit)).thenReturn(false);
+        lenient().when(searchOperatorMiss.check(productCmptHit)).thenReturn(false);
+        lenient().when(searchOperatorMiss.check(generationHit)).thenReturn(false);
     }
 
     @Test

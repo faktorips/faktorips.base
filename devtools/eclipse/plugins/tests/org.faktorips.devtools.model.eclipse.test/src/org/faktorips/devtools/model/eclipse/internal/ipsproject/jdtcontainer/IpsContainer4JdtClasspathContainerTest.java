@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -36,10 +37,7 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsContainer4JdtClasspathContainerTest {
 
     private static final String MY_NAME = "myName";
@@ -211,14 +209,14 @@ public class IpsContainer4JdtClasspathContainerTest {
         JdtClasspathResolver containerResolver = mock(JdtClasspathResolver.class);
         ipsContainer4JdtClasspathContainer.setContainerResolver(containerResolver);
         when(containerResolver.getClasspathContainer(javaProject, classpathContainerPath)).thenReturn(container);
-        when(containerResolver.getResolvedClasspathEntry(entry)).thenReturn(entry);
+        lenient().when(containerResolver.getResolvedClasspathEntry(entry)).thenReturn(entry);
     }
 
     private void mockProjectAndClasspath() throws Exception {
         mockProject();
-        when(entry.getEntryKind()).thenReturn(IClasspathEntry.CPE_CONTAINER);
-        when(entry.getPath()).thenReturn(new Path(optionalPath));
-        when(javaProject.getRawClasspath()).thenReturn(new IClasspathEntry[] { entry });
+        lenient().when(entry.getEntryKind()).thenReturn(IClasspathEntry.CPE_CONTAINER);
+        lenient().when(entry.getPath()).thenReturn(new Path(optionalPath));
+        lenient().when(javaProject.getRawClasspath()).thenReturn(new IClasspathEntry[] { entry });
     }
 
     private void mockProject() throws Exception {

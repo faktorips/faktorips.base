@@ -15,6 +15,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -55,11 +56,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class InferTemplateProcessorMockTest {
 
     private static final String TEMPLATE_NAME = "templateName";
@@ -182,9 +180,9 @@ public class InferTemplateProcessorMockTest {
     private void setUpConfiguredValueSets() {
         IIpsModel ipsModel = mock(IIpsModel.class);
         for (IPropertyValue propertyValue : configuredValueSets) {
-            when(ipsModel.getNextPartId(propertyValue)).thenReturn(UUID.randomUUID().toString());
-            when(propertyValue.getIpsModel()).thenReturn(ipsModel);
-            when(valueSet.copy(eq((IConfiguredValueSet)propertyValue), anyString())).thenReturn(valueSetCopy);
+            lenient().when(ipsModel.getNextPartId(propertyValue)).thenReturn(UUID.randomUUID().toString());
+            lenient().when(propertyValue.getIpsModel()).thenReturn(ipsModel);
+            lenient().when(valueSet.copy(eq((IConfiguredValueSet)propertyValue), anyString())).thenReturn(valueSetCopy);
         }
     }
 
@@ -201,10 +199,10 @@ public class InferTemplateProcessorMockTest {
             String name = propValueClass.getSimpleName() + i;
             IPropertyValue propertyValue = mock(IPropertyValue.class,
                     withSettings().extraInterfaces(propValueClass).name(name));
-            when(propertyValue.getPropertyName()).thenReturn(name);
-            when(propertyValue.getIdentifier()).thenReturn(
+            lenient().when(propertyValue.getPropertyName()).thenReturn(name);
+            lenient().when(propertyValue.getIdentifier()).thenReturn(
                     new PropertyValueIdentifier(name, PropertyValueType.getTypeForValueClass(propValueClass)));
-            when(propertyValue.getIpsSrcFile()).thenReturn(srcFile);
+            lenient().when(propertyValue.getIpsSrcFile()).thenReturn(srcFile);
             propertyValues.add(propertyValue);
         }
         return propertyValues;
@@ -310,7 +308,7 @@ public class InferTemplateProcessorMockTest {
                     return singleValue;
                 } else {
                     SingleValueHolder valueMock = mock(SingleValueHolder.class);
-                    when(valueMock.compareTo(any(IValueHolder.class))).thenReturn(1);
+                    lenient().when(valueMock.compareTo(any(IValueHolder.class))).thenReturn(1);
                     return valueMock;
                 }
             };

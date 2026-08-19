@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -34,11 +35,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class SingleTableContentsValidatorTest {
 
     @Mock
@@ -59,7 +57,7 @@ public class SingleTableContentsValidatorTest {
     @BeforeEach
     public void setup() {
         validator = new SingleTableContentsValidator(ipsProjectBase, tableStructure);
-        when(tableStructure.getName()).thenReturn("tableStructure");
+        lenient().when(tableStructure.getName()).thenReturn("tableStructure");
     }
 
     @Test
@@ -205,7 +203,7 @@ public class SingleTableContentsValidatorTest {
     }
 
     private void setUpContentSrcFiles(IIpsProject ipsProject, IIpsSrcFile... srcFileArray) {
-        when(ipsProject.findAllTableContentsSrcFiles(tableStructure)).thenReturn(createList(srcFileArray));
+        lenient().when(ipsProject.findAllTableContentsSrcFiles(tableStructure)).thenReturn(createList(srcFileArray));
     }
 
     private Message getExpectedMessage() {

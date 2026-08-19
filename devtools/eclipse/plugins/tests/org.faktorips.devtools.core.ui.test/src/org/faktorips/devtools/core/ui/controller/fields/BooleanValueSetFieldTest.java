@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -30,11 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class BooleanValueSetFieldTest {
 
     @Mock
@@ -69,9 +67,9 @@ public class BooleanValueSetFieldTest {
     public void setUp() {
         when(control.getTrueCheckBox()).thenReturn(trueBox);
         when(control.getFalseCheckBox()).thenReturn(falseBox);
-        when(control.getNullCheckBox()).thenReturn(nullBox);
-        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
-        when(ipsModel.getNextPartId(configValueSet)).thenReturn(id);
+        lenient().when(control.getNullCheckBox()).thenReturn(nullBox);
+        lenient().when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(ipsModel.getNextPartId(configValueSet)).thenReturn(id);
 
         field = new BooleanValueSetField(configValueSet, control);
     }

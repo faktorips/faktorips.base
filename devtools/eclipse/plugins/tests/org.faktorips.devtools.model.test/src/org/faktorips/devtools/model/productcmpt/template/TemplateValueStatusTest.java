@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.productcmpt.template;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,11 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class TemplateValueStatusTest {
 
     @Mock
@@ -47,9 +45,9 @@ public class TemplateValueStatusTest {
 
     @BeforeEach
     public void setUp() {
-        doReturn(ipsProject).when(attributeValue).getIpsProject();
-        doReturn(ipsProject).when(link).getIpsProject();
-        doReturn(ipsProject).when(cardinality).getIpsProject();
+        lenient().doReturn(ipsProject).when(attributeValue).getIpsProject();
+        lenient().doReturn(ipsProject).when(link).getIpsProject();
+        lenient().doReturn(ipsProject).when(cardinality).getIpsProject();
     }
 
     @Test
@@ -189,19 +187,19 @@ public class TemplateValueStatusTest {
 
     private void addTemplateValue(IAttributeValue value) {
         IAttributeValue templateValue = mock(IAttributeValue.class);
-        when(value.findTemplateProperty(ipsProject)).thenReturn(templateValue);
+        lenient().when(value.findTemplateProperty(ipsProject)).thenReturn(templateValue);
     }
 
     private void makeTemplate(ITemplatedValue value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
-        when(container.isProductTemplate()).thenReturn(true);
-        when(value.getTemplatedValueContainer()).thenReturn(container);
+        lenient().when(container.isProductTemplate()).thenReturn(true);
+        lenient().when(value.getTemplatedValueContainer()).thenReturn(container);
     }
 
     private void makeProductCmpt(ITemplatedValue value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
-        when(container.isProductTemplate()).thenReturn(false);
-        when(value.getTemplatedValueContainer()).thenReturn(container);
+        lenient().when(container.isProductTemplate()).thenReturn(false);
+        lenient().when(value.getTemplatedValueContainer()).thenReturn(container);
     }
 
     private TemplateValueStatus nextStatus(TemplateValueStatus start) {

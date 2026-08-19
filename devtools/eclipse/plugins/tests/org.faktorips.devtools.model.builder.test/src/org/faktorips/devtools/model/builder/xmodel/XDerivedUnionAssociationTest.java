@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,11 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XDerivedUnionAssociationTest {
 
     private static final String DERIVED_UNION_NAME = "derivedUnion";
@@ -55,7 +53,7 @@ public class XDerivedUnionAssociationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        when(association.getName()).thenReturn(DERIVED_UNION_NAME);
+        lenient().when(association.getName()).thenReturn(DERIVED_UNION_NAME);
         xDerivedUnionAssociation = new XDerivedUnionAssociation(association, context, modelService);
     }
 

@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -35,11 +36,8 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumAttributeValueUnitTest {
 
     private IdentifierBoundaryValidator validator;
@@ -62,17 +60,17 @@ public class EnumAttributeValueUnitTest {
     @BeforeEach
     public void setUp() throws Exception {
         validator = new IdentifierBoundaryValidator(attribute, enumType, datatype, ipsProject);
-        when(attribute.findEnumAttribute(ipsProject)).thenReturn(identifierAttribute);
-        doReturn("10").when(enumType).getIdentifierBoundary();
-        doReturn(true).when(enumType).isValidateIdentifierBoundaryOnDatatypeNecessary(any());
+        lenient().when(attribute.findEnumAttribute(ipsProject)).thenReturn(identifierAttribute);
+        lenient().doReturn("10").when(enumType).getIdentifierBoundary();
+        lenient().doReturn(true).when(enumType).isValidateIdentifierBoundaryOnDatatypeNecessary(any());
 
-        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        lenient().when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
 
-        when(enumType.isIdentifierNamespaceBelowBoundary()).thenCallRealMethod();
-        when(enumContent.isIdentifierNamespaceBelowBoundary()).thenCallRealMethod();
+        lenient().when(enumType.isIdentifierNamespaceBelowBoundary()).thenCallRealMethod();
+        lenient().when(enumContent.isIdentifierNamespaceBelowBoundary()).thenCallRealMethod();
 
-        when(attribute.getEnumValue()).thenReturn(enumValue);
-        when(enumValue.getEnumValueContainer()).thenReturn(enumType);
+        lenient().when(attribute.getEnumValue()).thenReturn(enumValue);
+        lenient().when(enumValue.getEnumValueContainer()).thenReturn(enumType);
     }
 
     @Test

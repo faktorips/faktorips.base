@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,11 +47,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AttributeNodeGeneratorTest {
 
     @Mock
@@ -79,7 +77,7 @@ public class AttributeNodeGeneratorTest {
 
     @BeforeEach
     public void createAttributeNodeGenerator() {
-        when(builderSet.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(builderSet.getIpsProject()).thenReturn(ipsProject);
         attributeNodeGenerator = new AttributeNodeGenerator(factory, expression, builderSet);
     }
 

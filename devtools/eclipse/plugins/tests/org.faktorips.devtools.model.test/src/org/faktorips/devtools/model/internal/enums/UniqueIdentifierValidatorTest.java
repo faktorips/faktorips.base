@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,11 +33,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class UniqueIdentifierValidatorTest {
 
     @Mock
@@ -49,7 +47,7 @@ public class UniqueIdentifierValidatorTest {
 
     @BeforeEach
     public void createUniqueIdentifierValidator() throws Exception {
-        when(container.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(container.getIpsModel()).thenReturn(ipsModel);
         uniqueIdentifierValidator = new UniqueIdentifierValidator(container);
     }
 
@@ -153,8 +151,8 @@ public class UniqueIdentifierValidatorTest {
         List<IEnumAttributeValue> enumAttributeValues = new ArrayList<>();
         for (int j = 0; j < 2; j++) {
             IEnumAttributeValue enumAttributeValue = mock(IEnumAttributeValue.class);
-            when(enumAttributeValue.getEnumValue()).thenReturn(enumValue);
-            doReturn(new StringValue("abc" + i + j)).when(enumAttributeValue).getValue();
+            lenient().when(enumAttributeValue.getEnumValue()).thenReturn(enumValue);
+            lenient().doReturn(new StringValue("abc" + i + j)).when(enumAttributeValue).getValue();
             enumAttributeValues.add(enumAttributeValue);
         }
         when(enumValue.getEnumAttributeValues()).thenReturn(enumAttributeValues);

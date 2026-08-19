@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.ValueDatatype;
@@ -29,11 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class SingleValueHolderTest {
 
     @Mock
@@ -49,9 +47,9 @@ public class SingleValueHolderTest {
 
     @BeforeEach
     public void setUp() {
-        when(attributeValue.getIpsProject()).thenReturn(ipsProject);
-        when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
-        when(attribute.findValueDatatype(ipsProject)).thenReturn(datatype);
+        lenient().when(attributeValue.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
+        lenient().when(attribute.findValueDatatype(ipsProject)).thenReturn(datatype);
     }
 
     @Test

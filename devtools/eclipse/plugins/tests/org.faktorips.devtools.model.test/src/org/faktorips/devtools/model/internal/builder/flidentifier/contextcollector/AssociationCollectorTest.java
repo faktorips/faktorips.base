@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -43,11 +44,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AssociationCollectorTest {
 
     @Mock
@@ -100,8 +97,8 @@ public class AssociationCollectorTest {
     @BeforeEach
     public void setUpFinderAndNode() {
         when(finder.createCollector()).thenReturn(otherCollector);
-        when(finder.getIpsProject()).thenReturn(ipsProject);
-        when(finder.getExpression()).thenReturn(expression);
+        lenient().when(finder.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(finder.getExpression()).thenReturn(expression);
         when(node.getAssociation()).thenReturn(association);
     }
 
@@ -109,7 +106,7 @@ public class AssociationCollectorTest {
     public void setUpProductCmpts() throws Exception {
         productCmptsFiles = new ArrayList<>();
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        when(ipsSrcFile.getIpsObject()).thenReturn(productCmpt);
+        lenient().when(ipsSrcFile.getIpsObject()).thenReturn(productCmpt);
         productCmptsFiles.add(ipsSrcFile);
     }
 
@@ -194,7 +191,7 @@ public class AssociationCollectorTest {
 
     private Set<IProductCmpt> createContextProductCmpts() {
         GregorianCalendar validFrom = mockValidFrom();
-        when(contextProductCmpt2.getGenerationEffectiveOn(validFrom)).thenReturn(contextProductCmptGeneration);
+        lenient().when(contextProductCmpt2.getGenerationEffectiveOn(validFrom)).thenReturn(contextProductCmptGeneration);
         LinkedHashSet<IProductCmpt> context = new LinkedHashSet<>();
         context.add(contextProductCmpt1);
         context.add(contextProductCmpt2);
@@ -204,8 +201,8 @@ public class AssociationCollectorTest {
     private GregorianCalendar mockValidFrom() {
         GregorianCalendar validFrom = mock(GregorianCalendar.class);
         IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
-        when(generation.getValidFrom()).thenReturn(validFrom);
-        when(expression.getPropertyValueContainer()).thenReturn(generation);
+        lenient().when(generation.getValidFrom()).thenReturn(validFrom);
+        lenient().when(expression.getPropertyValueContainer()).thenReturn(generation);
         return validFrom;
     }
 

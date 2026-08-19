@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -36,11 +37,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumExportPageTest {
     @Mock
     private IStructuredSelection selection;
@@ -61,8 +59,8 @@ public class EnumExportPageTest {
         Field exportedIpsObjectControlField = IpsObjectExportPage.class.getDeclaredField("exportedIpsObjectControl");
         exportedIpsObjectControlField.setAccessible(true);
         exportedIpsObjectControlField.set(enumExportPage, exportedIpsObjectControl);
-        when(enumContent.getIpsProject()).thenReturn(ipsProject);
-        when(enumType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(enumType.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test

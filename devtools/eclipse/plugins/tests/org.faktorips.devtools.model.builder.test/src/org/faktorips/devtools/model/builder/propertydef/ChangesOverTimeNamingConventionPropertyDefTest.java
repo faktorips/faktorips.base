@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -24,11 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ChangesOverTimeNamingConventionPropertyDefTest {
 
     @Mock
@@ -41,7 +39,7 @@ public class ChangesOverTimeNamingConventionPropertyDefTest {
 
     @BeforeEach
     public void setUp() {
-        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+        lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
     }
 
     @Test

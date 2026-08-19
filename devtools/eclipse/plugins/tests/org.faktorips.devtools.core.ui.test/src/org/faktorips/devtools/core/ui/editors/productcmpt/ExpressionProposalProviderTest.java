@@ -11,7 +11,9 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,11 +44,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     private static final String IDENTIFIER_PROPOSAL1 = "identifierProposal1";
@@ -128,7 +127,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetProposals_considerPosition() {
         proposalProvider = new ExpressionProposalProvider(formula, parser);
-        doReturn(Collections.EMPTY_LIST).when(parser).getProposals(FUNCTION_ABS);
+        lenient().doReturn(Collections.EMPTY_LIST).when(parser).getProposals(anyString());
 
         IContentProposal[] proposals = proposalProvider.getProposals("AbsXYZ_ILLEGAL_INPUT", 6);
         assertEquals(0, proposals.length);

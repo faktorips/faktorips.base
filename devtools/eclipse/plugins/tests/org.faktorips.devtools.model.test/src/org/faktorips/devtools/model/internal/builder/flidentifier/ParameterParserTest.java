@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,11 +36,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ParameterParserTest extends AbstractParserTest {
 
     private static final String ANY_PARAMETER = "noParameter";
@@ -68,10 +65,10 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @BeforeEach
     public void mockFormulaSignature() throws Exception {
-        when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(formulaSignature);
-        when(formulaSignature.getParameters()).thenReturn(new IParameter[] { parameter });
-        when(parameter.getName()).thenReturn(MY_PARAMETER);
-        when(parameter.findDatatype(getIpsProject())).thenReturn(AnyDatatype.INSTANCE);
+        lenient().when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(formulaSignature);
+        lenient().when(formulaSignature.getParameters()).thenReturn(new IParameter[] { parameter });
+        lenient().when(parameter.getName()).thenReturn(MY_PARAMETER);
+        lenient().when(parameter.findDatatype(getIpsProject())).thenReturn(AnyDatatype.INSTANCE);
     }
 
     @Test

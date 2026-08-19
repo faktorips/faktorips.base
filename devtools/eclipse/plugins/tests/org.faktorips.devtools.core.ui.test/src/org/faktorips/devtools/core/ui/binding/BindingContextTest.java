@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -55,11 +56,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class BindingContextTest extends AbstractIpsPluginTest {
 
     private BindingContext bindingContext;
@@ -82,9 +80,9 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
         editField = Mockito.mock(EditField.class);
         controlMock = mock(Control.class);
-        when(editField.getControl()).thenReturn(controlMock);
+        lenient().when(editField.getControl()).thenReturn(controlMock);
 
-        when(ipsSrcFile.exists()).thenReturn(true);
+        lenient().when(ipsSrcFile.exists()).thenReturn(true);
     }
 
     @Test

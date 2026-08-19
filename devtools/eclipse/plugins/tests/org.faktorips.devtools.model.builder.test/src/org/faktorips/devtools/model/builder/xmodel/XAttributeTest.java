@@ -16,6 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -34,15 +35,12 @@ import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XAttributeTest {
 
     private static final String TEST_ANNOTATION = "@TestAnnotation";
@@ -68,11 +66,12 @@ public class XAttributeTest {
     private XAttribute xAttribute;
 
     public void setUpMocks() {
-        when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         xAttribute = new TestXAttribute(attribute, context, modelService);
-        when(annotationGenerator.createAnnotation(xAttribute)).thenReturn(new JavaCodeFragment(TEST_ANNOTATION));
-        when(annotationGenerator.isGenerateAnnotationFor(xAttribute)).thenReturn(true);
-        when(context.getAnnotationGenerator(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER))
+        lenient().when(annotationGenerator.createAnnotation(xAttribute))
+                .thenReturn(new JavaCodeFragment(TEST_ANNOTATION));
+        lenient().when(annotationGenerator.isGenerateAnnotationFor(xAttribute)).thenReturn(true);
+        lenient().when(context.getAnnotationGenerator(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER))
                 .thenReturn(Arrays.asList(annotationGenerator));
     }
 

@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,11 +47,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XProductClassTest {
 
     @Mock
@@ -111,22 +109,22 @@ public class XProductClassTest {
 
     @BeforeEach
     public void initModelContext() {
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
-        when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
+        lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
     }
 
     @BeforeEach
     public void createProductClass() {
         // need this because XProductClass is abstract
         xProductClass = mock(XProductClass.class, CALLS_REAL_METHODS);
-        when(xProductClass.getModelService()).thenReturn(modelService);
-        when(xProductClass.getContext()).thenReturn(modelContext);
-        when(xProductClass.getIpsObjectPartContainer()).thenReturn(type);
+        lenient().when(xProductClass.getModelService()).thenReturn(modelService);
+        lenient().when(xProductClass.getContext()).thenReturn(modelContext);
+        lenient().when(xProductClass.getIpsObjectPartContainer()).thenReturn(type);
     }
 
     @BeforeEach
     public void createTypes() {
-        when(type.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(type.getIpsProject()).thenReturn(ipsProject);
     }
 
     @BeforeEach
@@ -135,18 +133,18 @@ public class XProductClassTest {
         IProductCmptTypeAssociation assoc1 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc2 = mock(IProductCmptTypeAssociation.class);
         IProductCmptTypeAssociation assoc3 = mock(IProductCmptTypeAssociation.class);
-        when(assoc1.isChangingOverTime()).thenReturn(false);
-        when(assoc2.isChangingOverTime()).thenReturn(true);
-        when(assoc3.isChangingOverTime()).thenReturn(false);
+        lenient().when(assoc1.isChangingOverTime()).thenReturn(false);
+        lenient().when(assoc2.isChangingOverTime()).thenReturn(true);
+        lenient().when(assoc3.isChangingOverTime()).thenReturn(false);
 
         assocList.add(assoc1);
         assocList.add(assoc2);
         assocList.add(assoc3);
 
-        when(type.getProductCmptTypeAssociations()).thenReturn(assocList);
-        when(modelService.getModelNode(assoc1, XProductAssociation.class, modelContext)).thenReturn(assocNode1);
-        when(modelService.getModelNode(assoc2, XProductAssociation.class, modelContext)).thenReturn(assocNode2);
-        when(modelService.getModelNode(assoc3, XProductAssociation.class, modelContext)).thenReturn(assocNode3);
+        lenient().when(type.getProductCmptTypeAssociations()).thenReturn(assocList);
+        lenient().when(modelService.getModelNode(assoc1, XProductAssociation.class, modelContext)).thenReturn(assocNode1);
+        lenient().when(modelService.getModelNode(assoc2, XProductAssociation.class, modelContext)).thenReturn(assocNode2);
+        lenient().when(modelService.getModelNode(assoc3, XProductAssociation.class, modelContext)).thenReturn(assocNode3);
     }
 
     @BeforeEach
@@ -159,18 +157,18 @@ public class XProductClassTest {
         attrList.add(attr2);
         attrList.add(attr3);
 
-        when(attr1.isChangingOverTime()).thenReturn(true);
-        when(attr2.isChangingOverTime()).thenReturn(false);
-        when(attr3.isChangingOverTime()).thenReturn(true);
+        lenient().when(attr1.isChangingOverTime()).thenReturn(true);
+        lenient().when(attr2.isChangingOverTime()).thenReturn(false);
+        lenient().when(attr3.isChangingOverTime()).thenReturn(true);
 
-        when(type.getProductCmptTypeAttributes()).thenReturn(attrList);
-        when(modelService.getModelNode(attr1, XProductAttribute.class, modelContext)).thenReturn(attrNode1);
-        when(modelService.getModelNode(attr2, XProductAttribute.class, modelContext)).thenReturn(attrNode2);
-        when(modelService.getModelNode(attr3, XProductAttribute.class, modelContext)).thenReturn(attrNode3);
+        lenient().when(type.getProductCmptTypeAttributes()).thenReturn(attrList);
+        lenient().when(modelService.getModelNode(attr1, XProductAttribute.class, modelContext)).thenReturn(attrNode1);
+        lenient().when(modelService.getModelNode(attr2, XProductAttribute.class, modelContext)).thenReturn(attrNode2);
+        lenient().when(modelService.getModelNode(attr3, XProductAttribute.class, modelContext)).thenReturn(attrNode3);
 
-        when(attrNode1.isGenerateContentCode()).thenReturn(true);
-        when(attrNode2.isGenerateContentCode()).thenReturn(true);
-        when(attrNode3.isGenerateContentCode()).thenReturn(true);
+        lenient().when(attrNode1.isGenerateContentCode()).thenReturn(true);
+        lenient().when(attrNode2.isGenerateContentCode()).thenReturn(true);
+        lenient().when(attrNode3.isGenerateContentCode()).thenReturn(true);
     }
 
     @Test

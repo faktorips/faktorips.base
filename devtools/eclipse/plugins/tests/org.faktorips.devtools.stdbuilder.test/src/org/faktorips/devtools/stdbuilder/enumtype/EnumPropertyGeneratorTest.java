@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -38,10 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumPropertyGeneratorTest {
 
     @Mock
@@ -75,20 +73,20 @@ public class EnumPropertyGeneratorTest {
         attributes.add(enumAttribute2);
         when(enumType.getEnumAttributesIncludeSupertypeCopies(false)).thenReturn(attributes);
 
-        when(enumAttribute.getName()).thenReturn("column");
+        lenient().when(enumAttribute.getName()).thenReturn("column");
 
         List<IEnumValue> enumValues = new ArrayList<>();
         enumValues.add(enumValue);
-        when(enumType.getEnumValues()).thenReturn(enumValues);
+        lenient().when(enumType.getEnumValues()).thenReturn(enumValues);
 
-        when(enumValue.getEnumAttributeValue(enumAttribute)).thenReturn(enumAttributeValue);
-        when(enumValue.getEnumAttributeValue(enumAttribute2)).thenReturn(idAttributeValue);
+        lenient().when(enumValue.getEnumAttributeValue(enumAttribute)).thenReturn(enumAttributeValue);
+        lenient().when(enumValue.getEnumAttributeValue(enumAttribute2)).thenReturn(idAttributeValue);
 
-        when(enumType.findIdentiferAttribute(any(IIpsProject.class))).thenReturn(enumAttribute2);
+        lenient().when(enumType.findIdentiferAttribute(any(IIpsProject.class))).thenReturn(enumAttribute2);
 
-        when(enumAttributeValue.getEnumValue()).thenReturn(enumValue);
+        lenient().when(enumAttributeValue.getEnumValue()).thenReturn(enumValue);
 
-        doReturn(ValueFactory.createStringValue("myId")).when(idAttributeValue).getValue();
+        lenient().doReturn(ValueFactory.createStringValue("myId")).when(idAttributeValue).getValue();
 
         when(enumType.getIpsProject()).thenReturn(ipsProject);
 

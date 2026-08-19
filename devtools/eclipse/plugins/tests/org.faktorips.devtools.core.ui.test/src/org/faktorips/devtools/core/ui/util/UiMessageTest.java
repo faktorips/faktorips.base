@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class UiMessageTest {
 
     private static final String NAME1 = "name1";
@@ -62,11 +60,11 @@ public class UiMessageTest {
     @BeforeEach
     public void mockProjectAndObjects() {
         IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
-        when(properties.getDefaultLanguage()).thenReturn(new SupportedLanguage(Locale.GERMAN));
-        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
-        when(part1.getIpsProject()).thenReturn(ipsProject);
-        when(part2.getIpsProject()).thenReturn(ipsProject);
-        when(part1.getParent()).thenReturn(part2);
+        lenient().when(properties.getDefaultLanguage()).thenReturn(new SupportedLanguage(Locale.GERMAN));
+        lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+        lenient().when(part1.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(part2.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(part1.getParent()).thenReturn(part2);
     }
 
     @Test
@@ -78,7 +76,7 @@ public class UiMessageTest {
 
     @Test
     public void testGetCaptionName_directCaption() throws Exception {
-        when(part1.getCaption(Locale.GERMAN)).thenReturn(CAPTION1);
+        lenient().when(part1.getCaption(Locale.GERMAN)).thenReturn(CAPTION1);
 
         String captionName = uiMessage.getCaptionName(part1);
 
@@ -87,7 +85,7 @@ public class UiMessageTest {
 
     @Test
     public void testGetCaptionName_parentCaption() throws Exception {
-        when(part2.getCaption(Locale.GERMAN)).thenReturn(CAPTION2);
+        lenient().when(part2.getCaption(Locale.GERMAN)).thenReturn(CAPTION2);
 
         String captionName = uiMessage.getCaptionName(part1);
 
@@ -104,7 +102,7 @@ public class UiMessageTest {
     @Test
     public void testGetPrefix_caption() throws Exception {
         message = new Message("ABC", "text", Message.INFO, part1);
-        when(part2.getCaption(Locale.GERMAN)).thenReturn(CAPTION2);
+        lenient().when(part2.getCaption(Locale.GERMAN)).thenReturn(CAPTION2);
         uiMessage = new UiMessage(message);
 
         String prefix = uiMessage.getPrefix();
@@ -126,8 +124,8 @@ public class UiMessageTest {
     @Test
     public void testGetPrefix_label() throws Exception {
         ILabeledElement labeledElement = mock(ILabeledElement.class);
-        when(labeledElement.getIpsProject()).thenReturn(ipsProject);
-        when(labeledElement.getLabelValue(Locale.GERMAN)).thenReturn(LABEL1);
+        lenient().when(labeledElement.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(labeledElement.getLabelValue(Locale.GERMAN)).thenReturn(LABEL1);
         message = new Message("ABC", "text", Message.INFO, labeledElement);
         uiMessage = new UiMessage(message);
 

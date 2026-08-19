@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -46,12 +47,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleException;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsJarBundleTest {
 
     private static final String ROOT_PATH = "root";
@@ -79,9 +77,9 @@ public class IpsJarBundleTest {
 
     @BeforeEach
     public void createIpsJarBundle() throws Exception {
-        when(jarFileFactory.createJarFile()).thenReturn(jarFile);
+        lenient().when(jarFileFactory.createJarFile()).thenReturn(jarFile);
         Path path = Path.of(JAR_NAME);
-        when(jarFileFactory.getJarPath()).thenReturn(path);
+        lenient().when(jarFileFactory.getJarPath()).thenReturn(path);
         ipsJarBundle = new IpsJarBundle(ipsProject, jarFileFactory);
         ipsJarBundle.setBundleContentIndex(bundleContentIndex);
     }

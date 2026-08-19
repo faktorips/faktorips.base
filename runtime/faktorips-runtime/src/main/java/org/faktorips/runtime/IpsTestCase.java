@@ -29,12 +29,15 @@ import junit.framework.TestCase;
  * Base class for IPS test cases.
  *
  * @author Jan Ortmann
+ * @deprecated since 27.1, in favour of JUnit 5 or later
  */
 @Deprecated(since = "27.1", forRemoval = true)
 public abstract class IpsTestCase extends TestCase {
 
     /**
      * Creates a new test case.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     public IpsTestCase(String name) {
@@ -45,6 +48,8 @@ public abstract class IpsTestCase extends TestCase {
      * Implementation of the JUnit <code>Test</code> method that reads the test case data (input,
      * expected output) from the test's resource, executes the business functions and compares the
      * expected result with the actual result.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     @Override
@@ -85,12 +90,16 @@ public abstract class IpsTestCase extends TestCase {
 
     /**
      * Reads the input for the test from the given Xml element.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void readInput(Element inputEl);
 
     /**
      * Reads the expected result from the given Xml element.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void readExpectedResult(Element expResultEl);
@@ -99,12 +108,15 @@ public abstract class IpsTestCase extends TestCase {
      * Executes the business function(s) to test.
      *
      * @throws Exception Any exception thrown by the business function is considered as an error.
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void execBusinessFcts() throws Exception;
 
     /**
      * Compares the actual output (created by the business function) with the expected result.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     protected abstract void execAsserts() throws Exception;

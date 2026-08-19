@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.builder.java.annotations.association;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,19 +23,16 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 /**
  * This class is merely a String test. Functionality has to be additionally tested in integration
  * tests.
  */
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractAssociationAnnGenTest {
 
     private static final String ASSOCIATION = "association";
@@ -176,13 +174,13 @@ public class AbstractAssociationAnnGenTest {
      */
     private XAssociation mockBasicAssociation(String nameToUseForTargetClass) {
         XAssociation association = mock(XAssociation.class);
-        when(association.getName(false)).thenReturn(ASSOCIATION);
-        when(association.getName(true)).thenReturn(ASSOCIATION_PLURAL);
-        when(association.getAssociationKind()).thenReturn(AssociationKind.Composition);
-        when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
-        when(association.getMinCardinality()).thenReturn(MIN_CARD);
-        when(association.getMaxCardinality()).thenReturn(MAX_CARD);
-        when(association.addImport(ASSOCIATION_TARGET)).thenReturn(nameToUseForTargetClass);
+        lenient().when(association.getName(false)).thenReturn(ASSOCIATION);
+        lenient().when(association.getName(true)).thenReturn(ASSOCIATION_PLURAL);
+        lenient().when(association.getAssociationKind()).thenReturn(AssociationKind.Composition);
+        lenient().when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
+        lenient().when(association.getMinCardinality()).thenReturn(MIN_CARD);
+        lenient().when(association.getMaxCardinality()).thenReturn(MAX_CARD);
+        lenient().when(association.addImport(ASSOCIATION_TARGET)).thenReturn(nameToUseForTargetClass);
         return association;
     }
 }

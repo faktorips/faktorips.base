@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -34,11 +35,8 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectEditorTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
@@ -52,8 +50,8 @@ public class IpsObjectEditorTest {
 
     @BeforeEach
     public void setUp() {
-        doReturn(ipsObject).when(ipsObjectEditor).getIpsObject();
-        doReturn(ipsProject).when(ipsObjectEditor).getIpsProject();
+        lenient().doReturn(ipsObject).when(ipsObjectEditor).getIpsObject();
+        lenient().doReturn(ipsProject).when(ipsObjectEditor).getIpsProject();
     }
 
     @Test

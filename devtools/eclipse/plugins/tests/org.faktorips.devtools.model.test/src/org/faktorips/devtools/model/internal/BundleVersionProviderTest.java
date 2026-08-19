@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class BundleVersionProviderTest {
     private static final String VERSION_STRING = "1.2.3.test";
 
@@ -69,7 +67,7 @@ public class BundleVersionProviderTest {
         provider = new BundleVersionProvider(ipsProject);
         providerSpy = spy(provider);
 
-        doReturn(attributes).when(providerSpy).getManifestMainAttributes();
+        lenient().doReturn(attributes).when(providerSpy).getManifestMainAttributes();
     }
 
     @Test

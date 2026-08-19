@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -31,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class MinMaxListTest {
 
     private MinMaxList maxList;
@@ -59,12 +57,12 @@ public class MinMaxListTest {
         CompilationResultImpl arg1Result = new CompilationResultImpl("currentResult", elementDatatype);
         CompilationResultImpl arg2Result = new CompilationResultImpl("nextValue", elementDatatype);
 
-        when(argumentCompilationResult.getCodeFragment()).thenReturn(argumentFragment);
+        lenient().when(argumentCompilationResult.getCodeFragment()).thenReturn(argumentFragment);
         when(argumentCompilationResult.getDatatype()).thenReturn(datatype);
         maxList = spy(maxList);
         CompilationResultImpl fragment = new CompilationResultImpl(
                 new JavaCodeFragment("currentResult.max(nextValue)"), Datatype.DECIMAL);
-        doReturn(fragment).when(maxList).generateFunctionCall(arg1Result, arg2Result);
+        lenient().doReturn(fragment).when(maxList).generateFunctionCall(arg1Result, arg2Result);
         maxList.setCompiler(new JavaExprCompiler());
     }
 

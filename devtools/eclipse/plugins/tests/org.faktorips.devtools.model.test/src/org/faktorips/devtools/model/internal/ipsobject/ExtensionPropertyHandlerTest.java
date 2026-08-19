@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -43,8 +44,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,7 +52,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExtensionPropertyHandlerTest {
 
     private static final String MY_ID = "anyId";
@@ -109,33 +107,33 @@ public class ExtensionPropertyHandlerTest {
 
     @BeforeEach
     public void setUpExtPropDefAndPart() {
-        doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
-        doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID2);
-        doReturn(Arrays.asList(extPropDef, extPropDef2)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
+        lenient().doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
+        lenient().doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID2);
+        lenient().doReturn(Arrays.asList(extPropDef, extPropDef2)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
 
-        when(extPropDef.getPropertyId()).thenReturn(MY_ID);
-        when(extPropDef.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE);
-        when(extPropDef.beforeSetValue(any(IIpsObjectPartContainer.class), any())).thenReturn(true);
+        lenient().when(extPropDef.getPropertyId()).thenReturn(MY_ID);
+        lenient().when(extPropDef.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE);
+        lenient().when(extPropDef.beforeSetValue(any(IIpsObjectPartContainer.class), any())).thenReturn(true);
 
-        when(extPropDef2.getPropertyId()).thenReturn(MY_ID2);
-        when(extPropDef2.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE2);
+        lenient().when(extPropDef2.getPropertyId()).thenReturn(MY_ID2);
+        lenient().when(extPropDef2.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE2);
     }
 
     @BeforeEach
     public void setUpXmlElementAndDocument() {
-        when(xmlRootElement.getOwnerDocument()).thenReturn(xmlDocument);
-        when(xmlExtPropElement.getOwnerDocument()).thenReturn(xmlDocument);
-        when(xmlDocument.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT))
+        lenient().when(xmlRootElement.getOwnerDocument()).thenReturn(xmlDocument);
+        lenient().when(xmlExtPropElement.getOwnerDocument()).thenReturn(xmlDocument);
+        lenient().when(xmlDocument.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT))
                 .thenReturn(xmlExtPropElement);
-        when(xmlDocument.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(xmlValueElement);
+        lenient().when(xmlDocument.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(xmlValueElement);
 
-        when(xmlExtPropElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
-        when(xmlValueElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_VALUE_ELEMENT);
-        when(xmlValueElement.getNodeType()).thenReturn(Node.ELEMENT_NODE);
+        lenient().when(xmlExtPropElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT);
+        lenient().when(xmlValueElement.getNodeName()).thenReturn(IpsObjectPartContainer.XML_VALUE_ELEMENT);
+        lenient().when(xmlValueElement.getNodeType()).thenReturn(Node.ELEMENT_NODE);
 
-        when(xmlDocument.importNode(xmlValueElement, true)).thenReturn(xmlValueElement);
+        lenient().when(xmlDocument.importNode(xmlValueElement, true)).thenReturn(xmlValueElement);
 
-        when(documentBuilder.newDocument()).thenReturn(xmlDocument);
+        lenient().when(documentBuilder.newDocument()).thenReturn(xmlDocument);
     }
 
     @Test
@@ -407,27 +405,27 @@ public class ExtensionPropertyHandlerTest {
         doReturn(documentBuilder).when(extensionPropertyHandler).getDocumentBuilder();
 
         NodeList rootNodeList = mock(NodeList.class);
-        when(xmlRootElement.getChildNodes()).thenReturn(rootNodeList);
-        when(rootNodeList.getLength()).thenReturn(1);
-        when(rootNodeList.item(0)).thenReturn(xmlExtPropElement);
+        lenient().when(xmlRootElement.getChildNodes()).thenReturn(rootNodeList);
+        lenient().when(rootNodeList.getLength()).thenReturn(1);
+        lenient().when(rootNodeList.item(0)).thenReturn(xmlExtPropElement);
         NodeList extPropNodeList = mock(NodeList.class);
-        when(xmlExtPropElement.getChildNodes()).thenReturn(extPropNodeList);
-        when(extPropNodeList.getLength()).thenReturn(1);
-        when(extPropNodeList.item(0)).thenReturn(xmlValueElement);
-        when(xmlValueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID)).thenReturn(propId);
-        when(xmlValueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL)).thenReturn("" + isNull);
-        when(xmlValueElement.getTagName()).thenReturn("InvalidExt");
+        lenient().when(xmlExtPropElement.getChildNodes()).thenReturn(extPropNodeList);
+        lenient().when(extPropNodeList.getLength()).thenReturn(1);
+        lenient().when(extPropNodeList.item(0)).thenReturn(xmlValueElement);
+        lenient().when(xmlValueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID)).thenReturn(propId);
+        lenient().when(xmlValueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL)).thenReturn("" + isNull);
+        lenient().when(xmlValueElement.getTagName()).thenReturn("InvalidExt");
         NamedNodeMap namedNodeMap = mock(NamedNodeMap.class);
-        when(namedNodeMap.getLength()).thenReturn(2);
+        lenient().when(namedNodeMap.getLength()).thenReturn(2);
         Attr attr1 = mock(Attr.class);
-        when(attr1.getName()).thenReturn(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
-        when(attr1.getValue()).thenReturn(propId);
-        when(namedNodeMap.item(0)).thenReturn(attr1);
+        lenient().when(attr1.getName()).thenReturn(IpsObjectPartContainer.XML_ATTRIBUTE_EXTPROPERTYID);
+        lenient().when(attr1.getValue()).thenReturn(propId);
+        lenient().when(namedNodeMap.item(0)).thenReturn(attr1);
         Attr attr2 = mock(Attr.class);
-        when(attr2.getName()).thenReturn(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-        when(attr2.getValue()).thenReturn("" + isNull);
-        when(namedNodeMap.item(1)).thenReturn(attr2);
-        when(xmlValueElement.getAttributes()).thenReturn(namedNodeMap);
+        lenient().when(attr2.getName()).thenReturn(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
+        lenient().when(attr2.getValue()).thenReturn("" + isNull);
+        lenient().when(namedNodeMap.item(1)).thenReturn(attr2);
+        lenient().when(xmlValueElement.getAttributes()).thenReturn(namedNodeMap);
     }
 
     @Test

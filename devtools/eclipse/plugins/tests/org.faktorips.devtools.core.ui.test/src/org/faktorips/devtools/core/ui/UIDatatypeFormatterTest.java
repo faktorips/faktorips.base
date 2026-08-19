@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -42,11 +43,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class UIDatatypeFormatterTest {
 
     @Mock
@@ -174,8 +172,8 @@ public class UIDatatypeFormatterTest {
         when(enumValueSet.getValues()).thenReturn(enumValues);
         IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
         when(enumValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
-        when(valueSetOwner.getIpsProject()).thenReturn(ipsProject);
-        when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.STRING);
+        lenient().when(valueSetOwner.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.STRING);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(enumValueSet);

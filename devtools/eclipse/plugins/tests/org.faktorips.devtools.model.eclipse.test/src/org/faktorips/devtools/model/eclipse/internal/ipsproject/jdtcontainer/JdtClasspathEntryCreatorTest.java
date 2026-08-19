@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,10 +38,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class JdtClasspathEntryCreatorTest {
 
     @Mock
@@ -152,20 +150,20 @@ public class JdtClasspathEntryCreatorTest {
     }
 
     private void mockReferences() {
-        when(referenceFactory.createArchiveEntry()).thenReturn(expectedArchiveEntry);
-        when(expectedArchiveEntry.validate()).thenReturn(archiveMessageList);
-        when(referenceFactory.createIpsBundleEntry()).thenReturn(expectedBundleEntry);
-        when(expectedBundleEntry.validate()).thenReturn(bundleMessageList);
-        when(referenceFactory.createProjectRefEntry(refProject)).thenReturn(expectedProjectReference);
+        lenient().when(referenceFactory.createArchiveEntry()).thenReturn(expectedArchiveEntry);
+        lenient().when(expectedArchiveEntry.validate()).thenReturn(archiveMessageList);
+        lenient().when(referenceFactory.createIpsBundleEntry()).thenReturn(expectedBundleEntry);
+        lenient().when(expectedBundleEntry.validate()).thenReturn(bundleMessageList);
+        lenient().when(referenceFactory.createProjectRefEntry(refProject)).thenReturn(expectedProjectReference);
     }
 
     private void mockEntryAndPath() {
         when(entry.getPath()).thenReturn(path);
         File file = mock(File.class);
-        when(path.toFile()).thenReturn(file);
+        lenient().when(path.toFile()).thenReturn(file);
         Path filePath = mock(Path.class);
-        when(file.toPath()).thenReturn(filePath);
-        when(referenceFactory.getIpsProject(path)).thenReturn(refProject);
+        lenient().when(file.toPath()).thenReturn(filePath);
+        lenient().when(referenceFactory.getIpsProject(path)).thenReturn(refProject);
     }
 
 }

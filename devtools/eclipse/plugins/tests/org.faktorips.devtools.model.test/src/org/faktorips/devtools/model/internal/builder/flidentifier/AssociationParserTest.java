@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -33,11 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AssociationParserTest extends AbstractParserTest {
 
     private static final String TARGET = "target";
@@ -65,17 +62,17 @@ public class AssociationParserTest extends AbstractParserTest {
     public void mockAssociation() throws Exception {
         associationParser = new AssociationParser(getParsingContext());
 
-        when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(association);
-        when(association.getName()).thenReturn(MY_ASSOCIATION);
-        when(association.getTarget()).thenReturn(TARGET);
-        when(association.findTarget(getIpsProject())).thenReturn(targetType);
-        when(association2.getName()).thenReturn(MY_SECOND_ASSOCIATION);
-        when(association2.getTarget()).thenReturn(TARGET);
+        lenient().when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(association);
+        lenient().when(association.getName()).thenReturn(MY_ASSOCIATION);
+        lenient().when(association.getTarget()).thenReturn(TARGET);
+        lenient().when(association.findTarget(getIpsProject())).thenReturn(targetType);
+        lenient().when(association2.getName()).thenReturn(MY_SECOND_ASSOCIATION);
+        lenient().when(association2.getTarget()).thenReturn(TARGET);
 
         List<IAssociation> assocList = new ArrayList<>();
         assocList.add(association);
         assocList.add(association2);
-        when(policyCmptType.findAllAssociations(getIpsProject())).thenReturn(assocList);
+        lenient().when(policyCmptType.findAllAssociations(getIpsProject())).thenReturn(assocList);
 
         associationParser.setContextType(policyCmptType);
 

@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -127,11 +128,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private static final String ROOT_NAME = "myRootName";
@@ -244,7 +242,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      * {@link IpsContainerEntry} in its IPS object path.
      */
     private void mockPathAndContainerEntry() throws Exception {
-        when(root2.getName()).thenReturn(ROOT_NAME);
+        lenient().when(root2.getName()).thenReturn(ROOT_NAME);
 
         IpsObjectPath path = (IpsObjectPath)ipsProject.getIpsObjectPath();
 
@@ -252,12 +250,12 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.setEntries(new IIpsObjectPathEntry[] { containerEntry });
 
         IIpsObjectPathEntry entry = mock(IIpsObjectPathEntry.class);
-        when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
+        lenient().when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
         IIpsObjectPathEntry entry2 = mock(IIpsObjectPathEntry.class);
-        when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
+        lenient().when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
 
         List<IIpsObjectPathEntry> entries = Arrays.asList(entry, entry2);
-        doReturn(entries).when(containerEntry).resolveEntries();
+        lenient().doReturn(entries).when(containerEntry).resolveEntries();
 
         ipsProject = spy(ipsProject);
         doReturn(path).when(ipsProject).getIpsObjectPathInternal();

@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -75,15 +76,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 /**
  *
  * @author Jan Ortmann
  */
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -120,7 +118,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         productCmpt = newProductCmpt(productCmptType, "ProductA");
 
         propertyValueContainerToTypeDelta = mock(PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
+        lenient().doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
     }
 
     @Test

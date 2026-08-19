@@ -31,6 +31,8 @@ import junit.framework.TestSuite;
  * }
  * </code>
  * </pre>
+ *
+ * @deprecated since 27.1, in favour of JUnit 5 or later
  */
 @Deprecated(since = "27.1", forRemoval = true)
 public class IpsTestSuiteJUnitAdapter extends TestSuite {
@@ -57,6 +59,8 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
      * Dummy test method to avoid a warning when running all JUnit tests in this project. Without
      * this method, Eclpise's JUnit support would create a warning that his suite hasn't got any
      * tests.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @Deprecated(since = "27.1", forRemoval = true)
     public void testDummy() {
@@ -65,6 +69,8 @@ public class IpsTestSuiteJUnitAdapter extends TestSuite {
 
     /**
      * Creates an adapter test for the given ips test.
+     *
+     * @deprecated since 27.1, in favour of JUnit 5 or later
      */
     @SuppressWarnings("removal")
     @Deprecated(since = "27.1", forRemoval = true)

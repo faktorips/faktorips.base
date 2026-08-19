@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.builder.fl.identifier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,11 +36,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AssociationNodeGeneratorTest {
     @Mock
     IAssociation association;
@@ -88,8 +86,8 @@ public class AssociationNodeGeneratorTest {
     }
 
     private void setUpBuilderSet() {
-        when(builderSet.getJavaClassName(target, true)).thenReturn("Coverage");
-        when(builderSet.getJavaClassName(elementDatatype, true)).thenReturn("Policy");
+        lenient().when(builderSet.getJavaClassName(target, true)).thenReturn("Coverage");
+        lenient().when(builderSet.getJavaClassName(elementDatatype, true)).thenReturn("Policy");
     }
 
     private void setUpMockAssociation() {
@@ -99,7 +97,7 @@ public class AssociationNodeGeneratorTest {
     private void setUpCompilationResult() {
         codeFragment = new JavaCodeFragment("contextCode", new ImportDeclaration());
         when(contextCompilationResult.getCodeFragment()).thenReturn(codeFragment);
-        when(contextCompilationResult.getDatatype()).thenReturn(normalDatatype);
+        lenient().when(contextCompilationResult.getDatatype()).thenReturn(normalDatatype);
     }
 
     private void configureCompilatioResultWithListDatatype() {
@@ -194,6 +192,6 @@ public class AssociationNodeGeneratorTest {
     }
 
     private void setUpAssociation(boolean oneToOne) {
-        when(association.is1ToManyIgnoringQualifier()).thenReturn(!oneToOne);
+        lenient().when(association.is1ToManyIgnoringQualifier()).thenReturn(!oneToOne);
     }
 }

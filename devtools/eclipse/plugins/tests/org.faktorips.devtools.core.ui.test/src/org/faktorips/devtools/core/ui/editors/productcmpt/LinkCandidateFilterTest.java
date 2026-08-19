@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,11 +40,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class LinkCandidateFilterTest {
     private static final String TYPE_NAME = "bla.bla.bla.Type";
     @Mock
@@ -64,17 +62,17 @@ public class LinkCandidateFilterTest {
 
     @BeforeEach
     public void setUp() {
-        when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(prodCmptGeneration);
+        lenient().when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(prodCmptGeneration);
 
-        when(association.getName()).thenReturn("association");
-        when(association.findTargetProductCmptType(ipsProject)).thenReturn(type);
-        when(association.getMaxCardinality()).thenReturn(3);
+        lenient().when(association.getName()).thenReturn("association");
+        lenient().when(association.findTargetProductCmptType(ipsProject)).thenReturn(type);
+        lenient().when(association.getMaxCardinality()).thenReturn(3);
 
-        when(prodCmptGeneration.getLinks(association.getName())).thenReturn(new IProductCmptLink[0]);
-        when(prodCmptGeneration.getIpsSrcFile()).thenReturn(srcFile);
-        when(prodCmptGeneration.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(prodCmptGeneration.getLinks(association.getName())).thenReturn(new IProductCmptLink[0]);
+        lenient().when(prodCmptGeneration.getIpsSrcFile()).thenReturn(srcFile);
+        lenient().when(prodCmptGeneration.getIpsProject()).thenReturn(ipsProject);
 
-        when(type.isSubtypeOrSameType(eq(type), any(IIpsProject.class))).thenReturn(true);
+        lenient().when(type.isSubtypeOrSameType(eq(type), any(IIpsProject.class))).thenReturn(true);
         validAt = new GregorianCalendar(2013, 4, 1);
     }
 
@@ -226,13 +224,13 @@ public class LinkCandidateFilterTest {
     private IIpsSrcFile createSourceFile(IIpsProject project, IProductCmptType productCmptType) {
         IpsSrcFile srcFile = mock(IpsSrcFile.class);
         QualifiedNameType type = mock(QualifiedNameType.class);
-        when(srcFile.getQualifiedNameType()).thenReturn(type);
+        lenient().when(srcFile.getQualifiedNameType()).thenReturn(type);
 
-        when(srcFile.getIpsProject()).thenReturn(project);
+        lenient().when(srcFile.getIpsProject()).thenReturn(project);
 
-        when(srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE)).thenReturn(TYPE_NAME);
-        when(project.findProductCmptType(TYPE_NAME)).thenReturn(productCmptType);
-        when(srcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
+        lenient().when(srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE)).thenReturn(TYPE_NAME);
+        lenient().when(project.findProductCmptType(TYPE_NAME)).thenReturn(productCmptType);
+        lenient().when(srcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
 
         return srcFile;
     }

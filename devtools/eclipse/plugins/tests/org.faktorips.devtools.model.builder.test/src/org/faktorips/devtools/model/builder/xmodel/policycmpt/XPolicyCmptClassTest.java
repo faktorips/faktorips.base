@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -50,11 +51,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XPolicyCmptClassTest {
 
     @Mock
@@ -93,9 +91,9 @@ public class XPolicyCmptClassTest {
     @BeforeEach
     public void initModelContext() {
         GeneratorModelCaches generatorModelCache = new GeneratorModelCaches();
-        when(modelContext.getGeneratorModelCache()).thenReturn(generatorModelCache);
-        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(modelContext.getGeneratorModelCache()).thenReturn(generatorModelCache);
+        lenient().when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
+        lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test
@@ -160,9 +158,11 @@ public class XPolicyCmptClassTest {
         assocList.add(assoc1);
         assocList.add(assoc2);
 
-        doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class, modelContext);
-        doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class, modelContext);
-        when(type.getPolicyCmptTypeAssociations()).thenReturn(assocList);
+        lenient().doReturn(associationNode1).when(modelService).getModelNode(assoc1, XPolicyAssociation.class,
+                modelContext);
+        lenient().doReturn(associationNode2).when(modelService).getModelNode(assoc2, XPolicyAssociation.class,
+                modelContext);
+        lenient().when(type.getPolicyCmptTypeAssociations()).thenReturn(assocList);
     }
 
     @Test
@@ -226,9 +226,9 @@ public class XPolicyCmptClassTest {
         XPolicyAttribute attr1 = mock(XPolicyAttribute.class);
         XPolicyAttribute attr2 = mock(XPolicyAttribute.class);
         XPolicyAttribute attr3 = mock(XPolicyAttribute.class);
-        when(attr1.isGenerateInitPropertiesFromXML()).thenReturn(init1);
-        when(attr2.isGenerateInitPropertiesFromXML()).thenReturn(init2);
-        when(attr3.isGenerateInitPropertiesFromXML()).thenReturn(init3);
+        lenient().when(attr1.isGenerateInitPropertiesFromXML()).thenReturn(init1);
+        lenient().when(attr2.isGenerateInitPropertiesFromXML()).thenReturn(init2);
+        lenient().when(attr3.isGenerateInitPropertiesFromXML()).thenReturn(init3);
         list.add(attr1);
         list.add(attr2);
         list.add(attr3);
@@ -680,7 +680,7 @@ public class XPolicyCmptClassTest {
     }
 
     private XPolicyCmptClass createXPolicyCmptClassSpy() {
-        doReturn(ipsProject).when(type).getIpsProject();
+        lenient().doReturn(ipsProject).when(type).getIpsProject();
         return spy(new XPolicyCmptClass(type, modelContext, modelService));
     }
 

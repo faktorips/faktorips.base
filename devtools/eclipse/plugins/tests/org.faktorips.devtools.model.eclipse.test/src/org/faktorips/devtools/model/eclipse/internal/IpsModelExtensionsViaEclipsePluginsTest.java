@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.eclipse.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,10 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsModelExtensionsViaEclipsePluginsTest {
 
     private static final String MY_BASED_ON_FEATURE_MANAGER = "myBasedOnFeatureManager";
@@ -122,7 +120,7 @@ public class IpsModelExtensionsViaEclipsePluginsTest {
     }
 
     private IConfigurationElement mockVersionManager(IIpsFeatureVersionManager ipsFeatureVersionManager) {
-        when(TestConfigurationElement.CONTRIBUTOR.getName()).thenReturn(MY_CONTRIBUTOR_NAME);
+        lenient().when(TestConfigurationElement.CONTRIBUTOR.getName()).thenReturn(MY_CONTRIBUTOR_NAME);
         Map<String, String> attributes = new HashMap<>();
         attributes.put(ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS, IExtendableVersionManager.class.getName());
         attributes.put(FeatureVersionManagerExtensions.ATTRIBUTE_FEATURE_ID, MY_FEATURE_ID);

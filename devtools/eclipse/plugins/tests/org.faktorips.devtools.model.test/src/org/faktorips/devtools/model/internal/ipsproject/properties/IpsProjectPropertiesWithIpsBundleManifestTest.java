@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -39,12 +40,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.w3c.dom.Element;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -61,19 +59,19 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
 
         AProject realProject = ipsProject.getProject();
         AProject spiedProject = spy(realProject);
-        when(ipsProject.getProject()).thenReturn(spiedProject);
+        lenient().when(ipsProject.getProject()).thenReturn(spiedProject);
 
         AFolder folder = mock(AFolder.class);
-        when(folder.getProjectRelativePath()).thenReturn(Path.of("anyfolder"));
-        doReturn(folder).when(spiedProject).getFolder(anyString());
+        lenient().when(folder.getProjectRelativePath()).thenReturn(Path.of("anyfolder"));
+        lenient().doReturn(folder).when(spiedProject).getFolder(anyString());
 
         AFile file = mock(AFile.class);
-        when(file.exists()).thenReturn(true);
+        lenient().when(file.exists()).thenReturn(true);
         String s = createManifest();
         InputStream inputStream = new ByteArrayInputStream(s.getBytes());
-        when(file.getContents()).thenReturn(inputStream);
+        lenient().when(file.getContents()).thenReturn(inputStream);
 
-        when(spiedProject.getFile(IpsBundleManifest.MANIFEST_NAME)).thenReturn(file);
+        lenient().when(spiedProject.getFile(IpsBundleManifest.MANIFEST_NAME)).thenReturn(file);
 
         properties = new IpsProjectProperties(ipsProject);
         properties.addSupportedLanguage(Locale.ENGLISH);

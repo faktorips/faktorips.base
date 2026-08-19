@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -26,11 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductCmptTypeValidationsTest {
 
     private String policyCmptType = "pcType1";
@@ -51,7 +49,7 @@ public class ProductCmptTypeValidationsTest {
 
     @BeforeEach
     public void setUpIpsProject() {
-        when(ipsProject.findPolicyCmptType(superPolicyCmptType)).thenReturn(foundSuperPolicyCmptType);
+        lenient().when(ipsProject.findPolicyCmptType(superPolicyCmptType)).thenReturn(foundSuperPolicyCmptType);
     }
 
     @Test

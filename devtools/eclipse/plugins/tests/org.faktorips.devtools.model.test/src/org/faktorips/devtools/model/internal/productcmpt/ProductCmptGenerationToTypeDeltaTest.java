@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,11 +36,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductCmptGenerationToTypeDeltaTest {
 
     @Mock
@@ -82,11 +80,11 @@ public class ProductCmptGenerationToTypeDeltaTest {
         genLinks.add(link1);
         genLinks.add(link2);
         genLinks.add(link3);
-        when(gen.getLinksAsList()).thenReturn(genLinks);
+        lenient().when(gen.getLinksAsList()).thenReturn(genLinks);
         List<IProductCmptLink> cmptLinks = new ArrayList<>();
         cmptLinks.add(staticLink1);
         cmptLinks.add(staticLink2);
-        when(prodCmpt.getLinksAsList()).thenReturn(cmptLinks);
+        lenient().when(prodCmpt.getLinksAsList()).thenReturn(cmptLinks);
 
         setUpLink(link1, "assoc1", gen);
         setUpLink(link2, "assoc2", gen);
@@ -94,23 +92,23 @@ public class ProductCmptGenerationToTypeDeltaTest {
         setUpLink(staticLink1, "staticAssociation", prodCmpt);
         setUpLink(staticLink2, "staticAssociation", prodCmpt);
 
-        doReturn(type).when(delta).getProductCmptType();
-        doReturn(ipsProject).when(delta).getIpsProject();
+        lenient().doReturn(type).when(delta).getProductCmptType();
+        lenient().doReturn(ipsProject).when(delta).getIpsProject();
 
-        when(type.findAssociation("assoc1", ipsProject)).thenReturn(assoc1);
-        when(type.findAssociation("assoc2", ipsProject)).thenReturn(assoc2);
-        when(type.findAssociation("staticAssociation", ipsProject)).thenReturn(staticAssociation);
-        when(gen.isContainerFor(assoc1)).thenReturn(true);
-        when(gen.isContainerFor(assoc2)).thenReturn(true);
-        when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
+        lenient().when(type.findAssociation("assoc1", ipsProject)).thenReturn(assoc1);
+        lenient().when(type.findAssociation("assoc2", ipsProject)).thenReturn(assoc2);
+        lenient().when(type.findAssociation("staticAssociation", ipsProject)).thenReturn(staticAssociation);
+        lenient().when(gen.isContainerFor(assoc1)).thenReturn(true);
+        lenient().when(gen.isContainerFor(assoc2)).thenReturn(true);
+        lenient().when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
     }
 
     private void setUpLink(IProductCmptLink link,
             String association,
             IProductCmptLinkContainer container) {
-        when(link.getAssociation()).thenReturn(association);
-        when(link.getProductCmptLinkContainer()).thenReturn(container);
-        when(link.getTarget()).thenReturn("anyTargetName");
+        lenient().when(link.getAssociation()).thenReturn(association);
+        lenient().when(link.getProductCmptLinkContainer()).thenReturn(container);
+        lenient().when(link.getTarget()).thenReturn("anyTargetName");
     }
 
     @Test

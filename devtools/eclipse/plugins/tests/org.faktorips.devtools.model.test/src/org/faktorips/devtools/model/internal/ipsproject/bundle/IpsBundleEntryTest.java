@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,11 +40,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsBundleEntryTest {
 
     @Mock
@@ -188,12 +186,12 @@ public class IpsBundleEntryTest {
     }
 
     private void mockIpsStorageFactory() {
-        when(ipsObjectPath.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(ipsObjectPath.getIpsProject()).thenReturn(ipsProject);
         File file = mock(File.class);
-        when(bundlePath.toFile()).thenReturn(file);
+        lenient().when(bundlePath.toFile()).thenReturn(file);
         ipsBundleEntry.setIpsStorageFactory(ipsStorageFactory);
-        when(ipsStorageFactory.createFolderBundle(ipsProject, bundlePath)).thenReturn(ipsFolderBundle);
-        when(ipsStorageFactory.createJarBundle(eq(ipsProject), any(JarFileFactory.class))).thenReturn(ipsJarBundle);
+        lenient().when(ipsStorageFactory.createFolderBundle(ipsProject, bundlePath)).thenReturn(ipsFolderBundle);
+        lenient().when(ipsStorageFactory.createJarBundle(eq(ipsProject), any(JarFileFactory.class))).thenReturn(ipsJarBundle);
     }
 
     private void mockInitDependencies(boolean directory) {

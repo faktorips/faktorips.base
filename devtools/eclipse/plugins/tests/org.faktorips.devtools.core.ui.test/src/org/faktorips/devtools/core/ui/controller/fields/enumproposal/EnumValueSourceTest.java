@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -26,11 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumValueSourceTest {
 
     @Mock
@@ -46,17 +44,17 @@ public class EnumValueSourceTest {
         enumValueSource = new EnumValueSource(valueSetOwner, datatype);
 
         when(valueSetOwner.getValueSet()).thenReturn(valueSet);
-        when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
-        when(datatype.isEnum()).thenReturn(true);
+        lenient().when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
+        lenient().when(datatype.isEnum()).thenReturn(true);
 
         List<String> valueSetValues = new ArrayList<>();
         valueSetValues.add("eins");
         valueSetValues.add("zwei");
         valueSetValues.add("drei");
-        when(valueSet.getValuesAsList()).thenReturn(valueSetValues);
+        lenient().when(valueSet.getValuesAsList()).thenReturn(valueSetValues);
 
         String[] enumDatatypeValues = { "A", "BB", "CCC" };
-        when(datatype.getAllValueIds(true)).thenReturn(enumDatatypeValues);
+        lenient().when(datatype.getAllValueIds(true)).thenReturn(enumDatatypeValues);
     }
 
     @Test

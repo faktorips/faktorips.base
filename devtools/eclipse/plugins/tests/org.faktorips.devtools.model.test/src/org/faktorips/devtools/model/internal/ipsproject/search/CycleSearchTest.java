@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject.search;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.internal.ipsproject.IpsProjectRefEntry;
@@ -23,11 +24,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class CycleSearchTest {
 
     @Mock
@@ -43,7 +41,7 @@ public class CycleSearchTest {
     public void setUp() {
         cycleSearch = new CycleSearch(ipsProject);
 
-        when(ipsProjectRefEntry.getType()).thenReturn(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
+        lenient().when(ipsProjectRefEntry.getType()).thenReturn(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
     }
 
     @Test

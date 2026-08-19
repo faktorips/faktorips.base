@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,11 +33,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumTypeDatatypeAdapterTest {
 
     @Mock
@@ -83,11 +80,11 @@ public class EnumTypeDatatypeAdapterTest {
     public void setUp() {
         covariantEnumDatatype = new EnumTypeDatatypeAdapter(covariantEnumType, covariantEnumContent);
         covariantSuperenumDatatype = new EnumTypeDatatypeAdapter(covariantSuperEnumType, covariantEnumContent);
-        when(covariantEnumType.getIpsProject()).thenReturn(ipsProject);
-        when(covariantSuperEnumType.getIpsProject()).thenReturn(ipsProject);
-        when(covariantEnumType.isSubEnumTypeOrSelf(covariantEnumType, ipsProject)).thenReturn(true);
-        when(covariantSuperEnumType.isSubEnumTypeOrSelf(covariantSuperEnumType, ipsProject)).thenReturn(true);
-        when(covariantEnumType.isSubEnumTypeOrSelf(covariantSuperEnumType, ipsProject)).thenReturn(true);
+        lenient().when(covariantEnumType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(covariantSuperEnumType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(covariantEnumType.isSubEnumTypeOrSelf(covariantEnumType, ipsProject)).thenReturn(true);
+        lenient().when(covariantSuperEnumType.isSubEnumTypeOrSelf(covariantSuperEnumType, ipsProject)).thenReturn(true);
+        lenient().when(covariantEnumType.isSubEnumTypeOrSelf(covariantSuperEnumType, ipsProject)).thenReturn(true);
 
         adapter = new EnumTypeDatatypeAdapter(enumType, null);
         adapterWithContent = new EnumTypeDatatypeAdapter(enumType, enumContent);
@@ -268,12 +265,12 @@ public class EnumTypeDatatypeAdapterTest {
     }
 
     private void setUpEnumValue(String enumName, IEnumValue value) {
-        Mockito.when(enumType.findEnumValue(enumName, null)).thenReturn(value);
+        lenient().when(enumType.findEnumValue(enumName, null)).thenReturn(value);
     }
 
     private void setUpEnumValueWithIndex(String enumName, IEnumValue value, int index) {
         setUpEnumValue(enumName, value);
-        Mockito.when(enumType.getIndexOfEnumValue(value)).thenReturn(index);
+        lenient().when(enumType.getIndexOfEnumValue(value)).thenReturn(index);
     }
 
     @Test

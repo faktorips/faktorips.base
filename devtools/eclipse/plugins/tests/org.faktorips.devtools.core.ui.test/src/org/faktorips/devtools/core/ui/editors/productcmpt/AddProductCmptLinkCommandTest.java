@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -25,11 +26,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AddProductCmptLinkCommandTest {
 
     @Mock
@@ -49,10 +47,10 @@ public class AddProductCmptLinkCommandTest {
         command = mock(AddProductCmptLinkCommand.class, CALLS_REAL_METHODS);
 
         when(editor.getActiveGeneration()).thenReturn(gen);
-        when(gen.getProductCmpt()).thenReturn(prodCmpt);
-        when(association.getName()).thenReturn("foo");
-        when(gen.isContainerFor(association)).thenReturn(true);
-        when(staticAssociation.getName()).thenReturn("bar");
+        lenient().when(gen.getProductCmpt()).thenReturn(prodCmpt);
+        lenient().when(association.getName()).thenReturn("foo");
+        lenient().when(gen.isContainerFor(association)).thenReturn(true);
+        lenient().when(staticAssociation.getName()).thenReturn("bar");
     }
 
     @Test

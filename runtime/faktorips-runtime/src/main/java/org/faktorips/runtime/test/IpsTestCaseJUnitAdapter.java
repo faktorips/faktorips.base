@@ -20,8 +20,9 @@ import junit.framework.TestCase;
 
 /**
  * Adapter between JUnit 3/4 test cases and Faktor-IPS test cases.
- * 
+ *
  * @author Joerg Ortmann
+ * @deprecated since 27.1, in favour of JUnit 5 or later
  */
 @Deprecated(since = "27.1", forRemoval = true)
 public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,8 @@
 package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
@@ -21,15 +23,11 @@ import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class DatatypeInputFormatRegistryTest {
 
     @Mock
@@ -63,8 +61,8 @@ public class DatatypeInputFormatRegistryTest {
     public void initMap() {
         inputFormatMap = new DatatypeInputFormatRegistry();
         map = inputFormatMap.getInputFormatMap();
-        Mockito.when(factory1.newInputFormat(datatype1, ipsProject)).thenReturn(result1);
-        Mockito.when(factory2.newInputFormat(datatype2, ipsProject)).thenReturn(result2);
+        lenient().when(factory1.newInputFormat(datatype1, ipsProject)).thenReturn(result1);
+        lenient().when(factory2.newInputFormat(datatype2, ipsProject)).thenReturn(result2);
         map.put(datatype1.getClass(), factory1);
         map.put(datatype2.getClass(), factory2);
     }
@@ -85,7 +83,7 @@ public class DatatypeInputFormatRegistryTest {
 
     @Test
     public void test_superclassInputFormat() {
-        Mockito.when(factory1.newInputFormat(subclassDatatype, ipsProject)).thenReturn(result1);
+        when(factory1.newInputFormat(subclassDatatype, ipsProject)).thenReturn(result1);
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subclassDatatype, ipsProject);
         assertEquals(result1, actualResult);
     }
@@ -93,7 +91,7 @@ public class DatatypeInputFormatRegistryTest {
     @Test
     public void test_useNearestSuperclassInputFormat() {
         map.put(subclassDatatype.getClass(), subclassFactory);
-        Mockito.when(subclassFactory.newInputFormat(subsubclassDatatype, ipsProject)).thenReturn(subclassResult);
+        when(subclassFactory.newInputFormat(subsubclassDatatype, ipsProject)).thenReturn(subclassResult);
 
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subsubclassDatatype, ipsProject);
         assertEquals(subclassResult, actualResult);

@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,14 +34,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class FormulaHandlerTest extends XmlAbstractTestCase {
 
     @Mock
@@ -60,8 +58,8 @@ public class FormulaHandlerTest extends XmlAbstractTestCase {
     @BeforeEach
     public void setUp() throws Exception {
         formulaHandler = new FormulaHandler(callerObject, repository);
-        when(repository.getFormulaEvaluatorFactory()).thenReturn(factory);
-        when(factory.createFormulaEvaluator(eq(callerObject), anyMap())).thenReturn(
+        lenient().when(repository.getFormulaEvaluatorFactory()).thenReturn(factory);
+        lenient().when(factory.createFormulaEvaluator(eq(callerObject), anyMap())).thenReturn(
                 formulaEvaluator);
     }
 

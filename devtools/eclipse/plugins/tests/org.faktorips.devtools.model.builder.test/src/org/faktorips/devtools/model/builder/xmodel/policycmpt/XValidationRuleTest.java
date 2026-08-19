@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,11 +40,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XValidationRuleTest {
 
     @Mock
@@ -65,7 +63,7 @@ public class XValidationRuleTest {
 
     @BeforeEach
     public void createXValidationRule() throws Exception {
-        when(validationRule.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(validationRule.getIpsProject()).thenReturn(ipsProject);
 
         xValidationRule = new XValidationRule(validationRule, context, modelService);
     }

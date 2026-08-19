@@ -21,7 +21,7 @@
         When using CSV to read tables, add the optional dependencies to opencsv,
         commons-lang3 and commons-text.
         If you want to run Faktor-IPS tests as JUnit tests, you need to provide
-        either junit (JUnit 4) or junit-jupiter-api (JUnit 5).</description>
+        either junit (JUnit 4) or junit-jupiter-api (JUnit 5 or 6).</description>
 
     <build>
         <plugins>

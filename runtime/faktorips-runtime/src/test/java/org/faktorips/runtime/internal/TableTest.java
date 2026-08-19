@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,15 +38,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 /**
  *
  * @author Peter Erzberger
  */
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableTest extends XmlAbstractTestCase {
 
     private TestTable table;
@@ -56,7 +54,7 @@ public class TableTest extends XmlAbstractTestCase {
     @BeforeEach
     public void setUp() throws Exception {
         table = new TestTable();
-        when(tocEntry.getIpsObjectId()).thenReturn(getClass().getName());
+        lenient().when(tocEntry.getIpsObjectId()).thenReturn(getClass().getName());
     }
 
     @Test

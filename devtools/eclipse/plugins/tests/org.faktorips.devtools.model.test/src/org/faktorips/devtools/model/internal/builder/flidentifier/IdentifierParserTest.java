@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -56,11 +57,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdentifierParserTest {
 
     private static final String MY_PARAMETER = "anyParameter";
@@ -149,42 +146,42 @@ public class IdentifierParserTest {
 
     private void mockEnum() throws Exception {
         when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
-        when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
-        when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
+        lenient().when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
+        lenient().when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
     }
 
     @BeforeEach
     public void mockExpression() throws Exception {
-        when(expression.findProductCmptType(ipsProject)).thenReturn(productCmptType);
-        when(expression.findFormulaSignature(ipsProject)).thenReturn(formulaMethod);
-        when(formulaMethod.getParameters()).thenReturn(new IParameter[] { parameter });
-        when(parameter.getName()).thenReturn(MY_PARAMETER);
-        when(parameter.findDatatype(ipsProject)).thenReturn(type);
-        when(type.findAssociation(MY_ASSOCIATION, ipsProject)).thenReturn(association);
-        when(type.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
-        when(type.getIpsProject()).thenReturn(ipsProject);
-        when(association.findTarget(ipsProject)).thenReturn(type1);
-        when(association.is1ToMany()).thenReturn(true);
-        when(type1.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
-        when(type1.findProductCmptType(ipsProject)).thenReturn(productCmptType);
-        when(associationQualified.findTarget(ipsProject)).thenReturn(type2);
-        when(type2.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        lenient().when(expression.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        lenient().when(expression.findFormulaSignature(ipsProject)).thenReturn(formulaMethod);
+        lenient().when(formulaMethod.getParameters()).thenReturn(new IParameter[] { parameter });
+        lenient().when(parameter.getName()).thenReturn(MY_PARAMETER);
+        lenient().when(parameter.findDatatype(ipsProject)).thenReturn(type);
+        lenient().when(type.findAssociation(MY_ASSOCIATION, ipsProject)).thenReturn(association);
+        lenient().when(type.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
+        lenient().when(type.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(association.findTarget(ipsProject)).thenReturn(type1);
+        lenient().when(association.is1ToMany()).thenReturn(true);
+        lenient().when(type1.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
+        lenient().when(type1.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        lenient().when(associationQualified.findTarget(ipsProject)).thenReturn(type2);
+        lenient().when(type2.findProductCmptType(ipsProject)).thenReturn(productCmptType);
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        when(sourceFile.getIpsObject()).thenReturn(productCmpt);
-        when(productCmpt.getRuntimeId()).thenReturn("runtimeId." + MY_QUALIFIER);
-        when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(type2);
-        when(productCmpt.getName()).thenReturn(MY_QUALIFIER);
-        when(type2.findAssociation(MY_ASSOCIATION + "2", ipsProject)).thenReturn(associationIndexed);
-        when(productCmptType.searchProductComponents(true)).thenReturn(Arrays.asList(sourceFile));
-        when(associationIndexed.findTarget(ipsProject)).thenReturn(type3);
-        when(type3.findAllAttributes(ipsProject)).thenReturn(Arrays.asList(attribute));
-        when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
-        when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
-        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
+        lenient().when(sourceFile.getIpsObject()).thenReturn(productCmpt);
+        lenient().when(productCmpt.getRuntimeId()).thenReturn("runtimeId." + MY_QUALIFIER);
+        lenient().when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(type2);
+        lenient().when(productCmpt.getName()).thenReturn(MY_QUALIFIER);
+        lenient().when(type2.findAssociation(MY_ASSOCIATION + "2", ipsProject)).thenReturn(associationIndexed);
+        lenient().when(productCmptType.searchProductComponents(true)).thenReturn(Arrays.asList(sourceFile));
+        lenient().when(associationIndexed.findTarget(ipsProject)).thenReturn(type3);
+        lenient().when(type3.findAllAttributes(ipsProject)).thenReturn(Arrays.asList(attribute));
+        lenient().when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
+        lenient().when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
+        lenient().when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
                 .thenReturn(true);
-        when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
-        when(projectProperties.getDefaultLanguage()).thenReturn(supportetLanguage);
-        when(supportetLanguage.getLocale()).thenReturn(Locale.GERMAN);
+        lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
+        lenient().when(projectProperties.getDefaultLanguage()).thenReturn(supportetLanguage);
+        lenient().when(supportetLanguage.getLocale()).thenReturn(Locale.GERMAN);
     }
 
     @Test

@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.builder.xmodel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Modifier;
@@ -24,11 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XMethodTest {
 
     @Mock
@@ -48,7 +46,7 @@ public class XMethodTest {
     @BeforeEach
     public void createXMethod() throws Exception {
         xMethod = new XMethod(method, context, modelService);
-        when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test

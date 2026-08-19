@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,11 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class DatatypeUtilTest {
 
     private static final String NULL_VALUE = "NULL_VALUE";
@@ -63,9 +60,9 @@ public class DatatypeUtilTest {
     public void setUp() {
         enumDatatype = new EnumTypeDatatypeAdapter(enumType, enumContent);
         superenumDatatype = new EnumTypeDatatypeAdapter(superEnumType, enumContent);
-        when(enumType.getIpsProject()).thenReturn(ipsProject);
-        when(superEnumType.getIpsProject()).thenReturn(ipsProject);
-        when(enumType.isSubEnumTypeOrSelf(superEnumType, ipsProject)).thenReturn(true);
+        lenient().when(enumType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(superEnumType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(enumType.isSubEnumTypeOrSelf(superEnumType, ipsProject)).thenReturn(true);
     }
 
     @Test
@@ -121,7 +118,7 @@ public class DatatypeUtilTest {
 
     @Test
     public void testIsNonNullValue() throws Exception {
-        when(valueDatatype.isNull(NULL_VALUE)).thenReturn(true);
+        lenient().when(valueDatatype.isNull(NULL_VALUE)).thenReturn(true);
 
         assertThat(DatatypeUtil.isNonNull(valueDatatype, (String)null), is(false));
         assertThat(DatatypeUtil.isNonNull(valueDatatype, "", "abc", NULL_VALUE), is(false));

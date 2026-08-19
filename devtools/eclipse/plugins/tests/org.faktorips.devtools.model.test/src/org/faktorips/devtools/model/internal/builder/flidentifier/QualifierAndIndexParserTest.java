@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -34,11 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class QualifierAndIndexParserTest extends AbstractParserTest {
 
     private static final String RUNTIME_ID = "RuntimeID";
@@ -260,10 +257,10 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     }
 
     private IPolicyCmptType initSourceFile(String runtimeID) throws Exception {
-        when(association.findTarget(getIpsProject())).thenReturn(targetType);
-        when(targetType.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
-        when(productCmpt.getRuntimeId()).thenReturn(runtimeID);
-        when(productCmpt.findPolicyCmptType(getIpsProject())).thenReturn(targetSubType);
+        lenient().when(association.findTarget(getIpsProject())).thenReturn(targetType);
+        lenient().when(targetType.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        lenient().when(productCmpt.getRuntimeId()).thenReturn(runtimeID);
+        lenient().when(productCmpt.findPolicyCmptType(getIpsProject())).thenReturn(targetSubType);
         return targetType;
     }
 

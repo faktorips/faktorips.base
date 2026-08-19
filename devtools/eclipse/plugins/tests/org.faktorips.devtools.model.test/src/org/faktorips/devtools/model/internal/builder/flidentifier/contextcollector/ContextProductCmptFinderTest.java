@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollec
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -31,11 +32,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ContextProductCmptFinderTest {
     @Mock
     private IExpression expression;
@@ -63,7 +60,7 @@ public class ContextProductCmptFinderTest {
         myContextCmpts = new HashSet<>();
         for (int i = 5; i > 0; i--) {
             IProductCmpt productCmpt = mock(IProductCmpt.class);
-            when(productCmpt.getName()).thenReturn("MyCmpt" + i);
+            lenient().when(productCmpt.getName()).thenReturn("MyCmpt" + i);
             myContextCmpts.add(productCmpt);
         }
     }

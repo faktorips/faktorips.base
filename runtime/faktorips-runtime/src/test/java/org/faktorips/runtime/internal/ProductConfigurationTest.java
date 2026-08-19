@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -33,12 +34,9 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.w3c.dom.Element;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductConfigurationTest {
 
     private static final String PODUCT_COMPONENT_ID = "My_PC-ID";
@@ -62,17 +60,17 @@ public class ProductConfigurationTest {
 
     @BeforeEach
     public void createAbstractConfigurableModelObject() throws Exception {
-        when(productCmpt.getId()).thenReturn(PODUCT_COMPONENT_ID);
-        when(productCmpt.getRepository()).thenReturn(repository);
-        when(productCmpt.getGenerationBase(calendar)).thenReturn(productCmptGeneration);
-        when(productCmptGeneration.getProductComponent()).thenReturn(productCmpt);
-        when(productCmptGeneration.getValidFrom(ProductConfiguration.TIME_ZONE)).thenReturn(calendar.getTime());
+        lenient().when(productCmpt.getId()).thenReturn(PODUCT_COMPONENT_ID);
+        lenient().when(productCmpt.getRepository()).thenReturn(repository);
+        lenient().when(productCmpt.getGenerationBase(calendar)).thenReturn(productCmptGeneration);
+        lenient().when(productCmptGeneration.getProductComponent()).thenReturn(productCmpt);
+        lenient().when(productCmptGeneration.getValidFrom(ProductConfiguration.TIME_ZONE)).thenReturn(calendar.getTime());
 
-        when(element.getAttribute("productCmpt")).thenReturn(PODUCT_COMPONENT_ID);
-        when(repository.getExistingProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
+        lenient().when(element.getAttribute("productCmpt")).thenReturn(PODUCT_COMPONENT_ID);
+        lenient().when(repository.getExistingProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
 
-        when(repository.getProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
-        when(repository.getProductComponentGeneration(PODUCT_COMPONENT_ID, calendar)).thenReturn(productCmptGeneration);
+        lenient().when(repository.getProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
+        lenient().when(repository.getProductComponentGeneration(PODUCT_COMPONENT_ID, calendar)).thenReturn(productCmptGeneration);
     }
 
     @Test

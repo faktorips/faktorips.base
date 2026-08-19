@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -37,11 +38,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractGeneratorModelNodeTest {
 
     @Mock
@@ -60,9 +58,9 @@ public class AbstractGeneratorModelNodeTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         xClass = new XPolicyCmptClass(type, modelContext, modelService);
-        when(modelContext.addImport(anyString())).thenReturn("dummyImportStatement");
+        lenient().when(modelContext.addImport(anyString())).thenReturn("dummyImportStatement");
     }
 
     @Test

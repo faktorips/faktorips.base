@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.osgi.util.NLS;
@@ -36,11 +37,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class RangeValueSetFormatTest {
 
     @Mock
@@ -73,13 +71,13 @@ public class RangeValueSetFormatTest {
     public void setUp() throws Exception {
         rangeVSFormat = new RangeValueSetFormat(configValueSet, uiPlugin);
 
-        when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class)))
+        lenient().when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class)))
                 .thenReturn(new DefaultInputFormat(null));
-        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configValueSet.getValueSet()).thenReturn(range);
-        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
-        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
-        when(configValueSet.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
+        lenient().when(configValueSet.getValueSet()).thenReturn(range);
+        lenient().when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(configValueSet.getIpsObject()).thenReturn(ipsObject);
+        lenient().when(configValueSet.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test

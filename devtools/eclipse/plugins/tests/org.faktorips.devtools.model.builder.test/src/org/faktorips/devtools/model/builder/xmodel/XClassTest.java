@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XClassTest {
 
     @Mock
@@ -52,8 +50,8 @@ public class XClassTest {
     @BeforeEach
     public void createTestXClass() {
         xClass = mock(XClass.class, CALLS_REAL_METHODS);
-        when(xClass.getIpsObjectPartContainer()).thenReturn(type);
-        when(xClass.getContext()).thenReturn(modelContext);
+        lenient().when(xClass.getIpsObjectPartContainer()).thenReturn(type);
+        lenient().when(xClass.getContext()).thenReturn(modelContext);
     }
 
     @Test
@@ -123,11 +121,11 @@ public class XClassTest {
         when(xPolicyClass.getIpsObjectPartContainer()).thenReturn(startType);
         when(xPolicyClass.getIpsProject()).thenReturn(ipsProjectMock);
 
-        when(startType.findSupertype(any(IIpsProject.class))).thenReturn(superType);
-        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
-        when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(null);
-        when(superType.isAbstract()).thenReturn(superIsAbstract);
-        when(superSuperType.isAbstract()).thenReturn(superSuperIsAbstract);
+        lenient().when(startType.findSupertype(any(IIpsProject.class))).thenReturn(superType);
+        lenient().when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
+        lenient().when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(null);
+        lenient().when(superType.isAbstract()).thenReturn(superIsAbstract);
+        lenient().when(superSuperType.isAbstract()).thenReturn(superSuperIsAbstract);
 
         return xPolicyClass;
     }

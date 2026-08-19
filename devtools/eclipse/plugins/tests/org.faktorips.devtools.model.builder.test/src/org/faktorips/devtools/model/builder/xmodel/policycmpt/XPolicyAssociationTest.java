@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -42,11 +43,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XPolicyAssociationTest {
 
     @Mock
@@ -110,40 +108,42 @@ public class XPolicyAssociationTest {
 
         XPolicyAssociation xPolicyAssociation = myMock(XPolicyAssociation.class, name, myAnswer);
         XPolicyAssociation xInversePolicyAssociation = myMock(XPolicyAssociation.class, inverseName, myAnswer);
-        doReturn(ipsProject).when(xInversePolicyAssociation).getIpsProject();
+        lenient().doReturn(ipsProject).when(xInversePolicyAssociation).getIpsProject();
         IPolicyCmptTypeAssociation policyAssociation = mock(IPolicyCmptTypeAssociation.class, name);
         IPolicyCmptTypeAssociation inverseAssociation = mock(IPolicyCmptTypeAssociation.class, inverseName);
 
-        when(xInversePolicyAssociation.getName()).thenReturn(inverseName);
+        lenient().when(xInversePolicyAssociation.getName()).thenReturn(inverseName);
 
-        when(xInversePolicyAssociation.isCompositionDetailToMaster()).thenReturn(true);
+        lenient().when(xInversePolicyAssociation.isCompositionDetailToMaster()).thenReturn(true);
 
-        when(xPolicyAssociation.getInverseAssociation()).thenReturn(xInversePolicyAssociation);
-        when(xInversePolicyAssociation.getInverseAssociation()).thenReturn(xPolicyAssociation);
-        when(xPolicyAssociation.hasInverseAssociation()).thenReturn(true);
+        lenient().when(xPolicyAssociation.getInverseAssociation()).thenReturn(xInversePolicyAssociation);
+        lenient().when(xInversePolicyAssociation.getInverseAssociation()).thenReturn(xPolicyAssociation);
+        lenient().when(xPolicyAssociation.hasInverseAssociation()).thenReturn(true);
 
         if (isDerivedUnion) {
-            when(xPolicyAssociation.isDerived()).thenReturn(isDerivedUnion);
+            lenient().when(xPolicyAssociation.isDerived()).thenReturn(isDerivedUnion);
 
             XDerivedUnionAssociation xDerivedUnionAssociation = myMock(XDerivedUnionAssociation.class, name, myAnswer);
-            when(xDerivedUnionAssociation.getAssociation()).thenReturn(policyAssociation);
-            when(modelService.getModelNode(policyAssociation, XDerivedUnionAssociation.class, context)).thenReturn(
-                    xDerivedUnionAssociation);
+            lenient().when(xDerivedUnionAssociation.getAssociation()).thenReturn(policyAssociation);
+            lenient().when(modelService.getModelNode(policyAssociation, XDerivedUnionAssociation.class, context))
+                    .thenReturn(xDerivedUnionAssociation);
 
             XDetailToMasterDerivedUnionAssociation xDetailToMasterDerivedUnionAssociation = myMock(
                     XDetailToMasterDerivedUnionAssociation.class, inverseName, myAnswer);
-            when(modelService.getModelNode(inverseAssociation, XDetailToMasterDerivedUnionAssociation.class, context))
+            lenient()
+                    .when(modelService.getModelNode(inverseAssociation, XDetailToMasterDerivedUnionAssociation.class,
+                            context))
                     .thenReturn(xDetailToMasterDerivedUnionAssociation);
         }
 
         if (subsettedDU != null) {
-            when(xPolicyAssociation.getSubsettedDerivedUnion()).thenReturn(subsettedDU);
-            when(xPolicyAssociation.isSubsetOfADerivedUnion()).thenReturn(true);
+            lenient().when(xPolicyAssociation.getSubsettedDerivedUnion()).thenReturn(subsettedDU);
+            lenient().when(xPolicyAssociation.isSubsetOfADerivedUnion()).thenReturn(true);
         }
 
-        when(xPolicyAssociation.getAssociation()).thenReturn(policyAssociation);
-        when(xInversePolicyAssociation.getAssociation()).thenReturn(inverseAssociation);
-        when(modelService.getModelNode(policyAssociation, XPolicyAssociation.class, context)).thenReturn(
+        lenient().when(xPolicyAssociation.getAssociation()).thenReturn(policyAssociation);
+        lenient().when(xInversePolicyAssociation.getAssociation()).thenReturn(inverseAssociation);
+        lenient().when(modelService.getModelNode(policyAssociation, XPolicyAssociation.class, context)).thenReturn(
                 xPolicyAssociation);
 
         return new XPolicyAssociation[] { xPolicyAssociation, xInversePolicyAssociation };

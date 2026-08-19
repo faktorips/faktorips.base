@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,11 +31,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectPartChangeRefreshHelperTest {
 
     @Mock
@@ -53,7 +51,7 @@ public class IpsObjectPartChangeRefreshHelperTest {
     @BeforeEach
     public void setUp() throws Exception {
         singletonHelper.setSingletonInstance(IpsModel.class, ipsModel);
-        when(viewer.getControl()).thenReturn(control);
+        lenient().when(viewer.getControl()).thenReturn(control);
 
         helper = new IpsObjectPartChangeRefreshHelper(ipsObject, viewer);
         // no init(), deliberately

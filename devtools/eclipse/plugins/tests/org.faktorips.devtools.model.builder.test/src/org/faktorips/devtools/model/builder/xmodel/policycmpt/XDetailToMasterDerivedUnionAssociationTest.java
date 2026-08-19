@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -37,11 +38,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XDetailToMasterDerivedUnionAssociationTest {
 
     @Mock
@@ -109,7 +107,7 @@ public class XDetailToMasterDerivedUnionAssociationTest {
 
     @BeforeEach
     public void initModelContext() {
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
     }
 
     @Test
@@ -134,13 +132,13 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         Set<XPolicyAssociation> assocs = new LinkedHashSet<>();
         assocs.add(associationNode1);
         assocs.add(associationNode2);
-        when(associationNode1.isCompositionDetailToMaster()).thenReturn(true);
-        when(associationNode2.isCompositionDetailToMaster()).thenReturn(true);
+        lenient().when(associationNode1.isCompositionDetailToMaster()).thenReturn(true);
+        lenient().when(associationNode2.isCompositionDetailToMaster()).thenReturn(true);
         doReturn(assocs).when(policyCmptClass).getAssociations();
         XPolicyAssociation inverseAsso1 = mock(XPolicyAssociation.class);
-        when(associationNode1.getInverseAssociation()).thenReturn(inverseAsso1);
+        lenient().when(associationNode1.getInverseAssociation()).thenReturn(inverseAsso1);
         XPolicyAssociation inverseAsso2 = mock(XPolicyAssociation.class);
-        when(associationNode2.getInverseAssociation()).thenReturn(inverseAsso2);
+        lenient().when(associationNode2.getInverseAssociation()).thenReturn(inverseAsso2);
         return policyCmptClass;
     }
 

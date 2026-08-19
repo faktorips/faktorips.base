@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -36,11 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumParserTest extends AbstractParserTest {
 
     private static final String MY_LABEL = "myLabel";
@@ -69,10 +66,10 @@ public class EnumParserTest extends AbstractParserTest {
 
     @BeforeEach
     public void createEnumParser() throws Exception {
-        when(getExpression().getEnumDatatypesAllowedInFormula()).thenReturn(
+        lenient().when(getExpression().getEnumDatatypesAllowedInFormula()).thenReturn(
                 new EnumDatatype[] { enumDatatype, enumDatatypeAdapter });
-        when(enumDatatype.getName()).thenReturn(MY_ENUM_CLASS);
-        when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUM_VALUE });
+        lenient().when(enumDatatype.getName()).thenReturn(MY_ENUM_CLASS);
+        lenient().when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUM_VALUE });
         enumParser = new EnumParser(getParsingContext());
     }
 
@@ -132,7 +129,7 @@ public class EnumParserTest extends AbstractParserTest {
         doReturn(new String[] { "notMyEnumValue", "myEnumValue" }).when(enumDatatype).getAllValueIds(false);
         enumParser.setContextType(enumClass);
         when(enumClass.getEnumDatatype()).thenReturn(enumDatatype);
-        when(enumDatatype.getValueName(eq(MY_ENUM_VALUE), any(Locale.class))).thenReturn(MY_LABEL);
+        lenient().when(enumDatatype.getValueName(eq(MY_ENUM_VALUE), any(Locale.class))).thenReturn(MY_LABEL);
 
         List<IdentifierProposal> proposals = enumParser.getProposals("my");
 

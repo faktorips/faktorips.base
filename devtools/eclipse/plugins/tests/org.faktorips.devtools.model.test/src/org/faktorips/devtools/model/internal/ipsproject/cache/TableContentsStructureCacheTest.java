@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -32,11 +33,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class TableContentsStructureCacheTest {
 
     private static final String TABLE_STRUCTURE = "myTableStructure";
@@ -78,15 +76,15 @@ public class TableContentsStructureCacheTest {
 
     @BeforeEach
     public void setUp() {
-        when(ipsProjectBase.getIpsModel()).thenReturn(ipsModel);
-        when(ipsProjectA.getIpsModel()).thenReturn(ipsModel);
-        when(ipsProjectB.getIpsModel()).thenReturn(ipsModel);
-        when(ipsProjectC.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(ipsProjectBase.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(ipsProjectA.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(ipsProjectB.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(ipsProjectC.getIpsModel()).thenReturn(ipsModel);
 
-        when(ipsProjectBase.findReferencingProjects(true)).thenReturn(
+        lenient().when(ipsProjectBase.findReferencingProjects(true)).thenReturn(
                 new IIpsProject[] { ipsProjectA, ipsProjectB, ipsProjectC });
-        when(ipsProjectA.findReferencingProjects(true)).thenReturn(new IIpsProject[] { ipsProjectC });
-        when(ipsProjectC.findReferencingProjects(true)).thenReturn(new IIpsProject[] {});
+        lenient().when(ipsProjectA.findReferencingProjects(true)).thenReturn(new IIpsProject[] { ipsProjectC });
+        lenient().when(ipsProjectC.findReferencingProjects(true)).thenReturn(new IIpsProject[] {});
         tableContentsStructureCacheBase = new TableContentsStructureCache(ipsProjectBase);
         tableContentsStructureCacheA = new TableContentsStructureCache(ipsProjectA);
         tableContentsStructureCacheB = new TableContentsStructureCache(ipsProjectB);
@@ -95,10 +93,10 @@ public class TableContentsStructureCacheTest {
 
     @BeforeEach
     public void setUpsIpsSrcFiles() {
-        when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
-        when(tableContent1.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
-        when(tableContent2.getIpsProject()).thenReturn(ipsProjectA);
-        when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn("");
+        lenient().when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
+        lenient().when(tableContent1.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
+        lenient().when(tableContent2.getIpsProject()).thenReturn(ipsProjectA);
+        lenient().when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn("");
     }
 
     @Test
@@ -143,8 +141,8 @@ public class TableContentsStructureCacheTest {
     @Test
     public void testGetTableContents_structureReferencedProject_base() throws Exception {
         setUpProjectWithTableContents(ipsProjectBase, tableContent1, tableContent2);
-        when(tableContent1.getIpsProject()).thenReturn(ipsProjectBase);
-        when(tableContent2.getIpsProject()).thenReturn(ipsProjectBase);
+        lenient().when(tableContent1.getIpsProject()).thenReturn(ipsProjectBase);
+        lenient().when(tableContent2.getIpsProject()).thenReturn(ipsProjectBase);
         setUpTableStructureIn(ipsProjectBase);
 
         List<IIpsSrcFile> tableContents = tableContentsStructureCacheBase.getTableContents(tableStructure);
@@ -156,8 +154,8 @@ public class TableContentsStructureCacheTest {
     @Test
     public void testGetTableContents_structureReferencedProject_projectA() throws Exception {
         setUpProjectWithTableContents(ipsProjectA, tableContent1, tableContent2);
-        when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
-        when(tableContent2.getIpsProject()).thenReturn(ipsProjectA);
+        lenient().when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
+        lenient().when(tableContent2.getIpsProject()).thenReturn(ipsProjectA);
         setUpTableStructureIn(ipsProjectBase);
 
         List<IIpsSrcFile> tableContents = tableContentsStructureCacheA.getTableContents(tableStructure);
@@ -182,8 +180,8 @@ public class TableContentsStructureCacheTest {
         // no contents
         setUpProjectWithTableContents(ipsProjectA);
         setUpProjectWithTableContents(ipsProjectBase, tableContent1, tableContent2);
-        when(tableContent1.getIpsProject()).thenReturn(ipsProjectBase);
-        when(tableContent2.getIpsProject()).thenReturn(ipsProjectBase);
+        lenient().when(tableContent1.getIpsProject()).thenReturn(ipsProjectBase);
+        lenient().when(tableContent2.getIpsProject()).thenReturn(ipsProjectBase);
 
         List<IIpsSrcFile> tableContents = tableContentsStructureCacheA.getTableContents(tableStructure);
 
@@ -194,8 +192,8 @@ public class TableContentsStructureCacheTest {
     public void testGetTableContents_structureReferencedProject_projectC() throws Exception {
         setUpProjectWithTableContents(ipsProjectA, tableContent1);
         setUpProjectWithTableContents(ipsProjectC, tableContent2);
-        when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
-        when(tableContent2.getIpsProject()).thenReturn(ipsProjectC);
+        lenient().when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
+        lenient().when(tableContent2.getIpsProject()).thenReturn(ipsProjectC);
         setUpTableStructureIn(ipsProjectBase);
         setUpTableStructureNameFor(tableContent2, TABLE_STRUCTURE);
 
@@ -235,7 +233,7 @@ public class TableContentsStructureCacheTest {
     }
 
     private void setUpTableStructureNameFor(IIpsSrcFile tc, String name) {
-        when(tc.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(name);
+        lenient().when(tc.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(name);
     }
 
     private void setUpProjectWithTableContents(IIpsProject project, IIpsSrcFile... files) {
@@ -255,19 +253,19 @@ public class TableContentsStructureCacheTest {
         List<IIpsSrcFile> oldIpsSrcFiles = project.findAllIpsSrcFiles(ipsObjectType);
         ArrayList<IIpsSrcFile> newResultingFiles = new ArrayList<>(oldIpsSrcFiles);
         newResultingFiles.addAll(Arrays.asList(files));
-        when(project.findAllIpsSrcFiles(ipsObjectType)).thenReturn(newResultingFiles);
+        lenient().when(project.findAllIpsSrcFiles(ipsObjectType)).thenReturn(newResultingFiles);
         setUpFindQNameType(project, files);
     }
 
     private void setUpTableStructureIn(IIpsProject project) {
-        when(tableStructure.getQualifiedNameType()).thenReturn(
+        lenient().when(tableStructure.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE));
         setUpProjectFindIpsSrcFiles(project, IpsObjectType.TABLE_STRUCTURE, tableStructure);
     }
 
     private void setUpFindQNameType(IIpsProject project, IIpsSrcFile... files) {
         for (IIpsSrcFile file : files) {
-            when(project.findIpsSrcFile(file.getQualifiedNameType())).thenReturn(file);
+            lenient().when(project.findIpsSrcFile(file.getQualifiedNameType())).thenReturn(file);
         }
     }
 

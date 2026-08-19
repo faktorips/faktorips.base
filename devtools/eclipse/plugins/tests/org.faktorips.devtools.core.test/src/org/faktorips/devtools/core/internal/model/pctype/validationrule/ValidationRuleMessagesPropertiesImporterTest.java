@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -37,11 +38,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ValidationRuleMessagesPropertiesImporterTest {
 
     private static final String MSG_CODE = "MyMsgCode";
@@ -69,12 +67,12 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
     @BeforeEach
     public void setUp() {
-        when(ipsSrcFile.isMutable()).thenReturn(true);
+        lenient().when(ipsSrcFile.isMutable()).thenReturn(true);
         List<IIpsSrcFile> srcFiles = new ArrayList<>();
         srcFiles.add(ipsSrcFile);
-        when(root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
-        when(policyCmptType.getQualifiedName()).thenReturn("testPolicy");
-        when(ipsSrcFile.getIpsObject()).thenReturn(policyCmptType);
+        lenient().when(root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE)).thenReturn(srcFiles);
+        lenient().when(policyCmptType.getQualifiedName()).thenReturn("testPolicy");
+        lenient().when(ipsSrcFile.getIpsObject()).thenReturn(policyCmptType);
 
         importer = new ValidationRuleMessagesPropertiesImporter(inputStream, root, Locale.GERMAN);
 
@@ -146,8 +144,8 @@ public class ValidationRuleMessagesPropertiesImporterTest {
     }
 
     void mockRule() {
-        when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
-        when(rule.getMessageCode()).thenReturn(MSG_CODE);
+        lenient().when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
+        lenient().when(rule.getMessageCode()).thenReturn(MSG_CODE);
         when(rule.getMessageText()).thenReturn(new ValidationRuleMessageText());
         ArrayList<IValidationRule> rules = new ArrayList<>();
         rules.add(rule);

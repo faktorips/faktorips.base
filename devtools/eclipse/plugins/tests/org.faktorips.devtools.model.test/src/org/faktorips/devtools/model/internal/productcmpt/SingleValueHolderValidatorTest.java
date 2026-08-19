@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,11 +50,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class SingleValueHolderValidatorTest {
 
     @Mock
@@ -70,10 +68,10 @@ public class SingleValueHolderValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        when(attributeValue.getIpsProject()).thenReturn(ipsProject);
-        when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
-        when(attribute.getIpsProject()).thenReturn(ipsProject);
-        when(attribute.findDatatype(ipsProject)).thenReturn(datatype);
+        lenient().when(attributeValue.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
+        lenient().when(attribute.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attribute.findDatatype(ipsProject)).thenReturn(datatype);
     }
 
     @Test
@@ -318,20 +316,20 @@ public class SingleValueHolderValidatorTest {
         IValueSet unrestricted = new UnrestrictedValueSet(attribute, "partId", includeNull);
         SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, value);
 
-        when(attribute.findDatatype(ipsProject)).thenReturn(ValueDatatype.STRING);
-        when(attribute.findValueDatatype(ipsProject)).thenReturn(ValueDatatype.STRING);
-        when(attribute.getValueSet()).thenReturn(unrestricted);
-        when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
-        doReturn("stringTestAttribute").when(attributeValue).getName();
+        lenient().when(attribute.findDatatype(ipsProject)).thenReturn(ValueDatatype.STRING);
+        lenient().when(attribute.findValueDatatype(ipsProject)).thenReturn(ValueDatatype.STRING);
+        lenient().when(attribute.getValueSet()).thenReturn(unrestricted);
+        lenient().when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
+        lenient().doReturn("stringTestAttribute").when(attributeValue).getName();
 
         if (value instanceof InternationalStringValue) {
             IIpsProjectProperties ipsProjectProperties = mock(IIpsProjectProperties.class);
             ISupportedLanguage supportedLanguages = mock(ISupportedLanguage.class);
-            when(supportedLanguages.getLocale()).thenReturn(Locale.getDefault());
-            when(ipsProjectProperties.getSupportedLanguages()).thenReturn(Set.of(supportedLanguages));
-            when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
-            when(attribute.isMultilingual()).thenReturn(true);
-            doReturn("multilangTestAttribute").when(attributeValue).getName();
+            lenient().when(supportedLanguages.getLocale()).thenReturn(Locale.getDefault());
+            lenient().when(ipsProjectProperties.getSupportedLanguages()).thenReturn(Set.of(supportedLanguages));
+            lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
+            lenient().when(attribute.isMultilingual()).thenReturn(true);
+            lenient().doReturn("multilangTestAttribute").when(attributeValue).getName();
         }
 
         return new SingleValueHolderValidator(singleValueHolder, attributeValue,

@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -27,11 +28,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class DefaultVersionProviderTest {
 
     private static final String VERSION_STRING = "1.2.3.test";
@@ -50,8 +48,8 @@ public class DefaultVersionProviderTest {
 
     @BeforeEach
     public void initDefaultVersionProvider() {
-        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
-        when(ipsProject.getProperties()).thenReturn(properties);
+        lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+        lenient().when(ipsProject.getProperties()).thenReturn(properties);
     }
 
     @Test

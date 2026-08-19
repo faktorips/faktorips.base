@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,11 +33,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ParameterCollectorTest {
     @Mock
     private ContextProductCmptFinder finder;
@@ -70,13 +67,13 @@ public class ParameterCollectorTest {
 
     @BeforeEach
     public void setUpFinderAndFormula() {
-        when(finder.getExpression()).thenReturn(formula);
-        when(finder.getIpsProject()).thenReturn(ipsProject);
-        when(formula.getPropertyValueContainer()).thenReturn(generation);
-        when(generation.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
-        when(generation.getProductCmpt()).thenReturn(productCmpt);
-        when(policyCmptType.isSubtypeOrSameType(policyCmptType, ipsProject)).thenReturn(true);
-        when(policyCmptType.isSubtypeOrSameType(superPolicyCmptType, ipsProject)).thenReturn(true);
+        lenient().when(finder.getExpression()).thenReturn(formula);
+        lenient().when(finder.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(formula.getPropertyValueContainer()).thenReturn(generation);
+        lenient().when(generation.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
+        lenient().when(generation.getProductCmpt()).thenReturn(productCmpt);
+        lenient().when(policyCmptType.isSubtypeOrSameType(policyCmptType, ipsProject)).thenReturn(true);
+        lenient().when(policyCmptType.isSubtypeOrSameType(superPolicyCmptType, ipsProject)).thenReturn(true);
     }
 
     @Test

@@ -15,6 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,11 +35,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XProductAttributeTest {
 
     private static final String DATATYPE = "Datatype";
@@ -69,15 +67,15 @@ public class XProductAttributeTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        when(attribute.getIpsProject()).thenReturn(ipsProject);
-        when(superAttribute.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attribute.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(superAttribute.getIpsProject()).thenReturn(ipsProject);
     }
 
     @BeforeEach
     public void createXProductAttribute() {
         xProductAttribute = new XProductAttribute(attribute, modelContext, modelService);
         superXAttribute = new XProductAttribute(superAttribute, modelContext, modelService);
-        when(modelService.getModelNode(superAttribute, XProductAttribute.class, modelContext)).thenReturn(
+        lenient().when(modelService.getModelNode(superAttribute, XProductAttribute.class, modelContext)).thenReturn(
                 superXAttribute);
     }
 
@@ -111,10 +109,10 @@ public class XProductAttributeTest {
     private ValueDatatype mockDatatype(IAttribute attributeMock, String datatypeName, boolean abstractFlag) {
         ValueDatatype datatype = mock(ValueDatatype.class);
         DatatypeHelper datatypeHelper = mock(DatatypeHelper.class);
-        when(ipsProject.findDatatypeHelper(datatypeName)).thenReturn(datatypeHelper);
-        when(attributeMock.getDatatype()).thenReturn(datatypeName);
-        when(datatypeHelper.getDatatype()).thenReturn(datatype);
-        when(datatype.isAbstract()).thenReturn(abstractFlag);
+        lenient().when(ipsProject.findDatatypeHelper(datatypeName)).thenReturn(datatypeHelper);
+        lenient().when(attributeMock.getDatatype()).thenReturn(datatypeName);
+        lenient().when(datatypeHelper.getDatatype()).thenReturn(datatype);
+        lenient().when(datatype.isAbstract()).thenReturn(abstractFlag);
         return datatype;
     }
 

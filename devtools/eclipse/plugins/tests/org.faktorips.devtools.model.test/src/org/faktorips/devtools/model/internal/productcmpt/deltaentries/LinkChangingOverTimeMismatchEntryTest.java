@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -31,11 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class LinkChangingOverTimeMismatchEntryTest {
 
     @Mock
@@ -101,14 +99,14 @@ public class LinkChangingOverTimeMismatchEntryTest {
         setUpLink(staticLink2);
         setUpLink(staticLink3);
 
-        when(prodCmpt.getProductCmpt()).thenReturn(prodCmpt);
+        lenient().when(prodCmpt.getProductCmpt()).thenReturn(prodCmpt);
 
-        when(assoc2.isChangingOverTime()).thenReturn(true);
-        when(staticAssoc1.isChangingOverTime()).thenReturn(false);
+        lenient().when(assoc2.isChangingOverTime()).thenReturn(true);
+        lenient().when(staticAssoc1.isChangingOverTime()).thenReturn(false);
     }
 
     private void setUpLink(IProductCmptLink link) {
-        when(link.getTarget()).thenReturn("targetName");
+        lenient().when(link.getTarget()).thenReturn("targetName");
     }
 
     private void setUpGenerationOrder() {
@@ -116,16 +114,16 @@ public class LinkChangingOverTimeMismatchEntryTest {
         genList.add(gen1);
         genList.add(gen2);
         genList.add(genLatest);
-        when(prodCmpt.getLatestProductCmptGeneration()).thenReturn(genLatest);
-        when(prodCmpt.getProductCmptGenerations()).thenReturn(genList);
+        lenient().when(prodCmpt.getLatestProductCmptGeneration()).thenReturn(genLatest);
+        lenient().when(prodCmpt.getProductCmptGenerations()).thenReturn(genList);
     }
 
     private void setUpLinksForLinkContainer(IProductCmptLinkContainer container, IProductCmptLink... links) {
         List<IProductCmptLink> genLinks = new ArrayList<>();
         genLinks.addAll(Arrays.asList(links));
         for (IProductCmptLink link : links) {
-            when(link.getProductCmptLinkContainer()).thenReturn(container);
-            when(link.getProductCmpt()).thenReturn(prodCmpt);
+            lenient().when(link.getProductCmptLinkContainer()).thenReturn(container);
+            lenient().when(link.getProductCmpt()).thenReturn(prodCmpt);
         }
     }
 

@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,11 +48,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class DependencyResolverTest {
 
     @Mock
@@ -202,36 +199,36 @@ public class DependencyResolverTest {
      */
     @BeforeEach
     public void setUp() throws Exception {
-        when(ipsProject1.getDependencyGraph()).thenReturn(dependencyGraph1);
-        when(ipsProject1.canBeBuild()).thenReturn(true);
-        when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
-        when(ipsProject1.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
+        lenient().when(ipsProject1.getDependencyGraph()).thenReturn(dependencyGraph1);
+        lenient().when(ipsProject1.canBeBuild()).thenReturn(true);
+        lenient().when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
+        lenient().when(ipsProject1.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
 
         dependencyResolver = new DependencyResolver(ipsProject1);
 
-        when(dependencyGraph1.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
+        lenient().when(dependencyGraph1.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
 
-        when(ipsProject2.getDependencyGraph()).thenReturn(dependencyGraph2);
-        when(ipsProject2.canBeBuild()).thenReturn(true);
-        when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
-        when(ipsProject2.isReferencing(ipsProject1)).thenReturn(true);
+        lenient().when(ipsProject2.getDependencyGraph()).thenReturn(dependencyGraph2);
+        lenient().when(ipsProject2.canBeBuild()).thenReturn(true);
+        lenient().when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
+        lenient().when(ipsProject2.isReferencing(ipsProject1)).thenReturn(true);
 
-        when(dependencyGraph2.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
+        lenient().when(dependencyGraph2.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
 
-        when(ipsProject3.getDependencyGraph()).thenReturn(dependencyGraph3);
-        when(ipsProject3.canBeBuild()).thenReturn(true);
-        when(ipsProject3.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
-        when(ipsProject3.isReferencing(ipsProject1)).thenReturn(true);
-        when(ipsProject3.isReferencing(ipsProject2)).thenReturn(true);
+        lenient().when(ipsProject3.getDependencyGraph()).thenReturn(dependencyGraph3);
+        lenient().when(ipsProject3.canBeBuild()).thenReturn(true);
+        lenient().when(ipsProject3.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
+        lenient().when(ipsProject3.isReferencing(ipsProject1)).thenReturn(true);
+        lenient().when(ipsProject3.isReferencing(ipsProject2)).thenReturn(true);
 
-        when(dependencyGraph3.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
+        lenient().when(dependencyGraph3.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
 
-        when(ipsProject4.getDependencyGraph()).thenReturn(dependencyGraph4);
-        when(ipsProject4.canBeBuild()).thenReturn(true);
-        when(ipsProject4.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
-        when(ipsProject4.isReferencing(ipsProject1)).thenReturn(true);
+        lenient().when(ipsProject4.getDependencyGraph()).thenReturn(dependencyGraph4);
+        lenient().when(ipsProject4.canBeBuild()).thenReturn(true);
+        lenient().when(ipsProject4.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
+        lenient().when(ipsProject4.isReferencing(ipsProject1)).thenReturn(true);
 
-        when(dependencyGraph4.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
+        lenient().when(dependencyGraph4.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
     }
 
     @Test

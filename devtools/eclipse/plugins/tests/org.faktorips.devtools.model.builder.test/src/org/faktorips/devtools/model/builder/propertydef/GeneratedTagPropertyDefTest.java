@@ -30,8 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 /**
  * Tests for {@link GeneratedTagPropertyDef} and its inner classes {@link GeneratedTagPropertyDef.StartTag}
@@ -42,7 +40,6 @@ import org.mockito.quality.Strictness;
  * that {@code {0}} always refers to the start tag and {@code {1}} always refers to the end tag.
  */
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class GeneratedTagPropertyDefTest {
 
     @Mock

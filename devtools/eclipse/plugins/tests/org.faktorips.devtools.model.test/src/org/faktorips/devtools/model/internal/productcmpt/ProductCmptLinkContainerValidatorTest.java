@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -44,11 +45,8 @@ import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.verification.VerificationMode;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductCmptLinkContainerValidatorTest {
 
     @Mock
@@ -77,29 +75,29 @@ public class ProductCmptLinkContainerValidatorTest {
                 .format(validFromDate.getTime());
         productCmptQualifiedName = "prodCmpt";
 
-        when(ipsProject.getReadOnlyProperties()).thenReturn(props);
-        when(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()).thenReturn(false);
+        lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(props);
+        lenient().when(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()).thenReturn(false);
 
         MessageList messageList = new MessageList();
         messageList.add(Message.newError("code1", "errorText"));
         messageList.add(Message.newWarning("code2", "warningText"));
         messageList.add(Message.newError("code3", "errorText2"));
-        when(association.validate(ipsProject)).thenReturn(messageList);
+        lenient().when(association.validate(ipsProject)).thenReturn(messageList);
 
         List<IProductCmptTypeAssociation> associations = new ArrayList<>();
         associations.add(association);
-        when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
+        lenient().when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
 
-        when(association.getTargetRoleSingular()).thenReturn("targetRole");
-        when(association.isDerivedUnion()).thenReturn(false);
-        when(linkContainer.isContainerFor(association)).thenReturn(true);
-        when(linkContainer.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(association.getTargetRoleSingular()).thenReturn("targetRole");
+        lenient().when(association.isDerivedUnion()).thenReturn(false);
+        lenient().when(linkContainer.isContainerFor(association)).thenReturn(true);
+        lenient().when(linkContainer.getIpsProject()).thenReturn(ipsProject);
 
-        when(prodCmptLink.findTarget(ipsProject)).thenReturn(prodCmpt);
-        when(linkContainer.getValidFrom()).thenReturn(validFromDate);
-        when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(null);
-        when(prodCmpt.getQualifiedName()).thenReturn(productCmptQualifiedName);
-        when(prodCmpt.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
+        lenient().when(prodCmptLink.findTarget(ipsProject)).thenReturn(prodCmpt);
+        lenient().when(linkContainer.getValidFrom()).thenReturn(validFromDate);
+        lenient().when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(null);
+        lenient().when(prodCmpt.getQualifiedName()).thenReturn(productCmptQualifiedName);
+        lenient().when(prodCmpt.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
 
         validator = new ProductCmptLinkContainerValidator(ipsProject, linkContainer);
     }

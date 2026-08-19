@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -30,11 +31,8 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractRuntimeRepositoryMockTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
@@ -127,9 +125,9 @@ public class AbstractRuntimeRepositoryMockTest {
     }
 
     private void mockRepository(AbstractRuntimeRepository repository) {
-        doReturn(null).when(repository).getEnumValueLookupService(ExtensibleEnum.class);
-        doReturn(null).when(repository).getEnumValuesInternal(ExtensibleEnum.class);
-        doNothing().when(repository).getAllModelTypeImplementationClasses(anySet());
+        lenient().doReturn(null).when(repository).getEnumValueLookupService(ExtensibleEnum.class);
+        lenient().doReturn(null).when(repository).getEnumValuesInternal(ExtensibleEnum.class);
+        lenient().doNothing().when(repository).getAllModelTypeImplementationClasses(anySet());
     }
 
     @Test

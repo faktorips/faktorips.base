@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -24,11 +25,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class UniqueKeysProposalProviderTest {
 
     @Mock
@@ -50,8 +48,8 @@ public class UniqueKeysProposalProviderTest {
     @BeforeEach
     public void setUp() {
         proposalProvider = new UniqueKeysProposalProvider(pmo);
-        when(index1.getName()).thenReturn("firstResult");
-        when(index2.getName()).thenReturn("secondResult");
+        lenient().when(index1.getName()).thenReturn("firstResult");
+        lenient().when(index2.getName()).thenReturn("secondResult");
     }
 
     @Test

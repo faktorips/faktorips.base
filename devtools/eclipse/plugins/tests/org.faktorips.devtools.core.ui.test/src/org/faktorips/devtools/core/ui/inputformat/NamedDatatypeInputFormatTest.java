@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
@@ -28,11 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class NamedDatatypeInputFormatTest {
 
     @Mock
@@ -52,13 +50,13 @@ public class NamedDatatypeInputFormatTest {
     @BeforeEach
     public void setUpEnumDatatype() {
 
-        when(enumDatatype.getValueByName(eq("nameA"), any(Locale.class))).thenReturn("a");
-        when(enumDatatype.valueToString("a")).thenReturn("a");
-        when(enumDatatype.getValueByName(eq("c (c)"), any(Locale.class))).thenReturn("c");
-        when(enumDatatype.valueToString("c")).thenReturn("c");
+        lenient().when(enumDatatype.getValueByName(eq("nameA"), any(Locale.class))).thenReturn("a");
+        lenient().when(enumDatatype.valueToString("a")).thenReturn("a");
+        lenient().when(enumDatatype.getValueByName(eq("c (c)"), any(Locale.class))).thenReturn("c");
+        lenient().when(enumDatatype.valueToString("c")).thenReturn("c");
 
-        when(enumDatatype.isParsable("a")).thenReturn(true);
-        when(enumDatatype.isParsable("c")).thenReturn(true);
+        lenient().when(enumDatatype.isParsable("a")).thenReturn(true);
+        lenient().when(enumDatatype.isParsable("c")).thenReturn(true);
     }
 
     @Test

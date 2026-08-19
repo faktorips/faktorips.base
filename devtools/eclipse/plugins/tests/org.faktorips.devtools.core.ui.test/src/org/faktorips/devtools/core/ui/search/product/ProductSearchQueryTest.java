@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.search.product;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,11 +34,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProductSearchQueryTest {
 
     private static final String PRODUCT_CMPT_TYPE_NAME = "ProductCmptType";
@@ -70,17 +68,17 @@ public class ProductSearchQueryTest {
 
     @BeforeEach
     public void setUp() {
-        when(validCondition.isValid()).thenReturn(true);
-        when(invalidCondition.isValid()).thenReturn(false);
+        lenient().when(validCondition.isValid()).thenReturn(true);
+        lenient().when(invalidCondition.isValid()).thenReturn(false);
 
-        when(model.getSearchScope()).thenReturn(scope);
-        when(model.getProductCmptType()).thenReturn(productCmptType);
+        lenient().when(model.getSearchScope()).thenReturn(scope);
+        lenient().when(model.getProductCmptType()).thenReturn(productCmptType);
 
-        when(productCmptType.getQualifiedName()).thenReturn(PRODUCT_CMPT_TYPE_NAME);
+        lenient().when(productCmptType.getQualifiedName()).thenReturn(PRODUCT_CMPT_TYPE_NAME);
 
-        when(ipsModel.getIpsProjects()).thenReturn(new IIpsProject[] { ipsProject, ipsProject2 });
+        lenient().when(ipsModel.getIpsProjects()).thenReturn(new IIpsProject[] { ipsProject, ipsProject2 });
 
-        when(ipsProject.findProductCmptType(PRODUCT_CMPT_TYPE_NAME)).thenReturn(productCmptType);
+        lenient().when(ipsProject.findProductCmptType(PRODUCT_CMPT_TYPE_NAME)).thenReturn(productCmptType);
     }
 
     @Test

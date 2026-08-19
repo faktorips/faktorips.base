@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.Datatype;
@@ -44,7 +45,7 @@ public class AbstractParserTest {
 
     @BeforeEach
     public void mockExpression() throws Exception {
-        when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        lenient().when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
         parsingContext = new ParsingContext(getExpression(), getIpsProject(), getMultiLanguageSupport());
     }
 

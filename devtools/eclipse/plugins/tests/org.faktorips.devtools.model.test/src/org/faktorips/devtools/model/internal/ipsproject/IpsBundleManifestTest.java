@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -68,12 +69,9 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleException;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsBundleManifestTest {
 
     private static final String MANIFEST = """
@@ -139,8 +137,8 @@ public class IpsBundleManifestTest {
         mockManifest();
         ipsBundleManifest = new IpsBundleManifest(manifest);
         AProject project = mock(AProject.class);
-        when(project.getDefaultLineSeparator()).thenReturn("\n");
-        when(ipsProject.getProject()).thenReturn(project);
+        lenient().when(project.getDefaultLineSeparator()).thenReturn("\n");
+        lenient().when(ipsProject.getProject()).thenReturn(project);
     }
 
     public void mockManifest() throws IOException {

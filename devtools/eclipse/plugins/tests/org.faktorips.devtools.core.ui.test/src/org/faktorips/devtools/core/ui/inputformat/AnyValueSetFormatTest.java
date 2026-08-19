@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -38,11 +39,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AnyValueSetFormatTest {
 
     @Mock
@@ -77,11 +75,11 @@ public class AnyValueSetFormatTest {
     @BeforeEach
     public void setUp() throws Exception {
         enumValueSet = new EnumValueSet(configValueSet, "ID");
-        when(configValueSet.getValueSet()).thenReturn(enumValueSet);
-        when(configValueSet.getIpsProject()).thenReturn(ipsProject);
-        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
-        when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(cachedInputFormat);
+        lenient().when(configValueSet.getValueSet()).thenReturn(enumValueSet);
+        lenient().when(configValueSet.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
+        lenient().when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(cachedInputFormat);
         format = new AnyValueSetFormat(configValueSet, uiPlugin);
         rangeValueSet = new RangeValueSet(configValueSet, "ID");
         unrestrictedValueSet = new UnrestrictedValueSet(configValueSet, "ID");

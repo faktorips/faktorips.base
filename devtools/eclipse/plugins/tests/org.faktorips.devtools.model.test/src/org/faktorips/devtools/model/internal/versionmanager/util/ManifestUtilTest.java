@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.versionmanager.util;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,13 +34,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ManifestUtilTest {
 
     @Mock
@@ -78,8 +76,8 @@ public class ManifestUtilTest {
     @BeforeEach
     public void mockManifest() throws Exception {
         openMocks = MockitoAnnotations.openMocks(this);
-        when(manifest.getMainAttributes()).thenReturn(attributes);
-        when(manifestFactory.loadManifest(file)).thenReturn(manifest);
+        lenient().when(manifest.getMainAttributes()).thenReturn(attributes);
+        lenient().when(manifestFactory.loadManifest(file)).thenReturn(manifest);
     }
 
     @AfterEach

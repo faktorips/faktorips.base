@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -47,11 +48,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AttributeParserTest extends AbstractParserTest {
 
     private static final String MY_ATTRIBUTE = "myAttribute";
@@ -96,9 +93,9 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @BeforeEach
     public void mockAttribute() throws Exception {
-        when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
-        when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
-        when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
+        lenient().when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
+        lenient().when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
+        lenient().when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
                 .thenReturn(true);
     }
 
@@ -281,8 +278,8 @@ public class AttributeParserTest extends AbstractParserTest {
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
         when(policyType.findProductCmptType(getIpsProject())).thenReturn(prodType);
-        when(attribute2.getName()).thenReturn("xyz");
-        when(attribute3.getName()).thenReturn("myProd");
+        lenient().when(attribute2.getName()).thenReturn("xyz");
+        lenient().when(attribute3.getName()).thenReturn("myProd");
         return spy;
     }
 

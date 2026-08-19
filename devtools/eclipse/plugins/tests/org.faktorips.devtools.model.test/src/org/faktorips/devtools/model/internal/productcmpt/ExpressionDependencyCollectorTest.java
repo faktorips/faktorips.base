@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,11 +46,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ExpressionDependencyCollectorTest {
 
     private static final String MY_EXPRESSION = "1 + 2";
@@ -94,13 +92,13 @@ public class ExpressionDependencyCollectorTest {
     @BeforeEach
     public void setUpIdentifierVisitor() {
         identifiers = new HashMap<>();
-        when(identifierVisitor.getIdentifiers()).thenReturn(identifiers);
+        lenient().when(identifierVisitor.getIdentifiers()).thenReturn(identifiers);
     }
 
     @BeforeEach
     public void setUpExpression() {
-        when(expression.getIpsObject()).thenReturn(ipsObject);
-        when(ipsObject.getQualifiedNameType()).thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
+        lenient().when(expression.getIpsObject()).thenReturn(ipsObject);
+        lenient().when(ipsObject.getQualifiedNameType()).thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
     }
 
     @BeforeEach
@@ -110,14 +108,14 @@ public class ExpressionDependencyCollectorTest {
 
     @BeforeEach
     public void setUpQualifiedNodes() {
-        when(qualifierNode.getProductCmpt()).thenReturn(targetProductCmpt);
-        when(targetProductCmpt.getQualifiedNameType()).thenReturn(
+        lenient().when(qualifierNode.getProductCmpt()).thenReturn(targetProductCmpt);
+        lenient().when(targetProductCmpt.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType(MY_TARGET_NAME, IpsObjectType.PRODUCT_CMPT));
-        when(qualifierNode.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 1, 7));
-        when(qualifierNode2.getProductCmpt()).thenReturn(targetProductCmpt2);
-        when(targetProductCmpt2.getQualifiedNameType()).thenReturn(
+        lenient().when(qualifierNode.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 1, 7));
+        lenient().when(qualifierNode2.getProductCmpt()).thenReturn(targetProductCmpt2);
+        lenient().when(targetProductCmpt2.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType("secondTarget", IpsObjectType.PRODUCT_CMPT));
-        when(qualifierNode2.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 8, 29));
+        lenient().when(qualifierNode2.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 8, 29));
     }
 
     @Test

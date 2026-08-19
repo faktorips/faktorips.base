@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,11 +35,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XProductAssociationTest {
 
     @Mock
@@ -69,12 +67,12 @@ public class XProductAssociationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
-        when(association.getIpsProject()).thenReturn(ipsProject);
-        when(association.findTarget(ipsProject)).thenReturn(targetCmptType);
-        when(modelService.getModelNode(targetCmptType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
-                xTargetGenerationClass);
-        when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
+        lenient().when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
+        lenient().when(association.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(association.findTarget(ipsProject)).thenReturn(targetCmptType);
+        lenient().when(modelService.getModelNode(targetCmptType, XProductCmptGenerationClass.class, modelContext))
+                .thenReturn(xTargetGenerationClass);
+        lenient().when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
     }
 
     @BeforeEach

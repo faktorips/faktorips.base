@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,11 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumerationProposalProviderTest {
 
     private static final String DEFAULT_VALUE_REPRESENTATION = Messages.DefaultValueRepresentation_EditField;
@@ -59,21 +57,21 @@ public class EnumerationProposalProviderTest {
     public void setUp() throws Exception {
         enumProposalProvider = new EnumerationProposalProvider(enumDatatype, owner, inputFormat);
 
-        when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
-        when(enumValueSet.getValuesAsList())
+        lenient().when(owner.getValueSet()).thenReturn(enumValueSet);
+        lenient().when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
+        lenient().when(enumValueSet.getValuesAsList())
                 .thenReturn(Arrays.asList("aaaaa", "bbbbb", "ccccc", null));
 
-        when(inputFormat.format("aaaaa")).thenReturn("aaaaa");
-        when(inputFormat.format("bbbbb")).thenReturn("bbbbb");
-        when(inputFormat.format("ccccc")).thenReturn("ccccc");
-        when(inputFormat.format(null)).thenReturn(DEFAULT_VALUE_REPRESENTATION);
-        when(inputFormat.format("xxxxx")).thenReturn("xxxxx");
-        when(inputFormat.format("yyyyy")).thenReturn("yyyyy");
-        when(inputFormat.format("zzzzz")).thenReturn("zzzzz");
+        lenient().when(inputFormat.format("aaaaa")).thenReturn("aaaaa");
+        lenient().when(inputFormat.format("bbbbb")).thenReturn("bbbbb");
+        lenient().when(inputFormat.format("ccccc")).thenReturn("ccccc");
+        lenient().when(inputFormat.format(null)).thenReturn(DEFAULT_VALUE_REPRESENTATION);
+        lenient().when(inputFormat.format("xxxxx")).thenReturn("xxxxx");
+        lenient().when(inputFormat.format("yyyyy")).thenReturn("yyyyy");
+        lenient().when(inputFormat.format("zzzzz")).thenReturn("zzzzz");
 
-        when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { "xxxxx", "yyyyy", "zzzzz", null });
-        when(enumDatatype.isEnum()).thenReturn(true);
+        lenient().when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { "xxxxx", "yyyyy", "zzzzz", null });
+        lenient().when(enumDatatype.isEnum()).thenReturn(true);
     }
 
     @Test

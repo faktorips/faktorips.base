@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.dialogs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,11 +28,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
 
     private static final String TESTARCHIVE_JAR = "testarchive.jar";
@@ -55,7 +53,7 @@ public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = (IpsProject)newIpsProject();
-        when(archiveEntry.getIpsPackageFragmentRootName()).thenReturn(TESTARCHIVE_JAR);
+        lenient().when(archiveEntry.getIpsPackageFragmentRootName()).thenReturn(TESTARCHIVE_JAR);
         resource = ipsProject.getProject().getFile(TESTARCHIVE_JAR);
     }
 

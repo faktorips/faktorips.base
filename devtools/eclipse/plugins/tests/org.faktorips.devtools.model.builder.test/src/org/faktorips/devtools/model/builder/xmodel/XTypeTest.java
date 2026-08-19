@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashSet;
@@ -31,11 +32,8 @@ import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XTypeTest {
 
     @Mock
@@ -60,21 +58,21 @@ public class XTypeTest {
     public void mockContext() {
         // addImport should always return the input parameter
         Answer<String> inputAnswer = invocation -> invocation.getArguments()[0].toString();
-        when(context.addImport(anyString())).thenAnswer(inputAnswer);
-        doReturn(generatorConfig).when(xType).getGeneratorConfig();
+        lenient().when(context.addImport(anyString())).thenAnswer(inputAnswer);
+        lenient().doReturn(generatorConfig).when(xType).getGeneratorConfig();
     }
 
     @BeforeEach
     public void createXType() {
-        when(xType.getIpsObjectPartContainer()).thenReturn(type);
-        doReturn(ipsProject).when(xType).getIpsProject();
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
-        doReturn("myInterface").when(xType).getInterfaceName();
+        lenient().when(xType.getIpsObjectPartContainer()).thenReturn(type);
+        lenient().doReturn(ipsProject).when(xType).getIpsProject();
+        lenient().when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
+        lenient().doReturn("myInterface").when(xType).getInterfaceName();
     }
 
     @BeforeEach
     public void createXSuperType() {
-        when(xSuperType.getContext()).thenReturn(context);
+        lenient().when(xSuperType.getContext()).thenReturn(context);
     }
 
     @Test

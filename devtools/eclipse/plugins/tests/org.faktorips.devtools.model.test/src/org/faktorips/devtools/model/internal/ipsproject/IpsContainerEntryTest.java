@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,11 +35,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsContainerEntryTest {
 
     private static final String MY_ID = "myId";
@@ -61,9 +59,9 @@ public class IpsContainerEntryTest {
         ipsContainerEntry = new IpsContainerEntry(path);
         ipsContainerEntry.setContainerTypeId(MY_ID);
         ipsContainerEntry.setOptionalPath(MY_OPTIONAL_PATH);
-        when(path.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getIpsModel()).thenReturn(ipsModel);
-        when(ipsProject.getName()).thenReturn("ipsProject");
+        lenient().when(path.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(ipsProject.getIpsModel()).thenReturn(ipsModel);
+        lenient().when(ipsProject.getName()).thenReturn("ipsProject");
 
         new IpsObjectPathSearchContext(ipsProject);
     }

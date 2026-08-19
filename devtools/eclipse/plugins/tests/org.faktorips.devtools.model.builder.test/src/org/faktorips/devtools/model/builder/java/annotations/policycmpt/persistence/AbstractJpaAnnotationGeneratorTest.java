@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
@@ -27,11 +28,8 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class AbstractJpaAnnotationGeneratorTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
@@ -56,7 +54,7 @@ public class AbstractJpaAnnotationGeneratorTest {
     public void setUp() {
         when(ipsPartContainer.getIpsProject()).thenReturn(project);
         when(project.getIpsArtefactBuilderSet()).thenReturn(builderSet);
-        when(modelNode.getIpsObjectPartContainer()).thenReturn(ipsPartContainer);
+        lenient().when(modelNode.getIpsObjectPartContainer()).thenReturn(ipsPartContainer);
     }
 
     @Test

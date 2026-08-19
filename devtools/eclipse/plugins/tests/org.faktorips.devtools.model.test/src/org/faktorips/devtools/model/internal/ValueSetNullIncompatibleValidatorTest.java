@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -22,11 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ValueSetNullIncompatibleValidatorTest {
 
     @Mock
@@ -36,8 +34,8 @@ public class ValueSetNullIncompatibleValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        when(valueSetWithNull.isContainsNull()).thenReturn(true);
-        when(valueSetWithoutNull.isContainsNull()).thenReturn(false);
+        lenient().when(valueSetWithNull.isContainsNull()).thenReturn(true);
+        lenient().when(valueSetWithoutNull.isContainsNull()).thenReturn(false);
     }
 
     @Test

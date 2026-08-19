@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -36,11 +37,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class EnumValuesTablePageElementTest {
 
     @Mock
@@ -80,8 +78,8 @@ public class EnumValuesTablePageElementTest {
         attributeList.add(enumAttribute1);
 
         doReturn(ipsProject).when(enumType).getIpsProject();
-        doReturn(ipsProject).when(enumAttribute1).getIpsProject();
-        doReturn(ipsProject).when(doc).getIpsProject();
+        lenient().doReturn(ipsProject).when(enumAttribute1).getIpsProject();
+        lenient().doReturn(ipsProject).when(doc).getIpsProject();
         doReturn(valuelist).when(enumType).getEnumValues();
         doReturn(attributeList).when(enumType).findAllEnumAttributes(true, ipsProject);
 

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -32,11 +33,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ConfigElementProposalProviderTest {
     @Mock
     private ConfiguredValueSet propertyValue;
@@ -66,18 +64,18 @@ public class ConfigElementProposalProviderTest {
     @BeforeEach
     public void setUp() throws Exception {
         enumValueSet = new EnumValueSet(propertyValue, "ID");
-        when(enumValueSet.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
+        lenient().when(enumValueSet.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
         when(propertyValue.getIpsProject()).thenReturn(ipsProject);
-        when(propertyValue.getIpsObject()).thenReturn(ipsObject);
-        when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
-        when(propertyValue.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
-        when(propertyValue.getValueSet()).thenReturn(new UnrestrictedValueSet(propertyValue, "123"));
-        when(propertyValue.getAllowedValueSetTypes(ipsProject)).thenReturn(
+        lenient().when(propertyValue.getIpsObject()).thenReturn(ipsObject);
+        lenient().when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
+        lenient().when(propertyValue.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
+        lenient().when(propertyValue.getValueSet()).thenReturn(new UnrestrictedValueSet(propertyValue, "123"));
+        lenient().when(propertyValue.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
-        when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
-        doReturn("enumA aaaaa").when(inputFormat).format("aaaaa");
-        doReturn("enumB bbbbb").when(inputFormat).format("bbbbb");
-        doReturn("en um C ccccc").when(inputFormat).format("ccccc");
+        lenient().when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
+        lenient().doReturn("enumA aaaaa").when(inputFormat).format("aaaaa");
+        lenient().doReturn("enumB bbbbb").when(inputFormat).format("bbbbb");
+        lenient().doReturn("en um C ccccc").when(inputFormat).format("ccccc");
         valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat);
     }
 

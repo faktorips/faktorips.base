@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,12 +28,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.osgi.framework.BundleException;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsObjectPathManifestReaderTest {
 
     private static final String MY_BAS_PACK = "myBasPack";
@@ -69,11 +67,11 @@ public class IpsObjectPathManifestReaderTest {
     @BeforeEach
     public void mockIpsProjectAndFolders() {
         AProject project = mock(AProject.class);
-        when(ipsProject.getProject()).thenReturn(project);
-        when(myObjectDir.getProjectRelativePath()).thenReturn(Path.of(MY_OBJECT_DIR));
-        when(project.getFolder(MY_OBJECT_DIR)).thenReturn(myObjectDir);
-        when(project.getFolder(MY_SRC_OUT)).thenReturn(mySrcOut);
-        when(project.getFolder(MY_RESOURCE_OUT)).thenReturn(myResourceOut);
+        lenient().when(ipsProject.getProject()).thenReturn(project);
+        lenient().when(myObjectDir.getProjectRelativePath()).thenReturn(Path.of(MY_OBJECT_DIR));
+        lenient().when(project.getFolder(MY_OBJECT_DIR)).thenReturn(myObjectDir);
+        lenient().when(project.getFolder(MY_SRC_OUT)).thenReturn(mySrcOut);
+        lenient().when(project.getFolder(MY_RESOURCE_OUT)).thenReturn(myResourceOut);
     }
 
     @BeforeEach

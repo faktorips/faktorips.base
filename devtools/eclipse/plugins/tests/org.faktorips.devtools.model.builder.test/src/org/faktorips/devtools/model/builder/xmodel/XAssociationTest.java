@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,11 +34,8 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XAssociationTest {
 
     @Mock
@@ -60,13 +58,12 @@ public class XAssociationTest {
 
     @BeforeEach
     public void initMocks() {
-        when(association.getTargetRoleSingular()).thenReturn("singular");
-        when(association.getTargetRolePlural()).thenReturn("plural");
-        when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
-        when(xAssociation.getIpsProject()).thenReturn(ipsProject);
-        doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
-        doReturn(modelContext).when(xAssociation).getContext();
-        doReturn(modelService).when(xAssociation).getModelService();
+        lenient().when(association.getTargetRoleSingular()).thenReturn("singular");
+        lenient().when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
+        lenient().when(xAssociation.getIpsProject()).thenReturn(ipsProject);
+        lenient().doReturn(new JavaNamingConvention()).when(xAssociation).getJavaNamingConvention();
+        lenient().doReturn(modelContext).when(xAssociation).getContext();
+        lenient().doReturn(modelService).when(xAssociation).getModelService();
     }
 
     @Test
@@ -188,8 +185,8 @@ public class XAssociationTest {
 
     private XProductCmptClass initMocksForGetNameTests() {
         XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class, CALLS_REAL_METHODS);
-        doReturn(xProductCmptClass).when(xAssociation).getTargetModelNode();
-        doReturn("ITargetType").when(xProductCmptClass).getPublishedInterfaceName();
+        lenient().doReturn(xProductCmptClass).when(xAssociation).getTargetModelNode();
+        lenient().doReturn("ITargetType").when(xProductCmptClass).getPublishedInterfaceName();
         return xProductCmptClass;
     }
 

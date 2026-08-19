@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -35,11 +36,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
 
     @Mock
@@ -70,25 +68,25 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
 
         container = mock(IIpsObjectPathContainer.class);
         List<IIpsObjectPathEntry> containerEntries = Arrays.asList(mock(IIpsObjectPathEntry.class));
-        when(container.resolveEntries()).thenReturn(containerEntries);
+        lenient().when(container.resolveEntries()).thenReturn(containerEntries);
 
         IIpsContainerEntry containerEntry = mock(IIpsContainerEntry.class);
-        when(containerEntry.getIpsObjectPathContainer()).thenReturn(container);
-        when(containerEntry.isContainer()).thenReturn(true);
+        lenient().when(containerEntry.getIpsObjectPathContainer()).thenReturn(container);
+        lenient().when(containerEntry.isContainer()).thenReturn(true);
 
         IIpsObjectPathEntry entry = mock(IIpsObjectPathEntry.class);
-        when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
+        lenient().when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
         IIpsObjectPathEntry entry2 = mock(IIpsObjectPathEntry.class);
-        when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
+        lenient().when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
         List<IIpsObjectPathEntry> ipsObjectPathEntries = Arrays.asList(entry, entry2);
-        when(containerEntry.resolveEntries()).thenReturn(ipsObjectPathEntries);
+        lenient().when(containerEntry.resolveEntries()).thenReturn(ipsObjectPathEntries);
 
         emptyContainer = mock(IIpsObjectPathContainer.class);
-        when(emptyContainer.resolveEntries()).thenReturn(new ArrayList<>());
+        lenient().when(emptyContainer.resolveEntries()).thenReturn(new ArrayList<>());
 
         IIpsContainerEntry emptyContainerEntry = mock(IIpsContainerEntry.class);
-        when(emptyContainerEntry.getIpsObjectPathContainer()).thenReturn(emptyContainer);
-        when(emptyContainerEntry.isContainer()).thenReturn(true);
+        lenient().when(emptyContainerEntry.getIpsObjectPathContainer()).thenReturn(emptyContainer);
+        lenient().when(emptyContainerEntry.isContainer()).thenReturn(true);
 
         IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[projectEntries.length + 2];
         System.arraycopy(projectEntries, 0, entries, 0, projectEntries.length);
@@ -98,7 +96,7 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
         doReturn(entries).when(spiedIpsObjectPath).getEntries();
         doReturn(spiedIpsObjectPath).when(project).getIpsObjectPath();
 
-        doReturn(spiedIpsObjectPath).when(((IpsProject)project)).getIpsObjectPathInternal();
+        lenient().doReturn(spiedIpsObjectPath).when(((IpsProject)project)).getIpsObjectPathInternal();
 
     }
 

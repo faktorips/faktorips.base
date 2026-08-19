@@ -15,6 +15,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -33,15 +34,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.w3c.dom.Element;
 
 /**
  * @see AttributeValue for validation tests
  */
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class TemplateValueSettingsTest {
 
     @Mock
@@ -60,9 +58,9 @@ public class TemplateValueSettingsTest {
 
     @BeforeEach
     public void setUp() {
-        when(attrValue.getIpsProject()).thenReturn(ipsProject);
-        when(attrValue.isPartOfTemplateHierarchy()).thenReturn(true);
-        when(attrValue.findTemplateProperty(ipsProject)).thenReturn(templateValue);
+        lenient().when(attrValue.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attrValue.isPartOfTemplateHierarchy()).thenReturn(true);
+        lenient().when(attrValue.findTemplateProperty(ipsProject)).thenReturn(templateValue);
         handler = new TemplateValueSettings(attrValue);
     }
 
@@ -142,6 +140,7 @@ public class TemplateValueSettingsTest {
     @Test
     public void testValidate_InheritedLinkWithMissingTemplate() {
         IProductCmptLink link = mock(IProductCmptLink.class);
+        lenient().when(link.getIpsProject()).thenReturn(ipsProject);
         when(link.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
         when(link.findTemplateProperty(ipsProject)).thenReturn(null);
 
@@ -153,6 +152,7 @@ public class TemplateValueSettingsTest {
     public void testValidate_InheritedLinkWithTemplate() {
         IProductCmptLink link = mock(IProductCmptLink.class);
         IProductCmptLink templateLink = mock(IProductCmptLink.class);
+        lenient().when(link.getIpsProject()).thenReturn(ipsProject);
         when(link.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
         when(link.findTemplateProperty(ipsProject)).thenReturn(templateLink);
 
@@ -163,6 +163,7 @@ public class TemplateValueSettingsTest {
     @Test
     public void testValidate_UndefinedLinkWithMissingTemplate() {
         IProductCmptLink link = mock(IProductCmptLink.class);
+        lenient().when(link.getIpsProject()).thenReturn(ipsProject);
         when(link.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
         when(link.findTemplateProperty(ipsProject)).thenReturn(null);
 
@@ -174,6 +175,7 @@ public class TemplateValueSettingsTest {
     public void testValidate_UndefinedLinkWithTemplate() {
         IProductCmptLink link = mock(IProductCmptLink.class);
         IProductCmptLink templateLink = mock(IProductCmptLink.class);
+        lenient().when(link.getIpsProject()).thenReturn(ipsProject);
         when(link.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
         when(link.findTemplateProperty(ipsProject)).thenReturn(templateLink);
 

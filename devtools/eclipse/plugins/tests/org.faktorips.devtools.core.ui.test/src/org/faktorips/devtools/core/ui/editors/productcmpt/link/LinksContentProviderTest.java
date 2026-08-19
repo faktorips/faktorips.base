@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,11 +42,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class LinksContentProviderTest {
 
     private IProductCmptGeneration gen;
@@ -78,11 +76,11 @@ public class LinksContentProviderTest {
 
         provider = new LinksContentProvider();
 
-        when(link1.getAssociation()).thenReturn("dummyAssociation");
-        when(link2.getAssociation()).thenReturn("dummyAssociation");
-        when(link3.getAssociation()).thenReturn("dummyAssociation");
-        when(staticLink1.getAssociation()).thenReturn("staticDummyAssociation");
-        when(staticLink2.getAssociation()).thenReturn("staticDummyAssociation");
+        lenient().when(link1.getAssociation()).thenReturn("dummyAssociation");
+        lenient().when(link2.getAssociation()).thenReturn("dummyAssociation");
+        lenient().when(link3.getAssociation()).thenReturn("dummyAssociation");
+        lenient().when(staticLink1.getAssociation()).thenReturn("staticDummyAssociation");
+        lenient().when(staticLink2.getAssociation()).thenReturn("staticDummyAssociation");
         links = new ArrayList<>();
         links.add(link1);
         links.add(link2);
@@ -91,8 +89,8 @@ public class LinksContentProviderTest {
         staticLinks.add(staticLink1);
         staticLinks.add(staticLink2);
 
-        when(gen.getProductCmpt()).thenReturn(prodCmpt);
-        when(gen.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(gen.getProductCmpt()).thenReturn(prodCmpt);
+        lenient().when(gen.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test

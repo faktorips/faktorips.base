@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -39,11 +40,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class XProductCmptGenerationClassTest {
 
     @Mock
@@ -71,12 +69,12 @@ public class XProductCmptGenerationClassTest {
 
     @BeforeEach
     public void initMocks() {
-        when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
-        when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
-        when(productCmptType.getQualifiedName()).thenReturn("ProductCmptType");
-        when(productCmptType.getIpsProject()).thenReturn(ipsProject);
-        when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
-        when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
+        lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+        lenient().when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
+        lenient().when(productCmptType.getQualifiedName()).thenReturn("ProductCmptType");
+        lenient().when(productCmptType.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
+        lenient().when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
         xProductCmptGenerationClass = new XProductCmptGenerationClass(productCmptType, modelContext, modelService);
     }
 
@@ -84,9 +82,9 @@ public class XProductCmptGenerationClassTest {
     public void testGetClassHierarchy_productCmptGenerationClass() throws Exception {
         XProductCmptGenerationClass xSuperType = mock(XProductCmptGenerationClass.class);
         XProductCmptGenerationClass xSuperSuperType = mock(XProductCmptGenerationClass.class);
-        when(modelService.getModelNode(superType, XProductCmptGenerationClass.class, modelContext))
+        lenient().when(modelService.getModelNode(superType, XProductCmptGenerationClass.class, modelContext))
                 .thenReturn(xSuperType);
-        when(modelService.getModelNode(superSuperType, XProductCmptGenerationClass.class, modelContext))
+        lenient().when(modelService.getModelNode(superSuperType, XProductCmptGenerationClass.class, modelContext))
                 .thenReturn(xSuperSuperType);
 
         Set<XProductCmptGenerationClass> superclasses = xProductCmptGenerationClass.getClassHierarchy();
