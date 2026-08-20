@@ -424,6 +424,9 @@ public enum Relevance {
     }
 
     private static ValueSet<?> changeRangeRelevance(ValueSet<?> valueSet, boolean containsNull) {
+        if (valueSet.isEmpty()) {
+            return valueSet;
+        }
         if (valueSet instanceof BigDecimalRange bigDecimalRange) {
             return BigDecimalRange.valueOf(bigDecimalRange.getLowerBound(), bigDecimalRange.getUpperBound(),
                     bigDecimalRange.getStep(), containsNull);

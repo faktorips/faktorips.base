@@ -12,6 +12,7 @@ package org.faktorips.runtime.validation;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
@@ -38,7 +39,10 @@ import org.faktorips.runtime.model.type.ValueSetKind;
 import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.faktorips.sample.model.TestConcreteJavaEnum;
 import org.faktorips.values.Money;
+import org.faktorips.valueset.BigDecimalRange;
+import org.faktorips.valueset.DecimalRange;
 import org.faktorips.valueset.DerivedValueSet;
+import org.faktorips.valueset.DoubleRange;
 import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.LongRange;
 import org.faktorips.valueset.MoneyRange;
@@ -801,6 +805,81 @@ public class RelevanceTest {
                 Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithMoneyRange(),
                         TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE),
                 is(MoneyRange.valueOf((Money)null, null, null, true)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeRange_Empty() {
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithIntegerRange(),
+                        TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE, IntegerRange.empty()),
+                is(IntegerRange.empty()));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeRange_Empty_AllRangeTypes() {
+        TestPolicyWithIntegerRange modelObject = new TestPolicyWithIntegerRange();
+        String property = TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE;
+
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, property, BigDecimalRange.empty()),
+                is(BigDecimalRange.empty()));
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, property, DecimalRange.empty()),
+                is(DecimalRange.empty()));
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, property, DoubleRange.empty()),
+                is(DoubleRange.empty()));
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, property, IntegerRange.empty()),
+                is(IntegerRange.empty()));
+        assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, property, LongRange.empty()),
+                is(LongRange.empty()));
+        assertThat(
+                Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithMoneyRange(),
+                        TestPolicyWithMoneyRange.PROPERTY_MONEY_ATTRIBUTE_WITH_RANGE, MoneyRange.empty()),
+                is(MoneyRange.empty()));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeRange_Empty_LowerBoundGreaterThanUpperBound() {
+        IntegerRange rangeWithoutEmptyFlag = IntegerRange.valueOf(5, 1);
+        assertThat(rangeWithoutEmptyFlag.isEmpty(), is(true));
+
+        ValueSet<Integer> valueSet = Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithIntegerRange(),
+                TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE, rangeWithoutEmptyFlag);
+
+        assertThat(valueSet.isEmpty(), is(true));
+        assertThat(valueSet.containsNull(), is(false));
+        assertThat(valueSet, is(IntegerRange.empty()));
+    }
+
+    @Test
+    public void testAsValueSetFor_Optional_ValueSetTypeRange_Empty_ContainsNull() {
+        IntegerRange emptyRangeContainingNull = IntegerRange.valueOf(5, 1, null, true);
+        assertThat(emptyRangeContainingNull.isEmpty(), is(true));
+        assertThat(emptyRangeContainingNull.containsNull(), is(true));
+
+        ValueSet<Integer> valueSet = Relevance.OPTIONAL.asValueSetFor(new TestPolicyWithIntegerRange(),
+                TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE, emptyRangeContainingNull);
+
+        assertThat(valueSet, is(sameInstance(emptyRangeContainingNull)));
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_ValueSetTypeRange_Empty() {
+        ValueSet<Integer> valueSet = Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerRange(),
+                TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE, IntegerRange.empty());
+
+        assertThat(valueSet, is(IntegerRange.empty()));
+    }
+
+    @Test
+    public void testAsValueSetFor_Mandatory_ValueSetTypeRange_Empty_ContainsNull() {
+        IntegerRange emptyRangeContainingNull = IntegerRange.valueOf(5, 1, null, true);
+        assertThat(emptyRangeContainingNull.isEmpty(), is(true));
+        assertThat(emptyRangeContainingNull.containsNull(), is(true));
+
+        ValueSet<Integer> valueSet = Relevance.MANDATORY.asValueSetFor(new TestPolicyWithIntegerRange(),
+                TestPolicyWithIntegerRange.PROPERTY_INTEGER_ATTRIBUTE_WITH_RANGE, emptyRangeContainingNull);
+
+        assertThat(valueSet, is(sameInstance(emptyRangeContainingNull)));
+        assertThat(valueSet.containsNull(), is(true));
     }
 
     @Test
