@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
@@ -20,8 +20,10 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
+import org.mockito.MockitoSession;
 
 public class AbstractParserTest {
 
@@ -37,6 +39,8 @@ public class AbstractParserTest {
     @Mock
     private IMultiLanguageSupport multiLanguageSupport;
 
+    private MockitoSession mockito;
+
     private ParsingContext parsingContext;
 
     public AbstractParserTest() {
@@ -45,8 +49,14 @@ public class AbstractParserTest {
 
     @BeforeEach
     public void mockExpression() throws Exception {
+        mockito = createMocks(this);
         lenient().when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
         parsingContext = new ParsingContext(getExpression(), getIpsProject(), getMultiLanguageSupport());
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     public ParsingContext getParsingContext() {

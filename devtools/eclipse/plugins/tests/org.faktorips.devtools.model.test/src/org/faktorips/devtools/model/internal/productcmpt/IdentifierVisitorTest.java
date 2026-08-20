@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,14 +47,14 @@ import org.faktorips.fl.parser.ASTStringNode;
 import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.SimpleNode;
 import org.faktorips.fl.parser.Token;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IdentifierVisitorTest {
+
 
     private static final int TOKEN_1_COL = 2;
 
@@ -125,15 +126,14 @@ public class IdentifierVisitorTest {
     @Mock
     private IdentifierNode identifierNode2;
 
+    private MockitoSession mockito;
+
     private IdentifierVisitor identifierVisitor;
 
     @BeforeEach
-    public void setUpIdentifierVisitor() {
+    public void setUp() {
+        mockito = createMocks(this);
         identifierVisitor = new IdentifierVisitor("my expression", identifierParser);
-    }
-
-    @BeforeEach
-    public void setUpNodes() {
         aSTIdentifierNode1 = spy(new ASTIdentifierNode(0));
         aSTIdentifierNode2 = spy(new ASTIdentifierNode(0));
 
@@ -208,6 +208,11 @@ public class IdentifierVisitorTest {
         aSTStart.jjtAddChild(aSTEQNode, 0);
 
         setUpIdentifierToken();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     public void setUpIdentifierToken() {

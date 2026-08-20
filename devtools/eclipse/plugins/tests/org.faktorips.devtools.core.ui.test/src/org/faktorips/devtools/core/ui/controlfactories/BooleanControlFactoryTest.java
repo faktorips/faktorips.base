@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -39,10 +40,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
 
     @Mock
@@ -51,19 +50,28 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
     @Mock
     private BooleanControlFactory booleanControlFactory;
 
+    private MockitoSession mockito;
+
     private Shell shell;
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        super.setUp();
+        mockito = createMocks(this);
         booleanControlFactory = new BooleanControlFactory();
         shell = new Shell(Display.getCurrent());
     }
 
     @Override
     @AfterEach
-    public void tearDown() {
-        shell.dispose();
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+            shell.dispose();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

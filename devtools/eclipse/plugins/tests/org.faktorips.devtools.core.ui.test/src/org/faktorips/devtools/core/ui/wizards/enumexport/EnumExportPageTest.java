@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumexport;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -31,15 +32,15 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumExportPageTest {
+
     @Mock
     private IStructuredSelection selection;
     @Mock
@@ -51,16 +52,24 @@ public class EnumExportPageTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @InjectMocks
     private EnumExportPage enumExportPage;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         Field exportedIpsObjectControlField = IpsObjectExportPage.class.getDeclaredField("exportedIpsObjectControl");
         exportedIpsObjectControlField.setAccessible(true);
         exportedIpsObjectControlField.set(enumExportPage, exportedIpsObjectControl);
         lenient().when(enumContent.getIpsProject()).thenReturn(ipsProject);
         lenient().when(enumType.getIpsProject()).thenReturn(ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

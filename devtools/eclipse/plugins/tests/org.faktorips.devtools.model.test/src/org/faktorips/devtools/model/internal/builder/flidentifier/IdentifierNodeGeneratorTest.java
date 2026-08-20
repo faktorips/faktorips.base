@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -24,14 +25,15 @@ import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.Severity;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class IdentifierNodeGeneratorTest {
+
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     IdentifierNodeGenerator<JavaCodeFragment> generator;
@@ -45,13 +47,21 @@ public class IdentifierNodeGeneratorTest {
     @Mock
     private IdentifierNode identifierNode;
 
+    private MockitoSession mockito;
+
     private InvalidIdentifierNode invalidNode;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(new TextRegion("anyIdentifierPart", 0, 17),
                 ipsProject);
         invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", Severity.NONE));
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -73,4 +83,5 @@ public class IdentifierNodeGeneratorTest {
         IdentifierNodeGenerator<JavaCodeFragment> builderFor = generator.getGeneratorFor(invalidNode);
         assertEquals(identtifierNodeBuilder, builderFor);
     }
+
 }

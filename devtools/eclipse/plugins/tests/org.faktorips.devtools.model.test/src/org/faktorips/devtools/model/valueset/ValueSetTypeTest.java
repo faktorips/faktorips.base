@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.valueset;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,19 +20,34 @@ import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@ExtendWith(MockitoExtension.class)
 public class ValueSetTypeTest {
+
 
     private static final String MY_ID = "myId";
     @Mock
     private IValueSetOwner mockOwner;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testUNRESTRICTEDNewValueSet() throws Exception {

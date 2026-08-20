@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,16 +29,16 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryLookup;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Element;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductConfigurationTest {
+
 
     private static final String PODUCT_COMPONENT_ID = "My_PC-ID";
 
@@ -56,10 +57,13 @@ public class ProductConfigurationTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Element element;
 
+    private MockitoSession mockito;
+
     private final Calendar calendar = Calendar.getInstance(ProductConfiguration.TIME_ZONE);
 
     @BeforeEach
     public void createAbstractConfigurableModelObject() throws Exception {
+        mockito = createMocks(this);
         lenient().when(productCmpt.getId()).thenReturn(PODUCT_COMPONENT_ID);
         lenient().when(productCmpt.getRepository()).thenReturn(repository);
         lenient().when(productCmpt.getGenerationBase(calendar)).thenReturn(productCmptGeneration);
@@ -71,6 +75,11 @@ public class ProductConfigurationTest {
 
         lenient().when(repository.getProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
         lenient().when(repository.getProductComponentGeneration(PODUCT_COMPONENT_ID, calendar)).thenReturn(productCmptGeneration);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

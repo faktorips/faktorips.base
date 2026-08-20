@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -21,24 +22,37 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class FixEnumContentStrategyTest extends AbstractIpsEnumPluginTest {
+
     @Mock
     private AssignContentAttributesPage<IEnumType, IEnumAttribute> assignEnumAttributesPage;
+
+    private MockitoSession mockito;
 
     private FixEnumContentStrategy enumStrategy;
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         enumStrategy = new FixEnumContentStrategy(genderEnumContent);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

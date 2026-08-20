@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.enumtype;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,16 +44,18 @@ import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.hamcrest.CoreMatchers;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class EnumAttributeTest {
+
 
     @Mock
     private EnumType enumType;
+
+    private MockitoSession mockito;
 
     private EnumAttribute fooModel;
 
@@ -68,11 +71,17 @@ public class EnumAttributeTest {
 
     @BeforeEach
     public void initModels() throws SecurityException, NoSuchMethodException {
+        mockito = createMocks(this);
         Method fooGetter = MyEnum.class.getMethod("getFoo");
         fooModel = new EnumAttribute(enumType, "foo", fooGetter);
         Method barGetter = MyEnum.class.getMethod("getBar", Locale.class);
         barModel = new EnumAttribute(enumType, "bar", barGetter);
 
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,14 +27,14 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class BooleanValueSetFieldTest {
+
 
     @Mock
     private BooleanValueSetControl control;
@@ -59,12 +60,15 @@ public class BooleanValueSetFieldTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private String id = "ID";
 
     private BooleanValueSetField field;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         when(control.getTrueCheckBox()).thenReturn(trueBox);
         when(control.getFalseCheckBox()).thenReturn(falseBox);
         lenient().when(control.getNullCheckBox()).thenReturn(nullBox);
@@ -72,6 +76,11 @@ public class BooleanValueSetFieldTest {
         lenient().when(ipsModel.getNextPartId(configValueSet)).thenReturn(id);
 
         field = new BooleanValueSetField(configValueSet, control);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

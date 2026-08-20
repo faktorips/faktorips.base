@@ -1,17 +1,19 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -36,7 +38,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
 
@@ -55,35 +57,32 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
     @Mock
     private IProgressMonitor monitor;
 
+    private MockitoSession mockito;
+
     private List<ITimedIpsObject> timedIpsObjects;
 
     private NewGenerationPMO pmo;
 
     private NewGenerationRunnable runnable;
 
-    private AutoCloseable openMocks;
-
     @Override
     @BeforeEach
-    public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        when(timedIpsObject1.getIpsSrcFile()).thenReturn(ipsSrcFile1);
-        when(timedIpsObject2.getIpsSrcFile()).thenReturn(ipsSrcFile2);
+    public void setUp() throws Exception {
+        super.setUp();
+        mockito = createMocks(this);
+        lenient().when(timedIpsObject1.getIpsSrcFile()).thenReturn(ipsSrcFile1);
+        lenient().when(timedIpsObject2.getIpsSrcFile()).thenReturn(ipsSrcFile2);
         timedIpsObjects = Arrays.asList(timedIpsObject1, timedIpsObject2);
 
         pmo = new NewGenerationPMO();
         runnable = new NewGenerationRunnable(pmo, timedIpsObjects);
     }
 
-    @AfterEach
-    public void releaseMocks() throws Exception {
-        openMocks.close();
-    }
-
     @Override
     @AfterEach
     public void tearDown() throws Exception {
-        // nothing to tear down
+        super.tearDown();
+        mockito.finishMocking();
     }
 
     @Test

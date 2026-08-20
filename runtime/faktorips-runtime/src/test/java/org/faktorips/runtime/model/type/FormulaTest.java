@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,18 +32,31 @@ import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsFormula;
 import org.faktorips.runtime.model.annotation.IpsFormulas;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class FormulaTest {
+
 
     private static ProductCmptType productCmptType = IpsModel.getProductCmptType(Product.class);
 
     @Mock
     private IRuntimeRepository repository;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testValidate_RequiredNotSet() {

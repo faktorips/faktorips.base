@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.spy;
@@ -25,14 +26,14 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IndexNodeGeneratorTest {
+
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -52,6 +53,8 @@ public class IndexNodeGeneratorTest {
     @Mock
     private IType target;
 
+    private MockitoSession mockito;
+
     private IndexNodeGenerator indexNodeGenerator;
 
     private IndexNode indexNode;
@@ -60,9 +63,15 @@ public class IndexNodeGeneratorTest {
 
     @BeforeEach
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
+        mockito = createMocks(this);
         nodeFactory = new IdentifierNodeFactory(new TextRegion("IndexBasedAssociationNodeGeneratorTest", 0,
                 "IndexBasedAssociationNodeGeneratorTest".length()), ipsProject);
         indexNodeGenerator = new IndexNodeGenerator(factory, builderSet);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private IndexNode createIndexNode(int index) throws Exception {

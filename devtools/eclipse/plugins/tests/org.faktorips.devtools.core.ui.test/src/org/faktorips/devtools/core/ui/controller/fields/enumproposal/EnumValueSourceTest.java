@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,14 +23,14 @@ import java.util.List;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumValueSourceTest {
+
 
     @Mock
     private IValueSetOwner valueSetOwner;
@@ -37,10 +38,13 @@ public class EnumValueSourceTest {
     private IEnumValueSet valueSet;
     @Mock
     private EnumDatatype datatype;
+
+    private MockitoSession mockito;
     private EnumValueSource enumValueSource;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         enumValueSource = new EnumValueSource(valueSetOwner, datatype);
 
         when(valueSetOwner.getValueSet()).thenReturn(valueSet);
@@ -55,6 +59,11 @@ public class EnumValueSourceTest {
 
         String[] enumDatatypeValues = { "A", "BB", "CCC" };
         lenient().when(datatype.getAllValueIds(true)).thenReturn(enumDatatypeValues);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

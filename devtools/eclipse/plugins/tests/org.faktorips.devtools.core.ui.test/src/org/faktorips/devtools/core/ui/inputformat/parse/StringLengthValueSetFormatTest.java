@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,14 +27,14 @@ import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class StringLengthValueSetFormatTest {
+
 
     @Mock
     private IIpsObject ipsObject;
@@ -56,6 +57,8 @@ public class StringLengthValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
+    private MockitoSession mockito;
+
     private static final String REGULARFORMAT = NLS.bind(Messages.StringLengthValueSetFormat_Description, "10");
     private static final String UNLIMITEDFORMAT = NLS.bind(Messages.StringLengthValueSetFormat_Description,
             Messages.StringLengthValueSetFormat_Unlimited);
@@ -64,9 +67,15 @@ public class StringLengthValueSetFormatTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         format = new StringLengthValueSetFormat(configValueSet, uiPlugin);
 
         lenient().when(configValueSet.getIpsModel()).thenReturn(ipsModel);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

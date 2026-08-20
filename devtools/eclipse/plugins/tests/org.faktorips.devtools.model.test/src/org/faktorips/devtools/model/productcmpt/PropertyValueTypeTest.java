@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,13 +25,14 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.AttributeValue;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class PropertyValueTypeTest {
+
 
     private static final String ANY_VALUE = "anyValue";
 
@@ -57,6 +59,20 @@ public class PropertyValueTypeTest {
 
     @Mock
     private IValidationRuleConfig ruleConfig;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testGetValueComparator_other_eq() throws Exception {

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
@@ -25,15 +26,16 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class RangeValueSetValidatorTest {
+
 
     private static final String ANY_VALUE = "anyValue";
 
@@ -52,8 +54,22 @@ public class RangeValueSetValidatorTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @InjectMocks
     private RangeValueSetValidator rangeValueSetValidator;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testValidate_useCorrectDatatype() throws Exception {

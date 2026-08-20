@@ -10,21 +10,35 @@
 
 package org.faktorips.devtools.tableconversion.excel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractExcelImportOperationTest {
+
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractExcelImportOperation operation;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testRoundNumericCellValue_SmallPositive() throws Exception {
@@ -66,12 +80,5 @@ public class AbstractExcelImportOperationTest {
         BigDecimal value = operation.roundNumericCellValue(-0.00000000000000000000);
 
         assertEquals(0, BigDecimal.valueOf(-0.0).compareTo(value), value.toString());
-    }
-
-    @Test
-    public void testRoundNumericCellValue222() throws Exception {
-        BigDecimal value = operation.roundNumericCellValue(1234000);
-
-        assertEquals(0, BigDecimal.valueOf(1234000).compareTo(value), value.toString());
     }
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -28,14 +29,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractIpsPackageFragmentTest {
+
 
     private static final String MY_PACKAGE = "myPackage";
 
@@ -44,12 +45,20 @@ public class AbstractIpsPackageFragmentTest {
     @Mock
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
+    private MockitoSession mockito;
+
     private AbstractIpsPackageFragment abstractIpsPackageFragment;
 
     @BeforeEach
     public void createAbstractIpsPackageFragment() throws Exception {
+        mockito = createMocks(this);
         abstractIpsPackageFragment = mock(AbstractIpsPackageFragment.class, CALLS_REAL_METHODS);
         lenient().when(abstractIpsPackageFragment.getRoot()).thenReturn(ipsPackageFragmentRoot);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

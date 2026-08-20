@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -21,14 +22,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class DatatypeInputFormatRegistryTest {
+
 
     @Mock
     private IDatatypeInputFormatFactory factory1;
@@ -53,18 +54,26 @@ public class DatatypeInputFormatRegistryTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private Map<Class<? extends ValueDatatype>, IDatatypeInputFormatFactory> map;
 
     private DatatypeInputFormatRegistry inputFormatMap;
 
     @BeforeEach
     public void initMap() {
+        mockito = createMocks(this);
         inputFormatMap = new DatatypeInputFormatRegistry();
         map = inputFormatMap.getInputFormatMap();
         lenient().when(factory1.newInputFormat(datatype1, ipsProject)).thenReturn(result1);
         lenient().when(factory2.newInputFormat(datatype2, ipsProject)).thenReturn(result2);
         map.put(datatype1.getClass(), factory1);
         map.put(datatype2.getClass(), factory2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

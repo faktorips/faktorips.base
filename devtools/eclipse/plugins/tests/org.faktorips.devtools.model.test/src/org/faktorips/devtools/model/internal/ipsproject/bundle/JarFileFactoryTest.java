@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,25 +31,37 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.testsupport.Wait;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class JarFileFactoryTest extends AbstractIpsPluginTest {
 
     private AFile jarFile;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         String folder = getClass().getPackage().getName().replace(".", "/");
         InputStream is = getClass().getClassLoader().getResourceAsStream(folder + "/helloWorld.jar");
         AProject root = newIpsProject("TestJarLoading").getProject();
         jarFile = root.getFile(Path.of("helloWorld.jar"));
         jarFile.create(is, null);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

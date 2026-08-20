@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.type.read;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,13 +29,14 @@ import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementC
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NamesAccessor;
 import org.faktorips.runtime.util.MessagesHelper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class SimpleGetterMethodCollectorTest {
+
 
     @Mock
     ModelElement parentModel;
@@ -47,6 +49,18 @@ public class SimpleGetterMethodCollectorTest {
 
     @Mock
     private NamesAccessor<ParentAnnotation> namesAccessor;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testGetNames() {

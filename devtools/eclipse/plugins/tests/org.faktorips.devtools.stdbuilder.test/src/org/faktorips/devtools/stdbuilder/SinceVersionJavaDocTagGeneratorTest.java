@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -18,17 +19,30 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.java.annotations.SinceVersionJavaDocTagGenerator;
 import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class SinceVersionJavaDocTagGeneratorTest {
+
 
     @Mock
     private AbstractGeneratorModelNode modelNode;
 
+    private MockitoSession mockito;
+
     private SinceVersionJavaDocTagGenerator generator = new SinceVersionJavaDocTagGenerator();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCreateAnnotation_withSinceVersion() throws Exception {

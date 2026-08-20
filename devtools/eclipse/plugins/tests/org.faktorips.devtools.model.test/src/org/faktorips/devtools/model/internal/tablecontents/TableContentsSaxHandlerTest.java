@@ -10,30 +10,39 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.xml.sax.Attributes;
 
-@ExtendWith(MockitoExtension.class)
 public class TableContentsSaxHandlerTest {
+
 
     private static final String MY_ID = "myID";
 
     @Mock
     private TableContents tableContents;
 
+    private MockitoSession mockito;
+
     private TableContentsSaxHandler tableContentsSaxHandler;
 
     @BeforeEach
     public void createTableContentsSaxHandler() throws Exception {
+        mockito = createMocks(this);
         tableContentsSaxHandler = new TableContentsSaxHandler(tableContents, true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

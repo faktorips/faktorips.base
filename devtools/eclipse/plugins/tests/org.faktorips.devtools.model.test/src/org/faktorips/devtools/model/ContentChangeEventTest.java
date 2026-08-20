@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
@@ -18,13 +19,14 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class ContentChangeEventTest {
+
 
     @Mock
     private IIpsObjectPart part;
@@ -41,10 +43,13 @@ public class ContentChangeEventTest {
     @Mock
     private IIpsObjectPart unrelatedPart;
 
+    private MockitoSession mockito;
+
     private ContentChangeEvent event;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         lenient().when(part.getParent()).thenReturn(partContainer);
         lenient().when(partContainer.getParent()).thenReturn(ipsObject);
 
@@ -54,6 +59,11 @@ public class ContentChangeEventTest {
         lenient().when(part.getIpsSrcFile()).thenReturn(srcFile);
         lenient().when(partContainer.getIpsSrcFile()).thenReturn(srcFile);
         lenient().when(ipsObject.getIpsSrcFile()).thenReturn(srcFile);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

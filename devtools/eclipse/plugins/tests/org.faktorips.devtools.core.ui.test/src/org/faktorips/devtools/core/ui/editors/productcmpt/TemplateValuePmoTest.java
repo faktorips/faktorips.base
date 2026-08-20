@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,14 +22,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TemplateValuePmoTest {
+
     @Mock
     private IAttributeValue value;
     @Mock
@@ -40,10 +41,13 @@ public class TemplateValuePmoTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private TemplateValuePmo<IPropertyValue> templateValuePmo;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(value.getTemplatedValueContainer()).thenReturn(container);
         when(value.getIpsProject()).thenReturn(ipsProject);
         lenient().when(container.getTemplate()).thenReturn("qualified.TemplateName");
@@ -52,6 +56,11 @@ public class TemplateValuePmoTest {
         lenient().when(templateContainer.getName()).thenReturn("TemplateName");
 
         templateValuePmo = spy(new TemplateValuePmo<IPropertyValue>(value, null));
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

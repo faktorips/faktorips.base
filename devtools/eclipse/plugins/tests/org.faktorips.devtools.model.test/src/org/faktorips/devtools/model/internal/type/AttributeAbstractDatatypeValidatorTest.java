@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.type;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,14 +21,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AttributeAbstractDatatypeValidatorTest {
+
     @Mock
     private IAttribute attribute;
 
@@ -40,11 +41,19 @@ public class AttributeAbstractDatatypeValidatorTest {
     @Mock
     private IType type;
 
+    private MockitoSession mockito;
+
     private AttributeAbstractDatatypeValidator attributeAbstractDatatypeValidator;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         attributeAbstractDatatypeValidator = new AttributeAbstractDatatypeValidator(attribute, type, ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

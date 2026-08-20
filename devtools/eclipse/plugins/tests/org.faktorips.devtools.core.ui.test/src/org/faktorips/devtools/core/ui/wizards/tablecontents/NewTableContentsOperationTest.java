@@ -1,21 +1,23 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,12 +45,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     @Mock
     private IProgressMonitor monitor;
+
+    private MockitoSession mockito;
 
     private IIpsProject ipsProject;
 
@@ -56,13 +60,11 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     private NewTableContentsPMO pmo = new NewTableContentsPMO();
 
-    private AutoCloseable openMocks;
-
     @Override
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         ipsProject = newIpsProject();
 
         tableContents = newTableContents(ipsProject, "TestTableContent");
@@ -71,7 +73,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Override
@@ -259,7 +261,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     private NewTableContentsPMO mockPMO(ITableContentUsage tableUsage, boolean autosafe) {
         NewTableContentsPMO mockPmo = mock(NewTableContentsPMO.class);
         when(mockPmo.getAddToTableUsage()).thenReturn(tableUsage);
-        when(mockPmo.isAutoSaveAddToFile()).thenReturn(autosafe);
+        lenient().when(mockPmo.isAutoSaveAddToFile()).thenReturn(autosafe);
         return mockPmo;
     }
 
@@ -269,8 +271,8 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         when(tableUsage.getPropertyValueContainer()).thenReturn(propertyValueContainer);
         when(propertyValueContainer.getIpsSrcFile()).thenReturn(newProductCmptGeneration().getIpsSrcFile());
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        when(ipsSrcFile.isDirty()).thenReturn(dirty);
-        when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        lenient().when(ipsSrcFile.isDirty()).thenReturn(dirty);
+        lenient().when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
         return tableUsage;
     }
 }

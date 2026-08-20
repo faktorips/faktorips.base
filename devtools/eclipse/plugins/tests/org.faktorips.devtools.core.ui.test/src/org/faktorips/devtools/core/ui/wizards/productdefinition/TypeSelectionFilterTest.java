@@ -1,19 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class TypeSelectionFilterTest {
 
@@ -44,20 +45,20 @@ public class TypeSelectionFilterTest {
     @Mock
     private Object parentObject;
 
-    private AutoCloseable openMocks;
+    private MockitoSession mockito;
 
     @BeforeEach
     public void setUp() throws Exception {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         ILabelProvider labelProvider = mock(ILabelProvider.class);
-        when(viewer.getLabelProvider()).thenReturn(labelProvider);
-        when(labelProvider.getText(ipsObject)).thenReturn(existingIpsElementName);
+        lenient().when(viewer.getLabelProvider()).thenReturn(labelProvider);
+        lenient().when(labelProvider.getText(ipsObject)).thenReturn(existingIpsElementName);
         filter = new TypeSelectionFilter();
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

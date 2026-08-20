@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,12 +39,12 @@ import org.faktorips.devtools.model.internal.ipsobject.ExtensionPropertyHandler.
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,8 +52,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-@ExtendWith(MockitoExtension.class)
 public class ExtensionPropertyHandlerTest {
+
 
     private static final String MY_ID = "anyId";
 
@@ -102,11 +103,14 @@ public class ExtensionPropertyHandlerTest {
     @Mock
     private StringExtensionPropertyDefinition stringPropDef;
 
+    private MockitoSession mockito;
+
     @InjectMocks
     private ExtensionPropertyHandler extensionPropertyHandler;
 
     @BeforeEach
-    public void setUpExtPropDefAndPart() {
+    public void setUp() {
+        mockito = createMocks(this);
         lenient().doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
         lenient().doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID2);
         lenient().doReturn(Arrays.asList(extPropDef, extPropDef2)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
@@ -117,10 +121,7 @@ public class ExtensionPropertyHandlerTest {
 
         lenient().when(extPropDef2.getPropertyId()).thenReturn(MY_ID2);
         lenient().when(extPropDef2.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE2);
-    }
 
-    @BeforeEach
-    public void setUpXmlElementAndDocument() {
         lenient().when(xmlRootElement.getOwnerDocument()).thenReturn(xmlDocument);
         lenient().when(xmlExtPropElement.getOwnerDocument()).thenReturn(xmlDocument);
         lenient().when(xmlDocument.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT))
@@ -134,6 +135,11 @@ public class ExtensionPropertyHandlerTest {
         lenient().when(xmlDocument.importNode(xmlValueElement, true)).thenReturn(xmlValueElement);
 
         lenient().when(documentBuilder.newDocument()).thenReturn(xmlDocument);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -526,4 +532,5 @@ public class ExtensionPropertyHandlerTest {
 
         assertEquals(0, map.values().size());
     }
+
 }

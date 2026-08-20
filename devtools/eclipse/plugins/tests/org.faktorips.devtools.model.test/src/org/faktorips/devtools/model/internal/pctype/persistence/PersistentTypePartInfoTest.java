@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,27 +20,39 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-@ExtendWith(MockitoExtension.class)
 public class PersistentTypePartInfoTest extends PersistenceIpsTest {
 
     private IPolicyCmptTypeAttribute pcTypePart;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
 
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         pcTypePart = policyCmptType.newPolicyCmptTypeAttribute();
         pcTypePart.getPersistenceAttributeInfo().setTransient(false);
         pcTypePart.setName("attr1");
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

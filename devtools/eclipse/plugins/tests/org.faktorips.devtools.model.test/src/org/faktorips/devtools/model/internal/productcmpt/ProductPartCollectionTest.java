@@ -10,19 +10,20 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.verify;
 
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductPartCollectionTest {
+
 
     @Mock
     private ProductCmptLinkCollection productCmptLinkCollection;
@@ -30,11 +31,19 @@ public class ProductPartCollectionTest {
     @Mock
     private PropertyValueCollection propertyValueCollection;
 
+    private MockitoSession mockito;
+
     private ProductPartCollection productPartCollection;
 
     @BeforeEach
     public void createProductPartCollection() throws Exception {
+        mockito = createMocks(this);
         productPartCollection = new ProductPartCollection(propertyValueCollection, productCmptLinkCollection);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -6,8 +6,7 @@ Bundle-Version: 27.1.0.qualifier
 Fragment-Host: org.faktorips.devtools.core
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core;bundle-version="3.4.0",
- org.hamcrest;bundle-version="3.0",
- org.mockito.junit-jupiter
+ org.hamcrest;bundle-version="3.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Faktor Zehn GmbH
@@ -55,13 +54,12 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.util,
  org.faktorips.values,
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
- org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
  org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
- org.mockito.junit.jupiter,
- org.mockito.quality,
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
  org.mockito,
  org.mockito.invocation,
  org.mockito.junit,
+ org.mockito.quality,
  org.mockito.stubbing,
  org.mockito.verification

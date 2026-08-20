@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -25,14 +26,14 @@ import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumerationProposalProviderTest {
+
 
     private static final String DEFAULT_VALUE_REPRESENTATION = Messages.DefaultValueRepresentation_EditField;
 
@@ -53,8 +54,11 @@ public class EnumerationProposalProviderTest {
     @Mock
     private UnrestrictedValueSet unrestrictedValueSet;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         enumProposalProvider = new EnumerationProposalProvider(enumDatatype, owner, inputFormat);
 
         lenient().when(owner.getValueSet()).thenReturn(enumValueSet);
@@ -72,6 +76,11 @@ public class EnumerationProposalProviderTest {
 
         lenient().when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { "xxxxx", "yyyyy", "zzzzz", null });
         lenient().when(enumDatatype.isEnum()).thenReturn(true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

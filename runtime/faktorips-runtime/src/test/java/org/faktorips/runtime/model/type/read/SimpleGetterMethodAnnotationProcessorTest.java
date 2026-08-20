@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.type.read;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -19,16 +20,29 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.NameAccessor;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class SimpleGetterMethodAnnotationProcessorTest {
+
 
     @Mock
     private NameAccessor<DummyAnnotation> nameAccessor;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testProcess() throws SecurityException, NoSuchMethodException {

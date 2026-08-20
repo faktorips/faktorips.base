@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
@@ -33,13 +34,13 @@ import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class JdtClasspathEntryCreatorTest {
+
 
     @Mock
     private IClasspathEntry entry;
@@ -77,12 +78,20 @@ public class JdtClasspathEntryCreatorTest {
     @Mock
     private MessageList bundleMessageList;
 
+    private MockitoSession mockito;
+
     private EntryCreator entryCreator;
 
     @BeforeEach
     public void createJdtClasspathEntryCreator() throws Exception {
+        mockito = createMocks(this);
         entryCreator = new EntryCreator(entry, ipsObjectPath);
         entryCreator.setReferenceFactory(referenceFactory);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

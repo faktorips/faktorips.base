@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.versionmanager.util;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -31,13 +32,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
-@ExtendWith(MockitoExtension.class)
 public class ManifestUtilTest {
 
     @Mock
@@ -51,6 +49,8 @@ public class ManifestUtilTest {
 
     @Mock
     private ManifestFactory manifestFactory;
+
+    private MockitoSession mockito;
 
     private static final String MY_REQUIRE_BUNDLE = "my.Require.Bundle";
     private static final String MY_REQUIRE_BUNDLE_VERSION = MY_REQUIRE_BUNDLE + ";"
@@ -71,18 +71,16 @@ public class ManifestUtilTest {
     private static final VersionRange RANGE1 = new VersionRange(VERSION_3_10, true, VERSION_3_11, true);
     private static final VersionRange RANGE2 = new VersionRange(VERSION_3_10, true, VERSION_3_11, false);
 
-    private AutoCloseable openMocks;
-
     @BeforeEach
     public void mockManifest() throws Exception {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         lenient().when(manifest.getMainAttributes()).thenReturn(attributes);
         lenient().when(manifestFactory.loadManifest(file)).thenReturn(manifest);
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

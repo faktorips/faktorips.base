@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,14 +34,14 @@ import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractGeneratorModelNodeTest {
+
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -54,13 +55,21 @@ public class AbstractGeneratorModelNodeTest {
     @Mock
     private IPolicyCmptType type;
 
+    private MockitoSession mockito;
+
     private XClass xClass;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         xClass = new XPolicyCmptClass(type, modelContext, modelService);
         lenient().when(modelContext.addImport(anyString())).thenReturn("dummyImportStatement");
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

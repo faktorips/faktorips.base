@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,15 +30,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XProductAssociationTest {
+
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -63,21 +64,25 @@ public class XProductAssociationTest {
     @Mock
     private XProductCmptGenerationClass xTargetGenerationClass;
 
+    private MockitoSession mockito;
+
     private XProductAssociation xProductAssociation;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         lenient().when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         lenient().when(association.getIpsProject()).thenReturn(ipsProject);
         lenient().when(association.findTarget(ipsProject)).thenReturn(targetCmptType);
         lenient().when(modelService.getModelNode(targetCmptType, XProductCmptGenerationClass.class, modelContext))
                 .thenReturn(xTargetGenerationClass);
         lenient().when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
+        xProductAssociation = new XProductAssociation(association, modelContext, modelService);
     }
 
-    @BeforeEach
-    public void createXProductAssociation() {
-        xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

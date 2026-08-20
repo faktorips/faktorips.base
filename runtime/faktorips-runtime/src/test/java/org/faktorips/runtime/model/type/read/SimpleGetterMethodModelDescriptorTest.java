@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.type.read;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
@@ -19,21 +20,34 @@ import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader.ModelElementCreator;
 import org.faktorips.runtime.util.MessagesHelper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class SimpleGetterMethodModelDescriptorTest {
+
 
     @Mock
     private ModelElementCreator<DummyElement> modelElementCreator;
     @Mock
     private ModelElement parentElement;
+
+    private MockitoSession mockito;
     @InjectMocks
     private SimpleGetterMethodModelDescriptor<DummyElement> simpleGetterMethodModelDescriptor;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCreate() throws Exception {

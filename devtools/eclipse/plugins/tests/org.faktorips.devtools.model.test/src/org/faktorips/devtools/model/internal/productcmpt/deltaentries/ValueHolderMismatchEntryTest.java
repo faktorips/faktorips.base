@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class ValueHolderMismatchEntryTest {
 
@@ -48,16 +49,16 @@ public class ValueHolderMismatchEntryTest {
     @Mock
     private IProductCmptTypeAttribute attribute;
 
-    private AutoCloseable openMocks;
+    private MockitoSession mockito;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

@@ -19,25 +19,38 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.xml.jakarta.ProductConfigurationXmlAdapter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductConfigurationXmlAdapterTest {
+
     @Mock
     IProductComponent productCmpt;
     @Mock
     IRuntimeRepository repository;
+
+    private MockitoSession mockito;
     private ProductConfigurationXmlAdapter xmlAdapter;
 
     @BeforeEach
     public void setUp() {
+        mockito = Mockito.mockitoSession()
+                .initMocks(this)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
         lenient().when(productCmpt.getId()).thenReturn("someId");
         lenient().when(repository.getProductComponent("someId")).thenReturn(productCmpt);
         xmlAdapter = new ProductConfigurationXmlAdapter(repository);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

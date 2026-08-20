@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,13 +26,13 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class ValidationRuleMessagePropertiesTest {
+
 
     private static final String QNAME1 = "myQName";
 
@@ -58,10 +59,18 @@ public class ValidationRuleMessagePropertiesTest {
     @Mock
     private IValidationRule rule3;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void initPcType() {
+        mockito = createMocks(this);
         when(pcType1.getQualifiedName()).thenReturn(QNAME1);
         when(pcType2.getQualifiedName()).thenReturn(QNAME2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void mockRuleProperties(IValidationRule rule, IPolicyCmptType pcType, String ruleName) {

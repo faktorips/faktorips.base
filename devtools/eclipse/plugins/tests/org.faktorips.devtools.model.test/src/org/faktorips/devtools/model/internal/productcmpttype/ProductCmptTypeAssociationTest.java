@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -23,18 +24,18 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.mockito.MockitoSession;
 /**
  * 
  * @author Stefan Widmaier
  */
-@ExtendWith(MockitoExtension.class)
 public class ProductCmptTypeAssociationTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -42,11 +43,25 @@ public class ProductCmptTypeAssociationTest {
     @Mock
     private ProductCmptTypeAssociation derivedUnionMock;
 
+    private MockitoSession mockito;
+
     private ProductCmptTypeAssociation subsetMock;
 
     private ArgumentCaptor<Message> messageCaptor;
 
     private MessageList messageList;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testDerivedUnionStatic_SubsetChanging() {
@@ -96,4 +111,5 @@ public class ProductCmptTypeAssociationTest {
         assertEquals(IProductCmptTypeAssociation.MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH, message.getCode());
         assertEquals(subsetMock, message.getInvalidObjectProperties().get(0).getObject());
     }
+
 }

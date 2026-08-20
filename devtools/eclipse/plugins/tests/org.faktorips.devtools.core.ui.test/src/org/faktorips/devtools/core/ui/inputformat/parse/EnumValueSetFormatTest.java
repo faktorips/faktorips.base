@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,15 +32,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumValueSetFormatTest {
+
 
     @Mock
     private IIpsObject ipsObject;
@@ -59,12 +60,15 @@ public class EnumValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
+    private MockitoSession mockito;
+
     private IEnumValueSet enumValueSet;
 
     private AbstractValueSetFormat enumVSFormat;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         enumVSFormat = new EnumValueSetFormat(configValueSet, uiPlugin);
         enumValueSet = new EnumValueSet(configValueSet, "");
 
@@ -75,6 +79,11 @@ public class EnumValueSetFormatTest {
         lenient().when(configValueSet.getIpsModel()).thenReturn(ipsModel);
         lenient().when(configValueSet.getIpsObject()).thenReturn(ipsObject);
         lenient().when(configValueSet.getValueSet()).thenReturn(enumValueSet);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

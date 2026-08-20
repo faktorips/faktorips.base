@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.verify;
 
 import java.beans.PropertyChangeEvent;
@@ -18,14 +19,14 @@ import java.beans.PropertyChangeListener;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsObjectPartPmoTest {
+
     @Mock
     private IIpsObjectPartContainer ipsObjectPartContainer;
 
@@ -38,11 +39,19 @@ public class IpsObjectPartPmoTest {
     @Mock
     private PropertyChangeEvent propertyChangeEvent;
 
+    private MockitoSession mockito;
+
     private IpsObjectPartPmo ipsObjectPartPmo;
 
     @BeforeEach
     public void setUpIpsObjectPartPmo() {
+        mockito = createMocks(this);
         ipsObjectPartPmo = new IpsObjectPartPmo(part);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

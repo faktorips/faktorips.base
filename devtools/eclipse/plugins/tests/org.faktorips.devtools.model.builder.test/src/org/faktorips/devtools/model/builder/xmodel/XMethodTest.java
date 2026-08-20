@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,14 +21,14 @@ import java.lang.reflect.Modifier;
 
 import org.faktorips.devtools.model.builder.java.JavaBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XMethodTest {
+
 
     @Mock
     private GeneratorModelContext context;
@@ -41,12 +42,20 @@ public class XMethodTest {
     @Mock
     private ModelService modelService;
 
+    private MockitoSession mockito;
+
     private XMethod xMethod;
 
     @BeforeEach
     public void createXMethod() throws Exception {
+        mockito = createMocks(this);
         xMethod = new XMethod(method, context, modelService);
         lenient().when(context.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,17 +22,32 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class StringLengthValueSetValidatorTest {
+
 
     @Mock
     private IValueSetOwner valueSetOwner;
+
+    private MockitoSession mockito;
     private ValueDatatype datatype = new StringDatatype();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testValidate_MSGCODE_UNKNOWN_DATATYPE() {
@@ -61,4 +77,5 @@ public class StringLengthValueSetValidatorTest {
 
         assertThat(list, hasMessageCode(IStringLengthValueSet.MSGCODE_NEGATIVE_VALUE));
     }
+
 }

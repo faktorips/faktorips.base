@@ -10,25 +10,39 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EqualitySearchOperatorTest {
+
 
     @Mock
     private IAttributeValue attributeValue;
 
+    private MockitoSession mockito;
+
     private SingleValueHolder singleValueHolder4 = new SingleValueHolder(attributeValue, "4");
     private SingleValueHolder singleValueHolder5 = new SingleValueHolder(attributeValue, "5");
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testInteger() {

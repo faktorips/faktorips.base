@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
 import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
 import static org.faktorips.testsupport.IpsMatchers.containsNoErrorMessage;
@@ -123,14 +124,14 @@ import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOp
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsProjectTest extends AbstractIpsPluginTest {
+
 
     private static final String ROOT_NAME = "myRootName";
 
@@ -146,15 +147,28 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Mock
     private IIpsPackageFragmentRoot root3;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         ipsProject = (IpsProject)this.newIpsProject();
         root = ipsProject.getIpsPackageFragmentRoots()[0];
 
         baseProject = (IpsProject)this.newIpsProject();
         setPredefinedDatatypesUsed(baseProject, "Integer");
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test
@@ -2613,4 +2627,5 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             throw new UnsupportedOperationException();
         }
     }
+
 }

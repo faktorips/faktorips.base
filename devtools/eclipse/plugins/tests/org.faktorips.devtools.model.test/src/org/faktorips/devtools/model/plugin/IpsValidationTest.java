@@ -1,22 +1,23 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.plugin;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class IpsValidationTest {
 
@@ -39,19 +40,19 @@ public class IpsValidationTest {
     @Mock
     private IpsValidationTask validationTask2;
 
-    private IpsValidation ipsValidation;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private IpsValidation ipsValidation;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         ipsValidation = new IpsValidation();
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -110,13 +111,13 @@ public class IpsValidationTest {
     }
 
     private void addTask(IpsValidationTask task, boolean continueOnError) {
-        when(task.isContinueOnError()).thenReturn(continueOnError);
+        lenient().when(task.isContinueOnError()).thenReturn(continueOnError);
         ipsValidation.addTask(task);
     }
 
     private void associateErrorMessage(IpsValidationTask task, String code) {
         Message message = new Message(code, "text", Message.ERROR);
-        when(task.execute(ipsProject)).thenReturn(message);
+        lenient().when(task.execute(ipsProject)).thenReturn(message);
     }
 
 }

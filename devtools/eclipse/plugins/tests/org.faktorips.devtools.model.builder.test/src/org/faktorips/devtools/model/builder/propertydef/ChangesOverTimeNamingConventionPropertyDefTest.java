@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.propertydef;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -20,14 +21,14 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.runtime.Message;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ChangesOverTimeNamingConventionPropertyDefTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -35,11 +36,19 @@ public class ChangesOverTimeNamingConventionPropertyDefTest {
     @Mock
     private IIpsProjectProperties properties;
 
+    private MockitoSession mockito;
+
     private ChangesOverTimeNamingConventionPropertyDef propertyDef = new ChangesOverTimeNamingConventionPropertyDef();
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

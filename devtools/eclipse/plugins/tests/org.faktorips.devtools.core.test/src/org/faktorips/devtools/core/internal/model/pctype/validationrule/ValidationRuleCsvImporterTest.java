@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,13 +29,13 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleCsvImporter.CsvTableBean;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class ValidationRuleCsvImporterTest {
+
 
     @Mock
     private InputStream contents;
@@ -44,13 +45,21 @@ public class ValidationRuleCsvImporterTest {
     @Mock
     private IIpsPackageFragmentRoot root;
 
+    private MockitoSession mockito;
+
     MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, "", null);
 
     private ValidationRuleCsvImporter validationRuleCsvImporter;
 
     @BeforeEach
     public void setUpImporter() {
+        mockito = createMocks(this);
         validationRuleCsvImporter = new ValidationRuleCsvImporter(contents, root, locale);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

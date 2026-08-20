@@ -10,20 +10,21 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.util.TextRegion;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ExpressionDependencyDetailTest {
+
 
     private static final String NEW_NAME = "super";
 
@@ -41,6 +42,8 @@ public class ExpressionDependencyDetailTest {
     @Mock
     private IIpsPackageFragment targetIpsPackageFragment;
 
+    private MockitoSession mockito;
+
     private TextRegion textRegion1 = new TextRegion(EXPRESSION_TEXT, 15, 24);
 
     private TextRegion textRegion2 = new TextRegion(EXPRESSION_TEXT, 25, 35);
@@ -51,7 +54,13 @@ public class ExpressionDependencyDetailTest {
 
     @BeforeEach
     public void createExpressionDependencyDetail() throws Exception {
+        mockito = createMocks(this);
         expressionDependencyDetail = new ExpressionDependencyDetail(expression);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

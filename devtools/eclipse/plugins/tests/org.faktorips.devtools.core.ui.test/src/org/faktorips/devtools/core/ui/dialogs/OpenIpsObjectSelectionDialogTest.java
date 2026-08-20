@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -23,14 +24,14 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
+
 
     private static final String TESTARCHIVE_JAR = "testarchive.jar";
 
@@ -42,6 +43,8 @@ public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
     @Mock
     private IIpsObjectPathEntry archiveEntry;
 
+    private MockitoSession mockito;
+
     private AFile resource;
 
     private IpsObjectSelectionHistory selectionHistory;
@@ -51,15 +54,22 @@ public class OpenIpsObjectSelectionDialogTest extends AbstractIpsPluginTest {
     @BeforeEach
     @Override
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         ipsProject = (IpsProject)newIpsProject();
         lenient().when(archiveEntry.getIpsPackageFragmentRootName()).thenReturn(TESTARCHIVE_JAR);
         resource = ipsProject.getProject().getFile(TESTARCHIVE_JAR);
+        selectionHistory = new IpsObjectSelectionHistory();
     }
 
-    @BeforeEach
-    public void createOpenIpsObjectSelectionDialog() throws Exception {
-        selectionHistory = new IpsObjectSelectionHistory();
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

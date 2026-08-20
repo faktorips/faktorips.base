@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,17 +30,17 @@ import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.values.InternationalString;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-@ExtendWith(MockitoExtension.class)
 public class FormulaHandlerTest extends XmlAbstractTestCase {
+
 
     @Mock
     private Object callerObject;
@@ -53,14 +54,22 @@ public class FormulaHandlerTest extends XmlAbstractTestCase {
     @Mock
     private IFormulaEvaluator formulaEvaluator;
 
+    private MockitoSession mockito;
+
     private FormulaHandler formulaHandler;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         formulaHandler = new FormulaHandler(callerObject, repository);
         lenient().when(repository.getFormulaEvaluatorFactory()).thenReturn(factory);
         lenient().when(factory.createFormulaEvaluator(eq(callerObject), anyMap())).thenReturn(
                 formulaEvaluator);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

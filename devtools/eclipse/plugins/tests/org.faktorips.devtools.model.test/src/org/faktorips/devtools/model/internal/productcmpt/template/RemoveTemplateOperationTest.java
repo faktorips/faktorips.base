@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.template;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,14 +24,14 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class RemoveTemplateOperationTest {
+
 
     @Mock
     private IProductCmpt prodCmpt;
@@ -65,8 +66,11 @@ public class RemoveTemplateOperationTest {
     @Mock
     private IProductCmptLink g2l2;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         when(p1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
         when(p2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
         when(g11.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
@@ -93,6 +97,11 @@ public class RemoveTemplateOperationTest {
         when(gen2.getAllPropertyValues()).thenReturn(g2List);
         when(gen1.getLinksAsList()).thenReturn(g1LinkList);
         when(gen2.getLinksAsList()).thenReturn(g2LinkList);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

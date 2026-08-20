@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -39,14 +40,14 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
+
 
     private static final String IDENTIFIER_PROPOSAL1 = "identifierProposal1";
     private static final String ANY_IDENTIFIER = "TestPolicy";
@@ -62,9 +63,12 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     @Mock
     private IdentifierParser parser;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         ipsProject = (IpsProject)newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
@@ -91,6 +95,16 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         formula = productCmptGen.newFormula();
         formula.setFormulaSignature(formulaSignature.getFormulaName());
         formula.setExpression("expresion");
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

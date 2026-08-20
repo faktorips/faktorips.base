@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -23,15 +24,15 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.util.QNameUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.osgi.framework.BundleException;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsObjectPathManifestReaderTest {
+
 
     private static final String MY_BAS_PACK = "myBasPack";
 
@@ -62,21 +63,25 @@ public class IpsObjectPathManifestReaderTest {
     @Mock
     private AFolder myResourceOut;
 
+    private MockitoSession mockito;
+
     private IpsObjectPathManifestReader objectPathReader;
 
     @BeforeEach
-    public void mockIpsProjectAndFolders() {
+    public void setUp() {
+        mockito = createMocks(this);
         AProject project = mock(AProject.class);
         lenient().when(ipsProject.getProject()).thenReturn(project);
         lenient().when(myObjectDir.getProjectRelativePath()).thenReturn(Path.of(MY_OBJECT_DIR));
         lenient().when(project.getFolder(MY_OBJECT_DIR)).thenReturn(myObjectDir);
         lenient().when(project.getFolder(MY_SRC_OUT)).thenReturn(mySrcOut);
         lenient().when(project.getFolder(MY_RESOURCE_OUT)).thenReturn(myResourceOut);
+        objectPathReader = new IpsObjectPathManifestReader(bundleManifest, ipsProject);
     }
 
-    @BeforeEach
-    public void createIpsObjectPathManifestReader() {
-        objectPathReader = new IpsObjectPathManifestReader(bundleManifest, ipsProject);
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

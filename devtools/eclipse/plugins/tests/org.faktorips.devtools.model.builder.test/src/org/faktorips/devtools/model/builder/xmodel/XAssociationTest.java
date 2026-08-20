@@ -1,19 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
@@ -28,14 +29,13 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XAssociationTest {
 
     @Mock
@@ -56,8 +56,11 @@ public class XAssociationTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void initMocks() {
+        mockito = createMocks(this);
         lenient().when(association.getTargetRoleSingular()).thenReturn("singular");
         lenient().when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         lenient().when(xAssociation.getIpsProject()).thenReturn(ipsProject);
@@ -66,9 +69,13 @@ public class XAssociationTest {
         lenient().doReturn(modelService).when(xAssociation).getModelService();
     }
 
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
     @Test
     public void testGetMethodNameAdd() throws Exception {
-        initMocks();
         when(xAssociation.isOneToMany()).thenReturn(true);
         String addMethodName = xAssociation.getMethodNameSetOrAdd();
         assertEquals("addSingular", addMethodName);
@@ -80,7 +87,6 @@ public class XAssociationTest {
 
     @Test
     public void testGetMethodNameSetter() throws Exception {
-        initMocks();
         String methodName = xAssociation.getMethodNameSetOrAdd();
         assertEquals("setSingular", methodName);
     }

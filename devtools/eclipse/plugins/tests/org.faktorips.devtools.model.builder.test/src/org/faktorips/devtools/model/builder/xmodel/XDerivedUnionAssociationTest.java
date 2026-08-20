@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -26,14 +27,14 @@ import java.util.Set;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XDerivedUnionAssociationTest {
+
 
     private static final String DERIVED_UNION_NAME = "derivedUnion";
 
@@ -49,12 +50,20 @@ public class XDerivedUnionAssociationTest {
     @Mock
     private ModelService modelService;
 
+    private MockitoSession mockito;
+
     private XDerivedUnionAssociation xDerivedUnionAssociation;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         lenient().when(association.getName()).thenReturn(DERIVED_UNION_NAME);
         xDerivedUnionAssociation = new XDerivedUnionAssociation(association, context, modelService);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,23 +36,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     @Mock
     private IProgressMonitor monitor;
 
+    private MockitoSession mockito;
+
     private IIpsProject ipsProject;
 
     private SingletonMockHelper singletonMockHelper;
 
-    private AutoCloseable openMocks;
-
     @Override
     @BeforeEach
-    public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+    public void setUp() throws Exception {
+        super.setUp();
+        mockito = createMocks(this);
         ipsProject = newIpsProject();
         singletonMockHelper = new SingletonMockHelper();
     }
@@ -59,8 +61,12 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
     @Override
     @AfterEach
     public void tearDown() throws Exception {
-        singletonMockHelper.reset();
-        openMocks.close();
+        try {
+            super.tearDown();
+            singletonMockHelper.reset();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

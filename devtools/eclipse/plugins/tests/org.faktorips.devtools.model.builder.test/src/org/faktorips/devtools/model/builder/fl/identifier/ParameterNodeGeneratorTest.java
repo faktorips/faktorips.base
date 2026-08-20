@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -26,14 +27,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ParameterNodeGeneratorTest {
+
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -47,14 +48,22 @@ public class ParameterNodeGeneratorTest {
     @Mock
     private CompilationResult<JavaCodeFragment> contextCompilationResult;
 
+    private MockitoSession mockito;
+
     private ParameterNodeGenerator parameterNodeJavaGenerator;
 
     private ParameterNode parameterNode;
 
     @BeforeEach
     public void createParameterNodeJavaGenerator() throws Exception {
+        mockito = createMocks(this);
         parameterNodeJavaGenerator = new ParameterNodeGenerator(factory, builderSet);
         setUpParameterNode();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void setUpParameterNode() throws Exception {

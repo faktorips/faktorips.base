@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,7 +26,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
 public class MsgCodePmoTest {
 
@@ -55,11 +57,11 @@ public class MsgCodePmoTest {
     @Mock
     private IIpsModel model;
 
-    private AutoCloseable openMocks;
+    private MockitoSession mockito;
 
     @BeforeEach
     public void setUp() throws Exception {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this, Strictness.LENIENT);
 
         when(rule.getIpsModel()).thenReturn(model);
         when(rule.getMessageSeverity()).thenReturn(msgSeverity);
@@ -76,7 +78,7 @@ public class MsgCodePmoTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

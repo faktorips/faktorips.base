@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
@@ -37,14 +38,14 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XProductCmptClassTest {
+
 
     @Mock
     private IProductCmptType productCmptType;
@@ -67,10 +68,13 @@ public class XProductCmptClassTest {
     @Mock
     private IProductCmptType superSuperType;
 
+    private MockitoSession mockito;
+
     private XProductCmptClass xProductCmptClass;
 
     @BeforeEach
     public void initMocks() throws Exception {
+        mockito = createMocks(this);
         lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
         lenient().when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         lenient().when(productCmptType.getIpsProject()).thenReturn(ipsProject);
@@ -78,6 +82,11 @@ public class XProductCmptClassTest {
         lenient().when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
         lenient().when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
         xProductCmptClass = new XProductCmptClass(productCmptType, modelContext, modelService);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

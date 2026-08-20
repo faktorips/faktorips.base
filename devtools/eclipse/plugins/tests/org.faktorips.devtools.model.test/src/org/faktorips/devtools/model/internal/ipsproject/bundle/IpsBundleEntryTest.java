@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,14 +36,14 @@ import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry.Ip
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsBundleEntryTest {
+
 
     @Mock
     private IpsObjectPath ipsObjectPath;
@@ -62,11 +63,19 @@ public class IpsBundleEntryTest {
     @Mock
     private Path bundlePath;
 
+    private MockitoSession mockito;
+
     private IpsBundleEntry ipsBundleEntry;
 
     @BeforeEach
     public void createIpsJarBundleEntry() throws Exception {
+        mockito = createMocks(this);
         ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

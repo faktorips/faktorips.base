@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel.policycmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,17 +36,17 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XPolicyAssociationTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -59,11 +60,19 @@ public class XPolicyAssociationTest {
     @Mock
     private ModelService modelService;
 
+    private MockitoSession mockito;
+
     private XPolicyAssociation assoc;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         assoc = spy(new XPolicyAssociation(typeAssoc, context, modelService));
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

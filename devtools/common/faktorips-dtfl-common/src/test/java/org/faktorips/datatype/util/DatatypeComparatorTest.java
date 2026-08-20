@@ -12,16 +12,19 @@ package org.faktorips.datatype.util;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mockitoSession;
 
 import org.faktorips.datatype.AbstractDatatype;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
 public class DatatypeComparatorTest {
+
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractDatatype datatype1;
@@ -29,7 +32,22 @@ public class DatatypeComparatorTest {
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractDatatype datatype2;
 
+    private MockitoSession mockito;
+
     private final DatatypeComparator comparator = new DatatypeComparator();
+
+    @BeforeEach
+    void setUp() {
+        mockito = mockitoSession()
+                .initMocks(this)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCompareTo_Same() throws Exception {

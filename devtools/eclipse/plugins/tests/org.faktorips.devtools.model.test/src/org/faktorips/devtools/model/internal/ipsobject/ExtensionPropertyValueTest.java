@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -17,17 +18,17 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@ExtendWith(MockitoExtension.class)
 public class ExtensionPropertyValueTest {
+
 
     private String ID = "myId";
 
@@ -57,10 +58,18 @@ public class ExtensionPropertyValueTest {
     @Mock
     private Object defaultObject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUpElement() {
+        mockito = createMocks(this);
         lenient().when(extPropertiesEl.getOwnerDocument()).thenReturn(document);
         lenient().when(document.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(valueElement);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

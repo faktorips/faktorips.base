@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.fl;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class IdentifierFilterTest {
 
@@ -35,13 +36,13 @@ public class IdentifierFilterTest {
     @Mock
     private IFlIdentifierFilterExtension flIdentifierExtension;
 
-    private IdentifierFilter filter;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private IdentifierFilter filter;
 
     @BeforeEach
     public void setUp() throws Exception {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         List<IFlIdentifierFilterExtension> flIdentifierExtensions = new ArrayList<>();
         flIdentifierExtensions.add(flIdentifierExtension);
         filter = new IdentifierFilter(flIdentifierExtensions);
@@ -49,7 +50,7 @@ public class IdentifierFilterTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -28,14 +29,14 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ConfigElementProposalProviderTest {
+
     @Mock
     private ConfiguredValueSet propertyValue;
 
@@ -57,12 +58,15 @@ public class ConfigElementProposalProviderTest {
     @Mock
     private IPolicyCmptTypeAttribute policyCmptTypeAttribute;
 
+    private MockitoSession mockito;
+
     private ConfigElementProposalProvider valueSetProposalProvider;
 
     private EnumValueSet enumValueSet;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         enumValueSet = new EnumValueSet(propertyValue, "ID");
         lenient().when(enumValueSet.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
         when(propertyValue.getIpsProject()).thenReturn(ipsProject);
@@ -77,6 +81,11 @@ public class ConfigElementProposalProviderTest {
         lenient().doReturn("enumB bbbbb").when(inputFormat).format("bbbbb");
         lenient().doReturn("en um C ccccc").when(inputFormat).format("ccccc");
         valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

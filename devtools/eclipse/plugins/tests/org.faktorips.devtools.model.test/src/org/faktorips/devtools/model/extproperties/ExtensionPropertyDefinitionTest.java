@@ -10,19 +10,21 @@
 
 package org.faktorips.devtools.model.extproperties;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ExtensionPropertyDefinitionTest {
+
 
     private static final String VALUE = "test123";
 
@@ -31,6 +33,20 @@ public class ExtensionPropertyDefinitionTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private ExtensionPropertyDefinition extensionPropertyDefinition;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testGetDefaultValueIIpsObjectPartContainer_default() throws Exception {

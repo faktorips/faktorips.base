@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel.policycmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -46,15 +47,15 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XPolicyAttributeTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -77,6 +78,8 @@ public class XPolicyAttributeTest {
     @Mock
     private XPolicyAttribute xSuperAttribute;
 
+    private MockitoSession mockito;
+
     private XPolicyAttribute xPolicyAttribute;
 
     private XPolicyCmptClass policyClass;
@@ -85,6 +88,7 @@ public class XPolicyAttributeTest {
 
     @BeforeEach
     public void createXPolicyAttribute() {
+        mockito = createMocks(this);
         lenient().when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         lenient().when(attribute.getIpsProject()).thenReturn(ipsProject);
         lenient().when(attribute.getDatatype()).thenReturn(ValueDatatype.BOOLEAN.getQualifiedName());
@@ -109,6 +113,11 @@ public class XPolicyAttributeTest {
         lenient().when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
 
         xPolicyAttribute = new XPolicyAttribute(attribute, modelContext, modelService);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

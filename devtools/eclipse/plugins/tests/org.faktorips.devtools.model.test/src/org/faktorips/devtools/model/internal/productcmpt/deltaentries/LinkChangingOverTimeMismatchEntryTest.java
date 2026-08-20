@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -27,14 +28,14 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class LinkChangingOverTimeMismatchEntryTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -79,8 +80,11 @@ public class LinkChangingOverTimeMismatchEntryTest {
     @Mock
     private IProductCmptLink staticLink3;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         setUpLinksForLinkContainer(gen1, link1, link2);
         setUpLinksForLinkContainer(gen2, linkA, linkB);
         setUpLinksForLinkContainer(genLatest, linkLatest1, linkLatest2, linkLatest3);
@@ -103,6 +107,11 @@ public class LinkChangingOverTimeMismatchEntryTest {
 
         lenient().when(assoc2.isChangingOverTime()).thenReturn(true);
         lenient().when(staticAssoc1.isChangingOverTime()).thenReturn(false);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void setUpLink(IProductCmptLink link) {

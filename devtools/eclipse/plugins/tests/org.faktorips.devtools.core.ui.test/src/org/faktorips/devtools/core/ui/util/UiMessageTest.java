@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.util;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
@@ -27,14 +28,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class UiMessageTest {
+
 
     private static final String NAME1 = "name1";
 
@@ -53,18 +54,26 @@ public class UiMessageTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private Message message = new Message("ABC", "text", Message.INFO);
 
     private UiMessage uiMessage = new UiMessage(message);
 
     @BeforeEach
     public void mockProjectAndObjects() {
+        mockito = createMocks(this);
         IIpsProjectProperties properties = mock(IIpsProjectProperties.class);
         lenient().when(properties.getDefaultLanguage()).thenReturn(new SupportedLanguage(Locale.GERMAN));
         lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
         lenient().when(part1.getIpsProject()).thenReturn(ipsProject);
         lenient().when(part2.getIpsProject()).thenReturn(ipsProject);
         lenient().when(part1.getParent()).thenReturn(part2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

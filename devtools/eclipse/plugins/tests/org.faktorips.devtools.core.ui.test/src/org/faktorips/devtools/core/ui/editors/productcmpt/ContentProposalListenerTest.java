@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,14 +18,14 @@ import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ContentProposalListenerTest {
+
 
     @Mock
     ContentProposalAdapter contentProposalAdapter;
@@ -38,13 +39,21 @@ public class ContentProposalListenerTest {
     @Mock
     TextContentAdapter controlContentAdapter;
 
+    private MockitoSession mockito;
+
     ContentProposalListener listener;
 
     @BeforeEach
     public void initMocks() {
+        mockito = createMocks(this);
         when(contentProposalAdapter.getControl()).thenReturn(textControl);
         when(contentProposalAdapter.getControlContentAdapter()).thenReturn(controlContentAdapter);
         listener = new ContentProposalListener(contentProposalAdapter);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

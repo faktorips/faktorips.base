@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -68,21 +69,20 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import org.mockito.MockitoSession;
 /**
  *
  * @author Jan Ortmann
  */
-@ExtendWith(MockitoExtension.class)
 public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest {
+
 
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
@@ -104,9 +104,12 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private MultiValueHolder multiValueHolder;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         ipsProject = newIpsProject();
         superPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
@@ -119,6 +122,16 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         propertyValueContainerToTypeDelta = mock(PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
         lenient().doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test
@@ -1030,4 +1043,5 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         assertThat(formula.getExpressionInternal(), is("bar"));
     }
+
 }

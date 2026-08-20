@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -21,18 +22,19 @@ import java.util.LinkedHashSet;
 import org.faktorips.devtools.model.builder.xmodel.XAssociation;
 import org.faktorips.devtools.model.builder.xmodel.XAttribute;
 import org.faktorips.devtools.model.builder.xmodel.XType;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
 /**
  * This class is merely a String test. Functionality has to be additionally tested in integration
  * tests.
  */
-@ExtendWith(MockitoExtension.class)
 public class AbstractTypeDeclClassAnnGenTest {
+
 
     private static final String ATTRIBUTE1 = "attribute1";
     private static final String ATTRIBUTE2 = "attribute2";
@@ -41,6 +43,8 @@ public class AbstractTypeDeclClassAnnGenTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractTypeDeclClassAnnGen annGen;
+
+    private MockitoSession mockito;
 
     // expected outcomes
     private String annAttribute_single = "@IpsAttributes({\"" + ATTRIBUTE1 + "\"})"
@@ -51,6 +55,16 @@ public class AbstractTypeDeclClassAnnGenTest {
             + System.lineSeparator();
     private String annAssociation_mult = "@IpsAssociations({\"" + ASSOCIATION1 + "\", \"" + ASSOCIATION2 + "\"})"
             + System.lineSeparator();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCreateAnnAttributesNone() {

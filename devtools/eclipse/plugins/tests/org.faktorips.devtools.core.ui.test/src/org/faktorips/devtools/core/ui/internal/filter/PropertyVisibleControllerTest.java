@@ -1,18 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.internal.filter;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -28,26 +30,26 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class PropertyVisibleControllerTest {
 
     @Mock
     private Control outerControl;
 
-    private PropertyVisibleController controller;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private PropertyVisibleController controller;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         controller = new PropertyVisibleController();
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -66,10 +68,10 @@ public class PropertyVisibleControllerTest {
         IProductCmptPropertyFilter filter1 = mock(IProductCmptPropertyFilter.class);
         IProductCmptPropertyFilter filter2 = mock(IProductCmptPropertyFilter.class);
 
-        when(filter1.isFiltered(p1)).thenReturn(false);
-        when(filter2.isFiltered(p1)).thenReturn(true);
-        when(filter1.isFiltered(p2)).thenReturn(false);
-        when(filter2.isFiltered(p2)).thenReturn(false);
+        lenient().when(filter1.isFiltered(p1)).thenReturn(false);
+        lenient().when(filter2.isFiltered(p1)).thenReturn(true);
+        lenient().when(filter1.isFiltered(p2)).thenReturn(false);
+        lenient().when(filter2.isFiltered(p2)).thenReturn(false);
 
         controller.addFilter(filter1);
         controller.addFilter(filter2);
@@ -97,10 +99,10 @@ public class PropertyVisibleControllerTest {
         IProductCmptPropertyFilter filter1 = mock(IProductCmptPropertyFilter.class);
         IProductCmptPropertyFilter filter2 = mock(IProductCmptPropertyFilter.class);
 
-        when(filter1.isFiltered(p1)).thenReturn(false);
-        when(filter2.isFiltered(p1)).thenReturn(true);
-        when(filter1.isFiltered(p2)).thenReturn(false);
-        when(filter2.isFiltered(p2)).thenReturn(false);
+        lenient().when(filter1.isFiltered(p1)).thenReturn(false);
+        lenient().when(filter2.isFiltered(p1)).thenReturn(true);
+        lenient().when(filter1.isFiltered(p2)).thenReturn(false);
+        lenient().when(filter2.isFiltered(p2)).thenReturn(false);
 
         controller.addFilter(filter1);
         controller.addFilter(filter2);
@@ -216,7 +218,7 @@ public class PropertyVisibleControllerTest {
             parent = mock(Composite.class);
         }
 
-        when(control.getParent()).thenReturn(parent);
+        lenient().when(control.getParent()).thenReturn(parent);
         when(control.getLayoutData()).thenReturn(layoutData);
 
         return control;

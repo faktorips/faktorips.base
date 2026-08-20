@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,14 +36,14 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeSt
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class LinkCandidateFilterTest {
+
     private static final String TYPE_NAME = "bla.bla.bla.Type";
     @Mock
     private IProductCmpt prodCmpt;
@@ -57,11 +58,14 @@ public class LinkCandidateFilterTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private LinkCandidateFilter filter;
     private GregorianCalendar validAt;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(prodCmptGeneration);
 
         lenient().when(association.getName()).thenReturn("association");
@@ -74,6 +78,11 @@ public class LinkCandidateFilterTest {
 
         lenient().when(type.isSubtypeOrSameType(eq(type), any(IIpsProject.class))).thenReturn(true);
         validAt = new GregorianCalendar(2013, 4, 1);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

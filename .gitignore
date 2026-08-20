@@ -29,3 +29,7 @@ org.moreunit.prefs
 
 # macOS
 .DS_Store
+
+# Claude
+.superpowers
+.remember

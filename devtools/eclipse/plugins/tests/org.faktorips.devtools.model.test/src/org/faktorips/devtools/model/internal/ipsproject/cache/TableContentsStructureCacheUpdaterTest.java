@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,14 +39,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TableContentsStructureCacheUpdaterTest {
+
 
     private static final String TABLE_STRUCTURE = "myTableStructure";
 
@@ -88,6 +89,8 @@ public class TableContentsStructureCacheUpdaterTest {
     @Mock
     private IIpsObjectPathEntry objectPathEntryBase;
 
+    private MockitoSession mockito;
+
     private TableContentsStructureCache tableContentsStructureCacheA;
 
     private TableContentsStructureCache tableContentsStructureCacheC;
@@ -98,6 +101,7 @@ public class TableContentsStructureCacheUpdaterTest {
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(ipsProjectA.getIpsModel()).thenReturn(ipsModel);
         lenient().when(ipsProjectC.getIpsModel()).thenReturn(ipsModel);
 
@@ -145,6 +149,11 @@ public class TableContentsStructureCacheUpdaterTest {
         lenient().when(objectPathEntryA.isReexported()).thenReturn(true);
 
         lenient().when(objectPathC.getEntry(anyString())).thenReturn(objectPathEntryC);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

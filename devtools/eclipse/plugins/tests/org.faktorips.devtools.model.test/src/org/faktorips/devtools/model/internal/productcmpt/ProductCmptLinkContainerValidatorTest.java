@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,15 +40,16 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.verification.VerificationMode;
 
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class ProductCmptLinkContainerValidatorTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -64,12 +66,15 @@ public class ProductCmptLinkContainerValidatorTest {
     @Mock
     private IProductCmptTypeAssociation association;
 
+    private MockitoSession mockito;
+
     private ProductCmptLinkContainerValidator validator;
     private String validFrom;
     private String productCmptQualifiedName;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         GregorianCalendar validFromDate = new GregorianCalendar(2021, 0, 1);
         validFrom = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
                 .format(validFromDate.getTime());
@@ -100,6 +105,11 @@ public class ProductCmptLinkContainerValidatorTest {
         lenient().when(prodCmpt.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
 
         validator = new ProductCmptLinkContainerValidator(ipsProject, linkContainer);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private MessageList callValidator() {
@@ -207,4 +217,5 @@ public class ProductCmptLinkContainerValidatorTest {
                 new Object[] { productCmptQualifiedName, validFrom });
         assertThat(list.getFirstMessage(Severity.ERROR).getText(), is(text));
     }
+
 }

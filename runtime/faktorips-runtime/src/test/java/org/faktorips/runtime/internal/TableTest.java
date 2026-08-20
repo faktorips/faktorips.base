@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,28 +34,36 @@ import org.faktorips.values.Decimal;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
 /**
  *
  * @author Peter Erzberger
  */
-@ExtendWith(MockitoExtension.class)
 public class TableTest extends XmlAbstractTestCase {
+
 
     private TestTable table;
 
     @Mock
     private TableContentTocEntry tocEntry;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         table = new TestTable();
         lenient().when(tocEntry.getIpsObjectId()).thenReturn(getClass().getName());
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

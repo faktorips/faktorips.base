@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controls.chooser;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -30,15 +31,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class MultiValueSubsetChooserModelTest {
+
 
     private MultiValueHolder multiValueHolder;
     private MultiValueSubsetChooserModel model;
@@ -51,8 +52,11 @@ public class MultiValueSubsetChooserModelTest {
     @Mock
     private IAttributeValue attributeValue;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         setUpMultiValueHolder();
 
         model = new MultiValueSubsetChooserModel(new ArrayList<>(), multiValueHolder, null, attributeValue);
@@ -63,6 +67,11 @@ public class MultiValueSubsetChooserModelTest {
         assertEquals("C", values.get(2).getValue());
         assertEquals("1", values.get(3).getValue());
         assertEquals("2", values.get(4).getValue());
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     protected void setUpMultiValueHolder() {

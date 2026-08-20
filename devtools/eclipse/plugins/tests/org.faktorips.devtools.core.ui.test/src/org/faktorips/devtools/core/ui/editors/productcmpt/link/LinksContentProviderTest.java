@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,14 +38,14 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class LinksContentProviderTest {
+
 
     private IProductCmptGeneration gen;
     private IProductCmpt prodCmpt;
@@ -65,12 +66,15 @@ public class LinksContentProviderTest {
     @Mock
     private LinkViewItem linkViewItem;
 
+    private MockitoSession mockito;
+
     private LinksContentProvider provider;
     private List<ProductCmptLink> links;
     private List<ProductCmptLink> staticLinks;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         gen = mock(ProductCmptGeneration.class, CALLS_REAL_METHODS);
         prodCmpt = mock(ProductCmpt.class, CALLS_REAL_METHODS);
 
@@ -91,6 +95,11 @@ public class LinksContentProviderTest {
 
         lenient().when(gen.getProductCmpt()).thenReturn(prodCmpt);
         lenient().when(gen.getIpsProject()).thenReturn(ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

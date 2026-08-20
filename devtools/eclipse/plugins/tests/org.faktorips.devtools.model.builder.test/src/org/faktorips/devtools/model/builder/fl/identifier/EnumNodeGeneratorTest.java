@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,14 +39,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumNodeGeneratorTest extends AbstractJavaBuilderPluginTest {
+
 
     private static final String ENUM_VALUE_NAME = "EnumValueName";
     private static final String ENUM_VALUE_NAME_LITERAL = ENUM_VALUE_NAME + "_LITERAL";
@@ -60,6 +61,8 @@ public class EnumNodeGeneratorTest extends AbstractJavaBuilderPluginTest {
     @Mock
     private DatatypeHelper helper;
 
+    private MockitoSession mockito;
+
     private EnumDatatype enumDatatype;
 
     private EnumValueNode enumValueNode;
@@ -68,10 +71,21 @@ public class EnumNodeGeneratorTest extends AbstractJavaBuilderPluginTest {
 
     @BeforeEach
     public void createEnumValueNodeJavaBuilder() throws Exception {
+        mockito = createMocks(this);
 
         exprCompiler = ipsProject.newExpressionCompiler();
 
         enumNodeGenerator = new EnumNodeGenerator(factory, builderSet, exprCompiler);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

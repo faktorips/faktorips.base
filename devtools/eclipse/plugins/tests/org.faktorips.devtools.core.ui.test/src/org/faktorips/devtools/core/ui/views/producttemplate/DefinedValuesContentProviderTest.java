@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,14 +27,14 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class DefinedValuesContentProviderTest {
+
 
     @Mock
     private Viewer viewer;
@@ -52,11 +53,14 @@ public class DefinedValuesContentProviderTest {
     @Mock
     private IPropertyValue valueC;
 
+    private MockitoSession mockito;
+
     private DefinedValuesContentProvider definedValuesContentProvider;
     private Histogram<Object, ITemplatedValue> histogram;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         when(valueA1.getPropertyValue()).thenReturn("A");
         when(valueA2.getPropertyValue()).thenReturn("A");
         when(valueA3.getPropertyValue()).thenReturn("A");
@@ -72,6 +76,11 @@ public class DefinedValuesContentProviderTest {
 
         definedValuesContentProvider = new DefinedValuesContentProvider();
         definedValuesContentProvider.inputChanged(viewer, null, pmo);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private Function<ITemplatedValue, Object> getValueFunction() {

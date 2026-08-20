@@ -10,17 +10,19 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class IdentifierProposalCollectorTest {
+
 
     @Mock
     private AbstractIdentifierNodeParser parser;
@@ -29,11 +31,19 @@ public class IdentifierProposalCollectorTest {
     @Mock
     private IdentifierProposal proposal2;
 
+    private MockitoSession mockito;
+
     private IdentifierProposalCollector collector;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         collector = new IdentifierProposalCollector();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

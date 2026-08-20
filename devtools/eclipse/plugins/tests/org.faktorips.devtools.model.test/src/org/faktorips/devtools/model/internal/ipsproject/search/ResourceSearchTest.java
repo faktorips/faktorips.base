@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.search;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -19,14 +20,14 @@ import static org.mockito.Mockito.when;
 import java.io.InputStream;
 
 import org.faktorips.devtools.model.internal.ipsproject.IpsProjectRefEntry;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ResourceSearchTest {
+
 
     private static final String MY_PATH = "myPath";
 
@@ -39,9 +40,17 @@ public class ResourceSearchTest {
     @Mock
     private InputStream inputStream;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         resourceSearch = new ResourceSearch(MY_PATH);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

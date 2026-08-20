@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.dependency;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,14 +19,14 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class DependencyDetailTest {
+
 
     private static final String MY_NEW_NAME = "MyNewName";
 
@@ -39,11 +40,19 @@ public class DependencyDetailTest {
     @Mock
     private IIpsPackageFragment targetIpsPackageFragment;
 
+    private MockitoSession mockito;
+
     private DependencyDetail dependencyDetail;
 
     @BeforeEach
     public void setUpDependencyDetail() {
+        mockito = createMocks(this);
         dependencyDetail = new DependencyDetail(part, propertyName);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel.policycmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,14 +47,14 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XPolicyCmptClassTest {
+
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -88,12 +89,20 @@ public class XPolicyCmptClassTest {
     @Mock
     private XPolicyCmptClass superXType;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void initModelContext() {
+        mockito = createMocks(this);
         GeneratorModelCaches generatorModelCache = new GeneratorModelCaches();
         lenient().when(modelContext.getGeneratorModelCache()).thenReturn(generatorModelCache);
         lenient().when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
         lenient().when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

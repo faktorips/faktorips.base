@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
@@ -30,15 +31,15 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductCmptGenerationToTypeDeltaTest {
+
 
     @Mock
     private IProductCmptGeneration gen;
@@ -70,10 +71,13 @@ public class ProductCmptGenerationToTypeDeltaTest {
     private IProductCmptTypeAssociation assoc1;
     @Mock
     private IProductCmptTypeAssociation assoc2;
+
+    private MockitoSession mockito;
     private ProductCmptGenerationToTypeDelta delta;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         delta = spy(new ProductCmptGenerationToTypeDelta(gen, ipsProject));
 
         List<IProductCmptLink> genLinks = new ArrayList<>();
@@ -101,6 +105,11 @@ public class ProductCmptGenerationToTypeDeltaTest {
         lenient().when(gen.isContainerFor(assoc1)).thenReturn(true);
         lenient().when(gen.isContainerFor(assoc2)).thenReturn(true);
         lenient().when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void setUpLink(IProductCmptLink link,
@@ -172,4 +181,5 @@ public class ProductCmptGenerationToTypeDeltaTest {
             assertEquals(links[i], captor.getAllValues().get(i).getLink());
         }
     }
+
 }

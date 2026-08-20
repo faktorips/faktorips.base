@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpttype;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,24 +23,37 @@ import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class NewProductCmptTypePageTest extends AbstractIpsPluginTest {
+
 
     @Mock
     private IStructuredSelection selection;
+
+    private MockitoSession mockito;
     private IIpsProject ipsProject;
 
     @BeforeEach
     @Override
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         ipsProject = newIpsProject();
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

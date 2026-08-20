@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
@@ -32,14 +33,14 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductSearchQueryConditionMatcherTest {
+
 
     @Mock
     private ProductSearchPresentationModel searchModel;
@@ -74,12 +75,15 @@ public class ProductSearchQueryConditionMatcherTest {
     @Mock
     private IProductCmpt productCmptMiss;
 
+    private MockitoSession mockito;
+
     private List<ISearchOperator> searchOperators;
 
     private Set<IIpsSrcFile> matchingFiles;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         searchOperators = Arrays.asList(searchOperatorHit);
         matchingFiles = new HashSet<>(Arrays.asList(srcFileMiss, srcFileHit, srcFileGenerationHit));
 
@@ -100,6 +104,11 @@ public class ProductSearchQueryConditionMatcherTest {
 
         lenient().when(searchOperatorMiss.check(productCmptHit)).thenReturn(false);
         lenient().when(searchOperatorMiss.check(generationHit)).thenReturn(false);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

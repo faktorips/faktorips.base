@@ -7,7 +7,6 @@ Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Fragment-Host: org.faktorips.devtools.abstraction.eclipse
 Bundle-ClassPath: .
-Require-Bundle: org.mockito.junit-jupiter
 Import-Package: org.apache.commons.io;version="2.11.0",
  org.faktorips.abstracttest,
  org.faktorips.devtools.abstraction,

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,14 +31,14 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class QualifierNodeGeneratorTest {
+
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -69,11 +70,19 @@ public class QualifierNodeGeneratorTest {
     @Mock
     private IProductCmpt productCmpt;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
+        mockito = createMocks(this);
         nodeFactory = new IdentifierNodeFactory(new TextRegion("QualifiedAssociationNodeGeneratorTest", 0,
                 "QualifiedAssociationNodeGeneratorTest".length()), ipsProject);
         qualifiedAssociationNodeGenerator = new QualifierNodeGenerator(factory, builderSet);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private QualifierNode createQualifiedAssociationNode(String qualifier,

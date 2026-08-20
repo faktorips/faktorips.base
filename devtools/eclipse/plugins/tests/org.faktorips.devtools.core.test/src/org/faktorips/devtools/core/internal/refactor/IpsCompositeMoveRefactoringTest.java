@@ -1,19 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -28,7 +29,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class IpsCompositeMoveRefactoringTest {
 
@@ -44,15 +45,15 @@ public class IpsCompositeMoveRefactoringTest {
     @Mock
     private IIpsPackageFragment targetIpsPackageFragment;
 
-    private IpsCompositeMoveRefactoring ipsCompositeMoveRefactoring;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private IpsCompositeMoveRefactoring ipsCompositeMoveRefactoring;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        when(ipsObject1.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
-        when(ipsObject2.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
+        mockito = createMocks(this);
+        lenient().when(ipsObject1.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
+        lenient().when(ipsObject2.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
         LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1, ipsObject2));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
@@ -60,7 +61,7 @@ public class IpsCompositeMoveRefactoringTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -101,7 +102,7 @@ public class IpsCompositeMoveRefactoringTest {
         // Test successful if no NPE has been thrown
     }
 
-        @Test
+    @Test
     public void testSetTargetIpsPackageFragmentNullFragment() {
         assertThrows(NullPointerException.class, () -> {
             ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(null);

@@ -1,17 +1,19 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.enums.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,7 +28,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class PullUpEnumAttributeProcessorTest {
 
@@ -49,17 +51,17 @@ public class PullUpEnumAttributeProcessorTest {
     @Mock
     private IEnumAttribute enumAttribute;
 
-    private AutoCloseable openMocks;
+    private MockitoSession mockito;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
-        when(enumAttribute.getEnumType()).thenReturn(enumType);
-        when(enumAttribute.getName()).thenReturn(ENUM_ATTRIBUTE_NAME);
-        when(enumType.findSuperEnumType(ipsProject)).thenReturn(superEnumType);
-        when(enumType.isSubEnumTypeOf(superEnumType, ipsProject)).thenReturn(true);
-        when(enumType.hasSuperEnumType()).thenReturn(true);
+        mockito = createMocks(this);
+        lenient().when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(enumAttribute.getEnumType()).thenReturn(enumType);
+        lenient().when(enumAttribute.getName()).thenReturn(ENUM_ATTRIBUTE_NAME);
+        lenient().when(enumType.findSuperEnumType(ipsProject)).thenReturn(superEnumType);
+        lenient().when(enumType.isSubEnumTypeOf(superEnumType, ipsProject)).thenReturn(true);
+        lenient().when(enumType.hasSuperEnumType()).thenReturn(true);
 
         pullUpEnumAttributeProcessor = new PullUpEnumAttributeProcessor(enumAttribute);
         pullUpEnumAttributeProcessor.setTarget(superEnumType);
@@ -67,7 +69,7 @@ public class PullUpEnumAttributeProcessorTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -137,7 +139,6 @@ public class PullUpEnumAttributeProcessorTest {
         // Add another level
         IEnumType superSuperEnumType = mock(IEnumType.class);
         when(superEnumType.findSuperEnumType(ipsProject)).thenReturn(superSuperEnumType);
-        when(superEnumType.isSubEnumTypeOf(superSuperEnumType, ipsProject)).thenReturn(true);
 
         RefactoringStatus status = new RefactoringStatus();
         pullUpEnumAttributeProcessor.validateUserInputThis(status, progressMonitor);
@@ -153,7 +154,6 @@ public class PullUpEnumAttributeProcessorTest {
         // Add another level
         IEnumType superSuperEnumType = mock(IEnumType.class);
         when(superEnumType.findSuperEnumType(ipsProject)).thenReturn(superSuperEnumType);
-        when(superEnumType.isSubEnumTypeOf(superSuperEnumType, ipsProject)).thenReturn(true);
 
         // Create the base enum attribute
         when(superSuperEnumType.containsEnumAttribute(ENUM_ATTRIBUTE_NAME)).thenReturn(true);

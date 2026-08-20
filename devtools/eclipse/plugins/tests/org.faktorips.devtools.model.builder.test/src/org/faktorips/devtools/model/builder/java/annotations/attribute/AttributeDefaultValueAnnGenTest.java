@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.attribute;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,17 +23,30 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAttribute;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AttributeDefaultValueAnnGenTest {
+
 
     @Mock
     private GeneratorModelContext modelContext;
+
+    private MockitoSession mockito;
     private AttributeDefaultValueAnnGen attributeDefaultValueAnnGen = new AttributeDefaultValueAnnGen();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testIsGenerateAnnotationFor() throws Exception {

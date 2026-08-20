@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.productcmpt.template;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -22,14 +23,14 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TemplateValueStatusTest {
+
 
     @Mock
     private IAttributeValue attributeValue;
@@ -43,11 +44,19 @@ public class TemplateValueStatusTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().doReturn(ipsProject).when(attributeValue).getIpsProject();
         lenient().doReturn(ipsProject).when(link).getIpsProject();
         lenient().doReturn(ipsProject).when(cardinality).getIpsProject();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

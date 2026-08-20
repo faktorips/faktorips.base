@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,14 +28,15 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class ParameterCollectorTest {
+
     @Mock
     private ContextProductCmptFinder finder;
 
@@ -65,8 +67,11 @@ public class ParameterCollectorTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUpFinderAndFormula() {
+        mockito = createMocks(this);
         lenient().when(finder.getExpression()).thenReturn(formula);
         lenient().when(finder.getIpsProject()).thenReturn(ipsProject);
         lenient().when(formula.getPropertyValueContainer()).thenReturn(generation);
@@ -74,6 +79,11 @@ public class ParameterCollectorTest {
         lenient().when(generation.getProductCmpt()).thenReturn(productCmpt);
         lenient().when(policyCmptType.isSubtypeOrSameType(policyCmptType, ipsProject)).thenReturn(true);
         lenient().when(policyCmptType.isSubtypeOrSameType(superPolicyCmptType, ipsProject)).thenReturn(true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,14 +28,14 @@ import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XClassTest {
+
 
     @Mock
     private GeneratorModelContext modelContext;
@@ -45,13 +46,21 @@ public class XClassTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private XClass xClass;
 
     @BeforeEach
     public void createTestXClass() {
+        mockito = createMocks(this);
         xClass = mock(XClass.class, CALLS_REAL_METHODS);
         lenient().when(xClass.getIpsObjectPartContainer()).thenReturn(type);
         lenient().when(xClass.getContext()).thenReturn(modelContext);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

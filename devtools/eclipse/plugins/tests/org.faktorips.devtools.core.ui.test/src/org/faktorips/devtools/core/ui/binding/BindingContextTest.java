@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -49,16 +50,16 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class BindingContextTest extends AbstractIpsPluginTest {
+
 
     private BindingContext bindingContext;
 
@@ -71,9 +72,12 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     @Mock
     private IIpsSrcFile ipsSrcFile;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         bindingContext = new BindingContext();
         pmo = new TestPMO();
@@ -83,6 +87,16 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         lenient().when(editField.getControl()).thenReturn(controlMock);
 
         lenient().when(ipsSrcFile.exists()).thenReturn(true);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

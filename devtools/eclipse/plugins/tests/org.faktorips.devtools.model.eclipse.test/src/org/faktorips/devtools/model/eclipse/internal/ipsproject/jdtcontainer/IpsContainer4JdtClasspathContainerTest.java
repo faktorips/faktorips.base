@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
@@ -31,14 +32,14 @@ import org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer.Ips
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class IpsContainer4JdtClasspathContainerTest {
+
 
     private static final String MY_NAME = "myName";
 
@@ -62,11 +63,19 @@ public class IpsContainer4JdtClasspathContainerTest {
     @Mock(answer = Answers.RETURNS_SMART_NULLS)
     private IJavaProject javaProject;
 
+    private MockitoSession mockito;
+
     private IpsContainer4JdtClasspathContainer ipsContainer4JdtClasspathContainer;
 
     @BeforeEach
     public void createIpsContainer4JdtClasspathContainer() throws Exception {
+        mockito = createMocks(this);
         ipsContainer4JdtClasspathContainer = new IpsContainer4JdtClasspathContainer(optionalPath, ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

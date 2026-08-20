@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,13 +22,14 @@ import java.util.List;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumDatatypeValueSourceTest {
+
 
     @Mock
     private ValueDatatype valueDatatype;
@@ -40,10 +42,22 @@ public class EnumDatatypeValueSourceTest {
     @Mock
     private IValueSetOwner valueSetOwner;
 
+    private MockitoSession mockito;
+
     // @BeforeEach
     // public void setUp() {
     // valueSource = new EnumDatatypeValueSource(datatype);
     // }
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testIsApplicable_true() {

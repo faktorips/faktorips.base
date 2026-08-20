@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -27,17 +28,19 @@ import java.util.jar.JarFile;
 
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsJarBundleContentIndexTest {
+
 
     @Mock
     private JarFile jarFile;
+
+    private MockitoSession mockito;
 
     private List<JarEntry> jarEntries;
 
@@ -55,6 +58,7 @@ public class IpsJarBundleContentIndexTest {
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         jarEntries = new ArrayList<>();
 
         pathRelative = Path.of("src/model");
@@ -77,6 +81,11 @@ public class IpsJarBundleContentIndexTest {
         qntRelative = new QualifiedNameType("life.policy", IpsObjectType.POLICY_CMPT_TYPE);
         qntAbsolute = new QualifiedNameType("base.sub.coverage", IpsObjectType.POLICY_CMPT_TYPE);
         qntTrailing = new QualifiedNameType("base.sub.reduction", IpsObjectType.POLICY_CMPT_TYPE);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -144,4 +153,5 @@ public class IpsJarBundleContentIndexTest {
 
         return entry;
     }
+
 }

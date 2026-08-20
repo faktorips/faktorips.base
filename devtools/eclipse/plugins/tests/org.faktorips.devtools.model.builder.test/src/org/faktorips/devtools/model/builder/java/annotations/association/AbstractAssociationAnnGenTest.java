@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.association;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.lenient;
@@ -22,18 +23,19 @@ import org.faktorips.devtools.model.builder.xmodel.XType;
 import org.faktorips.devtools.model.builder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.runtime.model.type.AssociationKind;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
 /**
  * This class is merely a String test. Functionality has to be additionally tested in integration
  * tests.
  */
-@ExtendWith(MockitoExtension.class)
 public class AbstractAssociationAnnGenTest {
+
 
     private static final String ASSOCIATION = "association";
     private static final String ASSOCIATION_PLURAL = "associations";
@@ -47,6 +49,8 @@ public class AbstractAssociationAnnGenTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractAssociationAnnGen annGen;
+
+    private MockitoSession mockito;
 
     // expected outcomes
     private String annAssociation = "@IpsAssociation(name = \"" + ASSOCIATION + "\", pluralName = \""
@@ -66,6 +70,16 @@ public class AbstractAssociationAnnGenTest {
             + System.lineSeparator();
     private String annMatchingAssociation = "@IpsMatchingAssociation(source = " + MATCHING_SOURCE_TYPE
             + ".class, name = \"" + MATCHING_ASSOCIATION + "\")" + System.lineSeparator();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCreateAnnAssociation() {

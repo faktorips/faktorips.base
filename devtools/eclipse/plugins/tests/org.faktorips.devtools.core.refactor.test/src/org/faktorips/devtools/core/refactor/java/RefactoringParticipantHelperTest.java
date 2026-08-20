@@ -1,18 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.refactor.java;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -33,7 +35,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class RefactoringParticipantHelperTest extends RefactoringParticipantTest {
 
@@ -49,16 +51,16 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     @Mock
     private IpsRefactoringProcessor ipsRefactoringProcessor;
 
-    private TestParticipantHelper spyRefactoringHelper;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private TestParticipantHelper spyRefactoringHelper;
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        openMocks = MockitoAnnotations.openMocks(this);
-        when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(
+        mockito = createMocks(this);
+        lenient().when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(
                 new IpsRefactoringModificationSet(null));
         TestParticipantHelper refactoringHelper = new TestParticipantHelper();
         spyRefactoringHelper = spy(refactoringHelper);
@@ -66,7 +68,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -97,7 +99,6 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(mockIpsObjectPartContainer);
         IIpsObjectPartContainer targetIpsObjectPartContainer = mock(IIpsObjectPartContainer.class);
         modificationSet.setTargetElement(targetIpsObjectPartContainer);
-        when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(modificationSet);
 
         assertTrue(spyRefactoringHelper.initialize(ipsRefactoringProcessor, mockIpsObjectPartContainer));
 

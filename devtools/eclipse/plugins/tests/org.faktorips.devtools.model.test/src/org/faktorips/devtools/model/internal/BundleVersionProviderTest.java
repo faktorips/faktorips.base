@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -27,14 +28,14 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class BundleVersionProviderTest {
+
     private static final String VERSION_STRING = "1.2.3.test";
 
     private static final String VERSION_STRING_NEW = "1.2.4.test";
@@ -58,8 +59,11 @@ public class BundleVersionProviderTest {
     @Mock
     private InputStream inputStream;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() throws IOException {
+        mockito = createMocks(this);
         doReturn(project).when(ipsProject).getProject();
         when(project.getFile(JarFile.MANIFEST_NAME)).thenReturn(file);
         doReturn(inputStream).when(file).getContents();
@@ -68,6 +72,11 @@ public class BundleVersionProviderTest {
         providerSpy = spy(provider);
 
         lenient().doReturn(attributes).when(providerSpy).getManifestMainAttributes();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -96,4 +105,5 @@ public class BundleVersionProviderTest {
 
         verify(attributes).putValue(org.osgi.framework.Constants.BUNDLE_VERSION, VERSION_STRING_NEW);
     }
+
 }

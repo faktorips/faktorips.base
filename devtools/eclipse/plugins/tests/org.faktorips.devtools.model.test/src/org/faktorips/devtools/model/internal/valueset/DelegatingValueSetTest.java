@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -29,16 +30,17 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@ExtendWith(MockitoExtension.class)
 public class DelegatingValueSetTest {
+
 
     private static final String ANY_VALUE = "anyValue";
 
@@ -65,8 +67,22 @@ public class DelegatingValueSetTest {
     @Mock
     private AbstractValueSetValidator<?> validator;
 
+    private MockitoSession mockito;
+
     @InjectMocks
     private DelegatingValueSet delegatingValueSet;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testInitPropertiesFromXml() throws Exception {

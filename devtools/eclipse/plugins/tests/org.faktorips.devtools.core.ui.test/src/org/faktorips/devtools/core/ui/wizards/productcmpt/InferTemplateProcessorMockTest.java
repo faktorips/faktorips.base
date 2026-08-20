@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -51,14 +52,14 @@ import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.values.Decimal;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class InferTemplateProcessorMockTest {
+
 
     private static final String TEMPLATE_NAME = "templateName";
 
@@ -115,6 +116,8 @@ public class InferTemplateProcessorMockTest {
     @Mock
     IIpsProjectProperties ipsProjectProperties;
 
+    private MockitoSession mockito;
+
     private List<IProductCmpt> productCmpts;
 
     private InferTemplateProcessor inferTemplateProcessor;
@@ -136,7 +139,7 @@ public class InferTemplateProcessorMockTest {
     @BeforeEach
     @SuppressWarnings("deprecation")
     public void setUp() {
-
+        mockito = createMocks(this);
         when(templateGeneration.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
         when(ipsProjectProperties.getInferredTemplatePropertyValueThreshold()).thenReturn(Decimal.valueOf(8, 1));
@@ -175,6 +178,11 @@ public class InferTemplateProcessorMockTest {
         propertyValues.addAll(mockHistograms(IValidationRuleConfig.class, ruleConfigs));
 
         doReturn(singleValueCopy).when(singleValue).copy(any(IAttributeValue.class));
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void setUpConfiguredValueSets() {

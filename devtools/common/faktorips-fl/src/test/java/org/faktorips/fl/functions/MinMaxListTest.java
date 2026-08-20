@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mockitoSession;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -27,14 +28,15 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.JavaExprCompiler;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
 public class MinMaxListTest {
+
 
     private MinMaxList maxList;
     private JavaCodeFragment argumentFragment;
@@ -44,9 +46,20 @@ public class MinMaxListTest {
     @Mock
     private CompilationResultImpl argumentCompilationResult;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = mockitoSession()
+                .initMocks(this)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
         maxList = new MinMaxList("max", "", true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     public void spyFunctionWithDatatype(Datatype elementDatatype) {

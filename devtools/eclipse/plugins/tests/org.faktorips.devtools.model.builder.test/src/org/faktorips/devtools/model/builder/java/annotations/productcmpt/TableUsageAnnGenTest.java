@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,13 +22,14 @@ import java.util.Collections;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.builder.xmodel.productcmpt.XTableUsage;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TableUsageAnnGenTest {
+
 
     @Mock
     private XTableUsage tableUsage;
@@ -35,7 +37,19 @@ public class TableUsageAnnGenTest {
     @Mock
     private ITableStructureUsage tableStructureUsage;
 
+    private MockitoSession mockito;
+
     private TableUsageAnnGen generator = new TableUsageAnnGen();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCreateTableUsageAnnotation_withNameOnly_OptionalTable() {

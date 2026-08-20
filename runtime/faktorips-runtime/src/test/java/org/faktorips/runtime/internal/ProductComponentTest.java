@@ -14,6 +14,7 @@ import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_ATTRIBUTE_ATTR
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_ATTRIBUTE_VALUE;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
 import static org.faktorips.runtime.internal.ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +52,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,19 +63,20 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     @Mock
     private IRuntimeRepository repository;
 
+    private MockitoSession mockito;
+
     private ProductComponent pc;
 
-    private AutoCloseable mocks;
 
     @BeforeEach
     public void setUp() {
-        mocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
-        mocks.close();
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     // the verify for the parameterized map cannot be type safe
@@ -263,7 +265,6 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         when(cmpt.isChangingOverTime()).thenReturn(true);
         IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
 
-        when(repository.getProductComponentGenerations(cmpt)).thenReturn(List.of(productComponentGeneration));
         when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900)))
                 .thenReturn(productComponentGeneration);
 
@@ -285,7 +286,6 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         when(cmpt.isChangingOverTime()).thenReturn(true);
         IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
 
-        when(repository.getProductComponentGenerations(cmpt)).thenReturn(List.of(productComponentGeneration));
         when(repository.getLatestProductComponentGeneration(cmpt)).thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getLatestProductComponentGeneration());
@@ -517,16 +517,8 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     @Test
     public void testSetVariedBase_NotModifiable() {
         assertThrows(IllegalRepositoryModificationException.class, () -> {
-            String oldId = "oldId";
-            TestProductComponent oldBaseComponent = new TestProductComponent(repository, oldId, "old", "1.0");
-            when(repository.getProductComponent(oldId)).thenReturn(oldBaseComponent);
             String newId = "newId";
             TestProductComponent newBaseComponent = new TestProductComponent(repository, newId, "new", "1.0");
-            when(repository.getProductComponent(newId)).thenReturn(newBaseComponent);
-            Element element = getTestDocument().getDocumentElement();
-            element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, oldId);
-            pc.initFromXml(element);
-
             pc.setVariedBase(newBaseComponent);
         });
     }

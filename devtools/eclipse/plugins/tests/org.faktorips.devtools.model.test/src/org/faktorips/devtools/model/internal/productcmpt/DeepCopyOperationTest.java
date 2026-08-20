@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.abstracttest.matcher.IpsElementNamesMatcher.containsInOrder;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -72,18 +73,17 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.type.AssociationType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
 /**
  * Tests for product component structure.
  *
  * @author Thorsten Guenther
  */
-@ExtendWith(MockitoExtension.class)
 public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     private static final String TABLE_STRUCTURE = "TableStructure";
@@ -119,13 +119,26 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     @Mock
     private IProgressMonitor progressMonitor;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         ipsProject = newIpsProject();
         IPolicyCmptType pctype = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         product = newProductCmpt(pctype.findProductCmptType(ipsProject), "Product");
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     /**

@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,15 +21,15 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractMapStructureTest {
+
 
     private final Map<String, ResultStructure<Integer>> map = new HashMap<>();
 
@@ -40,10 +41,18 @@ public class AbstractMapStructureTest {
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractMapStructure<String, ResultStructure<Integer>, Integer> abstractMapStructure2;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUpStructure() {
+        mockito = createMocks(this);
         when(abstractMapStructure.getMap()).thenReturn(map);
         lenient().when(abstractMapStructure2.getMap()).thenReturn(map2);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

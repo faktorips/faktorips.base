@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -42,15 +43,15 @@ import java.util.zip.ZipEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.osgi.framework.BundleException;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsJarBundleTest {
+
 
     private static final String ROOT_PATH = "root";
 
@@ -73,15 +74,23 @@ public class IpsJarBundleTest {
     @Mock
     private IpsJarBundleContentIndex bundleContentIndex;
 
+    private MockitoSession mockito;
+
     private IpsJarBundle ipsJarBundle;
 
     @BeforeEach
     public void createIpsJarBundle() throws Exception {
+        mockito = createMocks(this);
         lenient().when(jarFileFactory.createJarFile()).thenReturn(jarFile);
         Path path = Path.of(JAR_NAME);
         lenient().when(jarFileFactory.getJarPath()).thenReturn(path);
         ipsJarBundle = new IpsJarBundle(ipsProject, jarFileFactory);
         ipsJarBundle.setBundleContentIndex(bundleContentIndex);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -1,17 +1,19 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +27,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class PullUpAttributeProcessorTest {
 
@@ -45,24 +47,24 @@ public class PullUpAttributeProcessorTest {
     @Mock
     private IAttribute attribute;
 
-    private PullUpAttributeProcessor pullUpAttributeProcessor;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private PullUpAttributeProcessor pullUpAttributeProcessor;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        when(attribute.getIpsProject()).thenReturn(ipsProject);
-        when(attribute.getType()).thenReturn(type);
-        when(attribute.getName()).thenReturn(ATTRIBUTE_NAME);
-        when(type.isSubtypeOf(superType, ipsProject)).thenReturn(true);
+        mockito = createMocks(this);
+        lenient().when(attribute.getIpsProject()).thenReturn(ipsProject);
+        lenient().when(attribute.getType()).thenReturn(type);
+        lenient().when(attribute.getName()).thenReturn(ATTRIBUTE_NAME);
+        lenient().when(type.isSubtypeOf(superType, ipsProject)).thenReturn(true);
 
         pullUpAttributeProcessor = new PullUpAttributeProcessor(attribute);
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -116,7 +118,6 @@ public class PullUpAttributeProcessorTest {
         // Add another hierarchy level
         IType superSuperType = mock(IType.class);
         when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
-        when(type.isSubtypeOf(superSuperType, ipsProject)).thenReturn(true);
 
         pullUpAttributeProcessor.setTarget(superType);
 
@@ -133,7 +134,6 @@ public class PullUpAttributeProcessorTest {
         // Add another hierarchy level
         IType superSuperType = mock(IType.class);
         when(superType.findSupertype(ipsProject)).thenReturn(superSuperType);
-        when(type.isSubtypeOf(superSuperType, ipsProject)).thenReturn(true);
 
         // Create the base attribute
         IAttribute baseAttribute = mock(IAttribute.class);

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -24,14 +25,14 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.Messages;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class UnrestrictedValueSetFormatTest {
+
 
     @Mock
     private IIpsObject ipsObject;
@@ -51,14 +52,22 @@ public class UnrestrictedValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
+    private MockitoSession mockito;
+
     private UnrestrictedValueSetFormat unrestrictedValueSetFormat;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         unrestrictedValueSetFormat = new UnrestrictedValueSetFormat(configValueSet, uiPlugin);
 
         lenient().when(configValueSet.getIpsProject()).thenReturn(ipsProject);
         lenient().when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.UNRESTRICTED));
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

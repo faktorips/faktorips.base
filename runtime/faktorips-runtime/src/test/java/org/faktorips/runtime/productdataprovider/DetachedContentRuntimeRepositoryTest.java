@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.productdataprovider;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Element;
 
 public class DetachedContentRuntimeRepositoryTest {
@@ -46,19 +47,20 @@ public class DetachedContentRuntimeRepositoryTest {
     @Mock
     private IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
-    private AutoCloseable mocks;
+    private MockitoSession mockito;
+
 
     @BeforeEach
     public void setUp() {
-        mocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
 
         repository = new DetachedContentRuntimeRepository("", mock(ICacheFactory.class), mock(ClassLoader.class),
                 productDataProvider, formulaEvaluatorFactory);
     }
 
     @AfterEach
-    public void tearDown() throws Exception {
-        mocks.close();
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

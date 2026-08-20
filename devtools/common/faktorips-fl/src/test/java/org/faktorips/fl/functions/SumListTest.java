@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mockitoSession;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -26,13 +27,15 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.JavaExprCompiler;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
 public class SumListTest {
+
     private SumList sumList = new SumList("sum", "");
     private JavaCodeFragment argumentFragment = new JavaCodeFragment("valueList");
     private ListOfTypeDatatype datatype = new ListOfTypeDatatype(Datatype.DECIMAL);
@@ -43,7 +46,22 @@ public class SumListTest {
     @Mock
     private JavaExprCompiler compiler;
 
+    private MockitoSession mockito;
+
     private DatatypeHelper helper = new DecimalHelper();
+
+    @BeforeEach
+    void setUp() {
+        mockito = mockitoSession()
+                .initMocks(this)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCompile_NumberOfArgumentsZero() {

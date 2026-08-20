@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,13 +35,13 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.values.LocalizedString;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class EnumPropertyGeneratorTest {
+
 
     @Mock
     private IEnumType enumType;
@@ -66,8 +67,11 @@ public class EnumPropertyGeneratorTest {
     @Mock
     private AProject aProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void initEnumType() {
+        mockito = createMocks(this);
         List<IEnumAttribute> attributes = new ArrayList<>();
         attributes.add(enumAttribute);
         attributes.add(enumAttribute2);
@@ -93,6 +97,11 @@ public class EnumPropertyGeneratorTest {
         when(aProject.getDefaultLineSeparator()).thenReturn(System.lineSeparator());
 
         when(ipsProject.getProject()).thenReturn(aProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.faktorips.runtime.testutil.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
@@ -48,18 +49,31 @@ import org.faktorips.runtime.model.annotation.IpsTableUsage;
 import org.faktorips.runtime.model.annotation.IpsTableUsages;
 import org.faktorips.runtime.model.table.TableStructure;
 import org.faktorips.runtime.model.table.TableStructureKind;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TableUsageTest {
+
 
     @Mock
     private IRuntimeRepository repository;
 
+    private MockitoSession mockito;
+
     private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testGetTableUsage() {

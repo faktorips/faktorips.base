@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,14 +33,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.value.IValue;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumValuesTablePageElementTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -68,10 +69,13 @@ public class EnumValuesTablePageElementTest {
     @Mock
     private IDatatypeFormatter datatypeFormatter;
 
+    private MockitoSession mockito;
+
     private EnumValuesTablePageElement pageElement;
 
     @BeforeEach
     public void setup() {
+        mockito = createMocks(this);
         List<IEnumValue> valuelist = new ArrayList<>();
         List<IEnumAttribute> attributeList = new ArrayList<>();
         valuelist.add(enumValue1);
@@ -83,6 +87,11 @@ public class EnumValuesTablePageElementTest {
         doReturn(valuelist).when(enumType).getEnumValues();
         doReturn(attributeList).when(enumType).findAllEnumAttributes(true, ipsProject);
 
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

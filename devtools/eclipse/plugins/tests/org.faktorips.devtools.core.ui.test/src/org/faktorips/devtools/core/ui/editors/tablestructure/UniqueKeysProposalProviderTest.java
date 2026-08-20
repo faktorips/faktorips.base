@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
@@ -20,14 +21,14 @@ import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.devtools.model.tablestructure.IIndex;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class UniqueKeysProposalProviderTest {
+
 
     @Mock
     private UniqueKeysProposalProvider proposalProvider;
@@ -43,13 +44,21 @@ public class UniqueKeysProposalProviderTest {
     @Mock
     private ForeignKeyPMO pmo;
 
+    private MockitoSession mockito;
+
     private IContentProposal[] proposals;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         proposalProvider = new UniqueKeysProposalProvider(pmo);
         lenient().when(index1.getName()).thenReturn("firstResult");
         lenient().when(index2.getName()).thenReturn("secondResult");
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

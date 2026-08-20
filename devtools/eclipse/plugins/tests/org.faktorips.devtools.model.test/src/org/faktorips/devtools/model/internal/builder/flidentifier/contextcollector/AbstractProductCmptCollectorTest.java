@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
@@ -23,13 +24,14 @@ import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IFormula;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class AbstractProductCmptCollectorTest {
+
     @Mock
     private ContextProductCmptFinder finder;
 
@@ -41,8 +43,12 @@ public class AbstractProductCmptCollectorTest {
     @Mock
     private IExpression expression;
 
+    private MockitoSession mockito;
+
     @BeforeEach
-    public void setUpCollector() {
+    public void setUp() {
+        mockito = createMocks(this);
+        when(finder.getExpression()).thenReturn(expression);
         abstractProductCmptCollector = new AbstractProductCmptCollector(node, finder) {
 
             @Override
@@ -52,9 +58,9 @@ public class AbstractProductCmptCollectorTest {
         };
     }
 
-    @BeforeEach
-    public void setUpFinder() {
-        when(finder.getExpression()).thenReturn(expression);
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

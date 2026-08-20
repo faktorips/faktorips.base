@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,7 +44,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
 // Cannot test the createChange method as LTK's PerformRefactoringOperation does not allow it
 public class IpsCompositeRefactoringTest {
@@ -72,13 +74,13 @@ public class IpsCompositeRefactoringTest {
     @Mock
     private IProgressMonitor progressMonitor;
 
-    private IpsCompositeRefactoring ipsCompositeRefactoring;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private IpsCompositeRefactoring ipsCompositeRefactoring;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this, Strictness.LENIENT);
         when(ipsElement1.getIpsProject()).thenReturn(ipsProject);
         when(ipsElement2.getIpsProject()).thenReturn(ipsProject);
         when(refactoring1.toLtkRefactoring()).thenReturn(ltkRefactoring1);
@@ -89,7 +91,7 @@ public class IpsCompositeRefactoringTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
         @Test

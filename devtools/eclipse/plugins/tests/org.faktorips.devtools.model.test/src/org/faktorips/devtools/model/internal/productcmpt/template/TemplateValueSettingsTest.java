@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.template;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.devtools.model.productcmpt.template.ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
@@ -29,18 +30,18 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.w3c.dom.Element;
 
 /**
  * @see AttributeValue for validation tests
  */
-@ExtendWith(MockitoExtension.class)
 public class TemplateValueSettingsTest {
+
 
     @Mock
     private Element element;
@@ -54,14 +55,22 @@ public class TemplateValueSettingsTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     private TemplateValueSettings handler;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(attrValue.getIpsProject()).thenReturn(ipsProject);
         lenient().when(attrValue.isPartOfTemplateHierarchy()).thenReturn(true);
         lenient().when(attrValue.findTemplateProperty(ipsProject)).thenReturn(templateValue);
         handler = new TemplateValueSettings(attrValue);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -27,13 +28,14 @@ import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.DatatypeUtil;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class DatatypeUtilTest {
+
 
     private static final String NULL_VALUE = "NULL_VALUE";
 
@@ -52,17 +54,25 @@ public class DatatypeUtilTest {
     @Mock
     private ValueDatatype valueDatatype;
 
+    private MockitoSession mockito;
+
     private EnumTypeDatatypeAdapter enumDatatype;
 
     private EnumTypeDatatypeAdapter superenumDatatype;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         enumDatatype = new EnumTypeDatatypeAdapter(enumType, enumContent);
         superenumDatatype = new EnumTypeDatatypeAdapter(superEnumType, enumContent);
         lenient().when(enumType.getIpsProject()).thenReturn(ipsProject);
         lenient().when(superEnumType.getIpsProject()).thenReturn(ipsProject);
         lenient().when(enumType.isSubEnumTypeOrSelf(superEnumType, ipsProject)).thenReturn(true);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,14 +25,14 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnsureContainsNullForConfigElementValueSourceTest {
+
     @Mock
     private IValueSource valueSource;
     @Mock
@@ -39,15 +40,23 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
     @Mock
     private ValueDatatype valueDatatype;
 
+    private MockitoSession mockito;
+
     private List<String> valueList;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         valueList = new ArrayList<>();
         valueList.add("eins");
         valueList.add("zwei");
         valueList.add("drei");
         when(valueSource.getValues()).thenReturn(valueList);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,14 +39,15 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class AssociationCollectorTest {
+
 
     @Mock
     private AssociationNode node;
@@ -94,20 +96,24 @@ public class AssociationCollectorTest {
     @Mock
     private IFormula expression;
 
+    private MockitoSession mockito;
+
     @BeforeEach
-    public void setUpFinderAndNode() {
+    public void setUp() throws Exception {
+        mockito = createMocks(this);
         when(finder.createCollector()).thenReturn(otherCollector);
         lenient().when(finder.getIpsProject()).thenReturn(ipsProject);
         lenient().when(finder.getExpression()).thenReturn(expression);
         when(node.getAssociation()).thenReturn(association);
-    }
-
-    @BeforeEach
-    public void setUpProductCmpts() throws Exception {
         productCmptsFiles = new ArrayList<>();
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         lenient().when(ipsSrcFile.getIpsObject()).thenReturn(productCmpt);
         productCmptsFiles.add(ipsSrcFile);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

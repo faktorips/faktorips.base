@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
@@ -30,13 +31,14 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumValueSetValidatorTest {
+
 
     private static final String ANY_VALUE = "anyValue";
 
@@ -54,6 +56,20 @@ public class EnumValueSetValidatorTest {
 
     @Mock
     private IpsProjectPropertiesReadOnlyProxy settings;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testValidate_MSGCODE_VALUE_IN_ENUM_CONTENT() throws Exception {
@@ -134,4 +150,5 @@ public class EnumValueSetValidatorTest {
                         IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE),
                 hasInvalidObject(enumValueSet));
     }
+
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,17 +22,19 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.devtools.core.ui.editors.productcmpt.GenerationEditDialog.GenerationEditDialogPMO;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class GenerationEditDialogTest {
+
 
     @Mock
     private IProductCmptGeneration generation;
+
+    private MockitoSession mockito;
 
     private GregorianCalendar calendar = new GregorianCalendar();
     private GregorianCalendar calendar2 = new GregorianCalendar(2000, 1, 1);
@@ -40,8 +43,14 @@ public class GenerationEditDialogTest {
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         when(generation.getValidFrom()).thenReturn(calendar);
         pmo = new GenerationEditDialogPMO(generation);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

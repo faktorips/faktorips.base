@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -31,14 +32,14 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AssociationNodeGeneratorTest {
+
     @Mock
     IAssociation association;
 
@@ -68,6 +69,8 @@ public class AssociationNodeGeneratorTest {
     @Mock
     Datatype normalDatatype;
 
+    private MockitoSession mockito;
+
     private AssociationNode node;
 
     private AssociationNodeGenerator gen;
@@ -76,6 +79,7 @@ public class AssociationNodeGeneratorTest {
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         nodeFactory = new IdentifierNodeFactory(new TextRegion("AssociationNodeGeneratorTest", 0,
                 "AssociationNodeGeneratorTest".length()), ipsProject);
         setUpMockAssociation();
@@ -83,6 +87,11 @@ public class AssociationNodeGeneratorTest {
         setUpBuilderSet();
         node = (AssociationNode)nodeFactory.createAssociationNode(association, true);
         setUpSpyGenerator();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void setUpBuilderSet() {

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -32,17 +33,32 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.Is;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class CustomValidationsMapTest {
+
     private ICustomValidation<Attribute> attributeValidation = new ValidationOnAttribute("AttributeValidation");
     private ICustomValidation<PolicyCmptTypeAttribute> pcTypeAttributeValidation = new ValidationOnPolicyCmptType(
             "PolicyCmptTypeAttributeValidation");
 
     private CustomValidationsMap validationsMap = new CustomValidationsMap();
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testPut_withExtendingClass() {

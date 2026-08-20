@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.inputformat;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,13 +25,12 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class NamedDatatypeInputFormatTest {
 
     @Mock
@@ -39,24 +39,26 @@ public class NamedDatatypeInputFormatTest {
     @Mock
     private IpsPreferences ipsPreferences;
 
+    private MockitoSession mockito;
+
     private NamedDatatypeInputFormat NamedDatatypeInputFormat;
 
     @BeforeEach
-    public void createInputFormat() {
-        doReturn(Locale.GERMANY).when(ipsPreferences).getDatatypeFormattingLocale();
-        NamedDatatypeInputFormat = new NamedDatatypeInputFormat(enumDatatype, ipsPreferences);
-    }
-
-    @BeforeEach
-    public void setUpEnumDatatype() {
-
+    public void setUp() {
+        mockito = createMocks(this);
         lenient().when(enumDatatype.getValueByName(eq("nameA"), any(Locale.class))).thenReturn("a");
         lenient().when(enumDatatype.valueToString("a")).thenReturn("a");
         lenient().when(enumDatatype.getValueByName(eq("c (c)"), any(Locale.class))).thenReturn("c");
         lenient().when(enumDatatype.valueToString("c")).thenReturn("c");
-
         lenient().when(enumDatatype.isParsable("a")).thenReturn(true);
         lenient().when(enumDatatype.isParsable("c")).thenReturn(true);
+        doReturn(Locale.GERMANY).when(ipsPreferences).getDatatypeFormattingLocale();
+        NamedDatatypeInputFormat = new NamedDatatypeInputFormat(enumDatatype, ipsPreferences);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

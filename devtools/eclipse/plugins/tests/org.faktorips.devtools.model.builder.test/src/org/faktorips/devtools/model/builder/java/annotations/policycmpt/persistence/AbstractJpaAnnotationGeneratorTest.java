@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.java.annotations.policycmpt.persistence;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,15 +23,15 @@ import org.faktorips.devtools.model.builder.java.TestJavaBuilderSet;
 import org.faktorips.devtools.model.builder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractJpaAnnotationGeneratorTest {
+
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractJpaAnnotationGenerator jpaAnnotationGenerator;
@@ -50,11 +51,19 @@ public class AbstractJpaAnnotationGeneratorTest {
     @Mock
     private IPersistenceProvider expectedPersistenceProvider;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         when(ipsPartContainer.getIpsProject()).thenReturn(project);
         when(project.getIpsArtefactBuilderSet()).thenReturn(builderSet);
         lenient().when(modelNode.getIpsObjectPartContainer()).thenReturn(ipsPartContainer);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

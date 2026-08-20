@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,13 +44,14 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.util.MultiMap;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class DependencyResolverTest {
+
 
     @Mock
     private IIpsProject ipsProject1;
@@ -86,6 +88,8 @@ public class DependencyResolverTest {
 
     @Mock
     private IEnumType enumTypeObject;
+
+    private MockitoSession mockito;
 
     private IIpsSrcFile ipsSrcFile1 = new IpsSrcFile(ipsElement, "ipsSrcFile1");
 
@@ -199,6 +203,7 @@ public class DependencyResolverTest {
      */
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         lenient().when(ipsProject1.getDependencyGraph()).thenReturn(dependencyGraph1);
         lenient().when(ipsProject1.canBeBuild()).thenReturn(true);
         lenient().when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
@@ -229,6 +234,11 @@ public class DependencyResolverTest {
         lenient().when(ipsProject4.isReferencing(ipsProject1)).thenReturn(true);
 
         lenient().when(dependencyGraph4.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -916,4 +926,5 @@ public class DependencyResolverTest {
                 EnumSet.allOf(DependencyType.class));
         return dependencyResolver.getCollectedDependencies();
     }
+
 }

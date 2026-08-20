@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,14 +34,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ValidationRuleMessagesPropertiesImporterTest {
+
 
     private static final String MSG_CODE = "MyMsgCode";
 
@@ -63,10 +64,13 @@ public class ValidationRuleMessagesPropertiesImporterTest {
     @Mock
     private InputStream inputStream;
 
+    private MockitoSession mockito;
+
     private ValidationRuleMessagesPropertiesImporter importer;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(ipsSrcFile.isMutable()).thenReturn(true);
         List<IIpsSrcFile> srcFiles = new ArrayList<>();
         srcFiles.add(ipsSrcFile);
@@ -76,6 +80,11 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         importer = new ValidationRuleMessagesPropertiesImporter(inputStream, root, Locale.GERMAN);
 
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

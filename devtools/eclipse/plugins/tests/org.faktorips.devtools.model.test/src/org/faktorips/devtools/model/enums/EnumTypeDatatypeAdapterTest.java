@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.enums;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -27,14 +28,15 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class EnumTypeDatatypeAdapterTest {
+
 
     @Mock
     private IEnumContent covariantEnumContent;
@@ -68,6 +70,8 @@ public class EnumTypeDatatypeAdapterTest {
     @Mock
     private IValue<IInternationalString> resultValue;
 
+    private MockitoSession mockito;
+
     private EnumTypeDatatypeAdapter covariantEnumDatatype;
 
     private EnumTypeDatatypeAdapter covariantSuperenumDatatype;
@@ -78,6 +82,7 @@ public class EnumTypeDatatypeAdapterTest {
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         covariantEnumDatatype = new EnumTypeDatatypeAdapter(covariantEnumType, covariantEnumContent);
         covariantSuperenumDatatype = new EnumTypeDatatypeAdapter(covariantSuperEnumType, covariantEnumContent);
         lenient().when(covariantEnumType.getIpsProject()).thenReturn(ipsProject);
@@ -88,6 +93,11 @@ public class EnumTypeDatatypeAdapterTest {
 
         adapter = new EnumTypeDatatypeAdapter(enumType, null);
         adapterWithContent = new EnumTypeDatatypeAdapter(enumType, enumContent);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

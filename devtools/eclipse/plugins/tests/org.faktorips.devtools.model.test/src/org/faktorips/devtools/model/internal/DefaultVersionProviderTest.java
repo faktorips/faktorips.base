@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,15 +23,15 @@ import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IVersionFormat;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class DefaultVersionProviderTest {
+
 
     private static final String VERSION_STRING = "1.2.3.test";
 
@@ -43,13 +44,21 @@ public class DefaultVersionProviderTest {
     @Mock
     private IVersionFormat versionFormat;
 
+    private MockitoSession mockito;
+
     @InjectMocks
     private DefaultVersionProvider defaultVersionProvider;
 
     @BeforeEach
     public void initDefaultVersionProvider() {
+        mockito = createMocks(this);
         lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
         lenient().when(ipsProject.getProperties()).thenReturn(properties);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

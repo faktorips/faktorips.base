@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,14 +29,14 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.values.LocalizedString;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class UniqueIdentifierValidatorTest {
+
 
     @Mock
     private EnumValueContainer container;
@@ -43,12 +44,20 @@ public class UniqueIdentifierValidatorTest {
     @Mock
     private IIpsModel ipsModel;
 
+    private MockitoSession mockito;
+
     private UniqueIdentifierValidator uniqueIdentifierValidator;
 
     @BeforeEach
     public void createUniqueIdentifierValidator() throws Exception {
+        mockito = createMocks(this);
         lenient().when(container.getIpsModel()).thenReturn(ipsModel);
         uniqueIdentifierValidator = new UniqueIdentifierValidator(container);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

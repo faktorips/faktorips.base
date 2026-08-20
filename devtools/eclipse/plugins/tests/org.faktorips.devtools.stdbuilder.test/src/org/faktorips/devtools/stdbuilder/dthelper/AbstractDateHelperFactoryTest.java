@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.dthelper;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,12 +20,13 @@ import static org.mockito.Mockito.when;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class AbstractDateHelperFactoryTest {
+
 
     @Mock
     private ValueDatatype datatype1;
@@ -34,6 +36,18 @@ public class AbstractDateHelperFactoryTest {
 
     @Mock
     private StandardBuilderSet builderSet;
+
+    private MockitoSession mockito;
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
 
     @Test
     public void testCreateDatatypeHelper_CacheTest() throws Exception {

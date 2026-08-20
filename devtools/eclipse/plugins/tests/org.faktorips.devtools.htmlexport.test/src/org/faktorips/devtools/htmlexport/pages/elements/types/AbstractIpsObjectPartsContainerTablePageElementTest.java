@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,17 +30,17 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 import org.faktorips.devtools.model.internal.DefaultVersion;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractIpsObjectPartsContainerTablePageElementTest {
+
 
     private static final String SINCE_VERSION = "Since Version";
 
@@ -58,14 +59,22 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractIpsObjectPartsContainerTablePageElement<IIpsObjectPartContainer> pageElement;
 
+    private MockitoSession mockito;
+
     private List<IIpsObjectPartContainer> objectParts;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         objectParts = new ArrayList<>();
         doReturn(objectParts).when(pageElement).getObjectParts();
         lenient().doReturn(context).when(pageElement).getContext();
         lenient().when(context.getMessage(HtmlExportMessages.TablePageElement_headlineSince)).thenReturn(SINCE_VERSION);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

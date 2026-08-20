@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,14 +30,14 @@ import java.util.jar.Manifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsFolderBundle.IOFactory;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsFolderBundleTest {
+
 
     @Mock
     private Path folder;
@@ -65,12 +66,20 @@ public class IpsFolderBundleTest {
     @Mock
     private AbstractIpsBundleContentIndex bundleContentIndex;
 
+    private MockitoSession mockito;
+
     private IpsFolderBundle ipsFolderBundle;
 
     @BeforeEach
     public void createIpsFolderBundle() throws Exception {
+        mockito = createMocks(this);
         ipsFolderBundle = new IpsFolderBundle(ipsProject, folder);
         ipsFolderBundle.setIOFactory(ioFactory);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

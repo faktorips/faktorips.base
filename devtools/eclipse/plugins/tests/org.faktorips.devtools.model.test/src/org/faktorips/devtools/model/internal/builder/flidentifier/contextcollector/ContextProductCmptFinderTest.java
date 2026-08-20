@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier.contextcollector;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
@@ -26,14 +27,15 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class ContextProductCmptFinderTest {
+
     @Mock
     private IExpression expression;
 
@@ -48,21 +50,25 @@ public class ContextProductCmptFinderTest {
     @Mock
     private AbstractProductCmptCollector mockCollector;
 
+    private MockitoSession mockito;
+
     private Set<IProductCmpt> myContextCmpts;
 
     @BeforeEach
-    public void setUpFinder() {
+    public void setUp() {
+        mockito = createMocks(this);
         contextProductCmptFinder = new ContextProductCmptFinder(nodes, expression, ipsProject);
-    }
-
-    @BeforeEach
-    public void setUpContextCmpts() {
         myContextCmpts = new HashSet<>();
         for (int i = 5; i > 0; i--) {
             IProductCmpt productCmpt = mock(IProductCmpt.class);
             lenient().when(productCmpt.getName()).thenReturn("MyCmpt" + i);
             myContextCmpts.add(productCmpt);
         }
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

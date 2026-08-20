@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,14 +43,14 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AttributeNodeGeneratorTest {
+
 
     @Mock
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> factory;
@@ -69,6 +70,8 @@ public class AttributeNodeGeneratorTest {
     @Mock
     private IFormula formula;
 
+    private MockitoSession mockito;
+
     private AttributeNodeGenerator attributeNodeGenerator;
 
     private AttributeNode attributeNode;
@@ -77,8 +80,14 @@ public class AttributeNodeGeneratorTest {
 
     @BeforeEach
     public void createAttributeNodeGenerator() {
+        mockito = createMocks(this);
         lenient().when(builderSet.getIpsProject()).thenReturn(ipsProject);
         attributeNodeGenerator = new AttributeNodeGenerator(factory, expression, builderSet);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private void createAttributeNode(boolean isDefault) {

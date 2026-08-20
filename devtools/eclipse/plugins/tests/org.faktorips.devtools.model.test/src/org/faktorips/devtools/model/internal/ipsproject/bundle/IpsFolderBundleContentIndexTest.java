@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -22,17 +23,19 @@ import java.util.Set;
 
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsFolderBundleContentIndexTest {
+
 
     @Mock
     private FolderExplorer indexer;
+
+    private MockitoSession mockito;
     private Path srcPath;
     private Path testPath;
     private Path srcFile;
@@ -49,6 +52,7 @@ public class IpsFolderBundleContentIndexTest {
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         Path bundleRoot = Path.of("/root/base/folder");
 
         srcPath = Path.of("src");
@@ -95,6 +99,11 @@ public class IpsFolderBundleContentIndexTest {
         when(indexer.getFiles(testPathAbsolute)).thenReturn(testFiles);
 
         contentIndex = new IpsFolderBundleContentIndex(modelFolders, bundleRoot, indexer);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private List<Path> makeAbsolutePaths(Path base, Path... files) {
@@ -150,4 +159,5 @@ public class IpsFolderBundleContentIndexTest {
 
         assertTrue(contentIndex.getQualifiedNameTypes("empty").isEmpty());
     }
+
 }

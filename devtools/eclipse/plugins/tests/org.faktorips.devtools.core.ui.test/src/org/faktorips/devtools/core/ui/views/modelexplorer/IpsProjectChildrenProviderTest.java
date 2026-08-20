@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,20 +32,22 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
+
 
     @Mock
     private IIpsPackageFragmentRoot root2;
 
     @Mock
     private IIpsPackageFragmentRoot root3;
+
+    private MockitoSession mockito;
 
     private IpsProjectChildrenProvider hierarchyProvider;
     private IIpsProject project;
@@ -54,6 +57,7 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
 
         hierarchyProvider = new IpsProjectChildrenProvider();
@@ -98,6 +102,16 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
 
         lenient().doReturn(spiedIpsObjectPath).when(((IpsProject)project)).getIpsObjectPathInternal();
 
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

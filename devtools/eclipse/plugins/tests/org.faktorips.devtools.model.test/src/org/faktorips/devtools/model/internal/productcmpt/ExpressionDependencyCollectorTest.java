@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -41,14 +42,14 @@ import org.faktorips.fl.parser.ASTIntegerNode;
 import org.faktorips.fl.parser.ASTStart;
 import org.faktorips.fl.parser.Node;
 import org.faktorips.fl.parser.SimpleNode;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ExpressionDependencyCollectorTest {
+
 
     private static final String MY_EXPRESSION = "1 + 2";
 
@@ -87,27 +88,17 @@ public class ExpressionDependencyCollectorTest {
     @Mock
     private Expression expression;
 
+    private MockitoSession mockito;
+
     private ExpressionDependencyCollector expressionDependencyCollector;
 
     @BeforeEach
-    public void setUpIdentifierVisitor() {
+    public void setUp() throws Exception {
+        mockito = createMocks(this);
         identifiers = new HashMap<>();
         lenient().when(identifierVisitor.getIdentifiers()).thenReturn(identifiers);
-    }
-
-    @BeforeEach
-    public void setUpExpression() {
         lenient().when(expression.getIpsObject()).thenReturn(ipsObject);
         lenient().when(ipsObject.getQualifiedNameType()).thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
-    }
-
-    @BeforeEach
-    public void createExpressionDependencyCollector() throws Exception {
-        expressionDependencyCollector = new ExpressionDependencyCollector(expression, identifierVisitor);
-    }
-
-    @BeforeEach
-    public void setUpQualifiedNodes() {
         lenient().when(qualifierNode.getProductCmpt()).thenReturn(targetProductCmpt);
         lenient().when(targetProductCmpt.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType(MY_TARGET_NAME, IpsObjectType.PRODUCT_CMPT));
@@ -116,6 +107,12 @@ public class ExpressionDependencyCollectorTest {
         lenient().when(targetProductCmpt2.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType("secondTarget", IpsObjectType.PRODUCT_CMPT));
         lenient().when(qualifierNode2.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 8, 29));
+        expressionDependencyCollector = new ExpressionDependencyCollector(expression, identifierVisitor);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

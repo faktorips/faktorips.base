@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,14 +35,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.Messages;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class AnyValueSetFormatTest {
+
 
     @Mock
     private IIpsObject ipsObject;
@@ -64,6 +65,8 @@ public class AnyValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
+    private MockitoSession mockito;
+
     private EnumValueSet enumValueSet;
 
     private RangeValueSet rangeValueSet;
@@ -74,6 +77,7 @@ public class AnyValueSetFormatTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         enumValueSet = new EnumValueSet(configValueSet, "ID");
         lenient().when(configValueSet.getValueSet()).thenReturn(enumValueSet);
         lenient().when(configValueSet.getIpsProject()).thenReturn(ipsProject);
@@ -83,6 +87,11 @@ public class AnyValueSetFormatTest {
         format = new AnyValueSetFormat(configValueSet, uiPlugin);
         rangeValueSet = new RangeValueSet(configValueSet, "ID");
         unrestrictedValueSet = new UnrestrictedValueSet(configValueSet, "ID");
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -1,21 +1,23 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -31,7 +33,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -41,7 +42,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class IpsRefactoringProcessorTest {
 
@@ -62,12 +63,12 @@ public class IpsRefactoringProcessorTest {
     @Mock
     private IIpsSrcFile ipsSrcFile;
 
-    private AutoCloseable openMocks;
+    private MockitoSession mockito;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        when(ipsElement.exists()).thenReturn(true);
+        mockito = createMocks(this);
+        lenient().when(ipsElement.exists()).thenReturn(true);
 
         TestProcessor testProcessor = new TestProcessor(ipsElement);
         testProcessorSpy = spy(testProcessor);
@@ -75,7 +76,7 @@ public class IpsRefactoringProcessorTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
@@ -132,8 +133,6 @@ public class IpsRefactoringProcessorTest {
             throws OperationCanceledException {
 
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, RETURNS_DEEP_STUBS);
-        when(ipsSrcFile.getCorrespondingResource().isSynchronized(any(AResourceTreeTraversalDepth.class)))
-                .thenReturn(false);
         Set<IIpsSrcFile> affectedFiles = new HashSet<>();
         affectedFiles.add(ipsSrcFile);
         when(testProcessorSpy.getAffectedIpsSrcFiles()).thenReturn(affectedFiles);
@@ -186,7 +185,7 @@ public class IpsRefactoringProcessorTest {
 
         @Override
         protected void validateIpsModel(MessageList validationMessageList) {
-
+            // nothing to validate
         }
 
         @Override
@@ -261,7 +260,6 @@ public class IpsRefactoringProcessorTest {
         IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsObject);
         IIpsObject ipsObject2 = mock(IIpsObject.class);
 
-        when(ipsObject.exists()).thenReturn(true);
         when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
         when(ipsSrcFile.getIpsObject()).thenReturn(ipsObject2);
 
@@ -273,11 +271,6 @@ public class IpsRefactoringProcessorTest {
         IIpsElement ipsElement = mock(IIpsElement.class);
 
         IpsRefactoringProcessor refactoringProcessor = new TestProcessor(ipsElement);
-
-        when(ipsElement.exists()).thenReturn(true);
-        assertSame(ipsElement, refactoringProcessor.getIpsElement());
-
-        when(ipsElement.exists()).thenReturn(false);
 
         assertSame(ipsElement, refactoringProcessor.getIpsElement());
     }

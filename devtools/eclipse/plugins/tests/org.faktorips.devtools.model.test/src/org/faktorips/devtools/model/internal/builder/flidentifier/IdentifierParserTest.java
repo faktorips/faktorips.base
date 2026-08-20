@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,13 +53,14 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
+
 public class IdentifierParserTest {
+
 
     private static final String MY_PARAMETER = "anyParameter";
 
@@ -138,20 +140,11 @@ public class IdentifierParserTest {
     @Mock
     private ISupportedLanguage supportetLanguage;
 
-    @BeforeEach
-    public void createIdentifierParser() throws Exception {
-        mockEnum();
-        identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
-    }
-
-    private void mockEnum() throws Exception {
-        when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
-        lenient().when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
-        lenient().when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
-    }
+    private MockitoSession mockito;
 
     @BeforeEach
-    public void mockExpression() throws Exception {
+    public void setUp() throws Exception {
+        mockito = createMocks(this);
         lenient().when(expression.findProductCmptType(ipsProject)).thenReturn(productCmptType);
         lenient().when(expression.findFormulaSignature(ipsProject)).thenReturn(formulaMethod);
         lenient().when(formulaMethod.getParameters()).thenReturn(new IParameter[] { parameter });
@@ -182,6 +175,19 @@ public class IdentifierParserTest {
         lenient().when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
         lenient().when(projectProperties.getDefaultLanguage()).thenReturn(supportetLanguage);
         lenient().when(supportetLanguage.getLocale()).thenReturn(Locale.GERMAN);
+        mockEnum();
+        identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+    private void mockEnum() throws Exception {
+        when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
+        lenient().when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
+        lenient().when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
     }
 
     @Test
@@ -301,4 +307,5 @@ public class IdentifierParserTest {
         assertEquals(1, proposals.size());
         assertEquals("\"" + MY_QUALIFIER + "\"]", proposals.get(0).getText());
     }
+
 }

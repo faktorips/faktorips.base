@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,14 +23,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.runtime.Message;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class InvalidNodeGeneratorTest {
+
 
     private static final String TEXT = "text";
 
@@ -44,16 +45,24 @@ public class InvalidNodeGeneratorTest {
     @Mock
     private JavaBuilderSet builderSet;
 
+    private MockitoSession mockito;
+
     private InvalidIdentifierNode invalidNode;
 
     private InvalidNodeGenerator generator;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         generator = new InvalidNodeGenerator(factory, builderSet);
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(new TextRegion("anyIdentifierPart", 0,
                 "anyIdentifierPart".length()), ipsProject);
         invalidNode = nodeFactory.createInvalidIdentifier(MESSAGE);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

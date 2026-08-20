@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.product;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,14 +30,14 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductSearchQueryTest {
+
 
     private static final String PRODUCT_CMPT_TYPE_NAME = "ProductCmptType";
 
@@ -64,10 +65,13 @@ public class ProductSearchQueryTest {
     @Mock
     private IProductCmptType productCmptType;
 
+    private MockitoSession mockito;
+
     private ProductSearchQuery query;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(validCondition.isValid()).thenReturn(true);
         lenient().when(invalidCondition.isValid()).thenReturn(false);
 
@@ -79,6 +83,11 @@ public class ProductSearchQueryTest {
         lenient().when(ipsModel.getIpsProjects()).thenReturn(new IIpsProject[] { ipsProject, ipsProject2 });
 
         lenient().when(ipsProject.findProductCmptType(PRODUCT_CMPT_TYPE_NAME)).thenReturn(productCmptType);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

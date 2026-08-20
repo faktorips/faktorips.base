@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.eclipse.internal.ipsproject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,14 +24,14 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathManifestReader;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.osgi.framework.BundleException;
-@ExtendWith(MockitoExtension.class)
 public class IpsObjectPathManifestReaderTest {
+
 
     @Mock
     private IpsBundleManifest bundleManifest;
@@ -47,11 +48,19 @@ public class IpsObjectPathManifestReaderTest {
     @Mock
     private AFolder myResourceOut;
 
+    private MockitoSession mockito;
+
     private IpsObjectPathManifestReader objectPathReader;
 
     @BeforeEach
     public void createIpsObjectPathManifestReader() {
+        mockito = createMocks(this);
         objectPathReader = new IpsObjectPathManifestReader(bundleManifest, ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     private ManifestElement[] mockObjectDirElements(String... objectDirs) {

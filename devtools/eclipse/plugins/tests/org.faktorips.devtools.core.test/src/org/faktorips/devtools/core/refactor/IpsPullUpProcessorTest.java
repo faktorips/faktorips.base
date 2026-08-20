@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class IpsPullUpProcessorTest {
 
@@ -45,13 +46,13 @@ public class IpsPullUpProcessorTest {
     @Mock
     private IProgressMonitor progressMonitor;
 
-    private TestIpsPullUpProcessor pullUpProcessor;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private TestIpsPullUpProcessor pullUpProcessor;
 
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
 
         when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
 
@@ -60,7 +61,7 @@ public class IpsPullUpProcessorTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

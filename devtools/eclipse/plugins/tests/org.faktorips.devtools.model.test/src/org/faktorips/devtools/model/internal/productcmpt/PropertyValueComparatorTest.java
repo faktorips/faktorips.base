@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -18,13 +19,14 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class PropertyValueComparatorTest {
+
 
     @Mock
     private IPropertyValue value1;
@@ -32,7 +34,21 @@ public class PropertyValueComparatorTest {
     @Mock
     private IPropertyValue value2;
 
+    private MockitoSession mockito;
+
     private PropertyValueComparator propertyValueComparator = new PropertyValueComparator();
+
+    @BeforeEach
+    void setUp() {
+        mockito = createMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
+    }
+
+
 
     @Test
     public void testCompare_DifferentTypes() {

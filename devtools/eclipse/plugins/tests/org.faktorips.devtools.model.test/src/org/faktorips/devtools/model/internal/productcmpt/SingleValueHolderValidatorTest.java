@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.faktorips.testsupport.IpsMatchers.containsNoErrorMessage;
 import static org.faktorips.testsupport.IpsMatchers.containsText;
 import static org.faktorips.testsupport.IpsMatchers.hasErrorMessage;
@@ -45,14 +46,14 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.values.LocalizedString;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class SingleValueHolderValidatorTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -66,12 +67,20 @@ public class SingleValueHolderValidatorTest {
     @Mock
     private ValueDatatype datatype;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(attributeValue.getIpsProject()).thenReturn(ipsProject);
         lenient().when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
         lenient().when(attribute.getIpsProject()).thenReturn(ipsProject);
         lenient().when(attribute.findDatatype(ipsProject)).thenReturn(datatype);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -345,4 +354,5 @@ public class SingleValueHolderValidatorTest {
         assertThat(secondObjectProperty.getObject(), is((Object)valueHolder));
         assertThat(secondObjectProperty.getProperty(), is(IValueHolder.PROPERTY_VALUE));
     }
+
 }

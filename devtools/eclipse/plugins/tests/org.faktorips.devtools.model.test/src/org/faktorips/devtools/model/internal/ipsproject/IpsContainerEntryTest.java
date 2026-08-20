@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,14 +31,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsContainerEntryTest {
+
 
     private static final String MY_ID = "myId";
 
@@ -52,10 +53,13 @@ public class IpsContainerEntryTest {
     @Mock
     private IIpsModel ipsModel;
 
+    private MockitoSession mockito;
+
     private IpsContainerEntry ipsContainerEntry;
 
     @BeforeEach
     public void createIpsContainerEntry() throws Exception {
+        mockito = createMocks(this);
         ipsContainerEntry = new IpsContainerEntry(path);
         ipsContainerEntry.setContainerTypeId(MY_ID);
         ipsContainerEntry.setOptionalPath(MY_OPTIONAL_PATH);
@@ -64,6 +68,11 @@ public class IpsContainerEntryTest {
         lenient().when(ipsProject.getName()).thenReturn("ipsProject");
 
         new IpsObjectPathSearchContext(ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

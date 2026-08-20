@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.xmodel;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,16 +26,16 @@ import java.util.LinkedHashSet;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class XTypeTest {
+
 
     @Mock
     private GeneratorModelContext context;
@@ -54,25 +55,25 @@ public class XTypeTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
-    public void mockContext() {
+    public void setUp() {
+        mockito = createMocks(this);
         // addImport should always return the input parameter
         Answer<String> inputAnswer = invocation -> invocation.getArguments()[0].toString();
         lenient().when(context.addImport(anyString())).thenAnswer(inputAnswer);
         lenient().doReturn(generatorConfig).when(xType).getGeneratorConfig();
-    }
-
-    @BeforeEach
-    public void createXType() {
         lenient().when(xType.getIpsObjectPartContainer()).thenReturn(type);
         lenient().doReturn(ipsProject).when(xType).getIpsProject();
         lenient().when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         lenient().doReturn("myInterface").when(xType).getInterfaceName();
+        lenient().when(xSuperType.getContext()).thenReturn(context);
     }
 
-    @BeforeEach
-    public void createXSuperType() {
-        lenient().when(xSuperType.getContext()).thenReturn(context);
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,15 +31,15 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.enums.EnumAttributeValue.IdentifierBoundaryValidator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumAttributeValueUnitTest {
+
 
     private IdentifierBoundaryValidator validator;
 
@@ -57,8 +58,11 @@ public class EnumAttributeValueUnitTest {
     @Mock
     private EnumContent enumContent;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         validator = new IdentifierBoundaryValidator(attribute, enumType, datatype, ipsProject);
         lenient().when(attribute.findEnumAttribute(ipsProject)).thenReturn(identifierAttribute);
         lenient().doReturn("10").when(enumType).getIdentifierBoundary();
@@ -71,6 +75,11 @@ public class EnumAttributeValueUnitTest {
 
         lenient().when(attribute.getEnumValue()).thenReturn(enumValue);
         lenient().when(enumValue.getEnumValueContainer()).thenReturn(enumType);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

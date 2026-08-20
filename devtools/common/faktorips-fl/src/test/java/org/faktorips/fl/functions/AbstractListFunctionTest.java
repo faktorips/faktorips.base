@@ -13,6 +13,7 @@ package org.faktorips.fl.functions;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockitoSession;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
@@ -25,14 +26,15 @@ import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.Message;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
 public class AbstractListFunctionTest {
+
 
     private static final String MY_DATATYPE = "myDatatype";
 
@@ -47,8 +49,14 @@ public class AbstractListFunctionTest {
     @Mock
     private DatatypeHelper datatypeHelper;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = mockitoSession()
+                .initMocks(this)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
         abstractListFunction = new AbstractListFunction("myFunction", "", FunctionSignatures.MinList) {
 
             @Override
@@ -58,6 +66,11 @@ public class AbstractListFunctionTest {
         };
         abstractListFunction.setCompiler(compiler);
         lenient().when(datatype.getName()).thenReturn(MY_DATATYPE);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

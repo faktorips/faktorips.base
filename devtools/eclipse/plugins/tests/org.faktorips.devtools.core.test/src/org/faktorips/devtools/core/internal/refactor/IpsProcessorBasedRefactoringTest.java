@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.refactor;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,29 +34,29 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class IpsProcessorBasedRefactoringTest {
 
     @Mock
     private IIpsElement ipsElement;
 
+    private MockitoSession mockito;
+
     private TestRefactoringProcessor ipsRefactoringProcessor;
 
     private IpsProcessorBasedRefactoring ipsProcessorBasedRefactoring;
 
-    private AutoCloseable openMocks;
-
     @BeforeEach
     public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this);
         ipsRefactoringProcessor = new TestRefactoringProcessor(ipsElement);
         ipsProcessorBasedRefactoring = new IpsProcessorBasedRefactoring(ipsRefactoringProcessor);
     }
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test

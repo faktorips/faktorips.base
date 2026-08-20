@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,13 +30,13 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class AssociationDecoratorTest extends AbstractIpsPluginTest {
+
 
     private AssociationDecorator decorator;
 
@@ -51,13 +52,26 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
     @Mock
     private IPolicyCmptTypeAttribute aPolicyCmptAttribute;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         decorator = new AssociationDecorator();
         lenient().when(aProductAssociation.isChangingOverTime()).thenReturn(true);
         lenient().when(aProductAssociation.isConstrain()).thenReturn(false);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

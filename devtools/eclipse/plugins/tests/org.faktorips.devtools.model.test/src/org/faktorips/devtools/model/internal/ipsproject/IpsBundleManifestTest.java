@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -63,16 +64,16 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 import org.osgi.framework.BundleException;
 
-@ExtendWith(MockitoExtension.class)
 public class IpsBundleManifestTest {
+
 
     private static final String MANIFEST = """
             Manifest-Version: 1.0
@@ -132,13 +133,21 @@ public class IpsBundleManifestTest {
     @Mock
     private IpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void createIpsBundleManifest() throws IOException {
+        mockito = createMocks(this);
         mockManifest();
         ipsBundleManifest = new IpsBundleManifest(manifest);
         AProject project = mock(AProject.class);
         lenient().when(project.getDefaultLineSeparator()).thenReturn("\n");
         lenient().when(ipsProject.getProject()).thenReturn(project);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     public void mockManifest() throws IOException {
@@ -1005,4 +1014,5 @@ public class IpsBundleManifestTest {
         // Should end with a newline
         assertThat(manifestContent.endsWith("\n"), is(true));
     }
+
 }

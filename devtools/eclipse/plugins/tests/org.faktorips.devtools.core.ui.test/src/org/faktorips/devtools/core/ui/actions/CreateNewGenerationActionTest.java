@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.ui.actions;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
 
 public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
 
@@ -42,26 +43,23 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
     @Mock
     private ISelectionProvider selectionProvider;
 
-    private CreateNewGenerationAction action;
+    private MockitoSession mockito;
 
-    private AutoCloseable openMocks;
+    private CreateNewGenerationAction action;
 
     @Override
     @BeforeEach
-    public void setUp() {
-        openMocks = MockitoAnnotations.openMocks(this);
+    public void setUp() throws Exception {
+        super.setUp();
+        mockito = createMocks(this);
         action = new CreateNewGenerationAction(shell, selectionProvider);
-    }
-
-    @AfterEach
-    public void releaseMocks() throws Exception {
-        openMocks.close();
     }
 
     @Override
     @AfterEach
     public void tearDown() throws Exception {
-        // nothing to tear down
+        super.tearDown();
+        mockito.finishMocking();
     }
 
     @Test
@@ -73,7 +71,6 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
     public void testComputeEnabledProperty_DisabledIfElementOtherThanProductCmptOrProductCmptReferenceOrIpsSrcFileIncluded() {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         IProductCmpt productCmpt = mock(IProductCmpt.class);
-        when(productCmpt.allowGenerations()).thenReturn(true);
         when(productCmpt.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
         when(ipsSrcFile.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
         IStructuredSelection selection = new StructuredSelection(Arrays.asList(productCmpt,

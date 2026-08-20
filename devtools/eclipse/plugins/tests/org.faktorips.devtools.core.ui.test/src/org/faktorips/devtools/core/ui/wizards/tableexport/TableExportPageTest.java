@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.tableexport;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,15 +30,15 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TableExportPageTest {
+
     @Mock
     private IStructuredSelection selection;
     @Mock
@@ -49,16 +50,24 @@ public class TableExportPageTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @InjectMocks
     private TableExportPage tableExportPage;
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         Field exportedIpsObjectControlField = IpsObjectExportPage.class.getDeclaredField("exportedIpsObjectControl");
         exportedIpsObjectControlField.setAccessible(true);
         exportedIpsObjectControlField.set(tableExportPage, exportedIpsObjectControl);
         lenient().when(tableContents.getIpsProject()).thenReturn(ipsProject);
         lenient().when(tableStructure.getIpsProject()).thenReturn(ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

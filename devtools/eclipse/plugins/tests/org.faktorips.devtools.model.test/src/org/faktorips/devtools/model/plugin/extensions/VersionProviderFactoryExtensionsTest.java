@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -26,14 +27,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class VersionProviderFactoryExtensionsTest {
+
 
     private static final String MY_VERSION_PROVIDER_ID = "myVersionProviderId";
 
@@ -58,8 +59,11 @@ public class VersionProviderFactoryExtensionsTest {
     @Mock
     private IVersionProvider<?> versionProvider;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUpExtensionRegistry() throws Exception {
+        mockito = createMocks(this);
         when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
                 VersionProviderFactoryExtensions.EXTENSION_POINT_ID_VERSION_PROVIDER))
                         .thenReturn(new IConfigurationElement[] { configElementDummy, configElementVersionProvider });
@@ -67,6 +71,11 @@ public class VersionProviderFactoryExtensionsTest {
                 .thenReturn(MY_VERSION_PROVIDER_ID);
         when(configElementVersionProvider.createExecutableExtension(ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS))
                 .thenReturn(versionProviderFactory);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

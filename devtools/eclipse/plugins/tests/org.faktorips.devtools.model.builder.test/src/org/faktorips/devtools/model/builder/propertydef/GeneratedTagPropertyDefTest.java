@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.propertydef;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -25,11 +26,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
 /**
  * Tests for {@link GeneratedTagPropertyDef} and its inner classes {@link GeneratedTagPropertyDef.StartTag}
@@ -39,8 +40,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * tag must either both be set or both be empty, and that the error message arguments are ordered so
  * that {@code {0}} always refers to the start tag and {@code {1}} always refers to the end tag.
  */
-@ExtendWith(MockitoExtension.class)
 public class GeneratedTagPropertyDefTest {
+
 
     @Mock
     private IIpsProject ipsProject;
@@ -51,11 +52,14 @@ public class GeneratedTagPropertyDefTest {
     @Mock
     private IIpsArtefactBuilderSetConfig config;
 
+    private MockitoSession mockito;
+
     private final GeneratedTagPropertyDef.StartTag startTag = new GeneratedTagPropertyDef.StartTag();
     private final GeneratedTagPropertyDef.EndTag endTag = new GeneratedTagPropertyDef.EndTag();
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         Map<String, Object> properties = new HashMap<>();
         properties.put("type", "string"); //$NON-NLS-1$ //$NON-NLS-2$
         properties.put("name", "generatedStartTag"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -67,6 +71,11 @@ public class GeneratedTagPropertyDefTest {
         properties.put("jdkComplianceLevels", List.of()); //$NON-NLS-1$
         startTag.initialize(null, properties);
         endTag.initialize(null, properties);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

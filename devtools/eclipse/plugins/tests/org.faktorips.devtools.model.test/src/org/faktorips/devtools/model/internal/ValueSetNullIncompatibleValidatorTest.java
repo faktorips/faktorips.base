@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,24 +19,32 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ValueSetNullIncompatibleValidatorTest {
+
 
     @Mock
     private IValueSet valueSetWithNull;
     @Mock
     private IValueSet valueSetWithoutNull;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         lenient().when(valueSetWithNull.isContainsNull()).thenReturn(true);
         lenient().when(valueSetWithoutNull.isContainsNull()).thenReturn(false);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -78,4 +87,5 @@ public class ValueSetNullIncompatibleValidatorTest {
         assertFalse(messages.isEmpty());
         assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
     }
+
 }

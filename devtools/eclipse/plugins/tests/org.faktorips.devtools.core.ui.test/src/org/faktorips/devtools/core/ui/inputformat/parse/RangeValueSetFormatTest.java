@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,15 +32,15 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class RangeValueSetFormatTest {
+
 
     @Mock
     private IIpsObject ipsObject;
@@ -64,11 +65,14 @@ public class RangeValueSetFormatTest {
     @Mock
     private ValueDatatype datatype;
 
+    private MockitoSession mockito;
+
     private static final String NULL_PRESENTATION = NLS.bind(Messages.RangeValueSetFormat_includingNull,
             IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
 
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         rangeVSFormat = new RangeValueSetFormat(configValueSet, uiPlugin);
 
         lenient().when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class)))
@@ -78,6 +82,11 @@ public class RangeValueSetFormatTest {
         lenient().when(configValueSet.getIpsModel()).thenReturn(ipsModel);
         lenient().when(configValueSet.getIpsObject()).thenReturn(ipsObject);
         lenient().when(configValueSet.getIpsProject()).thenReturn(ipsProject);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

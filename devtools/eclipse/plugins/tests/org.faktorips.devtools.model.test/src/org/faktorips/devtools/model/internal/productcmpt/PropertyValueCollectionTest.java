@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,15 +40,15 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
+
 
     private PropertyValueCollection valueContainer;
 
@@ -60,9 +61,12 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     @Mock
     private ProductCmpt parent;
 
+    private MockitoSession mockito;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         when(parent.getIpsObject()).thenReturn(ipsObject);
         when(parent.getIpsProject()).thenReturn(ipsProject);
@@ -77,6 +81,16 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         valueContainer.addPropertyValue(part1);
         valueContainer.addPropertyValue(part2);
         valueContainer.addPropertyValue(part3);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     protected void assertAttributesSize(int size) {

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
@@ -25,17 +26,19 @@ import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class FixTableContentStrategyTest extends AbstractIpsPluginTest {
+
 
     @Mock
     private AssignContentAttributesPage<ITableStructure, IColumn> assignTableAttributesPage;
+
+    private MockitoSession mockito;
 
     private FixTableContentStrategy tableStrategy;
     private IIpsProject project;
@@ -45,6 +48,7 @@ public class FixTableContentStrategyTest extends AbstractIpsPluginTest {
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
         project = newIpsProject("TestProject");
         structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
@@ -66,6 +70,16 @@ public class FixTableContentStrategyTest extends AbstractIpsPluginTest {
         IRow secondtRow = rows.newRow();
         secondtRow.setValue(0, "w");
         secondtRow.setValue(1, "female");
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

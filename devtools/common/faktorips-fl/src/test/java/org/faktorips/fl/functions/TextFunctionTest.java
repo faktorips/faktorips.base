@@ -11,18 +11,20 @@
 package org.faktorips.fl.functions;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mockitoSession;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResultImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
 public class TextFunctionTest extends FunctionAbstractTest {
+
 
     @Mock
     private CompilationResultImpl argumentCompilationResult;
@@ -30,13 +32,24 @@ public class TextFunctionTest extends FunctionAbstractTest {
     @Mock
     private DatatypeHelper helper;
 
+    private MockitoSession mockito;
+
     private TextFunction textFunc = new TextFunction("TEXT", "");
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
+        mockito = mockitoSession()
+                .initMocks(this)
+                .strictness(Strictness.STRICT_STUBS)
+                .startMocking();
         super.setUp();
         registerFunction(textFunc);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

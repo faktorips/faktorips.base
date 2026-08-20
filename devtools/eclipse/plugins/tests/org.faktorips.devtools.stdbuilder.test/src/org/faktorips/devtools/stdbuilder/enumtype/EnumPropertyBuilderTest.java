@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,12 +32,12 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
+
 
     private EnumPropertyBuilder enumPropertyBuilder;
 
@@ -44,9 +45,12 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
 
     private IIpsSrcFile ipsSrcFile;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     @Override
     public void setUp() throws Exception {
+        mockito = createMocks(this);
         super.setUp();
 
         IIpsProjectProperties properties = ipsProject.getProperties();
@@ -57,6 +61,16 @@ public class EnumPropertyBuilderTest extends AbstractStdBuilderTest {
         enumType.setExtensible(false);
         ipsSrcFile = enumType.getIpsSrcFile();
         enumPropertyBuilder = (EnumPropertyBuilder)builderSet.getBuilderById(BuilderKindIds.ENUM_PROPERTY);
+    }
+
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        try {
+            super.tearDown();
+        } finally {
+            mockito.finishMocking();
+        }
     }
 
     @Test

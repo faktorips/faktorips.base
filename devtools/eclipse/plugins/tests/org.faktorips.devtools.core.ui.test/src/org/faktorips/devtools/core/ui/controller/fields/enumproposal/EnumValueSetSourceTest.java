@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,14 +23,14 @@ import java.util.List;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class EnumValueSetSourceTest {
+
 
     @Mock
     private IValueSetOwner valueSetOwner;
@@ -40,11 +41,19 @@ public class EnumValueSetSourceTest {
     @Mock
     private EnumValueSet enumValueSet;
 
+    private MockitoSession mockito;
+
     private EnumValueSetSource valueSource;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         valueSource = new EnumValueSetSource(valueSetOwner);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

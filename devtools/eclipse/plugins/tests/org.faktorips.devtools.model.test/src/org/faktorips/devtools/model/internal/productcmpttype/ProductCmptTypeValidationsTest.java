@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -22,14 +23,14 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class ProductCmptTypeValidationsTest {
+
 
     private String policyCmptType = "pcType1";
 
@@ -47,9 +48,17 @@ public class ProductCmptTypeValidationsTest {
     @Mock
     private IIpsProject ipsProject;
 
+    private MockitoSession mockito;
+
     @BeforeEach
     public void setUpIpsProject() {
+        mockito = createMocks(this);
         lenient().when(ipsProject.findPolicyCmptType(superPolicyCmptType)).thenReturn(foundSuperPolicyCmptType);
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test
@@ -175,4 +184,5 @@ public class ProductCmptTypeValidationsTest {
                 message.getInvalidObjectProperties().get(0).getProperty());
         assertEquals(Message.ERROR, message.getSeverity());
     }
+
 }

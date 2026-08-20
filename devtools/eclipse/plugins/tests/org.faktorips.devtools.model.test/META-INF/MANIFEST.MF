@@ -9,8 +9,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.17.100",
  org.eclipse.jdt.launching;bundle-version="3.17.0",
  org.eclipse.ltk.core.refactoring;bundle-version="3.10.400",
  org.hamcrest;bundle-version="3.0",
- org.faktorips.abstracttest,
- org.mockito.junit-jupiter
+ org.faktorips.abstracttest
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Faktor Zehn GmbH
@@ -40,14 +39,13 @@ Import-Package: com.opencsv;version="5.6.0",
  org.faktorips.values,
  org.hamcrest;version="3.0",
  org.junit.jupiter.api;version="[5.0.0,7.0.0)",
- org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
  org.junit.jupiter.api.extension;version="[5.0.0,7.0.0)",
- org.mockito.junit.jupiter,
- org.mockito.quality,
+ org.junit.jupiter.api.function;version="[5.0.0,7.0.0)",
  org.junit.platform.commons.annotation;version="[1.0.0,7.0.0)",
  org.mockito,
  org.mockito.invocation;version="4.7.0",
  org.mockito.junit,
+ org.mockito.quality,
  org.mockito.stubbing,
  org.mockito.verification
 Export-Package: org.faktorips.devtools.model.internal.value

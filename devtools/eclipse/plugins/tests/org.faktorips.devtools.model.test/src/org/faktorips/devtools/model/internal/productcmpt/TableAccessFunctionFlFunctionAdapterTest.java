@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,14 +25,14 @@ import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class TableAccessFunctionFlFunctionAdapterTest {
+
 
     private static final String MY_DATATYPE = "myDatatype";
 
@@ -57,12 +58,15 @@ public class TableAccessFunctionFlFunctionAdapterTest {
     @Mock
     private ValueDatatype datatype2;
 
+    private MockitoSession mockito;
+
     private ITableAccessFunction fct;
 
     private TableAccessFunctionFlFunctionAdapter tableAccessFunctionFlFunctionAdapter;
 
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         ITableStructure tableStructure = mock(ITableStructure.class);
         when(key.getTableStructure()).thenReturn(tableStructure);
         IKeyItem keyItem = mock(IKeyItem.class);
@@ -74,6 +78,11 @@ public class TableAccessFunctionFlFunctionAdapterTest {
         tableAccessFunctionFlFunctionAdapter = new TableAccessFunctionFlFunctionAdapter(TABLE_CONTENTS_NAME, fct,
                 REFERENCED_NAME, ipsProject1);
 
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

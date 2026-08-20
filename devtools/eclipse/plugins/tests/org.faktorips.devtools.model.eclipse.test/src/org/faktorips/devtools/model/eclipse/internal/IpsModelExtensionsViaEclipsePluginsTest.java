@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.eclipse.internal;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
@@ -29,13 +30,13 @@ import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExten
 import org.faktorips.devtools.model.versionmanager.EmptyIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IExtendableVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-@ExtendWith(MockitoExtension.class)
+import org.mockito.MockitoSession;
 public class IpsModelExtensionsViaEclipsePluginsTest {
+
 
     private static final String MY_BASED_ON_FEATURE_MANAGER = "myBasedOnFeatureManager";
 
@@ -54,13 +55,21 @@ public class IpsModelExtensionsViaEclipsePluginsTest {
     @Mock
     private IExtendableVersionManager extendableVersionManager;
 
+    private MockitoSession mockito;
+
     private IIpsModelExtensions modelExtensionFactory;
 
     @BeforeEach
     public void createExtensionFactory() throws Exception {
+        mockito = createMocks(this);
         if (Abstractions.isEclipseRunning()) {
             modelExtensionFactory = new IpsModelExtensionsViaEclipsePlugins(extensionRegistry);
         }
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

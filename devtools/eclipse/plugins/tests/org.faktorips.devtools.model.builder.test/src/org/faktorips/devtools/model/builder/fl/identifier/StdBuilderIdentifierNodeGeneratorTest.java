@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.builder.fl.identifier;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,18 +21,20 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.fl.CompilationResult;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoSession;
 
-@ExtendWith(MockitoExtension.class)
 public class StdBuilderIdentifierNodeGeneratorTest {
+
     @Mock
     JavaBuilderIdentifierNodeGenerator generator;
     @Mock
     CompilationResult<JavaCodeFragment> compilationResult;
+
+    private MockitoSession mockito;
 
     Datatype elementDatatype = new IntegerDatatype();
     Datatype listDatatype = new ListOfTypeDatatype(elementDatatype);
@@ -39,7 +42,13 @@ public class StdBuilderIdentifierNodeGeneratorTest {
     @SuppressWarnings("unchecked")
     @BeforeEach
     public void setUp() {
+        mockito = createMocks(this);
         when(generator.isListDatatypeContext(any(CompilationResult.class))).thenCallRealMethod();
+    }
+
+    @AfterEach
+    void tearDown() {
+        mockito.finishMocking();
     }
 
     @Test

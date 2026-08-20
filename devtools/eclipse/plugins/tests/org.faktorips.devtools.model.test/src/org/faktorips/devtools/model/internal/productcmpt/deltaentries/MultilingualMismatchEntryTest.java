@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
@@ -39,11 +40,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.MockitoSession;
+import org.mockito.quality.Strictness;
 
 /**
  * Test for {@link MultilingualMismatchEntry}
- * 
+ *
  * @author frank
  */
 public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
@@ -72,14 +74,15 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
     @Mock
     private IIpsSrcFile ipsSrcFile;
 
+    private MockitoSession mockito;
+
     private InternationalStringValue internationalStringValue;
-    private AutoCloseable openMocks;
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        openMocks = MockitoAnnotations.openMocks(this);
+        mockito = createMocks(this, Strictness.LENIENT);
         doReturn(ipsProject).when(attributeValue).getIpsProject();
         doReturn(ipsObject).when(attributeValue).getIpsObject();
         doReturn(ipsSrcFile).when(ipsObject).getIpsSrcFile();
@@ -95,7 +98,7 @@ public class MultilingualMismatchEntryTest extends AbstractIpsPluginTest {
 
     @AfterEach
     public void releaseMocks() throws Exception {
-        openMocks.close();
+        mockito.finishMocking();
     }
 
     @Test
