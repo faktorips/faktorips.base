@@ -43,7 +43,11 @@ public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, 
         if (qName == null && selectedContentType == null) {
             selectedContentType = enumContent.findEnumType(ipsProject);
         } else if (qName != null) {
-            selectedContentType = ipsProject.findEnumType(qName);
+            final IEnumType found = ipsProject.findEnumType(qName);
+            if (found != null) {
+                selectedContentType = found;
+            }
+            return found;
         }
         return selectedContentType;
     }
