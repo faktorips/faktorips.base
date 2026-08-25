@@ -10,22 +10,17 @@
 
 package org.faktorips.devtools.ant;
 
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
-import org.eclipse.m2e.core.project.IProjectConfigurationManager;
-import org.eclipse.m2e.core.project.MavenUpdateRequest;
+import org.eclipse.m2e.core.project.IMavenProjectRegistry;
 
 public class MavenProjectRefreshTask extends AbstractIpsTask {
-
-    private static final long SERVICE_TIMEOUT_MS = 5 * 60 * 1000L;
 
     private boolean offline = false;
     private boolean updateSnapshots = false;
@@ -106,31 +101,19 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
     }
 
     @Override
-    @SuppressWarnings("restriction")
     protected void executeInternal() throws Exception {
-        MavenUpdateRequest mavenUpdateRequest = new MavenUpdateRequest(
-                waitForService(MavenPlugin::getMavenProjectRegistry, "IMavenProjectRegistry", SERVICE_TIMEOUT_MS)
-                        .getProjects().stream()
-                        .map(IMavenProjectFacade::getProject)
-                        .peek(p -> System.out.println("refreshing: " + p.getName()))
-                        .toList(),
-                isOffline(),
-                isUpdateSnapshots());
+        IMavenProjectRegistry projectRegistry = waitForService(
+                MavenPlugin::getMavenProjectRegistry, "IMavenProjectRegistry");
+        List<IProject> projects = projectRegistry
+                .getProjects().stream()
+                .map(IMavenProjectFacade::getProject)
+                .peek(p -> System.out.println("refreshing: " + p.getName()))
+                .toList();
 
-        IProjectConfigurationManager pm = waitForService(
-                MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", SERVICE_TIMEOUT_MS);
         System.out.println("calling updateProjectConfiguration");
-        Map<String, IStatus> updateProjectStatus = ((org.eclipse.m2e.core.internal.project.ProjectConfigurationManager)pm)
-                .updateProjectConfiguration(
-                        mavenUpdateRequest,
-                        isUpdateConfiguration(),
-                        isCleanProjects(),
-                        isRefreshFromFilesystem(),
-                        new NullProgressMonitor());
-        System.out.println("updateProject status:");
-        updateProjectStatus.forEach((p, s) -> System.out.println(p + ": " + s));
-
-        waitForBuildJobs();
+        MavenProjectRefreshUtil.refresh(this, projects,
+                isOffline(), isUpdateSnapshots(), isUpdateConfiguration(), isCleanProjects(),
+                isRefreshFromFilesystem());
 
         checkForImportErrors();
     }

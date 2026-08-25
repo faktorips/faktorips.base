@@ -67,11 +67,11 @@ public class MavenProjectImportTask extends AbstractIpsTask {
 
         if (new File(getDir(), "pom.xml").exists()) {
             IProjectConfigurationManager projectConfigManager = waitForService(
-                    MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager", timeout);
+                    MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager");
             LocalProjectScanner scanner = new LocalProjectScanner(
                     List.of(getDir()),
                     false,
-                    waitForService(MavenPlugin::getMavenModelManager, "IMavenModelManager", timeout));
+                    waitForService(MavenPlugin::getMavenModelManager, "IMavenModelManager"));
             System.out.println("running ProjectScanner");
             scanner.run(monitor);
 

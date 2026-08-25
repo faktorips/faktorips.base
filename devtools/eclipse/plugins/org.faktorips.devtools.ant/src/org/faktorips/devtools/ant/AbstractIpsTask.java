@@ -36,6 +36,8 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
  */
 public abstract class AbstractIpsTask extends Task {
 
+    private static final long SERVICE_TIMEOUT_MS = 5 * 60 * 1000L;
+
     /**
      * Optional status file for communication of failed tasks to the calling Maven job without
      * throwing a {@link BuildException}.
@@ -149,12 +151,11 @@ public abstract class AbstractIpsTask extends Task {
      *
      * @param supplier the service to poll
      * @param serviceName used in the error message
-     * @param timeoutMs maximum time to wait in milliseconds
      * @return the non-null service
      */
-    protected <T> T waitForService(Supplier<T> supplier, String serviceName, long timeoutMs) {
+    protected <T> T waitForService(Supplier<T> supplier, String serviceName) {
         System.out.println("waiting for OSGi service: " + serviceName);
-        long deadline = System.currentTimeMillis() + timeoutMs;
+        long deadline = System.currentTimeMillis() + SERVICE_TIMEOUT_MS;
         int attempts = 0;
         while (true) {
             T value = supplier.get();
@@ -178,7 +179,7 @@ public abstract class AbstractIpsTask extends Task {
             }
         }
         throw new BuildException("OSGi service " + serviceName
-                + " was not available after " + timeoutMs + "ms. "
+                + " was not available after " + SERVICE_TIMEOUT_MS + "ms. "
                 + "This may be caused by a circular reference in m2e DS activation (felix.scr).");
     }
 
