@@ -185,6 +185,20 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
     }
 
     @Test
+    public void testCreateConstrainingAssociation_keepTargetUnchanged() {
+        setUpInverseAssociation();
+        CreateConstrainingAssociationOperation operation = new CreateConstrainingAssociationOperation(subSourcePolicy,
+                policyAssociation, targetPolicy);
+        operation.execute();
+
+        MessageList targetMessages = targetPolicy.validate(ipsProject);
+        assertNull(targetMessages.getMessageByCode(IAssociation.MSGCODE_CONSTRAINED_SINGULAR_NOT_FOUND));
+
+        MessageList sourceMessages = subSourcePolicy.validate(ipsProject);
+        assertNull(sourceMessages.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
+    }
+
+    @Test
     public void testCreateConstrainingAssociation_createMatchingAndInverseAssociationPolicy() {
         setUpMatchingAssociations();
         setUpInverseAssociation();

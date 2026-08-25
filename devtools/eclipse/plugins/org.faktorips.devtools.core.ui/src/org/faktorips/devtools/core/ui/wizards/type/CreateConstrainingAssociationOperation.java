@@ -26,7 +26,9 @@ import org.faktorips.devtools.model.type.IType;
  * <li>the corresponding constraining association on product-/policy-side (IOW matching
  * association), in case the constrained association has a matching association.</li>
  * <li>the inverse association of a constraining association (policy side only), in case the
- * constrained association has an inverse association.</li>
+ * constrained association has an inverse association and the target type is actually changed.
+ * If the target type is unchanged, the existing inverse association of the constrained
+ * association remains valid and is not touched.</li>
  * </ul>
  * Only creates constraining, matching and inverse associations if required and if they have not
  * been created yet.
@@ -136,7 +138,7 @@ public class CreateConstrainingAssociationOperation {
             IPolicyCmptTypeAssociation assoc = (IPolicyCmptTypeAssociation)constrainingAssociation;
             IPolicyCmptTypeAssociation constrainedAssoc = (IPolicyCmptTypeAssociation)assoc
                     .findConstrainedAssociation(getIpsProject());
-            if (isInverseRequired(constrainedAssoc)) {
+            if (isInverseRequired(assoc, constrainedAssoc)) {
                 createInverseAssociation(assoc, constrainedAssoc);
             }
         }
@@ -146,8 +148,14 @@ public class CreateConstrainingAssociationOperation {
         return constrainingAssociation instanceof IPolicyCmptTypeAssociation;
     }
 
-    private boolean isInverseRequired(IPolicyCmptTypeAssociation constrainedAssoc) {
-        return constrainedAssoc != null && constrainedAssoc.hasInverseAssociation();
+    private boolean isInverseRequired(IAssociation constrainingAssociation,
+            IPolicyCmptTypeAssociation constrainedAssoc) {
+        return constrainedAssoc != null && constrainedAssoc.hasInverseAssociation()
+                && isTargetChanged(constrainingAssociation, constrainedAssoc);
+    }
+
+    private boolean isTargetChanged(IAssociation constrainingAssociation, IAssociation constrainedAssoc) {
+        return !constrainingAssociation.getTarget().equals(constrainedAssoc.getTarget());
     }
 
     private void createInverseAssociation(IPolicyCmptTypeAssociation assoc,

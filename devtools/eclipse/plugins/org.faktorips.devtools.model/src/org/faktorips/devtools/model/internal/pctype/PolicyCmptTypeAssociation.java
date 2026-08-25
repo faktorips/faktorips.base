@@ -612,6 +612,14 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 && inverseAss.getTarget().equals(association.getType().getQualifiedName())) {
             return true;
         }
+        
+        if (association.isConstrain()) {
+            IPolicyCmptTypeAssociation constrainedAssociation = (IPolicyCmptTypeAssociation)association
+                    .findConstrainedAssociation(ipsProject);
+            if (constrainedAssociation != null) {
+                return checkInverseAssociation(ipsProject, constrainedAssociation, inverseAss);
+            }
+        }
         // FIPS-85: For shared associations we have to check the inverse association of the shared
         // association host
         if (inverseAss.isSharedAssociation()) {

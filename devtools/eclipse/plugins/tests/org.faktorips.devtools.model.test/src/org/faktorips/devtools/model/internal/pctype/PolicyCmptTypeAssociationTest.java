@@ -285,6 +285,41 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateInverseRelationMismatch_constrainWithUnchangedTargetIsValid() throws Exception {
+        IIpsProject ipsProject = newIpsProject("testValidateInverseRelationMismatch_constrain");
+        IPolicyCmptType typeA = newPolicyCmptType(ipsProject, "A");
+        IPolicyCmptType subTypeA = newPolicyCmptType(ipsProject, "SubA");
+        subTypeA.setSupertype(typeA.getQualifiedName());
+        IPolicyCmptType typeB = newPolicyCmptType(ipsProject, "B");
+
+        IPolicyCmptTypeAssociation relationAtoB = typeA.newPolicyCmptTypeAssociation();
+        relationAtoB.setAssociationType(AssociationType.ASSOCIATION);
+        relationAtoB.setTarget("B");
+        relationAtoB.setTargetRoleSingular("roleB");
+        relationAtoB.setTargetRolePlural("roleBs");
+        relationAtoB.setInverseAssociation("roleA");
+
+        IPolicyCmptTypeAssociation relationBtoA = typeB.newPolicyCmptTypeAssociation();
+        relationBtoA.setAssociationType(AssociationType.ASSOCIATION);
+        relationBtoA.setTarget("A");
+        relationBtoA.setTargetRoleSingular("roleA");
+        relationBtoA.setTargetRolePlural("roleAs");
+        relationBtoA.setInverseAssociation("roleB");
+
+        // SubA overrides "roleB" without changing its target
+        IPolicyCmptTypeAssociation overriddenRelation = subTypeA.newPolicyCmptTypeAssociation();
+        overriddenRelation.setAssociationType(AssociationType.ASSOCIATION);
+        overriddenRelation.setTarget("B");
+        overriddenRelation.setTargetRoleSingular("roleB");
+        overriddenRelation.setTargetRolePlural("roleBs");
+        overriddenRelation.setInverseAssociation("roleA");
+        overriddenRelation.setConstrain(true);
+
+        MessageList ml = overriddenRelation.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IPolicyCmptTypeAssociation.MSGCODE_INVERSE_RELATION_MISMATCH));
+    }
+
+    @Test
     public void testValidateInverseRelationNotFoundInTarget() throws Exception {
         IIpsProject ipsProject = newIpsProject("testValidateInverseRelationNotFoundInTarget");
         IPolicyCmptType typeA = newPolicyCmptType(ipsProject, "A");
