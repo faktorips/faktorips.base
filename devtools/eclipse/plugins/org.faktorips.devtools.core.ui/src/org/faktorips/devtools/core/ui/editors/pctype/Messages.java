@@ -232,8 +232,6 @@ public class Messages extends NLS {
 
     public static String PersistentTypeInfoSection_sectionTitleJpaEntityInformation;
 
-    public static String PersistentTypeInfoSection_textRootEntityNotFound;
-
     public static String PersistentTypeInfoSection_textSupertypeNotFound;
 
     public static String AttributeEditDialog_attributeComputed;

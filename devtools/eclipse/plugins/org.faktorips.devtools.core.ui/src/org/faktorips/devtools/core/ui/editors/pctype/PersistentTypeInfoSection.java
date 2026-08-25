@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,18 +29,19 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.InheritanceStrategy;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
-import org.faktorips.devtools.model.type.IType;
+import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 
 /**
  * Section to display and edit the persistence properties specific to an {@link IPolicyCmptType}.
  * <p>
  * The editable properties are Table Name, Inheritance Strategy amongst others.
- * 
+ *
  * @author Roman Grutza
  */
 public class PersistentTypeInfoSection extends IpsSection {
@@ -245,25 +246,38 @@ public class PersistentTypeInfoSection extends IpsSection {
         }
 
         public String getTableName() {
-            if (getIpsObjectPartContainer().isUseTableDefinedInSupertype()) {
-                IPolicyCmptType rootEntity = getIpsObjectPartContainer().findRootEntity();
-                IType superType = getPolicyCmptType().findSupertype(getIpsProject());
-                if (superType == null) {
-                    return Messages.PersistentTypeInfoSection_textSupertypeNotFound;
-                } else if (rootEntity == null) {
-                    return Messages.PersistentTypeInfoSection_textRootEntityNotFound;
-                } else {
-                    return rootEntity.getPersistenceTypeInfo().getTableName();
-                }
-            } else {
-                return getIpsObjectPartContainer().getTableName();
+            TableNameFinder finder = new TableNameFinder(getIpsProject());
+            finder.start(getPolicyCmptType());
+            if (finder.cycleDetected() || finder.tableName == null) {
+                return Messages.PersistentTypeInfoSection_textSupertypeNotFound;
             }
+            return finder.tableName;
+
         }
 
         public void setTableName(String tableName) {
             getIpsObjectPartContainer().setTableName(tableName);
         }
 
+    }
+
+    private static final class TableNameFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
+
+        private String tableName;
+
+        TableNameFinder(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IPolicyCmptType currentType) {
+            IPersistentTypeInfo info = currentType.getPersistenceTypeInfo();
+            if (!info.isUseTableDefinedInSupertype()) {
+                tableName = info.getTableName();
+                return false;
+            }
+            return true;
+        }
     }
 
 }
