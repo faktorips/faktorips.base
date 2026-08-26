@@ -126,6 +126,34 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
     }
 
     @Test
+    public void testValidate_NoPersistenceValidation_WhenAssociationIsConstrained() {
+        pcAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        pcAssociation.setMinCardinality(0);
+        pcAssociation.setMaxCardinality(1);
+        pcAssociation.setInverseAssociation("");
+
+        PolicyCmptType subPolicyCmptType = newPolicyCmptType(ipsProject, "SubPolicy");
+        subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
+        subPolicyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
+
+        IPolicyCmptTypeAssociation constrainedAssociation = subPolicyCmptType.newPolicyCmptTypeAssociation();
+        constrainedAssociation.setTarget(targetPolicyCmptType.getQualifiedName());
+        constrainedAssociation.setTargetRoleSingular(pcAssociation.getTargetRoleSingular());
+        constrainedAssociation.setTargetRolePlural(pcAssociation.getTargetRolePlural());
+        constrainedAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        constrainedAssociation.setMinCardinality(0);
+        constrainedAssociation.setMaxCardinality(1);
+        constrainedAssociation.setInverseAssociation("");
+        constrainedAssociation.setConstrain(true);
+
+        IPersistentAssociationInfo constrainedInfo = constrainedAssociation.getPersistenceAssociatonInfo();
+
+        MessageList ml = constrainedInfo.validate(ipsProject);
+
+        assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+    }
+
+    @Test
     public void testValidateTargetSideNotTransient() {
         setupMasterToDetailComposition();
         IPersistentAssociationInfo sourcePersistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();

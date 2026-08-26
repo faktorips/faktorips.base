@@ -197,7 +197,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
-        if (ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
+        if (ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled() && !association.isConstrain()) {
             persistenceTabItem = new AssociationPersistenceTab(tabFolder, association, getBindingContext(),
                     getToolkit());
         }

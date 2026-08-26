@@ -573,7 +573,8 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
 
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) {
-        if (!getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
+        if (!getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()
+                || getPolicyComponentTypeAssociation().isConstrain()) {
             return;
         }
 
