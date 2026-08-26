@@ -24,6 +24,16 @@
                       "code": "java.method.addedToInterface",
                       "new": "method void org.faktorips.devtools.model.ipsproject.IIpsProjectProperties::setMissingLabelSeverity(org.faktorips.runtime.Severity)",
                       "justification": "FIPS-9505: Configurable validation for missing labels on model elements"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.faktorips.devtools.model.ipsproject.IPersistenceOptions::isAllowCascadeTypesOnInverseAssociations()",
+                      "justification": "FIPS-14741: New setting to allow cascade types on inverse associations"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.ipsproject.IPersistenceOptions::setAllowCascadeTypesOnInverseAssociations(boolean)",
+                      "justification": "FIPS-14741: New setting to allow cascade types on inverse associations"
                     }
                 ]
             }

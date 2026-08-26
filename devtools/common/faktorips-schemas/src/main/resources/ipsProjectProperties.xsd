@@ -48,6 +48,7 @@
             <xsd:element name="TableNamingStrategy" type="TableNamingStrategyType" minOccurs="1" maxOccurs="1" />
             <xsd:element name="TableColumnNamingStrategy" type="TableColumnNamingStrategyType" minOccurs="1" maxOccurs="1" />
         </xsd:sequence>
+        <xsd:attribute name="allowCascadeTypesOnInverseAssociations" type="boolean" />
         <xsd:attribute name="allowLazyFetchForSingleValuedAssociations" type="boolean" />
         <xsd:attribute name="maxColumnNameLength" type="xsd:int" />
         <xsd:attribute name="maxTableColumnPrecision" type="xsd:int" />

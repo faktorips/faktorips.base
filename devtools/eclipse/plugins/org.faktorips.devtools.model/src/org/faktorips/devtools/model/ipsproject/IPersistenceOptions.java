@@ -26,6 +26,7 @@ public interface IPersistenceOptions {
     String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength"; //$NON-NLS-1$
     String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength"; //$NON-NLS-1$
     String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations"; //$NON-NLS-1$
+    String ALLOW_CASCADE_TYPES_ON_INVERSE_ASSOCIATIONS = "allowCascadeTypesOnInverseAssociations"; //$NON-NLS-1$
 
     String MAX_TABLE_COLUMN_SCALE = "maxTableColumnScale"; //$NON-NLS-1$
     String MAX_TABLE_COLUMN_PRECISION = "maxTableColumnPrecision"; //$NON-NLS-1$
@@ -80,6 +81,23 @@ public interface IPersistenceOptions {
      * Sets if the lazy fetching of single value associations (to-one) is allowed or not.
      */
     void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
+
+    /**
+     * Returns whether the cascade types MERGE, PERSIST and REFRESH are allowed on inverse
+     * (detail-to-master) associations. The cascade type REMOVE is never allowed on those
+     * associations.
+     *
+     * @since 27.1
+     */
+    boolean isAllowCascadeTypesOnInverseAssociations();
+
+    /**
+     * Sets whether the cascade types MERGE, PERSIST and REFRESH are allowed on inverse
+     * (detail-to-master) associations.
+     *
+     * @since 27.1
+     */
+    void setAllowCascadeTypesOnInverseAssociations(boolean allowCascadeTypesOnInverseAssociations);
 
     /**
      * Returns the maximum column size.

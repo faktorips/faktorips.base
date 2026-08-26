@@ -31,6 +31,7 @@ public class PersistenceOptions implements IPersistenceOptions {
     private int maxColumnNameLength = 30;
     private int maxTableNameLength = 30;
     private boolean allowLazyFetchForSingleValuedAssociations = true;
+    private boolean allowCascadeTypesOnInverseAssociations = false;
 
     private int maxTableColumnScale = 31;
     private int maxTableColumnPrecision = 31;
@@ -53,7 +54,8 @@ public class PersistenceOptions implements IPersistenceOptions {
      * {@code
      * <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
      *       maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="1000"
-     *       allowLazyFetchForSingleValuedAssociations="true">
+     *       allowLazyFetchForSingleValuedAssociations="true"
+     *       allowCascadeTypesOnInverseAssociations="false">
      *      <TableNamingStrategy
      *          id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
      *      <TableColumnNamingStrategy
@@ -70,6 +72,8 @@ public class PersistenceOptions implements IPersistenceOptions {
         maxTableNameLength = Integer.parseInt(element.getAttribute(MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME));
         allowLazyFetchForSingleValuedAssociations = Boolean.parseBoolean(element
                 .getAttribute(ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS));
+        allowCascadeTypesOnInverseAssociations = Boolean.parseBoolean(element
+                .getAttribute(ALLOW_CASCADE_TYPES_ON_INVERSE_ASSOCIATIONS));
         maxTableColumnSize = getValueOrDefault(element, MAX_TABLE_COLUMN_SIZE, maxTableColumnSize);
         maxTableColumnScale = getValueOrDefault(element, MAX_TABLE_COLUMN_SCALE, maxTableColumnScale);
         maxTableColumnPrecision = getValueOrDefault(element, MAX_TABLE_COLUMN_PRECISION, maxTableColumnPrecision);
@@ -151,6 +155,16 @@ public class PersistenceOptions implements IPersistenceOptions {
     @Override
     public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations) {
         this.allowLazyFetchForSingleValuedAssociations = allowLazyFetchForSingleValuedAssociations;
+    }
+
+    @Override
+    public boolean isAllowCascadeTypesOnInverseAssociations() {
+        return allowCascadeTypesOnInverseAssociations;
+    }
+
+    @Override
+    public void setAllowCascadeTypesOnInverseAssociations(boolean allowCascadeTypesOnInverseAssociations) {
+        this.allowCascadeTypesOnInverseAssociations = allowCascadeTypesOnInverseAssociations;
     }
 
     @Override
