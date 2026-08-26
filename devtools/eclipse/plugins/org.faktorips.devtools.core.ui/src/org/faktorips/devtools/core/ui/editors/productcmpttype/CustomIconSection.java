@@ -19,7 +19,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -167,6 +169,23 @@ public class CustomIconSection extends IpsSection {
         performRefresh();
     }
 
+    /**
+     * Returns the given file's path relative to the {@link IIpsPackageFragmentRoot} (IPS source
+     * folder) that contains it, regardless of how deeply that source folder is nested below the
+     * project root.
+     */
+    static String computeIconPath(IFile file) {
+        IIpsProject fileIpsProject = IIpsModel.get()
+                .getIpsProject(Wrappers.wrap(file.getProject()).as(AProject.class));
+        IPath filePath = file.getProjectRelativePath();
+        IIpsPackageFragmentRoot root = fileIpsProject
+                .findIpsPackageFragmentRoot(java.nio.file.Path.of(filePath.toPortableString()));
+        if (root == null) {
+            return filePath.toString();
+        }
+        return filePath.makeRelativeTo(new Path(root.getName())).toString();
+    }
+
     private class BrowseIconsListener extends SelectionAdapter {
 
         @Override
@@ -195,7 +214,7 @@ public class CustomIconSection extends IpsSection {
                  * will be cached by the IpsUIPlugin using their path, so problems may arise with
                  * caching as well.
                  */
-                ((ProductCmptType)type).setInstancesIcon(file.getFullPath().removeFirstSegments(2).toString());
+                ((ProductCmptType)type).setInstancesIcon(computeIconPath(file));
                 performRefresh();
             }
         }
@@ -255,6 +274,13 @@ public class CustomIconSection extends IpsSection {
         private boolean isIpsSrcFolder(IFolder folder) {
             IIpsProject ipsProject = IIpsModel.get()
                     .getIpsProject(Wrappers.wrap(folder.getProject()).as(AProject.class));
+            var roots = ipsProject.getIpsPackageFragmentRoots(false);
+            for (var root : roots) {
+                IResource rootResource = root.getCorrespondingResource().unwrap();
+                if (folder.getProjectRelativePath().isPrefixOf(rootResource.getProjectRelativePath())) {
+                    return true;
+                }
+            }
             IIpsPackageFragmentRoot root = ipsProject
                     .getIpsPackageFragmentRoot(folder.getProjectRelativePath().toOSString());
             if (root != null && root.exists()) {

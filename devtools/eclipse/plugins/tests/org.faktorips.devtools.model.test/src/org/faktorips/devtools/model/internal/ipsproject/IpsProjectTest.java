@@ -36,7 +36,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -132,7 +131,6 @@ import org.mockito.MockitoSession;
 
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
-
     private static final String ROOT_NAME = "myRootName";
 
     private IpsProject ipsProject;
@@ -183,6 +181,30 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(ipsProject.getIpsPackageFragmentRoots()[1],
                 ipsProject.findIpsPackageFragmentRoot(deepFolder.getProjectRelativePath().toString()));
 
+    }
+
+    @Test
+    public void testFindIpsPackageFragmentRootByPath() throws Exception {
+        assertEquals(root, ipsProject.findIpsPackageFragmentRoot(java.nio.file.Path.of(root.getName())));
+        assertNull(ipsProject.findIpsPackageFragmentRoot(java.nio.file.Path.of("Unknown")));
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        AFolder deepFolder = ipsProject.getProject().getFolder("a").getFolder("deep").getFolder("root");
+        ipsObjectPath.newSourceFolderEntry(deepFolder);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        IIpsPackageFragmentRoot deepRoot = ipsProject.getIpsPackageFragmentRoots()[1];
+
+        assertEquals(deepRoot, ipsProject.findIpsPackageFragmentRoot(deepFolder.getProjectRelativePath()));
+        assertEquals(deepRoot, ipsProject.findIpsPackageFragmentRoot(
+                deepFolder.getProjectRelativePath().resolve("sub/icon.gif")));
+
+        AFolder similarSuffixFolder = ipsProject.getProject().getFolder(root.getName() + "test");
+        ipsObjectPath.newSourceFolderEntry(similarSuffixFolder);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        IIpsPackageFragmentRoot similarSuffixRoot = ipsProject.getIpsPackageFragmentRoots()[2];
+
+        assertEquals(similarSuffixRoot,
+                ipsProject.findIpsPackageFragmentRoot(similarSuffixFolder.getProjectRelativePath()));
     }
 
     @Test
