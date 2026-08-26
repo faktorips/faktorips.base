@@ -589,7 +589,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         validateJoinColumn(msgList, inverseAssociation);
         validateJoinTable(msgList, inverseAssociation);
         validateLazyFetchOnSingleValuedAssociation(msgList, ipsProject, inverseAssociation);
-        validateCascadeType(msgList);
+        validateCascadeType(msgList, ipsProject);
         super.validateThis(msgList, ipsProject);
     }
 
@@ -775,26 +775,33 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         }
     }
 
-    private void validateCascadeType(MessageList msgList) {
-        if (getPolicyComponentTypeAssociation().isCompositionDetailToMaster()) {
-            List<String> invalidProperties = new ArrayList<>();
+    private void validateCascadeType(MessageList msgList, IIpsProject ipsProject) {
+        if (!getPolicyComponentTypeAssociation().isCompositionDetailToMaster()) {
+            return;
+        }
+        boolean allowCascadeTypes = ipsProject.getReadOnlyProperties().getPersistenceOptions()
+                .isAllowCascadeTypesOnInverseAssociations();
+        List<String> invalidProperties = new ArrayList<>();
+        if (cascadeTypeRemove) {
+            invalidProperties.add(PROPERTY_CASCADE_TYPE_REMOVE);
+        }
+        if (!allowCascadeTypes) {
             if (cascadeTypeMerge) {
                 invalidProperties.add(PROPERTY_CASCADE_TYPE_MERGE);
             }
             if (cascadeTypePersist) {
                 invalidProperties.add(PROPERTY_CASCADE_TYPE_PERSIST);
             }
-            if (cascadeTypeRemove) {
-                invalidProperties.add(PROPERTY_CASCADE_TYPE_REMOVE);
-            }
             if (cascadeTypeRefresh) {
                 invalidProperties.add(PROPERTY_CASCADE_TYPE_REFRESH);
             }
-            if (!invalidProperties.isEmpty()) {
-                msgList.add(new Message(MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE,
-                        Messages.PersistentAssociationInfo_msgChildToParentCascadeType, Message.ERROR,
-                        this, invalidProperties.toArray(new String[0])));
-            }
+        }
+        if (!invalidProperties.isEmpty()) {
+            String text = allowCascadeTypes
+                    ? Messages.PersistentAssociationInfo_msgChildToParentCascadeTypeRemove
+                    : Messages.PersistentAssociationInfo_msgChildToParentCascadeType;
+            msgList.add(new Message(MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE, text, Message.ERROR, this,
+                    invalidProperties.toArray(new String[0])));
         }
     }
 

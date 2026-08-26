@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+org.eclipse.m2e.apt.aptProcessDuringReconcile=true
+org.eclipse.m2e.apt.mode=jdt_apt

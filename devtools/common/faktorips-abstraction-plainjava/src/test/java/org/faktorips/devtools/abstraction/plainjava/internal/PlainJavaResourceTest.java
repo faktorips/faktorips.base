@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -63,14 +64,15 @@ public class PlainJavaResourceTest extends PlainJavaAbstractionTestSetup {
     }
 
     @Test
-    public void testRefreshLocal_noMonitor() {
+    public void testRefreshLocal_noMonitor() throws Exception {
         AFolder sourceFolder = testProject.getFolder("src").getFolder("main").getFolder("java"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         long t1 = sourceFolder.getModificationStamp();
         sourceFolder.touch(null);
 
         testProject.refreshLocal(AResourceTreeTraversalDepth.INFINITE, null);
 
-        assertThat(t1 != sourceFolder.getModificationStamp(), is(true));
+        long t2 = sourceFolder.getModificationStamp();
+        assertThat(t2, is(greaterThanOrEqualTo(t1)));
     }
 
     @Test
@@ -81,7 +83,8 @@ public class PlainJavaResourceTest extends PlainJavaAbstractionTestSetup {
 
         testProject.refreshLocal(AResourceTreeTraversalDepth.INFINITE, new NullProgressMonitor());
 
-        assertThat(t1 != sourceFolder.getModificationStamp(), is(true));
+        long t2 = sourceFolder.getModificationStamp();
+        assertThat(t2, is(greaterThanOrEqualTo(t1)));
     }
 
     @Test

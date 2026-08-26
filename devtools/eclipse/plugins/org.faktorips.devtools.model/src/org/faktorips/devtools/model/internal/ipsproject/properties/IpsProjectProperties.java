@@ -775,6 +775,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.appendChild(persistenceOptionsEl);
         persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
                 + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_CASCADE_TYPES_ON_INVERSE_ASSOCIATIONS, "" //$NON-NLS-1$
+                + Boolean.valueOf(getPersistenceOptions().isAllowCascadeTypesOnInverseAssociations()));
         persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE,
                 String.valueOf(getPersistenceOptions().getMaxTableColumnSize()));
         persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE,
@@ -1616,10 +1618,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         + IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS
         + " defines if it is allowed to use lazy fetching " + System.lineSeparator() //$NON-NLS-1$
         + "on the association side which holds a single value (to-one relationship side)." + System.lineSeparator() //$NON-NLS-1$
+        + "The attribute " //$NON-NLS-1$
+        + IPersistenceOptions.ALLOW_CASCADE_TYPES_ON_INVERSE_ASSOCIATIONS
+        + " defines whether the cascade types MERGE, PERSIST" + System.lineSeparator() //$NON-NLS-1$
+        + "and REFRESH may be activated on inverse (detail-to-master) associations. The cascade type REMOVE" + System.lineSeparator() //$NON-NLS-1$
+        + "is never allowed on those associations." + System.lineSeparator() //$NON-NLS-1$
         + " " + System.lineSeparator() //$NON-NLS-1$
         + "<PersistenceOptions maxColumnNameLength=\"30\" maxTableNameLength=\"30\"" + System.lineSeparator() //$NON-NLS-1$
         + "        maxTableColumnPrecision=\"31\"  maxTableColumnScale=\"31\" maxTableColumnSize=\"1000\"" + System.lineSeparator() //$NON-NLS-1$
-        + "        allowLazyFetchForSingleValuedAssociations=\"true\">" + System.lineSeparator() //$NON-NLS-1$
+        + "        allowLazyFetchForSingleValuedAssociations=\"true\"" + System.lineSeparator() //$NON-NLS-1$
+        + "        allowCascadeTypesOnInverseAssociations=\"false\">" + System.lineSeparator() //$NON-NLS-1$
         + "    <TableNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
         + "    <TableColumnNamingStrategy id=\"org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy\"/>" + System.lineSeparator() //$NON-NLS-1$
         + "</PersistenceOptions>" + System.lineSeparator() //$NON-NLS-1$

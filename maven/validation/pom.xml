@@ -13,6 +13,17 @@
         <java.version>17</java.version>
 	<skip-publish>false</skip-publish>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>eclipse-platform-dependencies</artifactId>
+                <version>${faktorips.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
@@ -20,7 +31,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <!-- Needed as a direct dependency although it is a transitive dependency of faktorips-model-plainjava, 
+            <!-- Needed as a direct dependency although it is a transitive dependency of faktorips-model-plainjava,
             probably due to some Maven confusion regarding the eclipse-plugin packaging type -->
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.model</artifactId>
@@ -29,13 +40,6 @@
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>eclipse-platform-dependencies</artifactId>
-            <version>${faktorips.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>

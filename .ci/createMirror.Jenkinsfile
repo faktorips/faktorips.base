@@ -1,5 +1,5 @@
-library 'fips-jenkins-library@main'
- 
+library 'f10-jenkins-library@1.1_patches'
+
 def p2Server = 'hudson@update.faktorzehn.org'
 def ps2MirrorDir = '/var/www/update.faktorzehn.org/p2repositories'
 def pomString = """<?xml version="1.0" encoding="UTF-8"?>
@@ -12,7 +12,7 @@ def pomString = """<?xml version="1.0" encoding="UTF-8"?>
 
     <properties>
         <source.encoding>UTF-8</source.encoding>
-        <tycho-version>4.0.4</tycho-version>
+        <tycho-version>4.0.8</tycho-version>
         <eclipse-version>${eclipseVersion}</eclipse-version>
     </properties>
 
@@ -56,7 +56,7 @@ pipeline {
     agent any
 
     parameters {
-        string description: 'Eclipse Version z.B: 2023-12', name: 'eclipseVersion'
+        string description: 'Eclipse Version z.B: 2024-09', name: 'eclipseVersion'
     }
 
     tools {
@@ -66,7 +66,6 @@ pipeline {
 
     options {
         skipDefaultCheckout true
-        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
     stages {
@@ -75,17 +74,22 @@ pipeline {
                 script {
                     sh "mkdir -p /tmp/mirror/${eclipseVersion}"
                     writeFile encoding: 'UTF-8', file: "/tmp/mirror/${eclipseVersion}/mirror.pom.xml", text: "${pomString}"
-                    osSpecificMaven commands: [
-                        "mvn -U -V tycho-p2-extras:mirror -f /tmp/mirror/${eclipseVersion}/mirror.pom.xml -Dmirror.destination=/tmp/mirror/${eclipseVersion}"
-                    ]
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        sh "mvn -U -V tycho-p2-extras:mirror -f /tmp/mirror/${eclipseVersion}/mirror.pom.xml -Dmirror.destination=/tmp/mirror/${eclipseVersion}"
+                    }
                 }
             }
         }
 
         stage('Copy Mirror') {
             steps {
-                sshagent(credentials: ['hudson.jenkins-f10org'], ignoreMissing: true) {
-                    replaceOnServer server:p2Server, port:'22', localFolder:"/tmp/mirror/${eclipseVersion}", remoteFolder:"${ps2MirrorDir}/${eclipseVersion}"
+                script {
+                    def localFolder="/tmp/mirror/${eclipseVersion}"
+                    def remoteFolder="${ps2MirrorDir}/${eclipseVersion}"
+                    sh "echo 'save replace files on server'"
+                    sh "scp -P 22 -r ${localFolder} ${p2Server}:${remoteFolder}_deploy"
+                    // a non existing folder would stop the script therefore make it or ignore it (-p)
+                    sh "ssh -p 22 ${p2Server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
                 }
             }
         }
@@ -99,7 +103,7 @@ pipeline {
             }
         }
         unsuccessful {
-            failedEmail to: 'fips@faktorzehn.de'
+            sendFailureEmail()
         }
     }
 }

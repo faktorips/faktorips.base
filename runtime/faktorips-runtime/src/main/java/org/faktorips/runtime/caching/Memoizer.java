@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,10 +25,10 @@ import java.util.function.Function;
 /**
  * This Memoizer is implemented as suggested by Brian Goetz in Java Concurrency in Practice. It is a
  * thread safe caching mechanism that loads not stored object by calling a {@link IComputable}.
- * 
+ *
  * It is extended by the soft reference mechanism so references could be garbage collected in case
  * of memory needs.
- * 
+ *
  * @author dirmeier
  */
 public class Memoizer<K, V> implements IComputable<K, V> {
@@ -40,12 +40,11 @@ public class Memoizer<K, V> implements IComputable<K, V> {
     private final ReferenceQueue<V> queue = new ReferenceQueue<>();
 
     /**
-     * The constructor to create a {@link Memoizer} with default values for the internal
-     * {@link ConcurrentHashMap}
-     * 
-     * @param computable the {@link IComputable} to load new items
-     * @see #of(Class, Function) the static {@link #of(Class, Function)} factory method to avoid
-     *          creating the {@link IComputable} and instead using a {@link Function}.
+     * The constructor to create a Memoizer with default values for the internal ConcurrentHashMap.
+     *
+     * @param computable the IComputable to load new items.
+     * @see #of(Class, Function) the static factory method to avoid creating the IComputable and
+     *          instead using a Function.
      */
     public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;
@@ -56,7 +55,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
      * This constructor needs next to the {@link IComputable} also the initial size, the load factor
      * and the concurrency level. These parameters are only for tuning purpose and are directly
      * forwarded to the internal {@link ConcurrentHashMap}.
-     * 
+     *
      * @param computable The {@link IComputable} to load new items
      * @param initSize the initial size @see {@link ConcurrentHashMap}
      * @param loadFactor the load factor @see {@link ConcurrentHashMap}

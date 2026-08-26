@@ -89,7 +89,7 @@
     </build>
     <profiles>
         <profile>
-            <id>release</id>
+            <id>mavenCentralRelease</id>
             <properties>
                 <skip-publish>true</skip-publish>
             </properties>
@@ -101,6 +101,37 @@
                         <configuration>
                             <skip>true</skip>
                         </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>update-composite</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-p2-repository-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>minor-composite</id>
+                                <goals><goal>modify-composite-repository</goal></goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <repository>
+                                        <id>minor-composite</id>
+                                        <url>https://update.faktorzehn.org/faktorips/v${major}_${minor}</url>
+                                    </repository>
+                                    <outputLocation>${project.basedir}/org.faktorips.p2repository/target/composite-out/v${major}_${minor}</outputLocation>
+                                    <repositoryName>Faktor-IPS ${major}.${minor} Updates</repositoryName>
+                                    <childrenToAdd>
+                                        <child>./${release.version}</child>
+                                    </childrenToAdd>
+                                    <validateChildren>false</validateChildren>
+                                    <compress>false</compress>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

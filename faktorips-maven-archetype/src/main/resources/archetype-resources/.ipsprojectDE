@@ -430,10 +430,14 @@
         mapping of multi-byte characters depends on the encoding and database used.
         The attribute allowLazyFetchForSingleValuedAssociations defines if it is allowed to use lazy fetching 
         on the association side which holds a single value (to-one relationship side).
+        The attribute allowCascadeTypesOnInverseAssociations defines whether the cascade types MERGE, PERSIST
+        and REFRESH may be activated on inverse (detail-to-master) associations. The cascade type REMOVE
+        is never allowed on those associations.
          
         <PersistenceOptions maxColumnNameLength="30" maxTableNameLength="30"
                 maxTableColumnPrecision="31"  maxTableColumnScale="31" maxTableColumnSize="1000"
-                allowLazyFetchForSingleValuedAssociations="true">
+                allowLazyFetchForSingleValuedAssociations="true"
+                allowCascadeTypesOnInverseAssociations="false">
             <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
             <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
         </PersistenceOptions>
@@ -442,7 +446,7 @@
         for tables and CamelCaseToUpperUnderscoreColumnNamingStrategy for columns, example:
             IdentifierName1 -> IDENTIFIER_NAME1
     -->
- <PersistenceOptions allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="1000" maxTableNameLength="30">
+ <PersistenceOptions allowCascadeTypesOnInverseAssociations="false" allowLazyFetchForSingleValuedAssociations="true" maxColumnNameLength="30" maxTableColumnPrecision="31" maxTableColumnScale="31" maxTableColumnSize="1000" maxTableNameLength="30">
   <TableNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreTableNamingStrategy"/>
   <TableColumnNamingStrategy id="org.faktorips.devtools.model.CamelCaseToUpperUnderscoreColumnNamingStrategy"/>
  </PersistenceOptions>

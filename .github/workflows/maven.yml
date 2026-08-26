@@ -25,11 +25,14 @@ jobs:
     - name: Set up JDKs
       uses: actions/setup-java@v3
       with:
+        # 21 comes last so it becomes JAVA_HOME: Tycho 5 requires it to run.
+        # The older JDKs stay as toolchain providers for the bundles' BREE.
         java-version: |
             8
             11
             17
-        distribution: 'adopt'
+            21
+        distribution: 'temurin'
         cache: maven
     - name: build config
       run: mvn -B -V install --settings settings.xml --file codequality-config/pom.xml

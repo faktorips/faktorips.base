@@ -1,39 +1,38 @@
-library 'f10-jenkins-library@1.0_patches'
+library 'f10-jenkins-library@1.1_patches'
 library 'fips-jenkins-library@main'
 
 pipeline {
     agent any
 
     tools {
-        jdk 'AdoptiumJDK17'
-        maven 'maven 3.8.6'
+        jdk 'JDK21'
+        maven 'maven 3.9'
     }
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14'))
+    environment {
+        MAVEN_OPTS = '-Xmx4g'
+        MAVEN_REPO = '.repository'
+        DISPLAY = ':0'
+        REFERENCE_JOB = 'FaktorIPS_hotfix_24.1'
     }
 
     stages {
         stage('Build and Test') {
 
-            environment {
-                MAVEN_OPTS = '-Xmx4g'
-            }
-
             steps {
                 script {
                     currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}-${env.GERRIT_TOPIC}"
-                    sh 'rm -rf $HOME/.m2/repository/.meta'
-                    sh 'rm -rf $HOME/.m2/repository/.cache'
-                    sh 'rm -rf $HOME/.m2/repository/p2'
                 }
 
-                osSpecificMaven commands: [
-                    "mvn -U -V -fae -e clean install -f codequality-config",
-                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -fae -e clean verify site -Dtycho.localArtifacts=ignore"
-                    // site:site is not called for the review, as it depends on base and runtime which are not installed when built with only verify
-                ]
+                // the build runs on JDK 21 for Tycho 5, while the bundles keep BREE JavaSE-17
+                // and tycho-surefire resolves the test JVM from this toolchain;
+                // JDK11/JDK8 are needed for runtime modules whose java.version is still 11/1.8
+                createToolchain jdk: ['AdoptiumJDK17', 'JDK11', 'JDK8'], outputFile: 'toolchains.xml'
+                withMaven(mavenLocalRepo: "${env.MAVEN_REPO}", publisherStrategy: 'EXPLICIT') {
+                    sh "mvn -U -V -fae -e clean install -f codequality-config"
+                    sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
+                    sh "mvn -U -V -T 8 -fae -e clean install site checkstyle:checkstyle -Dtycho.localArtifacts=ignore -t toolchains.xml"
+                }
             }
         }
         stage('Prepare Artifacts for Archiving') {
@@ -66,56 +65,20 @@ pipeline {
 
     post {
         always {
-            parentReference referenceJob: "${JOB_NAME}", mergeBranch: 'hotfix/24.1',  targetBranch: '$GERRIT_BRANCH', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: false, maxBuilds: 10, maxCommits: 500
+            script {
+                // only use successful builds as a reference, since (randomly) failed jobs might have failed before all warnings have occurred
+                discoverReferenceBuild referenceJob: "${REFERENCE_JOB}", requiredResult: 'SUCCESS'
 
-            junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
-            
-            recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
-            
-            publishCoverage(
-                adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/**/jacoco.xml')],
-                sourceFileResolver: sourceFiles('STORE_ALL_BUILD'),
-                sourceCodeEncoding: 'UTF-8',
-                sourceDirectories: [
-                    [path: 'devtools/common/faktorips-abstraction/src/main/java'],
-                    [path: 'devtools/common/faktorips-abstraction-plainjava/src/main/java'],
-                    [path: 'devtools/common/faktorips-abstraction-testsetup/src/main/java'],
-                    [path: 'devtools/common/faktorips-dtfl-common/src/main/java'],
-                    [path: 'devtools/common/faktorips-fl/src/main/java'],
-                    [path: 'devtools/common/faktorips-model-plainjava/src/main/java'],
-                    [path: 'devtools/common/faktorips-util/src/main/java'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.abstraction.eclipse/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.ant/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.refactor/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.ui/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.ui/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.builder/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.decorators/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.eclipse/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder.ui/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.tableconversion/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.eclipse.emf.codegen/src'],
-                    [path: 'devtools/eclipse/plugins/org.faktorips.m2e/src'],
-                    [path: 'faktorips-maven-plugin/src/main/java'],
-                    [path: 'runtime/faktorips-runtime/src/main/java'],
-                    [path: 'runtime/faktorips-runtime-groovy/src/main/java'],
-                    [path: 'runtime/faktorips-runtime-jakarta-xml/src/main/java'],
-                    [path: 'runtime/faktorips-runtime-javax-xml/src/main/java'],
-                    [path: 'runtime/faktorips-testsupport/src/main/java'],
-                    [path: 'runtime/faktorips-valuetypes/src/main/java'],
-                    [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
+                junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+                params = [
+                    enabledForFailure: true,
+                    qualityGates     : [[threshold: 1, type: 'NEW', unstable: true]],
+                    tools            : [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()],
                 ]
-            )
-            
-            archiveArtifacts artifacts: '**/target/*.jar, **/target/*.pom', fingerprint: true, onlyIfSuccessful: true
-        }
-
-        regression {
-            failedEmail to: '$GERRIT_PATCHSET_UPLOADER_EMAIL'
+                recordIssues params
+                jacoco sourceInclusionPattern: '**/*.java'
+                archiveArtifacts artifacts: '**/target/*.jar, **/target/*.pom', fingerprint: true, onlyIfSuccessful: true
+            }
         }
     }
 }

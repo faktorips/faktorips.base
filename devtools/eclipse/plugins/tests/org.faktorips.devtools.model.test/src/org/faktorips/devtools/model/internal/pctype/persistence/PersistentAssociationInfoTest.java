@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
+import static org.faktorips.testsupport.IpsMatchers.containsText;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.Persi
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -240,6 +242,80 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST));
         assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH));
         assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
+    }
+
+    @Test
+    public void testValidateCascadeType_Merge_AllowedOnInverseAssociations() {
+        allowCascadeTypesOnInverseAssociations();
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeMerge(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+
+        assertThat(messages, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE));
+    }
+
+    @Test
+    public void testValidateCascadeType_Persist_AllowedOnInverseAssociations() {
+        allowCascadeTypesOnInverseAssociations();
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypePersist(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+
+        assertThat(messages, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE));
+    }
+
+    @Test
+    public void testValidateCascadeType_Refresh_AllowedOnInverseAssociations() {
+        allowCascadeTypesOnInverseAssociations();
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeRefresh(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+
+        assertThat(messages, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE));
+    }
+
+    @Test
+    public void testValidateCascadeType_Remove_StillForbiddenOnInverseAssociations() {
+        allowCascadeTypesOnInverseAssociations();
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeRemove(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message, containsText("REMOVE"));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
+    }
+
+    @Test
+    public void testValidateCascadeType_All_StillForbiddenOnInverseAssociations() {
+        allowCascadeTypesOnInverseAssociations();
+        setupMasterToDetailComposition();
+        IPersistentAssociationInfo targetInfo = targetPcAssociation.getPersistenceAssociatonInfo();
+
+        targetInfo.setCascadeTypeMerge(true);
+        targetInfo.setCascadeTypePersist(true);
+        targetInfo.setCascadeTypeRefresh(true);
+        targetInfo.setCascadeTypeRemove(true);
+        MessageList messages = targetInfo.validate(ipsProject);
+        Message message = messages.getMessageByCode(IPersistentAssociationInfo.MSGCODE_CHILD_TO_PARENT_CASCADE_TYPE);
+
+        assertThat(messages, hasSize(1));
+        assertThat(message, hasSeverity(Message.ERROR));
+        assertThat(message.getInvalidObjectProperties(), Matchers.hasSize(1));
+        assertThat(message, hasInvalidObject(targetInfo, IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE));
+    }
+
+    private void allowCascadeTypesOnInverseAssociations() {
+        setProjectProperty(ipsProject, p -> p.getPersistenceOptions().setAllowCascadeTypesOnInverseAssociations(true));
     }
 
     @Test

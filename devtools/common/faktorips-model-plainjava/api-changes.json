@@ -1,0 +1,22 @@
+{
+    "24.1.19": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.faktorips.devtools.model.ipsproject.IPersistenceOptions::isAllowCascadeTypesOnInverseAssociations()",
+                      "justification": "FIPS-14741: New setting to allow cascade types on inverse associations"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.ipsproject.IPersistenceOptions::setAllowCascadeTypesOnInverseAssociations(boolean)",
+                      "justification": "FIPS-14741: New setting to allow cascade types on inverse associations"
+                    }
+                ]
+            }
+        }
+    ]
+}

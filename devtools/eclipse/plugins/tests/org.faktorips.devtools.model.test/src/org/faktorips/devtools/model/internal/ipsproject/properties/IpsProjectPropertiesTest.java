@@ -271,6 +271,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.getPersistenceOptions().setMaxTableColumnSize(100);
         props.getPersistenceOptions().setMaxTableColumnScale(101);
         props.getPersistenceOptions().setMaxTableColumnPrecision(102);
+        props.getPersistenceOptions().setAllowCascadeTypesOnInverseAssociations(true);
 
         props.setReleaseExtensionId("myReleaseExtension");
         props.setVersion("1.2.3");
@@ -357,6 +358,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(100, props.getPersistenceOptions().getMaxTableColumnSize());
         assertEquals(101, props.getPersistenceOptions().getMaxTableColumnScale());
         assertEquals(102, props.getPersistenceOptions().getMaxTableColumnPrecision());
+        assertTrue(props.getPersistenceOptions().isAllowCascadeTypesOnInverseAssociations());
 
         IIpsFeatureConfiguration newFeatureConfiguration = props.getFeatureConfiguration("a.feature.id");
         assertThat(newFeatureConfiguration.get("foo"), is("bar"));
@@ -486,6 +488,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(30, props.getPersistenceOptions().getMaxTableNameLength());
         assertEquals(60, props.getPersistenceOptions().getMaxColumnNameLenght());
         assertTrue(props.getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations());
+        assertTrue(props.getPersistenceOptions().isAllowCascadeTypesOnInverseAssociations());
         assertEquals(CamelCaseToUpperUnderscoreColumnNamingStrategy.class.getName(),
                 props.getPersistenceOptions().getTableColumnNamingStrategy().getClass().getName());
         assertEquals(CamelCaseToUpperUnderscoreTableNamingStrategy.class.getName(),

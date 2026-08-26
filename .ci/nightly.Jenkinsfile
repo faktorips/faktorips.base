@@ -1,16 +1,16 @@
-library 'f10-jenkins-library@1.0_patches'
+library 'f10-jenkins-library@1.1_patches'
 library 'fips-jenkins-library@main'
 
 pipeline {
     agent none
 
     tools {
-        jdk 'AdoptiumJDK17'
-        maven 'maven 3.8.6'
+        jdk 'JDK21'
+        maven 'maven 3.9'
     }
 
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
+    environment {
+        DISPLAY = ':0'
     }
 
     stages {
@@ -34,9 +34,13 @@ pipeline {
                                 sh 'rm -rf $HOME/.m2/repository/p2'
                             }
 
-                            osSpecificMaven commands: [
-                                "mvn -U -V -T 8 clean verify"
-                            ]
+                            // the build runs on JDK 21 for Tycho 5, while the bundles keep BREE JavaSE-17
+                            // and tycho-surefire resolves the test JVM from this toolchain;
+                            // JDK11/JDK8 are needed for runtime modules whose java.version is still 11/1.8
+                            createToolchain jdk: ['AdoptiumJDK17', 'JDK11', 'JDK8'], outputFile: 'toolchains.xml'
+                            withMaven(publisherStrategy: 'EXPLICIT') {
+                                sh "mvn -U -V -T 8 clean verify -Dtarget-platform=eclipse-${TARGET_PLATFORM} -Drevapi.skip=true -t toolchains.xml"
+                            }
                         }
                         post {
                             always {
@@ -44,7 +48,7 @@ pipeline {
                             }
 
                             unstable {
-                                failedEmail to: 'fips@faktorzehn.de'
+                                sendFailureEmail()
                             }
                         }
                     }

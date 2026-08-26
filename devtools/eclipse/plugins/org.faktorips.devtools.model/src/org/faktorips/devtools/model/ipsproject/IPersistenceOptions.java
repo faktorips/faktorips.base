@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,7 @@ package org.faktorips.devtools.model.ipsproject;
  * <p>
  * These include maximum and minimum table name lengths (as well as column name lengths), and the
  * strategies used for deriving table/column names from arbitrary strings.
- * 
+ *
  * @author Roman Grutza
  */
 public interface IPersistenceOptions {
@@ -26,6 +26,7 @@ public interface IPersistenceOptions {
     String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength"; //$NON-NLS-1$
     String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength"; //$NON-NLS-1$
     String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations"; //$NON-NLS-1$
+    String ALLOW_CASCADE_TYPES_ON_INVERSE_ASSOCIATIONS = "allowCascadeTypesOnInverseAssociations"; //$NON-NLS-1$
 
     String MAX_TABLE_COLUMN_SCALE = "maxTableColumnScale"; //$NON-NLS-1$
     String MAX_TABLE_COLUMN_PRECISION = "maxTableColumnPrecision"; //$NON-NLS-1$
@@ -80,6 +81,23 @@ public interface IPersistenceOptions {
      * Sets if the lazy fetching of single value associations (to-one) is allowed or not.
      */
     void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
+
+    /**
+     * Returns whether the cascade types MERGE, PERSIST and REFRESH are allowed on inverse
+     * (detail-to-master) associations. The cascade type REMOVE is never allowed on those
+     * associations.
+     *
+     * @since 27.1 (cherry-picked only to 24.1.19)
+     */
+    boolean isAllowCascadeTypesOnInverseAssociations();
+
+    /**
+     * Sets whether the cascade types MERGE, PERSIST and REFRESH are allowed on inverse
+     * (detail-to-master) associations.
+     *
+     * @since 27.1 (cherry-picked only to 24.1.19)
+     */
+    void setAllowCascadeTypesOnInverseAssociations(boolean allowCascadeTypesOnInverseAssociations);
 
     /**
      * Returns the maximum column size.

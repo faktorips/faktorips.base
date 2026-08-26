@@ -1,20 +1,16 @@
-library 'f10-jenkins-library@1.0_patches'
-library 'fips-jenkins-library@main'
-import java.text.MessageFormat
-
-def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
+library 'f10-jenkins-library@1.1_patches'
 
 pipeline {
     agent any
 
     parameters {
         string description: 'Die nächste Version, z.B. 22.12.1 (-SNAPSHOT wird automatisch hinzugefügt)', name: 'NEW_VERSION'
-        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+        string defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH'
     }
 
     tools {
-        jdk 'AdoptiumJDK17'
-        maven 'maven 3.8.6'
+        jdk 'JDK21'
+        maven 'maven 3.9'
     }
 
     options {
@@ -37,9 +33,10 @@ pipeline {
                     ])
 
                     LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
-                    
-                    def xmlfile = readFile 'pom.xml'
-                    oldVersion = lib.MavenProjectVersion.fromPom(xmlfile)
+
+                    withMaven(publisherStrategy: 'EXPLICIT') {
+                        oldVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+                    }
                     newVersion = params.NEW_VERSION+'-SNAPSHOT'
                 }
             }
@@ -47,9 +44,16 @@ pipeline {
 
         stage('Update versions') {
             steps {
-                osSpecificMaven commands: [
-                    "mvn -V -T 8 org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas"
-                ]
+                withMaven(publisherStrategy: 'EXPLICIT') {
+                    sh "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
+                    // add Target-Platforms-BOMs here
+                    sh """
+                        for boms in \$(find devtools/common/bom/ -type d -name "*-platform-dependencies");
+                        do
+                            sed -i "s|<version>${oldVersion}</version>|<version>${newVersion}</version>|" \$boms/pom.xml;
+                        done
+                    """
+                }
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${newVersion}/' {} \\;"
                 sh "git add . && git commit -m 'Update version to ${newVersion}'"
@@ -60,7 +64,7 @@ pipeline {
 
     post {
         unsuccessful {
-            failedEmail to: 'fips@faktorzehn.de'
+            sendFailureEmail()
         }
     }
 }
