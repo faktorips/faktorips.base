@@ -13,6 +13,7 @@ package org.faktorips.maven.plugin.mojo;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.faktorips.maven.plugin.mojo.internal.M2eIgnorePlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -169,7 +171,41 @@ public class IpsBuildMojoM2eTest {
         assertThrows(MojoExecutionException.class, this::invokeWrite);
     }
 
+    @Test
+    public void testIsIpsProjectNoIpsProjectFileReturnsFalse() throws Exception {
+        setField("project", mavenProjectAt(tempDir));
+
+        assertThat(invokeIsIpsProject(), is(false));
+    }
+
+    @Test
+    public void testIsIpsProjectIpsProjectFileExistsReturnsTrue() throws Exception {
+        setField("project", mavenProjectAt(tempDir));
+        new File(tempDir, ".ipsproject").createNewFile();
+
+        assertThat(invokeIsIpsProject(), is(true));
+    }
+
+    @Test
+    public void testExecuteOnNotAnIpsProjectReturnsWithoutException() throws Exception {
+        setField("project", mavenProjectAt(tempDir));
+
+        assertDoesNotThrow(mojo::execute);
+    }
+
     // --- helpers ---
+
+    private MavenProject mavenProjectAt(File basedir) {
+        MavenProject project = new MavenProject();
+        project.setFile(new File(basedir, "pom.xml"));
+        return project;
+    }
+
+    private boolean invokeIsIpsProject() throws Exception {
+        Method m = IpsBuildMojo.class.getDeclaredMethod("isIpsProject");
+        m.setAccessible(true);
+        return (boolean)m.invoke(mojo);
+    }
 
     private M2eIgnorePlugin plugin(String groupId, String artifactId, String versionRange, String goals) {
         M2eIgnorePlugin p = new M2eIgnorePlugin();

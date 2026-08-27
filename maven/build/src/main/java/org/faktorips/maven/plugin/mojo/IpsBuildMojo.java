@@ -722,6 +722,12 @@ public class IpsBuildMojo extends AbstractMojo {
             getLog().info("skipping mojo execution");
             return;
         }
+        if (!isIpsProject()) {
+            getLog().warn("Skipping Faktor-IPS build as \"" + project.getBasedir()
+                    + "\" is not a Faktor-IPS project (no .ipsproject file found).");
+            return;
+        }
+
         validate();
 
         if (work == null) {
@@ -1264,5 +1270,9 @@ public class IpsBuildMojo extends AbstractMojo {
     @Override
     public String toString() {
         return getClass().getSimpleName() + " building " + project;
+    }
+
+    private boolean isIpsProject() {
+        return new File(project.getBasedir(), ".ipsproject").exists();
     }
 }
