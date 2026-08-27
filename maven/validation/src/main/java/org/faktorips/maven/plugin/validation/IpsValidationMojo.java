@@ -118,6 +118,8 @@ public class IpsValidationMojo extends AbstractMojo {
                 .getProject(MavenWorkspaceRoot.toProjectName(project));
 
         if (!aProject.isIpsProject()) {
+            log.info("Skipping Faktor-IPS validation as \"" + project.getBasedir()
+                    + "\" is not a Faktor-IPS project (no .ipsproject file found).");
             return;
         }
 
