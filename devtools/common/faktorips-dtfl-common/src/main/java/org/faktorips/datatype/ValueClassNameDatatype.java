@@ -131,7 +131,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         return Objects.equals(getValue(valueA), getValue(valueB));
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     @Override
     public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
@@ -143,7 +143,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         if (hasNullObject()) {
             return compareNullObjects(valA, valB);
         } else {
-            return Comparator.nullsFirst(Comparator.<Comparable> naturalOrder()).compare(valA, valB);
+            return ((Comparator<Comparable<?>>)Comparator.nullsFirst(Comparator.naturalOrder())).compare(valA, valB);
         }
     }
 
