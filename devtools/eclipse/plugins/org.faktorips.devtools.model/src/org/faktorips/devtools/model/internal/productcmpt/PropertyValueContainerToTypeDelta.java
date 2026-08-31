@@ -303,16 +303,22 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
         IValueSet valueSet = element.getValueSet();
-        if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()
-                || attribute.getValueSet().isStringLength()
+        IValueSet modelValueSet = attribute.getValueSet();
+        if (modelValueSet.isUnrestricted() || modelValueSet.isDerived()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }
-        if (valueSet.getValueSetType() == ValueSetType.ENUM
-                && attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
+        if (modelValueSet.isStringLength()) {
+            if (!(valueSet.isStringLength() || valueSet.isEnum())) {
+                addEntry(new ValueSetMismatchEntry(attribute, element));
+            }
             return;
         }
-        if (!valueSet.isSameTypeOfValueSet(attribute.getValueSet())) {
+        if (valueSet.getValueSetType() == ValueSetType.ENUM
+                && modelValueSet.getValueSetType() == ValueSetType.RANGE) {
+            return;
+        }
+        if (!valueSet.isSameTypeOfValueSet(modelValueSet)) {
             ValueSetMismatchEntry valueSetMismatchEntry = new ValueSetMismatchEntry(attribute, element);
             addEntry(valueSetMismatchEntry);
         }

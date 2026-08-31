@@ -66,6 +66,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.jupiter.api.AfterEach;
@@ -513,6 +514,51 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
         IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
         assertEquals(0, genDelta.getEntries().length);
+    }
+
+    @Test
+    public void testValueSetTypeMismatch_ModelChangedToStringLength() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setValueSetConfiguredByProduct(true);
+        attr.setName("a1");
+        attr.setDatatype("String");
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+
+        productCmpt.fixAllDifferencesToModel(ipsProject);
+        IConfiguredValueSet configValueSet = productCmpt.getFirstGeneration().getPropertyValue("a1",
+                IConfiguredValueSet.class);
+        assertTrue(configValueSet.getValueSet().isUnrestricted());
+
+        // model is changed from Unrestricted to StringLength, product still has Unrestricted
+        attr.setValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)attr.getValueSet()).setMaximumLength("10");
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+        assertEquals(1, genDelta.getEntries().length);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)genDelta.getEntries()[0];
+        assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
+        assertEquals(PropertyValueType.CONFIGURED_VALUESET, entry.getPropertyType());
+
+        delta.fixAllDifferencesToModel();
+        assertTrue(configValueSet.getValueSet().isStringLength());
+
+        // product value set is already StringLength -> no mismatch
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertTrue(delta.isEmpty());
+
+        // product value set is Enum, an allowed subtype of the model's StringLength -> no mismatch
+        configValueSet.changeValueSetType(ValueSetType.ENUM);
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertTrue(delta.isEmpty());
+
+        // product value set is Range, not allowed for a StringLength model -> mismatch again
+        configValueSet.changeValueSetType(ValueSetType.RANGE);
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+        assertEquals(1, genDelta.getEntries().length);
+        entry = (IDeltaEntryForProperty)genDelta.getEntries()[0];
+        assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
     }
 
     @Test

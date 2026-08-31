@@ -18,6 +18,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -401,6 +402,8 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_STEP)));
         assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_LOWERBOUND_OPEN)));
         assertThat(ml, hasMessageThat(hasInvalidObject(productRange, IRangeValueSet.PROPERTY_UPPERBOUND_OPEN)));
+        assertThat(ml.getMessageByCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH).getText(),
+                containsString(attr.getName()));
     }
 
     @Test

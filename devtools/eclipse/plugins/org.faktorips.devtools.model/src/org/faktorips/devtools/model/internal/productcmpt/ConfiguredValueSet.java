@@ -149,7 +149,8 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         if (!valueSetToValidate.isSameTypeOfValueSet(modelValueSet)) {
             msgCode = IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH;
             text = MessageFormat.format(Messages.ConfigElement_msgTypeMismatch,
-                    modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName());
+                    modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName(),
+                    getPolicyCmptTypeAttribute());
         } else if (!modelValueSet.containsValueSet(valueSetToValidate)) {
             msgCode = IConfiguredValueSet.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
             text = MessageFormat.format(Messages.ConfigElement_valueSetIsNotASubset,
@@ -178,14 +179,8 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             IPolicyCmptTypeAttribute attribute,
             IValueSet valueSetToValidate,
             IValueSet modelValueSet) {
-        if (modelValueSet.isStringLength()) {
-            MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
-                    (IEnumValueSet)valueSetToValidate,
-                    (IStringLengthValueSet)modelValueSet);
-            if (!valueValidationResult.isEmpty()) {
-                list.add(valueValidationResult);
-                return;
-            }
+        if (addEnumValueStringLengthMismatch(list, ipsProject, valueSetToValidate, modelValueSet)) {
+            return;
         }
         if (isValueSetOrRelevanceConfiguredByProduct(attribute)) {
             if (modelValueSet.isEmpty()) {
@@ -212,6 +207,29 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
                 }
             }
         }
+    }
+
+    /**
+     * Validates an enum value set against a model value set of type string length and adds any
+     * resulting messages to the given list.
+     *
+     * @return {@code true} if messages were added and the caller should stop further validation
+     */
+    private boolean addEnumValueStringLengthMismatch(MessageList list,
+            IIpsProject ipsProject,
+            IValueSet valueSetToValidate,
+            IValueSet modelValueSet) {
+        if (!modelValueSet.isStringLength() || !valueSetToValidate.isEnum()) {
+            return false;
+        }
+        MessageList valueValidationResult = validateEnumValueStringLength(ipsProject,
+                (IEnumValueSet)valueSetToValidate,
+                (IStringLengthValueSet)modelValueSet);
+        if (valueValidationResult.isEmpty()) {
+            return false;
+        }
+        list.add(valueValidationResult);
+        return true;
     }
 
     private void validateEmptyModelValueSet(MessageList list,
