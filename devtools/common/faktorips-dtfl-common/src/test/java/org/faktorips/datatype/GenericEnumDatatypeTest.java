@@ -19,8 +19,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -187,12 +187,7 @@ public class GenericEnumDatatypeTest {
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 
         datatype.setIsSupportingNames(false);
-        try {
-            datatype.getAllValueNamesFromCache();
-            fail();
-        } catch (RuntimeException e) {
-            // data type does not support names
-        }
+        assertThrows(RuntimeException.class, () -> datatype.getAllValueNamesFromCache());
 
         datatype.setIsSupportingNames(true);
         datatype.setGetNameMethodName("getName"); //$NON-NLS-1$

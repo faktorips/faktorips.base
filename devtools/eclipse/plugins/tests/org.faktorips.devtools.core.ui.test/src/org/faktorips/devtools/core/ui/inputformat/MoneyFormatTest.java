@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Currency;
@@ -83,12 +82,8 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
         parsed = moneyFormat.parse(input);
         assertEquals(",1,12", parsed);
 
-        try {
-            input = "1,123";
-            parsed = moneyFormat.parse(input);
-            fail("Exception expected");
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for an invalid fraction length
+        assertThrows(IllegalArgumentException.class, () -> moneyFormat.parse("1,123"));
 
         moneyFormat.initFormat(Locale.US);
         input = "1";
@@ -135,12 +130,8 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
         parsed = moneyFormat.parse(input);
         assertEquals(".1.12", parsed);
 
-        try {
-            input = "1.123";
-            parsed = moneyFormat.parse(input);
-            fail("Exception expected");
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for an invalid fraction length
+        assertThrows(IllegalArgumentException.class, () -> moneyFormat.parse("1.123"));
     }
 
     @Test

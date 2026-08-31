@@ -54,7 +54,9 @@ public abstract class IpsSrcFileSaxHelper {
             saxParser.parse(new InputSource(is), handler);
         } catch (SAXFinishedException ignored) {
             // nothing to do
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new IpsException(new IpsStatus(e));
         } finally {
             try {

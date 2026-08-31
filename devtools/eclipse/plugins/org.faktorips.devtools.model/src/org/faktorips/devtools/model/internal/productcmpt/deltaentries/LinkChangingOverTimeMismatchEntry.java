@@ -104,9 +104,8 @@ public class LinkChangingOverTimeMismatchEntry extends AbstractDeltaEntryForLink
         if (isLinkPartOfLatestGeneration()) {
             IProductCmptLink newLink = getLink().getProductCmpt().newLink(getAssociation());
             newLink.copyFrom(getLink());
-        } else {
-            // nothing to do: link is part of an "older" generation
         }
+        // else: nothing to do, link is part of an "older" generation
     }
 
     private boolean isLinkPartOfLatestGeneration() {

@@ -105,6 +105,7 @@ public class TableLayoutComposite extends Composite {
         return result;
     }
 
+    // CSOFF: CyclomaticComplexity
     private void layoutTable(Table table, int width, Rectangle area, boolean increase) {
         /*
          * Layout is being called with an invalid value the first time it is being called on Linux.
@@ -166,10 +167,12 @@ public class TableLayoutComposite extends Composite {
 
             // Distribute any remaining pixels to columns with weight.
             int diff = rest - totalDistributed;
+            // CSOFF: ModifiedControlVariable
             for (int i = 0; diff > 0; ++i) {
                 if (i == size) {
                     i = 0;
                 }
+                // CSON: ModifiedControlVariable
                 ColumnLayoutData col = columns.get(i);
                 if (col instanceof ColumnWeightData) {
                     ++widths[i];
@@ -188,4 +191,5 @@ public class TableLayoutComposite extends Composite {
             table.setSize(area.width, area.height);
         }
     }
+    // CSON: CyclomaticComplexity
 }

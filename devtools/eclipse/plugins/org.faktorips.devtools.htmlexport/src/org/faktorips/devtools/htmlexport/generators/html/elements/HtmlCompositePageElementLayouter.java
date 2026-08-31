@@ -22,15 +22,15 @@ public class HtmlCompositePageElementLayouter extends AbstractHtmlPageElementLay
 
     @Override
     protected void layoutInternal() {
-        WrapperType wrapperType = pageElement.getWrapperType();
-        if (wrapperType == WrapperType.NONE && pageElement.getStylesCopy().isEmpty()) {
-            layouter.visitSubElements(pageElement);
+        WrapperType wrapperType = getPageElement().getWrapperType();
+        if (wrapperType == WrapperType.NONE && getPageElement().getStylesCopy().isEmpty()) {
+            getLayouter().visitSubElements(getPageElement());
             return;
         }
         String wrappingElement = getHtmlElementByWrappingType(wrapperType);
-        append(htmlUtil.createHtmlElementOpenTag(wrappingElement, pageElement.getId(), getClasses()));
-        layouter.visitSubElements(pageElement);
-        append(htmlUtil.createHtmlElementCloseTag(wrappingElement));
+        append(getHtmlUtil().createHtmlElementOpenTag(wrappingElement, getPageElement().getId(), getClasses()));
+        getLayouter().visitSubElements(getPageElement());
+        append(getHtmlUtil().createHtmlElementCloseTag(wrappingElement));
     }
 
     /**

@@ -63,7 +63,9 @@ public class VisibleBinding extends ControlPropertyBinding {
                 parent.layout();
 
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
     }

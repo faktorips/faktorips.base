@@ -107,6 +107,7 @@ public final class MoveRenamePackageHelper {
         }
     }
 
+    // CSOFF: CyclomaticComplexity
     private void moveRenamePackageFragement(IIpsPackageFragment targetPackageFragement,
             String newName,
             IpsRefactoringModificationSet modificationSet,
@@ -175,6 +176,7 @@ public final class MoveRenamePackageHelper {
             }
         }
     }
+    // CSON: CyclomaticComplexity
 
     private IIpsPackageFragmentRoot getSourceRoot() {
         IIpsPackageFragment sourceParent = originalPackageFragment.getParentIpsPackageFragment();

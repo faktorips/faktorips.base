@@ -89,7 +89,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
     static final String TAG_SCROLL = "scroll"; //$NON-NLS-1$
 
     // Contains the status message
-    protected volatile String fStatus = ""; //$NON-NLS-1$
+    private volatile String fStatus = ""; //$NON-NLS-1$
 
     /* Ui components */
     private Composite fCounterComposite;

@@ -60,6 +60,7 @@ public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AR
         };
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public Set<AResourceDeltaFlag> getFlags() {
         Set<AResourceDeltaFlag> flagedChanges = new HashSet<>();
@@ -105,6 +106,7 @@ public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AR
         }
         return flagedChanges;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public void accept(AResourceDeltaVisitor visitor) {

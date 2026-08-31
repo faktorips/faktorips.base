@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  */
 public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
 
+    // CSOFF: CyclomaticComplexity
     @SuppressWarnings("unchecked")
     @Override
     // eclipse does not use generics in IAdapterFactory
@@ -70,6 +71,7 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
             return null;
         }
     }
+    // CSON: CyclomaticComplexity
 
     Object getGeneration(IProductCmptReference cmptReference) {
         GregorianCalendar validAt = cmptReference.getStructure().getValidAt();

@@ -119,10 +119,11 @@ public class DeltaContentProvider implements ITreeContentProvider {
      *             (entries whose string representation is equal).
      */
     private boolean areDifferenceCompositeEntriesEqual(Object a, IFixDifferencesComposite b) {
-        if (a instanceof ProductCmptGenerationsDeltaViewItem) {
-            a = ((ProductCmptGenerationsDeltaViewItem)a).getDelta();
+        Object resolvedA = a;
+        if (resolvedA instanceof ProductCmptGenerationsDeltaViewItem viewItem) {
+            resolvedA = viewItem.getDelta();
         }
-        if (!(a instanceof IPropertyValueContainerToTypeDelta aDelta)
+        if (!(resolvedA instanceof IPropertyValueContainerToTypeDelta aDelta)
                 || !(b instanceof IPropertyValueContainerToTypeDelta bDelta)) {
             return false;
         }
@@ -153,6 +154,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * @param parent {@code IProductCmpt} of which children are retrieved.
      * @return all children of the product component.
      */
+    // CSOFF: CyclomaticComplexity
     private Object[] getChildrenOfIProductCmpt(IProductCmpt parent) {
         List<Object> kids = new ArrayList<>();
         IFixDifferencesComposite fixDifferenceComposite = objectToDifferencesMap.get(parent);
@@ -189,6 +191,7 @@ public class DeltaContentProvider implements ITreeContentProvider {
         }
         return kids.toArray();
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public Object[] getChildren(Object parentElement) {

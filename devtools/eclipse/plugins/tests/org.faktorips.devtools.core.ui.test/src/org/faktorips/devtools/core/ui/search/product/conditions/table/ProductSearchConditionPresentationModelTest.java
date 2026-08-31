@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -71,12 +71,7 @@ public class ProductSearchConditionPresentationModelTest {
         List<IIpsElement> emptyList = Collections.emptyList();
         when(condition.getSearchableElements(any(IProductCmptType.class))).thenReturn(emptyList);
 
-        try {
-            model.setCondition(condition);
-            fail("Should throw an IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // expected Exception
-        }
+        assertThrows(IllegalArgumentException.class, () -> model.setCondition(condition));
     }
 
     @Test

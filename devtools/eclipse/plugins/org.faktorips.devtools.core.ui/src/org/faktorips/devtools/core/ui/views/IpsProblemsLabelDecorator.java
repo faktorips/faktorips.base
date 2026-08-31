@@ -74,6 +74,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
         return baseImage;
     }
 
+    // CSOFF: CyclomaticComplexity
     private int findMaxProblemSeverity(Object element) {
         if (element instanceof IIpsElement ipsElement) {
             if (ipsElement instanceof IIpsProject) {
@@ -127,6 +128,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
             return DEFAULT_FLAG;
         }
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Collects the error flags of all <code>IIpsPackageFragmentRoot</code>s contained in the given

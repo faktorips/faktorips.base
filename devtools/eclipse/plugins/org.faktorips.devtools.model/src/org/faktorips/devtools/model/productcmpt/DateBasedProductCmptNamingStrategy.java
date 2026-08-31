@@ -127,7 +127,9 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
             if (id.length() != dateFormatPattern.length()) {
                 throw new RuntimeException();
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             list.add(newInvalidVersionIdMsg());
         }
         return list;

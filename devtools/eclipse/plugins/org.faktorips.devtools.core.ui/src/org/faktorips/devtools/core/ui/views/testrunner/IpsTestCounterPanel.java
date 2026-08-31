@@ -30,10 +30,10 @@ import org.faktorips.devtools.model.decorators.OverlayIcons;
  * @author Joerg Ortmann
  */
 public class IpsTestCounterPanel extends Composite {
-    protected Text fNumberOfErrors;
-    protected Text fNumberOfFailures;
-    protected Text fNumberOfRuns;
-    protected int fTotal;
+    private Text fNumberOfErrors;
+    private Text fNumberOfFailures;
+    private Text fNumberOfRuns;
+    private int fTotal;
 
     private ResourceManager resourceManager;
 

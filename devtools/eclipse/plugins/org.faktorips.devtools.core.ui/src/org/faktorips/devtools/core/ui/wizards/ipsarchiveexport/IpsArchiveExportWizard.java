@@ -107,7 +107,9 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
             try {
                 folder.mkdirs();
                 return true;
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID, "Could not create " //$NON-NLS-1$
                         + folder.getAbsoluteFile(), e));
             }
@@ -135,7 +137,9 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
             getContainer().run(true, true, workbenchRunnableAdapter);
         } catch (InterruptedException e) {
             return false;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

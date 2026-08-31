@@ -81,6 +81,7 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
 
         @Override
         public void addSelectionChangedListener(ISelectionChangedListener listener) {
+            // not needed for this test
         }
 
         @Override
@@ -90,10 +91,12 @@ public class IpsCutActionTest extends AbstractIpsPluginTest {
 
         @Override
         public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+            // not needed for this test
         }
 
         @Override
         public void setSelection(ISelection selection) {
+            // not needed for this test
         }
     }
 }

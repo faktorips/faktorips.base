@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
  */
 public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescriptionSupport {
 
-    TestCaseTypeEditorPage editorPage;
+    private TestCaseTypeEditorPage editorPage;
 
     @Override
     public void doSave(IProgressMonitor monitor) {
@@ -48,7 +48,9 @@ public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescrip
     public ITestCaseType getTestCaseType() {
         try {
             return (ITestCaseType)getIpsSrcFile().getIpsObject();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }

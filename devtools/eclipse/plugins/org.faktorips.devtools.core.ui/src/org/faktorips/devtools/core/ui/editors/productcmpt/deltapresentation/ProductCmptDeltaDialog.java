@@ -68,25 +68,25 @@ public class ProductCmptDeltaDialog extends AbstractDeltaDialog {
         // layouting
 
         // create composite with margins
-        Composite listParent = toolkit.createGridComposite(root, 3, false, false);
+        Composite listParent = getToolkit().createGridComposite(root, 3, false, false);
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.minimumHeight = 100;
         listParent.setLayoutData(gridData);
 
         // line 1 (label for tree)
-        toolkit.createVerticalSpacer(listParent, 1);
+        getToolkit().createVerticalSpacer(listParent, 1);
         String text = NLS.bind(Messages.ProductCmptDeltaDialog_labelDifferencesHeader, genTextPlural);
-        Label label = toolkit.createLabel(listParent, text, false);
+        Label label = getToolkit().createLabel(listParent, text, false);
         ((GridData)label.getLayoutData()).minimumHeight = 10;
-        toolkit.createVerticalSpacer(listParent, 1);
+        getToolkit().createVerticalSpacer(listParent, 1);
 
         // line 2 (tree)
-        toolkit.createVerticalSpacer(listParent, 1);
+        getToolkit().createVerticalSpacer(listParent, 1);
         tree = new TreeViewer(listParent);
         gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         gridData.minimumHeight = 100;
         tree.getTree().setLayoutData(gridData);
-        toolkit.createVerticalSpacer(listParent, 1);
+        getToolkit().createVerticalSpacer(listParent, 1);
 
         // adding data and behaviour
         getShell().setText(Messages.ProductCmptDeltaDialog_title);

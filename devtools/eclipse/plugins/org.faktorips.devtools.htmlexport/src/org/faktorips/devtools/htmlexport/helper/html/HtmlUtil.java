@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.helper.path.IHtmlPath;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
@@ -126,9 +126,9 @@ public class HtmlUtil {
      */
     public String getHtmlText(String text) {
         String adaptedText = text;
-        adaptedText = StringUtils.replace(adaptedText, "<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
-        adaptedText = StringUtils.replace(adaptedText, ">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
-        return StringUtils.replace(adaptedText, "\n", "\n<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
+        adaptedText = Strings.CS.replace(adaptedText, "<", "&lt;"); //$NON-NLS-1$ //$NON-NLS-2$
+        adaptedText = Strings.CS.replace(adaptedText, ">", "&gt;"); //$NON-NLS-1$ //$NON-NLS-2$
+        return Strings.CS.replace(adaptedText, "\n", "\n<br/>"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

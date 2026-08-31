@@ -69,7 +69,9 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
                 IIpsPackageFragmentRoot root = dialog.getSelectedRoot();
                 setIpsPackageFragmentRoot(root);
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

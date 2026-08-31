@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.tablestructure;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 
@@ -117,13 +117,7 @@ public class IndexTest extends AbstractIpsPluginTest {
         IKeyItem item = key.getKeyItemAt(1);
         assertEquals("c1", item.getName());
 
-        try {
-            key.getKeyItemAt(2);
-            fail();
-        } catch (IndexOutOfBoundsException e) {
-            // do nothing
-        }
-
+        assertThrows(IndexOutOfBoundsException.class, () -> key.getKeyItemAt(2));
     }
 
     @Test
@@ -138,13 +132,7 @@ public class IndexTest extends AbstractIpsPluginTest {
         String itemName = key.getNameOfKeyItemAt(1);
         assertEquals("c1", itemName);
 
-        try {
-            key.getNameOfKeyItemAt(3);
-            fail();
-        } catch (IndexOutOfBoundsException e) {
-            // do nothing
-        }
-
+        assertThrows(IndexOutOfBoundsException.class, () -> key.getNameOfKeyItemAt(3));
     }
 
     @Test
@@ -162,13 +150,7 @@ public class IndexTest extends AbstractIpsPluginTest {
         TableStructure table2 = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable2");
         IColumn column = table2.newColumn();
         column.setName("t2c0");
-        try {
-            key.getIndexForKeyItem(column);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // do nothing
-        }
-
+        assertThrows(IllegalArgumentException.class, () -> key.getIndexForKeyItem(column));
     }
 
     @Test
@@ -229,12 +211,7 @@ public class IndexTest extends AbstractIpsPluginTest {
         int index = key.getIndexForKeyItemName("c1");
         assertEquals(1, index);
 
-        try {
-            key.getIndexForKeyItemName("c3");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // do nothing
-        }
+        assertThrows(IllegalArgumentException.class, () -> key.getIndexForKeyItemName("c3"));
     }
 
     @Test

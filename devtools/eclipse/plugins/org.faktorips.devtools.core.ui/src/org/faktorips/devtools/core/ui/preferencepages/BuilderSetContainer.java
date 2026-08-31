@@ -396,7 +396,7 @@ public class BuilderSetContainer {
 
         @Override
         public void valueChanged(FieldValueChangedEvent event) {
-            String builderSetLabel = (String)event.field.getValue();
+            String builderSetLabel = (String)event.getField().getValue();
             String newBuilderSetId = getBuilderSetIdByLabel(builderSetLabel);
             changeBuilderSet(builderSetId, newBuilderSetId);
         }

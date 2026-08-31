@@ -801,7 +801,7 @@ public class BindingContext {
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
             for (FieldPropertyMapping<?> mapping : bindingContext.mappings) {
-                if (e.field == mapping.getField()) {
+                if (e.getField() == mapping.getField()) {
                     try {
                         mapping.setPropertyValue();
                     } catch (Exception ex) {

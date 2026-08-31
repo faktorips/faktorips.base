@@ -41,7 +41,9 @@ public class ButtonTextBinding extends ControlPropertyBinding {
             } else {
                 ((Button)getControl()).setText(value);
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
     }

@@ -51,6 +51,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         derivedUnionSubsets = new HashSet<>();
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
         HashSet<IIpsSrcFile> result = new HashSet<>();
@@ -91,6 +92,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         }
         return result;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     protected void validateIpsModel(MessageList validationMessageList) {

@@ -42,7 +42,9 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         for (ISaveParticipant participant : saveParticipants) {
             try {
                 participant.doneSaving(context);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsLog.log(e);
             }
         }
@@ -53,7 +55,9 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         for (ISaveParticipant participant : saveParticipants) {
             try {
                 participant.prepareToSave(context);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsLog.log(e);
             }
         }
@@ -64,7 +68,9 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         for (ISaveParticipant participant : saveParticipants) {
             try {
                 participant.rollback(context);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsLog.log(e);
             }
         }
@@ -75,7 +81,9 @@ public class IpsCompositeSaveParticipant implements ISaveParticipant {
         for (ISaveParticipant participant : saveParticipants) {
             try {
                 participant.saving(context);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsLog.log(e);
             }
         }

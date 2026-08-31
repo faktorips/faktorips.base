@@ -16,8 +16,8 @@ import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -158,45 +158,25 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testGetSetIdentifier() {
         assertFalse(literalNameAttribute.isIdentifier());
-        try {
-            literalNameAttribute.setIdentifier(true);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // expected
-        }
+        assertThrows(UnsupportedOperationException.class, () -> literalNameAttribute.setIdentifier(true));
     }
 
     @Test
     public void testGetSetInherited() {
         assertFalse(literalNameAttribute.isInherited());
-        try {
-            literalNameAttribute.setInherited(true);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // expected
-        }
+        assertThrows(UnsupportedOperationException.class, () -> literalNameAttribute.setInherited(true));
     }
 
     @Test
     public void testGetSetMandatory() {
         assertTrue(literalNameAttribute.isMandatory());
-        try {
-            literalNameAttribute.setMandatory(false);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // expected
-        }
+        assertThrows(UnsupportedOperationException.class, () -> literalNameAttribute.setMandatory(false));
     }
 
     @Test
     public void testGetSetUsedAsNameInFaktorIpsUi() {
         assertFalse(literalNameAttribute.isUsedAsNameInFaktorIpsUi());
-        try {
-            literalNameAttribute.setUsedAsNameInFaktorIpsUi(true);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // expected
-        }
+        assertThrows(UnsupportedOperationException.class, () -> literalNameAttribute.setUsedAsNameInFaktorIpsUi(true));
     }
 
 }

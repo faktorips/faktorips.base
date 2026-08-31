@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
 
 /**
@@ -56,7 +56,7 @@ class IdentifierProposalCollector {
      * @return <code>true</code> if the prefix matches the text, otherwise <code>false</code>.
      */
     protected boolean isMatchingText(String text, String prefix) {
-        return StringUtils.startsWithIgnoreCase(text, prefix);
+        return Strings.CI.startsWith(text, prefix);
     }
 
     public ArrayList<IdentifierProposal> getProposals() {

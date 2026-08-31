@@ -149,8 +149,4 @@ public class TypeSelectionFilterTest {
 
     }
 
-    @Test
-    public void testSelect() throws Exception {
-
-    }
 }

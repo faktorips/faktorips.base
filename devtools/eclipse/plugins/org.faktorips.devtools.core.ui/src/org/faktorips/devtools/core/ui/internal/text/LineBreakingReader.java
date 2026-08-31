@@ -91,14 +91,15 @@ public class LineBreakingReader {
 
     private int findNextBreakOffset(int currOffset) {
         int currWidth = 0;
-        int nextOffset = fLineBreakIterator.following(currOffset);
+        int offset = currOffset;
+        int nextOffset = fLineBreakIterator.following(offset);
         while (nextOffset != BreakIterator.DONE) {
-            String word = fLine.substring(currOffset, nextOffset);
+            String word = fLine.substring(offset, nextOffset);
             int wordWidth = fGC.textExtent(word).x;
             int nextWidth = wordWidth + currWidth;
             if (nextWidth > fMaxWidth) {
                 if (currWidth > 0) {
-                    return currOffset;
+                    return offset;
                 }
 
                 if (!fBreakWords) {
@@ -112,22 +113,23 @@ public class LineBreakingReader {
                     word = word.substring(0, length);
                     wordWidth = fGC.textExtent(word).x;
                     if (wordWidth + currWidth < fMaxWidth) {
-                        return currOffset + length;
+                        return offset + length;
                     }
                 }
                 return nextOffset;
             }
             currWidth = nextWidth;
-            currOffset = nextOffset;
+            offset = nextOffset;
             nextOffset = fLineBreakIterator.next();
         }
         return nextOffset;
     }
 
     private int findWordBegin(int idx) {
-        while (idx < fLine.length() && Character.isWhitespace(fLine.charAt(idx))) {
-            idx++;
+        int pos = idx;
+        while (pos < fLine.length() && Character.isWhitespace(fLine.charAt(pos))) {
+            pos++;
         }
-        return idx;
+        return pos;
     }
 }

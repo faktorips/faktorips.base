@@ -22,21 +22,21 @@ public class HtmlLinkPageElementLayouter extends AbstractHtmlPageElementLayouter
 
     @Override
     protected void layoutInternal() {
-        if (pageElement.hasStyle(Style.BLOCK)) {
-            append(htmlUtil.createHtmlElementOpenTag("div")); //$NON-NLS-1$
+        if (getPageElement().hasStyle(Style.BLOCK)) {
+            append(getHtmlUtil().createHtmlElementOpenTag("div")); //$NON-NLS-1$
         }
-        append(htmlUtil.createLinkOpenTag(createLinkBase(), pageElement.getLinkAnchor(), pageElement.getTarget()
-                .getId(), getClasses(), pageElement.getTitle()));
+        append(getHtmlUtil().createLinkOpenTag(createLinkBase(), getPageElement().getLinkAnchor(), getPageElement()
+                .getTarget().getId(), getClasses(), getPageElement().getTitle()));
 
-        layouter.visitSubElements(pageElement);
+        getLayouter().visitSubElements(getPageElement());
 
-        append(htmlUtil.createHtmlElementCloseTag("a")); //$NON-NLS-1$
-        if (pageElement.hasStyle(Style.BLOCK)) {
-            append(htmlUtil.createHtmlElementCloseTag("div")); //$NON-NLS-1$
+        append(getHtmlUtil().createHtmlElementCloseTag("a")); //$NON-NLS-1$
+        if (getPageElement().hasStyle(Style.BLOCK)) {
+            append(getHtmlUtil().createHtmlElementCloseTag("div")); //$NON-NLS-1$
         }
     }
 
     protected String createLinkBase() {
-        return layouter.createLinkBase(pageElement);
+        return getLayouter().createLinkBase(getPageElement());
     }
 }

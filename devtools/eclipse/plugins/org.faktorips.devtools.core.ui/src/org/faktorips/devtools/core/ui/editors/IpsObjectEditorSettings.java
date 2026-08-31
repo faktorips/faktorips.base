@@ -111,7 +111,9 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         File file = stateLocation.append(new Path(FILE_NAME)).toFile();
         try {
             load(file);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // if the settigns are lost, this causes just a small inconveniance for the user, so we
             // just log it
             settings = new HashMap<>();
@@ -134,22 +136,22 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         }
     }
 
-    private String load(BufferedReader reader, String line) throws IOException {
+    private String load(BufferedReader reader, String firstLine) throws IOException {
         HashMap<String, String> keyValues = new HashMap<>();
-        settings.put(line, keyValues);
-        line = reader.readLine();
-        while (line != null) {
-            int index = line.indexOf(' ');
+        settings.put(firstLine, keyValues);
+        String currentLine = reader.readLine();
+        while (currentLine != null) {
+            int index = currentLine.indexOf(' ');
             if (index != 0) {
                 // next ips source file (source file lines start with a /, key/value pair lines with
                 // a blank
-                return line;
+                return currentLine;
             }
-            index = line.indexOf(' ', index + 1);
-            String key = line.substring(1, index);
-            String value = line.substring(index + 1);
+            index = currentLine.indexOf(' ', index + 1);
+            String key = currentLine.substring(1, index);
+            String value = currentLine.substring(index + 1);
             keyValues.put(key, value);
-            line = reader.readLine();
+            currentLine = reader.readLine();
         }
         return null;
     }

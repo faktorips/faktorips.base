@@ -267,7 +267,9 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
             T newPart = constructor.newInstance(parent, id);
             parts.add(newPart);
             return newPart;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(this + ", Error creating new instance via constructor " + constructor, e); //$NON-NLS-1$
         }
     }

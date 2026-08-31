@@ -444,6 +444,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public int compareTo(IValueSet o) {
         if (o.isRange()) {
             IRangeValueSet otherRangeValueSet = (IRangeValueSet)o;

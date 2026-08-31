@@ -460,11 +460,6 @@ public class IpsArchiveTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsValid() throws Exception {
-
-    }
-
-    @Test
     public void testGetPath_ipsObject() throws Exception {
         JarEntry jarEntry = mock(JarEntry.class);
         when(jarEntry.getName()).thenReturn(IpsArchive.IPSOBJECTS_FOLDER + "/my/object/dings");

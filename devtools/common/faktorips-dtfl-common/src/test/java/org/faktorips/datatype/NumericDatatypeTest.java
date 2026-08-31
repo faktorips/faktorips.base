@@ -11,8 +11,8 @@
 package org.faktorips.datatype;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.faktorips.datatype.classtypes.BigDecimalDatatype;
 import org.faktorips.datatype.classtypes.DecimalDatatype;
@@ -48,18 +48,10 @@ public class NumericDatatypeTest {
             assertTrue(datatype.divisibleWithoutRemainder("2.4", "1.2")); //$NON-NLS-1$ //$NON-NLS-2$
             assertFalse(datatype.divisibleWithoutRemainder("2.41", "1.2")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            try {
-                datatype.divisibleWithoutRemainder("10", null); //$NON-NLS-1$
-                fail();
-            } catch (NullPointerException e) {
-                // success
-            }
-            try {
-                datatype.divisibleWithoutRemainder(null, "2"); //$NON-NLS-1$
-                fail();
-            } catch (NullPointerException e) {
-                // success
-            }
+            assertThrows(NullPointerException.class,
+                    () -> datatype.divisibleWithoutRemainder("10", null)); //$NON-NLS-1$
+            assertThrows(NullPointerException.class,
+                    () -> datatype.divisibleWithoutRemainder(null, "2")); //$NON-NLS-1$
         }
 
     }
@@ -113,33 +105,17 @@ public class NumericDatatypeTest {
 
         assertFalse(datatype.divisibleWithoutRemainder("10", "0")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        try {
-            datatype.divisibleWithoutRemainder("10", ""); //$NON-NLS-1$ //$NON-NLS-2$
-            fail();
-        } catch (NumberFormatException e) {
-            // success
-        }
+        assertThrows(NumberFormatException.class,
+                () -> datatype.divisibleWithoutRemainder("10", "")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        try {
-            datatype.divisibleWithoutRemainder("10", null); //$NON-NLS-1$
-            fail();
-        } catch (NullPointerException e) {
-            // success
-        }
+        assertThrows(NullPointerException.class,
+                () -> datatype.divisibleWithoutRemainder("10", null)); //$NON-NLS-1$
 
-        try {
-            datatype.divisibleWithoutRemainder("", "2"); //$NON-NLS-1$ //$NON-NLS-2$
-            fail();
-        } catch (NumberFormatException e) {
-            // success
-        }
+        assertThrows(NumberFormatException.class,
+                () -> datatype.divisibleWithoutRemainder("", "2")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        try {
-            datatype.divisibleWithoutRemainder(null, "2"); //$NON-NLS-1$
-            fail();
-        } catch (NullPointerException e) {
-            // success
-        }
+        assertThrows(NullPointerException.class,
+                () -> datatype.divisibleWithoutRemainder(null, "2")); //$NON-NLS-1$
     }
 
     @Test

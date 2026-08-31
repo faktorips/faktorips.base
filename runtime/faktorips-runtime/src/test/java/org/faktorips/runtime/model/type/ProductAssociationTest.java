@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -783,12 +782,9 @@ public class ProductAssociationTest {
         Target target = new Target();
         Target target2 = new Target();
 
-        try {
-            association.addTargetObjects(source, null, Arrays.<IProductComponent> asList(target, target2));
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) {
-            assertNull(source.target);
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> association.addTargetObjects(source, null, Arrays.<IProductComponent> asList(target, target2)));
+        assertNull(source.target);
     }
 
     @Test
@@ -796,12 +792,8 @@ public class ProductAssociationTest {
         Source source = new Source();
         Target target = new Target();
 
-        try {
-            association3.addTargetObjects(source, null, target);
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) {
-            assertNull(source.target);
-        }
+        assertThrows(IllegalArgumentException.class, () -> association3.addTargetObjects(source, null, target));
+        assertNull(source.target);
     }
 
     @Test
@@ -822,12 +814,9 @@ public class ProductAssociationTest {
         Target wrongTarget = new Target();
         ProductAssociation overridingAssociation = IpsModel.getProductCmptType(subSource)
                 .getAssociation("overriddenAsso");
-        try {
-            overridingAssociation.addTargetObjects(subSource, null, wrongTarget);
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) {
-            assertNull(subSource.getOverriddenAsso());
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> overridingAssociation.addTargetObjects(subSource, null, wrongTarget));
+        assertNull(subSource.getOverriddenAsso());
     }
 
     @Test
@@ -949,12 +938,9 @@ public class ProductAssociationTest {
         Target target2 = new Target();
         source.setTarget(target);
 
-        try {
-            association.removeTargetObjects(source, effectiveDate, Arrays.<IProductComponent> asList(target, target2));
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) {
-            assertThat(source.getTarget(), is(target));
-        }
+        assertThrows(IllegalArgumentException.class, () -> association.removeTargetObjects(source, effectiveDate,
+                Arrays.<IProductComponent> asList(target, target2)));
+        assertThat(source.getTarget(), is(target));
     }
 
     @Test
@@ -963,12 +949,9 @@ public class ProductAssociationTest {
         Target target = new Target();
         source.setTarget(target);
 
-        try {
-            association3.removeTargetObjects(source, effectiveDate, target);
-            fail("IllegalArgumentException expected");
-        } catch (IllegalArgumentException e) {
-            assertThat(association3.getTargetObjects(source, effectiveDate), hasItem(target));
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> association3.removeTargetObjects(source, effectiveDate, target));
+        assertThat(association3.getTargetObjects(source, effectiveDate), hasItem(target));
     }
 
     @Test

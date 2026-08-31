@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.type.IType;
  */
 public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
 
+    // CSOFF: CyclomaticComplexity
     @Override
     @SuppressWarnings("unchecked")
     // Can suppress warning as eclipse IAdapterFactory is not generic.
@@ -71,6 +72,7 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
 
         return null;
     }
+    // CSON: CyclomaticComplexity
 
     private IIpsSrcFile adaptToIpsSrcFile(Object adaptableObject) {
         IIpsSrcFileWrapper wrapper = (IIpsSrcFileWrapper)adaptableObject;

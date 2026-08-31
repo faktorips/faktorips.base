@@ -46,7 +46,9 @@ class NavigateToTableStructureAction extends Action {
             if (tableStructure != null) {
                 IpsUIPlugin.getDefault().openEditor(tableStructure);
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

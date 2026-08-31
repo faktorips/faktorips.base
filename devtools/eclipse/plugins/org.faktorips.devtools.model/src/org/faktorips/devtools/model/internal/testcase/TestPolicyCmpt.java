@@ -634,6 +634,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return testPolicyCmptLinks.toArray(new ITestPolicyCmptLink[testPolicyCmptLinks.size()]);
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
@@ -764,6 +765,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         // check correct product cmpt
         validateAllowedProductCmpt(list, param, productCmptObj, ipsProject);
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Returns the qualified name of the corresponding policy component type, if a product is
@@ -778,11 +780,11 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             // find using the product cmpt
             IProductCmpt productCmptFound = findProductCmpt(ipsProject);
             if (productCmptFound != null) {
-                IPolicyCmptType policyCmptType = productCmptFound.findPolicyCmptType(ipsProject);
-                if (policyCmptType == null) {
+                IPolicyCmptType foundPolicyCmptType = productCmptFound.findPolicyCmptType(ipsProject);
+                if (foundPolicyCmptType == null) {
                     return null;
                 }
-                return policyCmptType.getQualifiedName();
+                return foundPolicyCmptType.getQualifiedName();
             }
         } else {
             // "find" using the given policy cmpt type
@@ -797,6 +799,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         return null;
     }
 
+    // CSOFF: CyclomaticComplexity
     private void validateAllowedProductCmpt(MessageList list,
             ITestPolicyCmptTypeParameter param,
             IProductCmpt productCmptCandidateObj,
@@ -814,13 +817,13 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
          * if this is the root element, only check the policy component type of the specified
          * product cmpt
          */
-        IPolicyCmptType policyCmptType = param.findPolicyCmptType(ipsProject);
+        IPolicyCmptType paramPolicyCmptType = param.findPolicyCmptType(ipsProject);
         IPolicyCmptType policyCmptTypeOfCandidate = productCmptCandidateObj.findPolicyCmptType(ipsProject);
-        if (policyCmptType != null && !policyCmptType.equals(policyCmptTypeOfCandidate)) {
+        if (paramPolicyCmptType != null && !paramPolicyCmptType.equals(policyCmptTypeOfCandidate)) {
             // maybe the policy cmpt type of the product cmpt candidate is a subtype of the
             // specified type in the test case type param
             if (policyCmptTypeOfCandidate == null
-                    || !policyCmptTypeOfCandidate.isSubtypeOf(policyCmptType, ipsProject)) {
+                    || !policyCmptTypeOfCandidate.isSubtypeOf(paramPolicyCmptType, ipsProject)) {
                 String text = MessageFormat.format(
                         Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpNotAllowedRoot,
                         productCmptCandidateObj.getName());
@@ -900,6 +903,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             }
         }
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) {

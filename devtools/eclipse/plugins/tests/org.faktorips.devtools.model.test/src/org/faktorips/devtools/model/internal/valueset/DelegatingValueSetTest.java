@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -429,12 +428,9 @@ public class DelegatingValueSetTest {
     public void testSetMaximumLength() throws Exception {
         StringLengthValueSet stringLengthDelegate = mock(StringLengthValueSet.class);
         delegatingValueSet = new DelegatingValueSet(stringLengthDelegate, parent);
-        try {
-            delegatingValueSet.setMaximumLength("99");
-            fail("Expect IllegalStateException to be thrown");
-        } catch (IllegalStateException e) {
-            assertThat(e.getMessage(), is("DelegatingValueSets cannot be changed"));
-        }
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> delegatingValueSet.setMaximumLength("99"));
+        assertThat(e.getMessage(), is("DelegatingValueSets cannot be changed"));
     }
 
     @Test

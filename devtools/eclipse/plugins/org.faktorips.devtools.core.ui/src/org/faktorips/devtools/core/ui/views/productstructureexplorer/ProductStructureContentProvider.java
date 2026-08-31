@@ -67,6 +67,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
         this.showAssociationNodes = showAssociationNodes;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public Object[] getChildren(Object parentElement) {
         List<IProductCmptStructureReference> children = new ArrayList<>();
@@ -128,6 +129,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
 
         return children.toArray();
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public Object getParent(Object element) {

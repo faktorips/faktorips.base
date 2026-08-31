@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -88,7 +88,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private IValueSet parseNonEmptyString(String stringToBeParsed) {
         boolean containsNull = stringToBeParsed.endsWith(getNullPresentation());
-        String inputWihoutNullPresentation = StringUtils.removeEnd(stringToBeParsed, getNullPresentation());
+        String inputWihoutNullPresentation = Strings.CS.removeEnd(stringToBeParsed, getNullPresentation());
         return parseValueSet(inputWihoutNullPresentation, containsNull);
     }
 

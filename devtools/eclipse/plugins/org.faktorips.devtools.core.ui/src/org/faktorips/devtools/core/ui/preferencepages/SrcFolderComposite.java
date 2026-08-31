@@ -579,19 +579,19 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
-            if (e.field == mergableSrcFolderField) {
+            if (e.getField() == mergableSrcFolderField) {
                 handleDefaultOutputFolderChanged(true);
 
-            } else if (e.field == derivedSrcFolderField) {
+            } else if (e.getField() == derivedSrcFolderField) {
                 handleDefaultOutputFolderChanged(false);
 
-            } else if (e.field == basePackageMergableField) {
+            } else if (e.getField() == basePackageMergableField) {
 
                 handleBasePackageNameChanged(true);
-            } else if (e.field == basePackageDerivedField) {
+            } else if (e.getField() == basePackageDerivedField) {
 
                 handleBasePackageNameChanged(false);
-            } else if (e.field == multipleOutputCheckBoxField) {
+            } else if (e.getField() == multipleOutputCheckBoxField) {
                 boolean multipleEnabled = (multipleOutputCheckBoxField.getValue()).booleanValue();
                 handleOutputDefinedPerSrcFolderChanged(multipleEnabled);
             }

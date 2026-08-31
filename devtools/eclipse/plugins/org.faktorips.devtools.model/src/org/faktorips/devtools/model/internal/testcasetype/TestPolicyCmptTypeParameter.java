@@ -137,8 +137,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         ArgumentCheck.isTrue(testParameterType.equals(TestParameterType.INPUT)
                 || testParameterType.equals(TestParameterType.EXPECTED_RESULT)
                 || testParameterType.equals(TestParameterType.COMBINED));
-        TestParameterType oldType = type;
-        type = testParameterType;
+        TestParameterType oldType = getTestParameterType();
+        setType(testParameterType);
         valueChanged(oldType, testParameterType);
     }
 
@@ -409,6 +409,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         return newIdxs;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public IIpsSrcFile[] getAllowedProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmpt) {
         if (isRoot() || productCmpt == null) {
@@ -475,7 +476,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
+    // CSON: CyclomaticComplexity
 
+    // CSOFF: CyclomaticComplexity
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
@@ -510,9 +513,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         // check if the type of the parameter matches the type of the parent
         if (!isRoot()) {
             TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
-            if (!TestParameterType.isChildTypeMatching(type, parentType)) {
+            if (!TestParameterType.isChildTypeMatching(getTestParameterType(), parentType)) {
                 String text = MessageFormat.format(Messages.TestPolicyCmptTypeParameter_ValidationError_TypeNotAllowed,
-                        type.getName(), parentType.getName());
+                        getTestParameterType().getName(), parentType.getName());
                 Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                         PROPERTY_TEST_PARAMETER_TYPE);
                 list.add(msg);
@@ -621,5 +624,6 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
             list.add(msg);
         }
     }
+    // CSON: CyclomaticComplexity
 
 }

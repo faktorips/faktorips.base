@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Collection;
 import java.util.List;
@@ -78,12 +78,7 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
 
         assertFalse(condition.hasValueSet());
 
-        try {
-            condition.getValueSet(link);
-            fail();
-        } catch (Exception e) {
-            // nix
-        }
+        assertThrows(Exception.class, () -> condition.getValueSet(link));
 
         Collection<?> allowedValues = condition.getAllowedValues(link);
 

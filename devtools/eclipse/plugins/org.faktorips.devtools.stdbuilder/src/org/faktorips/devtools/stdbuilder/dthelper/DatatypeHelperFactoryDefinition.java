@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.dthelper;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.datatype.Datatype;
@@ -29,7 +29,7 @@ public class DatatypeHelperFactoryDefinition {
 
     public DatatypeHelperFactoryDefinition(IExtension extension, IConfigurationElement configElement) {
         super();
-        if (!StringUtils.equalsIgnoreCase(FACTORY_DEFINTIION, configElement.getName())) {
+        if (!Strings.CI.equals(FACTORY_DEFINTIION, configElement.getName())) {
             String text = String.format(ILLEGAL_DEFINITION, extension.getUniqueIdentifier(), configElement.getName());
             throw new IllegalStateException(text);
         }

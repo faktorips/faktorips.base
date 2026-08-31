@@ -33,9 +33,9 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
 
     private static final String DIALOG_SETTINGS_KEY = "IpsObjectExportWizard"; //$NON-NLS-1$
 
-    protected boolean hasNewDialogSettings;
-    protected IStructuredSelection selection;
-    protected Map<ITableFormat, TableFormatPropertiesPage> customPages;
+    private boolean hasNewDialogSettings;
+    private IStructuredSelection selection;
+    private Map<ITableFormat, TableFormatPropertiesPage> customPages;
 
     /**
      * Saves dialog settings, like size and position information.
@@ -52,6 +52,22 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         this.selection = selection;
+    }
+
+    protected void setHasNewDialogSettings(boolean hasNewDialogSettings) {
+        this.hasNewDialogSettings = hasNewDialogSettings;
+    }
+
+    protected IStructuredSelection getSelection() {
+        return selection;
+    }
+
+    protected Map<ITableFormat, TableFormatPropertiesPage> getCustomPages() {
+        return customPages;
+    }
+
+    protected void setCustomPages(Map<ITableFormat, TableFormatPropertiesPage> customPages) {
+        this.customPages = customPages;
     }
 
     /**

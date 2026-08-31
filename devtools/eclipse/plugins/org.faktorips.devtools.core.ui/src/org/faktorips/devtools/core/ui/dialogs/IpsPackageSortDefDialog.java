@@ -424,15 +424,13 @@ public class IpsPackageSortDefDialog extends TrayDialog {
             }
             Point coordinates = new Point(event.x, event.y);
             coordinates = getViewer().getControl().toControl(coordinates);
-            if (item != null) {
-                Rectangle bounds = getBounds(item);
-                int offset = bounds.height / 2;
-                if ((coordinates.y - bounds.y) < offset) {
-                    return LOCATION_BEFORE;
-                }
-                if ((bounds.y + bounds.height - coordinates.y) < offset) {
-                    return LOCATION_AFTER;
-                }
+            Rectangle bounds = getBounds(item);
+            int offset = bounds.height / 2;
+            if ((coordinates.y - bounds.y) < offset) {
+                return LOCATION_BEFORE;
+            }
+            if ((bounds.y + bounds.height - coordinates.y) < offset) {
+                return LOCATION_AFTER;
             }
             return LOCATION_ON;
         }

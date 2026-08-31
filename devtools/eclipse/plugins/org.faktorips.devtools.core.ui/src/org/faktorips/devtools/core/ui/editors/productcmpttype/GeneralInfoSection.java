@@ -68,7 +68,9 @@ public class GeneralInfoSection extends IpsSection {
             public void linkActivated(HyperlinkEvent event) {
                 try {
                     IpsUIPlugin.getDefault().openEditor(productCmptType.findSupertype(productCmptType.getIpsProject()));
+                    // CSOFF: IllegalCatch
                 } catch (Exception e) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
 
@@ -132,7 +134,9 @@ public class GeneralInfoSection extends IpsSection {
                     if (policyCmptType != null) {
                         IpsUIPlugin.getDefault().openEditor(policyCmptType);
                     }
+                    // CSOFF: IllegalCatch
                 } catch (Exception e) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

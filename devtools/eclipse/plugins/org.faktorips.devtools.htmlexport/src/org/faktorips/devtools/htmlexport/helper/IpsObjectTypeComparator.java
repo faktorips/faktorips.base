@@ -46,6 +46,7 @@ public class IpsObjectTypeComparator implements Comparator<IpsObjectType> {
             IpsObjectType.TEST_CASE_TYPE, IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_TEMPLATE,
             IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS, IpsObjectType.TEST_CASE);
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public int compare(IpsObjectType o1, IpsObjectType o2) {
 
@@ -83,4 +84,5 @@ public class IpsObjectTypeComparator implements Comparator<IpsObjectType> {
 
         return 0;
     }
+    // CSON: CyclomaticComplexity
 }

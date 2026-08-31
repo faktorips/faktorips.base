@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.ipsobject;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 
@@ -51,14 +51,9 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
         assertTrue(collection.isDuplicateName(cmpt2.getIpsSrcFile()));
         assertFalse(collection.isInstanceOfMetaClass(cmpt2.getIpsSrcFile()));
 
-        collection = new IpsSrcFileCollection(Arrays.asList());
+        IpsSrcFileCollection emptyCollection = new IpsSrcFileCollection(Arrays.asList());
 
-        try {
-            collection.isDuplicateName(cmpt1.getIpsSrcFile());
-            fail();
-        } catch (IpsException ce) {
-            // success
-        }
+        assertThrows(IpsException.class, () -> emptyCollection.isDuplicateName(cmpt1.getIpsSrcFile()));
 
         // MetaObjectClass = null !
         collection = new IpsSrcFileCollection(
@@ -67,12 +62,6 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
         assertFalse(collection.isInstanceOfMetaClass(cmpt1.getIpsSrcFile()));
         assertFalse(collection.isInstanceOfMetaClass(cmpt2.getIpsSrcFile()));
 
-        try {
-            new IpsSrcFileCollection(null, null);
-            fail();
-        } catch (NullPointerException e) {
-            // success
-        }
-
+        assertThrows(NullPointerException.class, () -> new IpsSrcFileCollection(null, null));
     }
 }

@@ -95,7 +95,7 @@ public class TestCaseDetailAreaStoreActualValueTest extends AbstractIpsPluginTes
 
         IEditorPart editor = IpsUIPlugin.getDefault().openEditor(testCase);
         TestCaseEditor testCaseEditor = (TestCaseEditor)editor;
-        testCaseSection = testCaseEditor.editorPage.getSection();
+        testCaseSection = testCaseEditor.getEditorPage().getSection();
         testCaseDetailArea = testCaseSection.getTestCaseDetailArea();
 
         // re-fetch the objects

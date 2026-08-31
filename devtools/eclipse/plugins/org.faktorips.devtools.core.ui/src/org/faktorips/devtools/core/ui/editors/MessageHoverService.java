@@ -161,14 +161,14 @@ public abstract class MessageHoverService {
         /**
          * This info hover's shell.
          */
-        Shell fHoverShell;
+        private Shell fHoverShell;
 
         /**
          * The info hover text.
          */
-        String fText = ""; //$NON-NLS-1$
+        private String fText = ""; //$NON-NLS-1$
 
-        Shell parentShell;
+        private Shell parentShell;
 
         /**
          * Distance of info hover arrow from left side.
@@ -181,11 +181,11 @@ public abstract class MessageHoverService {
         /**
          * Height of info hover arrow.
          */
-        private int HH = 10;
+        private int hh = 10;
         /**
          * Margin around info hover text.
          */
-        private int LABEL_MARGIN = 2;
+        private int labelMargin = 2;
 
         private int defaultOffsetOfArrow = hd + hw / 2;
 
@@ -205,7 +205,7 @@ public abstract class MessageHoverService {
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
             fHoverShell.setBackground(display.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
             fHoverShell.addPaintListener(pe -> {
-                pe.gc.drawText(fText, LABEL_MARGIN, LABEL_MARGIN);
+                pe.gc.drawText(fText, labelMargin, labelMargin);
 
                 // if (!fgCarbon)
                 pe.gc.drawPolygon(getPolygon(true));
@@ -215,10 +215,10 @@ public abstract class MessageHoverService {
         int[] getPolygon(boolean border) {
             Point e = getExtent();
             if (border) {
-                return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, hd + hw, e.y - 1, hd + hw / 2, e.y + HH - 1, hd,
+                return new int[] { 0, 0, e.x - 1, 0, e.x - 1, e.y - 1, hd + hw, e.y - 1, hd + hw / 2, e.y + hh - 1, hd,
                         e.y - 1, 0, e.y - 1, 0, 0 };
             } else {
-                return new int[] { 0, 0, e.x, 0, e.x, e.y, hd + hw, e.y, hd + hw / 2, e.y + HH, hd, e.y, 0, e.y, 0, 0 };
+                return new int[] { 0, 0, e.x, 0, e.x, e.y, hd + hw, e.y, hd + hw / 2, e.y + hh, hd, e.y, 0, e.y, 0, 0 };
             }
         }
 
@@ -245,12 +245,10 @@ public abstract class MessageHoverService {
         }
 
         void setText(String t) {
-            if (t == null) {
-                t = ""; //$NON-NLS-1$
-            }
-            if (!t.equals(fText)) {
+            String text = t == null ? "" : t; //$NON-NLS-1$
+            if (!text.equals(fText)) {
                 Point oldSize = getExtent();
-                fText = t;
+                fText = text;
                 fHoverShell.redraw();
                 Point newSize = getExtent();
                 if (!oldSize.equals(newSize)) {
@@ -274,8 +272,8 @@ public abstract class MessageHoverService {
             GC gc = new GC(fHoverShell);
             Point e = gc.textExtent(fText, SWT.DRAW_DELIMITER | SWT.DRAW_TAB);
             gc.dispose();
-            e.x += LABEL_MARGIN * 2;
-            e.y += LABEL_MARGIN * 2;
+            e.x += labelMargin * 2;
+            e.y += labelMargin * 2;
             return e;
         }
 

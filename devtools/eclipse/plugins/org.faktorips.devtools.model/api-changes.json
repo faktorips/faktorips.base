@@ -51,7 +51,16 @@
                       "code": "java.method.addedToInterface",
                       "new": "method void org.faktorips.devtools.model.ipsproject.IPersistenceOptions::setAllowCascadeTypesOnInverseAssociations(boolean)",
                       "justification": "FIPS-14741: New setting to allow cascade types on inverse associations"
+                    },
+                    {
+                      "code": "java.field.visibilityReduced",
+                      "old": "field org.faktorips.devtools.model.internal.testcasetype.TestParameter.type",
+                      "new": "field org.faktorips.devtools.model.internal.testcasetype.TestParameter.type",
+                      "oldVisibility": "protected",
+                      "newVisibility": "private",
+                      "justification": "FIPS-6514: clean up encapsulation"
                     }
+                    
                 ]
             }
         }

@@ -25,8 +25,8 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
  */
 public abstract class AbstractHtmlPageElementLayouter<T extends IPageElement> extends AbstractPageElementLayouter<T> {
 
-    protected final HtmlUtil htmlUtil = new HtmlUtil();
-    protected final HtmlLayouter layouter;
+    private final HtmlUtil htmlUtil = new HtmlUtil();
+    private final HtmlLayouter layouter;
 
     public AbstractHtmlPageElementLayouter(T pageElement, HtmlLayouter layouter) {
         super(pageElement);
@@ -35,19 +35,27 @@ public abstract class AbstractHtmlPageElementLayouter<T extends IPageElement> ex
 
     @Override
     protected void setAnchor() {
-        append(htmlUtil.createAnchor(getPageElement().getAnchor()));
+        append(getHtmlUtil().createAnchor(getPageElement().getAnchor()));
     }
 
     protected void append(String text) {
-        layouter.append(text);
+        getLayouter().append(text);
     }
 
     protected String getClasses() {
-        Set<Style> styles = pageElement.getStyles();
+        Set<Style> styles = getPageElement().getStyles();
         if (styles == null || styles.isEmpty()) {
             return null;
         }
 
         return StringUtils.join(styles, ' ');
+    }
+
+    protected HtmlUtil getHtmlUtil() {
+        return htmlUtil;
+    }
+
+    protected HtmlLayouter getLayouter() {
+        return layouter;
     }
 }

@@ -63,6 +63,7 @@ public class MockPluginResourcesFacade implements IPluginResourceFacade {
     @Override
     public IDatatypeFormatter getDatatypeFormatter() {
         return new IDatatypeFormatter() {
+            // not needed for this test
         };
     }
 

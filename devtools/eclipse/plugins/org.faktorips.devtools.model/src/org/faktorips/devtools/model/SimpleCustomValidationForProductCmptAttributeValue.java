@@ -85,7 +85,9 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
                 messages.add(msg);
                 return messages;
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsLog.log(e);
         }
         return null;

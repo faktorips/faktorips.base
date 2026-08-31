@@ -121,6 +121,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         listener = null;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public void writeToXml(Element element) {
         if (getAdaptedClassName() != null) {
@@ -155,6 +156,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
             element.setAttribute("jaxbXmlJavaTypeAdapterClass", getJaxbXmlJavaTypeAdapterClass()); //$NON-NLS-1$
         }
     }
+    // CSON: CyclomaticComplexity
 
     // CSOFF: CyclomaticComplexity
     public static final DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {

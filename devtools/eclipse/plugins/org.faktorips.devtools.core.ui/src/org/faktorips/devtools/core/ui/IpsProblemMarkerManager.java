@@ -119,8 +119,9 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
             if (kind == IResourceDelta.REMOVED || kind == IResourceDelta.ADDED
                     || (kind == IResourceDelta.CHANGED && isErrorDelta(delta))) {
                 // invalidate the resource and all parents
-                while (resource.getType() != IResource.ROOT && changedElements.add(resource)) {
-                    resource = resource.getParent();
+                IResource current = resource;
+                while (current.getType() != IResource.ROOT && changedElements.add(current)) {
+                    current = current.getParent();
                 }
             }
         }

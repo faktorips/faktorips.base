@@ -11,7 +11,6 @@
 package org.faktorips.util;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,35 +23,21 @@ public class ArgumentCheckTest {
     public void testIsSubclassOf() {
         ArgumentCheck.isSubclassOf(String.class, String.class);
         ArgumentCheck.isSubclassOf(Double.class, Number.class);
-        try {
-            ArgumentCheck.isSubclassOf(String.class, Number.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // an exception is excepted to be thrown
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> ArgumentCheck.isSubclassOf(String.class, Number.class));
     }
 
     @Test
     public void testIsInstanceOf() {
         ArgumentCheck.isInstanceOf("123", String.class);
         ArgumentCheck.isInstanceOf(Double.valueOf(1234), Number.class);
-        try {
-            ArgumentCheck.isInstanceOf(this, String.class);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // an exception is excepted to be thrown
-        }
+        assertThrows(IllegalArgumentException.class, () -> ArgumentCheck.isInstanceOf(this, String.class));
     }
 
     @Test
     public void testIsNullArray() {
         String[] ids = new String[3];
-        try {
-            ArgumentCheck.notNull(ids);
-            fail();
-        } catch (RuntimeException e) {
-            // an exception is excepted to be thrown
-        }
+        assertThrows(RuntimeException.class, () -> ArgumentCheck.notNull(ids));
 
         ids[0] = "";
         ids[1] = "";
@@ -65,12 +50,7 @@ public class ArgumentCheckTest {
     @Test
     public void testIsNullArrayContext() {
         String[] ids = new String[3];
-        try {
-            ArgumentCheck.notNull(ids, this);
-            fail();
-        } catch (RuntimeException e) {
-            // an exception is excepted to be thrown
-        }
+        assertThrows(RuntimeException.class, () -> ArgumentCheck.notNull(ids, this));
 
         ids[0] = "";
         ids[1] = "";

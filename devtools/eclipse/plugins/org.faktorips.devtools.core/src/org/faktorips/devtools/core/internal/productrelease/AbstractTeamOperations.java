@@ -117,10 +117,12 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
                 observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
                 return true;
             }
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             // runtime exceptions should not be thrown
             throw e;
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // any exception during cvs check would be catched and 'not synchron' is returned
             return false;
         } finally {

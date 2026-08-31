@@ -50,7 +50,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
 
     private static final String PAGE_ID = "TestAttributeSelectionWizardPage"; //$NON-NLS-1$
 
-    protected FilteredList fFilteredList;
+    private FilteredList fFilteredList;
 
     private NewTestAttributeWizard wizard;
 
@@ -106,7 +106,7 @@ public class TestAttributeSelectionWizardPage extends WizardPage {
         field.addChangeListener(e -> {
             Runnable runnable = () -> {
                 try {
-                    showSubtypes = ((CheckboxField)e.field).getCheckbox().isChecked();
+                    showSubtypes = ((CheckboxField)e.getField()).getCheckbox().isChecked();
                     setListElements(getElements());
                     wizard.setShowSubtypeAttributes(showSubtypes);
                 } catch (IpsException ex) {

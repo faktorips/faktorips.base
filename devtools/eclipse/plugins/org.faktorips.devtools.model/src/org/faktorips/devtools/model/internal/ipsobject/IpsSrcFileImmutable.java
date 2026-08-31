@@ -121,7 +121,9 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
             ipsObject = (IpsObject)getIpsObjectType().newObject(this);
             Document doc = XmlUtil.getDefaultDocumentBuilder().parse(getContentFromEnclosingResource());
             ipsObject.initFromXml(doc.getDocumentElement());
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsLog.log(new IpsStatus(e));
         }
     }

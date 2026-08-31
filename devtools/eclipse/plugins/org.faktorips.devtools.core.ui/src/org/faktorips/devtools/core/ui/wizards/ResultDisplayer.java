@@ -67,6 +67,7 @@ public class ResultDisplayer implements Runnable {
         run();
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public void run() {
         MultiStatus multiStatus = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, Messages.ResultDisplayer_reasonText, null);
@@ -119,6 +120,7 @@ public class ResultDisplayer implements Runnable {
         ErrorDialog.openError(shell, NLS.bind(Messages.ResultDisplayer_titleResults, operationName), messageText,
                 multiStatus);
     }
+    // CSON: CyclomaticComplexity
 
     /*
      * Returns the message text and if available adds the string representation of the object the

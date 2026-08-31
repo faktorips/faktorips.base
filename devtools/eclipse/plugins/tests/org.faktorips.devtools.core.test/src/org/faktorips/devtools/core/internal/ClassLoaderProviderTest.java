@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
@@ -106,26 +106,21 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         deleteClassFile();
         assertEquals(javaProject, listener.project);
 
-        cl = provider.getClassLoader();
-        try {
-            Class.forName("SomeClass", true, cl);
-            fail(); // class was deleted, so it shouldn't be found.
-        } catch (ClassNotFoundException e) {
-        }
+        // class was deleted, so it shouldn't be found.
+        assertThrows(ClassNotFoundException.class, () -> Class.forName("SomeClass", true, provider.getClassLoader()));
 
         // after re-adding the class file, the class should be loaded again
         listener.project = null;
         createClassFile();
-        cl = provider.getClassLoader();
-        Class.forName("SomeClass", true, cl);
+        Class.forName("SomeClass", true, provider.getClassLoader());
     }
 
     /*
      * The following code section has been commented, as an exception is thrown, when the jar-file
      * is deleted. this happens in most cases, not all!
-     * 
+     *
      * The first test case 'testDemoDeleteProblem' is a test case that just illustrates the problem.
-     * 
+     *
      * Jan Ortmann, 6.10.2010
      */
     @Disabled
@@ -147,12 +142,9 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
 
         deleteJarFile();
         assertEquals(javaProject, listener.project);
-        cl = provider.getClassLoader();
-        try {
-            Class.forName("org.faktorips.test.ClassInAJar", true, cl);
-            fail(); // jar was deleted, so the class shouldn't be found.
-        } catch (ClassNotFoundException e) {
-        }
+        // jar was deleted, so the class shouldn't be found.
+        assertThrows(ClassNotFoundException.class,
+                () -> Class.forName("org.faktorips.test.ClassInAJar", true, provider.getClassLoader()));
 
         // after re-adding the jar, the class should be loaded again
         listener.project = null;

@@ -24,7 +24,7 @@ public class AlternateRowTablePageElementLayout extends DefaultTablePageElementL
     /**
      * true if first row should be ignored (e.g. when first line is a headline!)
      */
-    protected boolean ignoreFirstRow;
+    private boolean ignoreFirstRow;
 
     /**
      * creates an {@link AlternateRowTablePageElementLayout}

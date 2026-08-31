@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -84,7 +84,7 @@ public abstract class NewTypePage extends IpsObjectPage {
      */
     @Override
     protected void valueChangedExtension(FieldValueChangedEvent e) {
-        if (e.field == supertypeField) {
+        if (e.getField() == supertypeField) {
             supertypeChanged(supertypeField);
         }
     }
@@ -92,9 +92,9 @@ public abstract class NewTypePage extends IpsObjectPage {
     /**
      * Empty by default. Subclasses can override it to react input changes of the super type
      * control.
-     * 
+     *
      * @param supertypeField The text button field used to select the supertype.
-     * 
+     *
      * @throws IpsException Subclasses may throw at any time.
      */
     protected void supertypeChanged(TextButtonField supertypeField) {
@@ -120,7 +120,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     /**
      * Returns the value of the abstract checkbox field.
-     * 
+     *
      * @return A flag indicating whether the abstract checkbox field is checked (<code>true</code>)
      *             or not ( <code>false</code>).
      */
@@ -130,7 +130,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     /**
      * Sets the value of the abstract checkbox field.
-     * 
+     *
      * @param value If <code>true</code> the abstract checkbox field will be checked, if
      *            <code>false</code> it won't be checked.
      */
@@ -140,7 +140,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     /**
      * Returns the value of the super type field.
-     * 
+     *
      * @return A <code>String</code> representing the current value of the super type field.
      */
     public String getSuperType() {
@@ -149,7 +149,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     /**
      * Sets the value of the super type field.
-     * 
+     *
      * @param superTypeQualifiedName The qualified name of the super type that will be written into
      *            the super type field.
      */
@@ -176,7 +176,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
     /**
      * Returns whether this wizard page has already been entered.
-     * 
+     *
      * @return A flag indicating whether this wizard page has already been entered.
      */
     public boolean isAlreadyBeenEntered() {

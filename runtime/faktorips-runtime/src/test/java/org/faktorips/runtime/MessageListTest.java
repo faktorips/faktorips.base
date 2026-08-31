@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.function.Predicate;
 
@@ -313,12 +312,7 @@ public class MessageListTest {
         assertTrue(msg1 == list.getMessage(0));
         assertTrue(msg2 == list.getMessage(1));
 
-        try {
-            list.getMessage(2);
-            fail();
-        } catch (IndexOutOfBoundsException e) {
-            // OK
-        }
+        assertThrows(IndexOutOfBoundsException.class, () -> list.getMessage(2));
     }
 
     @Test

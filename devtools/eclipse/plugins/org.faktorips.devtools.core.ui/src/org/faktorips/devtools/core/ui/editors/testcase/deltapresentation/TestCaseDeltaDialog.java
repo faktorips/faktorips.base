@@ -42,7 +42,7 @@ public class TestCaseDeltaDialog extends AbstractDeltaDialog {
         super.setShellStyle(getShellStyle() | SWT.RESIZE);
         this.delta = delta;
 
-        toolkit = new UIToolkit(null);
+        setToolkit(new UIToolkit(null));
     }
 
     @Override
@@ -54,11 +54,11 @@ public class TestCaseDeltaDialog extends AbstractDeltaDialog {
         setMessage(Messages.TestCaseDeltaDialog_Message, IMessageProvider.INFORMATION);
 
         // create composite with margins
-        Composite listParent = toolkit.createGridComposite(root, 1, false, true);
+        Composite listParent = getToolkit().createGridComposite(root, 1, false, true);
         GridData gridData = new GridData(GridData.FILL_BOTH);
         listParent.setLayoutData(gridData);
 
-        Label label = toolkit.createLabel(listParent, Messages.TestCaseDeltaDialog_Label_DifferencesTree, true);
+        Label label = getToolkit().createLabel(listParent, Messages.TestCaseDeltaDialog_Label_DifferencesTree, true);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         tree = new TreeViewer(listParent);

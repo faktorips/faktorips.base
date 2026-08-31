@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -156,21 +156,10 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         tableRows.removeColumn(1);
         assertEquals("row1,col1", row1.getValue(0));
         assertEquals("row1,col3", row1.getValue(1));
-        try {
-            row1.getValue(2);
-            fail();
-        } catch (Exception e) {
-            assertNotNull(e);
-        }
+        assertNotNull(assertThrows(Exception.class, () -> row1.getValue(2)));
         assertEquals("row2,col1", row2.getValue(0));
         assertEquals("row2,col3", row2.getValue(1));
-        try {
-            row2.getValue(2);
-            fail();
-        } catch (Exception e) {
-            assertNotNull(e);
-        }
-
+        assertNotNull(assertThrows(Exception.class, () -> row2.getValue(2)));
     }
 
     @Test

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,10 +37,12 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.Radiobutton;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Page to select a source file, the table format and the destination IPS object (like a table
  * content or an enum type/content) to import into.
- * 
+ *
  * @author Thorsten Waertel
  * @author Roman Grutza
  */
@@ -55,7 +57,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
     private static final String ENUM_AS_NAME_AND_ID = PAGE_NAME + ".ENUM_AS_NAME_AND_ID"; //$NON-NLS-1$
 
     // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
+    private boolean validateInput = true;
 
     private Text nullRepresentation;
 
@@ -89,19 +91,18 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == filenameField) {
+        if (e.getField() == filenameField) {
             filenameChanged();
-        } else if (e.field == importIntoExistingField) {
+        } else if (e.getField() == importIntoExistingField) {
             importIntoExistingChanged();
-        } else if (e.field == importIntoNewField) {
+        } else if (e.getField() == importIntoNewField) {
             importIntoNewChanged();
-        } else if (e.field == importExistingAppendField) {
+        } else if (e.getField() == importExistingAppendField) {
             importExistingAppendChanged();
-        } else if (e.field == importExistingReplaceField) {
+        } else if (e.getField() == importExistingReplaceField) {
             importExistingReplaceChanged();
-        } else if (e.field == fileFormatField) {
-            // TODO rg: update preview
         }
+        // else if (e.getField() == fileFormatField): TODO rg: update preview
 
         if (validateInput) {
             // don't validate during control creating!
@@ -296,7 +297,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
 
     /**
      * Derives the default values for source folder and package from the selected resource.
-     * 
+     *
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
@@ -376,6 +377,7 @@ public abstract class SelectFileAndImportMethodPage extends WizardDataTransferPa
         importExistingReplaceChanged();
     }
 
+    @SuppressFBWarnings("IAOM_DO_NOT_INCREASE_METHOD_ACCESSIBILITY")
     @Override
     public void saveWidgetValues() {
         IDialogSettings settings = getDialogSettings();

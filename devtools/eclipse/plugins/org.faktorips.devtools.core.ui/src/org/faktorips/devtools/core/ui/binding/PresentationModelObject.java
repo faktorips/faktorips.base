@@ -57,7 +57,9 @@ public class PresentationModelObject {
         for (PropertyChangeListener listener : propertyChangeListeners) {
             try {
                 listener.propertyChange(event);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 // catch all exception and only log them to notify the other listeners
                 IpsPlugin.log(e);
             }

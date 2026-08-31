@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -88,7 +88,7 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_labelType);
         rangeTypeField = new EnumField<>(getToolkit().createCombo(rangeTypeArea),
                 ColumnRangeType.class);
-        rangeTypeField.addChangeListener(e -> adjustEnableStateToRangeType((ColumnRangeType)e.field.getValue()));
+        rangeTypeField.addChangeListener(e -> adjustEnableStateToRangeType((ColumnRangeType)e.getField().getValue()));
         getToolkit().createFormLabel(rangeTypeArea, Messages.RangeEditDialog_RangeEditDialog_parameterName);
         Text parameterNameText = getToolkit().createText(rangeTypeArea);
         parameterNameField = new TextField(parameterNameText);

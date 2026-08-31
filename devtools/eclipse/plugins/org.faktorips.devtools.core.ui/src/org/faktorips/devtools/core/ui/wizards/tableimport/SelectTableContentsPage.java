@@ -48,43 +48,43 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
-        validateInput = false;
+        setValidateInput(false);
         setTitle(Messages.SelectTableContentsPage_title);
 
-        pageControl = new Composite(parent, SWT.NONE);
-        pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        setPageControl(new Composite(parent, SWT.NONE));
+        getPageControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout pageLayout = new GridLayout(1, false);
         pageLayout.verticalSpacing = 20;
-        pageControl.setLayout(pageLayout);
-        setControl(pageControl);
+        getPageControl().setLayout(pageLayout);
+        setControl(getPageControl());
 
-        Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        Composite locationComposite = toolkit.createLabelEditColumnComposite(getPageControl());
         toolkit.createFormLabel(locationComposite, Messages.SelectTableContentsPage_labelProject);
-        projectControl = toolkit.createIpsProjectRefControl(locationComposite);
-        projectField = new TextButtonField(projectControl);
-        projectField.addChangeListener(this);
+        setProjectControl(toolkit.createIpsProjectRefControl(locationComposite));
+        setProjectField(new TextButtonField(getProjectControl()));
+        getProjectField().addChangeListener(this);
 
-        Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
+        Label line = new Label(getPageControl(), SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         createTableImportControls(toolkit);
 
-        setDefaults(selectedResource);
+        setDefaults(getSelectedResource());
 
-        validateInput = true;
+        setValidateInput(true);
 
     }
 
     private void createTableImportControls(UIToolkit toolkit) {
-        Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        Composite lowerComposite = toolkit.createLabelEditColumnComposite(getPageControl());
         toolkit.createFormLabel(lowerComposite, Messages.SelectTableContentsPage_labelContents);
-        importTargetControl = toolkit.createTableContentsRefControl(null, lowerComposite);
-        importTargetField = new TextButtonField(importTargetControl);
-        importTargetField.addChangeListener(this);
+        setImportTargetControl(toolkit.createTableContentsRefControl(null, lowerComposite));
+        setImportTargetField(new TextButtonField(getImportTargetControl()));
+        getImportTargetField().addChangeListener(this);
     }
 
     @Override
     public IIpsObject getTargetForImport() {
-        return ((TableContentsRefControl)importTargetControl).findTableContents();
+        return ((TableContentsRefControl)getImportTargetControl()).findTableContents();
     }
 
     @Override
@@ -112,14 +112,14 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
 
     @Override
     protected void validateImportTarget() {
-        if (importTargetControl.getText().length() == 0) {
+        if (getImportTargetControl().getText().length() == 0) {
             setErrorMessage(Messages.SelectTableContentsPage_msgContentsEmpty);
             return;
         }
         ITableContents tableContents = (ITableContents)getTargetForImport();
         if ((tableContents == null) || !tableContents.exists()) {
             setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
-                    importTargetControl.getText()));
+                    getImportTargetControl().getText()));
             return;
         }
         ITableStructure structure = tableContents.findTableStructure(tableContents.getIpsProject());
@@ -131,11 +131,11 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
 
     private void setTableContents(ITableContents contents) {
         if (contents == null) {
-            importTargetControl.setText(""); //$NON-NLS-1$
+            getImportTargetControl().setText(""); //$NON-NLS-1$
             setIpsProject(null);
             return;
         }
-        importTargetControl.setText(contents.getQualifiedName());
+        getImportTargetControl().setText(contents.getQualifiedName());
         setIpsProject(contents.getIpsProject());
     }
 }

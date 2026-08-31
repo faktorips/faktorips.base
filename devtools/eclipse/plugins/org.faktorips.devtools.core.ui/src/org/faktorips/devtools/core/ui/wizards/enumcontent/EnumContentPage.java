@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,11 +50,11 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The wizard page for the <code>NewEnumContentWizard</code>.
- * 
+ *
  * @see NewEnumContentWizard
- * 
+ *
  * @author Alexander Weickmann, Peter Kuntz
- * 
+ *
  * @since 2.3
  */
 public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements ValueChangeListener {
@@ -85,7 +85,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     /**
      * Creates the <code>EnumContentEditorPage</code>.
-     * 
+     *
      * @param selection If a selection is provided default values for some fields can be derived
      *            from that.
      */
@@ -274,7 +274,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     @Override
     public final void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == sourceFolderField) {
+        if (e.getField() == sourceFolderField) {
             sourceFolderChanged();
         }
         // Don't validate during control creating!

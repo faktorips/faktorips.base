@@ -168,8 +168,8 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
      * Action to open the selected target in a new editor window
      */
     private class OpenTableStructuresInEditorAction extends IpsAction {
-        String textSingular = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorSingular;
-        String textPlural = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorPlural;
+        private String textSingular = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorSingular;
+        private String textPlural = Messages.TableStructureUsageSection_menuOpenTargetInNewEditorPlural;
 
         public OpenTableStructuresInEditorAction(ISelectionProvider selectionProvider) {
             super(selectionProvider);
@@ -195,7 +195,9 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
                             getProductCmptType().getIpsProject()
                                     .findIpsObject(IpsObjectType.TABLE_STRUCTURE, tblStruct));
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

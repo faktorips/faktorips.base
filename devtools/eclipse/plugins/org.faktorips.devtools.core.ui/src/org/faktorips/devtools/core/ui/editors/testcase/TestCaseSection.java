@@ -237,9 +237,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     private boolean localDragAndDrop;
 
+    // CSOFF: ParameterNumber
     public TestCaseSection(Composite parent, TestCaseEditor editor, UIToolkit toolkit,
             TestCaseContentProvider contentProvider, final String title, String detailTitle, ScrolledForm form,
             IEditorSite site) {
+        // CSON: ParameterNumber
 
         super(parent, Section.NO_TITLE, GridData.FILL_BOTH, toolkit);
 
@@ -335,7 +337,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (event.getIpsSrcFile().equals(testCaseType.getIpsSrcFile())) {
                 testCaseTypeChanged = true;
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         }
     }
@@ -562,6 +566,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * Recursive search the given childs for the given target object.
      */
+    // CSOFF: CyclomaticComplexity
     private TreeItem searchChildsByObject(ITestPolicyCmpt testPolicyCmpt, ITestPolicyCmptLink link, TreeItem[] childs) {
         if (testPolicyCmpt == null && link == null) {
             return null;
@@ -588,10 +593,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         }
         return null;
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * The selection in the tree changed the given object is the new object selected.
      */
+    // CSOFF: CyclomaticComplexity
     private void selectionInTreeChanged(IStructuredSelection selection) {
         updateStructureSectionToolBarEnableStates(selection.getFirstElement());
 
@@ -645,10 +652,12 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         Object selected = selection.getFirstElement();
         selectInDetailArea(selected, false);
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Evaluates the state of the available actions
      */
+    // CSOFF: CyclomaticComplexity
     private TreeActionEnableState evaluateTreeActionEnableState(Object selection) {
         TreeActionEnableState actionEnableState = new TreeActionEnableState();
 
@@ -728,6 +737,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         return actionEnableState;
     }
+    // CSON: CyclomaticComplexity
 
     private boolean isNoTestPolicyCmptExistsFor(TestCaseTypeAssociation association) {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCase().getTestPolicyCmpts();
@@ -2595,7 +2605,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         return (IValidationRule)selectDialog.getResult()[0];
                     }
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
             }
             return null;
@@ -2604,6 +2616,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * Add a new link based an the given test case type association.
          */
+        // CSOFF: CyclomaticComplexity
         private void addAssociation(final TestCaseTypeAssociation associationType) {
             String[] selectedTargetsQualifiedNames = null;
             boolean chooseProductCmpts = false;
@@ -2715,6 +2728,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             });
         }
+        // CSON: CyclomaticComplexity
 
         /**
          * Add a test rule the test case
@@ -2843,7 +2857,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         public void run(IStructuredSelection selection) {
             try {
                 changeProductCmpt();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -2869,7 +2885,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         public void run(IStructuredSelection selection) {
             try {
                 resetProductCmptToEmpty();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -2909,7 +2927,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 } else {
                     throw new RuntimeException("Move action not supported for: " + firstElement.getClass().getName()); //$NON-NLS-1$
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

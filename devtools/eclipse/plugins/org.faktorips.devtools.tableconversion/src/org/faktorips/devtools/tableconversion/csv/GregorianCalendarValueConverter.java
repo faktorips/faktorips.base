@@ -36,7 +36,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
             GregorianCalendar cal = (GregorianCalendar)datatype.getValue(ipsValue);
             Date date = cal.getTime();
 
-            String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+            String datePattern = getTableFormat().getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
             return DateFormatUtils.format(date, datePattern);
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
@@ -63,7 +63,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
                 // generic error message is created outside of this block
             }
             try {
-                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+                String dateFormat = getTableFormat().getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
                 Date parseDate = DateUtils.parseDate((String)externalDataValue, dateFormat);
                 return DateUtil.dateToIsoDateString(parseDate);
             } catch (ParseException ignored) {

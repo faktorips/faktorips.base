@@ -45,6 +45,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public Image getImage(Object element) {
         if (element instanceof ComponentNode node) {
@@ -95,6 +96,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
         }
         return null;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public String getText(Object element) {

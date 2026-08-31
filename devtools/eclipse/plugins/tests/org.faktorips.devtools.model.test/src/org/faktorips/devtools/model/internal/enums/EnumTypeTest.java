@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -65,11 +65,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         genderEnumType.setSuperEnumType("OtherEnumTypeName");
         assertThat(genderEnumType.getSuperEnumType(), is("OtherEnumTypeName"));
 
-        try {
-            genderEnumType.setSuperEnumType(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.setSuperEnumType(null));
     }
 
     @Test
@@ -225,11 +222,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetEnumAttribute() {
-        try {
-            genderEnumType.getEnumAttribute(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.getEnumAttribute(null));
 
         IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
         inheritedEnumAttribute.setInherited(true);
@@ -242,11 +236,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetEnumAttributeIncludeSupertypeCopies() {
-        try {
-            genderEnumType.getEnumAttributeIncludeSupertypeCopies(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.getEnumAttributeIncludeSupertypeCopies(null));
 
         IEnumAttribute inheritedEnumAttribute = genderEnumType.newEnumAttribute();
         inheritedEnumAttribute.setInherited(true);
@@ -261,17 +252,13 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindEnumAttributeIncludeSupertypeOriginals() {
-        try {
-            genderEnumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject, null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class,
+                () -> genderEnumType.findEnumAttributeIncludeSupertypeOriginals(ipsProject, null));
 
-        try {
-            genderEnumType.findEnumAttributeIncludeSupertypeOriginals(null, GENDER_ENUM_ATTRIBUTE_ID_NAME);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType
+                .findEnumAttributeIncludeSupertypeOriginals(null, GENDER_ENUM_ATTRIBUTE_ID_NAME));
 
         genderEnumType.setAbstract(true);
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
@@ -332,11 +319,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertThat(attributeValues.get(0).findEnumAttribute(ipsProject),
                 is(paymentMode.getEnumLiteralNameAttribute()));
 
-        try {
-            attributeValues.get(0).findEnumAttribute(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> attributeValues.get(0).findEnumAttribute(null));
     }
 
     @Test
@@ -352,22 +336,16 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindEnumType() {
-        try {
-            genderEnumType.findEnumType(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.findEnumType(null));
 
         assertThat(genderEnumType.findEnumType(ipsProject), is(genderEnumType));
     }
 
     @Test
     public void testMoveEnumAttributeUp() {
-        try {
-            genderEnumType.moveEnumAttribute(null, true);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.moveEnumAttribute(null, true));
 
         IEnumAttribute newEnumAttribute = genderEnumType.newEnumAttribute();
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
@@ -443,11 +421,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testMoveEnumAttributeDown() {
-        try {
-            genderEnumType.moveEnumAttribute(null, false);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.moveEnumAttribute(null, false));
 
         IEnumAttribute newEnumAttribute = genderEnumType.newEnumAttribute();
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
@@ -887,11 +862,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         assertThat(subEnumType.findSuperEnumType(ipsProject), is(genderEnumType));
 
-        try {
-            subEnumType.findSuperEnumType(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> subEnumType.findSuperEnumType(null));
     }
 
     @Test
@@ -1004,11 +976,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindAllSuperEnumTypes() {
-        try {
-            genderEnumType.findAllSuperEnumTypes(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.findAllSuperEnumTypes(null));
 
         assertThat(genderEnumType.findAllSuperEnumTypes(ipsProject).size(), is(0));
 
@@ -1053,11 +1022,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
         assertThat(rootEnumType.isSubEnumTypeOf(null, null), is(false));
         assertThat(rootEnumType.isSubEnumTypeOf(null, ipsProject), is(false));
-        try {
-            assertThat(level1EnumType.isSubEnumTypeOf(rootEnumType, null), is(false));
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> level1EnumType.isSubEnumTypeOf(rootEnumType, null));
 
         assertThat(rootEnumType.isSubEnumTypeOf(rootEnumType, ipsProject), is(false));
         assertThat(rootEnumType.isSubEnumTypeOf(level1EnumType, ipsProject), is(false));
@@ -1138,11 +1104,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindInheritEnumAttributeCandidates() {
-        try {
-            genderEnumType.findInheritEnumAttributeCandidates(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumType.findInheritEnumAttributeCandidates(null));
 
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
         subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
@@ -1175,14 +1138,12 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertThat(inheritedName, is(notNullValue()));
         assertThat(inheritedName.isInherited(), is(true));
 
-        try {
-            IEnumAttribute notInSupertypeHierarchyAttribute = paymentMode.newEnumAttribute();
-            notInSupertypeHierarchyAttribute.setName("foo");
-            notInSupertypeHierarchyAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-            subEnumType.inheritEnumAttributes(Arrays.asList(notInSupertypeHierarchyAttribute));
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        IEnumAttribute notInSupertypeHierarchyAttribute = paymentMode.newEnumAttribute();
+        notInSupertypeHierarchyAttribute.setName("foo");
+        notInSupertypeHierarchyAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        // expected exception because the attribute is not in the supertype hierarchy
+        assertThrows(IllegalArgumentException.class,
+                () -> subEnumType.inheritEnumAttributes(Arrays.asList(notInSupertypeHierarchyAttribute)));
     }
 
     @Test

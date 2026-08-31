@@ -132,7 +132,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         emptyRangeCheckbox.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         emptyRangeCheckboxField = new CheckboxField(emptyRangeCheckbox);
         emptyRangeCheckboxField.addChangeListener(e -> {
-            range.setEmpty((Boolean)e.field.getValue());
+            range.setEmpty((Boolean)e.getField().getValue());
             updateUI();
         });
         toolkit.createLabel(workArea, IpsStringUtils.EMPTY);

@@ -55,9 +55,10 @@ public class EnumExportPage extends IpsObjectExportPage {
         return toolkit.createEnumRefControl(getIpsProject(), parent, true, false);
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     protected void validateObjectToExport() {
-        if (exportedIpsObjectControl.getText().length() == 0) {
+        if (getExportedIpsObjectControl().getText().length() == 0) {
             setErrorMessage(Messages.EnumExportPage_msgEnumEmpty);
             return;
         }
@@ -104,6 +105,7 @@ public class EnumExportPage extends IpsObjectExportPage {
             setErrorMessage(text);
         }
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     protected void setDefaults(IResource selectedResource) {
@@ -145,11 +147,11 @@ public class EnumExportPage extends IpsObjectExportPage {
     private void setEnum(IEnumValueContainer enumContainer) {
         if (enumContainer == null) {
             setIpsProject(null);
-            exportedIpsObjectControl.updateSelection(null);
+            getExportedIpsObjectControl().updateSelection(null);
             return;
         }
         setIpsProject(enumContainer.getIpsProject());
-        exportedIpsObjectControl.updateSelection(enumContainer.getQualifiedNameType());
+        getExportedIpsObjectControl().updateSelection(enumContainer.getQualifiedNameType());
     }
 
     /**
@@ -158,6 +160,6 @@ public class EnumExportPage extends IpsObjectExportPage {
      * @return The currently selected {@link IEnumValueContainer}
      */
     public IEnumValueContainer getEnum() {
-        return ((EnumRefControl)exportedIpsObjectControl).findEnum();
+        return ((EnumRefControl)getExportedIpsObjectControl()).findEnum();
     }
 }

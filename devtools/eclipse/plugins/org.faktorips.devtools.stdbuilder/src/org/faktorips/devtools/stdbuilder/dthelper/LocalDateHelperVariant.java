@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.dthelper;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Supported variants of helpers for local date datatypes (
@@ -21,7 +21,7 @@ public enum LocalDateHelperVariant {
     JAVA8;
 
     public static LocalDateHelperVariant fromString(String s) {
-        if (StringUtils.equalsIgnoreCase(JAVA8.name(), s)) {
+        if (Strings.CI.equals(JAVA8.name(), s)) {
             return JAVA8;
         }
         return JODA;

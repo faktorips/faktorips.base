@@ -78,8 +78,8 @@ public class IpsTestProgressBar extends Canvas {
         GC gc = new GC(this);
         setStatusColor(gc);
         Rectangle rect = getClientArea();
-        startX = Math.max(1, startX);
-        gc.fillRectangle(startX, 1, endX - startX, rect.height - 2);
+        int paintStartX = Math.max(1, startX);
+        gc.fillRectangle(paintStartX, 1, endX - paintStartX, rect.height - 2);
         gc.dispose();
     }
 

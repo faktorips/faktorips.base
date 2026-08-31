@@ -39,7 +39,9 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
             packagePage = createFirstPage(selection);
             addPage(packagePage);
             createAdditionalPages();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -64,7 +66,9 @@ public class NewIpsPackageWizard extends Wizard implements INewWizard {
             }
             path += packagePage.getIpsPackageName();
             pack.createSubPackage(path, true, null);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;

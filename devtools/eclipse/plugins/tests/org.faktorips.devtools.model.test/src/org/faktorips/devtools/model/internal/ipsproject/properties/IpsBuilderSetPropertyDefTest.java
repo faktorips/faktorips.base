@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
@@ -37,7 +37,6 @@ import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -147,12 +146,8 @@ public class IpsBuilderSetPropertyDefTest {
         assertNotNull(propertyDef.validateValue(null, "hallo"));
         assertNull(propertyDef.validateValue(null, "1"));
 
-        try {
-            propertyDef.parseValue("hallo");
-            fail();
-        } catch (Exception e) {
-        }
-
+        // expected exception for an invalid value
+        assertThrows(Exception.class, () -> propertyDef.parseValue("hallo"));
     }
 
     @Test

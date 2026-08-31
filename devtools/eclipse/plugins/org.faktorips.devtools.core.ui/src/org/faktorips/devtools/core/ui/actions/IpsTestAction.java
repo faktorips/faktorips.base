@@ -77,6 +77,7 @@ public class IpsTestAction extends IpsAction {
     /**
      * Adds all test path elements depending on the given object
      */
+    // CSOFF: CyclomaticComplexity
     private IIpsPackageFragmentRoot addPathElementFromObject(List<String> pathElements, Object object)
             throws IpsException, CoreException {
 
@@ -121,6 +122,7 @@ public class IpsTestAction extends IpsAction {
         }
         return root;
     }
+    // CSON: CyclomaticComplexity
 
     private void addElement(List<String> pathElements, IIpsPackageFragmentRoot root, String name) {
         if (root.exists()) {
@@ -129,6 +131,7 @@ public class IpsTestAction extends IpsAction {
         }
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public void run(IStructuredSelection selection) {
         try {
@@ -187,6 +190,7 @@ public class IpsTestAction extends IpsAction {
             return;
         }
     }
+    // CSON: CyclomaticComplexity
 
     public void run(String tocFile, String testCasePackages) {
         try {

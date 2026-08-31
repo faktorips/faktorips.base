@@ -30,7 +30,9 @@ public class PolicyCmptTypeEditor extends TypeEditor implements IModelDescriptio
     IPolicyCmptType getPolicyCmptType() {
         try {
             return (IPolicyCmptType)getIpsObject();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }

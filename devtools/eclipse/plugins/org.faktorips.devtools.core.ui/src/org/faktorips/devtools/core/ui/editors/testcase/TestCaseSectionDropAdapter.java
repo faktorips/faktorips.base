@@ -8,6 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
+// CSOFF: OuterTypeNumber
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.Arrays;
@@ -76,7 +77,7 @@ import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
  */
 class TestCaseSectionDropAdapter extends ViewerDropAdapter {
 
-    final TestCaseSection testCaseSection;
+    private final TestCaseSection testCaseSection;
 
     private final DropToMoveHelper dropToMoveHelper;
 
@@ -151,6 +152,10 @@ class TestCaseSectionDropAdapter extends ViewerDropAdapter {
         return super.getCurrentTarget();
     }
 
+    TestCaseSection getTestCaseSection() {
+        return testCaseSection;
+    }
+
 }
 
 class DropToMoveHelper {
@@ -217,7 +222,7 @@ class DropToMoveHelper {
     }
 
     private TestCaseSection getTestCaseSection() {
-        return viewerDropAdapter.testCaseSection;
+        return viewerDropAdapter.getTestCaseSection();
     }
 
 }
@@ -406,7 +411,7 @@ class DropToLinkHelper {
     }
 
     private TestCaseSection getTestCaseSection() {
-        return viewerDropAdapter.testCaseSection;
+        return viewerDropAdapter.getTestCaseSection();
     }
 
     private Object getCurrentTarget() {
@@ -414,3 +419,4 @@ class DropToLinkHelper {
     }
 
 }
+// CSON: OuterTypeNumber

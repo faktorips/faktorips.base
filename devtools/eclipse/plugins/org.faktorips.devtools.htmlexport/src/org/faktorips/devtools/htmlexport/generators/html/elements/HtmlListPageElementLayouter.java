@@ -21,16 +21,16 @@ public class HtmlListPageElementLayouter extends AbstractHtmlPageElementLayouter
 
     @Override
     protected void layoutInternal() {
-        if (pageElement.isEmpty()) {
+        if (getPageElement().isEmpty()) {
             return;
         }
 
-        String listBaseHtmlTag = pageElement.isOrdered() ? "ol" : "ul"; //$NON-NLS-1$ //$NON-NLS-2$
-        append(htmlUtil.createHtmlElementOpenTag(listBaseHtmlTag, pageElement.getId(), getClasses()));
+        String listBaseHtmlTag = getPageElement().isOrdered() ? "ol" : "ul"; //$NON-NLS-1$ //$NON-NLS-2$
+        append(getHtmlUtil().createHtmlElementOpenTag(listBaseHtmlTag, getPageElement().getId(), getClasses()));
 
-        layouter.visitSubElements(pageElement);
+        getLayouter().visitSubElements(getPageElement());
 
-        append(htmlUtil.createHtmlElementCloseTag(listBaseHtmlTag));
+        append(getHtmlUtil().createHtmlElementCloseTag(listBaseHtmlTag));
     }
 
 }

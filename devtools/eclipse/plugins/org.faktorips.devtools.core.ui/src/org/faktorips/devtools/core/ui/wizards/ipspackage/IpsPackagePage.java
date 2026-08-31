@@ -267,7 +267,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == sourceFolderField) {
+        if (e.getField() == sourceFolderField) {
             sourceFolderChanged();
         }
 

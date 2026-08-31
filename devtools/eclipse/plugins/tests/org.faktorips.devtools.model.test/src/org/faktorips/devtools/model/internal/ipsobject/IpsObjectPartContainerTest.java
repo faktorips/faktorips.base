@@ -19,17 +19,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -190,10 +188,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         container.setExtPropertyValue("org.foo.prop0", null);
         assertNull(container.getExtPropertyValue("org.foo.prop0"));
 
-        try {
-            container.getExtPropertyValue("undefinedProperty");
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for an undefined ext property
+        assertThrows(IllegalArgumentException.class, () -> container.getExtPropertyValue("undefinedProperty"));
     }
 
     @Test
@@ -221,10 +217,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         assertEquals("blabla", container.getExtPropertyValue("org.foo.prop0"));
 
-        try {
-            container.setExtPropertyValue("undefinedProperty", null);
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for an undefined ext property
+        assertThrows(IllegalArgumentException.class, () -> container.setExtPropertyValue("undefinedProperty", null));
 
         // test veto set
         extProperty0.allowValueToBeSet = false;
@@ -416,13 +410,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertTrue(sb.indexOf("is unknown") != -1);
         assertEquals("value0", container.getExtPropertyValue("org.foo.prop0"));
 
-        // exception if no value (not even null) is available
-        try {
-            container.getExtPropertyValue("org.foo.propInexistent");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // because property doesn't exist
-        }
+        // exception if no value (not even null) is available; because property doesn't exist
+        assertThrows(IllegalArgumentException.class, () -> container.getExtPropertyValue("org.foo.propInexistent"));
     }
 
     @Test
@@ -663,11 +652,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         IpsSrcFile file2 = new IpsSrcFile(null, IpsObjectType.POLICY_CMPT_TYPE.getFileName("file"));
         IIpsObject pdObject2 = new PolicyCmptType(file2);
-        try {
-            pdObject2.setState(memento);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        Memento finalMemento = memento;
+        // expected exception because the memento was created for a different object
+        assertThrows(IllegalArgumentException.class, () -> pdObject2.setState(finalMemento));
     }
 
     @Test
@@ -1183,11 +1170,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetDescriptionTextNullPointerLocale() {
-        try {
-            container.setDescriptionText(null, "foo");
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.setDescriptionText(null, "foo"));
     }
 
     @Test
@@ -1198,11 +1182,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetDescriptionTextNotExistent() {
-        try {
-            container.setDescriptionText(Locale.TAIWAN, "foo");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for a locale that does not exist
+        assertThrows(IllegalArgumentException.class, () -> container.setDescriptionText(Locale.TAIWAN, "foo"));
     }
 
     @Test
@@ -1224,11 +1205,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLabelValueNullPointer() {
-        try {
-            container.getLabelValue(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.getLabelValue(null));
     }
 
     @Test
@@ -1244,11 +1222,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetPluralLabelValueNullPointer() {
-        try {
-            container.getPluralLabelValue(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.getPluralLabelValue(null));
     }
 
     @Test
@@ -1259,11 +1234,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetLabelValueNullPointerLocale() {
-        try {
-            container.setLabelValue(null, "foo");
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.setLabelValue(null, "foo"));
     }
 
     @Test
@@ -1274,11 +1246,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetLabelValueNotExistent() {
-        try {
-            container.setLabelValue(Locale.TAIWAN, "foo");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for a locale that does not exist
+        assertThrows(IllegalArgumentException.class, () -> container.setLabelValue(Locale.TAIWAN, "foo"));
     }
 
     @Test
@@ -1289,11 +1258,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetPluralLabelValueNullPointerLocale() {
-        try {
-            container.setPluralLabelValue(null, "foos");
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.setPluralLabelValue(null, "foos"));
     }
 
     @Test
@@ -1304,11 +1270,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetPluralLabelValueNotExistent() {
-        try {
-            container.setPluralLabelValue(Locale.TAIWAN, "foos");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for a locale that does not exist
+        assertThrows(IllegalArgumentException.class, () -> container.setPluralLabelValue(Locale.TAIWAN, "foos"));
     }
 
     @Test
@@ -1324,11 +1287,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDescriptionNullPointer() {
-        try {
-            container.getDescription(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.getDescription(null));
     }
 
     @Test
@@ -1344,11 +1304,8 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDescriptionTextNullPointer() {
-        try {
-            container.getDescriptionText(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.getDescriptionText(null));
     }
 
     @Test
@@ -1425,21 +1382,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     @Test
     public void testGetCaption() {
         assertEquals("", container.getCaption(Locale.US));
-        try {
-            container.getCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.getCaption(null));
     }
 
     @Test
     public void testGetPluralCaption() {
         assertEquals("", container.getPluralCaption(Locale.US));
-        try {
-            container.getPluralCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null locale
+        assertThrows(NullPointerException.class, () -> container.getPluralCaption(null));
     }
 
     @Test
@@ -1597,7 +1548,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         public void delete() {
-
+            // not needed for this test
         }
 
         @Override
@@ -1625,7 +1576,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         protected void propertiesToXml(Element element) {
-
+            // not needed for this test
         }
 
         @Override
@@ -1635,7 +1586,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         protected void reinitPartCollectionsThis() {
-
+            // not needed for this test
         }
 
         @Override
@@ -1758,7 +1709,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         public void delete() {
-
+            // not needed for this test
         }
 
         @Override
@@ -1786,7 +1737,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         protected void propertiesToXml(Element element) {
-
+            // not needed for this test
         }
 
         @Override
@@ -1796,7 +1747,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         protected void reinitPartCollectionsThis() {
-
+            // not needed for this test
         }
 
         @Override
@@ -1852,7 +1803,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         private static final String TAG = "TestPart";
         private static int counter = 0;
         private final int c = ++counter;
-        private String name = Integer.toString(c);
+        private String partName = Integer.toString(c);
 
         public TestPart(IIpsObjectPartContainer parent, String id) {
             super(parent, id);
@@ -1870,19 +1821,19 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         @Override
         public String getName() {
-            return name;
+            return partName;
         }
 
         @Override
         protected void propertiesToXml(Element element) {
             super.propertiesToXml(element);
-            element.setAttribute(PROPERTY_NAME, name);
+            element.setAttribute(PROPERTY_NAME, partName);
         }
 
         @Override
         protected void initPropertiesFromXml(Element element, String id) {
             super.initPropertiesFromXml(element, id);
-            name = element.getAttribute(PROPERTY_NAME);
+            partName = element.getAttribute(PROPERTY_NAME);
         }
 
     }

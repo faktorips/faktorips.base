@@ -407,22 +407,21 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
         if (type == null) {
             return false;
         }
-        if (project == null) {
-            project = type.getIpsProject();
-        }
+        IIpsProject resolvedProject = project == null ? type.getIpsProject() : project;
         if (isAssociationTarget(type, projectSpecificITypes, types)) {
             return true;
         } else {
             List<IType> associatingTypes = getAssociatingTypes(type, allComponentITypes, types);
             for (IType associatingType : associatingTypes) {
-                List<IType> associationSubtypes = associatingType.findSubtypes(true, false, project);
+                List<IType> associationSubtypes = associatingType.findSubtypes(true, false, resolvedProject);
                 for (IType associationSubtype : associationSubtypes) {
-                    if (associationSubtype.getIpsProject().equals(project)) {
+                    if (associationSubtype.getIpsProject().equals(resolvedProject)) {
                         return true;
                     }
                 }
             }
-            return isAssociated(type.findSupertype(project), projectSpecificITypes, allComponentITypes, project, types);
+            return isAssociated(type.findSupertype(resolvedProject), projectSpecificITypes, allComponentITypes,
+                    resolvedProject, types);
         }
     }
 

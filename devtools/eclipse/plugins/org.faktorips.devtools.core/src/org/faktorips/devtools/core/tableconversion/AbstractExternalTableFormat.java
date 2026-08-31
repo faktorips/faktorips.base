@@ -33,8 +33,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     /**
      * Table specific properties like text/field delimiter chars for CSV, ...
      */
-    public Map<String, String> properties = new HashMap<>();
-
+    private Map<String, String> properties = new HashMap<>();
     /**
      * The human readable name of this external table format.
      */
@@ -74,6 +73,10 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
             return "" + intValue; //$NON-NLS-1$
         }
         return externalDataValue.toString();
+    }
+
+    protected void putProperty(String key, String value) {
+        properties.put(key, value);
     }
 
     @Override

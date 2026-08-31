@@ -19,7 +19,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
@@ -170,15 +169,12 @@ public class ProductAttributeTest {
         try {
             getterField.set(attribute, null);
 
-            try {
-                attribute.getValue(productComponent, effectiveDate);
-                fail("Expected IllegalStateException");
-            } catch (IllegalStateException e) {
-                assertThat(e.getMessage(), containsString("Getter for"));
-                assertThat(e.getMessage(), containsString("ProductXYZ"));
-                assertThat(e.getMessage(), containsString("attr1"));
-                assertThat(e.getMessage(), containsString("is not available"));
-            }
+            IllegalStateException e = assertThrows(IllegalStateException.class,
+                    () -> attribute.getValue(productComponent, effectiveDate));
+            assertThat(e.getMessage(), containsString("Getter for"));
+            assertThat(e.getMessage(), containsString("ProductXYZ"));
+            assertThat(e.getMessage(), containsString("attr1"));
+            assertThat(e.getMessage(), containsString("is not available"));
         } finally {
             getterField.set(attribute, originalGetter);
         }

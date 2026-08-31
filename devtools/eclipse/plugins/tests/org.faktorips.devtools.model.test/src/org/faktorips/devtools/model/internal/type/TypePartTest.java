@@ -134,7 +134,7 @@ public class TypePartTest extends AbstractIpsPluginTest {
 
         @Override
         protected void reinitPartCollectionsThis() {
-
+            // not needed for this test
         }
 
         @Override

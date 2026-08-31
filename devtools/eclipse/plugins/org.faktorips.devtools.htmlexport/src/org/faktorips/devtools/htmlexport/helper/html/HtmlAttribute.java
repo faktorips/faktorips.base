@@ -18,8 +18,8 @@ package org.faktorips.devtools.htmlexport.helper.html;
  * 
  */
 public class HtmlAttribute {
-    String name;
-    String value;
+    private String name;
+    private String value;
 
     public HtmlAttribute(String name, String value) {
         super();

@@ -51,7 +51,9 @@ public abstract class XmlAbstractTestCase {
                 throw new RuntimeException("Can't find resource " + resourceName);
             }
             return getDocumentBuilder().parse(is);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new RuntimeException(e);
         } finally {
             IoUtil.close(is);

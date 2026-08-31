@@ -115,6 +115,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
      * @param callHierarchy a {@link List} which contains the path from the current element to the
      *            source element
      */
+    // CSOFF: CyclomaticComplexity
     Collection<IType> getRootElementsForIType(IType element,
             List<IType> componentList,
             ToChildAssociationType association,
@@ -171,6 +172,7 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
 
         return rootElements;
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     protected List<SubtypeComponentNode> getComponentNodeSubtypeChildren(ComponentNode parent) {

@@ -93,7 +93,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         file = folder.getFile("test.txt");
         file.create(null, true, null);
         failRessource = new WorkspaceRoot(Path.ROOT, null) {
-
+            // not needed for this test
         };
 
     }
@@ -141,6 +141,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertFalse(config.isAllowedResource(failRessource));
     }
 
+    @SuppressWarnings("cast")
     @Test
     public void testIsAllowedResourceType() {
         assertTrue(config.isAllowedResourceType(folder.getClass()));

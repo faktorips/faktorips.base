@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -255,6 +256,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
         verify(querySpy).checkIIPsSrcFileDependencies(anySet(), eq(ipsScrFiles));
         verify(querySpy).addDependencyDetails(anySet(), eq(objectReferencedProductCmpt),
                 eq(dependencyRefProdCmptToObj1));
+        verify(querySpy, atLeastOnce()).getReferenced();
         verifyNoMoreInteractions(querySpy);
     }
 

@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,11 +69,8 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testMoveEnumValuesUp() {
-        try {
-            genderEnumContent.moveEnumValues(null, true);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumContent.moveEnumValues(null, true));
 
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
 
@@ -108,11 +105,8 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testMoveEnumValuesDown() {
-        try {
-            genderEnumContent.moveEnumValues(null, false);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumContent.moveEnumValues(null, false));
 
         IEnumValue newEnumValue = genderEnumContent.newEnumValue();
 

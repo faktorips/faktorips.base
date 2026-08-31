@@ -19,7 +19,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * @author dicker
  */
 public abstract class AbstractPageElementLayouter<T extends IPageElement> implements IPageElementLayouter<T> {
-    protected final T pageElement;
+    private final T pageElement;
 
     protected AbstractPageElementLayouter(T pageElement) {
         this.pageElement = pageElement;

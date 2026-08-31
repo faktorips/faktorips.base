@@ -43,7 +43,7 @@ import org.faktorips.util.ArgumentCheck;
 public class EnumContentGeneralInfoSection extends IpsSection {
 
     /** The label showing the base <code>IEnumType</code>. */
-    Label enumTypeLabel;
+    private Label enumTypeLabel;
 
     /** The <code>IEnumContent</code> the editor is currently editing. */
     private IEnumContent enumContent;

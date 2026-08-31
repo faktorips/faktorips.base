@@ -45,6 +45,7 @@ public class AddIpsNatureAction extends ActionDelegate {
 
     private IJavaProject javaProject = null;
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public void selectionChanged(IAction action, ISelection newSelection) {
         javaProject = null;
@@ -81,6 +82,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             }
         }
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public void runWithEvent(IAction action, Event event) {

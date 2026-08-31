@@ -100,6 +100,7 @@ public class ValidationUtils {
      * @param msgCode the message code to use if a message has to be created
      * @param list the list of messages to add a new one
      */
+    // CSOFF: ParameterNumber
     public static final IIpsObject checkAndGetIpsObjectReference(String objectName,
             IpsObjectType type,
             String propertyDisplayName,
@@ -108,6 +109,7 @@ public class ValidationUtils {
             String msgCode,
             MessageList list,
             IIpsProject ipsProject) {
+        // CSON: ParameterNumber
 
         if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName, part, propertyName, msgCode, list)) {
             return null;

@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -159,12 +159,8 @@ public class IpsBundleEntryTest {
         mockInitDependencies(true);
         doThrow(new IOException()).when(ipsFolderBundle).initBundle();
 
-        try {
-            ipsBundleEntry.initStorage(bundlePath);
-            fail("IOException expected");
-        } catch (IOException e) {
-            assertNull(ipsBundleEntry.getIpsStorage());
-        }
+        assertThrows(IOException.class, () -> ipsBundleEntry.initStorage(bundlePath));
+        assertNull(ipsBundleEntry.getIpsStorage());
     }
 
     @Test
@@ -181,12 +177,8 @@ public class IpsBundleEntryTest {
         mockInitDependencies(false);
         doThrow(new IOException()).when(ipsJarBundle).initBundle();
 
-        try {
-            ipsBundleEntry.initStorage(bundlePath);
-            fail("IOException expected");
-        } catch (IOException e) {
-            assertNull(ipsBundleEntry.getIpsStorage());
-        }
+        assertThrows(IOException.class, () -> ipsBundleEntry.initStorage(bundlePath));
+        assertNull(ipsBundleEntry.getIpsStorage());
     }
 
     private void initStorage() throws IOException {

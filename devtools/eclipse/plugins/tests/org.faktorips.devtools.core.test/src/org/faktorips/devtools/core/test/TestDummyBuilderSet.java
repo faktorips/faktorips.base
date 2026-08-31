@@ -14,4 +14,5 @@ import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
 
 public class TestDummyBuilderSet extends EmptyBuilderSet {
 
+    // dummy subclass, only used to get a distinct builder set type in tests
 }

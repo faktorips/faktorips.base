@@ -54,7 +54,9 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
             if (adapterType.equals(ResourceMapping.class)) {
                 return (T)new IpsElementResourceMapping(ipsElement);
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.log(e);
         }
         return null;

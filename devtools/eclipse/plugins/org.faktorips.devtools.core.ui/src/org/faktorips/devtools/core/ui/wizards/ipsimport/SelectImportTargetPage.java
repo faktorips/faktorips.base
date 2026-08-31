@@ -47,16 +47,17 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 public abstract class SelectImportTargetPage extends WizardPage implements ValueChangeListener {
 
     public static final String PAGE_NAME = "SelectImportTargetPage"; //$NON-NLS-1$
-    protected IResource selectedResource;
-    protected IpsProjectRefControl projectControl;
-    protected TextButtonField projectField;
-    protected Composite pageControl;
 
-    protected IpsObjectRefControl importTargetControl;
-    protected TextButtonField importTargetField;
+    private IResource selectedResource;
+    private IpsProjectRefControl projectControl;
+    private TextButtonField projectField;
+    private Composite pageControl;
+
+    private IpsObjectRefControl importTargetControl;
+    private TextButtonField importTargetField;
 
     // true if the input is validated and errors are displayed in the messages area.
-    protected boolean validateInput = true;
+    private boolean validateInput = true;
 
     /**
      * @param selection The import target type is derived from the given selection if possible.
@@ -92,6 +93,54 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
      */
     public void setIpsProject(IIpsProject project) {
         projectControl.setIpsProject(project);
+    }
+
+    protected IResource getSelectedResource() {
+        return selectedResource;
+    }
+
+    protected Composite getPageControl() {
+        return pageControl;
+    }
+
+    protected void setPageControl(Composite pageControl) {
+        this.pageControl = pageControl;
+    }
+
+    protected IpsProjectRefControl getProjectControl() {
+        return projectControl;
+    }
+
+    protected void setProjectControl(IpsProjectRefControl projectControl) {
+        this.projectControl = projectControl;
+    }
+
+    protected TextButtonField getProjectField() {
+        return projectField;
+    }
+
+    protected void setProjectField(TextButtonField projectField) {
+        this.projectField = projectField;
+    }
+
+    protected IpsObjectRefControl getImportTargetControl() {
+        return importTargetControl;
+    }
+
+    protected void setImportTargetControl(IpsObjectRefControl importTargetControl) {
+        this.importTargetControl = importTargetControl;
+    }
+
+    protected TextButtonField getImportTargetField() {
+        return importTargetField;
+    }
+
+    protected void setImportTargetField(TextButtonField importTargetField) {
+        this.importTargetField = importTargetField;
+    }
+
+    protected void setValidateInput(boolean validateInput) {
+        this.validateInput = validateInput;
     }
 
     /**
@@ -205,7 +254,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == projectField) {
+        if (e.getField() == projectField) {
             projectChanged();
         }
         if (validateInput) {

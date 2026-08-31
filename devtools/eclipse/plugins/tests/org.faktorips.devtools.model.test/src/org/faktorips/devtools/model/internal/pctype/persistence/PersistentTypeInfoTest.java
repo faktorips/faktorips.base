@@ -21,8 +21,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Locale;
 
@@ -215,11 +215,8 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertNotNull(getValidationMessageForDiscriminator(persTypeInfo, DiscriminatorDatatype.INTEGER));
         assertNotNull(getValidationMessageForDiscriminator(persTypeInfo, DiscriminatorDatatype.STRING));
 
-        try {
-            persTypeInfo.setDiscriminatorValue(null);
-            fail();
-        } catch (Exception expected) {
-        }
+        // expected exception for a null discriminator value
+        assertThrows(Exception.class, () -> persTypeInfo.setDiscriminatorValue(null));
     }
 
     private Message getValidationMessageForDiscriminator(IPersistentTypeInfo persTypeInfo,

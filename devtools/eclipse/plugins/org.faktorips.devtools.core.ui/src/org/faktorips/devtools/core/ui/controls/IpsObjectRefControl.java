@@ -60,7 +60,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     /**
      * The {@link IpsObjectType} of the currently selected object.
      */
-    protected IpsObjectType objectType;
+    private IpsObjectType objectType;
 
     private List<IIpsProject> ipsProjects;
 

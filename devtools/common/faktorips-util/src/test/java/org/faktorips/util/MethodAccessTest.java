@@ -11,7 +11,6 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -99,24 +98,17 @@ public class MethodAccessTest {
     public void testInvoke_ThrowsRuntimeExceptionIfMethodDoesNotExist() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "bar");
 
-        try {
-            methodAccess.invoke("that does not exist", this);
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that does not exist"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invoke("that does not exist", this));
+        assertThat(e.getMessage(), containsString("that does not exist"));
     }
 
     @Test
     public void testInvoke_ThrowsRuntimeExceptionIfMethodInvocationFails() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "failing");
 
-        try {
-            methodAccess.invoke("that fails", this);
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that fails"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class, () -> methodAccess.invoke("that fails", this));
+        assertThat(e.getMessage(), containsString("that fails"));
     }
 
     public int failing() {
@@ -127,12 +119,9 @@ public class MethodAccessTest {
     public void testInvoke_ThrowsRuntimeExceptionIfMethodCantBeAccessed() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "cantBeAccessed");
 
-        try {
-            methodAccess.invoke("that can't be accessed", this);
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that can't be accessed"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invoke("that can't be accessed", this));
+        assertThat(e.getMessage(), containsString("that can't be accessed"));
     }
 
     @SuppressWarnings("unused")
@@ -144,38 +133,30 @@ public class MethodAccessTest {
     public void testInvoke_ThrowsClassCastExceptionIfMethodReturnTypeIsIncompatible() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "foo");
 
-        try {
+        ClassCastException e = assertThrows(ClassCastException.class, () -> {
             String bar = methodAccess.invoke("will not be part of the message", this);
             System.out.println(bar);
-            fail("Expected " + ClassCastException.class.getSimpleName());
-        } catch (ClassCastException e) {
-            assertThat(e.getMessage(), containsString("Integer"));
-            assertThat(e.getMessage(), not(containsString("will not be part of the message")));
-        }
+        });
+        assertThat(e.getMessage(), containsString("Integer"));
+        assertThat(e.getMessage(), not(containsString("will not be part of the message")));
     }
 
     @Test
     public void testInvoke_ThrowsRuntimeExceptionNoObjectIsGiven() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "foo");
 
-        try {
-            methodAccess.invoke("is not static", null);
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("is not static"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invoke("is not static", null));
+        assertThat(e.getMessage(), containsString("is not static"));
     }
 
     @Test
     public void testInvoke_ThrowsRuntimeExceptionIfMethodIsStatic() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "fooStatic");
 
-        try {
-            methodAccess.invokeStatic("that is static", this);
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that is static"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invokeStatic("that is static", this));
+        assertThat(e.getMessage(), containsString("that is static"));
     }
 
     @Test
@@ -215,24 +196,17 @@ public class MethodAccessTest {
     public void testInvokeStatic_ThrowsRuntimeExceptionIfMethodDoesNotExist() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "barStatic");
 
-        try {
-            methodAccess.invokeStatic("that does not exist");
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that does not exist"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invokeStatic("that does not exist"));
+        assertThat(e.getMessage(), containsString("that does not exist"));
     }
 
     @Test
     public void testInvokeStatic_ThrowsRuntimeExceptionIfMethodInvocationFails() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "failingStatic");
 
-        try {
-            methodAccess.invokeStatic("that fails");
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that fails"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class, () -> methodAccess.invokeStatic("that fails"));
+        assertThat(e.getMessage(), containsString("that fails"));
     }
 
     public static int failingStatic() {
@@ -243,12 +217,9 @@ public class MethodAccessTest {
     public void testInvokeStatic_ThrowsRuntimeExceptionIfMethodCantBeAccessed() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "cantBeAccessedStatic");
 
-        try {
-            methodAccess.invokeStatic("that can't be accessed");
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that can't be accessed"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invokeStatic("that can't be accessed"));
+        assertThat(e.getMessage(), containsString("that can't be accessed"));
     }
 
     @SuppressWarnings("unused")
@@ -260,26 +231,21 @@ public class MethodAccessTest {
     public void testInvokeStatic_ThrowsClassCastExceptionIfMethodReturnTypeIsIncompatible() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "fooStatic");
 
-        try {
+        ClassCastException e = assertThrows(ClassCastException.class, () -> {
             String bar = methodAccess.invokeStatic("will not be part of the message");
             System.out.println(bar);
-            fail("Expected " + ClassCastException.class.getSimpleName());
-        } catch (ClassCastException e) {
-            assertThat(e.getMessage(), containsString("Integer"));
-            assertThat(e.getMessage(), not(containsString("will not be part of the message")));
-        }
+        });
+        assertThat(e.getMessage(), containsString("Integer"));
+        assertThat(e.getMessage(), not(containsString("will not be part of the message")));
     }
 
     @Test
     public void testInvokeStatic_ThrowsRuntimeExceptionIfMethodNotStatic() {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "foo");
 
-        try {
-            methodAccess.invokeStatic("that is not static");
-            fail("Expected " + RuntimeException.class.getSimpleName());
-        } catch (RuntimeException e) {
-            assertThat(e.getMessage(), containsString("that is not static"));
-        }
+        RuntimeException e = assertThrows(RuntimeException.class,
+                () -> methodAccess.invokeStatic("that is not static"));
+        assertThat(e.getMessage(), containsString("that is not static"));
     }
 
     @Test

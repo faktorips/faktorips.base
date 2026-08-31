@@ -43,6 +43,7 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
         return null;
     }
 
+    // CSOFF: CyclomaticComplexity
     public void copyToClipboard(IStructuredSelection selection, Clipboard clipboard) {
         List<IpsObjectPartState> copiedObjects = new ArrayList<>();
         List<IResource> copiedResources = new ArrayList<>();
@@ -94,5 +95,6 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
                     getTypeArray(copiedObjects, copiedResources, copiedResourceLinks));
         }
     }
+    // CSON: CyclomaticComplexity
 
 }

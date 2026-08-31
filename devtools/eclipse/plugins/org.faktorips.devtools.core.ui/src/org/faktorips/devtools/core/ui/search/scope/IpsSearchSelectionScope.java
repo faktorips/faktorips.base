@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class IpsSearchSelectionScope extends AbstractIpsSearchScope {
 
-    ISelection selection;
+    private ISelection selection;
 
     public IpsSearchSelectionScope(ISelection selection) {
         this.selection = selection;

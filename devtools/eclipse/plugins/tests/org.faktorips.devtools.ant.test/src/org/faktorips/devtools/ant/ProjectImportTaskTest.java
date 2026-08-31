@@ -10,10 +10,9 @@
 
 package org.faktorips.devtools.ant;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -29,14 +28,8 @@ public class ProjectImportTaskTest {
 
         projectimporter.setDir(null);
 
-        try {
-            projectimporter.execute();
-        } catch (BuildException e) {
-            // is expected
-        } catch (NullPointerException e) {
-            fail();
-        }
-
+        // is expected
+        assertThrows(BuildException.class, projectimporter::execute);
     }
 
     @Test
@@ -45,12 +38,8 @@ public class ProjectImportTaskTest {
         ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(getTempDirPath());
 
-        try {
-            projectimporter.execute();
-            fail();
-        } catch (BuildException e) {
-            // expected
-        }
+        // expected
+        assertThrows(BuildException.class, projectimporter::execute);
     }
 
     @Test
@@ -65,14 +54,12 @@ public class ProjectImportTaskTest {
         d.deleteOnExit();
         f.deleteOnExit();
 
-        try {
+        // expected
+        assertThrows(Exception.class, () -> {
             d.mkdir();
             f.createNewFile();
             projectimporter.execute();
-            fail();
-        } catch (BuildException | IOException e) {
-            // expected
-        }
+        });
     }
 
     @Test
@@ -86,13 +73,8 @@ public class ProjectImportTaskTest {
         dir.mkdir();
         dir.deleteOnExit();
 
-        try {
-            projectimporter.execute();
-            fail();
-        } catch (Exception e) {
-            // expected
-        }
-
+        // expected
+        assertThrows(Exception.class, projectimporter::execute);
     }
 
     private String getTempDirPath() {

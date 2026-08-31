@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -161,13 +160,10 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(mainRepository.getExistingProductComponent("inBPc"), is(inBPc));
         assertThat(mainRepository.getExistingProductComponent("basePc"), is(basePc));
 
-        try {
-            mainRepository.getExistingProductComponent("unknown");
-            fail();
-        } catch (ProductCmptNotFoundException e) {
-            assertThat(e.getProductCmptId(), is("unknown"));
-            assertThat(e.getRepositoryName(), is(mainRepository.getName()));
-        }
+        ProductCmptNotFoundException e = assertThrows(ProductCmptNotFoundException.class,
+                () -> mainRepository.getExistingProductComponent("unknown"));
+        assertThat(e.getProductCmptId(), is("unknown"));
+        assertThat(e.getRepositoryName(), is(mainRepository.getName()));
     }
 
     @Test
@@ -189,25 +185,20 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(mainRepository.getExistingProductComponentGeneration("inBPc", effectiveDate), is(inBPcGen));
         assertThat(mainRepository.getExistingProductComponentGeneration("basePc", effectiveDate), is(basePcGen));
 
-        try {
-            mainRepository.getExistingProductComponentGeneration("unknown", effectiveDate);
-            fail();
-        } catch (ProductCmptGenerationNotFoundException e) {
-            assertThat(e.getRepositoryName(), is(mainRepository.getName()));
-            assertThat(e.getProductCmptId(), is("unknown"));
-            assertThat(e.getEffetiveDate(), is(effectiveDate));
-            assertThat(e.productCmptWasFound(), is(false));
-        }
+        ProductCmptGenerationNotFoundException e1 = assertThrows(ProductCmptGenerationNotFoundException.class,
+                () -> mainRepository.getExistingProductComponentGeneration("unknown", effectiveDate));
+        assertThat(e1.getRepositoryName(), is(mainRepository.getName()));
+        assertThat(e1.getProductCmptId(), is("unknown"));
+        assertThat(e1.getEffetiveDate(), is(effectiveDate));
+        assertThat(e1.productCmptWasFound(), is(false));
 
-        try {
-            mainRepository.getExistingProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1));
-            fail();
-        } catch (ProductCmptGenerationNotFoundException e) {
-            assertThat(e.getRepositoryName(), is(mainRepository.getName()));
-            assertThat(e.getProductCmptId(), is("mainPc"));
-            assertThat(e.getEffetiveDate(), is(new GregorianCalendar(2000, 0, 1)));
-            assertThat(e.productCmptWasFound(), is(true));
-        }
+        ProductCmptGenerationNotFoundException e2 = assertThrows(ProductCmptGenerationNotFoundException.class,
+                () -> mainRepository.getExistingProductComponentGeneration("mainPc",
+                        new GregorianCalendar(2000, 0, 1)));
+        assertThat(e2.getRepositoryName(), is(mainRepository.getName()));
+        assertThat(e2.getProductCmptId(), is("mainPc"));
+        assertThat(e2.getEffetiveDate(), is(new GregorianCalendar(2000, 0, 1)));
+        assertThat(e2.productCmptWasFound(), is(true));
     }
 
     @Test
@@ -282,7 +273,6 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(result.get(0), is(basePc));
     }
 
-    @SuppressWarnings("removal")
     @Test
     public void testGetAllTableIds() {
         TestTable testTable2 = new TestTable("t2");
@@ -404,12 +394,7 @@ public class AbstractRuntimeRepositoryTest {
         suite = (IpsTestSuite)mainRepository.getIpsTest("unknown");
         assertThat(suite.size(), is(0));
 
-        try {
-            mainRepository.getIpsTest(null);
-            fail();
-        } catch (Exception e) {
-            // OK
-        }
+        assertThrows(Exception.class, () -> mainRepository.getIpsTest(null));
     }
 
     @Test
@@ -568,13 +553,8 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(values.get(1), is(lookup.value2));
 
         // test if list is unmodifiable
-        try {
-            values.add(new TestEnumValue("value3"));
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // OK
-        }
-
+        List<TestEnumValue> finalValues = values;
+        assertThrows(UnsupportedOperationException.class, () -> finalValues.add(new TestEnumValue("value3")));
     }
 
     @IpsTableStructure(name = "tables.TestTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = { "company",

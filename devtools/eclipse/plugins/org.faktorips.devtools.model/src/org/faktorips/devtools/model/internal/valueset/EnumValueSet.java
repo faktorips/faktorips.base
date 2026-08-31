@@ -444,6 +444,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
     public int compareTo(IValueSet o) {
         if (o.isEnum()) {
             IEnumValueSet otherEnum = (IEnumValueSet)o;

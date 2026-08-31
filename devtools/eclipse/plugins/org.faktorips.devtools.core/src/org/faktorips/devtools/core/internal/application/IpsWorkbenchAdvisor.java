@@ -12,11 +12,8 @@ package org.faktorips.devtools.core.internal.application;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.Arrays;
 
 import org.eclipse.core.internal.registry.ExtensionRegistry;
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -270,23 +267,6 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
             throw new IpsException("Can't remove Java Builder", e);
         }
         registry.removeExtension(jdtJavabuilder, masterToken);
-    }
-
-    private void removeJavaBuilderFromProjects() {
-        var workspace = ResourcesPlugin.getWorkspace();
-        for (var project : workspace.getRoot().getProjects()) {
-            try {
-                var description = project.getDescription();
-                var buildSpec = description.getBuildSpec();
-                buildSpec = Arrays.stream(buildSpec)
-                        .filter(s -> !s.getBuilderName().equals("org.eclipse.jdt.core.javabuilder"))
-                        .toArray(ICommand[]::new);
-                description.setBuildSpec(buildSpec);
-                project.setDescription(description, IResource.NONE, null);
-            } catch (CoreException e) {
-                throw new IpsException(e);
-            }
-        }
     }
 
     @Override

@@ -105,6 +105,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         return validateIpsObjectNameInternal(type, name, false);
     }
 
+    // CSOFF: CyclomaticComplexity
     private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck) {
         MessageList result = new MessageList();
 
@@ -137,6 +138,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         });
         return result;
     }
+    // CSON: CyclomaticComplexity
 
     private MessageList validateNameForPolicyCmptType(String name, boolean qualifiedCheck) {
         return validateJavaTypeName(name, qualifiedCheck);

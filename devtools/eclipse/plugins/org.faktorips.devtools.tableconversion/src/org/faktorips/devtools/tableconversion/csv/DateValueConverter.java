@@ -34,10 +34,10 @@ public class DateValueConverter extends AbstractValueConverter {
         }
         try {
             Date date = (Date)datatype.getValue(ipsValue);
-            if (tableFormat == null) {
+            if (getTableFormat() == null) {
                 return DateUtil.dateToIsoDateString(date);
             }
-            String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+            String datePattern = getTableFormat().getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
             return DateFormatUtils.format(date, datePattern);
             // CSOFF: Illegal Catch
         } catch (RuntimeException e) {
@@ -58,7 +58,7 @@ public class DateValueConverter extends AbstractValueConverter {
         }
         if (externalDataValue instanceof String s) {
             try {
-                String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
+                String dateFormat = getTableFormat().getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
                 Date parseDate = DateUtils.parseDate(s, dateFormat);
                 return DateUtil.dateToIsoDateString(parseDate);
                 // CSOFF: Empty Statement

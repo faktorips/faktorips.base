@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,23 +25,23 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 /**
  * Abstract class for ReferenceSearches in the Faktor-IPS object model. Subclasses are used with the
  * eclipse search ui:
- * 
+ *
  * <pre>
  * <code>
  * NewSearchUI.activateSearchResultView();
  * NewSearchUI.runQueryInBackground(ISearchQuery query);
  * </code>
  * </pre>
- * 
+ *
  * Subclasses must implement the abstract methods <code>findReferences()</code> and
  * <code>getDataForResult(IIpsElement object)</code>.
- * 
+ *
  * @author Stefan Widmaier
  */
 public abstract class ReferenceSearchQuery implements ISearchQuery {
 
-    protected ReferenceSearchResult result;
-    protected IIpsObject referenced;
+    private ReferenceSearchResult result;
+    private IIpsObject referenced;
 
     public ReferenceSearchQuery(IIpsObject referenced) {
         this.referenced = referenced;
@@ -104,6 +104,10 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
     public String getReferencedName() {
         return referenced.getName();
+    }
+
+    protected IIpsObject getReferenced() {
+        return referenced;
     }
 
     @Override

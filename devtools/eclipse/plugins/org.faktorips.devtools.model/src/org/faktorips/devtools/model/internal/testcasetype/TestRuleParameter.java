@@ -79,8 +79,8 @@ public class TestRuleParameter extends TestParameter implements ITestRuleParamet
     public void setTestParameterType(TestParameterType testParameterType) {
         // a test rule parameter supports only input type
         ArgumentCheck.isTrue(testParameterType.equals(TestParameterType.EXPECTED_RESULT));
-        TestParameterType oldType = type;
-        type = testParameterType;
+        TestParameterType oldType = getTestParameterType();
+        setType(testParameterType);
         valueChanged(oldType, testParameterType);
     }
 

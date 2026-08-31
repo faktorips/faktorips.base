@@ -24,10 +24,10 @@ public class HtmlImagePageElementLayouter extends AbstractHtmlPageElementLayoute
 
     @Override
     protected void layoutInternal() {
-        String path = layouter.getResourcePath() + "/images/" + pageElement.getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
-        layouter.addLayoutResource(new LayoutResource(path, new ImageUtil().convertImageDataToByteArray(
-                pageElement.getImageData(), SWT.IMAGE_PNG)));
+        String path = getLayouter().getResourcePath() + "/images/" + getPageElement().getFileName() + ".png"; //$NON-NLS-1$ //$NON-NLS-2$
+        getLayouter().addLayoutResource(new LayoutResource(path, new ImageUtil().convertImageDataToByteArray(
+                getPageElement().getImageData(), SWT.IMAGE_PNG)));
 
-        append(htmlUtil.createImage(layouter.getPathToRoot() + path, pageElement.getTitle()));
+        append(getHtmlUtil().createImage(getLayouter().getPathToRoot() + path, getPageElement().getTitle()));
     }
 }

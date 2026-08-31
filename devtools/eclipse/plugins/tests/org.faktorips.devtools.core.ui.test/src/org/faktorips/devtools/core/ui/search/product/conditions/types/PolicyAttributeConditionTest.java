@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -91,12 +91,7 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
 
         assertTrue(condition.hasValueSet());
 
-        try {
-            condition.getAllowedValues(attribut);
-            fail();
-        } catch (Exception e) {
-            // nix
-        }
+        assertThrows(Exception.class, () -> condition.getAllowedValues(attribut));
 
         assertEquals(integerDatatype, condition.getValueDatatype(attribut));
         assertEquals(valueSet, condition.getValueSet(attribut));

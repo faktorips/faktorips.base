@@ -56,7 +56,7 @@ import org.faktorips.util.ArgumentCheck;
 public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage implements ValueChangeListener {
 
     // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
+    private boolean validateInput = true;
 
     // edit controls
     private IpsPckFragmentRootRefControl sourceFolderControl;
@@ -284,13 +284,13 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
 
     @Override
     public final void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == sourceFolderField) {
+        if (e.getField() == sourceFolderField) {
             sourceFolderChanged();
         }
-        if (e.field == packageField) {
+        if (e.getField() == packageField) {
             packageChanged();
         }
-        if (e.field == nameField) {
+        if (e.getField() == nameField) {
             nameChanged();
         }
         try {
@@ -403,6 +403,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      *
      * @throws IpsException in case of exception
      */
+    // CSOFF: CyclomaticComplexity
     protected void validateName() {
         if (getIpsProject() == null) {
             return;
@@ -462,6 +463,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
             setErrorMessage(msg.toString());
         }
     }
+    // CSON: CyclomaticComplexity
 
     private IIpsSrcFile findExistingIpsSrcFile() {
         IIpsSrcFile file = null;

@@ -60,15 +60,16 @@ public abstract class AbstractTextField<T> extends DefaultEditField<T> {
     public void setText(String newText) {
         immediatelyNotifyListener = true;
         try {
-            if (newText == null) {
+            String resolvedText = newText;
+            if (resolvedText == null) {
                 // AbstractNumberFormats call this method with null values
                 if (supportsNullStringRepresentation()) {
-                    newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                    resolvedText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                 } else {
-                    newText = ""; //$NON-NLS-1$
+                    resolvedText = ""; //$NON-NLS-1$
                 }
             }
-            text.setText(newText);
+            text.setText(resolvedText);
         } finally {
             immediatelyNotifyListener = false;
         }

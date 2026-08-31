@@ -105,6 +105,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
         return updatePresentation((Drawable)display, hoverInfo, presentation, maxWidth, maxHeight);
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public String updatePresentation(Drawable drawable,
             String hoverInfo,
@@ -177,6 +178,7 @@ public class HTMLTextPresenter implements DefaultInformationControl.IInformation
             gc.dispose();
         }
     }
+    // CSON: CyclomaticComplexity
 
     private String trim(StringBuilder sb, TextPresentation presentation) {
         int length = sb.length();

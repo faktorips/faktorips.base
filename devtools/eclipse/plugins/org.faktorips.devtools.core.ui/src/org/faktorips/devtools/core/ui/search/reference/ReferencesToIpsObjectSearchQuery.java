@@ -37,7 +37,7 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
     @Override
     protected IIpsElement[] findReferences() {
         Set<IIpsElement> result = new LinkedHashSet<>();
-        IIpsProject[] referencingProjects = referenced.getIpsProject().findReferencingProjectLeavesOrSelf();
+        IIpsProject[] referencingProjects = getReferenced().getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject referencingProject : referencingProjects) {
             Set<IIpsElement> foundResults = findReferencingIpsObjTypes(referencingProject);
             result.addAll(foundResults);
@@ -57,8 +57,8 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
             IIpsObject object = iIpsSrcFile.getIpsObject();
             IDependency[] dependencies = object.dependsOn();
             for (IDependency dependency : dependencies) {
-                if (dependency.getTarget().equals(referenced.getQualifiedNameType())
-                        || dependency.getTarget().equals(referenced.getQualifiedName())) {
+                if (dependency.getTarget().equals(getReferenced().getQualifiedNameType())
+                        || dependency.getTarget().equals(getReferenced().getQualifiedName())) {
                     fillResultSet(resultSet, object, dependency);
                 }
             }

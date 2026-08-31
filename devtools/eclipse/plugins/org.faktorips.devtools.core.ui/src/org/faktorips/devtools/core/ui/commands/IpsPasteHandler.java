@@ -163,7 +163,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
                     }
                 }
                 return newParts;
+                // CSOFF: IllegalCatch
             } catch (RuntimeException e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -285,7 +287,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
                     showPasteNotSupportedError();
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return result;
@@ -311,7 +315,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
                     showPasteNotSupportedError();
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return result;
@@ -322,14 +328,15 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * resource links inside the clipboard an empty array will ne returned. If the linked object
      * wasn't found then the object will be ignored (not returned).
      */
+    // CSOFF: CyclomaticComplexity
     public Object[] getObjectsFromResourceLinks(String resourceLinks) {
         if (resourceLinks == null || !resourceLinks.startsWith(ARCHIVE_LINK)) {
             // no resource links
             return EMPTY_IPS_OBJECT_ARRAY;
         }
-        resourceLinks = resourceLinks.substring(ARCHIVE_LINK.length(), resourceLinks.length());
+        String remainingResourceLinks = resourceLinks.substring(ARCHIVE_LINK.length(), resourceLinks.length());
 
-        StringTokenizer tokenizer = new StringTokenizer(resourceLinks, ","); //$NON-NLS-1$
+        StringTokenizer tokenizer = new StringTokenizer(remainingResourceLinks, ","); //$NON-NLS-1$
         int count = tokenizer.countTokens();
         List<Object> result = new ArrayList<>(1);
         List<String> links = new ArrayList<>(count);
@@ -372,12 +379,15 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
                         result.add(packageFrgmt);
                     }
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.log(e);
             }
         }
         return result.toArray();
     }
+    // CSON: CyclomaticComplexity
 
     protected String getContentsOfIpsObject(IIpsObject ipsObject) {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
@@ -478,21 +488,22 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         NewResourceNameValidator validator = new NewResourceNameValidator(targetPath, resourceType, extension,
                 sourceIpsSrcFile);
         int doCopy = Window.OK;
-        boolean nameChangeRequired = validator.isValid(nameWithOrWithoutExtension) != null;
+        String currentName = nameWithOrWithoutExtension;
+        boolean nameChangeRequired = validator.isValid(currentName) != null;
         if (nameChangeRequired) {
-            String suggestedName = validator.getValidResourceName(nameWithOrWithoutExtension);
-            nameWithOrWithoutExtension = suggestedName;
+            String suggestedName = validator.getValidResourceName(currentName);
+            currentName = suggestedName;
 
             // if force is true don't show dialog (could be true for automated testing purposes)
             if (!forceUseNameSuggestionIfFileExists) {
                 dialogWasDisplayed = true;
                 suggestedName += showExtension ? extension : ""; //$NON-NLS-1$
                 InputDialog dialog = new InputDialog(shell, Messages.IpsPasteAction_titleNamingConflict, NLS.bind(
-                        Messages.IpsPasteAction_msgNamingConflict, nameWithOrWithoutExtension), suggestedName,
+                        Messages.IpsPasteAction_msgNamingConflict, currentName), suggestedName,
                         validator);
                 dialog.setBlockOnOpen(true);
                 doCopy = dialog.open();
-                nameWithOrWithoutExtension = dialog.getValue();
+                currentName = dialog.getValue();
                 if (doCopy != Window.OK) {
                     return null;
                 }
@@ -500,9 +511,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         }
         if (showExtension && dialogWasDisplayed) {
             // the extension was already shown in the dialog
-            return nameWithOrWithoutExtension;
+            return currentName;
         } else {
-            return nameWithOrWithoutExtension + extension;
+            return currentName + extension;
         }
     }
 
@@ -591,7 +602,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             try {
                 IPath destination = targetPath.append(newName);
                 resource.copy(destination, true, null);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.showErrorDialog(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
                         Messages.IpsPasteAction_cannot_copy, e));
             }

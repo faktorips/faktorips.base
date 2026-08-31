@@ -105,7 +105,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     protected void valueChangedExtension(FieldValueChangedEvent e) {
         super.valueChangedExtension(e);
 
-        if (e.field == policyCmptTypeField) {
+        if (e.getField() == policyCmptTypeField) {
             IPolicyCmptType policyCmptType = getPolicyCmptType();
             if (policyCmptType != null) {
                 setAbstract(policyCmptType.isAbstract());

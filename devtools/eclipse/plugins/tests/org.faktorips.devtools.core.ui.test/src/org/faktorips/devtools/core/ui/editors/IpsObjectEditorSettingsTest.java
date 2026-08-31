@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.editors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,17 +66,11 @@ public class IpsObjectEditorSettingsTest extends AbstractIpsPluginTest {
         settings.put(srcFile, "KEY1", null);
         assertNull(settings.get(srcFile, "KEY1"));
 
-        try {
-            settings.put(srcFile, null, "");
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null key
+        assertThrows(NullPointerException.class, () -> settings.put(srcFile, null, ""));
 
-        try {
-            settings.put(srcFile, "KEY CONTAINGING A BLANK", "");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for a key containing a blank
+        assertThrows(IllegalArgumentException.class, () -> settings.put(srcFile, "KEY CONTAINGING A BLANK", ""));
     }
 
     @Test

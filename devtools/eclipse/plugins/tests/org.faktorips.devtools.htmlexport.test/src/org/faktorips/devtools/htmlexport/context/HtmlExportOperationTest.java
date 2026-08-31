@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.context;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -29,11 +30,8 @@ public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
     @Test
     public void testConstructorParameters() {
 
-        try {
-            new HtmlExportOperation(null);
-            fail("fehlende DocumentationContext nicht moniert");
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for a missing DocumentationContext
+        assertThrows(IllegalArgumentException.class, () -> new HtmlExportOperation(null));
         new HtmlExportOperation(context);
     }
 

@@ -276,7 +276,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         valueSetTypeField = new StringValueComboField(valueSetTypesCombo);
         valueSetTypeField.addChangeListener(e -> {
-            String selectedText = e.field.getText();
+            String selectedText = e.getField().getText();
             ValueSetType newValueSetType = ValueSetType.getValueSetTypeByName(selectedText);
             changeValueSetType(newValueSetType);
         });
@@ -294,7 +294,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         concreteValueSetField = new CheckboxField(concreteValueSetCheckbox);
         updateConcreteValueSetCheckbox();
         concreteValueSetField.addChangeListener(e -> {
-            boolean checked = ((Boolean)e.field.getValue());
+            boolean checked = ((Boolean)e.getField().getValue());
             getValueSet().setAbstract(!checked);
             updateUI();
         });

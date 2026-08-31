@@ -609,6 +609,7 @@ public class TestCase extends IpsObject implements ITestCase {
      *
      * @throws IpsException if an error occurs while searching for the object.
      */
+    // CSOFF: CyclomaticComplexity
     private ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(ITestPolicyCmpt testPolicyCmptBase,
             ITestPolicyCmptLink link,
             IIpsProject ipsProject) {
@@ -662,6 +663,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
         return policyCmptTypeParam;
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * Removes the given test parameter object from the parameter list
@@ -720,14 +722,15 @@ public class TestCase extends IpsObject implements ITestCase {
      */
     private ITestPolicyCmpt searchChildTestPolicyCmpt(ITestPolicyCmpt pc, TestCaseHierarchyPath path) {
         String searchedPath = path.toString();
-        while (pc != null && path.hasNext()) {
+        ITestPolicyCmpt currentPc = pc;
+        while (currentPc != null && path.hasNext()) {
             boolean found = false;
             String currElem = path.next();
 
-            ITestPolicyCmptLink[] prs = pc.getTestPolicyCmptLinks(currElem);
+            ITestPolicyCmptLink[] prs = currentPc.getTestPolicyCmptLinks(currElem);
 
             currElem = path.next();
-            pc = null;
+            currentPc = null;
             for (ITestPolicyCmptLink link : prs) {
                 ITestPolicyCmpt pcTarget = link.findTarget();
                 if (pcTarget == null) {
@@ -742,11 +745,11 @@ public class TestCase extends IpsObject implements ITestCase {
                                         MessageFormat.format(Messages.TestCase_Error_MoreThanOneObject, searchedPath)));
                     }
                     found = true;
-                    pc = pcTarget;
+                    currentPc = pcTarget;
                 }
             }
         }
-        return pc;
+        return currentPc;
     }
 
     @Override
@@ -758,6 +761,7 @@ public class TestCase extends IpsObject implements ITestCase {
         String newUniqueLabel = uniqueLabel;
         if (newTestPolicyCmpt.isRoot()) {
             ITestPolicyCmpt[] testPolicyCmpts = getTestPolicyCmpts();
+            // CSOFF: ModifiedControlVariable
             for (int i = 0; i < testPolicyCmpts.length; i++) {
                 ITestPolicyCmpt cmpt = testPolicyCmpts[i];
                 if (newUniqueLabel.equals(cmpt.getName()) && !cmpt.equals(newTestPolicyCmpt)) {
@@ -766,6 +770,7 @@ public class TestCase extends IpsObject implements ITestCase {
                     i = -1;
                 }
             }
+            // CSON: ModifiedControlVariable
         } else {
             ITestPolicyCmpt parent = newTestPolicyCmpt.getParentTestPolicyCmpt();
             ITestPolicyCmptLink[] links = parent.getTestPolicyCmptLinks();
@@ -971,7 +976,9 @@ public class TestCase extends IpsObject implements ITestCase {
             if (testParameter.isCombinedParameter() && type.equals(TestParameterType.COMBINED)) {
                 return true;
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // TODO ignored exception needs to be documented properly (why is it OK to ignore?)
             // ignore exceptions
         }

@@ -136,14 +136,15 @@ public class HTML2TextReader extends SubstitutionTextReader {
         return null;
     }
 
+    // CSOFF: CyclomaticComplexity
     private String html2Text(String html) {
         if (html == null || html.length() == 0) {
             return EMPTY_STRING;
         }
 
-        html = html.toLowerCase();
+        String lowerCaseHtml = html.toLowerCase();
 
-        String tag = html;
+        String tag = lowerCaseHtml;
         if ('/' == tag.charAt(0)) {
             tag = tag.substring(1);
         }
@@ -152,12 +153,12 @@ public class HTML2TextReader extends SubstitutionTextReader {
             return EMPTY_STRING;
         }
 
-        if ("pre".equals(html)) { //$NON-NLS-1$
+        if ("pre".equals(lowerCaseHtml)) { //$NON-NLS-1$
             startPreformattedText();
             return EMPTY_STRING;
         }
 
-        if ("/pre".equals(html)) { //$NON-NLS-1$
+        if ("/pre".equals(lowerCaseHtml)) { //$NON-NLS-1$
             stopPreformattedText();
             return EMPTY_STRING;
         }
@@ -166,75 +167,79 @@ public class HTML2TextReader extends SubstitutionTextReader {
             return EMPTY_STRING;
         }
 
-        if ("b".equals(html)) { //$NON-NLS-1$
+        if ("b".equals(lowerCaseHtml)) { //$NON-NLS-1$
             startBold();
             return EMPTY_STRING;
         }
 
-        if ((html.length() > 1 && html.charAt(0) == 'h' && Character.isDigit(html.charAt(1))) || "dt".equals(html)) { //$NON-NLS-1$
+        if ((lowerCaseHtml.length() > 1 && lowerCaseHtml.charAt(0) == 'h' && Character.isDigit(lowerCaseHtml.charAt(1)))
+                || "dt".equals(lowerCaseHtml)) { //$NON-NLS-1$
             startBold();
             return EMPTY_STRING;
         }
 
-        if ("dl".equals(html)) { //$NON-NLS-1$
+        if ("dl".equals(lowerCaseHtml)) { //$NON-NLS-1$
             return LINE_DELIM;
         }
 
-        if ("dd".equals(html)) { //$NON-NLS-1$
+        if ("dd".equals(lowerCaseHtml)) { //$NON-NLS-1$
             return "\t"; //$NON-NLS-1$
         }
 
-        if ("li".equals(html)) { //$NON-NLS-1$
+        if ("li".equals(lowerCaseHtml)) { //$NON-NLS-1$
             // FIXME: this hard-coded prefix does not work for RTL languages, see
             // https://bugs.eclipse.org/bugs/show_bug.cgi?id=91682
             return LINE_DELIM + HTMLMessages.getString("HTML2TextReader.listItemPrefix"); //$NON-NLS-1$
         }
 
-        if ("/b".equals(html)) { //$NON-NLS-1$
+        if ("/b".equals(lowerCaseHtml)) { //$NON-NLS-1$
             stopBold();
             return EMPTY_STRING;
         }
 
-        if ("p".equals(html)) { //$NON-NLS-1$
+        if ("p".equals(lowerCaseHtml)) { //$NON-NLS-1$
             fInParagraph = true;
             return LINE_DELIM;
         }
 
-        if ("br".equals(html) || "br/".equals(html) || "div".equals(html)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if ("br".equals(lowerCaseHtml) || "br/".equals(lowerCaseHtml) || "div".equals(lowerCaseHtml)) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return LINE_DELIM;
         }
 
-        if ("/p".equals(html)) { //$NON-NLS-1$
+        if ("/p".equals(lowerCaseHtml)) { //$NON-NLS-1$
             boolean inParagraph = fInParagraph;
             fInParagraph = false;
             return inParagraph ? EMPTY_STRING : LINE_DELIM;
         }
 
-        if ((html.startsWith("/h") && html.length() > 2 && Character.isDigit(html.charAt(2))) || "/dt".equals(html)) { //$NON-NLS-1$ //$NON-NLS-2$
+        if ((lowerCaseHtml.startsWith("/h") && lowerCaseHtml.length() > 2 && Character.isDigit(lowerCaseHtml.charAt(2))) //$NON-NLS-1$
+                || "/dt".equals(lowerCaseHtml)) { //$NON-NLS-1$
             stopBold();
             return LINE_DELIM;
         }
 
-        if ("/dd".equals(html)) { //$NON-NLS-1$
+        if ("/dd".equals(lowerCaseHtml)) { //$NON-NLS-1$
             return LINE_DELIM;
         }
 
-        if ("head".equals(html) && !fHeaderDetected) { //$NON-NLS-1$
+        if ("head".equals(lowerCaseHtml) && !fHeaderDetected) { //$NON-NLS-1$
             fHeaderDetected = true;
             fIgnore = true;
             return EMPTY_STRING;
         }
 
-        if ("/head".equals(html) && fHeaderDetected && fIgnore) { //$NON-NLS-1$
+        if ("/head".equals(lowerCaseHtml) && fHeaderDetected && fIgnore) { //$NON-NLS-1$
             fIgnore = false;
         }
 
         return EMPTY_STRING;
     }
+    // CSON: CyclomaticComplexity
 
     /**
      * A '<' has been read. Process a html tag
      */
+    // CSOFF: CyclomaticComplexity
     private String processHTMLTag() throws IOException {
 
         StringBuilder sb = new StringBuilder();
@@ -275,6 +280,7 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
         return html2Text(sb.toString());
     }
+    // CSON: CyclomaticComplexity
 
     private String processPreformattedText(int c) {
         if (c == '\r' || c == '\n') {

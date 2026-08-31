@@ -62,7 +62,7 @@ public class EditFieldChangesBroadcaster {
      */
     public void broadcastDelayed(FieldValueChangedEvent event, ValueChangeListener[] listeners) {
         synchronized (mutex) {
-            if (lastEvent != null && lastEvent.field != event.field) {
+            if (lastEvent != null && lastEvent.getField() != event.getField()) {
                 broadcastLastEvent();
             }
             incrementCounter();
@@ -90,7 +90,7 @@ public class EditFieldChangesBroadcaster {
      */
     public void broadcastImmediately(FieldValueChangedEvent event, ValueChangeListener[] listeners) {
         synchronized (mutex) {
-            if (currentEvent != null && currentEvent.field == event.field) {
+            if (currentEvent != null && currentEvent.getField() == event.getField()) {
                 logTrace("Skip current broadcast event"); //$NON-NLS-1$
                 return;
             }
@@ -103,7 +103,7 @@ public class EditFieldChangesBroadcaster {
             resetCounter();
             for (ValueChangeListener listener : listeners) {
                 try {
-                    if (event.field.getControl() != null && event.field.getControl().isDisposed()) {
+                    if (event.getField().getControl() != null && event.getField().getControl().isDisposed()) {
                         // don't notifiy listeners if the control is disposed
                         continue;
                     }

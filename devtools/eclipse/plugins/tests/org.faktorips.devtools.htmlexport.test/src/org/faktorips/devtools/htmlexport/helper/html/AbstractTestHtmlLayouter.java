@@ -70,7 +70,7 @@ public abstract class AbstractTestHtmlLayouter {
     public void assertXpathExists(String xml, String xPath) throws IOException, SAXException {
         String prepared = prepareXml(xml);
         try {
-            NodeList nodes = (NodeList) XPathFactory.newInstance().newXPath()
+            NodeList nodes = (NodeList)XPathFactory.newInstance().newXPath()
                     .evaluate(xPath, toDocument(prepared), XPathConstants.NODESET);
             if (nodes.getLength() == 0) {
                 throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$
@@ -83,7 +83,7 @@ public abstract class AbstractTestHtmlLayouter {
     public void assertXpathNotExists(String xml, String xPath) throws IOException, SAXException {
         String prepared = prepareXml(xml);
         try {
-            NodeList nodes = (NodeList) XPathFactory.newInstance().newXPath()
+            NodeList nodes = (NodeList)XPathFactory.newInstance().newXPath()
                     .evaluate(xPath, toDocument(prepared), XPathConstants.NODESET);
             if (nodes.getLength() > 0) {
                 throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$

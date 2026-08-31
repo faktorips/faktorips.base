@@ -94,14 +94,14 @@ public class TestCaseHierarchyPathTest extends AbstractIpsPluginTest {
     @Test
     public void testEvalTestPolicyCmptParamPath() {
         // eval path for testPolicyCmpt2 => testPolicyCmptType10.testPolicyCmptTypeRelation10
-        String testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.testPolicyCmpt2);
+        String testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.getTestPolicyCmpt2());
         assertEquals("testPolicyCmptType1#0.testPolicyCmptTypeRelation1#0", testPolicyCmptParamPath);
         // eval path for testPolicyCmpt22 => testPolicyCmptType10.testPolicyCmptTypeRelation11
-        testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.testPolicyCmpt22);
+        testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.getTestPolicyCmpt22());
         assertEquals("testPolicyCmptType1#0.testPolicyCmptTypeRelation1#1", testPolicyCmptParamPath);
         // eval path for testPolicyCmpt3 =>
         // testPolicyCmptType10.testPolicyCmptTypeRelation11.testPolicyCmptTypeRelation20
-        testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.testPolicyCmpt3);
+        testPolicyCmptParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testContent.getTestPolicyCmpt3());
         assertEquals("testPolicyCmptType1#0.testPolicyCmptTypeRelation1#1.testPolicyCmptTypeRelation2#0",
                 testPolicyCmptParamPath);
     }

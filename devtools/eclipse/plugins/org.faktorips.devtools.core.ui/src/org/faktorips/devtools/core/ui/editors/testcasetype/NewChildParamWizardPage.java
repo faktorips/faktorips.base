@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -35,7 +35,7 @@ import org.faktorips.devtools.model.testcasetype.TestParameterType;
  * Wizard page to create a new child test policy cmpt type parameter.<br>
  * The following fields will be handled: Association, target policy cmpt type, test policy cmpt type
  * parameter name and the test parameter type (input, exp result or combined).
- * 
+ *
  * @author Joerg Ortmann
  */
 public class NewChildParamWizardPage extends WizardPage implements ValueChangeListener {
@@ -104,7 +104,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == editFieldAssociation) {
+        if (e.getField() == editFieldAssociation) {
             associationChanged(editFieldAssociation.getText());
         }
 

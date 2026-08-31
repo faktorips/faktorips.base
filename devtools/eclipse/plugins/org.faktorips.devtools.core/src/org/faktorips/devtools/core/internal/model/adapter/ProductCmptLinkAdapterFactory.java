@@ -60,7 +60,9 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
             if (adapterType.isInstance(eclipseResource)) {
                 return (T)eclipseResource;
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.log(e);
         }
         return null;

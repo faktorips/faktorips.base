@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 

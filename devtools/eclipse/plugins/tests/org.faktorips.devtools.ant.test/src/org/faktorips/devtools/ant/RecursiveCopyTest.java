@@ -11,6 +11,7 @@
 package org.faktorips.devtools.ant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -85,12 +86,8 @@ public class RecursiveCopyTest {
             }
 
             // copy file to dir => should throw an Exception
-            try {
-                c.copyFile(tmpFile.toPath().toAbsolutePath(), tmpDir.toPath().toAbsolutePath());
-                fail("copy from file to dir was sucessfull. should throw an Exception");
-            } catch (Exception e) {
-                // expected
-            }
+            assertThrows(Exception.class,
+                    () -> c.copyFile(tmpFile.toPath().toAbsolutePath(), tmpDir.toPath().toAbsolutePath()));
 
             // copy file to file => should work
             try {

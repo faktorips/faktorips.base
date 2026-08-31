@@ -16,8 +16,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -789,16 +789,12 @@ public class DefaultPolicyAttributeTest {
         assertEquals(valueSet, produkt.getSetOfAllowedValuesForAttr1(null));
         // yes, this works.
         assertThat(produkt.getSetOfAllowedValuesForAttr1(null).contains("A"), is(false));
-        try {
-            ValueSet<String> setOfAllowedValuesForAttr1 = produkt.getSetOfAllowedValuesForAttr1(null);
-            Set<String> values = setOfAllowedValuesForAttr1.getValues(true);
+        ValueSet<String> setOfAllowedValuesForAttr1 = produkt.getSetOfAllowedValuesForAttr1(null);
+        Set<String> values = setOfAllowedValuesForAttr1.getValues(true);
+        // Generics are fun
+        assertThrows(ClassCastException.class, () -> {
             String firstValue = values.iterator().next();
-            fail("expected a " + ClassCastException.class.getSimpleName()
-                    + " when casting Integer 1 to a String, but we got \""
-                    + firstValue + "\"");
-        } catch (ClassCastException e) {
-            // Generics are fun
-        }
+        });
     }
 
     @Test

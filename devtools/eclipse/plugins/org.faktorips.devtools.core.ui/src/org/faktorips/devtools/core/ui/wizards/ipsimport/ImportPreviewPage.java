@@ -56,7 +56,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     public static final int MAX_NUMBER_PREVIEW_ROWS = 8;
 
     // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
+    private boolean validateInput = true;
 
     // display preview for this filename using the table format and structure
     private String filename;
@@ -164,6 +164,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         }
     }
 
+    // CSOFF: CyclomaticComplexity
     private void fillPreview() {
         previewTable.removeAll();
 
@@ -216,6 +217,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
         refreshColumnWidths();
         pageControl.layout();
     }
+    // CSON: CyclomaticComplexity
 
     private void handleNumberOfTableColumnsChanged() {
         int previewTableColumnCount = previewTable.getColumnCount();

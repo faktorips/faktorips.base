@@ -63,9 +63,9 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY_ENUM_EXPORT);
         if (section == null) {
-            hasNewDialogSettings = true;
+            setHasNewDialogSettings(true);
         } else {
-            hasNewDialogSettings = false;
+            setHasNewDialogSettings(false);
             setDialogSettings(section);
         }
     }
@@ -87,20 +87,22 @@ public class EnumExportWizard extends IpsObjectExportWizard {
     @Override
     public void addPages() {
         try {
-            exportPage = new EnumExportPage(selection);
+            exportPage = new EnumExportPage(getSelection());
             addPage(exportPage);
 
             // Add page for each table format having custom properties.
-            customPages = new HashMap<>();
+            setCustomPages(new HashMap<>());
             ITableFormat[] externalTableFormats = IpsPlugin.getDefault().getExternalTableFormats();
             for (ITableFormat format : externalTableFormats) {
                 if (IpsUIPlugin.getDefault().hasTableFormatCustomProperties(format)) {
                     TableFormatPropertiesPage customPage = new TableFormatPropertiesPage(format);
-                    customPages.put(format, customPage);
+                    getCustomPages().put(format, customPage);
                     addPage(customPage);
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

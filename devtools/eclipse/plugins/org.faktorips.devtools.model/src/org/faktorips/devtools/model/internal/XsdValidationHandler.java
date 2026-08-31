@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.internal.ipsobject.Messages;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -67,7 +67,7 @@ public class XsdValidationHandler implements ErrorHandler {
     }
 
     private boolean isXsdSchemaMissingError(String localizedMessage) {
-        return StringUtils.startsWith(localizedMessage, "cvc-elt.1.a"); //$NON-NLS-1$
+        return Strings.CS.startsWith(localizedMessage, "cvc-elt.1.a"); //$NON-NLS-1$
     }
 
     private String createLogMessage(String localizedMessage) {

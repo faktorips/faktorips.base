@@ -63,8 +63,8 @@ public abstract class ControlComposite extends Composite {
     }
 
     private static class ControlTypeStruct {
-        Control control;
-        int eventType;
+        private Control control;
+        private int eventType;
 
         ControlTypeStruct(Control c, int type) {
             control = c;

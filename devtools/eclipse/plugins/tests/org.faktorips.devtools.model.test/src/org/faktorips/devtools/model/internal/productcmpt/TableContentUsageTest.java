@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Locale;
 
@@ -210,12 +210,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetCaptionNullPointer() {
-        try {
-            structUsage.getCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> structUsage.getCaption(null));
     }
 
     @Test

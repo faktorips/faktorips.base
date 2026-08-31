@@ -132,7 +132,9 @@ public class TestSelectionComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newTest(buttons);
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -152,7 +154,9 @@ public class TestSelectionComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 try {
                     newTestSuite();
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -172,7 +176,9 @@ public class TestSelectionComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 try {
                     deleteElement();
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -208,7 +214,9 @@ public class TestSelectionComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(true);
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -225,7 +233,9 @@ public class TestSelectionComposite extends Composite {
             public void widgetSelected(SelectionEvent e) {
                 try {
                     moveParts(false);
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
             }
@@ -282,7 +292,9 @@ public class TestSelectionComposite extends Composite {
                 viewer.refresh();
                 notifyListener();
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -304,7 +316,9 @@ public class TestSelectionComposite extends Composite {
                 }
             }
             return packageFragmentList.toArray(new IIpsPackageFragment[0]);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return new IIpsPackageFragment[0];

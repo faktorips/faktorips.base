@@ -15,7 +15,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.GregorianCalendar;
 
@@ -43,12 +43,7 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertEquals(date, XmlUtil.parseGregorianCalendar("2005-9-9")); //$NON-NLS-1$
         date = new GregorianCalendar(2005, 9, 10);
         assertEquals(date, XmlUtil.parseGregorianCalendar("2005-10-10")); //$NON-NLS-1$
-        try {
-            XmlUtil.parseGregorianCalendar("200d-10-22"); //$NON-NLS-1$
-            fail();
-        } catch (XmlParseException e) {
-            // Expected exception.
-        }
+        assertThrows(XmlParseException.class, () -> XmlUtil.parseGregorianCalendar("200d-10-22")); //$NON-NLS-1$
     }
 
     @Test

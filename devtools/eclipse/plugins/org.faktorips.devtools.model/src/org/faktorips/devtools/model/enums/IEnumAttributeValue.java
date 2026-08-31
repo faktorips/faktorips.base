@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.enums;
 
-import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IPartIdentifiedByIndex;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.IValue;
@@ -31,7 +30,7 @@ import org.faktorips.runtime.model.enumtype.EnumAttribute;
  *
  * @since 2.3
  */
-public interface IEnumAttributeValue extends IIpsObjectPart, IPartIdentifiedByIndex {
+public interface IEnumAttributeValue extends IPartIdentifiedByIndex {
 
     /** The XML tag for this IPS object part. */
     String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$

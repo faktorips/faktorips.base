@@ -494,9 +494,9 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
                     try {
                         Object contentProvider = element.createExecutableExtension("class"); //$NON-NLS-1$
                         if (contentProvider instanceof AbstractModelStructureContentProvider) {
-                            String label = element.getAttribute("label"); //$NON-NLS-1$
+                            String labelText = element.getAttribute("label"); //$NON-NLS-1$
 
-                            Action contentProviderAction = createContentProviderAction(label,
+                            Action contentProviderAction = createContentProviderAction(labelText,
                                     (AbstractModelStructureContentProvider)contentProvider);
                             contentProviderActions.add(contentProviderAction);
                             if (initialContentProvider == null) {

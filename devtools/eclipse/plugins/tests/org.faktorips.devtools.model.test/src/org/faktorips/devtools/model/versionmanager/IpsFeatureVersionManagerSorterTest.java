@@ -83,7 +83,7 @@ public class IpsFeatureVersionManagerSorterTest {
 
         @Override
         public void setId(String id) {
-
+            // not needed for this test
         }
 
         @Override
@@ -93,7 +93,7 @@ public class IpsFeatureVersionManagerSorterTest {
 
         @Override
         public void setPredecessorId(String predecessorId) {
-
+            // not needed for this test
         }
 
         @Override
@@ -103,7 +103,7 @@ public class IpsFeatureVersionManagerSorterTest {
 
         @Override
         public void setFeatureId(String featureId) {
-
+            // not needed for this test
         }
 
         @Override
@@ -138,6 +138,7 @@ public class IpsFeatureVersionManagerSorterTest {
 
         @Override
         public void setRequiredForAllProjects(boolean required) {
+            // not needed for this test
         }
 
     }

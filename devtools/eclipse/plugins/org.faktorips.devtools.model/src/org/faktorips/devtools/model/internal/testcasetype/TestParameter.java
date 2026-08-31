@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
  */
 public abstract class TestParameter extends IpsObjectPart implements ITestParameter {
 
-    protected TestParameterType type = TestParameterType.COMBINED;
+    private TestParameterType type = TestParameterType.COMBINED;
 
     public TestParameter(IIpsObjectPartContainer parent, String id) {
         super(parent, id);
@@ -90,6 +90,10 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
     @Override
     public TestParameterType getTestParameterType() {
         return type;
+    }
+
+    protected void setType(TestParameterType type) {
+        this.type = type;
     }
 
     @Override

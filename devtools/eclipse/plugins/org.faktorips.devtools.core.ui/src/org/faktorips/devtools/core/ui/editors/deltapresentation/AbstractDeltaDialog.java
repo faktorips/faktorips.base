@@ -22,11 +22,19 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  */
 public abstract class AbstractDeltaDialog extends TitleAreaDialog {
 
-    protected UIToolkit toolkit;
+    private UIToolkit toolkit;
 
     public AbstractDeltaDialog(Shell parentShell) {
         super(parentShell);
         toolkit = new UIToolkit(null);
+    }
+
+    protected UIToolkit getToolkit() {
+        return toolkit;
+    }
+
+    protected void setToolkit(UIToolkit toolkit) {
+        this.toolkit = toolkit;
     }
 
     @Override

@@ -96,6 +96,7 @@ public class IpsDeepCopyAction extends IpsAction {
         });
     }
 
+    // CSOFF: CyclomaticComplexity
     protected void runCopyWizard(IProductCmptGeneration generation) {
         IProductCmptNamingStrategy ns = generation.getIpsProject().getProductCmptNamingStrategy();
         if (type == DeepCopyWizard.TYPE_NEW_VERSION && ns == null) {
@@ -152,5 +153,6 @@ public class IpsDeepCopyAction extends IpsAction {
             }
         }
     }
+    // CSON: CyclomaticComplexity
 
 }

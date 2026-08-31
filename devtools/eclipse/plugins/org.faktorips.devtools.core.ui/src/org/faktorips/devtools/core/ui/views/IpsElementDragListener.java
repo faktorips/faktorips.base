@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.adapter.IIpsSrcFileWrapper;
  */
 public class IpsElementDragListener implements DragSourceListener {
 
-    StructuredViewer dragSource;
+    private StructuredViewer dragSource;
 
     /**
      * Constructor for <code>IpsElementDragListener</code> needs a <code>StructuredViewer</code>

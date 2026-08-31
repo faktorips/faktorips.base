@@ -87,8 +87,8 @@ public class TableExportPage extends IpsObjectExportPage {
      * @return The currently selected {@link ITableContents}
      */
     public ITableContents getTableContents() {
-        if (exportedIpsObjectControl instanceof TableContentsRefControl) {
-            return ((TableContentsRefControl)exportedIpsObjectControl).findTableContents();
+        if (getExportedIpsObjectControl() instanceof TableContentsRefControl) {
+            return ((TableContentsRefControl)getExportedIpsObjectControl()).findTableContents();
         }
         return null;
     }
@@ -100,17 +100,17 @@ public class TableExportPage extends IpsObjectExportPage {
      */
     private void setTableContents(ITableContents contents) {
         if (contents == null) {
-            exportedIpsObjectControl.updateSelection(null);
+            getExportedIpsObjectControl().updateSelection(null);
             setIpsProject(null);
             return;
         }
-        exportedIpsObjectControl.updateSelection(contents.getQualifiedNameType());
+        getExportedIpsObjectControl().updateSelection(contents.getQualifiedNameType());
         setIpsProject(contents.getIpsProject());
     }
 
     @Override
     protected void validateObjectToExport() {
-        if (exportedIpsObjectControl.getText().length() == 0) {
+        if (getExportedIpsObjectControl().getText().length() == 0) {
             setErrorMessage(Messages.TableExportPage_msgContentsEmpty);
             return;
         }

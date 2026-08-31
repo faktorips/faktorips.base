@@ -32,8 +32,8 @@ public class ReferenceSearchResultPage extends IpsElementsSearchViewPage {
     private static final String KEY_FILTER_TEST_CASE = "org.faktorips.devtools.core.ui.search.referencesearchresultpage.filtertestcase"; //$NON-NLS-1$
     private static final String KEY_FILTER_PRODUCT_CMPT = "org.faktorips.devtools.core.ui.search.referencesearchresultpage.filterproductcmpt"; //$NON-NLS-1$
 
-    boolean filterTestCase = false;
-    boolean filterProductCmpt = false;
+    private boolean filterTestCase = false;
+    private boolean filterProductCmpt = false;
 
     @Override
     public void restoreState(IMemento memento) {

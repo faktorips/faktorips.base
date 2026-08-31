@@ -16,7 +16,9 @@ package org.faktorips.devtools.model;
  * 
  * @author Joerg Ortmann
  */
+// CSOFF: InterfaceIsType
 public interface IValidationMsgCodesForInvalidValues {
+    // CSON: InterfaceIsType
 
     /**
      * Validation message code to indicate that a value can't be validated because the required

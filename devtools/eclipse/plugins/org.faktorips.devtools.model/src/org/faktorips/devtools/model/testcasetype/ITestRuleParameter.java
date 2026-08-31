@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,10 +12,12 @@ package org.faktorips.devtools.model.testcasetype;
 
 /**
  * Specification of a test rule parameter.
- * 
+ *
  * @author Joerg Ortmann
  */
+// CSOFF: InterfaceIsType
 public interface ITestRuleParameter extends ITestParameter {
+    // CSON: InterfaceIsType
 
     /**
      * Prefix for all message codes of this class.

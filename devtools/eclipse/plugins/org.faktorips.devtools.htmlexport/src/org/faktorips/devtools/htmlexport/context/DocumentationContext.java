@@ -60,12 +60,12 @@ public class DocumentationContext {
     /**
      * Path for output
      */
-    protected String path;
+    private String path;
 
     /**
      * related {@link IpsObjectType}s: Just {@link IIpsObject} of these types are documented
      */
-    protected IpsObjectType[] documentedIpsObjectTypes;
+    private IpsObjectType[] documentedIpsObjectTypes;
 
     private List<IStatus> exportStatus = new ArrayList<>();
 

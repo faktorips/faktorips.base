@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 
 /**
  * The editor to edit test cases based on test case types.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TestCaseEditor extends IpsObjectEditor implements IModelDescriptionSupport {
@@ -37,12 +37,12 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
      */
     private static final String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
-    TestCaseEditorPage editorPage;
+    private TestCaseEditorPage editorPage;
 
     @Override
     protected void disposeInternal() {
-        if (editorPage != null) {
-            editorPage.saveState();
+        if (getEditorPage() != null) {
+            getEditorPage().saveState();
         }
         super.disposeInternal();
     }
@@ -64,10 +64,10 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         TestCaseContentProvider contentProviderInput = new TestCaseContentProvider(TestCaseContentProvider.COMBINED,
                 getTestCase());
 
-        editorPage = new TestCaseEditorPage(this, Messages.TestCaseEditor_Combined_Title, contentProviderInput,
-                Messages.TestCaseEditor_Combined_SectionTitle, Messages.TestCaseEditor_Combined_Description);
+        setEditorPage(new TestCaseEditorPage(this, Messages.TestCaseEditor_Combined_Title, contentProviderInput,
+                Messages.TestCaseEditor_Combined_SectionTitle, Messages.TestCaseEditor_Combined_Description));
 
-        addPage(editorPage);
+        addPage(getEditorPage());
     }
 
     /**
@@ -76,7 +76,9 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     public ITestCase getTestCase() {
         try {
             return (ITestCase)getIpsSrcFile().getIpsObject();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
@@ -105,8 +107,8 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
                 datachangeable = false;
             }
         }
-        if (editorPage != null) {
-            editorPage.setReadOnly(!datachangeable);
+        if (getEditorPage() != null) {
+            getEditorPage().setReadOnly(!datachangeable);
         }
 
         return datachangeable;
@@ -127,15 +129,23 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     public void addDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
-        editorPage.addDetailAreaRedrawListener(listener);
+        getEditorPage().addDetailAreaRedrawListener(listener);
     }
 
     public void removeDetailAreaRedrawListener(ITestCaseDetailAreaRedrawListener listener) {
-        editorPage.removeDetailAreaRedrawListener(listener);
+        getEditorPage().removeDetailAreaRedrawListener(listener);
     }
 
     @Override
     protected void refreshIncludingStructuralChanges() {
-        editorPage.refreshInclStructuralChanges();
+        getEditorPage().refreshInclStructuralChanges();
+    }
+
+    public TestCaseEditorPage getEditorPage() {
+        return editorPage;
+    }
+
+    public void setEditorPage(TestCaseEditorPage editorPage) {
+        this.editorPage = editorPage;
     }
 }

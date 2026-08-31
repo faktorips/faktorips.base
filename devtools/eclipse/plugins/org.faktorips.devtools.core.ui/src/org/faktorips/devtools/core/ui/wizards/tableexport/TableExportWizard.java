@@ -65,9 +65,9 @@ public class TableExportWizard extends IpsObjectExportWizard {
         IDialogSettings workbenchSettings = IpsUIPlugin.getDefault().getDialogSettings();
         IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
         if (section == null) {
-            hasNewDialogSettings = true;
+            setHasNewDialogSettings(true);
         } else {
-            hasNewDialogSettings = false;
+            setHasNewDialogSettings(false);
             setDialogSettings(section);
         }
     }
@@ -80,26 +80,28 @@ public class TableExportWizard extends IpsObjectExportWizard {
     @Override
     public void addPages() {
         try {
-            selectionPage = new TableSelectionPage(selection);
+            selectionPage = new TableSelectionPage(getSelection());
             if (selectionPage.getTableContents().size() > 1) {
                 isMassExport = true;
                 addPage(selectionPage);
             } else {
-                exportPage = new TableExportPage(selection);
+                exportPage = new TableExportPage(getSelection());
                 addPage(exportPage);
 
-                customPages = new HashMap<>();
+                setCustomPages(new HashMap<>());
                 ITableFormat[] externalTableFormats = IpsPlugin.getDefault().getExternalTableFormats();
                 for (ITableFormat format : externalTableFormats) {
                     if (IpsUIPlugin.getDefault().hasTableFormatCustomProperties(format)) {
                         TableFormatPropertiesPage customPage = new TableFormatPropertiesPage(format);
-                        customPages.put(format, customPage);
+                        getCustomPages().put(format, customPage);
                         addPage(customPage);
                     }
                 }
             }
 
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -186,7 +188,9 @@ public class TableExportWizard extends IpsObjectExportWizard {
             saveDialogSettings();
         } catch (InterruptedException ignoredException) {
             return true;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             Throwable throwable = (e instanceof InvocationTargetException) ? e.getCause() : e;
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(Messages.TableExportWizard_operationError, throwable));
         } finally {

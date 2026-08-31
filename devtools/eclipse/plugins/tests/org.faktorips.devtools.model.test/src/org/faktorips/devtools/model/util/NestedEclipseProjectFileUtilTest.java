@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.junit.jupiter.api.Test;
 
 public class NestedEclipseProjectFileUtilTest extends AbstractIpsPluginTest {

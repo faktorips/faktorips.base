@@ -46,7 +46,7 @@ import org.faktorips.runtime.MessageList;
 public class ExcelTableFormat extends AbstractExternalTableFormat {
 
     public ExcelTableFormat() {
-        properties.put(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "false");
+        putProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "false");
     }
 
     @Override

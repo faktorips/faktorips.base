@@ -341,9 +341,9 @@ public class TypeHierarchy implements ITypeHierarchy {
     }
 
     private static class Node {
-        IType type;
-        IType supertype;
-        List<IType> subtypes;
+        private IType type;
+        private IType supertype;
+        private List<IType> subtypes;
 
         Node(IType type, IType supertype, List<IType> subtypes) {
             ArgumentCheck.notNull(type);

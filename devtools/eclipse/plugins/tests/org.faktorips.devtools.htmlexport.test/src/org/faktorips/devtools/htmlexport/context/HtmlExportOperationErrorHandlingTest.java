@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.context;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Set;
 
@@ -75,15 +75,7 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
 
         context.setDocumentedIpsObjectTypes(context.getIpsProject().getIpsModel().getIpsObjectTypes());
 
-        Display.getDefault().syncExec(() -> {
-            try {
-                operation.run(new NullProgressMonitor());
-                fail("sollte IpsException werfen");
-            } catch (IpsException e1) {
-                // nix zu tun
-            } catch (Exception e2) {
-                fail(e2.getMessage());
-            }
-        });
+        Display.getDefault()
+                .syncExec(() -> assertThrows(IpsException.class, () -> operation.run(new NullProgressMonitor())));
     }
 }

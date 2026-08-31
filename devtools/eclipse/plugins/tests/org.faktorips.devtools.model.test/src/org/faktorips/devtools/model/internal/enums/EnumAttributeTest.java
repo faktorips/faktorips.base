@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 import java.util.Locale;
@@ -64,12 +64,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindSuperEnumAttribute() {
-        try {
-            genderEnumAttributeId.findSuperEnumAttribute(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> genderEnumAttributeId.findSuperEnumAttribute(null));
 
         assertNull(genderEnumAttributeId.findSuperEnumAttribute(ipsProject));
 
@@ -109,12 +104,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setName("OtherEnumAttributeName");
         assertEquals("OtherEnumAttributeName", genderEnumAttributeId.getName());
 
-        try {
-            genderEnumAttributeId.setName(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> genderEnumAttributeId.setName(null));
     }
 
     @Test
@@ -123,12 +113,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setDatatype(Datatype.INTEGER.getQualifiedName());
         assertEquals(Datatype.INTEGER.getQualifiedName(), genderEnumAttributeId.getDatatype());
 
-        try {
-            genderEnumAttributeId.setDatatype(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> genderEnumAttributeId.setDatatype(null));
     }
 
     @Test
@@ -425,12 +410,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         genderEnumAttributeId.setDatatype("foo");
         assertNull(genderEnumAttributeId.findDatatype(ipsProject));
 
-        try {
-            genderEnumAttributeId.findDatatype(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> genderEnumAttributeId.findDatatype(null));
 
         // Test inherited.
         genderEnumAttributeId.setDatatype(Datatype.STRING.getQualifiedName());
@@ -442,12 +422,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindIsUniqueIdentifier() {
-        try {
-            inheritedEnumAttributeId.findIsUnique(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> inheritedEnumAttributeId.findIsUnique(null));
 
         assertTrue(inheritedEnumAttributeId.findIsUnique(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
@@ -460,12 +435,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindIsIdentifier() {
-        try {
-            inheritedEnumAttributeId.findIsIdentifier(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> inheritedEnumAttributeId.findIsIdentifier(null));
 
         assertTrue(inheritedEnumAttributeId.findIsIdentifier(ipsProject));
         inheritedEnumAttributeId.setInherited(false);
@@ -486,12 +456,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindIsUsedAsNameInFaktorIpsUi() {
-        try {
-            inheritedEnumAttributeId.findIsUsedAsNameInFaktorIpsUi(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> inheritedEnumAttributeId.findIsUsedAsNameInFaktorIpsUi(null));
 
         assertTrue(inheritedEnumAttributeName.findIsUsedAsNameInFaktorIpsUi(ipsProject));
         inheritedEnumAttributeName.setInherited(false);

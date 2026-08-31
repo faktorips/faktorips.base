@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class IpsSearchProjectsScope extends AbstractIpsSearchScope {
 
-    protected final ISelection selection;
+    private final ISelection selection;
 
     public IpsSearchProjectsScope(ISelection selection) {
         this.selection = selection;

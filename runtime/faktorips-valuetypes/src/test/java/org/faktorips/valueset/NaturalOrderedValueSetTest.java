@@ -3,8 +3,8 @@ package org.faktorips.valueset;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,17 +14,12 @@ import org.junit.jupiter.api.Test;
 
 public class NaturalOrderedValueSetTest {
 
-    // Warning doesn't matter as only constructor is tested
-    @SuppressWarnings("unused")
     @Test
     public void testConstructor_Exception() {
-        try {
-            new NaturalOrderedValueSet<>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
-                    Integer.valueOf(1));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        // Expected exception.
+        assertThrows(IllegalArgumentException.class,
+                () -> new NaturalOrderedValueSet<>(false, null, Integer.valueOf(1), Integer.valueOf(2),
+                        Integer.valueOf(3), Integer.valueOf(1)));
     }
 
     @Test

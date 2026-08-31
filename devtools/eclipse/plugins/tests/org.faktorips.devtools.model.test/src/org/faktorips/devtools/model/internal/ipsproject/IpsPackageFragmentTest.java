@@ -21,8 +21,8 @@ import static org.hamcrest.Matchers.empty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -311,28 +311,15 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertEquals(0, result.size());
 
         // ipsobjecttype null
-        try {
-            pack.findIpsSourceFilesStartingWith(null, "M", true, result);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> pack.findIpsSourceFilesStartingWith(null, "M", true, result));
 
         // prefix null
-        try {
-            pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class,
+                () -> pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result));
 
         // result null
-        try {
-            pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class,
+                () -> pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null));
     }
 
     @Test

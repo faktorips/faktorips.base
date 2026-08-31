@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,9 +28,9 @@ public class CopyTableAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        IpsCopyAction copyAction = new IpsCopyAction(selectionProvider, shell);
+        IpsCopyAction copyAction = new IpsCopyAction(getSelectionProvider(), shell);
         copyAction.run();
-        IpsPasteAction pasteAction = new IpsPasteAction(selectionProvider, shell);
+        IpsPasteAction pasteAction = new IpsPasteAction(getSelectionProvider(), shell);
         pasteAction.run();
     }
 

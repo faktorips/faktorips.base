@@ -24,9 +24,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -72,7 +70,6 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
         setShellStyle(getShellStyle() | SWT.RESIZE);
     }
 
-    @SuppressWarnings("restriction")
     private IInternationalString getInternationalString() {
         // directly return the internationalString from its parent, saving may change the parent
         // but not the cached internationalString see concept of

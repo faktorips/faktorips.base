@@ -43,7 +43,7 @@ public class ModelDescriptionView extends PageBookView {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelDescription"; //$NON-NLS-1$
 
     // default message: view not supported.
-    final String notSupportedMessage = Messages.ModelDescriptionView_notSupported;
+    private final String notSupportedMessage = Messages.ModelDescriptionView_notSupported;
 
     /**
      * The <code>PageBookView</code> implementation of this <code>IWorkbenchPart</code> method

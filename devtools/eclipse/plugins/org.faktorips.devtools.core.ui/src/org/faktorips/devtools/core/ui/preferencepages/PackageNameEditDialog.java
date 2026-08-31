@@ -79,7 +79,7 @@ public class PackageNameEditDialog extends StatusDialog {
         text = new Text(group, SWT.BORDER | SWT.SINGLE);
 
         final TextField specificPackageNameTextField = new TextField(text);
-        specificPackageNameTextField.addChangeListener(e -> selectedPackageName = e.field.getText());
+        specificPackageNameTextField.addChangeListener(e -> selectedPackageName = e.getField().getText());
 
         text.setLayoutData(new GridData(SWT.HORIZONTAL));
 

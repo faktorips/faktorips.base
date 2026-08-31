@@ -84,7 +84,9 @@ final class OperatorEditingSupport extends EnhancedCellTrackingEditingSupport {
 
         try {
             throw new RuntimeException();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             e.printStackTrace();
         }
 

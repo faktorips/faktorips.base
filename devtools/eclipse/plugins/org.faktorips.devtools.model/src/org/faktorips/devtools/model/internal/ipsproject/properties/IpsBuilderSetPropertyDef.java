@@ -329,7 +329,9 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         }
         try {
             propertyDef.initialize(ipsModel, properties);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             logger.log(new IpsStatus(e));
             return null;
         }

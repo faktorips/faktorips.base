@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -181,28 +181,18 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         assertEquals(0, result.size());
 
         // ipsobjecttype null
-        try {
-            ipsRoot.findIpsSourceFilesStartingWithInternal(null, "M", true, result);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class,
+                () -> ipsRoot.findIpsSourceFilesStartingWithInternal(null, "M", true, result));
 
         // prefix null
-        try {
-            ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class,
+                () -> ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, null, true,
+                        result));
 
         // result null
-        try {
-            ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class,
+                () -> ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "M", true,
+                        null));
     }
 
     @Test

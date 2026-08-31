@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,11 +53,8 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
     @Test
     public void testGetSetEnumType() {
         assertEquals(genderEnumType.getQualifiedName(), genderEnumContent.getEnumType());
-        try {
-            genderEnumContent.setEnumType(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null enum type
+        assertThrows(NullPointerException.class, () -> genderEnumContent.setEnumType(null));
 
         genderEnumContent.setEnumType(paymentMode.getQualifiedName());
         assertEquals(paymentMode.getQualifiedName(), genderEnumContent.getEnumType());
@@ -71,11 +68,8 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testFindEnumType() {
-        try {
-            genderEnumContent.findEnumType(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumContent.findEnumType(null));
 
         assertEquals(genderEnumType, genderEnumContent.findEnumType(ipsProject));
         genderEnumContent.setEnumType("");
@@ -345,10 +339,8 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
     @Test
     public void testGetEnumAttributeReference() {
-        try {
-            genderEnumContent.getEnumAttributeReference(null);
-        } catch (NullPointerException e) {
-        }
+        // expected exception for a null argument
+        assertThrows(NullPointerException.class, () -> genderEnumContent.getEnumAttributeReference(null));
 
         assertNotNull(genderEnumContent.getEnumAttributeReference(GENDER_ENUM_ATTRIBUTE_ID_NAME));
         assertNotNull(genderEnumContent.getEnumAttributeReference(GENDER_ENUM_ATTRIBUTE_NAME_NAME));

@@ -109,11 +109,11 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == editFieldDatatypeOrRule) {
+        if (e.getField() == editFieldDatatypeOrRule) {
             datatypeChanged(editFieldDatatypeOrRule.getText());
         }
 
-        if (e.field == editFieldName) {
+        if (e.getField() == editFieldName) {
             nameChanged(editFieldName.getText());
         }
         wizard.postAsyncRunnable(() -> {

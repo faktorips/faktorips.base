@@ -20,7 +20,9 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
  * 
  * @since 3.0
  */
+// CSOFF: InterfaceIsType
 public interface IEnumLiteralNameAttributeValue extends IEnumAttributeValue {
+    // CSON: InterfaceIsType
 
     /** The XML tag for this {@link IIpsObjectPart}. */
     String XML_TAG = "EnumLiteralNameAttributeValue"; //$NON-NLS-1$

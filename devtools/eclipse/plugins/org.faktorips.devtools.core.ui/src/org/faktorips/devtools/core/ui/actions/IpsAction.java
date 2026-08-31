@@ -37,7 +37,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 public abstract class IpsAction extends Action {
 
     /** The source of objects to modify by this action. */
-    protected ISelectionProvider selectionProvider;
+    private ISelectionProvider selectionProvider;
 
     private IDataChangeableReadAccess ctrl;
 
@@ -53,6 +53,14 @@ public abstract class IpsAction extends Action {
             adjustEnableStateListener = $ -> updateEnabledProperty();
             selectionProvider.addSelectionChangedListener(adjustEnableStateListener);
         }
+    }
+
+    protected ISelectionProvider getSelectionProvider() {
+        return selectionProvider;
+    }
+
+    protected void refreshSelection() {
+        selectionProvider.setSelection(selectionProvider.getSelection());
     }
 
     @Override

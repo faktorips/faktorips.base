@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -148,12 +148,8 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
         IProductCmptLink link = targetGen.newLink(association.getName());
         link.setTarget(productCmpt.getQualifiedName());
 
-        try {
-            productCmpt.getStructure(new GregorianCalendar(), ipsProject);
-            fail();
-        } catch (CycleInProductStructureException e) {
-            // success
-        }
+        assertThrows(CycleInProductStructureException.class,
+                () -> productCmpt.getStructure(new GregorianCalendar(), ipsProject));
     }
 
     @Test

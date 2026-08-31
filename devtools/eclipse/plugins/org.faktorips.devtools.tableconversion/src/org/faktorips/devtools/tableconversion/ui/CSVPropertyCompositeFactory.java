@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.faktorips.runtime.MessageList;
 /**
  * Composite for configuring CSV table format options like field delimiters, date formats and the
  * like.
- * 
+ *
  * @author Roman Grutza
  */
 public class CSVPropertyCompositeFactory extends TableFormatConfigurationCompositeFactory {
@@ -134,7 +134,9 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
             }
             // Construction of a new SimpleDateFormat instance fails if the pattern is invalid
             new SimpleDateFormat(dateFormat);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             ml.add(new Message("", Messages.CSVPropertyCompositeFactory_errMsgInvalidDateFormat, Message.ERROR)); //$NON-NLS-1$
         }
     }
@@ -161,11 +163,11 @@ public class CSVPropertyCompositeFactory extends TableFormatConfigurationComposi
             return;
         }
 
-        if (e.field.getControl() == dateFormatText) {
+        if (e.getField().getControl() == dateFormatText) {
             tableFormat.setProperty(CSVTableFormat.PROPERTY_DATE_FORMAT, dateFormatText.getText());
-        } else if (e.field.getControl() == fieldDelimiterText) {
+        } else if (e.getField().getControl() == fieldDelimiterText) {
             tableFormat.setProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER, fieldDelimiterText.getText());
-        } else if (e.field.getControl() == decimalSeparatorText) {
+        } else if (e.getField().getControl() == decimalSeparatorText) {
             tableFormat.setProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR, decimalSeparatorText.getText());
 
             // TODO rg: commented out for 2.4rc1, needs adaptation of IValueConverter's

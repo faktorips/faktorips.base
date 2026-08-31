@@ -52,9 +52,11 @@ public class TreeViewerDoubleclickListener implements IDoubleClickListener {
             IStructuredSelection selection = (IStructuredSelection)event.getSelection();
             Object selectedObject = selection.getFirstElement();
 
+            // CSOFF: BooleanExpressionComplexity
             if (selectedObject instanceof IIpsPackageFragment || selectedObject instanceof IIpsPackageFragmentRoot
                     || selectedObject instanceof IIpsProject || selectedObject instanceof IFolder
                     || selectedObject instanceof IProject) {
+                // CSON: BooleanExpressionComplexity
                 List<Object> list = Arrays.asList(tree.getVisibleExpandedElements());
                 if (list.contains(selectedObject)) {
                     tree.collapseToLevel(selectedObject, 1);

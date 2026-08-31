@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.plugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Locale;
 
@@ -130,12 +130,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedCaptionNullPointer() {
-        try {
-            support.getLocalizedCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getLocalizedCaption(null));
     }
 
     @Test
@@ -176,12 +171,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedPluralCaptionNullPointer() {
-        try {
-            support.getLocalizedPluralCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getLocalizedPluralCaption(null));
     }
 
     @Test
@@ -204,12 +194,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDefaultCaptionNullPointer() {
-        try {
-            support.getDefaultCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getDefaultCaption(null));
     }
 
     @Test
@@ -240,12 +225,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDefaultPluralCaptionNullPointer() {
-        try {
-            support.getDefaultPluralCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getDefaultPluralCaption(null));
     }
 
     @Test
@@ -302,12 +282,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedLabelNullPointer() {
-        try {
-            support.getLocalizedLabel(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getLocalizedLabel(null));
     }
 
     @Test
@@ -359,22 +334,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedPluralLabelNullPointer() {
-        try {
-            support.getLocalizedPluralLabel(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getLocalizedPluralLabel(null));
     }
 
     @Test
     public void testGetLocalizedPluralLabelNotSupported() {
-        try {
-            support.getLocalizedPluralLabel(productCmptType.newAttribute());
-            fail();
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> support.getLocalizedPluralLabel(productCmptType.newAttribute()));
     }
 
     @Test
@@ -396,12 +362,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDefaultLabelNullPointer() {
-        try {
-            support.getDefaultLabel(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getDefaultLabel(null));
     }
 
     @Test
@@ -429,22 +390,13 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDefaultPluralLabelNullPointer() {
-        try {
-            support.getDefaultPluralLabel(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getDefaultPluralLabel(null));
     }
 
     @Test
     public void testGetDefaultPluralLabelNotSupported() {
-        try {
-            support.getDefaultPluralLabel(productCmptType.newAttribute());
-            fail();
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> support.getDefaultPluralLabel(productCmptType.newAttribute()));
     }
 
     @Test
@@ -461,12 +413,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetDefaultLabelNullPointer1() {
-        try {
-            support.setDefaultLabel(null, "foo");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.setDefaultLabel(null, "foo"));
     }
 
     @Test
@@ -499,12 +446,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetDefaultPluralLabelNullPointer1() {
-        try {
-            support.setDefaultPluralLabel(null, "foos");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.setDefaultPluralLabel(null, "foos"));
     }
 
     @Test
@@ -515,12 +457,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetDefaultPluralLabelNotSupported() {
-        try {
-            support.setDefaultPluralLabel(productCmptType.newAttribute(), "foos");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> support.setDefaultPluralLabel(productCmptType.newAttribute(), "foos"));
     }
 
     @Test
@@ -586,12 +524,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedDescriptionNullPointer() {
-        try {
-            support.getLocalizedDescription(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getLocalizedDescription(null));
     }
 
     @Test
@@ -601,12 +534,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDefaultDescriptionNullPointer() {
-        try {
-            support.getDefaultDescription(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.getDefaultDescription(null));
     }
 
     @Test
@@ -636,22 +564,12 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetDefaultDescriptionNullPointer1() {
-        try {
-            support.setDefaultDescription(null, "foo");
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.setDefaultDescription(null, "foo"));
     }
 
     @Test
     public void testSetDefaultDescriptionNullPointer2() {
-        try {
-            support.setDefaultDescription(testContainer, null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> support.setDefaultDescription(testContainer, null));
     }
 
     @Test

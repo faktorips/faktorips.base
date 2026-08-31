@@ -16,7 +16,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -101,12 +101,9 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
 
         Thread.sleep(1100);
 
-        try {
-            Wait.atMost(Duration.ofSeconds(10)).until(() -> openJar.entries() == null, "JAR should be closed");
-            fail("expected an IllegalStateException because the jar should be closed");
-        } catch (IllegalStateException e) {
-            // is expected
-        }
+        assertThrows(IllegalStateException.class,
+                () -> Wait.atMost(Duration.ofSeconds(10)).until(() -> openJar.entries() == null,
+                        "JAR should be closed"));
     }
 
     @Test
@@ -133,12 +130,9 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         assertThat(sameJarOtherHandle.entries(), is(notNullValue()));
 
         // need to wait until the file is closed
-        try {
-            Wait.atMost(Duration.ofSeconds(10)).until(() -> openJar.entries() == null, "JAR should be closed");
-            fail("expected an IllegalStateException because the jar should be closed");
-        } catch (IllegalStateException e) {
-            // is expected
-        }
+        assertThrows(IllegalStateException.class,
+                () -> Wait.atMost(Duration.ofSeconds(10)).until(() -> openJar.entries() == null,
+                        "JAR should be closed"));
     }
 
 }

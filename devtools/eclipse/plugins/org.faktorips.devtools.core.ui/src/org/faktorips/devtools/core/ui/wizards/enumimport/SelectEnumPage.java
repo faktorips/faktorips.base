@@ -48,42 +48,42 @@ public class SelectEnumPage extends SelectImportTargetPage {
     @Override
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
-        validateInput = false;
+        setValidateInput(false);
         setTitle(Messages.SelectEnumPage_title);
 
-        pageControl = new Composite(parent, SWT.NONE);
-        pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        setPageControl(new Composite(parent, SWT.NONE));
+        getPageControl().setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout pageLayout = new GridLayout(1, false);
         pageLayout.verticalSpacing = 20;
-        pageControl.setLayout(pageLayout);
-        setControl(pageControl);
+        getPageControl().setLayout(pageLayout);
+        setControl(getPageControl());
 
-        Composite locationComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        Composite locationComposite = toolkit.createLabelEditColumnComposite(getPageControl());
         toolkit.createFormLabel(locationComposite, Messages.SelectEnumPage_locationLabel);
-        projectControl = toolkit.createIpsProjectRefControl(locationComposite);
-        projectField = new TextButtonField(projectControl);
-        projectField.addChangeListener(this);
+        setProjectControl(toolkit.createIpsProjectRefControl(locationComposite));
+        setProjectField(new TextButtonField(getProjectControl()));
+        getProjectField().addChangeListener(this);
 
-        Label line = new Label(pageControl, SWT.SEPARATOR | SWT.HORIZONTAL);
+        Label line = new Label(getPageControl(), SWT.SEPARATOR | SWT.HORIZONTAL);
         line.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         createEnumImportControls(toolkit);
 
-        setDefaults(selectedResource);
+        setDefaults(getSelectedResource());
 
-        validateInput = true;
+        setValidateInput(true);
     }
 
     private void createEnumImportControls(UIToolkit toolkit) {
-        Composite lowerComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        Composite lowerComposite = toolkit.createLabelEditColumnComposite(getPageControl());
         toolkit.createFormLabel(lowerComposite, Messages.SelectEnumPage_targetTypeLabel);
-        importTargetControl = toolkit.createEnumRefControl(null, lowerComposite, true, false);
-        importTargetField = new TextButtonField(importTargetControl);
-        importTargetField.addChangeListener(this);
+        setImportTargetControl(toolkit.createEnumRefControl(null, lowerComposite, true, false));
+        setImportTargetField(new TextButtonField(getImportTargetControl()));
+        getImportTargetField().addChangeListener(this);
     }
 
     @Override
     public IIpsObject getTargetForImport() {
-        return ((EnumRefControl)importTargetControl).findEnum();
+        return ((EnumRefControl)getImportTargetControl()).findEnum();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
 
     @Override
     protected void validateImportTarget() {
-        if (importTargetControl.getText().length() == 0) {
+        if (getImportTargetControl().getText().length() == 0) {
             setErrorMessage(Messages.SelectEnumPage_msgEnumEmpty);
             return;
         }
@@ -145,11 +145,11 @@ public class SelectEnumPage extends SelectImportTargetPage {
     private void setEnum(IEnumValueContainer enumValueContainer) {
         if (enumValueContainer == null) {
             setIpsProject(null);
-            importTargetControl.updateSelection(null);
+            getImportTargetControl().updateSelection(null);
             return;
         }
         setIpsProject(enumValueContainer.getIpsProject());
-        importTargetControl.updateSelection(enumValueContainer.getQualifiedNameType());
+        getImportTargetControl().updateSelection(enumValueContainer.getQualifiedNameType());
     }
 
 }

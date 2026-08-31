@@ -38,11 +38,13 @@ public abstract class AbstractXmlUnitHtmlExportTest extends AbstractHtmlExportPl
 
     protected void assertXPathExists(IPageElement pageElement, String xPath) throws Exception {
         new AbstractHtmlExportXmlUnitLayouterTest() {
+            // anonymous subclass only used to access the protected assertion method
         }.assertXpathExists(createXml(pageElement), xPath);
     }
 
     protected void assertXPathNotExists(IPageElement pageElement, String xPath) throws Exception {
         new AbstractHtmlExportXmlUnitLayouterTest() {
+            // anonymous subclass only used to access the protected assertion method
         }.assertXpathNotExists(createXml(pageElement), xPath);
     }
 

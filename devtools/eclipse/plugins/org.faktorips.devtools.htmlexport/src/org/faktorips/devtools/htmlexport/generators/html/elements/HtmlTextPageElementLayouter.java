@@ -23,11 +23,12 @@ public class HtmlTextPageElementLayouter extends AbstractHtmlPageElementLayouter
 
     @Override
     protected void layoutInternal() {
-        if (pageElement.getType() == TextType.WITHOUT_TYPE && pageElement.getStylesCopy().isEmpty()) {
-            append(htmlUtil.getHtmlText(pageElement.getText()));
+        if (getPageElement().getType() == TextType.WITHOUT_TYPE && getPageElement().getStylesCopy().isEmpty()) {
+            append(getHtmlUtil().getHtmlText(getPageElement().getText()));
             return;
         }
-        append(htmlUtil.createHtmlElement(identifyTagName(pageElement), pageElement.getText(), getClasses()));
+        append(getHtmlUtil().createHtmlElement(identifyTagName(getPageElement()), getPageElement().getText(),
+                getClasses()));
 
     }
 

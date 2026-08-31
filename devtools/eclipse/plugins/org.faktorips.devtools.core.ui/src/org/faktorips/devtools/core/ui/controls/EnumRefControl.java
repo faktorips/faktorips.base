@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,9 +27,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * <p>
  * The control is configured by the constructor for a specific IPS project and whether to hide
  * abstract <code>IEnumType</code>s or <code>IEnumType</code>s that contain no values.
- * 
+ *
  * @author Roman Grutza, Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumRefControl extends IpsObjectRefControl {
@@ -42,7 +42,7 @@ public class EnumRefControl extends IpsObjectRefControl {
 
     /**
      * Creates a new <code>EnumRefControl</code>.
-     * 
+     *
      * @param project The IPS project to search for <code>IEnumType</code>s and
      *            <code>IEnumContent</code>s.
      * @param parent The parent UI composite.
@@ -90,12 +90,13 @@ public class EnumRefControl extends IpsObjectRefControl {
     }
 
     /**
-     * Searches for an {@link IEnumValueContainer} based on the {@link #objectType}.
-     * 
+     * Searches for an {@link IEnumValueContainer} based on the {@link #getSelectedObjectType()
+     * objectType}.
+     *
      * @return The found {@link IEnumValueContainer} or null if it does not exist
      */
     public IEnumValueContainer findEnum() {
-        IIpsObject foundObject = findIpsObject(objectType);
+        IIpsObject foundObject = findIpsObject(getSelectedObjectType());
         if (foundObject instanceof IEnumValueContainer) {
             return (IEnumValueContainer)foundObject;
         }

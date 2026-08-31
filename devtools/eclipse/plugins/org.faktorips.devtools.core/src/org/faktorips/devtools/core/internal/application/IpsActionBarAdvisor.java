@@ -622,6 +622,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         super.dispose();
     }
 
+    // CSOFF: MethodLength
     @SuppressWarnings("deprecation")
     @Override
     protected void makeActions(final IWorkbenchWindow window) {
@@ -823,6 +824,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
                 m);
         pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR.create(window);
     }
+    // CSON: MethodLength
 
     private void disableUnwantedActionSets(IWorkbenchPage page) {
         if (page == null || disablingUnwantedActionSets) {

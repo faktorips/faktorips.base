@@ -514,14 +514,14 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == targetPackageRootField) {
+        if (e.getField() == targetPackageRootField) {
             targetInput.setIpsPckFragmentRoot(targetPackageRootControl.getIpsPackageFragmentRoot());
             targetInput.setIpsPackageFragment(
                     targetPackageRootControl.getIpsPackageFragmentRoot().getDefaultIpsPackageFragment());
-        } else if (e.field == checkboxFieldReplaceProductCmptManual) {
+        } else if (e.getField() == checkboxFieldReplaceProductCmptManual) {
             tableViewer.getTable().setEnabled(false);
             needRecreateTarget = true;
-        } else if (e.field == checkboxFieldReplaceProductCmptAutomatically) {
+        } else if (e.getField() == checkboxFieldReplaceProductCmptAutomatically) {
             tableViewer.getTable().setEnabled(true);
         }
         pageChanged();

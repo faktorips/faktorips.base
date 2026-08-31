@@ -68,7 +68,9 @@ public class TableImportWizard extends IpsObjectImportWizard {
             addPage(getIpsOIWStartingPage());
             addPage(newTableContentsPage);
             addPage(selectContentsPage);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -173,7 +175,9 @@ public class TableImportWizard extends IpsObjectImportWizard {
 
             contents.getIpsObject().getIpsSrcFile().save(new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(contents.getIpsSrcFile());
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             Throwable throwable = e;
             if (e instanceof InvocationTargetException) {
                 throwable = ((InvocationTargetException)e).getCause();

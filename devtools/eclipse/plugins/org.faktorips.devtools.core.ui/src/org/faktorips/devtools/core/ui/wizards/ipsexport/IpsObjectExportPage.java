@@ -78,25 +78,26 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
     protected static final String NULL_REPRESENTATION = PAGE_NAME + ".NULL_REPRESENTATION"; //$NON-NLS-1$
     protected static final String EXPORT_ENUM_AS_NAME_AND_ID = PAGE_NAME + ".EXPORT_ENUM_AS_NAME_AND_ID"; //$NON-NLS-1$
 
-    protected Composite pageControl;
+    private Composite pageControl;
 
-    protected IpsProjectRefControl projectControl;
+    private IpsProjectRefControl projectControl;
+    private Text nullRepresentation;
+    private TextButtonField filenameField;
+    private TextButtonField projectField;
+    private CheckboxField exportWithColumnHeaderRowField;
+    private CheckboxField exportEnumAsNameAndIdField;
+    private StringValueComboField fileFormatField;
+
+    private ITableFormat[] formats;
+
+    private TextButtonField exportedIpsObjectField;
+    private IpsObjectRefControl exportedIpsObjectControl;
+
+    private IResource selectedResource;
+
+    private IIpsSrcFile selectedIpsSrcFile;
+
     private Combo fileFormatControl;
-    protected Text nullRepresentation;
-    protected TextButtonField filenameField;
-    protected TextButtonField projectField;
-    protected CheckboxField exportWithColumnHeaderRowField;
-    protected CheckboxField exportEnumAsNameAndIdField;
-    protected StringValueComboField fileFormatField;
-
-    protected ITableFormat[] formats;
-
-    protected TextButtonField exportedIpsObjectField;
-    protected IpsObjectRefControl exportedIpsObjectControl;
-
-    protected IResource selectedResource;
-
-    protected IIpsSrcFile selectedIpsSrcFile;
 
     private boolean validateInput;
 
@@ -192,6 +193,22 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     public void setFileFormatControl(Combo fileFormatControl) {
         this.fileFormatControl = fileFormatControl;
+    }
+
+    protected Composite getPageControl() {
+        return pageControl;
+    }
+
+    protected IpsObjectRefControl getExportedIpsObjectControl() {
+        return exportedIpsObjectControl;
+    }
+
+    protected CheckboxField getExportWithColumnHeaderRowField() {
+        return exportWithColumnHeaderRowField;
+    }
+
+    protected Text getNullRepresentationControl() {
+        return nullRepresentation;
     }
 
     public ITableFormat getFormat() {
@@ -508,10 +525,10 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == projectField) {
+        if (e.getField() == projectField) {
             projectChanged();
         }
-        if (e.field == filenameField) {
+        if (e.getField() == filenameField) {
             filenameChanged();
         }
         if (validateInput) {

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.codegen.DatatypeHelper;
@@ -32,7 +32,7 @@ public class DatatypeDefinition {
 
     public DatatypeDefinition(IExtension extension, IConfigurationElement configElement) {
         super();
-        if (!StringUtils.equalsIgnoreCase(DATATYPE_DEFINTIION, configElement.getName())) {
+        if (!Strings.CI.equals(DATATYPE_DEFINTIION, configElement.getName())) {
             String text = String.format(ILLEGAL_DEFINITION, extension.getUniqueIdentifier(), configElement.getName());
             IpsLog.log(new IpsStatus(text));
             datatype = null;

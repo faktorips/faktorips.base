@@ -142,7 +142,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
 
         @Override
         protected void initSubclassFromXml(Element el) {
-
+            // not needed for this test
         }
 
         @Override

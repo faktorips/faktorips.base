@@ -12,7 +12,7 @@ package org.faktorips.devtools.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,23 +33,17 @@ public class QualifiedNameTypeTest {
         assertEquals("base.motor.Motorpolicy", qNameType.getName());
         assertEquals(IpsObjectType.POLICY_CMPT_TYPE, qNameType.getIpsObjectType());
 
-        try {
-            QualifiedNameType.newQualifedNameType("Motorpolicy");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for a name without extension
+        assertThrows(IllegalArgumentException.class,
+                () -> QualifiedNameType.newQualifedNameType("Motorpolicy"));
 
-        try {
-            QualifiedNameType.newQualifedNameType("Motorpolicy.");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for an empty extension
+        assertThrows(IllegalArgumentException.class,
+                () -> QualifiedNameType.newQualifedNameType("Motorpolicy."));
 
-        try {
-            QualifiedNameType.newQualifedNameType("Motorpolicy.invalidextension");
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        // expected exception for an invalid extension
+        assertThrows(IllegalArgumentException.class,
+                () -> QualifiedNameType.newQualifedNameType("Motorpolicy.invalidextension"));
     }
 
     @Test
@@ -111,16 +105,10 @@ public class QualifiedNameTypeTest {
     @Test
     public void testQualifiedNameType() {
         new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
-        try {
-            new QualifiedNameType(null, IpsObjectType.POLICY_CMPT_TYPE);
-            fail("Exception because of null argument expected");
-        } catch (Exception e) {
-        }
-        try {
-            new QualifiedNameType("test", null);
-            fail("Exception because of null argument expected");
-        } catch (Exception e) {
-        }
+        // expected exception for a null argument
+        assertThrows(Exception.class, () -> new QualifiedNameType(null, IpsObjectType.POLICY_CMPT_TYPE));
+        // expected exception for a null argument
+        assertThrows(Exception.class, () -> new QualifiedNameType("test", null));
     }
 
     @Test

@@ -22,8 +22,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Locale;
 
@@ -382,12 +382,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetCaptionNullPointer() {
-        try {
-            link.getCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> link.getCaption(null));
     }
 
     @Test
@@ -398,12 +393,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetPluralCaptionNullPointer() {
-        try {
-            link.getPluralCaption(null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
+        assertThrows(NullPointerException.class, () -> link.getPluralCaption(null));
     }
 
     @Test

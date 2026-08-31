@@ -18,8 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,28 +38,19 @@ public class OrderedValueSetTest {
     @SuppressWarnings("unused")
     @Test
     public void testConstructor() {
-        try {
-            new OrderedValueSet<>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
-                    Integer.valueOf(1));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        // Expected exception.
+        assertThrows(IllegalArgumentException.class,
+                () -> new OrderedValueSet<>(false, null, Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
+                        Integer.valueOf(1)));
 
-        try {
-            new OrderedValueSet<>(false, null, Integer.valueOf(1), null, Integer.valueOf(2), Integer.valueOf(3),
-                    null);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        // Expected exception.
+        assertThrows(IllegalArgumentException.class,
+                () -> new OrderedValueSet<>(false, null, Integer.valueOf(1), null, Integer.valueOf(2),
+                        Integer.valueOf(3), null));
 
-        try {
-            new OrderedValueSet<>(true, null, Money.valueOf("1"), Money.NULL, null);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        // Expected exception.
+        assertThrows(IllegalArgumentException.class,
+                () -> new OrderedValueSet<>(true, null, Money.valueOf("1"), Money.NULL, null));
     }
 
     @Test

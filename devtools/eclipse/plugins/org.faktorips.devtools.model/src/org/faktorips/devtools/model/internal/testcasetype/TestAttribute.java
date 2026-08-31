@@ -142,9 +142,9 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     @Override
     public String getCorrespondingPolicyCmptType() {
-        IPolicyCmptTypeAttribute attribute = findAttribute(getIpsProject());
-        if (attribute != null) {
-            return attribute.getPolicyCmptType().getQualifiedName();
+        IPolicyCmptTypeAttribute foundAttribute = findAttribute(getIpsProject());
+        if (foundAttribute != null) {
+            return foundAttribute.getPolicyCmptType().getQualifiedName();
         }
 
         // attribute wasn't found, return at least the stored policy cmpt type
@@ -239,8 +239,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         if (productCmpt == null) {
             return false;
         }
-        IPolicyCmptType policyCmptType = productCmpt.findPolicyCmptType(ipsProject);
-        return !(policyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
+        IPolicyCmptType foundPolicyCmptType = productCmpt.findPolicyCmptType(ipsProject);
+        return !(foundPolicyCmptType.findPolicyCmptTypeAttribute(getAttribute(), ipsProject) == null);
     }
 
     @Override
@@ -248,6 +248,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         return !IpsStringUtils.isEmpty(attribute) && IpsStringUtils.isEmpty(datatype);
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     protected void validateThis(MessageList messageList, IIpsProject ipsProject) {
         super.validateThis(messageList, ipsProject);
@@ -348,6 +349,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
         validateName(messageList, ipsProject);
     }
+    // CSON: CyclomaticComplexity
 
     private void validateName(MessageList messageList, IIpsProject ipsProject) {
         if (isBasedOnModelAttribute()) {

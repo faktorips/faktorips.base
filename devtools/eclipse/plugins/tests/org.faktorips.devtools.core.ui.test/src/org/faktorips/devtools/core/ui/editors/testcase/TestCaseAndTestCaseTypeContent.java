@@ -34,16 +34,16 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
  */
 public class TestCaseAndTestCaseTypeContent {
 
-    ITestPolicyCmpt testPolicyCmpt1;
-    ITestPolicyCmptLink link1;
-    ITestPolicyCmpt testPolicyCmpt2;
-    ITestPolicyCmpt testPolicyCmpt22;
-    ITestPolicyCmptLink link2;
-    ITestPolicyCmpt testPolicyCmpt3;
+    private ITestPolicyCmpt testPolicyCmpt1;
+    private ITestPolicyCmptLink link1;
+    private ITestPolicyCmpt testPolicyCmpt2;
+    private ITestPolicyCmpt testPolicyCmpt22;
+    private ITestPolicyCmptLink link2;
+    private ITestPolicyCmpt testPolicyCmpt3;
 
-    ITestPolicyCmptTypeParameter testPolicyCmptType1;
-    ITestPolicyCmptTypeParameter testPolicyCmptType2;
-    ITestPolicyCmptTypeParameter testPolicyCmptType3;
+    private ITestPolicyCmptTypeParameter testPolicyCmptType1;
+    private ITestPolicyCmptTypeParameter testPolicyCmptType2;
+    private ITestPolicyCmptTypeParameter testPolicyCmptType3;
 
     public TestCaseAndTestCaseTypeContent(ITestCase testCase, ITestCaseType testCaseType) {
         testCase.setTestCaseType("TestCaseType1");
@@ -99,6 +99,10 @@ public class TestCaseAndTestCaseTypeContent {
 
     public ITestPolicyCmpt getTestPolicyCmpt2() {
         return testPolicyCmpt2;
+    }
+
+    public ITestPolicyCmpt getTestPolicyCmpt22() {
+        return testPolicyCmpt22;
     }
 
     public ITestPolicyCmpt getTestPolicyCmpt3() {

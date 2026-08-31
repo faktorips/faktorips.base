@@ -197,7 +197,7 @@ public class TableSelectionPage extends IpsObjectExportPage {
      * Creates the table viewer to display the selected items.
      */
     private void createTableViewer() {
-        setTableViewer(CheckboxTableViewer.newCheckList(pageControl, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL));
+        setTableViewer(CheckboxTableViewer.newCheckList(getPageControl(), SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL));
         getTableViewer().getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         getTableViewer().setContentProvider(ArrayContentProvider.getInstance());
 
@@ -228,15 +228,15 @@ public class TableSelectionPage extends IpsObjectExportPage {
         setTitle(Messages.TableExportPage_title);
         createPageControl(parent);
         createTableViewer();
-        createSeparator(pageControl);
+        createSeparator(getPageControl());
 
-        Composite optionsComposite = toolkit.createLabelEditColumnComposite(pageControl);
+        Composite optionsComposite = toolkit.createLabelEditColumnComposite(getPageControl());
 
         createFolderControl(toolkit, optionsComposite);
         createFileFormatControl(toolkit, optionsComposite);
         createNullPresentationControl(toolkit, optionsComposite);
 
-        createColumHeaderCheckBox(toolkit, pageControl);
+        createColumHeaderCheckBox(toolkit, getPageControl());
 
         setPageComplete(false);
 
@@ -341,7 +341,7 @@ public class TableSelectionPage extends IpsObjectExportPage {
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        if (e.field == getFolderPathField()) {
+        if (e.getField() == getFolderPathField()) {
             validatePage();
         }
 
@@ -510,8 +510,8 @@ public class TableSelectionPage extends IpsObjectExportPage {
         if (settings == null) {
             return;
         }
-        exportWithColumnHeaderRowField.getCheckbox().setChecked(settings.getBoolean(EXPORT_WITH_COLUMN_HEADER));
-        nullRepresentation.setText(settings.get(NULL_REPRESENTATION));
+        getExportWithColumnHeaderRowField().getCheckbox().setChecked(settings.getBoolean(EXPORT_WITH_COLUMN_HEADER));
+        getNullRepresentationControl().setText(settings.get(NULL_REPRESENTATION));
         setFolderPath(settings.get(FOLDER_PATH));
 
     }
@@ -522,8 +522,8 @@ public class TableSelectionPage extends IpsObjectExportPage {
         if (settings == null) {
             return;
         }
-        settings.put(EXPORT_WITH_COLUMN_HEADER, exportWithColumnHeaderRowField.getCheckbox().isChecked());
-        settings.put(NULL_REPRESENTATION, nullRepresentation.getText());
+        settings.put(EXPORT_WITH_COLUMN_HEADER, getExportWithColumnHeaderRowField().getCheckbox().isChecked());
+        settings.put(NULL_REPRESENTATION, getNullRepresentationControl().getText());
         settings.put(FOLDER_PATH, getFolderPath());
 
     }

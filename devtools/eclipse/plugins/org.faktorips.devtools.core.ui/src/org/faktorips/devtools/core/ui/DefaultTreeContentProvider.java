@@ -27,7 +27,9 @@ public abstract class DefaultTreeContentProvider implements ITreeContentProvider
         }
         try {
             return ((IIpsElement)parentElement).getChildren();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
             return new Object[0];
         }
@@ -42,7 +44,9 @@ public abstract class DefaultTreeContentProvider implements ITreeContentProvider
     public boolean hasChildren(Object element) {
         try {
             return ((IIpsElement)element).hasChildren();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

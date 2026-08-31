@@ -102,6 +102,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
      * @param callHierarchy a {@link List} which contains the path from the current element to the
      *            source element
      */
+    // CSOFF: CyclomaticComplexity
     Collection<IType> getRootElementsForIType(IType element,
             List<IType> componentList,
             ToChildAssociationType association,
@@ -154,6 +155,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
 
         return rootElements;
     }
+    // CSON: CyclomaticComplexity
 
     private List<IType> computeDerivedRootElements(List<IType> projectSpecificITypes,
             List<IType> allComponentITypes,

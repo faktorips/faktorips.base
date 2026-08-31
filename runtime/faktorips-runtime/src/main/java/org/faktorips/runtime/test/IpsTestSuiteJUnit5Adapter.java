@@ -36,7 +36,6 @@ import org.junit.jupiter.api.DynamicTest;
  * </code>
  * </pre>
  */
-@SuppressWarnings("exports")
 public class IpsTestSuiteJUnit5Adapter {
 
     public Stream<DynamicTest> createTests(IpsTest2 test) {

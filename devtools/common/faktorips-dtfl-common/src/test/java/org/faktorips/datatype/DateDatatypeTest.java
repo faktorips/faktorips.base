@@ -13,8 +13,8 @@ package org.faktorips.datatype;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -50,12 +50,7 @@ public class DateDatatypeTest {
 
         assertNull(datatype.getValue(null));
 
-        try {
-            datatype.getValue("01.01.2000"); //$NON-NLS-1$
-            fail();
-        } catch (Exception e) {
-            // Expected exception.
-        }
+        assertThrows(Exception.class, () -> datatype.getValue("01.01.2000")); //$NON-NLS-1$
     }
 
     @Test
@@ -84,12 +79,7 @@ public class DateDatatypeTest {
 
         assertNull(datatype.valueToString(null));
 
-        try {
-            datatype.valueToString(cal);
-            fail();
-        } catch (Exception e) {
-            // Expected exception.
-        }
+        assertThrows(Exception.class, () -> datatype.valueToString(cal));
     }
 
 }

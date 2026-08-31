@@ -56,8 +56,8 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
         // a test value parameter supports only input type or expected result type
         ArgumentCheck.isTrue(testParameterType.equals(TestParameterType.INPUT)
                 || testParameterType.equals(TestParameterType.EXPECTED_RESULT));
-        TestParameterType oldType = type;
-        type = testParameterType;
+        TestParameterType oldType = getTestParameterType();
+        setType(testParameterType);
         valueChanged(oldType, testParameterType);
     }
 
@@ -110,8 +110,8 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
-        ValueDatatype datatype = findValueDatatype(ipsProject);
-        if (datatype == null) {
+        ValueDatatype foundDatatype = findValueDatatype(ipsProject);
+        if (foundDatatype == null) {
             String text = MessageFormat.format(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound,
                     getDatatype());
             Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this,
@@ -121,7 +121,8 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
 
         // check the correct type
         if (isCombinedParameter() || (!isInputOrCombinedParameter() && !isExpextedResultOrCombinedParameter())) {
-            String text = MessageFormat.format(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type, name);
+            String text = MessageFormat.format(Messages.TestValueParameter_ValidationError_TypeNotAllowed,
+                    getTestParameterType(), name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }

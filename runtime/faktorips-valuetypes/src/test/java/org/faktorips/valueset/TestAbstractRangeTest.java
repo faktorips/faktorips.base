@@ -13,8 +13,8 @@ package org.faktorips.valueset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,12 +60,9 @@ public class TestAbstractRangeTest {
         assertEquals(Integer.valueOf(100), range.getUpperBound());
         assertEquals(Integer.valueOf(10), range.getStep());
 
-        try {
-            IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), 7);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        // Expected exception.
+        assertThrows(IllegalArgumentException.class,
+                () -> IntegerRange.valueOf(Integer.valueOf(0), Integer.valueOf(100), 7));
     }
 
     @Test

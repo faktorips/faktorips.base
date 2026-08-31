@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,11 +29,11 @@ public class DecimalValueConverter extends NumberValueConverter {
         try {
             Decimal d = (Decimal)new DecimalDatatype().getValue(ipsValue);
             String result = d.toString();
-            if (tableFormat != null) {
-                String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
+            if (getTableFormat() != null) {
+                String decimalSeparator = getTableFormat().getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
                 if (decimalSeparator.length() == 1) {
                     result = result.replace(".", //$NON-NLS-1$
-                            tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR));
+                            getTableFormat().getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR));
                 }
             }
 
@@ -54,7 +54,7 @@ public class DecimalValueConverter extends NumberValueConverter {
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
             try {
-                DecimalFormat decimalFormat = getDecimalFormat(tableFormat);
+                DecimalFormat decimalFormat = getDecimalFormat(getTableFormat());
 
                 Number number = decimalFormat.parse((String)externalDataValue);
                 return number.toString();

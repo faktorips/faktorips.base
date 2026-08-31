@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,12 +32,8 @@ public class MoneyTest {
         assertEquals(Money.valueOf("420EUR"), Money.valueOf(Decimal.valueOf("420"), Currency.getInstance("EUR")));
         assertEquals(Money.valueOf("13.42EUR"), Money.valueOf(Decimal.valueOf("13.42"), Currency.getInstance("EUR")));
         assertEquals(Money.valueOf("13.4EUR"), Money.valueOf(Decimal.valueOf("13.4"), Currency.getInstance("EUR")));
-        try {
-            Money.valueOf(Decimal.valueOf("13.413"), Currency.getInstance("EUR"));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> Money.valueOf(Decimal.valueOf("13.413"), Currency.getInstance("EUR")));
 
         // null
         assertEquals(Money.NULL, Money.valueOf(null, Currency.getInstance("EUR")));
@@ -104,40 +99,15 @@ public class MoneyTest {
         assertEquals(Money.NULL, Money.valueOf(""));
         assertEquals(Money.NULL, Money.valueOf(null));
 
-        try {
-            Money.valueOf("1");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> Money.valueOf("1"));
 
-        try {
-            Money.valueOf("111");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> Money.valueOf("111"));
 
-        try {
-            Money.valueOf("1a1EUR");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> Money.valueOf("1a1EUR"));
 
-        try {
-            Money.valueOf("1.123EUR");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> Money.valueOf("1.123EUR"));
 
-        try {
-            Money.valueOf("1.001EUR");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> Money.valueOf("1.001EUR"));
     }
 
     @Test
@@ -150,18 +120,10 @@ public class MoneyTest {
         assertEquals(Currency.getInstance("EUR"), money.getCurrency());
         assertEquals(Decimal.valueOf("-123.74"), money.getAmount());
 
-        try {
-            money = Money.valueOf(123, 74123, Currency.getInstance("EUR"));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-        try {
-            money = Money.valueOf(-123, -74123, Currency.getInstance("EUR"));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
+        assertThrows(IllegalArgumentException.class,
+                () -> Money.valueOf(123, 74123, Currency.getInstance("EUR")));
+        assertThrows(IllegalArgumentException.class,
+                () -> Money.valueOf(-123, -74123, Currency.getInstance("EUR")));
     }
 
     @Test
@@ -199,27 +161,12 @@ public class MoneyTest {
         assertEquals(Money.NULL, Money.NULL.add(m1));
 
         // different currencies
-        try {
-            m1.add(Money.usd(1, 0));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m1.add(Money.usd(1, 0)));
 
         // null
-        try {
-            m1.add(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m1.add(null));
 
-        try {
-            Money.NULL.add(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.add(null));
     }
 
     @Test
@@ -296,27 +243,12 @@ public class MoneyTest {
         assertEquals(Money.NULL, Money.NULL.add(m1));
 
         // different currencies
-        try {
-            m1.subtract(Money.usd(1, 0));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m1.subtract(Money.usd(1, 0)));
 
         // null
-        try {
-            m1.subtract(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m1.subtract(null));
 
-        try {
-            Money.NULL.subtract(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.subtract(null));
     }
 
     @Test
@@ -349,20 +281,9 @@ public class MoneyTest {
         assertTrue(m.multiply(Decimal.NULL, RoundingMode.HALF_DOWN).isNull());
 
         // null
-        try {
-            m.multiply(null, RoundingMode.HALF_UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.multiply(null, RoundingMode.HALF_UP));
 
-        try {
-            Money.NULL.multiply(null, RoundingMode.UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
-
+        assertThrows(NullPointerException.class, () -> Money.NULL.multiply(null, RoundingMode.UP));
     }
 
     @Test
@@ -380,20 +301,9 @@ public class MoneyTest {
         assertTrue(m.multiply(Decimal.NULL, BigDecimal.ROUND_HALF_DOWN).isNull());
 
         // null
-        try {
-            m.multiply(null, BigDecimal.ROUND_HALF_UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.multiply(null, BigDecimal.ROUND_HALF_UP));
 
-        try {
-            Money.NULL.multiply(null, BigDecimal.ROUND_UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
-
+        assertThrows(NullPointerException.class, () -> Money.NULL.multiply(null, BigDecimal.ROUND_UP));
     }
 
     @Test
@@ -472,19 +382,9 @@ public class MoneyTest {
         assertTrue(m.divide(Decimal.NULL, RoundingMode.HALF_DOWN).isNull());
 
         // null
-        try {
-            m.divide(null, RoundingMode.HALF_UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.divide(null, RoundingMode.HALF_UP));
 
-        try {
-            Money.NULL.divide(null, RoundingMode.UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.divide(null, RoundingMode.UP));
     }
 
     @Test
@@ -502,19 +402,9 @@ public class MoneyTest {
         assertTrue(m.divide(Decimal.NULL, BigDecimal.ROUND_HALF_DOWN).isNull());
 
         // null
-        try {
-            m.divide(null, BigDecimal.ROUND_HALF_UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.divide(null, BigDecimal.ROUND_HALF_UP));
 
-        try {
-            Money.NULL.divide(null, BigDecimal.ROUND_UP);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.divide(null, BigDecimal.ROUND_UP));
     }
 
     @Test
@@ -527,19 +417,9 @@ public class MoneyTest {
         assertTrue(m.compareTo(Money.NULL) > 0);
         assertTrue(Money.NULL.compareTo(m) < 0);
 
-        try {
-            m.compareTo(Money.usd(10, 42));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m.compareTo(Money.usd(10, 42)));
 
-        try {
-            m.compareTo(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.compareTo(null));
     }
 
     @Test
@@ -551,26 +431,11 @@ public class MoneyTest {
         assertFalse(m.greaterThan(Money.NULL));
         assertFalse(Money.NULL.greaterThan(m));
 
-        try {
-            m.greaterThan(Money.usd(10, 42));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m.greaterThan(Money.usd(10, 42)));
 
-        try {
-            m.greaterThan(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.greaterThan(null));
 
-        try {
-            Money.NULL.greaterThan(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.greaterThan(null));
     }
 
     @Test
@@ -582,26 +447,11 @@ public class MoneyTest {
         assertFalse(m.greaterThanOrEqual(Money.NULL));
         assertFalse(Money.NULL.greaterThanOrEqual(m));
 
-        try {
-            m.greaterThanOrEqual(Money.usd(10, 42));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m.greaterThanOrEqual(Money.usd(10, 42)));
 
-        try {
-            m.greaterThanOrEqual(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.greaterThanOrEqual(null));
 
-        try {
-            Money.NULL.greaterThanOrEqual(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.greaterThanOrEqual(null));
     }
 
     @Test
@@ -613,26 +463,11 @@ public class MoneyTest {
         assertFalse(m.lessThan(Money.NULL));
         assertFalse(Money.NULL.lessThan(m));
 
-        try {
-            m.lessThan(Money.usd(10, 42));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m.lessThan(Money.usd(10, 42)));
 
-        try {
-            m.lessThan(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.lessThan(null));
 
-        try {
-            Money.NULL.lessThan(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.lessThan(null));
     }
 
     @Test
@@ -644,26 +479,11 @@ public class MoneyTest {
         assertFalse(m.lessThanOrEqual(Money.NULL));
         assertFalse(Money.NULL.lessThanOrEqual(m));
 
-        try {
-            m.lessThanOrEqual(Money.usd(10, 42));
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected exception.
-        }
+        assertThrows(IllegalArgumentException.class, () -> m.lessThanOrEqual(Money.usd(10, 42)));
 
-        try {
-            m.lessThanOrEqual(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> m.lessThanOrEqual(null));
 
-        try {
-            Money.NULL.lessThanOrEqual(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
+        assertThrows(NullPointerException.class, () -> Money.NULL.lessThanOrEqual(null));
     }
 
     @Test

@@ -39,7 +39,9 @@ public class UnparsableFilePage extends IpsObjectEditorPage {
             String text = StringUtil.readFromInputStream(getIpsObjectEditor().getIpsSrcFile()
                     .getContentFromEnclosingResource(), charSet);
             xmlText.setText(text);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.log(e);
         }
     }

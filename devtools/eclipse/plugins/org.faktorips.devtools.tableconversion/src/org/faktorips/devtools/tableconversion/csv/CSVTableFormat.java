@@ -52,15 +52,15 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
 
     public CSVTableFormat() {
         // initialize table format specific properties
-        properties.put(PROPERTY_FIELD_DELIMITER, ","); //$NON-NLS-1$
-        properties.put(PROPERTY_DECIMAL_SEPARATOR_CHAR, "."); //$NON-NLS-1$
-        properties.put(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "false"); //$NON-NLS-1$
+        putProperty(PROPERTY_FIELD_DELIMITER, ","); //$NON-NLS-1$
+        putProperty(PROPERTY_DECIMAL_SEPARATOR_CHAR, "."); //$NON-NLS-1$
+        putProperty(AbstractExternalTableFormat.PROPERTY_ENUM_EXPORT_AS_NAME_AND_ID, "false"); //$NON-NLS-1$
 
         Locale locale = IpsPlugin.getDefault().getUsedLanguagePackLocale();
         if (locale.equals(Locale.GERMAN)) {
-            properties.put(PROPERTY_DATE_FORMAT, "dd.MM.yyyy"); //$NON-NLS-1$
+            putProperty(PROPERTY_DATE_FORMAT, "dd.MM.yyyy"); //$NON-NLS-1$
         } else {
-            properties.put(PROPERTY_DATE_FORMAT, "yyyy-MM-dd"); //$NON-NLS-1$
+            putProperty(PROPERTY_DATE_FORMAT, "yyyy-MM-dd"); //$NON-NLS-1$
         }
     }
 

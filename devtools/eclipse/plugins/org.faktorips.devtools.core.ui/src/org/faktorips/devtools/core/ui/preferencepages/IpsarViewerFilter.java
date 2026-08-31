@@ -37,6 +37,7 @@ public class IpsarViewerFilter extends ViewerFilter {
         this.recursive = recursive;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
         if (element instanceof IFile file) {
@@ -69,6 +70,7 @@ public class IpsarViewerFilter extends ViewerFilter {
         }
         return false;
     }
+    // CSON: CyclomaticComplexity
 
     private boolean isArchiveFile(IPath fullPath) {
         String fileExtension = fullPath.getFileExtension();

@@ -77,7 +77,9 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
         public Object[] getElements(Object inputElement) {
             try {
                 return IIpsModel.get().getIpsProjects();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.logAndShowErrorDialog(e);
                 return new Object[0];
             }

@@ -116,7 +116,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         treeComposite.setLayout(layout);
         treeComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        TreeViewer treeViewer = createTreeViewer(treeComposite);
+        createTreeViewer(treeComposite);
         GridData data = new GridData(GridData.FILL_BOTH);
         data.widthHint = convertWidthInCharsToPixels(fWidth);
         data.heightHint = convertHeightInCharsToPixels(fHeight);

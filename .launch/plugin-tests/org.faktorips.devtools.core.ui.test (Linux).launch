@@ -410,7 +410,6 @@
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
         <setEntry value="org.hamcrest@default:default"/>
-        <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.jdom2@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>

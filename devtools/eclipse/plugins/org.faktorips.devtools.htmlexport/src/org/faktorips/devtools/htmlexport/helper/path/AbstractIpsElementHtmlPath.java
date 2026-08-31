@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 public abstract class AbstractIpsElementHtmlPath<T extends IIpsElement> implements IHtmlPath {
     protected static final String UP_PATH = "../"; //$NON-NLS-1$
 
-    protected T ipsElement;
+    private T ipsElement;
 
     protected AbstractIpsElementHtmlPath(T ipsElement) {
         this.ipsElement = ipsElement;
@@ -42,10 +42,10 @@ public abstract class AbstractIpsElementHtmlPath<T extends IIpsElement> implemen
         StringBuilder builder = new StringBuilder();
 
         builder.append(UP_PATH);
-        packageFragment = packageFragment.getParentIpsPackageFragment();
-        while (packageFragment.getParentIpsPackageFragment() != null) {
+        IIpsPackageFragment currentFragment = packageFragment.getParentIpsPackageFragment();
+        while (currentFragment.getParentIpsPackageFragment() != null) {
             builder.append(UP_PATH);
-            packageFragment = packageFragment.getParentIpsPackageFragment();
+            currentFragment = currentFragment.getParentIpsPackageFragment();
         }
         return builder.toString();
     }

@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.views;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,12 +69,7 @@ public class InstanceIpsSrcFileViewItemTest extends AbstractIpsPluginTest {
         items = InstanceIpsSrcFileViewItem.createItems(new ArrayList<>(), type);
         assertEquals(0, items.length);
 
-        try {
-            InstanceIpsSrcFileViewItem.createItems(null, null);
-            fail();
-        } catch (NullPointerException e) {
-            // expected
-        }
-
+        // expected
+        assertThrows(NullPointerException.class, () -> InstanceIpsSrcFileViewItem.createItems(null, null));
     }
 }

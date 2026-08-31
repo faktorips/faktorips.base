@@ -152,7 +152,7 @@ public class RadioButtonGroup<T> {
         Radiobutton radiobutton = toolkit.createRadiobutton(composite, text);
         CheckboxField checkboxField = new CheckboxField(radiobutton);
         checkboxField.addChangeListener(e -> {
-            if (e.field instanceof CheckboxField changedField) {
+            if (e.getField() instanceof CheckboxField changedField) {
                 if (changedField.getCheckbox().isChecked()) {
                     for (CheckboxField checkboxField1 : oldCheckboxFields) {
                         if (!checkboxField1.equals(changedField)) {

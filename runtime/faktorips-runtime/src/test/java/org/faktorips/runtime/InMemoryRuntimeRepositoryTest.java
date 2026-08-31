@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.mock;
@@ -152,12 +151,7 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(t2, repository.getTable("my.AnotherMultiTable"));
         assertEquals(t3, repository.getTable("my.MultiTable2"));
 
-        try {
-            repository.putTable(null);
-            fail();
-        } catch (NullPointerException e) {
-            // OK
-        }
+        assertThrows(NullPointerException.class, () -> repository.putTable(null));
     }
 
     @Test
@@ -179,12 +173,7 @@ public class InMemoryRuntimeRepositoryTest {
         assertEquals(t3, repository.getTable(TestSingleContentTable2.class));
         assertNotEquals(t2, repository.getTable(TestSingleContentTable.class));
 
-        try {
-            repository.putTable(null);
-            fail();
-        } catch (NullPointerException e) {
-            // OK
-        }
+        assertThrows(NullPointerException.class, () -> repository.putTable(null));
     }
 
     @Test
@@ -943,12 +932,7 @@ public class InMemoryRuntimeRepositoryTest {
 
         assertEquals(aGen3, repository.getLatestProductComponentGeneration(a));
 
-        try {
-            repository.getLatestProductComponentGeneration(null);
-            fail();
-        } catch (NullPointerException e) {
-            // OK
-        }
+        assertThrows(NullPointerException.class, () -> repository.getLatestProductComponentGeneration(null));
     }
 
     // actually testing the AbstractRuntimeRepository

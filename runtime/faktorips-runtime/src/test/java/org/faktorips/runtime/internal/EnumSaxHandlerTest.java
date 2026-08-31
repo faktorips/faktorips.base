@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -86,12 +86,7 @@ public class EnumSaxHandlerTest {
     @Test
     public void testWrongContent() throws Exception {
         is = createInputStream("Wrong.xml");
-        try {
-            saxParser.parse(is, handler);
-            fail("Exception expected because of wrong content.");
-        } catch (SAXException e) {
-            // ignore
-        }
+        assertThrows(SAXException.class, () -> saxParser.parse(is, handler));
     }
 
     @Test

@@ -38,7 +38,7 @@ public class OpenEditorAction extends IpsAction {
     }
 
     public IEditorPart openEditor() {
-        ISelection selection = selectionProvider.getSelection();
+        ISelection selection = getSelectionProvider().getSelection();
         if (selection != null) {
             if (selection instanceof IStructuredSelection) {
                 return openEditor((IStructuredSelection)selection);
