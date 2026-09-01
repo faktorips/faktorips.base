@@ -54,6 +54,7 @@ import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcase.ITestAttributeValue;
+import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestObject;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
@@ -99,6 +100,16 @@ public class TestCaseDetailArea {
 
     /** Contains the mapping between the edit field and model objects */
     private HashMap<EditField<?>, IIpsObjectPart> editField2ModelObject = new HashMap<>();
+
+    /**
+     * Contains all test values, test rules and test attribute values of the test case, keyed the
+     * same way as {@link #allEditFieldsCache}. Unlike the edit field cache this is independent of
+     * the input/expected-result content filter, so it also finds objects that currently have no
+     * edit field because they are hidden by the filter.
+     */
+    private HashMap<String, IIpsObjectPart> allModelObjectsCache = new HashMap<>();
+
+    private boolean modelObjectsCacheBuilt = false;
 
     /** Contains all ui controller */
     private List<Control> allBindedControls = new ArrayList<>();
@@ -706,6 +717,8 @@ public class TestCaseDetailArea {
         firstAttributeEditFields.clear();
         sectionControls.clear();
         editField2ModelObject.clear();
+        allModelObjectsCache.clear();
+        modelObjectsCacheBuilt = false;
     }
 
     /**
@@ -784,22 +797,76 @@ public class TestCaseDetailArea {
             testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, message, true);
             return true;
         }
+        // no edit field currently exists for this attribute, e.g. because it is hidden by the
+        // input/expected-result content filter - update the model object directly so the value
+        // is not silently lost
+        IIpsObjectPart modelObject = getModelObject(editFieldUniqueKey);
+        if (modelObject == null) {
+            modelObject = getModelObject(TestCaseSection.VALUESECTION + editFieldUniqueKey);
+        }
+        if (modelObject != null) {
+            fixedFieldsCache.add(editFieldUniqueKey);
+            updateModelValue(modelObject, actualValue);
+            return true;
+        }
         return false;
     }
 
     private void updateValue(EditField<?> editField, String actualValue) {
-        IIpsObjectPart object = editField2ModelObject.get(editField);
+        updateModelValue(editField2ModelObject.get(editField), actualValue);
+    }
+
+    private void updateModelValue(IIpsObjectPart object, String actualValue) {
         String actualValueToSet = nullIfNullRepresentation(actualValue);
-        if (object != null) {
-            switch (object) {
-                case ITestValue testValue -> testValue.setValue(actualValueToSet);
-                case ITestAttributeValue testAttributeValue -> testAttributeValue.setValue(actualValueToSet);
-                case ITestRule testRule -> testRule.setViolationType(getTestRuleViolationType(actualValue));
-                default -> {
-                    // don't care
-                }
+        switch (object) {
+            case ITestValue testValue -> testValue.setValue(actualValueToSet);
+            case ITestAttributeValue testAttributeValue -> testAttributeValue.setValue(actualValueToSet);
+            case ITestRule testRule -> testRule.setViolationType(getTestRuleViolationType(actualValue));
+            case null, default -> {
+                // don't care (no model object found, or an unknown/unsupported type)
             }
         }
+    }
+
+    /**
+     * Returns the test value, test rule or test attribute value which is identified by the given
+     * unique key, regardless of whether it currently has a visible edit field.
+     */
+    IIpsObjectPart getModelObject(String uniqueKey) {
+        buildModelObjectsCacheIfNeeded();
+        IIpsObjectPart object = allModelObjectsCache.get(uniqueKey);
+        if (object == null) {
+            object = allModelObjectsCache.get((TestCaseSection.VALUESECTION + uniqueKey).toUpperCase());
+            if (object == null && uniqueKey != null) {
+                // fallback
+                object = allModelObjectsCache.get(uniqueKey.toUpperCase());
+            }
+        }
+        return object;
+    }
+
+    private void buildModelObjectsCacheIfNeeded() {
+        if (modelObjectsCacheBuilt) {
+            return;
+        }
+        ITestCase testCase = contentProvider.getTestCase();
+        for (ITestValue testValue : testCase.getTestValues()) {
+            putModelObject(testCaseSection.getUniqueKey(testValue), testValue);
+        }
+        for (ITestRule testRule : testCase.getTestRuleObjects()) {
+            putModelObject(testCaseSection.getUniqueKey(testRule), testRule);
+        }
+        for (ITestPolicyCmpt testPolicyCmpt : testCase.getAllTestPolicyCmpt()) {
+            String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
+            for (ITestAttributeValue attributeValue : testPolicyCmpt.getTestAttributeValues()) {
+                putModelObject(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), attributeValue);
+            }
+        }
+        modelObjectsCacheBuilt = true;
+    }
+
+    private void putModelObject(String key, IIpsObjectPart object) {
+        allModelObjectsCache.put(key.toUpperCase(), object);
     }
 
     private String nullIfNullRepresentation(String actualValue) {

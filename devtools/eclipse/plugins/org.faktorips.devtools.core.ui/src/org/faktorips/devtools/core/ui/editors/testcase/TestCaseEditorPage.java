@@ -60,6 +60,13 @@ public class TestCaseEditorPage extends IpsObjectEditorPage {
         return contentProvider;
     }
 
+    /**
+     * Returns the test case section this page displays.
+     */
+    TestCaseSection getSection() {
+        return section;
+    }
+
     void saveState() {
         section.saveState();
     }

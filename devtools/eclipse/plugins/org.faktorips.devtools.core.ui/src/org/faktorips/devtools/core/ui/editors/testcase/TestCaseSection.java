@@ -286,8 +286,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private String findUniqueEditFieldKey(FailureDetails failureDetails) {
         String uniqueEditFieldKey = getUniqueEditFieldKey(failureDetails.getObjectName(),
                 failureDetails.getAttributeName());
-        EditField<?> editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
-        if (editField != null) {
+        if (editFieldOrModelObjectExists(uniqueEditFieldKey)) {
             return uniqueEditFieldKey;
         }
 
@@ -297,8 +296,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$
         uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset + TestCaseHierarchyPath.OFFSET_SEPARATOR + "0", //$NON-NLS-1$
                 failureDetails.getAttributeName());
-        editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
-        if (editField != null) {
+        if (editFieldOrModelObjectExists(uniqueEditFieldKey)) {
             return uniqueEditFieldKey;
         }
 
@@ -310,11 +308,20 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 + TestCaseHierarchyPath.OFFSET_SEPARATOR + lastKey;
         fieldKeyWithOffset = fieldKeyWithOffset.replaceAll("[0-9]\\.", TestCaseHierarchyPath.OFFSET_SEPARATOR + "0\\."); //$NON-NLS-1$ //$NON-NLS-2$
         uniqueEditFieldKey = getUniqueEditFieldKey(fieldKeyWithOffset, failureDetails.getAttributeName());
-        editField = testCaseDetailArea.getEditField(uniqueEditFieldKey);
-        if (editField != null) {
+        if (editFieldOrModelObjectExists(uniqueEditFieldKey)) {
             return uniqueEditFieldKey;
         }
         return null;
+    }
+
+    /**
+     * Returns whether the given key currently identifies a visible edit field or - if the
+     * attribute is hidden by the input/expected-result content filter - a model object that can
+     * be updated directly.
+     */
+    private boolean editFieldOrModelObjectExists(String uniqueEditFieldKey) {
+        return testCaseDetailArea.getEditField(uniqueEditFieldKey) != null
+                || testCaseDetailArea.getModelObject(uniqueEditFieldKey) != null;
     }
 
     private void contentsHasChanged(ContentChangeEvent event) {
@@ -1900,6 +1907,13 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      */
     TestCaseContentProvider getContentProvider() {
         return contentProvider;
+    }
+
+    /**
+     * Returns the detail area of this section.
+     */
+    TestCaseDetailArea getTestCaseDetailArea() {
+        return testCaseDetailArea;
     }
 
     /**
