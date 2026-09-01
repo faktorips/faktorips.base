@@ -12,10 +12,12 @@ package org.faktorips.devtools.model.util;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class AlphaNumericComparator implements Comparator<String>, Serializable {
@@ -42,12 +44,15 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
 
         private final Matcher input2Matcher;
 
+        private final Collator collator;
+
         public AlphaNumericCompare(String input1, String input2) {
             this.input1 = input1;
             this.input2 = input2;
 
             input1Matcher = NUMERIC_PATTERN.matcher(input1);
             input2Matcher = NUMERIC_PATTERN.matcher(input2);
+            collator = Collator.getInstance(Abstractions.getLocale());
         }
 
         public int compare() {
@@ -65,12 +70,12 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
          */
         private int compareAlphabeticPart(int prevPosition1, int prevPosition2) {
             if (!input1Matcher.find() || !input2Matcher.find() || input1Matcher.start() != input2Matcher.start()) {
-                return input1.substring(prevPosition1).compareTo(input2.substring(prevPosition2));
+                return collator.compare(input1.substring(prevPosition1), input2.substring(prevPosition2));
             }
             int startNum = input1Matcher.start();
             String alphaPart1 = input1.substring(prevPosition1, startNum);
             String alphaPart2 = input2.substring(prevPosition2, startNum);
-            int alphaResult = alphaPart1.compareTo(alphaPart2);
+            int alphaResult = collator.compare(alphaPart1, alphaPart2);
             if (alphaResult == 0) {
                 return compareNumericPart();
             } else {
