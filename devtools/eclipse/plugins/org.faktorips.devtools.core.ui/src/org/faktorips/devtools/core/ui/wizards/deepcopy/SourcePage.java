@@ -825,6 +825,7 @@ public class SourcePage extends WizardPage {
             }
             if (evt.getPropertyName().equals(DeepCopyPresentationModel.NEW_VALID_FROM)) {
                 refreshVersionId();
+                getWizard().updateTargetPackageForNewValidFrom();
             }
             if (evt.getPropertyName().equals(LinkStatus.CHECKED)
                     || evt.getPropertyName().equals(LinkStatus.COPY_OR_LINK)) {
@@ -851,12 +852,14 @@ public class SourcePage extends WizardPage {
         }
 
         private void expandOrCollapse(PropertyChangeEvent evt, IProductCmptStructureReference reference) {
-            if (!reference.isRoot()) {
-                if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
-                    tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
-                } else {
-                    tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
-                }
+            if (reference.isRoot()) {
+                return;
+            }
+            if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
+                tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
+                updateAfterExpansion(reference, true);
+            } else if (Boolean.FALSE.equals(evt.getNewValue())) {
+                tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
             }
         }
 

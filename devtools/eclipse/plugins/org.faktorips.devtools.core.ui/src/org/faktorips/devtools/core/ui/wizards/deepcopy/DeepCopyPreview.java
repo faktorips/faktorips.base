@@ -73,15 +73,14 @@ public class DeepCopyPreview {
         oldObject2newNameMap.clear();
         patternMatched = false;
 
-        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(false);
+        Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(true);
         SubMonitor subProgressMonitor = SubMonitor.convert(progressMonitor, toCopy.size() + 5);
-        int segmentsToIgnore = getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = presentationModel.getTargetPackage();
         IIpsPackageFragmentRoot root = presentationModel.getTargetPackageRoot();
 
         for (IProductCmptStructureReference element : toCopy) {
             try {
-                validateTarget(element, segmentsToIgnore, root, base);
+                validateTarget(element, root, base);
             } catch (PatternSyntaxException e) {
                 errorElements.put(
                         element,
@@ -116,7 +115,6 @@ public class DeepCopyPreview {
     }
 
     private void validateTarget(IProductCmptStructureReference modified,
-            int segmentsToIgnore,
             IIpsPackageFragmentRoot root,
             IIpsPackageFragment base) {
         if (isNullOrNotExists(root, base)) {
@@ -124,7 +122,8 @@ public class DeepCopyPreview {
         }
         IIpsObject correspondingIpsObject = modified.getWrappedIpsObject();
 
-        String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
+        String packageName = buildTargetPackageName(base, correspondingIpsObject,
+                getSegmentsToIgnore(correspondingIpsObject));
         IIpsPackageFragment targetPackage = root.getIpsPackageFragment(packageName);
 
         String newName = getNewName(targetPackage, correspondingIpsObject);
@@ -201,32 +200,46 @@ public class DeepCopyPreview {
     }
 
     /**
-     * Calculate the number of <code>IPath</code>-segements which are equal for all product
-     * component structure refences to copy.
-     * 
-     * @return 0 if no elements are contained in toCopy, number of all segments, if only one product
-     *             component is contained in toCopy and the calculated value as described above for
-     *             all other cases.
+     * Calculates the number of <code>IPath</code> segments of the given source's package that are
+     * also part of the copied root product component's package. Only these leading segments can be
+     * safely stripped when building the target package name for the source in
+     * {@link #buildTargetPackageName(IIpsPackageFragment, IIpsObject, int)}.
      */
-    int getSegmentsToIgnore(Set<IProductCmptStructureReference> toCopy) {
-        if (toCopy.size() == 0) {
+    int getSegmentsToIgnore(IIpsObject source) {
+        IIpsPackageFragment rootPackage = getRootPackage();
+        if (source == null || rootPackage == null) {
+            return 0;
+        }
+        IPath rootPath = rootPackage.getRelativePath();
+        IPath sourcePath = source.getIpsPackageFragment().getRelativePath();
+        return sourcePath.matchingFirstSegments(rootPath);
+    }
+
+    /**
+     * Calculates the number of <code>IPath</code> segments which are equal for all given product
+     * component structure references.
+     *
+     * @return 0 if references is empty, the number of all segments if only one reference is
+     *             contained in references and the calculated value as described above for all other
+     *             cases.
+     */
+    int getCommonSegmentsToIgnore(Set<IProductCmptStructureReference> references) {
+        if (references.isEmpty()) {
             return 0;
         }
 
         IPath refPath = null;
         int ignore = Integer.MAX_VALUE;
-        for (IProductCmptStructureReference reference : toCopy) {
+        for (IProductCmptStructureReference reference : references) {
             IIpsObject ipsObject = reference.getWrappedIpsObject();
-            if (refPath == null) {
-                refPath = ipsObject.getIpsPackageFragment().getRelativePath();
-            }
-            int tmpIgnore;
             if (ipsObject == null) {
                 continue;
             }
+            if (refPath == null) {
+                refPath = ipsObject.getIpsPackageFragment().getRelativePath();
+            }
             IPath nextPath = ipsObject.getIpsPackageFragment().getRelativePath();
-            tmpIgnore = nextPath.matchingFirstSegments(refPath);
-            ignore = Math.min(ignore, tmpIgnore);
+            ignore = Math.min(ignore, nextPath.matchingFirstSegments(refPath));
         }
 
         return ignore;
@@ -236,8 +249,11 @@ public class DeepCopyPreview {
      * Constructs the name of the target package
      */
     String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
-        if (targetBase == null || !targetBase.getRoot().exists()) {
+        if (targetBase == null || !targetBase.getRoot().exists() || source == null) {
             return IpsStringUtils.EMPTY;
+        }
+        if (!isWithinRootPackage(source)) {
+            return source.getIpsPackageFragment().getName();
         }
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
         String toAppend = subPath.toString().replace('/', IIpsPackageFragment.SEPARATOR);
@@ -249,6 +265,19 @@ public class DeepCopyPreview {
         }
 
         return base + toAppend;
+    }
+
+    private boolean isWithinRootPackage(IIpsObject source) {
+        IIpsPackageFragment rootPackage = getRootPackage();
+        if (rootPackage == null) {
+            return false;
+        }
+        return rootPackage.getRelativePath().isPrefixOf(source.getIpsPackageFragment().getRelativePath());
+    }
+
+    private IIpsPackageFragment getRootPackage() {
+        IProductCmpt rootProductCmpt = presentationModel.getStructure().getRoot().getProductCmpt();
+        return rootProductCmpt == null ? null : rootProductCmpt.getIpsPackageFragment();
     }
 
     /**
@@ -393,14 +422,14 @@ public class DeepCopyPreview {
 
         Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<>();
 
-        int segmentsToIgnore = getSegmentsToIgnore(toCopy);
         IIpsPackageFragmentRoot ipsPackageFragmentRoot = presentationModel.getTargetPackageRoot();
         IIpsPackageFragment base = presentationModel.getTargetPackage();
 
         for (IProductCmptStructureReference element : toCopy) {
             IIpsObject correspondingIpsObject = element.getWrappedIpsObject();
 
-            String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
+            String packageName = buildTargetPackageName(base, correspondingIpsObject,
+                    getSegmentsToIgnore(correspondingIpsObject));
             IIpsPackageFragment targetPackage = ipsPackageFragmentRoot.getIpsPackageFragment(packageName);
 
             IIpsSrcFile file = getNewIpsSrcFile(targetPackage, correspondingIpsObject);

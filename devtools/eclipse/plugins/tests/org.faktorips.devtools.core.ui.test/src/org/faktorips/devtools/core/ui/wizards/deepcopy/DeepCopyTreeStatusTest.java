@@ -14,9 +14,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -29,6 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -148,6 +146,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
             IIpsPackageFragmentRoot packageFragmentRoot = i < 3 ? packageRoots[i % packageRoots.length]
                     : childPackageRoots[i % childPackageRoots.length];
             when(packageFragment.getRoot()).thenReturn(packageFragmentRoot);
+            when(packageFragment.getRelativePath()).thenReturn(new Path("pack"));
             when(srcFile.getIpsPackageFragment()).thenReturn(packageFragment);
             when(productCmpts[i].getIpsPackageFragment()).thenReturn(packageFragment);
             when(productCmptGenerations[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
@@ -235,42 +234,60 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         Set<IProductCmptStructureReference> allCopyEnabledElements = deepCopyTreeStatus
                 .getAllEnabledElements(CopyOrLink.COPY, structure, true);
         // 6 product components + 1 is referenced twice (productCmpts[3])
-        assertEquals(7, allCopyEnabledElements.size());
+        assertThat(allCopyEnabledElements.size(), is(7));
         Set<IProductCmptStructureReference> allLinkEnabledElements = deepCopyTreeStatus
                 .getAllEnabledElements(CopyOrLink.LINK, structure, true);
-        assertEquals(0, allLinkEnabledElements.size());
+        assertThat(allLinkEnabledElements.size(), is(0));
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            assertTrue(deepCopyTreeStatus.isEnabled(reference));
+            assertThat(deepCopyTreeStatus.isEnabled(reference), is(true));
         }
 
         IProductCmptStructureReference r1 = structure.getRoot().getChildren()[0].getChildren()[1];
         deepCopyTreeStatus.setCopyOrLink(r1, CopyOrLink.LINK);
         allCopyEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, true);
-        assertEquals(5, allCopyEnabledElements.size());
+        assertThat(allCopyEnabledElements.size(), is(5));
         allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
-        assertEquals(1, allLinkEnabledElements.size());
+        assertThat(allLinkEnabledElements.size(), is(1));
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.getParent() == r1 || (!reference.isRoot() && reference.getParent().getParent() == r1)) {
-                assertFalse(deepCopyTreeStatus.isEnabled(reference));
+                assertThat(deepCopyTreeStatus.isEnabled(reference), is(false));
             } else {
-                assertTrue(deepCopyTreeStatus.isEnabled(reference));
+                assertThat(deepCopyTreeStatus.isEnabled(reference), is(true));
             }
         }
 
         deepCopyTreeStatus.setChecked(r1, false);
         allCopyEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, true);
-        assertEquals(5, allCopyEnabledElements.size());
+        assertThat(allCopyEnabledElements.size(), is(5));
         allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
-        assertEquals(0, allLinkEnabledElements.size());
+        assertThat(allLinkEnabledElements.size(), is(0));
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference == r1 || reference.getParent() == r1
                     || (!reference.isRoot() && reference.getParent().getParent() == r1)) {
-                assertFalse(deepCopyTreeStatus.isEnabled(reference));
+                assertThat(deepCopyTreeStatus.isEnabled(reference), is(false));
             } else {
-                assertTrue(deepCopyTreeStatus.isEnabled(reference));
+                assertThat(deepCopyTreeStatus.isEnabled(reference), is(true));
             }
         }
+    }
+
+    @Test
+    public void testSetCopyOrLink_SwitchingBackToCopyResetsChildrenToCopy() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_COPY);
+        mockProducts();
+        initDeepCopyTreeStatusWithStructure();
+
+        IProductCmptStructureReference r1 = structure.getRoot().getChildren()[0].getChildren()[1];
+        IProductCmptStructureReference child = r1.getChildren()[0].getChildren()[0];
+
+        deepCopyTreeStatus.setCopyOrLink(child, CopyOrLink.LINK);
+        assertThat(deepCopyTreeStatus.getCopyOrLinkStatus(child), is(CopyOrLink.LINK));
+
+        deepCopyTreeStatus.setCopyOrLink(r1, CopyOrLink.LINK);
+        deepCopyTreeStatus.setCopyOrLink(r1, CopyOrLink.COPY);
+
+        assertThat(deepCopyTreeStatus.getCopyOrLinkStatus(child), is(CopyOrLink.COPY));
     }
 
     @Test
@@ -281,9 +298,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             } else {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             }
         }
     }
@@ -295,11 +312,11 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         initDeepCopyTreeStatusWithStructure();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()) {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             } else {
-                assertEquals(CopyOrLink.LINK, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.LINK));
             }
         }
     }
@@ -313,9 +330,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()
                     || !(reference instanceof IProductCmptTypeAssociationReference)) {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             } else {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             }
         }
     }
@@ -336,11 +353,11 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
                 any(IProductCmptStructureReference.class));
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()) {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             } else {
-                assertEquals(CopyOrLink.LINK, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.LINK));
             }
         }
     }
@@ -365,9 +382,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference.isRoot()) {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             } else {
 
                 /* @formatter:off
@@ -380,9 +397,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
                  * 4  5
                  * @formatter:on */
                 if (Integer.parseInt(reference.getWrappedIpsObject().getName()) < 3) {
-                    assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                    assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
                 } else {
-                    assertEquals(CopyOrLink.LINK, deepCopyTreeStatus.getCopyOrLink(reference));
+                    assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.LINK));
                 }
             }
         }
@@ -399,9 +416,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             CopyOrLink copyOrLink = deepCopyTreeStatus.getCopyOrLink(reference);
             if (reference.isRoot()) {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             } else {
 
                 /* @formatter:off
@@ -417,9 +434,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
                 int number = Integer.parseInt(reference.getWrappedIpsObject().getName());
                 boolean isInSamePackageRoot = number % 2 == 0;
                 if (isInSamePackageRoot) {
-                    assertEquals(CopyOrLink.COPY, copyOrLink, number + " should be copied");
+                    assertThat(number + " should be copied", copyOrLink, is(CopyOrLink.COPY));
                 } else {
-                    assertEquals(CopyOrLink.LINK, copyOrLink, number + " should be linked");
+                    assertThat(number + " should be linked", copyOrLink, is(CopyOrLink.LINK));
                 }
             }
         }
@@ -437,9 +454,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             CopyOrLink copyOrLink = deepCopyTreeStatus.getCopyOrLink(reference);
             if (reference.isRoot()) {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertThat(deepCopyTreeStatus.getCopyOrLink(reference), is(CopyOrLink.UNDEFINED));
             } else {
 
                 /* @formatter:off
@@ -457,9 +474,9 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
                 boolean isInSamePackageRoot = number % 2 == 0;
                 boolean isInSameProject = number < 3;
                 if (isInSamePackageRoot && isInSameProject) {
-                    assertEquals(CopyOrLink.COPY, copyOrLink, number + " should be copied");
+                    assertThat(number + " should be copied", copyOrLink, is(CopyOrLink.COPY));
                 } else {
-                    assertEquals(CopyOrLink.LINK, copyOrLink, number + " should be linked");
+                    assertThat(number + " should be linked", copyOrLink, is(CopyOrLink.LINK));
                 }
             }
         }

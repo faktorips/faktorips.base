@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
@@ -41,13 +42,10 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
             "overlays/LinkOverlay.gif", //$NON-NLS-1$
             true);
     private final DeepCopyPreview deepCopyPreview;
-    private final int segmentsToIgnore;
 
     public DeepCopyLabelProvider(DeepCopyPreview deepCopyPreview) {
         this.deepCopyPreview = deepCopyPreview;
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
-        segmentsToIgnore = deepCopyPreview.getSegmentsToIgnore(deepCopyPreview.getPresentationModel()
-                .getAllCopyElements(false));
     }
 
     @Override
@@ -149,29 +147,30 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
 
     private String getSuffixFor(Object item) {
         return switch (item) {
-            case IProductCmptReference productCmptReference -> {
-                String packageName = ""; //$NON-NLS-1$
-                if (deepCopyPreview.getPresentationModel().getTreeStatus()
-                        .getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {
-                    packageName = deepCopyPreview.buildTargetPackageName(deepCopyPreview.getPresentationModel()
-                            .getTargetPackage(), productCmptReference.getWrappedIpsObject(), segmentsToIgnore);
-                } else {
-                    packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
-                }
-                if (IpsStringUtils.isEmpty(packageName)) {
-                    packageName = ""; //$NON-NLS-1$
-                }
-                yield " - " + packageName; //$NON-NLS-1$
-            }
-            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> {
-                String packageName = deepCopyPreview.buildTargetPackageName(
-                        deepCopyPreview.getPresentationModel().getTargetPackage(),
-                        productCmptStructureTblUsageReference.getWrappedIpsObject(),
-                        segmentsToIgnore);
-                yield " - " + packageName; //$NON-NLS-1$
-            }
+            case IProductCmptReference productCmptReference -> buildPackageNameSuffix(productCmptReference);
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference ->
+                buildPackageNameSuffix(productCmptStructureTblUsageReference);
             default -> IpsStringUtils.EMPTY;
         };
+    }
+
+    private String buildPackageNameSuffix(IProductCmptStructureReference reference) {
+        IIpsObject source = reference.getWrappedIpsObject();
+        if (source == null) {
+            return IpsStringUtils.EMPTY;
+        }
+        String packageName;
+        if (deepCopyPreview.getPresentationModel().getTreeStatus().getCopyOrLink(reference) == CopyOrLink.COPY) {
+            packageName = deepCopyPreview.buildTargetPackageName(
+                    deepCopyPreview.getPresentationModel().getTargetPackage(), source,
+                    deepCopyPreview.getSegmentsToIgnore(source));
+        } else {
+            packageName = source.getIpsPackageFragment().getName();
+        }
+        if (IpsStringUtils.isEmpty(packageName)) {
+            packageName = ""; //$NON-NLS-1$
+        }
+        return " - " + packageName; //$NON-NLS-1$
     }
 
     @Override

@@ -326,9 +326,21 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             LinkStatus status = getStatus(reference);
             CopyOrLink oldValue = status.getCopyOrLink();
             updateLinkStatusFor(reference, null, value);
+            if (value == CopyOrLink.COPY) {
+                resetChildrenToCopy(reference);
+            }
             if (oldValue != null && !oldValue.equals(value)) {
                 notifyListeners(new PropertyChangeEvent(reference, LinkStatus.COPY_OR_LINK, oldValue, value));
             }
+        }
+    }
+
+    private void resetChildrenToCopy(IProductCmptStructureReference reference) {
+        for (IProductCmptStructureReference child : reference.getChildren()) {
+            if (child instanceof IProductCmptReference || child instanceof IProductCmptStructureTblUsageReference) {
+                updateLinkStatusFor(child, null, CopyOrLink.COPY);
+            }
+            resetChildrenToCopy(child);
         }
     }
 

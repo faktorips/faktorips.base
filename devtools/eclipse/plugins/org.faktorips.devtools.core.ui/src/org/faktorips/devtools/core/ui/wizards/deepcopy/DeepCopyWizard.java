@@ -11,9 +11,14 @@
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.IPath;
@@ -54,6 +59,8 @@ public class DeepCopyWizard extends ResizableWizard {
     public static final int TYPE_NEW_VERSION = 100;
     private static final int DEFAULT_WIDTH = 800;
     private static final int DEFAULT_HEIGHT = 800;
+    private static final int MIN_PLAUSIBLE_YEAR = 1800;
+    private static final int MAX_PLAUSIBLE_YEAR = 2300;
 
     private static final String SECTION_NAME = "DeepCopyWizard"; //$NON-NLS-1$
 
@@ -64,6 +71,7 @@ public class DeepCopyWizard extends ResizableWizard {
     private IIpsSrcFile copyResultRoot;
     private int type;
     private List<IAdditionalDeepCopyWizardPage> additionalPages;
+    private OptionalInt lastAppliedPackageYear = OptionalInt.empty();
 
     /**
      * Creates a new wizard which can make a deep copy of the given product.
@@ -164,10 +172,13 @@ public class DeepCopyWizard extends ResizableWizard {
 
         getPresentationModel().setTargetPackageRoot(packRoot);
         getPresentationModel().setTargetPackage(defaultPackage);
+
+        lastAppliedPackageYear = extractYear(defaultPackage.getName());
+        updateTargetPackageForNewValidFrom();
     }
 
     IIpsPackageFragment getDefaultPackage() {
-        int ignore = deepCopyPreview.getSegmentsToIgnore(getStructure().toSet(true));
+        int ignore = deepCopyPreview.getCommonSegmentsToIgnore(getPresentationModel().getAllCopyElements(true));
         IIpsPackageFragment pack = getStructure().getRoot().getProductCmpt().getIpsPackageFragment();
         int segments = pack.getRelativePath().segmentCount();
         if (segments - ignore > 0) {
@@ -175,6 +186,69 @@ public class DeepCopyWizard extends ResizableWizard {
             pack = pack.getRoot().getIpsPackageFragment(path.toString().replace('/', '.'));
         }
         return pack;
+    }
+
+    /**
+     * Keeps a year contained in the target package name in sync with the "valid from" date, the
+     * same way the version id is kept in sync (see {@link SourcePage#refreshVersionId()}). The year
+     * to replace is the one last found in (or applied to) the target package name itself - not the
+     * generation's or the wizard's "valid from" date, which may not match the package name at all.
+     */
+    void updateTargetPackageForNewValidFrom() {
+        GregorianCalendar newValidFrom = getPresentationModel().getNewValidFrom();
+        IIpsPackageFragment targetPackage = getPresentationModel().getTargetPackage();
+        IIpsPackageFragmentRoot targetPackageRoot = getPresentationModel().getTargetPackageRoot();
+        if (newValidFrom == null || targetPackage == null || targetPackageRoot == null
+                || lastAppliedPackageYear.isEmpty()) {
+            return;
+        }
+
+        int oldYear = lastAppliedPackageYear.getAsInt();
+        int newYear = newValidFrom.get(Calendar.YEAR);
+        if (newYear != oldYear) {
+            String updatedName = replaceYearToken(targetPackage.getName(), oldYear, newYear);
+            if (updatedName != null) {
+                getPresentationModel().setTargetPackage(targetPackageRoot.getIpsPackageFragment(updatedName));
+            }
+            lastAppliedPackageYear = OptionalInt.of(newYear);
+        }
+    }
+
+    /**
+     * Extracts a plausible year (a 4-digit number in {@value #MIN_PLAUSIBLE_YEAR}-
+     * {@value #MAX_PLAUSIBLE_YEAR}) contained in the given package name, if any. If there are
+     * several, the last (rightmost) one is returned, since that is the one most likely to denote
+     * e.g. the product's generation year rather than some unrelated leading number.
+     */
+    static OptionalInt extractYear(String packageName) {
+        return Pattern.compile("(?<!\\d)\\d{4}(?!\\d)").matcher(packageName) //$NON-NLS-1$
+                .results()
+                .mapToInt(result -> Integer.parseInt(result.group()))
+                .filter(year -> year >= MIN_PLAUSIBLE_YEAR && year <= MAX_PLAUSIBLE_YEAR)
+                .reduce((first, last) -> last);
+    }
+
+    /**
+     * Replaces the given old year in the given package name with the new year 
+     * Returns <code>null</code> if neither representation of the old year is contained in the
+     * package name.
+     */
+    static String replaceYearToken(String packageName, int oldYear, int newYear) {
+        String oldYear4 = String.format("%04d", oldYear); //$NON-NLS-1$
+        String newYear4 = String.format("%04d", newYear); //$NON-NLS-1$
+        String replaced = replaceYearToken(packageName, oldYear4, newYear4);
+        if (replaced != null) {
+            return replaced;
+        }
+        return replaceYearToken(packageName, oldYear4.substring(2), newYear4.substring(2));
+    }
+
+    private static String replaceYearToken(String packageName, String oldToken, String newToken) {
+        Matcher matcher = Pattern.compile("(?<!\\d)" + oldToken + "(?!\\d)").matcher(packageName); //$NON-NLS-1$ //$NON-NLS-2$
+        if (matcher.find()) {
+            return matcher.replaceAll(newToken);
+        }
+        return null;
     }
 
     @Override
