@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ public class IpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsViaEx
      * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
      *
      * @see IpsModelExtensionsViaEclipsePlugins#get IpsModelExtensionsViaEclipsePlugins#get for the
-     *          singleton instance initialized from the Eclipse {@link Platform}.
+     *          singleton instance initialized from the Eclipse Platform.
      */
     protected IpsModelExtensionsViaEclipsePlugins(IExtensionRegistry extensionRegistry) {
         super(extensionRegistry);
@@ -41,7 +41,7 @@ public class IpsModelExtensionsViaEclipsePlugins extends IpsModelExtensionsViaEx
 
     /**
      * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
-     * 
+     *
      * @param testInstance an IpsModelExtensionsViaEclipsePlugins with test data
      */
     protected static void setInstanceForTest(IpsModelExtensionsViaEclipsePlugins testInstance) {
