@@ -69,10 +69,14 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     private IExtensionRegistry oldRegistry;
 
+    private GregorianCalendar originalDefaultValidityDate;
+
     @Override
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
+
+        originalDefaultValidityDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
 
         // PropertyEditFieldFactory setup code
         editFieldFactory = (ipsObjectPart, extensionArea, toolkit) -> null;
@@ -144,6 +148,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     public void tearDown() throws Exception {
         super.tearDown();
         IpsUIPlugin.getDefault().setExtensionRegistry(oldRegistry);
+        IpsUIPlugin.getDefault().setDefaultValidityDate(originalDefaultValidityDate);
     }
 
     @Test

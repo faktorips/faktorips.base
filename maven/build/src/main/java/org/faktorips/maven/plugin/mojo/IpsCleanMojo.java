@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
 import javax.inject.Inject;
@@ -74,11 +75,13 @@ public class IpsCleanMojo extends AbstractMojo {
                         FileLock ignored = lockChannel.lock()) {
                     getLog().info("Deleting " + workDir);
                     FileUtils.deleteDirectory(workDir);
+                    Files.deleteIfExists(WorkingDirectory.sentinelFileFor(workDir).toPath());
                 } catch (IOException e) {
                     throw new MojoExecutionException("Error while cleaning work directory " + workDir.getAbsolutePath(),
                             e);
                 }
-                lockFile.delete();
+                // the lock file is intentionally kept: deleting it while another process holds a
+                // lock on it would leave both processes locking different files
             }
         }
     }

@@ -14,12 +14,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -98,6 +101,28 @@ public class WorkingDirectoryTest {
 
         assertThat(lockFile.getParentFile(), is(workDir.getParentFile()));
         assertThat(lockFile.getName(), is(workDir.getName() + ".lock"));
+    }
+
+    @Test
+    public void testSentinelFileFor_isNextToWorkDir() {
+        File workDir = new File(tempDir, "sha1abc");
+
+        File sentinelFile = WorkingDirectory.sentinelFileFor(workDir);
+
+        assertThat(sentinelFile.getParentFile(), is(workDir.getParentFile()));
+        assertThat(sentinelFile.getName(), is(workDir.getName() + ".building"));
+    }
+
+    @Test
+    public void testSentinelFileFor_survivesDeletionOfWorkDir() throws Exception {
+        File workDir = new File(tempDir, "sha1abc");
+        workDir.mkdirs();
+        File sentinelFile = WorkingDirectory.sentinelFileFor(workDir);
+        Files.writeString(sentinelFile.toPath(), "group.id:artifact.id");
+
+        FileUtils.deleteDirectory(workDir);
+
+        assertTrue(sentinelFile.exists());
     }
 
     @Test

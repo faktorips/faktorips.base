@@ -87,4 +87,20 @@ public class WorkingDirectory {
     public static File lockFileFor(File workDir) {
         return new File(workDir.getParentFile(), workDir.getName() + ".lock");
     }
+
+    /**
+     * Returns the sentinel file marking a build that is currently running against the given working
+     * directory. It is created before Eclipse is launched and deleted once the launch has returned,
+     * so finding it at the start of a build means the previous build's JVM was killed and the
+     * workspace may be left in an inconsistent state.
+     * <p>
+     * Like the {@link #lockFileFor(File) lock file} it is placed next to the working directory, not
+     * inside it, because the workspace area is deleted when recovering from such a state.
+     *
+     * @param workDir the working directory as returned by {@link #createFor}
+     * @return the sentinel file (e.g. {@code /tmp/.../SHA1.building})
+     */
+    public static File sentinelFileFor(File workDir) {
+        return new File(workDir.getParentFile(), workDir.getName() + ".building");
+    }
 }

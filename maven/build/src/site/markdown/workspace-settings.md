@@ -31,7 +31,17 @@ Therefore the default value is `true`.
 ### work
 The parameter `work` can be used to overwrite the location of the workspace used to compile the Faktor-IPS project.
 It must not be set to a directory inside the project's own directory, such as the project's target directory, as Eclipse can not import a project that contains the workspace directory.
-The default value is `${java.io.tmpdir}/${project.name}/eclipserun-work`.
+The default value is `${java.io.tmpdir}/${project.groupId}/${project.artifactId}/${project.version}/<SHA1 of the project directory>`.
+
+Because that path is derived from the project's directory and not from its contents, **the same workspace is reused by every Maven invocation against the same checkout**. That is intentional — it keeps incremental builds fast — but it has consequences for CI:
+
+* The workspace is only deleted by the `faktorips-clean` goal, which runs in Maven's `clean` phase. A build such as `mvn site install` that omits `clean` inherits the workspace of the previous invocation. If a job runs Maven more than once, either pass `clean` every time or accept the reuse.
+* Eclipse's `.project` and `.classpath` files are written into the project's own directory during the import. They are usually not checked in, so anything that removes untracked files (a "clean before checkout", a `git clean`) invalidates the reused workspace. The plugin detects and repairs such registrations, but a concurrent build of the same job sharing one checkout directory can still race on those files. Configure `disableConcurrentBuilds()` or a build-specific workspace for jobs that build Faktor-IPS projects.
+* If a build's JVM is killed (aborted job, out of memory), the workspace is discarded automatically on the next run, which costs a full rebuild. Regular build failures do not trigger this.
+* Set `work` explicitly if you need two builds to use separate workspaces for the same checkout.
+
+### forkedProcessTimeoutInSeconds
+The number of seconds after which the forked Eclipse process is killed. The default `0` waits forever, which means a hung Eclipse blocks the build until the CI job itself times out. Set `-Dfaktorips.forkedProcessTimeoutInSeconds=1800` to get a Maven failure with the build log instead.
 
 ### importAsMavenProject
 By default a Faktor-IPS project will be imported as Maven project, therefore it must have a pom.xml file.

@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -259,6 +260,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * Kill the forked process after a certain number of seconds. If set to 0, wait forever for the
      * process, never timing out.
      */
+    @Parameter(property = "faktorips.forkedProcessTimeoutInSeconds", defaultValue = "0")
     private int forkedProcessTimeoutInSeconds;
 
     /**
@@ -967,18 +969,6 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     private void executePlatform() throws MojoExecutionException, MojoFailureException {
-        // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
-        boolean clearWorkspaceBeforeLaunch = false;
-        EclipseRunMojo eclipseRunMojo;
-
-        if (isInDebugMode() || LoggingMode.original == loggingMode) {
-            eclipseRunMojo = createOriginalEclipseRunMojo(clearWorkspaceBeforeLaunch);
-        } else {
-            eclipseRunMojo = createLoggingEclipseRunMojo(clearWorkspaceBeforeLaunch);
-        }
-
-        removeIncompatibleTychoProjectsFromContextCache();
-
         // Two-level locking: JVM-synchronized prevents OverlappingFileLockException within one
         // JVM; FileLock blocks separate OS processes from sharing the same workspace concurrently.
         File lockFile = WorkingDirectory.lockFileFor(work);
@@ -987,7 +977,27 @@ public class IpsBuildMojo extends AbstractMojo {
             try (FileChannel lockChannel = FileChannel.open(lockFile.toPath(),
                     StandardOpenOption.CREATE, StandardOpenOption.WRITE);
                     FileLock ignored = lockChannel.lock()) {
-                eclipseRunMojo.execute();
+                Path sentinel = WorkingDirectory.sentinelFileFor(work).toPath();
+                boolean clearWorkspaceBeforeLaunch = Files.exists(sentinel);
+                if (clearWorkspaceBeforeLaunch) {
+                    getLog().warn("The previous Faktor-IPS build was killed before it could finish. "
+                            + "Discarding its workspace to avoid building against inconsistent metadata.");
+                }
+                EclipseRunMojo eclipseRunMojo;
+                if (isInDebugMode() || LoggingMode.original == loggingMode) {
+                    eclipseRunMojo = createOriginalEclipseRunMojo(clearWorkspaceBeforeLaunch);
+                } else {
+                    eclipseRunMojo = createLoggingEclipseRunMojo(clearWorkspaceBeforeLaunch);
+                }
+
+                removeIncompatibleTychoProjectsFromContextCache();
+
+                Files.writeString(sentinel, project.getId() + " started at " + Instant.now());
+                try {
+                    eclipseRunMojo.execute();
+                } finally {
+                    Files.deleteIfExists(sentinel);
+                }
             } catch (MojoExecutionException | MojoFailureException e) {
                 throw e;
             } catch (IOException e) {
