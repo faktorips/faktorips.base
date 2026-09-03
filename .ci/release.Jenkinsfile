@@ -142,11 +142,11 @@ pipeline {
                     uploadRelease() {
                         if (isAlpha) {
                             withMaven(publisherStrategy: 'EXPLICIT') {
-                                sh "mvn -V deploy -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind"
+                                sh "mvn -V deploy -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t toolchains.xml"
                             }
                         } else {
                             deployToMavenCentral(
-                                    commands: ['mvn -V deploy -P mavenCentralRelease -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind']
+                                    commands: ['mvn -V deploy -P mavenCentralRelease -DskipTests=true -Dmaven.test.skip=true -Dversion.kind=$kind -t toolchains.xml']
                             )
                         }
                         def archiveZipFile = "org.faktorips.p2repository-${params.RELEASE_VERSION}.zip"
