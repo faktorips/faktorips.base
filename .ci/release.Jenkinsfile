@@ -105,13 +105,16 @@ pipeline {
                         sh "mvn -V -T 8 -fae -e site:stage -f maven"
                     }
 
-                    discoverReferenceBuild referenceJob: "${REFERENCE_JOB}", requiredResult: hudson.model.Result.SUCCESS
+                    // ignore for old builds
+                    // discoverReferenceBuild referenceJob: "${REFERENCE_JOB}", requiredResult: hudson.model.Result.SUCCESS
 
                     junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
-                    recordIssues enabledForFailure: true,
-                            qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
-                            tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
-                    jacoco sourceInclusionPattern: '**/*.java'
+
+                    // ignore for old builds
+                    // recordIssues enabledForFailure: true,
+                    //        qualityGates: [[threshold: 1, type: 'NEW', unstable: true]],
+                    //        tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+                    // jacoco sourceInclusionPattern: '**/*.java'
                 }
             }
         }
@@ -142,7 +145,7 @@ pipeline {
                     uploadRelease() {
                         if (isAlpha) {
                             withMaven(publisherStrategy: 'EXPLICIT') {
-                                sh "mvn -V deploy -DskipTests=true -Dmaven.test.skip=true-t toolchains.xml -Dversion.kind=$kind"
+                                sh "mvn -V deploy -DskipTests=true -Dmaven.test.skip=true -t toolchains.xml -Dversion.kind=$kind"
                             }
                         } else {
                             deployToMavenCentral(
