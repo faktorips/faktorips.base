@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ public class DoubleValueConverter extends NumberValueConverter {
             Double d = (Double)new DoubleDatatype().getValue(ipsValue);
             String result = d.toString();
             String decimalSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR);
-            if (tableFormat != null && decimalSeparator.length() == 1) {
+            if (decimalSeparator.length() == 1) {
                 result = result.replace(".", tableFormat.getProperty(CSVTableFormat.PROPERTY_DECIMAL_SEPARATOR_CHAR)); //$NON-NLS-1$
             }
 
