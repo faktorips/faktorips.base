@@ -9,6 +9,9 @@
         <version>24.1.19-SNAPSHOT</version>
     </parent>
 
+    <name>Faktor-IPS Fork of Eclipse EMF Codegen JMerge</name>
+    <description>Merge tool for generated source code</description>
+
     <artifactId>org.faktorips.eclipse.emf.codegen</artifactId>
 
     <packaging>eclipse-plugin</packaging>
