@@ -580,10 +580,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(java.nio.file.Path path) {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-        String pathRoot = PathUtil.toPortableString(path);
+        IPath pathRoot = new Path(PathUtil.toPortableString(path));
         for (IIpsPackageFragmentRoot root : roots) {
-            String rootName = root.getName();
-            if (pathRoot.equals(rootName) || pathRoot.startsWith(rootName + '/')) {
+            IPath rootPath = new Path(root.getName());
+            if (rootPath.isPrefixOf(pathRoot)) {
                 return root;
             }
         }

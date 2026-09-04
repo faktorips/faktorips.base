@@ -24,7 +24,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
 
-    public static final String PRODUCT_CMPT_LINK_IMAGE = "ProductCmptLink.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_LINK_IMAGE = "ProductCmptLink.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

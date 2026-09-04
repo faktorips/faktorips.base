@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.ui.wizards.ipspackage.NewIpsPackageWizard;
  * This action will then create the package defined by the path and all parent packages if they have
  * not been existing yet. The package name must be valid according to the java package name
  * conventions. Packages may only be created in <code>IpsSourceFolder</code>s.
- * 
+ *
  * @author Daniel Hohenberger
  */
 public class NewIpsPacketAction extends IpsAction {
@@ -35,7 +35,7 @@ public class NewIpsPacketAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.NewIpsPacketAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewIpsPackageFragment.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewIpsPackageFragment.svg")); //$NON-NLS-1$
     }
 
     @Override

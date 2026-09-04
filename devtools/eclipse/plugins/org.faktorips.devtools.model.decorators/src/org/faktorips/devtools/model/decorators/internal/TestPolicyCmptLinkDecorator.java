@@ -22,8 +22,8 @@ import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 
 public class TestPolicyCmptLinkDecorator implements IIpsObjectPartDecorator {
-    public static final String LINKED_POLICY_CMPT_TYPE_IMAGE = "LinkedPolicyCmptType.gif"; //$NON-NLS-1$
-    public static final String LINK_PRODUCT_CMPT_IMAGE = "LinkProductCmpt.gif"; //$NON-NLS-1$
+    public static final String LINKED_POLICY_CMPT_TYPE_IMAGE = "LinkedPolicyCmptType.svg"; //$NON-NLS-1$
+    public static final String LINK_PRODUCT_CMPT_IMAGE = "LinkProductCmpt.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

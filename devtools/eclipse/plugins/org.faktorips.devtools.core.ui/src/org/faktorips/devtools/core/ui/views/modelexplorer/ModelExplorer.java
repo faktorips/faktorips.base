@@ -278,11 +278,11 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         IAction flatLayoutAction = new LayoutAction(this, true);
         flatLayoutAction.setText(Messages.ModelExplorer_actionFlatLayout);
         flatLayoutAction.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "ModelExplorerFlatLayout.gif")); //$NON-NLS-1$
+                "ModelExplorerFlatLayout.svg")); //$NON-NLS-1$
         IAction hierarchicalLayoutAction = new LayoutAction(this, false);
         hierarchicalLayoutAction.setText(Messages.ModelExplorer_actionHierarchicalLayout);
         hierarchicalLayoutAction.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
-                "ModelExplorerHierarchicalLayout.gif")); //$NON-NLS-1$
+                "ModelExplorerHierarchicalLayout.svg")); //$NON-NLS-1$
 
         // Actions are unchecked as per default, check action for current layout
         if (isFlatLayout()) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -77,8 +77,8 @@ import org.faktorips.devtools.model.plugin.extensions.CachingSupplier;
 
 public class IpsDecorators implements IIpsDecorators {
 
-    public static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.gif"; //$NON-NLS-1$
-    public static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.gif"; //$NON-NLS-1$
+    public static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType.svg"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType.svg"; //$NON-NLS-1$
 
     private static IpsDecorators theInstance = new IpsDecorators();
 
@@ -91,34 +91,34 @@ public class IpsDecorators implements IIpsDecorators {
         // set this here, because the SimpleIpsElementDecorator will access it in its constructor
         theInstance = this;
         decorators.put(AbstractIpsSrcFile.class, new IpsSrcFileDecorator());
-        decorators.put(Column.class, new SimpleIpsElementDecorator("TableColumn.gif")); //$NON-NLS-1$
-        decorators.put(ColumnRange.class, new SimpleIpsElementDecorator("TableRange.gif")); //$NON-NLS-1$
-        decorators.put(EnumContent.class, new SimpleIpsElementDecorator("EnumContent.gif")); //$NON-NLS-1$
-        decorators.put(EnumType.class, new SimpleIpsElementDecorator("EnumType.gif")); //$NON-NLS-1$
-        decorators.put(Expression.class, new SimpleIpsElementDecorator("Formula.gif")); //$NON-NLS-1$
-        decorators.put(IpsModel.class, new SimpleIpsElementDecorator("IpsModel.gif")); //$NON-NLS-1$
-        decorators.put(IpsPackageFragmentRoot.class, new SimpleIpsElementDecorator("IpsPackageFragmentRoot.gif")); //$NON-NLS-1$
-        decorators.put(IpsProject.class, new SimpleIpsElementDecorator("IpsProject.gif")); //$NON-NLS-1$
-        decorators.put(Parameter.class, new SimpleIpsElementDecorator("Parameter.gif")); //$NON-NLS-1$
+        decorators.put(Column.class, new SimpleIpsElementDecorator("TableColumn.svg")); //$NON-NLS-1$
+        decorators.put(ColumnRange.class, new SimpleIpsElementDecorator("TableRange.svg")); //$NON-NLS-1$
+        decorators.put(EnumContent.class, new SimpleIpsElementDecorator("EnumContent.svg")); //$NON-NLS-1$
+        decorators.put(EnumType.class, new SimpleIpsElementDecorator("EnumType.svg")); //$NON-NLS-1$
+        decorators.put(Expression.class, new SimpleIpsElementDecorator("Formula.svg")); //$NON-NLS-1$
+        decorators.put(IpsModel.class, new SimpleIpsElementDecorator("IpsModel.svg")); //$NON-NLS-1$
+        decorators.put(IpsPackageFragmentRoot.class, new SimpleIpsElementDecorator("IpsPackageFragmentRoot.svg")); //$NON-NLS-1$
+        decorators.put(IpsProject.class, new SimpleIpsElementDecorator("IpsProject.svg")); //$NON-NLS-1$
+        decorators.put(Parameter.class, new SimpleIpsElementDecorator("Parameter.svg")); //$NON-NLS-1$
         decorators.put(PolicyCmptType.class, new SimpleIpsElementDecorator(POLICY_CMPT_TYPE_IMAGE));
         decorators.put(PolicyCmptTypeMethod.class, new MethodDecorator());
-        decorators.put(ProductCmptGeneration.class, new SimpleIpsElementDecorator("ProductCmptGeneration.gif")); //$NON-NLS-1$
+        decorators.put(ProductCmptGeneration.class, new SimpleIpsElementDecorator("ProductCmptGeneration.svg")); //$NON-NLS-1$
         decorators.put(ProductCmptType.class, new SimpleIpsElementDecorator(PRODUCT_CMPT_TYPE_IMAGE));
         decorators.put(ProductCmptTypeMethod.class, new ProductCmptTypeMethodDecorator());
-        decorators.put(Row.class, new SimpleIpsElementDecorator("TableRow.gif")); //$NON-NLS-1$
-        decorators.put(TableContents.class, new SimpleIpsElementDecorator("TableContents.gif")); //$NON-NLS-1$
-        decorators.put(TableContentUsage.class, new SimpleIpsElementDecorator("TableContentsUsage.gif")); //$NON-NLS-1$
-        decorators.put(TableStructure.class, new SimpleIpsElementDecorator("TableStructure.gif")); //$NON-NLS-1$
-        decorators.put(TableStructureReference.class, new SimpleIpsElementDecorator("TableStructure.gif")); //$NON-NLS-1$
-        decorators.put(TableStructureUsage.class, new SimpleIpsElementDecorator("TableStructure.gif")); //$NON-NLS-1$
-        decorators.put(TestCase.class, new SimpleIpsElementDecorator("TestCase.gif")); //$NON-NLS-1$
-        decorators.put(TestCaseType.class, new SimpleIpsElementDecorator("TestCaseType.gif")); //$NON-NLS-1$
-        decorators.put(TestRule.class, new SimpleIpsElementDecorator("ValidationRuleDef.gif")); //$NON-NLS-1$
-        decorators.put(TestRuleParameter.class, new SimpleIpsElementDecorator("ValidationRuleDef.gif")); //$NON-NLS-1$
-        decorators.put(TestValue.class, new SimpleIpsElementDecorator("TestValue.gif")); //$NON-NLS-1$
-        decorators.put(TestValueParameter.class, new SimpleIpsElementDecorator("Datatype.gif")); //$NON-NLS-1$
-        decorators.put(ValidationRule.class, new SimpleIpsElementDecorator("ValidationRuleDef.gif")); //$NON-NLS-1$
-        decorators.put(ValueSet.class, new SimpleIpsElementDecorator("ValueSet.gif")); //$NON-NLS-1$
+        decorators.put(Row.class, new SimpleIpsElementDecorator("TableRow.svg")); //$NON-NLS-1$
+        decorators.put(TableContents.class, new SimpleIpsElementDecorator("TableContents.svg")); //$NON-NLS-1$
+        decorators.put(TableContentUsage.class, new SimpleIpsElementDecorator("TableContentsUsage.svg")); //$NON-NLS-1$
+        decorators.put(TableStructure.class, new SimpleIpsElementDecorator("TableStructure.svg")); //$NON-NLS-1$
+        decorators.put(TableStructureReference.class, new SimpleIpsElementDecorator("TableStructure.svg")); //$NON-NLS-1$
+        decorators.put(TableStructureUsage.class, new SimpleIpsElementDecorator("TableStructure.svg")); //$NON-NLS-1$
+        decorators.put(TestCase.class, new SimpleIpsElementDecorator("TestCase.svg")); //$NON-NLS-1$
+        decorators.put(TestCaseType.class, new SimpleIpsElementDecorator("TestCaseType.svg")); //$NON-NLS-1$
+        decorators.put(TestRule.class, new SimpleIpsElementDecorator("ValidationRuleDef.svg")); //$NON-NLS-1$
+        decorators.put(TestRuleParameter.class, new SimpleIpsElementDecorator("ValidationRuleDef.svg")); //$NON-NLS-1$
+        decorators.put(TestValue.class, new SimpleIpsElementDecorator("TestValue.svg")); //$NON-NLS-1$
+        decorators.put(TestValueParameter.class, new SimpleIpsElementDecorator("Datatype.svg")); //$NON-NLS-1$
+        decorators.put(ValidationRule.class, new SimpleIpsElementDecorator("ValidationRuleDef.svg")); //$NON-NLS-1$
+        decorators.put(ValueSet.class, new SimpleIpsElementDecorator("ValueSet.svg")); //$NON-NLS-1$
 
         decorators.put(LibraryIpsPackageFragmentRoot.class, new LibraryIpsPackageFragmentRootDecorator());
         decorators.put(AbstractIpsPackageFragment.class, new IpsPackageFragmentDecorator());

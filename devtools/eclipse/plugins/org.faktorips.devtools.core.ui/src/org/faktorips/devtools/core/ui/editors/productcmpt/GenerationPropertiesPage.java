@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,7 +63,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * Page to display a generation's properties or product component properties in case that product
  * component is not defined as changing over time.
- * 
+ *
  * @author Thorsten Guenther
  * @author Alexander Weickmann
  */
@@ -285,7 +285,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private GotoGenerationAction createGotoPreviousGenerationAction() {
-        return new GotoGenerationAction(this, "ArrowLeft.gif") { //$NON-NLS-1$
+        return new GotoGenerationAction(this, "ArrowLeft.svg") { //$NON-NLS-1$
             @Override
             protected IIpsObjectGeneration getGeneration() {
                 return getGenerationPropertiesPage().getActiveGeneration().getPreviousByValidDate();
@@ -294,7 +294,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private GotoGenerationAction createGotoNextGenerationAction() {
-        return new GotoGenerationAction(this, "ArrowRight.gif") { //$NON-NLS-1$
+        return new GotoGenerationAction(this, "ArrowRight.svg") { //$NON-NLS-1$
             @Override
             protected IIpsObjectGeneration getGeneration() {
                 return getGenerationPropertiesPage().getActiveGeneration().getNextByValidDate();
@@ -321,7 +321,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private void createOpenModelDescriptionAction(IToolBarManager toolbarManager) {
         Action openModelDesciptionAction = new Action(Messages.GenerationPropertiesPage_openModelDescView,
-                imageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
+                imageDescriptor("ModelDescription.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 try {
@@ -603,7 +603,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private static final String PREF_ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FilterInheritedValuesAction_enabled"; //$NON-NLS-1$
 
-        private static final String IMAGE_NAME = "templateFilterInherited.png"; //$NON-NLS-1$
+        private static final String IMAGE_NAME = "templateFilterInherited.svg"; //$NON-NLS-1$
 
         private final IProductCmptPropertyFilter filter;
         private final IPropertyVisibleController controller;

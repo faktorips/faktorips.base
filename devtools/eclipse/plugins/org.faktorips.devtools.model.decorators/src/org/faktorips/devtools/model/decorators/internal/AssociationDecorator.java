@@ -23,10 +23,10 @@ import org.faktorips.devtools.model.type.IAssociation;
 
 public class AssociationDecorator implements IIpsObjectPartDecorator {
 
-    public static final String ASSOCIATION_TYPE_COMPOSITION_IMAGE = "AssociationType-Composition.gif"; //$NON-NLS-1$
-    public static final String ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE = "AssociationType-CompositionDetailToMaster.gif"; //$NON-NLS-1$
-    public static final String ASSOCIATION_TYPE_ASSOCIATION_IMAGE = "AssociationType-Association.gif"; //$NON-NLS-1$
-    public static final String ASSOCIATION_TYPE_AGGREGATION_IMAGE = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
+    public static final String ASSOCIATION_TYPE_COMPOSITION_IMAGE = "AssociationType-Composition.svg"; //$NON-NLS-1$
+    public static final String ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE = "AssociationType-CompositionDetailToMaster.svg"; //$NON-NLS-1$
+    public static final String ASSOCIATION_TYPE_ASSOCIATION_IMAGE = "AssociationType-Association.svg"; //$NON-NLS-1$
+    public static final String ASSOCIATION_TYPE_AGGREGATION_IMAGE = "AssociationType-Aggregation.svg"; //$NON-NLS-1$
 
     private final boolean showChangingOverTimeOverlay;
 

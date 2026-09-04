@@ -23,9 +23,9 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class AttributeDecorator implements IIpsObjectPartDecorator {
 
-    public static final String PUBLISHED_BASE_IMAGE = "AttributePublished.gif"; //$NON-NLS-1$
+    public static final String PUBLISHED_BASE_IMAGE = "AttributePublished.svg"; //$NON-NLS-1$
 
-    public static final String PUBLIC_BASE_IMAGE = "AttributePublic.gif"; //$NON-NLS-1$
+    public static final String PUBLIC_BASE_IMAGE = "AttributePublic.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

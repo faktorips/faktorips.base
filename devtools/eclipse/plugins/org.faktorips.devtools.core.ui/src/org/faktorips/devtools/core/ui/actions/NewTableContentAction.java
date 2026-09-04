@@ -28,7 +28,7 @@ public class NewTableContentAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewTableContentAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTableContentsWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTableContentsWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

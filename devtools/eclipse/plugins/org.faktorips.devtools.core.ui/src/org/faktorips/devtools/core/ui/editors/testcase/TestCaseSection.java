@@ -3,10 +3,10 @@
 // This class is a huge ugly moloch and needs to be completely rewritten from scratch.
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -411,7 +411,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
         actionAll.setChecked(false);
         actionAll.setToolTipText(Messages.TestCaseSection_ToolBar_FlatStructure);
-        actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.gif")); //$NON-NLS-1$
+        actionAll.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCase_flatView.svg")); //$NON-NLS-1$
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(detailAreaSection);
         toolBarManager.add(actionAll);
@@ -431,7 +431,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         actionAssociation.setChecked(true);
         actionAssociation.setToolTipText(Messages.TestCaseSection_ToolBar_ShowAssociations);
         actionAssociation.setImageDescriptor(
-                IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.gif")); //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("ShowAssociationTypeNodes.svg")); //$NON-NLS-1$
 
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(structureSection);
@@ -444,7 +444,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         toolBarManager.add(new CollapseAllAction(getTreeViewer()));
         toolBarManager.add(new Separator());
         toolBarManager.add(new ToggleAction(Messages.TestCaseSection_ToolBar_TogglePolicyComponentTypeDisplay,
-                "PolicyCmptType.gif", canShowExtension)); //$NON-NLS-1$
+                "PolicyCmptType.svg", canShowExtension)); //$NON-NLS-1$
         toolBarManager.add(actionAssociation);
         toolBarManager.update(true);
         structureSection.setTextClient(toolbar);
@@ -472,7 +472,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         };
         actionRunAndStoreExpectedResult.setToolTipText(Messages.TestCaseSection_Action_RunTestAndStoreExpectedResults);
         actionRunAndStoreExpectedResult.setImageDescriptor(
-                IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRunAndStoreExpResult.png")); //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRunAndStoreExpResult.svg")); //$NON-NLS-1$
         // enable run test case functionality only if a TOC file exists for this test case
         actionRunAndStoreExpectedResult.setEnabled(getTocFilePackage() != null);
 
@@ -484,7 +484,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
         actionTest.setToolTipText(Messages.TestCaseSection_ToolBar_RunTest);
-        actionTest.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif")); //$NON-NLS-1$
+        actionTest.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.svg")); //$NON-NLS-1$
 
         // enable run test case functionality only if a TOC file exists for this test case
         actionTest.setEnabled(getTocFilePackage() != null);
@@ -847,7 +847,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     /**
      * Select the given object in the detail area, change the color of the section.
-     * 
+     *
      * @param selected The object which will be searched in the detail area.
      * @param withFocusChange If <code>true</code> also the focus will be set to the first edit
      *            field in the found section. If <code>false</code> no focus will be moved.
@@ -968,7 +968,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * <p>
      * This operation can handle both configurations of
      * {@link TestCaseContentProvider#isWithoutAssociations()}.
-     * 
+     *
      * @param parentItemParam parent of the provided test policy component within the tree (this is
      *            either a {@link TestCaseTypeAssociation} or another test policy component
      * @param testPolicyCmpt test policy component to expand in the tree (including children)
@@ -1224,7 +1224,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * Shows the select product component dialog and returns the selected product component
      * qualified names. Returns <code>null</code> if no selection or an unsupported type was chosen.
-     * 
+     *
      * @throws IpsException If an error occurs
      */
     private String[] selectProductCmptsDialog(ITestPolicyCmptTypeParameter testTypeParam,
@@ -2231,17 +2231,17 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             if (actionContentType == TestCaseContentProvider.INPUT) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterInput);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseInput.svg")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterInput_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.EXPECTED_RESULT) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterExpected);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseExpResult.svg")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterExpected_ToolTip);
             } else if (actionContentType == TestCaseContentProvider.COMBINED) {
                 buttonChecked();
                 setText(Messages.TestCaseSection_FilterCombined);
-                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseCombined.gif")); //$NON-NLS-1$
+                setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseCombined.svg")); //$NON-NLS-1$
                 setToolTipText(Messages.TestCaseSection_FilterCombined_ToolTip);
             }
         }
@@ -2456,7 +2456,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 actionStoreActualValue.setToolTipText(Messages.TestCaseSection_Action_ToolTipStoreExpectedResult);
             }
             actionStoreActualValue.setImageDescriptor(
-                    IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseStoreExpResult.gif")); //$NON-NLS-1$
+                    IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseStoreExpResult.svg")); //$NON-NLS-1$
 
             manager.add(actionStoreActualValue);
         }
@@ -2502,7 +2502,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private class AddAction extends TestCaseAction {
 
-        private static final String IMAGE_FILENAME = "Add.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "Add.svg"; //$NON-NLS-1$
 
         private AddAction() {
             super(Messages.TestCaseSection_ButtonAdd,

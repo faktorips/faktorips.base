@@ -34,7 +34,7 @@ import org.faktorips.util.ArgumentCheck;
 public class OpenFixEnumContentWizardAction extends Action {
 
     /** The name of the image for the action. */
-    private static final String IMAGE_NAME = "BrokenEnum.gif"; //$NON-NLS-1$
+    private static final String IMAGE_NAME = "BrokenEnum.svg"; //$NON-NLS-1$
 
     /** The <code>IEnumContent</code> to fix. */
     private IEnumContent enumContent;

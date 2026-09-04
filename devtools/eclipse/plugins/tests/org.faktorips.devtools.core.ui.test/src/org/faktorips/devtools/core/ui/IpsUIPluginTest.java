@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -57,9 +57,9 @@ import org.junit.jupiter.api.Test;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
-    private static final String LINK_GIF = "over_co.gif";
+    private static final String LINK_GIF = "over_co.svg";
 
-    private static final String PRODUCT_GIF = "Table.gif";
+    private static final String PRODUCT_GIF = "Table.svg";
 
     private IExtensionPropertyEditFieldFactory editFieldFactory;
 

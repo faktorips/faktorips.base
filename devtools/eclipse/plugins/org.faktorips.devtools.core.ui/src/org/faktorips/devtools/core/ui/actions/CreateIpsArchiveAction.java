@@ -31,7 +31,7 @@ public class CreateIpsArchiveAction extends IpsAction {
         super.setText(Messages.CreateIpsArchiveAction_Name);
         super.setDescription(Messages.CreateIpsArchiveAction_Description);
         super.setToolTipText(Messages.CreateIpsArchiveAction_Tooltip);
-        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ExportIpsArchive.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("ExportIpsArchive.svg")); //$NON-NLS-1$
     }
 
     @Override

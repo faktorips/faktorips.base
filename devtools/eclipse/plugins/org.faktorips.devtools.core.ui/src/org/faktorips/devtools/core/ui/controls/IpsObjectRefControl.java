@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -53,7 +53,7 @@ import org.faktorips.util.StringUtil;
  * An older version of this class was based on using only one {@link IIpsProject}, but has been
  * refitted for several ips projects. Therefore some method are deprecated and replaced by new
  * methods.
- * 
+ *
  */
 public abstract class IpsObjectRefControl extends TextButtonControl {
 
@@ -122,7 +122,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     protected void addDeleteButton() {
         ((GridLayout)getLayout()).numColumns = 3;
         deleteButton = new Button(this, SWT.PUSH);
-        deleteButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Delete_grey.png", true)); //$NON-NLS-1$
+        deleteButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Delete_grey.svg", true)); //$NON-NLS-1$
         deleteButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -132,7 +132,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     }
 
     /**
-     * 
+     *
      * @deprecated This method is deprecated because of the refitting of this class for several
      *                 projects. Use {@link #setIpsProjects(List)} instead of this method.
      */
@@ -161,10 +161,10 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * If you want to use the {@link IIpsProject ips projects} to find the chosen {@link IIpsObject}
      * or the {@link IIpsSrcFile src files} of a type, consider calling
      * {@link #findIpsObject(IpsObjectType)} or {@link #findIpsSrcFilesByType(IpsObjectType)}.
-     * 
+     *
      * @deprecated This method is deprecated because of the refitting of this class for several
      *                 projects. This method is replaced by {@link #getIpsProjects()}.
-     * 
+     *
      */
     @Deprecated
     public IIpsProject getIpsProject() {
@@ -219,7 +219,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
     /**
      * Called when the user closes the dialog by clicking OK.
-     * 
+     *
      * @param ipsSrcFiles List of selected ips source files containing at least 1 element!
      */
     protected void updateTextControlAfterDialogOK(List<IIpsSrcFile> ipsSrcFiles) {
@@ -278,7 +278,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
     /**
      * Checks whether an object is clearly identifiable by the passed qualified name within the used
      * {@link #ipsProjects}.
-     * 
+     *
      * @param qualifiedName The qualified name to be checked for uniqueness
      * @return True whether the qualified name is unique, else false
      * @throws IpsException If getting the required {@link IIpsSrcFile}s failed
@@ -298,7 +298,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
     /**
      * Getter which provides the {@link #objectType} of the selected object.
-     * 
+     *
      * @return The object type
      */
     public IpsObjectType getSelectedObjectType() {
@@ -310,7 +310,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * text field text.
      * <p>
      * Passing {@code null} will clear the selection.
-     * 
+     *
      * @param qualifiedNameType The {@link QualifiedNameType} of the current selection
      */
     public void updateSelection(QualifiedNameType qualifiedNameType) {

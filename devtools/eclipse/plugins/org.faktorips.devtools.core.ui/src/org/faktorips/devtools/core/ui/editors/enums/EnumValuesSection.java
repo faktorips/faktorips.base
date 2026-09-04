@@ -382,7 +382,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         editingSupport.setTraversalStrategy(traversalStrategy);
 
         if (identifierColumnn) {
-            newColumn.getColumn().setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.gif", true)); //$NON-NLS-1$
+            newColumn.getColumn().setImage(IpsUIPlugin.getImageHandling().getSharedImage("TableKeyColumn.svg", true)); //$NON-NLS-1$
         }
 
         return traversalStrategy;

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -122,7 +122,7 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testImageLoadingStress() throws Exception {
-        String imageName = "New.gif";
+        String imageName = "New.svg";
         Image expected = IIpsDecorators.getImageHandling().getSharedImage(imageName, true);
 
         // Test getSharedImage(String)
@@ -153,7 +153,7 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
     public void testOverlayImages() throws Exception {
         ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 
-        String baseName = "New.gif";
+        String baseName = "New.svg";
         Image baseImage = IIpsDecorators.getImageHandling().getSharedImage(baseName, true);
 
         ImageDescriptor ovr1 = OverlayIcons.ABSTRACT_OVR_DESC;

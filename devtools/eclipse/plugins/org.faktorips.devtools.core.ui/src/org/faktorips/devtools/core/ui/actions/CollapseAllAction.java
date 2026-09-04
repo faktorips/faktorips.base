@@ -21,7 +21,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class CollapseAllAction extends Action {
 
-    private static final String COLLAPSE_ALL_ICON = "CollapseAll.gif"; //$NON-NLS-1$
+    private static final String COLLAPSE_ALL_ICON = "CollapseAll.svg"; //$NON-NLS-1$
 
     private final AbstractTreeViewer treeViewer;
 

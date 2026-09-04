@@ -36,7 +36,7 @@ public class CreateMissingEnumContentsAction extends IpsAction {
     public CreateMissingEnumContentsAction(ISelectionProvider selectionProvider, IWorkbenchWindow workbenchWindow) {
         super(selectionProvider);
         this.workbenchWindow = workbenchWindow;
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("CreateMissingEnumContents.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("CreateMissingEnumContents.svg")); //$NON-NLS-1$
         setText(Messages.CreateMissingEnumContentsAction_text);
     }
 

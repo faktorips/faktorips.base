@@ -66,11 +66,11 @@ public class IpsObjectGenerationDecorator implements IIpsObjectPartDecorator {
     public ImageDescriptor getGenerationImageDescriptor(IChangesOverTimeNamingConvention namingConvention) {
         String id = namingConvention.getId();
         ImageDescriptor imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(
-                id + "_" + GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$
+                id + "_" + GENERATION_IMAGE_BASE + ".svg"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // if image does not exist try to load default image
         if (!exists(imageDescriptor)) {
-            imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$
+            imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(GENERATION_IMAGE_BASE + ".svg"); //$NON-NLS-1$
         }
 
         return imageDescriptor;

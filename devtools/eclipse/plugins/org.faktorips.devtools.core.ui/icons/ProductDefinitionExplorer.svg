@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ecdaa1;
+      }
+
+      .cls-2 {
+        fill: #dcc586;
+      }
+
+      .cls-3 {
+        fill: #dfc890;
+      }
+
+      .cls-4 {
+        fill: #9cb108;
+      }
+
+      .cls-5 {
+        fill: #a1a19f;
+      }
+
+      .cls-6 {
+        fill: #b8c445;
+      }
+
+      .cls-7 {
+        fill: #d0b77a;
+      }
+    </style>
+  </defs>
+  <rect class="cls-5" x="5" y="7" width="3" height="1"/>
+  <rect class="cls-5" x="5" y="13" width="3" height="1"/>
+  <rect class="cls-5" y="9" width="11" height="1" transform="translate(-4 15) rotate(-90)"/>
+  <g>
+    <path class="cls-4" d="M7,13c0,1.1.9,2,2,2v-4c-1.1,0-2,.9-2,2Z"/>
+    <path class="cls-4" d="M7,7c0,1.1.9,2,2,2v-4c-1.1,0-2,.9-2,2Z"/>
+    <path class="cls-6" d="M11,13c0-1.1-.9-2-2-2v4c1.1,0,2-.9,2-2Z"/>
+    <path class="cls-6" d="M11,7c0-1.1-.9-2-2-2v4c1.1,0,2-.9,2-2Z"/>
+  </g>
+  <g>
+    <polygon class="cls-2" points="8.52 4.43 2.48 4.43 2.48 0 4.17 0 4.17 0 4.98 .46 8.52 .46 8.52 4.43"/>
+    <rect class="cls-1" x="5.51" y=".46" width="3.01" height=".75"/>
+    <rect class="cls-3" x="2.48" y=".81" width="6.04" height="3.62"/>
+    <polygon class="cls-7" points="5.51 3.95 5.51 3.62 5.51 .81 2.48 .81 2.48 4.43 5.51 4.43 5.51 3.95"/>
+  </g>
+</svg>

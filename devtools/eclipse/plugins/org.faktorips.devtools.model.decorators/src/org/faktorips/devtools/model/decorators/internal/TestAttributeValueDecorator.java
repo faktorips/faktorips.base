@@ -21,7 +21,7 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 
 public class TestAttributeValueDecorator implements IIpsObjectPartDecorator {
 
-    public static final String TEST_ATTRIBUTE_VALUE_IMAGE = "TestAttributeValue.gif"; //$NON-NLS-1$
+    public static final String TEST_ATTRIBUTE_VALUE_IMAGE = "TestAttributeValue.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

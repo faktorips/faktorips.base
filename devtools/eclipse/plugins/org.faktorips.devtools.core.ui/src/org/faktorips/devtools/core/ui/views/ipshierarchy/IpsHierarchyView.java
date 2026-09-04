@@ -167,7 +167,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
         // refresh action
         refreshAction = new Action(Messages.IpsHierarchy_tooltipRefreshContents,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 showHierarchy(((ITypeHierarchy)treeViewer.getInput()).getType());
@@ -187,7 +187,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
         // clear action
         clearAction = new Action(Messages.IpsHierarchy_tooltipClear, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+                .createImageDescriptor("Clear.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 enableButtons(false);

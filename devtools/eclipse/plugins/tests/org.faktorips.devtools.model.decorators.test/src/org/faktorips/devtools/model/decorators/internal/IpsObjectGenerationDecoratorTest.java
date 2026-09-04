@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ public class IpsObjectGenerationDecoratorTest {
 
             ImageDescriptor defaultImageDescriptor = ipsObjectGenerationDecorator.getDefaultImageDescriptor();
 
-            assertThat(defaultImageDescriptor, is(descriptorOf("FIPS_Generation.gif")));
+            assertThat(defaultImageDescriptor, is(descriptorOf("FIPS_Generation.svg")));
             assertThat(defaultImageDescriptor, hasNoOverlay());
         }
     }
@@ -61,7 +61,7 @@ public class IpsObjectGenerationDecoratorTest {
 
             ImageDescriptor defaultImageDescriptor = ipsObjectGenerationDecorator.getDefaultImageDescriptor();
 
-            assertThat(defaultImageDescriptor, is(descriptorOf("PM_Generation.gif")));
+            assertThat(defaultImageDescriptor, is(descriptorOf("PM_Generation.svg")));
             assertThat(defaultImageDescriptor, hasNoOverlay());
         }
     }
@@ -73,7 +73,7 @@ public class IpsObjectGenerationDecoratorTest {
 
             ImageDescriptor defaultImageDescriptor = ipsObjectGenerationDecorator.getDefaultImageDescriptor();
 
-            assertThat(defaultImageDescriptor, is(descriptorOf("VAA_Generation.gif")));
+            assertThat(defaultImageDescriptor, is(descriptorOf("VAA_Generation.svg")));
             assertThat(defaultImageDescriptor, hasNoOverlay());
         }
     }
@@ -85,7 +85,7 @@ public class IpsObjectGenerationDecoratorTest {
 
             ImageDescriptor defaultImageDescriptor = ipsObjectGenerationDecorator.getDefaultImageDescriptor();
 
-            assertThat(defaultImageDescriptor, is(descriptorOf("Generation.gif")));
+            assertThat(defaultImageDescriptor, is(descriptorOf("Generation.svg")));
             assertThat(defaultImageDescriptor, hasNoOverlay());
         }
     }
@@ -97,7 +97,7 @@ public class IpsObjectGenerationDecoratorTest {
 
             ImageDescriptor imageDescriptor = ipsObjectGenerationDecorator.getImageDescriptor(null);
 
-            assertThat(imageDescriptor, is(descriptorOf("VAA_Generation.gif")));
+            assertThat(imageDescriptor, is(descriptorOf("VAA_Generation.svg")));
             assertThat(imageDescriptor, hasNoOverlay());
         }
     }
@@ -110,7 +110,7 @@ public class IpsObjectGenerationDecoratorTest {
             ImageDescriptor imageDescriptor = ipsObjectGenerationDecorator
                     .getImageDescriptor(mock(IIpsObjectGeneration.class));
 
-            assertThat(imageDescriptor, is(descriptorOf("FIPS_Generation.gif")));
+            assertThat(imageDescriptor, is(descriptorOf("FIPS_Generation.svg")));
             assertThat(imageDescriptor, hasNoOverlay());
         }
     }

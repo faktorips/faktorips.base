@@ -26,7 +26,7 @@ public class IpsTestCaseCopyAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.IpsTestCaseCopyAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCaseCopyWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTestCaseCopyWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

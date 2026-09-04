@@ -96,7 +96,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     /**
      * The filename of the image for this view
      */
-    public static final String IMAGE = "InstanceExplorer.gif"; //$NON-NLS-1$
+    public static final String IMAGE = "InstanceExplorer.svg"; //$NON-NLS-1$
 
     private InstanceLabelProvider labelProvider;
     private TableViewer tableViewer;
@@ -197,7 +197,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
         // refresh action
         refreshAction = new Action(Messages.InstanceExplorer_tooltipRefreshContents,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setInputData(contentProvider.getActualElement());
@@ -216,7 +216,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
         // clear action
         clearAction = new Action(Messages.InstanceExplorer_tooltipClear,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setInputData(null);
@@ -546,7 +546,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
 
     private class SubtypeSearchAction extends Action {
 
-        private static final String SUBTYPE_SEARCH_IMG = "InstanceExplorerSubtypeSearch.gif"; //$NON-NLS-1$
+        private static final String SUBTYPE_SEARCH_IMG = "InstanceExplorerSubtypeSearch.svg"; //$NON-NLS-1$
 
         public SubtypeSearchAction() {
             setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(SUBTYPE_SEARCH_IMG));

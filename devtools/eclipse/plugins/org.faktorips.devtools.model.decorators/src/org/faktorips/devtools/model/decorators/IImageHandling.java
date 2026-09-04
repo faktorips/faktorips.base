@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.internal.ImageHandling;
@@ -217,7 +219,7 @@ public interface IImageHandling {
      * Returns the image with the indicated name from the <code>icons</code> folder. If no image
      * with the indicated name is found and createIfAbsent is false null is returned.
      *
-     * @param name The image name, e.g. <code>IpsProject.gif</code>
+     * @param name The image name, e.g. <code>IpsProject.svg</code>
      * @param createIfAbsent true to create a new image if not already registered
      */
     Image getSharedImage(String name, boolean createIfAbsent);
@@ -226,5 +228,29 @@ public interface IImageHandling {
      * Return a shared image which is the disabled version of the given image descriptor
      */
     Image getDisabledSharedImage(ImageDescriptor enabledImage);
+
+    /**
+     * scale an image to the chosen size
+     *
+     * @param image the image to scale
+     * @param width the new width of the image
+     * @param height the new height of the image
+     * @return the scaled image
+     */
+    static Image scaleImage(Image image, int width, int height) {
+        if (image == null || image.isDisposed()) {
+            return null;
+        }
+
+        Image scaled = new Image(image.getDevice(), width, height);
+        GC gc = new GC(scaled);
+        gc.setAntialias(SWT.ON);
+        gc.setInterpolation(SWT.HIGH);
+        gc.drawImage(image,
+                0, 0, image.getBounds().width, image.getBounds().height,
+                0, 0, width, height);
+        gc.dispose();
+        return scaled;
+    }
 
 }

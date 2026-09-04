@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Ebene_1"
+   data-name="Ebene 1"
+   viewBox="0 0 7 8"
+   version="1.1"
+   sodipodi:docname="OverrideIndicator.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7318"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="128.375"
+     inkscape:cx="3.4508277"
+     inkscape:cy="4.0077897"
+     inkscape:window-width="2510"
+     inkscape:window-height="1371"
+     inkscape:window-x="1970"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs7303">
+    <style
+       id="style7301">
+      .cls-1 {
+        fill: #005388;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #102c58;
+      }
+
+      .cls-4 {
+        fill: #9db208;
+      }
+
+      .cls-5 {
+        fill: #b9c545;
+      }
+    </style>
+    <filter
+       id="filter3959"
+       x="-0.17194878"
+       width="1.3438977"
+       y="-0.34375322"
+       height="1.6875132">
+      <feGaussianBlur
+         stdDeviation="0.22312288"
+         id="feGaussianBlur3961" />
+    </filter>
+    <linearGradient
+       y2="1045.1152"
+       x2="10.79303"
+       y1="1045.0979"
+       x1="5.2587028"
+       gradientTransform="matrix(0.64864834,0,0,0.64864834,-1.6738526,370.47129)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient4055"
+       xlink:href="#linearGradient4096" />
+    <linearGradient
+       id="linearGradient4096">
+      <stop
+         id="stop4098"
+         offset="0"
+         style="stop-color:#9db208;stop-opacity:1;" />
+      <stop
+         id="stop8520"
+         offset="0.5"
+         style="stop-color:#9db208;stop-opacity:1;" />
+      <stop
+         id="stop8522"
+         offset="0.5"
+         style="stop-color:#b9c545;stop-opacity:1;" />
+      <stop
+         id="stop4100"
+         offset="1"
+         style="stop-color:#b9c545;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       y2="1045.1067"
+       x2="-9.2022657"
+       y1="1045.1063"
+       x1="-14.73662"
+       gradientTransform="matrix(0.6486453,0.00198355,-0.00198355,0.6486453,13.369056,370.49826)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient4057"
+       xlink:href="#linearGradient4090" />
+    <linearGradient
+       id="linearGradient4090">
+      <stop
+         id="stop4092"
+         offset="0"
+         style="stop-color:#102c58;stop-opacity:1;" />
+      <stop
+         id="stop8662"
+         offset="0.5"
+         style="stop-color:#102c58;stop-opacity:1;" />
+      <stop
+         id="stop8664"
+         offset="0.5"
+         style="stop-color:#005388;stop-opacity:1;" />
+      <stop
+         id="stop4094"
+         offset="1"
+         style="stop-color:#005388;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer1"
+     transform="matrix(1.0000123,0,0,0.99999892,1.7647527e-4,-1044.3614)">
+    <path
+       id="path3836-1-8"
+       d="m 8.468284,1049.9363 -5.0069128,-5.0883 -4.8090924,5.0436 z"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.975001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       id="path3836-1-2"
+       d="m 6.4851776,1048.8675 -2.9550408,-2.9733 -2.99397457,2.9759 z"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.975001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3959)" />
+    <path
+       id="path3836-1"
+       d="m 6.4851776,1048.8675 -1.9057163,-1.9175 -1.0493245,-1.0558 -2.99397457,2.9759 z"
+       style="display:inline;fill:url(#linearGradient4055);fill-opacity:1;stroke:url(#linearGradient4057);stroke-width:0.975001;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:nodetypes="ccccc" />
+  </g>
+</svg>

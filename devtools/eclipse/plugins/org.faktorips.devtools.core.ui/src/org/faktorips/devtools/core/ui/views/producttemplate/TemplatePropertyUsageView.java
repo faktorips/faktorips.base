@@ -153,7 +153,7 @@ public class TemplatePropertyUsageView {
 
     void setUpToolbar() {
         final String toolTip = Messages.TemplatePropertyUsageView_toolTipRefreshContents;
-        final ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+        final ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.svg"); //$NON-NLS-1$
         Action refreshAction = new Action(toolTip, imageDescriptor) {
             @Override
             public void run() {
@@ -173,7 +173,7 @@ public class TemplatePropertyUsageView {
 
         // clear action
         Action clearAction = new Action(Messages.TemplatePropertyUsageView_ClearActionTooltip,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Clear.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 setTemplatedValue(null);

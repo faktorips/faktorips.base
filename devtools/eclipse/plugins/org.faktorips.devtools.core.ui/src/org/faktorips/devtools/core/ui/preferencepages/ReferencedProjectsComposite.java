@@ -225,7 +225,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
 
         @Override
         public Image getImage(Object element) {
-            return IIpsDecorators.getImageHandling().getSharedImage("IpsProject.gif", true); //$NON-NLS-1$
+            return IIpsDecorators.getImageHandling().getSharedImage("IpsProject.svg", true); //$NON-NLS-1$
         }
 
         @Override

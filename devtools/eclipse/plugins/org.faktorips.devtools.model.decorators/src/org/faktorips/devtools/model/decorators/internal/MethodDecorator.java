@@ -25,7 +25,7 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
 
 public class MethodDecorator implements IIpsObjectPartDecorator {
 
-    public static final String METHOD_IMAGE_NAME = "MethodPublic.gif"; //$NON-NLS-1$
+    public static final String METHOD_IMAGE_NAME = "MethodPublic.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {

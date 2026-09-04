@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Ebene_1" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #a17d18;
+      }
+
+      .cls-3 {
+        fill: url(#Unbenannter_Verlauf_10);
+      }
+
+      .cls-4 {
+        fill: #cfdb67;
+      }
+
+      .cls-5 {
+        fill: #9cb108;
+      }
+
+      .cls-6 {
+        fill: url(#Unbenannter_Verlauf_14);
+      }
+
+      .cls-7 {
+        fill: #b8c445;
+      }
+
+      .cls-8 {
+        fill: url(#Unbenannter_Verlauf_13);
+      }
+    </style>
+    <linearGradient id="Unbenannter_Verlauf_10" data-name="Unbenannter Verlauf 10" x1="13.64" y1="-1026.35" x2="13.64" y2="-1028.12" gradientTransform="translate(.0077 -1020.2206) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="Unbenannter_Verlauf_13" data-name="Unbenannter Verlauf 13" cx="-1849.62" cy="1063.44" fx="-1849.62" fy="1063.44" r="3.1" gradientTransform="translate(1899.5984 -3416.8762) rotate(-90.0003) scale(1.8508 -1.7751)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dfc476"/>
+      <stop offset="1" stop-color="#9d7916"/>
+    </radialGradient>
+    <linearGradient id="Unbenannter_Verlauf_14" data-name="Unbenannter Verlauf 14" x1="-383.42" y1="245.58" x2="-383.42" y2="243.17" gradientTransform="translate(902.0614 573.3424) scale(2.32 -2.32)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f6f8fa"/>
+      <stop offset="1" stop-color="#ffd580"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <ellipse class="cls-4" cx="4.99" cy="6.02" rx="4.98" ry="4.98"/>
+    <path class="cls-7" d="M4.98,1.03C2.23,1.03,0,3.26,0,6.02s2.23,4.98,4.98,4.98V1.03Z"/>
+    <path class="cls-1" d="M7.72,5.18c0,1.28-.86,2.09-2.22,2.09h-1.42v1.65h-1.36V3.09h2.78c1.36,0,2.22.81,2.22,2.09ZM6.36,5.19c0-.54-.37-.89-.94-.89h-1.36v1.78h1.36c.57,0,.94-.35.94-.89Z"/>
+  </g>
+  <ellipse class="cls-7" cx="9.01" cy="10" rx="4.98" ry="4.98"/>
+  <path class="cls-5" d="M8.99,5.02c-2.75,0-4.98,2.23-4.98,4.98s2.23,4.98,4.98,4.98V5.02Z"/>
+  <path class="cls-1" d="M11.73,9.16c0,1.28-.86,2.09-2.22,2.09h-1.42v1.65h-1.36v-5.82h2.78c1.36,0,2.22.81,2.22,2.09ZM10.38,9.17c0-.54-.37-.89-.94-.89h-1.36v1.78h1.36c.57,0,.94-.35.94-.89Z"/>
+  <g id="g6432">
+    <path id="path5581-1-1-79" class="cls-3" d="M13.86,6.58h-.42l.42.43h0v-.43Z"/>
+    <g id="g4514">
+      <g id="g4522">
+        <g>
+          <rect id="rect3910" class="cls-8" x="10.55" y="3.79" width="3.97" height="4.09" transform="translate(-.46 10.57) rotate(-45)"/>
+          <path class="cls-2" d="M12.57,9.33l-3.54-3.54,3.46-3.46,3.54,3.54-3.46,3.46ZM10.33,5.79l2.24,2.24,2.16-2.16-2.24-2.24-2.16,2.16Z"/>
+        </g>
+        <path id="path5581-5-5" class="cls-6" d="M12.08,3.5h.89v1.74h1.77v.91h-1.77v1.82h-.89v-1.82h-1.77v-.91h1.77v-1.74Z"/>
+      </g>
+    </g>
+  </g>
+</svg>

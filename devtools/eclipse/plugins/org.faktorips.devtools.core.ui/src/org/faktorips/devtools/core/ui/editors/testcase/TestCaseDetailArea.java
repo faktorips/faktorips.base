@@ -43,6 +43,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.IpsColor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -449,7 +450,7 @@ public class TestCaseDetailArea {
      * Marks the given edit field as expected result.
      */
     private void markAsExpected(final EditField<?> editField) {
-        editField.getControl().setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+        editField.getControl().setBackground(IpsColor.EXPECTED_VALUE.getColor());
     }
 
     /**

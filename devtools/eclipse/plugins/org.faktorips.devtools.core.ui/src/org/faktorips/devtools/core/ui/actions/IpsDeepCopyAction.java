@@ -66,11 +66,11 @@ public class IpsDeepCopyAction extends IpsAction {
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             setText(Messages.IpsDeepCopyAction_name);
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("DeepCopyWizard.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("DeepCopyWizard.svg")); //$NON-NLS-1$
         } else {
             setText(NLS.bind(Messages.IpsDeepCopyAction_nameNewVersion, IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getVersionConceptNameSingular()));
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.svg")); //$NON-NLS-1$
         }
     }
 

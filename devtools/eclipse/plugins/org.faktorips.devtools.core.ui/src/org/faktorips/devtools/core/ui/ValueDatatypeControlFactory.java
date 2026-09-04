@@ -231,7 +231,7 @@ public abstract class ValueDatatypeControlFactory {
         buttonData.widthHint = ARROW_DOWN_BUTTON_WIDTH;
         button.setLayoutData(buttonData);
 
-        Image arrowDown = IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown_grey.gif", true); //$NON-NLS-1$
+        Image arrowDown = IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown_grey.svg", true); //$NON-NLS-1$
         button.setImage(arrowDown);
 
         return button;

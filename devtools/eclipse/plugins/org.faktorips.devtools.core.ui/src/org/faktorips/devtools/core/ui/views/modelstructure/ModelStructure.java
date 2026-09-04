@@ -428,7 +428,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     private Action createRefreshAction() {
         return new Action(Messages.ModelStructure_tooltipRefreshContents,
-                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
+                IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.svg")) { //$NON-NLS-1$
             @Override
             public void run() {
                 refresh();

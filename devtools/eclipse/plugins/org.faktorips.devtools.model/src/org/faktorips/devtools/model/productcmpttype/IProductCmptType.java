@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,9 +32,9 @@ import org.faktorips.runtime.model.type.ProductCmptType;
 
 /**
  * A type of the product definition side of the model.
- * 
+ *
  * @since 2.0
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IProductCmptType extends IType, IIpsMetaClass {
@@ -50,7 +50,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     List<String> SUPPORTED_ICON_EXTENSIONS = Collections
-            .unmodifiableList(Arrays.asList("gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
+            .unmodifiableList(Arrays.asList("gif", "png", "svg")); //$NON-NLS-1$//$NON-NLS-2$
 
     /**
      * Prefix for all message codes of this class.
@@ -214,7 +214,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * abstract base types for your composite structure: <em>ProductPartContainer</em><br>
      * Marking this class as layer supertype it is filtered for example in the new product component
      * wizard where only business abstractions are relevant.
-     * 
+     *
      * @param layerSupertype true to specify this type as layer supertype
      */
     void setLayerSupertype(boolean layerSupertype);
@@ -222,7 +222,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns true if this type is a layer supertype. Have a look at
      * {@link #setLayerSupertype(boolean)} for more information about the layer supertype flag.
-     * 
+     *
      * @return true if this type is marked as layered supertype or false if not.
      * @see #setLayerSupertype(boolean)
      */
@@ -232,7 +232,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns <code>true</code> if the changing over time flag of this product component type is
      * enabled. Have a look at {@link #setChangingOverTime(boolean)} for more information about the
      * changing over time flag.
-     * 
+     *
      * @see #setChangingOverTime(boolean)
      */
     boolean isChangingOverTime();
@@ -246,7 +246,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * Furthermore no classes and access methods for {@link IProductCmptGeneration generations} will
      * be generated.
-     * 
+     *
      * @param changesOverTime <code>false</code> to specify this type's changing over time flag as
      *            disabled
      */
@@ -261,10 +261,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the policy component type this product component type refers to. Returns
      * <code>null</code> if either this product component type does not refer to a policy component
      * type or the policy component type can't be found.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      */
     IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
@@ -272,7 +272,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the type's supertype if the type is based on a supertype and the supertype can be
      * found on the project's IPS object path. Returns <code>null</code> if either this type is not
      * based on a supertype or the supertype can't be found on the project's IPS object path.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
@@ -283,7 +283,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * Constrained associations are not added to the result if a constraining association is already
      * added.
-     * 
+     *
      * @since 3.8
      */
     List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipcProject);
@@ -304,11 +304,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Searches an attribute with the given name in the type and it's supertype hierarchy and
      * returns it. Returns <code>null</code> if no such attribute exists.
-     * 
+     *
      * @param name The attribute's name.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @throws NullPointerException if project is <code>null</code>.
      */
     IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject);
@@ -351,11 +351,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Looks for the table structure usage with the specified roleName starting from this policy
      * component type and visiting up the supertype hierarchy. If no table structure usage is found,
      * <code>null</code> is returned.
-     * 
+     *
      * @param roleName the role name of the ITableStructureUsage in question
      * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
      */
     ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project);
@@ -369,13 +369,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Moves the table structure usages identified by the indexes up or down by one position. If one
      * of the indexes is 0 (the first object), no object is moved up. If one of the indexes is the
      * number of objects - 1 (the last object) no object is moved down.
-     * 
+     *
      * @param indexes The indexes identifying the table structure usages.
      * @param up <code>true</code>, to move the table structure usages up, <code>false</code> to
      *            move them down.
-     * 
+     *
      * @return The new indexes of the moved table structure usages.
-     * 
+     *
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a table structure
      *             usage.
@@ -391,9 +391,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns a new product component type method that has the role of a formula signature. The
      * formula name is set to the given formula name and the method name is set to the default
      * method name.
-     * 
+     *
      * @param formulaName The name of the formula signature.
-     * 
+     *
      * @see IProductCmptTypeMethod#getDefaultMethodName()
      */
     IProductCmptTypeMethod newFormulaSignature(String formulaName);
@@ -429,10 +429,10 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Searches the method signature with the indicated formula name in the type's supertype
      * hierarchy. Returns <code>null</code> if no such method is found.
-     * 
+     *
      * @param formulaName The formula name to search
      * @param ipsProject The IPS project which IPS object path is used to search.
-     * 
+     *
      * @throws NullPointerException if IPS project is <code>null</code>.
      */
     IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject);
@@ -447,13 +447,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the type's product definition properties including all product component properties
      * in the supertype hierarchy. This method simply calls findProductCmptProperties(true,
      * ipsProject)
-     * 
+     *
      */
     List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties.
-     * 
+     *
      * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
      */
@@ -462,11 +462,11 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
 
     /**
      * Returns the type's product definition properties according to the given search parameters.
-     * 
+     *
      * @param propertyType only properties of this {@link ProductCmptPropertyType} will be included.
      * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
-     * 
+     *
      * @see #findProductCmptProperties(IIpsProject)
      * @see #findProductCmptProperties(boolean, IIpsProject)
      */
@@ -520,7 +520,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Creates and returns a new {@link IProductCmptCategory} with the provided name, belonging to
      * this type.
-     * 
+     *
      * @param name the name of the category to create
      */
     IProductCmptCategory newCategory(String name);
@@ -528,7 +528,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Creates and returns a new {@link IProductCmptCategory} with the provided name and
      * {@link Position} belonging to this type.
-     * 
+     *
      * @param name the name of the {@link IProductCmptCategory} to create
      * @param position the {@link Position} of the {@link IProductCmptCategory} to create
      */
@@ -545,7 +545,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns a list (defensive copy) containing the categories with the indicated {@link Position}
      * , belonging to this {@link IProductCmptType}.
-     * 
+     *
      * @param position the {@link Position} to retrieve the categories for
      */
     List<IProductCmptCategory> getCategories(Position position);
@@ -555,7 +555,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
      * Categories from supertypes are located at the top of the list.
-     * 
+     *
      * @throws IpsException if an error occurs while searching the supertype hierarchy
      */
     List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws IpsException;
@@ -565,7 +565,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * category is found.
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @param name the name identifying the {@link IProductCmptCategory} to be retrieved
      */
     IProductCmptCategory getCategory(String name);
@@ -578,7 +578,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This operation does <strong>not</strong> consider categories defined in the supertype
      * hierarchy.
-     * 
+     *
      * @param position the {@link Position} to retrieve the first {@link IProductCmptCategory} for
      */
     IProductCmptCategory getFirstCategory(Position position);
@@ -591,7 +591,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This operation does <strong>not</strong> consider categories defined in the supertype
      * hierarchy.
-     * 
+     *
      * @param position the {@link Position} to retrieve the last {@link IProductCmptCategory} for
      */
     IProductCmptCategory getLastCategory(Position position);
@@ -611,7 +611,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns whether this {@link IProductCmptType} defines the indicated
      * {@link IProductCmptCategory}.
-     * 
+     *
      * @return true if {@code this.equals(category.getParent())} returns true, false otherwise
      */
     boolean isDefining(IProductCmptCategory category);
@@ -619,9 +619,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType}.
-     * 
+     *
      * @param name the name of the {@link IProductCmptCategory} to check for existence in this type
-     * 
+     *
      * @see #findHasCategory(String, IIpsProject)
      */
     boolean hasCategory(String name);
@@ -629,12 +629,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
      * {@link IProductCmptType} or it's supertype hierarchy.
-     * 
+     *
      * @param name the name of the {@link IProductCmptCategory} to check for existence in this type
      *            and it's supertypes
-     * 
+     *
      * @throws IpsException if an error occurs during the search
-     * 
+     *
      * @see #hasCategory(String)
      */
     boolean findHasCategory(String name, IIpsProject ipsProject) throws IpsException;
@@ -644,9 +644,9 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @param name the name identifying the {@link IProductCmptCategory} to be retrieved
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws IpsException;
@@ -656,7 +656,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * definitions or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
@@ -667,7 +667,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * rules or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws IpsException;
@@ -677,7 +677,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws IpsException;
@@ -687,7 +687,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * component type attributes or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
@@ -698,7 +698,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * attributes or null if no such {@link IProductCmptCategory} is found.
      * <p>
      * This method <strong>does</strong> consider categories defined in the supertype hierarchy.
-     * 
+     *
      * @throws IpsException if an error occurs during the search
      */
     IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
@@ -716,14 +716,14 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <li>the first {@link IProductCmptCategory} of it's {@link Position} is moved up
      * <li>the last {@link IProductCmptCategory} of it's {@link Position} is moved down
      * </ul>
-     * 
+     *
      * @param categories the categories to be moved
      * @param up flag indicating whether to move up or down
-     * 
+     *
      * @return true if a move has been performed or false if the first or last
      *             {@link IProductCmptCategory} of it's {@link Position} is moved up respectively
      *             down
-     * 
+     *
      * @throws IllegalArgumentException if one of the categories to be moved is not defined in this
      *             {@link IProductCmptType}
      */
@@ -735,7 +735,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * If the provided {@link IProductCmptProperty} belongs to an {@link IPolicyCmptType}, the
      * change is not forwarded immediately to the {@link IPolicyCmptType} but only as soon as the
      * {@link IProductCmptType} is saved.
-     * 
+     *
      * @param property the {@link IProductCmptProperty} to assign to another
      *            {@link IProductCmptCategory}
      * @param category the name of the {@link IProductCmptCategory} to assign the

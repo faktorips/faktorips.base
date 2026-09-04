@@ -29,7 +29,7 @@ public class TestPolicyCmptTypeParameterDecorator implements IIpsObjectPartDecor
          * Old comment: If no association is specified then return the policy cmpt type image or if
          * a product cmpt is required the the product cmpt image. If a association is specified then
          * return the image which is provided by the association or if the association is not found
-         * the default "association.gif" image.
+         * the default "association.svg" image.
          */
         if (ipsObjectPart instanceof ITestPolicyCmptTypeParameter testParameter) {
             if (IpsStringUtils.isEmpty(testParameter.getAssociation())) {

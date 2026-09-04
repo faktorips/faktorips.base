@@ -43,7 +43,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class ModelLabelProvider implements ILabelProvider {
 
-    private static final String IPS_OBJECT_PATH_CONTAINER_GIF = "IpsObjectPathContainer.gif"; //$NON-NLS-1$
+    private static final String IPS_OBJECT_PATH_CONTAINER_GIF = "IpsObjectPathContainer.svg"; //$NON-NLS-1$
 
     private DefaultLabelProvider defaultLabelProvider;
 

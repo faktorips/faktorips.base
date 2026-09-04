@@ -25,7 +25,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
 
-    public static final String ENUM_ATTRIBUTE_ICON = "EnumAttribute.gif"; //$NON-NLS-1$
+    public static final String ENUM_ATTRIBUTE_ICON = "EnumAttribute.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

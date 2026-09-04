@@ -60,7 +60,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
         GridData buttonGridData = new GridData(SWT.FILL, SWT.FILL, false, false);
         Button button = toolkit.createButton(calendarComposite, ""); //$NON-NLS-1$
         button.setLayoutData(buttonGridData);
-        button.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.png", true)); //$NON-NLS-1$
+        button.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Calendar.svg", true)); //$NON-NLS-1$
         return button;
     }
 

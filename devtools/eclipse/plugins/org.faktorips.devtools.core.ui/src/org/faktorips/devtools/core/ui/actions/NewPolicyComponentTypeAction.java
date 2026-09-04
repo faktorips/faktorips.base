@@ -28,7 +28,7 @@ public class NewPolicyComponentTypeAction extends Action {
         super();
         this.window = window;
         setText(Messages.NewPolicyComponentTypeAction_name);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewPolicyCmptTypeWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewPolicyCmptTypeWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

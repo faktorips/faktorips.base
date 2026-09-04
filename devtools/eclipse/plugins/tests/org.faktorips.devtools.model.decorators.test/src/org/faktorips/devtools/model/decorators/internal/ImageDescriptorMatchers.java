@@ -34,6 +34,12 @@ import org.hamcrest.TypeSafeMatcher;
 
 public final class ImageDescriptorMatchers {
 
+    /**
+     * Maximum allowed per-byte difference (0-255) between two independently rasterized SVG pixel
+     * values in {@link #descriptorOfSimilar(ImageData, Function, String)}.
+     */
+    private static final int PIXEL_TOLERANCE = 16;
+
     private ImageDescriptorMatchers() {
         // util class
     }
@@ -54,7 +60,7 @@ public final class ImageDescriptorMatchers {
     }
 
     public static Matcher<ImageDescriptor> hasBaseImage(String imageFileName) {
-        return descriptorOf(
+        return descriptorOfSimilar(
                 getSharedImageData(imageFileName),
                 ImageDescriptorMatchers::getImageData,
                 "an ImageDescriptor based on " + imageFileName);
@@ -104,6 +110,78 @@ public final class ImageDescriptorMatchers {
                         hasSame("width", i -> i.width, referenceImageData),
                         hasSame("x", i -> i.x, referenceImageData),
                         hasSame("y", i -> i.y, referenceImageData)));
+    }
+
+    /**
+     * Like {@link #descriptorOf(ImageData, Function, String)}, but compares the raw pixel data
+     * ({@code alphaData}, {@code data}) with a small per-byte tolerance instead of requiring exact
+     * equality. SVG icons are rasterized on the fly by SWT; loading the same SVG through different
+     * code paths (e.g. from a bundle URL vs. from a project file) does not guarantee bit-identical
+     * anti-aliasing, even though the resulting image is visually identical. All other properties
+     * (dimensions, depth, palette, transparency, ...) are still compared exactly.
+     */
+    private static PropertyMatcher<ImageDescriptor, ImageData> descriptorOfSimilar(ImageData referenceImageData,
+            Function<ImageDescriptor, ImageData> imageDataGetter,
+            String description) {
+        return new PropertyMatcher<>(imageDataGetter,
+                description,
+                allOf(
+                        hasSame("alpha", i -> i.alpha, referenceImageData),
+                        hasSimilarByteArray("alphaData", i -> i.alphaData, referenceImageData, PIXEL_TOLERANCE),
+                        hasSame("bytesPerLine", i -> i.bytesPerLine, referenceImageData),
+                        hasSimilarByteArray("data", i -> i.data, referenceImageData, PIXEL_TOLERANCE),
+                        hasSame("delayTime", i -> i.delayTime, referenceImageData),
+                        hasSame("depth", i -> i.depth, referenceImageData),
+                        hasSame("disposalMethod", i -> i.disposalMethod, referenceImageData),
+                        hasSame("height", i -> i.height, referenceImageData),
+                        hasSameByteArray("maskData", i -> i.maskData, referenceImageData),
+                        hasSame("maskPad", i -> i.maskPad, referenceImageData),
+                        hasSamePalette(referenceImageData),
+                        hasSame("scanlinePad", i -> i.scanlinePad, referenceImageData),
+                        hasSame("transparentPixel", i -> i.transparentPixel, referenceImageData),
+                        hasSame("type", i -> i.type, referenceImageData),
+                        hasSame("width", i -> i.width, referenceImageData),
+                        hasSame("x", i -> i.x, referenceImageData),
+                        hasSame("y", i -> i.y, referenceImageData)));
+    }
+
+    private static Matcher<ImageData> hasSimilarByteArray(String propertyDescription,
+            Function<ImageData, byte[]> propertyGetter,
+            ImageData referenceImageData,
+            int tolerance) {
+        byte[] reference = propertyGetter.apply(referenceImageData);
+        return new TypeSafeMatcher<>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has similar " + propertyDescription + " (tolerance " + tolerance + ") "
+                        + Arrays.toString(reference));
+            }
+
+            @Override
+            protected boolean matchesSafely(ImageData item) {
+                return isSimilar(reference, propertyGetter.apply(item), tolerance);
+            }
+
+            @Override
+            protected void describeMismatchSafely(ImageData item, Description mismatchDescription) {
+                mismatchDescription.appendText("was " + Arrays.toString(propertyGetter.apply(item)));
+            }
+        };
+    }
+
+    private static boolean isSimilar(byte[] reference, byte[] actual, int tolerance) {
+        if (reference == null || actual == null) {
+            return reference == actual;
+        }
+        if (reference.length != actual.length) {
+            return false;
+        }
+        for (int i = 0; i < reference.length; i++) {
+            if (Math.abs(Byte.toUnsignedInt(reference[i]) - Byte.toUnsignedInt(actual[i])) > tolerance) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static Matcher<ImageData> hasSamePalette(ImageData referenceImageData) {

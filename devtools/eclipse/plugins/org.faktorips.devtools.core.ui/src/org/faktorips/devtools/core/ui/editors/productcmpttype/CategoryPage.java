@@ -338,7 +338,7 @@ public class CategoryPage extends IpsObjectEditorPage {
          */
         private class NewCategoryAction extends Action {
 
-            private static final String IMAGE_FILENAME = "Add.gif"; //$NON-NLS-1$
+            private static final String IMAGE_FILENAME = "Add.svg"; //$NON-NLS-1$
 
             private NewCategoryAction() {
                 setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(IMAGE_FILENAME));

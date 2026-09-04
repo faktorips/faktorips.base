@@ -55,9 +55,9 @@ public class DeltaLabelProvider extends LabelProvider {
             case VALUE_WITHOUT_PROPERTY -> IpsUIPlugin.getImageHandling()
                     .createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
             case PROPERTY_TYPE_MISMATCH -> IpsUIPlugin.getImageHandling()
-                    .createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
+                    .createImageDescriptor("DeltaTypePropertyTypeMismatch.svg"); //$NON-NLS-1$
             case VALUE_SET_MISMATCH -> IpsUIPlugin.getImageHandling()
-                    .createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
+                    .createImageDescriptor("DeltaTypeValueSetMismatch.svg"); //$NON-NLS-1$
             case LINK_WITHOUT_ASSOCIATION -> IpsUIPlugin.getImageHandling()
                     .createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
             case HIDDEN_ATTRIBUTE_MISMATCH -> IpsUIPlugin.getImageHandling()

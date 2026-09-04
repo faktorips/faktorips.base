@@ -28,8 +28,8 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 
 public class ProductCmptDecorator implements IIpsSrcFileDecorator {
 
-    public static final String PRODUCT_CMPT_BASE_IMAGE = "ProductCmpt.gif"; //$NON-NLS-1$
-    public static final String PRODUCT_CMPT_TEMPLATE_BASE_IMAGE = "ProductTemplate.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_BASE_IMAGE = "ProductCmpt.svg"; //$NON-NLS-1$
+    public static final String PRODUCT_CMPT_TEMPLATE_BASE_IMAGE = "ProductTemplate.svg"; //$NON-NLS-1$
 
     private final String defaultImage;
 
@@ -83,6 +83,8 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
                         IImageHandling imageHandling = IIpsDecorators.getImageHandling();
                         return imageHandling.getSharedOverlayImageDescriptor(
                                 imageHandling.getImage(productCmptImageDescriptor),
+                                // IImageHandling.scaleImage(imageHandling.getImage(productCmptImageDescriptor),
+                                // 16, 16),
                                 OverlayIcons.TEMPLATE,
                                 IDecoration.TOP_LEFT);
                     }

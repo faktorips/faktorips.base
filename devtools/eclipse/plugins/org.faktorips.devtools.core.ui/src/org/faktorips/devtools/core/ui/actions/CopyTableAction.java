@@ -23,7 +23,7 @@ public class CopyTableAction extends IpsAction {
         super(selectionProvider);
         this.shell = shell;
         setText(Messages.CopyTableAction_title);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTableContentsCopy.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewTableContentsCopy.svg")); //$NON-NLS-1$
     }
 
     @Override

@@ -65,7 +65,7 @@ enum TestCaseDeltaType implements INamedValue {
     /**
      * The sort order of the test parameter and the corresponding test objects is different.
      */
-    DIFFERENT_SORT_ORDER("differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.gif"); //$NON-NLS-1$ //$NON-NLS-2$
+    DIFFERENT_SORT_ORDER("differentSortOrder", Messages.TestCaseDeltaType_DifferentSortOrder, "ChangedOrder.svg"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private final String id;
     private final String name;

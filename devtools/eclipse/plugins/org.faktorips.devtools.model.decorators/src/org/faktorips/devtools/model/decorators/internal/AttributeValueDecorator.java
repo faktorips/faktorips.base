@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 
 public class AttributeValueDecorator implements IIpsObjectPartDecorator {
 
-    public static final String PRODUCT_ATTRIBUTE_ICON = "ProductAttribute.gif"; //$NON-NLS-1$
+    public static final String PRODUCT_ATTRIBUTE_ICON = "ProductAttribute.svg"; //$NON-NLS-1$
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -66,7 +66,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * A ViewPart that shows the results of a ips test run.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListener {
@@ -318,7 +318,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         ViewForm top = new ViewForm(fSashForm, SWT.NONE);
         CLabel label = new CLabel(top, SWT.NONE);
         label.setText(Messages.IpsTestRunnerViewPart_TestRunPane_Text);
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.gif"); //$NON-NLS-1$
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("TestCaseRun.svg"); //$NON-NLS-1$
         label.setImage(resourceManager.get(imageDescriptor));
         top.setTopLeft(label);
         fTestRunPane = new TestRunPane(top, this);
@@ -327,7 +327,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         ViewForm bottom = new ViewForm(fSashForm, SWT.NONE);
         label = new CLabel(bottom, SWT.NONE);
         label.setText(Messages.IpsTestRunnerViewPart_TestFailurePane_Text);
-        ImageDescriptor failureImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
+        ImageDescriptor failureImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.svg"); //$NON-NLS-1$
         label.setImage(resourceManager.get(failureImageDescriptor));
         bottom.setTopLeft(label);
 
@@ -964,7 +964,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public ShowErrorsFailureOnlyAction() {
             super(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly, IAction.AS_CHECK_BOX);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowFailuresOnly_ToolTip);
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.gif"); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("failures.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
         }

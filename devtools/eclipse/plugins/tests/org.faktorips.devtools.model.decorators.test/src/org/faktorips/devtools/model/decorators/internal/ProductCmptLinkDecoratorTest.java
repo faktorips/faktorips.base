@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -116,13 +116,13 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetImageDescriptor_CustomProductCmptTypeIcon() throws IpsException, IOException {
-        AFile file = ipsProject.getProject().getFile("/root/foo.gif");
-        file.create(IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/TestCase.gif").openStream(), null);
-        prodType.setInstancesIcon("foo.gif");
+        AFile file = ipsProject.getProject().getFile("/root/foo.svg");
+        file.create(IpsModelDecoratorsPluginActivator.getBundle().getEntry("icons/TestCase.svg").openStream(), null);
+        prodType.setInstancesIcon("foo.svg");
 
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(link);
 
-        assertThat(imageDescriptor, hasBaseImage("TestCase.gif"));
+        assertThat(imageDescriptor, hasBaseImage("TestCase.svg"));
         assertThat(imageDescriptor, hasOverlay(OverlayIcons.LINK, IDecoration.BOTTOM_RIGHT));
     }
 

@@ -31,7 +31,7 @@ public class MigrateProjectAction extends Action {
         this.window = window;
         this.selection = selection;
         setText(Messages.MigrateProjectAction_text);
-        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("MigrationWizard.gif")); //$NON-NLS-1$
+        setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("MigrationWizard.svg")); //$NON-NLS-1$
     }
 
     @Override

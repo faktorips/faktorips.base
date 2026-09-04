@@ -32,10 +32,10 @@ public class NewProductComponentAction extends Action {
         this.template = template;
         if (template) {
             setText(IpsObjectType.PRODUCT_TEMPLATE.getDisplayName());
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductTemplateWizard.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductTemplateWizard.svg")); //$NON-NLS-1$
         } else {
             setText(IpsObjectType.PRODUCT_CMPT.getDisplayName());
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptWizard.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("NewProductCmptWizard.svg")); //$NON-NLS-1$
         }
     }
 
