@@ -717,7 +717,7 @@ public class IpsBuildMojo extends AbstractMojo {
         }
         throw new MojoExecutionException("Could not determine jdkDir");
     }
-
+    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip) {
@@ -725,7 +725,7 @@ public class IpsBuildMojo extends AbstractMojo {
             return;
         }
         if (!isIpsProject()) {
-            getLog().warn("Skipping Faktor-IPS build as \"" + project.getBasedir()
+            getLog().info("Skipping Faktor-IPS build as \"" + project.getBasedir()
                     + "\" is not a Faktor-IPS project (no .ipsproject file found).");
             return;
         }
