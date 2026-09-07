@@ -174,6 +174,38 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
+    public void testSetInheritanceStrategy_UseTableDefinedInSupertypeChangeMarksIpsSrcFileDirty() {
+        PolicyCmptType subPcType = newPolicyCmptType(ipsProject, "subtype");
+        subPcType.setSupertype(policyCmptType.getQualifiedName());
+        IPersistentTypeInfo subPersTypeInfo = subPcType.getPersistenceTypeInfo();
+        subPersTypeInfo.setPersistentType(PersistentType.ENTITY);
+        subPersTypeInfo.setUseTableDefinedInSupertype(false);
+
+        subPersTypeInfo.getIpsSrcFile().markAsClean();
+        // for a non-root entity switching to SINGLE_TABLE implicitly enables
+        // useTableDefinedInSupertype
+        subPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
+
+        assertTrue(subPersTypeInfo.isUseTableDefinedInSupertype());
+        assertTrue(subPersTypeInfo.getIpsSrcFile().isDirty());
+    }
+
+    @Test
+    public void testSetUseTableDefinedInSupertype_ClearsTableNameOnlyWhenEnabling() {
+        IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persTypeInfo.setPersistentType(PersistentType.ENTITY);
+        persTypeInfo.setTableName("OWN_TABLE");
+
+        persTypeInfo.setUseTableDefinedInSupertype(true);
+        assertEquals("", persTypeInfo.getTableName());
+
+        persTypeInfo.setTableName("OWN_TABLE");
+        // unchecking must not throw away the table name the user entered
+        persTypeInfo.setUseTableDefinedInSupertype(false);
+        assertEquals("OWN_TABLE", persTypeInfo.getTableName());
+    }
+
+    @Test
     public void testValidate_DiscriminatorInvalid() {
         IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persTypeInfo.setDefinesDiscriminatorColumn(true);

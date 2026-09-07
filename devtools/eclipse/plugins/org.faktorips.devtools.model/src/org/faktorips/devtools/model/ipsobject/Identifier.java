@@ -45,6 +45,9 @@ import org.faktorips.devtools.model.internal.testcasetype.TestValueParameter;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.method.IBaseMethod;
 import org.faktorips.devtools.model.method.IParameter;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -107,6 +110,11 @@ public interface Identifier {
             case IEnumValue enumValue -> EmumValueIdentifier.of(enumValue);
             case IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue -> new ByTypeIdentifier(
                     IEnumLiteralNameAttributeValue.XML_TAG);
+            case IPersistentTypeInfo persistentTypeInfo -> new ByTypeIdentifier(IPersistentTypeInfo.XML_TAG);
+            case IPersistentAttributeInfo persistentAttributeInfo -> new ByTypeIdentifier(
+                    IPersistentAttributeInfo.XML_TAG);
+            case IPersistentAssociationInfo persistentAssociationInfo -> new ByTypeIdentifier(
+                    IPersistentAssociationInfo.XML_TAG);
             case IPartIdentifiedByIndex indexedPart -> new IndexedIdentifier(index.getAndIncrement());
             default -> getIdProviders().stream()
                     .map(idProvider -> idProvider.getIdentity(part))
@@ -164,6 +172,8 @@ public interface Identifier {
                     .of(partEl);
             case IEnumValue.XML_TAG -> EmumValueIdentifier.of(partEl, (IEnumValueContainer)container);
             case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(IEnumAttributeValue.XML_TAG);
+            case IPersistentTypeInfo.XML_TAG, IPersistentAttributeInfo.XML_TAG,
+                    IPersistentAssociationInfo.XML_TAG -> new ByTypeIdentifier(partEl.getNodeName());
             case Row.TAG_NAME, IEnumAttributeValue.XML_TAG -> new IndexedIdentifier(index.getAndIncrement());
             default -> getIdProviders().stream()
                     .map(idProvider -> idProvider.getIdentity(partEl))

@@ -122,7 +122,10 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
     @Override
     public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype) {
-        setTableName(""); //$NON-NLS-1$
+        if (useTableDefinedInSupertype) {
+            // the table name is inherited from the supertype, an own one would be invalid
+            setTableName(""); //$NON-NLS-1$
+        }
         boolean oldValue = this.useTableDefinedInSupertype;
         this.useTableDefinedInSupertype = useTableDefinedInSupertype;
         valueChanged(oldValue, useTableDefinedInSupertype, PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
@@ -212,8 +215,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (InheritanceStrategy.SINGLE_TABLE.equals(newStrategy) && !isRootEntity()) {
             // initialize defaults for single table inheritance strategy if this is not the roor
             // entity
-            useTableDefinedInSupertype = true;
-            tableName = ""; //$NON-NLS-1$
+            setUseTableDefinedInSupertype(true);
         }
         inheritanceStrategy = newStrategy;
     }

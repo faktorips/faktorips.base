@@ -65,6 +65,9 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.IValidationRule;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.PersistentType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.AssociationType;
@@ -75,6 +78,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
@@ -921,9 +925,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     @Test
     public void testPersistenceSupport() {
         assertFalse(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
-        IIpsProjectProperties properties = policyCmptType.getIpsProject().getProperties();
-        properties.setPersistenceSupport(true);
-        ipsProject.setProperties(properties);
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
         assertTrue(policyCmptType.getIpsProject().isPersistenceSupportEnabled());
 
         policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "TestPolicyWithPerstence");
@@ -935,6 +937,117 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
         assertFalse(policyCmptType.isPersistentEnabled());
         policyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.NONE);
+    }
+
+    @Test
+    public void testReinitPartCollectionsThis_PreservesPersistenceTypeInfoInstance() {
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
+
+        PolicyCmptType persistentPcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PersistentPolicy");
+        IPersistentTypeInfo persistenceTypeInfoBefore = persistentPcType.getPersistenceTypeInfo();
+        assertNotNull(persistenceTypeInfoBefore);
+
+        // A reinit from XML (e.g. triggered by undo/redo or an external file change) must not
+        // replace an already existing IPersistentTypeInfo instance with a new one up front: any
+        // UI binding still referencing the old instance would otherwise silently stop working.
+        persistentPcType.reinitPartCollectionsThis();
+
+        assertSame(persistenceTypeInfoBefore, persistentPcType.getPersistenceTypeInfo());
+    }
+
+    @Test
+    public void testInitFromXml_PersistenceTypeInfoElementPresent_PreservesInstanceIdentity() {
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
+
+        PolicyCmptType persistentPcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PersistentPolicy2");
+        IPersistentTypeInfo persistenceTypeInfoBefore = persistentPcType.getPersistenceTypeInfo();
+        assertNotNull(persistenceTypeInfoBefore);
+
+        // a full reload with unchanged content (element still contains the matching
+        // <Persistence> element) must reuse the same instance instead of replacing it.
+        // IpsSrcFileContent#save strips all ids, so the reload path from disk must work without
+        // them
+        Element element = persistentPcType.toXml(newDocument());
+        XmlUtil.removeIds(element);
+        persistentPcType.initFromXml(element);
+
+        assertSame(persistenceTypeInfoBefore, persistentPcType.getPersistenceTypeInfo());
+        assertFalse(persistenceTypeInfoBefore.isDeleted());
+    }
+
+    @Test
+    public void testInitFromXml_PersistenceAttributeInfoElementPresent_PreservesInstanceIdentity() {
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
+
+        PolicyCmptType persistentPcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PersistentPolicy4");
+        IPolicyCmptTypeAttribute attribute = persistentPcType.newPolicyCmptTypeAttribute("attribute");
+        IPersistentAttributeInfo persistenceAttributeInfoBefore = attribute.getPersistenceAttributeInfo();
+        assertNotNull(persistenceAttributeInfoBefore);
+
+        Element element = persistentPcType.toXml(newDocument());
+        XmlUtil.removeIds(element);
+        persistentPcType.initFromXml(element);
+
+        IPolicyCmptTypeAttribute attributeAfter = persistentPcType.getPolicyCmptTypeAttribute("attribute");
+        assertSame(persistenceAttributeInfoBefore, attributeAfter.getPersistenceAttributeInfo());
+        assertFalse(persistenceAttributeInfoBefore.isDeleted());
+    }
+
+    @Test
+    public void testInitFromXml_PersistenceAssociationInfoElementPresent_PreservesInstanceIdentity() {
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
+
+        PolicyCmptType persistentPcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PersistentPolicy5");
+        IPolicyCmptTypeAssociation association = persistentPcType.newPolicyCmptTypeAssociation();
+        association.setTargetRoleSingular("target");
+        IPersistentAssociationInfo persistenceAssociationInfoBefore = association.getPersistenceAssociatonInfo();
+        assertNotNull(persistenceAssociationInfoBefore);
+
+        Element element = persistentPcType.toXml(newDocument());
+        XmlUtil.removeIds(element);
+        persistentPcType.initFromXml(element);
+
+        IPolicyCmptTypeAssociation associationAfter = persistentPcType.getPolicyCmptTypeAssociations().get(0);
+        assertSame(persistenceAssociationInfoBefore, associationAfter.getPersistenceAssociatonInfo());
+        assertFalse(persistenceAssociationInfoBefore.isDeleted());
+    }
+
+    @Test
+    public void testInitFromXml_PersistenceTypeInfoElementMissingWhileEnabled_RecreatesUsableInstance() {
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
+
+        PolicyCmptType persistentPcType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PersistentPolicy3");
+        IPersistentTypeInfo persistenceTypeInfoBefore = persistentPcType.getPersistenceTypeInfo();
+        assertNotNull(persistenceTypeInfoBefore);
+
+        // simulates (re-)loading a legacy document that predates persistence support for this
+        // policy component type: the <Persistence> element is missing even though persistence
+        // support is enabled for the project
+        Element element = persistentPcType.toXml(newDocument());
+        Element persistenceTypeInfoElement = XmlUtil.getFirstElement(element, IPersistentTypeInfo.XML_TAG);
+        element.removeChild(persistenceTypeInfoElement);
+
+        persistentPcType.initFromXml(element);
+
+        IPersistentTypeInfo persistenceTypeInfoAfter = persistentPcType.getPersistenceTypeInfo();
+        assertNotNull(persistenceTypeInfoAfter);
+        assertFalse(persistenceTypeInfoAfter.isDeleted());
+    }
+
+    @Test
+    public void testInitFromXml_PersistenceTypeInfoElementMissingWhileNoneExistedBefore_CreatesNewInstance() {
+        assertNull(policyCmptType.getPersistenceTypeInfo());
+        Element element = policyCmptType.toXml(newDocument());
+
+        setProjectProperty(ipsProject, p -> p.setPersistenceSupport(true));
+
+        // reloading the (persistence-less) document after persistence support was enabled for
+        // the project must create a fresh, usable IPersistentTypeInfo
+        policyCmptType.initFromXml(element);
+
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        assertNotNull(persistenceTypeInfo);
+        assertFalse(persistenceTypeInfo.isDeleted());
     }
 
     @Test

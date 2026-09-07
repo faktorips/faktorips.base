@@ -194,8 +194,6 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         private boolean checkEnable = true;
 
-        private Boolean oldValue;
-
         public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property,
                 boolean checkEnable) {
             super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
@@ -203,29 +201,22 @@ public class PersistentTypeInfoSection extends IpsSection {
             this.checkEnable = checkEnable;
         }
 
+        /**
+         * Must not short-circuit on an unchanged property value: the resulting state also depends
+         * on the persistent type, and the binding for the enclosing group re-enables this control
+         * recursively before this binding runs.
+         */
         @Override
         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
             try {
                 boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject());
-                if (oldValue != null && enabled == oldValue) {
-                    return;
+                if (ipsObject.getPersistenceTypeInfo().getPersistentType() != PersistentType.ENTITY) {
+                    toolkit.setDataChangeable(getControl(), false);
+                } else {
+                    toolkit.setDataChangeable(getControl(), checkEnable == enabled);
                 }
-                oldValue = enabled;
-                updateUiIfNotDisposedAndPropertyChanged(enabled);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                 throw new RuntimeException(e);
-            }
-        }
-
-        public void updateUiIfNotDisposedAndPropertyChanged(boolean enabled) {
-            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                toolkit.setDataChangeable(getControl(), false);
-            } else {
-                boolean newEnabled = enabled;
-                if (!checkEnable) {
-                    newEnabled = !newEnabled;
-                }
-                toolkit.setDataChangeable(getControl(), newEnabled);
             }
         }
     }

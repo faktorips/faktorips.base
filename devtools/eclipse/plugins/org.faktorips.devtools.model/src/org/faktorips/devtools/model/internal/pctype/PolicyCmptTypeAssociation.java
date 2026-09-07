@@ -805,6 +805,18 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
+    protected void initPartContainersFromXml(Element element) {
+        super.initPartContainersFromXml(element);
+        if (persistenceAssociationInfo != null && persistenceAssociationInfo.isDeleted()) {
+            // the XML contained no <PersistenceAssociation> element, so the instance kept for reuse
+            // was pruned as an obsolete part
+            persistenceAssociationInfo = getIpsProject().isPersistenceSupportEnabled()
+                    ? newPart(PersistentAssociationInfo.class)
+                    : null;
+        }
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         return false;
     }

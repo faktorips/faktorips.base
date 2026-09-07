@@ -524,6 +524,18 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
+    protected void initPartContainersFromXml(Element element) {
+        super.initPartContainersFromXml(element);
+        if (persistenceAttributeInfo != null && persistenceAttributeInfo.isDeleted()) {
+            // the XML contained no <PersistenceAttribute> element, so the instance kept for reuse
+            // was pruned as an obsolete part
+            persistenceAttributeInfo = getIpsProject().isPersistenceSupportEnabled()
+                    ? newPart(PersistentAttributeInfo.class)
+                    : null;
+        }
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part == valueSet) {
             valueSet = new UnrestrictedValueSet(this, getNextPartId());

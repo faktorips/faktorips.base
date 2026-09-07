@@ -526,6 +526,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
+    protected void initPartContainersFromXml(Element element) {
+        super.initPartContainersFromXml(element);
+        if (persistenceTypeInfo != null && persistenceTypeInfo.isDeleted()) {
+            // the XML contained no <Persistence> element, so the instance kept for reuse was
+            // pruned as an obsolete part
+            persistenceTypeInfo = null;
+            internalInitPersistenceTypeInfo();
+        }
+    }
+
+    @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (PersistentTypeInfo.class.isAssignableFrom(part.getClass())) {
             persistenceTypeInfo = newPart(PersistentTypeInfo.class);
@@ -583,7 +594,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             persistenceTypeInfo = null;
             return;
         }
-        newPart(PersistentTypeInfo.class);
+        if (persistenceTypeInfo == null) {
+            newPart(PersistentTypeInfo.class);
+        }
+        // Otherwise keep the existing instance so that the XML re-init loop in
+        // IpsObjectPartContainer#initPartContainersFromXml can match and reuse it. Replacing it
+        // would orphan any UI binding still referencing the old instance.
     }
 
     @Override
