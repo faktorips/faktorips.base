@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui;
+package org.faktorips.abstracttest;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

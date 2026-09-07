@@ -48,6 +48,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.RetryRule;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -87,6 +88,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.stubbing.Answer;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
@@ -345,6 +347,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    @ExtendWith(RetryRule.class)
     public void testResourceChanged() throws IOException {
         IIpsProject ipsProject = this.newIpsProject("TestProject");
         IIpsPackageFragmentRoot root = ipsProject.getIpsPackageFragmentRoots()[0];
@@ -504,6 +507,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    @ExtendWith(RetryRule.class)
     public void testRunAndQueueChangeEvents() {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
@@ -558,6 +562,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    @ExtendWith(RetryRule.class)
     public void testRunAndQueueChangeEvents_ErrorHandling() {
         IIpsProject project = newIpsProject();
         final IPolicyCmptType typeA = newPolicyCmptType(project, "A");
@@ -595,32 +600,6 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         fail("expected IpsSrcFile: " + ipsSrcFile.getName() + " not in List!");
     }
 
-    private static class TestContentsChangeListener implements ContentsChangeListener {
-
-        List<IIpsSrcFile> changedFiles = new ArrayList<>();
-        ContentChangeEvent lastEvent;
-
-        @Override
-        public void contentsChanged(ContentChangeEvent event) {
-            changedFiles.add(event.getIpsSrcFile());
-            lastEvent = event;
-        }
-
-    }
-
-    private static class TestModStatusListener implements IModificationStatusChangeListener {
-
-        List<IIpsSrcFile> modifiedFiles = new ArrayList<>();
-        ModificationStatusChangedEvent lastEvent;
-
-        @Override
-        public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
-            lastEvent = event;
-            modifiedFiles.add(event.getIpsSrcFile());
-        }
-
-    }
-
     @Test
     public void testClearIpsSrcFileContentsCacheWhenFileDeleted() throws Exception {
         IIpsProject project = newIpsProject("TestProject");
@@ -651,7 +630,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
                 + "should be triggered by now and have the cache cleared.");
     }
 
-        @Test
+    @Test
     public void testDelete() {
         assertThrows(UnsupportedOperationException.class, () -> {
             IIpsModel.get().delete();
@@ -681,6 +660,32 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertNotNull(versionProvider1);
         assertNotNull(versionProvider2);
         assertSame(versionProvider1, versionProvider2);
+    }
+
+    private static class TestContentsChangeListener implements ContentsChangeListener {
+
+        List<IIpsSrcFile> changedFiles = new ArrayList<>();
+        ContentChangeEvent lastEvent;
+
+        @Override
+        public void contentsChanged(ContentChangeEvent event) {
+            changedFiles.add(event.getIpsSrcFile());
+            lastEvent = event;
+        }
+
+    }
+
+    private static class TestModStatusListener implements IModificationStatusChangeListener {
+
+        List<IIpsSrcFile> modifiedFiles = new ArrayList<>();
+        ModificationStatusChangedEvent lastEvent;
+
+        @Override
+        public void modificationStatusHasChanged(ModificationStatusChangedEvent event) {
+            lastEvent = event;
+            modifiedFiles.add(event.getIpsSrcFile());
+        }
+
     }
 
 }
