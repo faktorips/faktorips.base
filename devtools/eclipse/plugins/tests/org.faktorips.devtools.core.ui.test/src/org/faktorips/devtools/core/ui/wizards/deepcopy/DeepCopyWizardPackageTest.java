@@ -173,6 +173,21 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testExtractYear_WithReferenceYear_TwoDigitToken_ResolvesCentury() {
+        assertThat(DeepCopyWizard.extractYear("produkte.hr_kompakt27", 2025), is(OptionalInt.of(2027)));
+    }
+
+    @Test
+    public void testExtractYear_WithReferenceYear_FourDigitTokenTakesPrecedence() {
+        assertThat(DeepCopyWizard.extractYear("produkte.produkt2026", 2099), is(OptionalInt.of(2026)));
+    }
+
+    @Test
+    public void testExtractYear_WithReferenceYear_NoDigits_ReturnsEmpty() {
+        assertThat(DeepCopyWizard.extractYear("produkte.produkt", 2025), is(OptionalInt.empty()));
+    }
+
+    @Test
     public void testReplaceYearToken_FourDigitMatch() {
         assertThat(DeepCopyWizard.replaceYearToken("produkte.produkt2025", 2025, 2027), is("produkte.produkt2027"));
     }
@@ -227,6 +242,28 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         wizard.getPresentationModel().setNewValidFrom(new GregorianCalendar(2028, Calendar.JANUARY, 1));
 
         assertThat(wizard.getPresentationModel().getTargetPackage().getName(), is("produkte.produkt2028"));
+    }
+
+    @Test
+    public void testUpdateTargetPackageForNewValidFrom_TwoDigitYearInTargetPackage() throws Exception {
+        IpsUIPlugin.getDefault().setDefaultValidityDate(new GregorianCalendar(2027, Calendar.JANUARY, 1));
+
+        IProductCmptType yearType = newProductCmptType(project, "YearType");
+        IProductCmpt yearProduct = newProductCmpt(yearType, "produkte.hr_kompakt27.MeinZuhause");
+        yearProduct.getIpsSrcFile().save(null);
+
+        DeepCopyWizard wizard = new DeepCopyWizard((IProductCmptGeneration)yearProduct.getGeneration(0),
+                DeepCopyWizard.TYPE_COPY_PRODUCT);
+        WizardDialog d = new WizardDialog(new Shell(), wizard);
+        cleanups.add(d::close);
+        d.setBlockOnOpen(false);
+        d.open();
+        SourcePage page = (SourcePage)wizard.getPage(SourcePage.PAGE_ID);
+        d.showPage(page);
+
+        wizard.getPresentationModel().setNewValidFrom(new GregorianCalendar(2028, Calendar.JANUARY, 1));
+
+        assertThat(wizard.getPresentationModel().getTargetPackage().getName(), is("produkte.hr_kompakt28"));
     }
 
     @Test

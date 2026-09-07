@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.function.IntUnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -173,7 +174,10 @@ public class DeepCopyWizard extends ResizableWizard {
         getPresentationModel().setTargetPackageRoot(packRoot);
         getPresentationModel().setTargetPackage(defaultPackage);
 
-        lastAppliedPackageYear = extractYear(defaultPackage.getName());
+        GenerationDate oldValidFrom = getPresentationModel().getOldValidFrom();
+        int referenceYear = oldValidFrom != null ? oldValidFrom.getValidFrom().get(Calendar.YEAR)
+                : getPresentationModel().getNewValidFrom().get(Calendar.YEAR);
+        lastAppliedPackageYear = extractYear(defaultPackage.getName(), referenceYear);
         updateTargetPackageForNewValidFrom();
     }
 
@@ -221,9 +225,34 @@ public class DeepCopyWizard extends ResizableWizard {
      * e.g. the product's generation year rather than some unrelated leading number.
      */
     static OptionalInt extractYear(String packageName) {
-        return Pattern.compile("(?<!\\d)\\d{4}(?!\\d)").matcher(packageName) //$NON-NLS-1$
+        return lastPlausibleYear(packageName, Pattern.compile("(?<!\\d)\\d{4}(?!\\d)"), year -> year); //$NON-NLS-1$
+    }
+
+    /**
+     * Like {@link #extractYear(String)}, but additionally falls back to a 2-digit year token
+     * (e.g. "27") if no 4-digit token is found, resolving its century from the given
+     * {@code referenceYear}.
+     */
+    static OptionalInt extractYear(String packageName, int referenceYear) {
+        OptionalInt fourDigitYear = extractYear(packageName);
+        if (fourDigitYear.isPresent()) {
+            return fourDigitYear;
+        }
+        int century = (referenceYear / 100) * 100;
+        return lastPlausibleYear(packageName, Pattern.compile("(?<!\\d)\\d{2}(?!\\d)"), //$NON-NLS-1$
+                twoDigits -> century + twoDigits);
+    }
+
+    /**
+     * Finds all tokens matching {@code yearTokenPattern} in {@code packageName}, maps them to a
+     * year via {@code toYear} and returns the last (rightmost) one that is plausible (see
+     * {@link #MIN_PLAUSIBLE_YEAR}, {@link #MAX_PLAUSIBLE_YEAR}), if any.
+     */
+    private static OptionalInt lastPlausibleYear(String packageName, Pattern yearTokenPattern,
+            IntUnaryOperator toYear) {
+        return yearTokenPattern.matcher(packageName)
                 .results()
-                .mapToInt(result -> Integer.parseInt(result.group()))
+                .mapToInt(result -> toYear.applyAsInt(Integer.parseInt(result.group())))
                 .filter(year -> year >= MIN_PLAUSIBLE_YEAR && year <= MAX_PLAUSIBLE_YEAR)
                 .reduce((first, last) -> last);
     }
