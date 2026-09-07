@@ -278,7 +278,9 @@ public class EnumTypePage extends IpsObjectPage {
         if (!isAbstractField.getValue()) {
             IEnumLiteralNameAttribute literalNameAttribute = newEnumType.newEnumLiteralNameAttribute();
             IEnumAttribute nameAttribute = newEnumType.findUsedAsNameInFaktorIpsUiAttribute(getIpsProject());
-            literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+            if (nameAttribute != null) {
+                literalNameAttribute.setDefaultValueProviderAttribute(nameAttribute.getName());
+            }
         }
 
         modifiedIpsObjects.add(newEnumType);
