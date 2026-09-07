@@ -10,11 +10,15 @@
 
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -83,5 +87,21 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
 
         assertFalse(messageList.isEmpty());
         assertEquals(1, messageList.size());
+    }
+
+    @Test
+    public void testGetAffectedIpsSrcFiles_EnumContentReferencesEnumType() throws Exception {
+        IEnumType enumType = newEnumType(ipsProject, "BaseEnumType");
+        enumType.setExtensible(true);
+        enumType.setEnumContentName("OtherEnumContent");
+        enumType.getIpsSrcFile().save(null);
+
+        IEnumContent enumContent = newEnumContent(ipsProject, "OtherEnumContent");
+        enumContent.setEnumType(enumType.getQualifiedName());
+        enumContent.getIpsSrcFile().save(null);
+
+        MoveRenameIpsObjectHelper enumContentMoveRenameHelper = new MoveRenameIpsObjectHelper(enumContent);
+
+        assertThat(enumContentMoveRenameHelper.getAffectedIpsSrcFiles(), hasItem(enumType.getIpsSrcFile()));
     }
 }

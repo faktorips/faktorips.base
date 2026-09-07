@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -297,7 +297,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
     }
 
     private void collectDependcies() {
-        dependencyToProject = new HashMap<>();
+        dependencyToProject = new IdentityHashMap<>();
         List<IDependency> collectedDependencies = new ArrayList<>();
 
         addDependencies(collectedDependencies, toBeRefactored.getIpsProject());

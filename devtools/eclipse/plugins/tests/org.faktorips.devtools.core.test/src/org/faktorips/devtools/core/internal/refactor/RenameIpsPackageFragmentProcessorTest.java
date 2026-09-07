@@ -1,16 +1,18 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core.internal.refactor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,8 +25,12 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.model.enums.IEnumAttribute;
+import org.faktorips.devtools.model.enums.IEnumContent;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -52,6 +58,8 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     private static final String COVERAGE_TYPE_STATIC_NAME = "StaticCoverageType"; //$NON-NLS-1$
     private static final String COVERAGE_TYPE_QNAME = "model." + COVERAGE_TYPE_NAME; //$NON-NLS-1$
     private static final String PRODUCT_QNAME = "model.Product"; //$NON-NLS-1$
+    private static final String ENUM_TYPE_QNAME = "data.products.EnumType"; //$NON-NLS-1$
+    private static final String ENUM_CONTENT_QNAME = "data.products.EnumContent"; //$NON-NLS-1$
 
     private IProductCmpt productA;
     private IProductCmptGeneration productAGen;
@@ -65,6 +73,9 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     private IProductCmptType productCmptType2;
     private IProductCmpt productC;
     private IIpsPackageFragment source;
+
+    private IEnumType enumType;
+    private IEnumContent enumContent;
 
     @Override
     @BeforeEach
@@ -113,6 +124,24 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
         file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
+
+        enumType = newEnumType(ipsProject, ENUM_TYPE_QNAME);
+        enumType.setExtensible(true);
+        enumType.setEnumContentName(ENUM_CONTENT_QNAME);
+        IEnumAttribute idAttr = enumType.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype("String");
+        idAttr.setUnique(true);
+        idAttr.setIdentifier(true);
+        IEnumAttribute nameAttr = enumType.newEnumAttribute();
+        nameAttr.setName("name");
+        nameAttr.setDatatype("String");
+        nameAttr.setUsedAsNameInFaktorIpsUi(true);
+        nameAttr.setUnique(true);
+        enumType.newEnumLiteralNameAttribute();
+        enumType.getIpsSrcFile().save(null);
+
+        enumContent = newEnumContent(enumType, ENUM_CONTENT_QNAME);
     }
 
     @Test
@@ -200,22 +229,73 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     @Test
     public void testGetAffectedIpsSrcFiles() throws Exception {
         Set<IIpsSrcFile> ipsSrcFiles = processor.getAffectedIpsSrcFiles();
-        assertEquals(3, ipsSrcFiles.size());
+        assertThat(ipsSrcFiles, hasSize(5));
 
         ipsSrcFiles.contains(productA.getIpsSrcFile());
         ipsSrcFiles.contains(productB.getIpsSrcFile());
         ipsSrcFiles.contains(productC.getIpsSrcFile());
+        ipsSrcFiles.contains(enumType.getIpsSrcFile());
+        ipsSrcFiles.contains(enumContent.getIpsSrcFile());
+    }
+
+    @Test
+    public void testRefactorIpsModel_UpdatesEnumContentReference() throws Exception {
+        processor.refactorIpsModel(new NullProgressMonitor());
+
+        IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("data.newproducts");
+
+        IIpsSrcFile newEnumContentSrcFile = newTarget.getIpsSrcFile("EnumContent", IpsObjectType.ENUM_CONTENT);
+        assertTrue(newEnumContentSrcFile.exists());
+        IEnumContent newEnumContent = (IEnumContent)newEnumContentSrcFile.getIpsObject();
+        assertThat(newEnumContent.getEnumType(), is("data.newproducts.EnumType"));
+
+        IIpsSrcFile newEnumTypeSrcFile = newTarget.getIpsSrcFile("EnumType", IpsObjectType.ENUM_TYPE);
+        assertTrue(newEnumTypeSrcFile.exists());
+        IEnumType newEnumType = (IEnumType)newEnumTypeSrcFile.getIpsObject();
+        assertThat(newEnumType.getEnumContentName(), is("data.newproducts.EnumContent"));
+    }
+
+    @Test
+    public void testRefactorIpsModel_UpdatesCrossProjectEnumContent() throws Exception {
+        IEnumType enumType = newEnumType(ipsProject, "data.products.FoobarEnum");
+        enumType.setExtensible(true);
+        enumType.setEnumContentName("data.products.FoobarEnum");
+        IEnumAttribute idAttr = enumType.newEnumAttribute();
+        idAttr.setName("id");
+        idAttr.setDatatype("String");
+        idAttr.setUnique(true);
+        idAttr.setIdentifier(true);
+        enumType.newEnumLiteralNameAttribute();
+        enumType.getIpsSrcFile().save(null);
+
+        IIpsProject subProject = newIpsProject("SubProject");
+        IIpsObjectPath subPath = subProject.getIpsObjectPath();
+        subPath.newIpsProjectRefEntry(ipsProject);
+        subProject.setIpsObjectPath(subPath);
+
+        IEnumContent subEnumContent = newEnumContent(subProject, "data.other.FoobarEnumContent");
+        subEnumContent.setEnumType(enumType.getQualifiedName());
+        subEnumContent.getIpsSrcFile().save(null);
+
+        processor.refactorIpsModel(new NullProgressMonitor());
+
+        IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("data.newproducts");
+        IIpsSrcFile newEnumTypeSrcFile = newTarget.getIpsSrcFile("FoobarEnum", IpsObjectType.ENUM_TYPE);
+        assertTrue(newEnumTypeSrcFile.exists());
+
+        subEnumContent = (IEnumContent)subEnumContent.getIpsSrcFile().getIpsObject();
+        assertThat(subEnumContent.getEnumType(), is("data.newproducts.FoobarEnum"));
     }
 
     @Test
     public void testGetIdentifier() throws Exception {
-        assertEquals("org.faktorips.devtools.core.internal.refactor.RenameIpsPackageFragmentProcessor",
-                processor.getIdentifier());
+        assertThat(processor.getIdentifier(),
+                is("org.faktorips.devtools.core.internal.refactor.RenameIpsPackageFragmentProcessor"));
     }
 
     @Test
     public void testGetProcessorName() throws Exception {
-        assertEquals(Messages.RenameIpsPackageFragmentProcessor_processorName, processor.getProcessorName());
+        assertThat(processor.getProcessorName(), is(Messages.RenameIpsPackageFragmentProcessor_processorName));
     }
 
     @Test

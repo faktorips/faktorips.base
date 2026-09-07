@@ -974,6 +974,13 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             dependencies.add(dependency);
             addDetails(details, dependency, enumAttribute, IEnumAttribute.PROPERTY_DATATYPE);
         }
+        if (isExtensible() && IpsStringUtils.isNotEmpty(enumContentPackageFragment)) {
+            IDependency enumContentDependency = IpsObjectDependency.createInstanceOfDependency(
+                    getQualifiedNameType(), new QualifiedNameType(enumContentPackageFragment,
+                            IpsObjectType.ENUM_CONTENT));
+            addDetails(details, enumContentDependency, this, PROPERTY_ENUM_CONTENT_NAME);
+            dependencies.add(enumContentDependency);
+        }
         return dependencies.toArray(new IDependency[dependencies.size()]);
     }
 
