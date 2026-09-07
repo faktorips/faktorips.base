@@ -302,10 +302,19 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
+        if (element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return;
+        }
         IValueSet valueSet = element.getValueSet();
         IValueSet modelValueSet = attribute.getValueSet();
-        if (modelValueSet.isUnrestricted() || modelValueSet.isDerived()
-                || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+
+        if (modelValueSet.isUnrestrictedOrDerived()) {
+            // StringLength is not offered as a configurable type for an Unrestricted or Derived
+            // model attribute anymore (see ConfiguredValueSet#getAllowedValueSetTypes)
+            if (valueSet.isStringLength()) {
+                addEntry(new ValueSetMismatchEntry(attribute, element));
+            }
+
             return;
         }
         if (modelValueSet.isStringLength()) {

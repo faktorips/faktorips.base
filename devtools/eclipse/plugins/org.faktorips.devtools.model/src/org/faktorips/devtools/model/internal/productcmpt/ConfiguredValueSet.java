@@ -126,7 +126,9 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             validateProductAgainstModel(list, ipsProject, attribute, valueSetToValidate, modelValueSet);
         }
 
-        if (valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
+        boolean staleStringLength = isStaleStringLengthConfiguration(valueSetToValidate, modelValueSet);
+
+        if (!staleStringLength && valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
             // situations like model value set is unrestricted, and this value set is a range
             // are ok.
             return;
@@ -139,6 +141,16 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         }
 
         validateValueSetIsCompatible(list, valueSetToValidate, modelValueSet);
+    }
+
+    /**
+     * StringLength is not offered as a configurable type for an Unrestricted or Derived model
+     * attribute anymore (see {@link #getAllowedValueSetTypes(IIpsProject)}). A value set that is
+     * still configured with StringLength for such a model attribute is therefore stale and must
+     * not be accepted by {@link IValueSet#isDetailedSpecificationOf(IValueSet)}.
+     */
+    private boolean isStaleStringLengthConfiguration(IValueSet valueSetToValidate, IValueSet modelValueSet) {
+        return modelValueSet.isUnrestrictedOrDerived() && valueSetToValidate.isStringLength();
     }
 
     private void validateValueSetIsCompatible(MessageList list, IValueSet valueSetToValidate, IValueSet modelValueSet) {

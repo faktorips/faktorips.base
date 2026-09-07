@@ -418,6 +418,66 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_ValueSetTypeMismatch_StringLengthNoLongerAllowedForUnrestrictedModel() {
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)attribute.getValueSet()).setMaximumLength("12");
+
+        configuredValueSet.changeValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)configuredValueSet.getValueSet()).setMaximumLength("12");
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+
+        // the model attribute switches to Unrestricted, but the product component keeps its
+        // StringLength configuration - StringLength is no longer a selectable type for this
+        // attribute (see getAllowedValueSetTypes), so this must be flagged as a mismatch
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_ValueSetTypeMismatch_StringLengthNoLongerAllowedForDerivedModel() {
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)attribute.getValueSet()).setMaximumLength("12");
+
+        configuredValueSet.changeValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)configuredValueSet.getValueSet()).setMaximumLength("12");
+
+        // the model attribute switches to Derived, but the product component keeps its
+        // StringLength configuration - StringLength is no longer a selectable type for this
+        // attribute (see getAllowedValueSetTypes), so this must be flagged as a mismatch, just as
+        // it is for an Unrestricted model attribute
+        attribute.setValueSetType(ValueSetType.DERIVED);
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+    }
+
+    @Test
+    public void testValidate_ValueSetTypeMismatch_StringLengthNoLongerAllowedForUnrestrictedModel_StillReportsNullIncompatible() {
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)attribute.getValueSet()).setMaximumLength("12");
+
+        configuredValueSet.changeValueSetType(ValueSetType.STRINGLENGTH);
+        IStringLengthValueSet configuredStringLength = (IStringLengthValueSet)configuredValueSet.getValueSet();
+        configuredStringLength.setMaximumLength("12");
+        configuredStringLength.setContainsNull(true);
+
+        // the model attribute switches to Unrestricted and additionally disallows null - the
+        // stale StringLength config is both a type mismatch and null-incompatible, and detecting
+        // the former must not suppress the latter
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        attribute.getValueSet().setContainsNull(false);
+
+        MessageList ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+        assertThat(ml, hasMessageCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
+    }
+
+    @Test
     public void testValidate_ValueSetTypeMismatch_RangeValueSet_ContainsOpenBoundProperties() {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("typeMismatchOpenBoundsTest");

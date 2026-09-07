@@ -496,6 +496,66 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertTrue(delta.isEmpty());
     }
 
+    // FIPS-10308
+    @Test
+    public void testValueSetTypeMismatch_StringLengthNoLongerAllowedForUnrestrictedModel() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setValueSetConfiguredByProduct(true);
+        attr.setName("a1");
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)attr.getValueSet()).setMaximumLength("255");
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IConfiguredValueSet configValueSet = productCmpt.getFirstGeneration().getPropertyValue("a1",
+                IConfiguredValueSet.class);
+        assertTrue(configValueSet.getValueSet().isStringLength());
+
+        // the model attribute switches to Unrestricted, but the product component keeps its
+        // StringLength configuration - StringLength is no longer a selectable type for this
+        // attribute, so this must be flagged as a mismatch (and offered for "fix differences")
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertFalse(delta.isEmpty());
+        IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+        assertEquals(1, genDelta.getEntries().length);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)genDelta.getEntries()[0];
+        assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
+
+        delta.fixAllDifferencesToModel();
+        assertTrue(configValueSet.getValueSet().isUnrestricted());
+    }
+
+    // FIPS-10308
+    @Test
+    public void testValueSetTypeMismatch_StringLengthNoLongerAllowedForDerivedModel() {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setValueSetConfiguredByProduct(true);
+        attr.setName("a1");
+        attr.setDatatype(Datatype.STRING.getQualifiedName());
+        attr.setValueSetType(ValueSetType.STRINGLENGTH);
+        ((IStringLengthValueSet)attr.getValueSet()).setMaximumLength("255");
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        delta.fixAllDifferencesToModel();
+        IConfiguredValueSet configValueSet = productCmpt.getFirstGeneration().getPropertyValue("a1",
+                IConfiguredValueSet.class);
+        assertTrue(configValueSet.getValueSet().isStringLength());
+
+        // the model attribute switches to Derived, but the product component keeps its
+        // StringLength configuration - StringLength is no longer a selectable type for this
+        // attribute, so this must be flagged as a mismatch, just as it is for an Unrestricted
+        // model attribute
+        attr.setValueSetType(ValueSetType.DERIVED);
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertFalse(delta.isEmpty());
+        IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+        assertEquals(1, genDelta.getEntries().length);
+        IDeltaEntryForProperty entry = (IDeltaEntryForProperty)genDelta.getEntries()[0];
+        assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
+    }
+
     @Test
     public void testValueSetTypeMismatch_UndefinedConfigElement() {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();

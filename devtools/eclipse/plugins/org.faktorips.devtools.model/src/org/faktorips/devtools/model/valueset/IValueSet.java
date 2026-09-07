@@ -218,6 +218,15 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
     }
 
     /**
+     * Returns {@code true} if the value set is unrestricted or derived, otherwise {@code false}.
+     *
+     * @since 27.1
+     */
+    default boolean isUnrestrictedOrDerived() {
+        return isUnrestricted() || isDerived();
+    }
+
+    /**
      * Returns {@code true} if this is a non-abstract enumeration value set. Non-abstract
      * enumeration value sets can be used as supersets for other enumeration value sets. Returns
      * {@code false} otherwise.
