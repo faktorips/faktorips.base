@@ -10,9 +10,13 @@
 
 package org.faktorips.devtools.ant;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
@@ -21,6 +25,7 @@ import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
@@ -35,33 +40,76 @@ import org.eclipse.m2e.core.project.MavenUpdateRequest;
  * {@link MavenProjectRefreshTask} (refreshes the whole workspace) and {@link BuildTask} (refreshes
  * only the projects whose dependencies failed to resolve).
  */
-final class MavenProjectRefreshUtil {
+final class ProjectRefreshUtil {
 
-    private MavenProjectRefreshUtil() {
+    private ProjectRefreshUtil() {
         // utility class
     }
 
     /**
-     * Triggers an m2e project configuration update for the given projects and waits for the
-     * resulting build/refresh jobs to finish.
-     *
-     * @param task the calling task, used to access its
-     *            {@code waitForService}/{@code waitForBuildJobs} helpers
-     * @param projects the projects to refresh
+     * Same as
+     * {@link #refresh(AbstractIpsTask, List, boolean, boolean, boolean, boolean, boolean, long)},
+     * using the {@link ProjectDirLock#DEFAULT_LOCK_TIMEOUT_MS default} lock timeout.
      */
+    // CSOFF: ThrowsCount
     static void refresh(AbstractIpsTask task,
             List<IProject> projects,
             boolean offline,
             boolean updateSnapshots,
             boolean updateConfiguration,
             boolean cleanProjects,
-            boolean refreshFromFilesystem) throws CoreException, InterruptedException {
+            boolean refreshFromFilesystem) throws CoreException, InterruptedException, IOException,
+            TimeoutException {
+        // CSON: ThrowsCount
+        refresh(task, projects, offline, updateSnapshots, updateConfiguration, cleanProjects, refreshFromFilesystem,
+                ProjectDirLock.DEFAULT_LOCK_TIMEOUT_MS);
+    }
+
+    /**
+     * Triggers an m2e project configuration update for the given projects and waits for the
+     * resulting build/refresh jobs to finish.
+     * <p>
+     * Acquires a {@link ProjectDirLock} for every project's directory first, so that this refresh
+     * cannot race with a concurrent {@link MavenProjectImportTask} (or another refresh) touching
+     * the same directory, e.g. from a parallel Maven build ({@code -T}) running several Eclipse
+     * processes.
+     *
+     * @param task the calling task, used to access its
+     *            {@code waitForService}/{@code waitForBuildJobs} helpers
+     * @param projects the projects to refresh
+     * @param lockTimeoutMs how long to wait, in total across all of {@code projects}' directory
+     *            locks, for another process holding one of them (see {@link ProjectDirLocks})
+     */
+    // CSOFF: ThrowsCount|ParameterNumber
+    static void refresh(AbstractIpsTask task,
+            List<IProject> projects,
+            boolean offline,
+            boolean updateSnapshots,
+            boolean updateConfiguration,
+            boolean cleanProjects,
+            boolean refreshFromFilesystem,
+            long lockTimeoutMs) throws CoreException, InterruptedException, IOException, TimeoutException {
+        // CSON: ThrowsCount|ParameterNumber
         IProjectConfigurationManager pm = task.waitForService(
                 MavenPlugin::getProjectConfigurationManager, "IProjectConfigurationManager");
-        Map<String, IStatus> updateProjectStatus = updateProjectConfiguration(pm, projects, offline, updateSnapshots,
-                updateConfiguration, cleanProjects, refreshFromFilesystem);
-        updateProjectStatus.forEach((p, s) -> System.out.println(p + ": " + s));
-        task.waitForBuildJobs();
+        List<IProject> unlocked = projects.stream()
+                .filter(p -> p.getLocation() == null)
+                .toList();
+        if (!unlocked.isEmpty()) {
+            System.out.println("refreshing without a directory lock, location could not be resolved: "
+                    + unlocked.stream().map(IProject::getName).collect(Collectors.joining(", ")));
+        }
+        List<File> projectDirs = projects.stream()
+                .map(IProject::getLocation)
+                .filter(Objects::nonNull)
+                .map(IPath::toFile)
+                .toList();
+        try (ProjectDirLocks locks = ProjectDirLocks.acquire(projectDirs, lockTimeoutMs)) {
+            Map<String, IStatus> updateProjectStatus = updateProjectConfiguration(pm, projects, offline,
+                    updateSnapshots, updateConfiguration, cleanProjects, refreshFromFilesystem);
+            updateProjectStatus.forEach((p, s) -> System.out.println(p + ": " + s));
+            task.waitForBuildJobs();
+        }
     }
 
     @SuppressWarnings("restriction")
@@ -86,8 +134,8 @@ final class MavenProjectRefreshUtil {
      * <p>
      * On each attempt, waits up to {@code resolutionTimeoutMs} for dependencies to resolve on their
      * own. If they are still unresolved afterwards, an explicit Maven project refresh is triggered
-     * for just the affected projects (instead of the whole workspace) and the wait is repeated, up to
-     * {@code maxRefreshAttempts} times before giving up.
+     * for just the affected projects (instead of the whole workspace) and the wait is repeated, up
+     * to {@code maxRefreshAttempts} times before giving up.
      *
      * @param task the calling task, used to access its
      *            {@code waitForService}/{@code waitForBuildJobs} helpers
@@ -95,8 +143,9 @@ final class MavenProjectRefreshUtil {
      *            attempt
      * @param maxRefreshAttempts maximum number of refresh attempts before giving up
      */
+    // CSOFF: ThrowsCount
     static void waitForDependenciesResolved(AbstractIpsTask task, long resolutionTimeoutMs, int maxRefreshAttempts)
-            throws CoreException, InterruptedException {
+            throws CoreException, InterruptedException, IOException, TimeoutException {
         IMavenProjectRegistry registry = task.waitForService(
                 MavenPlugin::getMavenProjectRegistry, "IMavenProjectRegistry");
         List<IMavenProjectFacade> unresolved = waitForResolution(registry, resolutionTimeoutMs);
@@ -114,10 +163,11 @@ final class MavenProjectRefreshUtil {
                     + unresolved.stream().map(f -> f.getProject().getName()).collect(Collectors.joining(", ")));
         }
     }
+    // CSON: ThrowsCount
 
     /**
-     * Polls {@link #findUnresolvedProjects(IMavenProjectRegistry)} every 500ms until either none are
-     * unresolved or {@code timeoutMs} has elapsed.
+     * Polls {@link #findUnresolvedProjects(IMavenProjectRegistry)} every 500ms until either none
+     * are unresolved or {@code timeoutMs} has elapsed.
      */
     private static List<IMavenProjectFacade> waitForResolution(IMavenProjectRegistry registry, long timeoutMs)
             throws CoreException, InterruptedException {

@@ -11,22 +11,12 @@
 package org.faktorips.devtools.ant;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HexFormat;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
@@ -46,19 +36,11 @@ import org.eclipse.m2e.core.project.ProjectImportConfiguration;
 public class MavenProjectImportTask extends AbstractIpsTask {
 
     private static final String POM_FILE = "pom.xml";
-    private static final String IMPORT_LOCK_DIR = "org.faktorips.import-locks";
     private static final long POLL_INTERVAL_MS = 200L;
-    private static final long LOCK_POLL_INTERVAL_MS = 500L;
-
-    /**
-     * Monitors per lock file, preventing {@link java.nio.channels.OverlappingFileLockException}
-     * when two tasks of the same JVM import the same directory.
-     */
-    private static final ConcurrentMap<String, Object> JVM_LOCKS = new ConcurrentHashMap<>();
 
     private String projectDir;
     private long timeout = 5 * 60 * 1000L;
-    private long lockTimeout = 10 * 60 * 1000L;
+    private long lockTimeout = ProjectDirLock.DEFAULT_LOCK_TIMEOUT_MS;
 
     public MavenProjectImportTask() {
         super("MavenProjektImportTask");
@@ -90,8 +72,8 @@ public class MavenProjectImportTask extends AbstractIpsTask {
     }
 
     /**
-     * Sets the timeout used to wait for another process importing the same directory. Defaults to
-     * 10 minutes.
+     * Sets the timeout used to wait for another process importing the same directory. Defaults to 5
+     * minutes.
      */
     public void setLockTimeout(long lockTimeout) {
         this.lockTimeout = lockTimeout;
@@ -101,27 +83,15 @@ public class MavenProjectImportTask extends AbstractIpsTask {
     protected void executeInternal() throws Exception {
         checkDir();
         if (!new File(getDir(), POM_FILE).exists()) {
-            System.out.println("Skipping import, no " + POM_FILE + " found in: " + getDir());
+            // we only want this logged as warning, logging is done in LoggingEclipseRunMojo#log
+            System.out.println("SKIP-WARNING: Skipping import, no " + POM_FILE + " found in: " + getDir());
             return;
         }
-        Path lockFile = importLockFile();
-        Path lockFileDir = lockFile.getParent();
-        if (lockFileDir != null) {
-            Files.createDirectories(lockFileDir);
-        }
-        synchronized (jvmLockFor(lockFile)) {
-            try (FileChannel lockChannel = FileChannel.open(lockFile, StandardOpenOption.CREATE,
-                    StandardOpenOption.WRITE)) {
-                FileLock lock = acquireImportLock(lockChannel, lockFile);
-                if (lock == null) {
-                    return;
-                }
-                try {
-                    importWithRetry();
-                } finally {
-                    lock.release();
-                }
-            }
+        try (ProjectDirLock lock = ProjectDirLock.acquire(new File(getDir()), lockTimeout)) {
+            importWithRetry();
+        } catch (TimeoutException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            fail(e.getMessage());
         }
     }
 
@@ -280,10 +250,10 @@ public class MavenProjectImportTask extends AbstractIpsTask {
     }
 
     IProject findProjectAt(File dir) {
-        Path canonicalDir = canonicalize(dir);
+        Path canonicalDir = ProjectDirLock.canonicalize(dir);
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
             IPath location = project.getLocation();
-            if (location != null && canonicalDir.equals(canonicalize(location.toFile()))) {
+            if (location != null && canonicalDir.equals(ProjectDirLock.canonicalize(location.toFile()))) {
                 return project;
             }
         }
@@ -298,63 +268,12 @@ public class MavenProjectImportTask extends AbstractIpsTask {
         return new File(projectDir, IProjectDescription.DESCRIPTION_FILE_NAME);
     }
 
-    private static Path canonicalize(File file) {
-        try {
-            return file.getCanonicalFile().toPath();
-        } catch (IOException e) {
-            return file.getAbsoluteFile().toPath();
-        }
-    }
-
     /**
-     * Acquires the lock guarding {@link #getDir()} against concurrent imports, or {@code null} if
-     * the task has already been {@link #fail(String) failed} because the lock could not be acquired
-     * in time.
-     * <p>
-     * A separate lock per imported directory is needed because m2e writes {@code .project} and
-     * {@code .classpath} into the imported project's own directory. With a parallel Maven build
-     * ({@code -T}) several Eclipse processes import the same upstream module, and without this lock
-     * they overwrite those files while another process is reading them.
-     */
-    private FileLock acquireImportLock(FileChannel lockChannel, Path lockFile)
-            throws IOException, InterruptedException {
-        long deadline = System.currentTimeMillis() + lockTimeout;
-        while (true) {
-            FileLock lock = lockChannel.tryLock();
-            if (lock != null) {
-                return lock;
-            }
-            if (System.currentTimeMillis() >= deadline) {
-                fail("Timed out after " + lockTimeout + "ms waiting for the import lock " + lockFile
-                        + ". Another process is importing " + getDir() + " concurrently.");
-                return null;
-            }
-            System.out.println("waiting for another process importing " + getDir());
-            Thread.sleep(LOCK_POLL_INTERVAL_MS);
-        }
-    }
-
-    /**
-     * The lock file is placed in the temp directory rather than in the imported project, because
-     * the projects using this task check their working tree with {@code git status} and would fail
-     * the build for an unexpected file.
+     * The lock file guarding {@link #getDir()} against a concurrent import or refresh of the same
+     * directory. See {@link ProjectDirLock}.
      */
     Path importLockFile() {
-        String digest = sha1Hex(canonicalize(new File(getDir())).toString());
-        return Path.of(System.getProperty("java.io.tmpdir"), IMPORT_LOCK_DIR, digest + ".lock");
-    }
-
-    private static String sha1Hex(String value) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            return HexFormat.of().formatHex(digest.digest(value.getBytes(StandardCharsets.UTF_8)));
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA-1 is not available", e);
-        }
-    }
-
-    private static Object jvmLockFor(Path lockFile) {
-        return JVM_LOCKS.computeIfAbsent(lockFile.toString(), k -> new Object());
+        return ProjectDirLock.lockFileFor(new File(getDir()));
     }
 
     /**

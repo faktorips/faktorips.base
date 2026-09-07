@@ -144,6 +144,10 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
                 for (String string : logger.getFilteredLogContent().split("\\R")) {
                     if (string.contains("ERROR")) {
                         getLog().error(logger.getProjectName() + ": " + string);
+                        // we only want to log skipping as WARNING, this is written by ant in
+                        // MavenProjectImportTask.executeInternal and AbstractIpsTask#execute
+                    } else if (string.contains("SKIP-WARNING")) {
+                        getLog().warn(logger.getProjectName() + ": " + string);
                     } else {
                         getLog().info(logger.getProjectName() + ": " + string);
                     }

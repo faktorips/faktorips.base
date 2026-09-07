@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IMarker;
@@ -91,8 +92,14 @@ public class BuildTask extends AbstractIpsTask {
     @Override
     protected void executeInternal() throws Exception {
         if (importAsMavenProject) {
-            MavenProjectRefreshUtil.waitForDependenciesResolved(this,
-                    DEPENDENCY_RESOLUTION_TIMEOUT_MS, MAX_DEPENDENCY_REFRESH_ATTEMPTS);
+            try {
+                ProjectRefreshUtil.waitForDependenciesResolved(this,
+                        DEPENDENCY_RESOLUTION_TIMEOUT_MS, MAX_DEPENDENCY_REFRESH_ATTEMPTS);
+            } catch (TimeoutException e) {
+                System.out.println("ERROR: " + e.getMessage());
+                fail(e.getMessage());
+                return;
+            }
         }
         WorkspaceJob job = new WorkspaceJob("build") {
             @Override

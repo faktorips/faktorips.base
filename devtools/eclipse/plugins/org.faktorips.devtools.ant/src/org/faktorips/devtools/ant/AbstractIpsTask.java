@@ -71,7 +71,9 @@ public abstract class AbstractIpsTask extends Task {
     @Override
     public final void execute() {
         getPreviousFailedTask().ifPresentOrElse(
-                failedTask -> System.out.println("Skipping " + getTaskName() + " because " + failedTask + " failed."),
+                // we only want this logged as warning, logging is done in LoggingEclipseRunMojo#log
+                failedTask -> System.out
+                        .println("SKIP-WARNING: Skipping " + getTaskName() + " because " + failedTask + " failed."),
                 () -> {
                     System.out.println(getTaskName() + ": execution started");
                     logInstalledFeatures();

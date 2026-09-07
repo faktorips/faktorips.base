@@ -11,6 +11,7 @@
 package org.faktorips.devtools.ant;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -27,6 +28,7 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
     private boolean updateConfiguration = true;
     private boolean refreshFromFilesystem = true;
     private boolean cleanProjects = true;
+    private long lockTimeout = ProjectDirLock.DEFAULT_LOCK_TIMEOUT_MS;
 
     public MavenProjectRefreshTask() {
         super("MavenProjektRefreshTask");
@@ -100,6 +102,15 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
         this.cleanProjects = cleanProjects;
     }
 
+    /**
+     * Sets the timeout used to wait for another process importing/refreshing one of the projects to
+     * be refreshed. This is a single budget shared across all projects to be refreshed, not a
+     * per-project timeout. Defaults to 5 minutes.
+     */
+    public void setLockTimeout(long lockTimeout) {
+        this.lockTimeout = lockTimeout;
+    }
+
     @Override
     protected void executeInternal() throws Exception {
         IMavenProjectRegistry projectRegistry = waitForService(
@@ -111,9 +122,15 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
                 .toList();
 
         System.out.println("calling updateProjectConfiguration");
-        MavenProjectRefreshUtil.refresh(this, projects,
-                isOffline(), isUpdateSnapshots(), isUpdateConfiguration(), isCleanProjects(),
-                isRefreshFromFilesystem());
+        try {
+            ProjectRefreshUtil.refresh(this, projects,
+                    isOffline(), isUpdateSnapshots(), isUpdateConfiguration(), isCleanProjects(),
+                    isRefreshFromFilesystem(), lockTimeout);
+        } catch (TimeoutException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            fail(e.getMessage());
+            return;
+        }
 
         checkForImportErrors();
     }
@@ -124,8 +141,10 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
             for (IMarker marker : markers) {
                 Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
                 if (severity != null && severity == IMarker.SEVERITY_ERROR) {
-                    fail("Import/Refresh of project " + project.getName() + " resulted in errors: "
-                            + marker.getAttribute(IMarker.MESSAGE, "unknown error"));
+                    String message = "ERROR: Import/Refresh of project " + project.getName()
+                            + " resulted in errors: " + marker.getAttribute(IMarker.MESSAGE, "unknown error");
+                    System.out.println(message);
+                    fail(message);
                     return;
                 }
             }
