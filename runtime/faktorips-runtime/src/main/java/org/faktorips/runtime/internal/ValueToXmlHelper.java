@@ -45,11 +45,6 @@ public enum ValueToXmlHelper {
     public static final String XML_TAG_VALUE_SET = "ValueSet"; //$NON-NLS-1$
     public static final String XML_TAG_DATA = "Data"; //$NON-NLS-1$
 
-    /**
-     * Since 3.19 the ConfigElement was separated in ConfiguredDefault and ConfiguredValueSet. We
-     * need this for reading legacy XML.
-     */
-    public static final String LEGACY_XML_TAG_CONFIG_ELEMENT = "ConfigElement";
     public static final String CONFIGURED_DEFAULT_PREFIX = "@default_";
     public static final String CONFIGURED_VALUE_SET_PREFIX = "@valueSet_";
     public static final String XML_TAG_CONFIGURED_DEFAULT = "ConfiguredDefault";

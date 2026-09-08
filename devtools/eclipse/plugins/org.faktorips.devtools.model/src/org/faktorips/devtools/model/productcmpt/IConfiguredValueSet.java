@@ -26,8 +26,6 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 
 public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
 
-    String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE_SET;
-
     String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
 
     String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$

@@ -326,11 +326,6 @@ public enum PropertyValueType {
             return true;
         }
 
-        @Override
-        protected boolean isProperXmlTagName(String xmlTagName) {
-            return super.isProperXmlTagName(xmlTagName) || IConfiguredValueSet.LEGACY_TAG_NAME.equals(xmlTagName);
-        }
-
     },
 
     /**
@@ -392,11 +387,6 @@ public enum PropertyValueType {
         @Override
         public boolean isPartOfComposite() {
             return true;
-        }
-
-        @Override
-        protected boolean isProperXmlTagName(String xmlTagName) {
-            return super.isProperXmlTagName(xmlTagName) || IConfiguredDefault.LEGACY_TAG_NAME.equals(xmlTagName);
         }
 
     },

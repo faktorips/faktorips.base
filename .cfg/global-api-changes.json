@@ -21,6 +21,16 @@
         "criticality": "documented",
         "differences": [
           {
+            "code": "java.field.removedWithConstant",
+            "old": "field org.faktorips.devtools.model.productcmpt.IConfiguredValueSet.LEGACY_TAG_NAME",
+            "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code is unreachable."
+          },
+          {
+            "code": "java.field.removedWithConstant",
+            "old": "field org.faktorips.devtools.model.productcmpt.IConfiguredDefault.LEGACY_TAG_NAME",
+            "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code is unreachable."
+          },
+          {
             "code": "java.method.addedToInterface",
             "new": "method <A> A org.osgi.framework.ServiceReference<S>::adapt(java.lang.Class<A>)",
             "justification": "Update to Eclipse 2026-03"

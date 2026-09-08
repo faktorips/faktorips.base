@@ -53,8 +53,6 @@ import org.w3c.dom.Element;
  */
 public class ConfiguredValueSet extends ConfigElement implements IConfiguredValueSet {
 
-    public static final String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE_SET;
-
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
 
     private static final String PROPERTY_RELEVANCE = "relevance"; //$NON-NLS-1$ ;
@@ -490,20 +488,6 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
             return valueSet;
         }
         return null;
-    }
-
-    @Override
-    protected void initPropertiesFromXml(Element element, String id) {
-        if (LEGACY_TAG_NAME.equals(element.getNodeName())) {
-            // overwrite ID in legacy mode
-            super.initPropertiesFromXml(element, getNextPartId());
-            // the legacy part only have one XML element for the ConfiguredVallueSet and nested
-            // ValueSet. So we create the a child with the same XML element
-            IIpsObjectPart newPart = newPart(element, id);
-            newPart.initFromXml(element);
-        } else {
-            super.initPropertiesFromXml(element, id);
-        }
     }
 
     @Override

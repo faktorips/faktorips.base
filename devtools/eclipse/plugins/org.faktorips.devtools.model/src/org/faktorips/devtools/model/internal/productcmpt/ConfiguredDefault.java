@@ -38,8 +38,6 @@ import org.w3c.dom.Element;
  */
 public class ConfiguredDefault extends ConfigElement implements IConfiguredDefault {
 
-    public static final String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE;
-
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
 
     private String value = ""; //$NON-NLS-1$
@@ -142,11 +140,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
-        if (LEGACY_TAG_NAME.equals(element.getNodeName())) {
-            super.initPropertiesFromXml(element, getNextPartId());
-        } else {
-            super.initPropertiesFromXml(element, id);
-        }
+        super.initPropertiesFromXml(element, id);
         value = ValueToXmlHelper.getValueFromElement(element);
     }
 

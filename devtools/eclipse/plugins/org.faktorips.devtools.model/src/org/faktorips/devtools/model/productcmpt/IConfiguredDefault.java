@@ -16,8 +16,6 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 
 public interface IConfiguredDefault extends IConfigElement {
 
-    String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE;
-
     String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
 
     String PROPERTY_VALUE = "value"; //$NON-NLS-1$

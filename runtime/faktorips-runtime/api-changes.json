@@ -1,4 +1,19 @@
 {
+    "27.1.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.field.removedWithConstant",
+                        "old": "field org.faktorips.runtime.internal.ValueToXmlHelper.LEGACY_XML_TAG_CONFIG_ELEMENT",
+                        "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code and this constant are unreachable."
+                    }
+                ]
+            }
+        }
+    ],
     "26.7.0": [
         {
             "extension": "revapi.differences",

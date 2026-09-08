@@ -120,7 +120,6 @@ import org.w3c.dom.Element;
 
 public class ProductCmptTest extends AbstractIpsPluginTest {
 
-    private static final String POLICY_ATTRIBUTE_NAME = "sumInsured";
     private ProductCmpt productCmpt;
     private IIpsPackageFragmentRoot root;
     private IIpsPackageFragment pack;
@@ -803,22 +802,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.setProductCmptType("newType");
         assertEquals("newType", productCmpt.getProductCmptType());
         assertTrue(srcFile.isDirty());
-    }
-
-    @Test
-    public void testInitFromXml_LegazyConfigElement() {
-        productCmpt.initFromXml(getTestDocument("_LegazyConfigElement").getDocumentElement());
-        IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(POLICY_ATTRIBUTE_NAME,
-                IConfiguredValueSet.class);
-        IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(POLICY_ATTRIBUTE_NAME,
-                IConfiguredDefault.class);
-
-        // the ID should NOT be the old ID of the valueSet to avoid ID collision
-        assertThat(configuredValueSet.getId(), is(not("1")));
-        assertThat(configuredValueSet.getValueSet(), instanceOf(RangeValueSet.class));
-        assertThat(configuredValueSet.getPolicyCmptTypeAttribute(), is(POLICY_ATTRIBUTE_NAME));
-        assertThat(configuredDefault.getValue(), is("10"));
-        assertThat(configuredDefault.getPolicyCmptTypeAttribute(), is(POLICY_ATTRIBUTE_NAME));
     }
 
     @Test

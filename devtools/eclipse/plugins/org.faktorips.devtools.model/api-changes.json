@@ -59,8 +59,22 @@
                       "oldVisibility": "protected",
                       "newVisibility": "private",
                       "justification": "FIPS-6514: clean up encapsulation"
+                    },
+                    {
+                      "code": "java.field.removedWithConstant",
+                      "old": "field org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet.LEGACY_TAG_NAME",
+                      "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code is unreachable."
+                    },
+                    {
+                      "code": "java.field.removedWithConstant",
+                      "old": "field org.faktorips.devtools.model.internal.productcmpt.ConfiguredDefault.LEGACY_TAG_NAME",
+                      "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code is unreachable."
+                    },
+                    {
+                      "code": "java.class.removed",
+                      "old": "class org.faktorips.devtools.model.internal.productcmpt.LegacyConfigElement",
+                      "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code is unreachable."
                     }
-                    
                 ]
             }
         }

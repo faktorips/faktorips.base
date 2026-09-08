@@ -182,8 +182,6 @@ public class PropertyValueCollection {
         PropertyValueType propertyType = PropertyValueType.getTypeForXmlTag(xmlTagName);
         if (propertyType != null) {
             return newPropertyValue(partId, propertyType.getInterfaceClass());
-        } else if (LegacyConfigElement.XML_TAG.equals(xmlTagName)) {
-            return new LegacyConfigElement(this);
         }
         return null;
     }
