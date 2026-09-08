@@ -134,7 +134,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         btnRemoveCondition.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 
         btnRemoveCondition.setToolTipText(Messages.ProductSearchPage_labelRemoveConditionButton);
-        btnRemoveCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("elcl16/trash.gif", true)); //$NON-NLS-1$
+        btnRemoveCondition.setImage(IpsUIPlugin.getImageHandling().getSharedImage("elcl16/trash.svg", true)); //$NON-NLS-1$
 
         btnRemoveCondition.addSelectionListener(new SelectionAdapter() {
             @Override

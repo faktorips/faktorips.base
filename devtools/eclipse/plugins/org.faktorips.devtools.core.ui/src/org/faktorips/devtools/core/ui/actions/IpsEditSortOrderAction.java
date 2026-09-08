@@ -35,7 +35,7 @@ public class IpsEditSortOrderAction extends IpsAction {
         super.setText(Messages.IpsEditSortOrderAction_text);
         super.setDescription(Messages.IpsEditSortOrderAction_description);
         super.setToolTipText(Messages.IpsEditSortOrderAction_tooltip);
-        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/alphab_sort_co.gif")); //$NON-NLS-1$
+        super.setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/alphab_sort_co.svg")); //$NON-NLS-1$
 
     }
 

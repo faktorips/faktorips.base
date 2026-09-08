@@ -30,7 +30,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
     private static final String POLICY_ASSOCIATION_IMAGE = "policy_AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String PRODUCT_ASSOCIATION_IMAGE = "product_AssociationType-Aggregation.gif"; //$NON-NLS-1$
     private static final String OVERLAY_INHERITED_ASSOCIATION_IMAGE = "OverrideIndicator.svg"; //$NON-NLS-1$
-    private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.gif"; //$NON-NLS-1$
+    private static final String OVERLAY_LOOP_IMAGE = "ovr16/loop_ovr.svg"; //$NON-NLS-1$
     private static final String PRODUCT_CMPT_TYPE_IMAGE = "ProductCmptType_width30.gif"; //$NON-NLS-1$
     private static final String POLICY_CMPT_TYPE_IMAGE = "PolicyCmptType_width30.gif"; //$NON-NLS-1$
     private static final String OVERLAY_ABSTRACT_IMAGE = "AbstractIndicator.svg"; //$NON-NLS-1$

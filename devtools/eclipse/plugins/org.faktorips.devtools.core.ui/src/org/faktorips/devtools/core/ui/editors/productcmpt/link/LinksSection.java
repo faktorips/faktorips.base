@@ -612,7 +612,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         FilterEmptyAssociationsAction(boolean exclude) {
             super(Messages.LinksSection_filterEmptyAssociations, AS_CHECK_BOX);
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.gif")); //$NON-NLS-1$
+            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.svg")); //$NON-NLS-1$
             setChecked(exclude);
         }
 

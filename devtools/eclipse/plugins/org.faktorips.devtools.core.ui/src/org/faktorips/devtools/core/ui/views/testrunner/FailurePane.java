@@ -241,7 +241,7 @@ public class FailurePane implements IMenuListener {
                         // be better determined with at least this trace line
                         tableItem.setText(traceLine);
                         ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                                "obj16/stkfrm_obj.gif"); //$NON-NLS-1$
+                                "obj16/stkfrm_obj.svg"); //$NON-NLS-1$
                         tableItem.setImage(resourceManager.get(imageDescriptor));
                     }
                 }
@@ -250,7 +250,7 @@ public class FailurePane implements IMenuListener {
                     TableItem tableItem = new TableItem(table, SWT.NONE);
                     tableItem.setText(testCaseFailures[i]);
                     ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                            "obj16/testfail.gif"); //$NON-NLS-1$
+                            "obj16/testfail.svg"); //$NON-NLS-1$
                     tableItem.setImage(resourceManager.get(imageDescriptor));
                 }
             }
@@ -336,11 +336,11 @@ public class FailurePane implements IMenuListener {
             super("", AS_RADIO_BUTTON); //$NON-NLS-1$
             setText(Messages.IpsTestRunnerViewPart_Action_ShowStackTrace);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_ShowStackTraceToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/cfilter.gif")); //$NON-NLS-1$
             ImageDescriptor cfilterDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/cfilter.gif"); //$NON-NLS-1$
+                    "elcl16/cfilter.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(cfilterDescriptor);
             setImageDescriptor(cfilterDescriptor);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(cfilterDescriptor));
             setEnabled(showStackTrace);
         }
 

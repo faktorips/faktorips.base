@@ -206,7 +206,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         linkWithEditor = new Action(Messages.IpsHierarchy_tooltipLinkWithEditor, SWT.TOGGLE) {
             @Override
             public ImageDescriptor getImageDescriptor() {
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/synced.gif"); //$NON-NLS-1$
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/synced.svg"); //$NON-NLS-1$
             }
 
             @Override

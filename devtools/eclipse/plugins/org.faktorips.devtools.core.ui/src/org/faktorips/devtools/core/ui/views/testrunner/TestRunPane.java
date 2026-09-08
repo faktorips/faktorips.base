@@ -68,7 +68,7 @@ public class TestRunPane {
     private Map<String, TestTableEntry> fTableItemMap = new HashMap<>();
 
     private final ImageDescriptor testImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "obj16/test.gif"); //$NON-NLS-1$
+            "obj16/test.svg"); //$NON-NLS-1$
 
     public TestRunPane(Composite parent, final IpsTestRunnerViewPart testRunnerViewPart) {
         this.testRunnerViewPart = testRunnerViewPart;
@@ -320,7 +320,7 @@ public class TestRunPane {
         }
 
         TableItem tableItem = testTableEntry.getTableItem();
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testrun.gif"); //$NON-NLS-1$
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testrun.svg"); //$NON-NLS-1$
         tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
 
         // select current item and scroll
@@ -359,7 +359,7 @@ public class TestRunPane {
             testTableEntry = fTableItemMap.get(testId);
         }
         TableItem tableItem = testTableEntry.getTableItem();
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testerr.gif"); //$NON-NLS-1$
+        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("obj16/testerr.svg"); //$NON-NLS-1$
         tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
         testTableEntry.setErrorDetails(errorDetails);
         testTableEntry.setStatus(TestTableEntry.ERROR);
@@ -439,7 +439,7 @@ public class TestRunPane {
                 // test was successful before, because it was not visible <- show only error or
                 // failure filter
                 ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                        "obj16/testok.gif"); //$NON-NLS-1$
+                        "obj16/testok.svg"); //$NON-NLS-1$
                 tableItem.setImage(testRunnerViewPart.getResourceManager().get(imageDescriptor));
                 tableItem.setData(tableEntry);
                 tableEntry.setTableItem(tableItem);

@@ -530,7 +530,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
             // get image: "alphabetical sort enabled"
             ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/alphab_sort_co.gif"); //$NON-NLS-1$
+                    "elcl16/alphab_sort_co.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(descriptor);
             setImageDescriptor(descriptor);
 
@@ -557,7 +557,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
             setToolTipText(Messages.DefaultModelDescriptionPage_FilterEmptyTooltipText);
             setDescription(Messages.DefaultModelDescriptionPage_FilterEmptyDescription);
-            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.gif"); //$NON-NLS-1$
+            ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/cfilter.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(descriptor);
             setImageDescriptor(descriptor);
 

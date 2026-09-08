@@ -60,7 +60,7 @@ public class IpsObjectPathContainer {
             .getDefaultImageDescriptor(LibraryIpsPackageFragmentRoot.class);
 
     private static final ImageDescriptor OBJECT_PATH_IMAGE = IpsUIPlugin.getImageHandling().createImageDescriptor(
-            "obj16/cp_order_obj.gif"); //$NON-NLS-1$
+            "obj16/cp_order_obj.svg"); //$NON-NLS-1$
 
     private IIpsProject currentIpsProject;
 

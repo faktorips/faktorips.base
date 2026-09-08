@@ -2756,7 +2756,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     private class RemoveAction extends TestCaseAction {
 
-        private static final String IMAGE_FILENAME = "elcl16/trash.gif"; //$NON-NLS-1$
+        private static final String IMAGE_FILENAME = "elcl16/trash.svg"; //$NON-NLS-1$
 
         private RemoveAction() {
             super(Messages.TestCaseSection_ButtonRemove,

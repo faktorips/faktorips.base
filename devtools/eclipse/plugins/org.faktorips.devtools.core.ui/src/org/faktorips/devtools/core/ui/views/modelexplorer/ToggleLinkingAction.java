@@ -33,7 +33,7 @@ public class ToggleLinkingAction extends Action {
         setDescription(Messages.ToggleLinkingAction_Description);
         setToolTipText(Messages.ToggleLinkingAction_ToolTipText);
 
-        ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/synced.gif"); //$NON-NLS-1$
+        ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/synced.svg"); //$NON-NLS-1$
         setHoverImageDescriptor(descriptor);
         setImageDescriptor(descriptor);
 

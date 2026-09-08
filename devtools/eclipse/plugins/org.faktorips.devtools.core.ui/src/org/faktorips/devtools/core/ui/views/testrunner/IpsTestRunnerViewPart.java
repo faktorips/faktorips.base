@@ -854,10 +854,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public LockScrollAction() {
             super(Messages.IpsTestRunnerViewPart_Menu_ScrollLock, IAction.AS_CHECK_BOX);
             setToolTipText(Messages.IpsTestRunnerViewPart_Menu_ScrollLockTooltip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/lock.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/lock.gif"); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/lock.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(imageDescriptor));
         }
 
         @Override
@@ -873,10 +873,10 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public StopTestRunAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_StopTest);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_StopTest_ToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/stop.gif")); //$NON-NLS-1$
-            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/stop.gif"); //$NON-NLS-1$
+            ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/stop.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(imageDescriptor));
             setEnabled(false);
         }
 
@@ -897,11 +897,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public RerunLastAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_Text);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_RerunLastTest_ToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/relaunch.gif")); //$NON-NLS-1$
             ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/relaunch.gif"); //$NON-NLS-1$
+                    "elcl16/relaunch.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(imageDescriptor));
             setEnabled(false);
         }
 
@@ -922,11 +922,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public ShowNextErrorAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_NextFailure);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_NextFailureToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_next.gif")); //$NON-NLS-1$
             ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/select_next.gif"); //$NON-NLS-1$
+                    "elcl16/select_next.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(imageDescriptor);
             setImageDescriptor(imageDescriptor);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(imageDescriptor));
             setEnabled(false);
         }
 
@@ -943,11 +943,11 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         public ShowPreviousErrorAction() {
             setText(Messages.IpsTestRunnerViewPart_Action_PrevFailure);
             setToolTipText(Messages.IpsTestRunnerViewPart_Action_PrevFailureToolTip);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("dlcl16/select_prev.gif")); //$NON-NLS-1$
             ImageDescriptor createImageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor(
-                    "elcl16/select_prev.gif"); //$NON-NLS-1$
+                    "elcl16/select_prev.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(createImageDescriptor);
             setImageDescriptor(createImageDescriptor);
+            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(createImageDescriptor));
             setEnabled(false);
         }
 
@@ -987,15 +987,15 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
                 case IpsTestRunnerViewPart.VIEW_ORIENTATION_HORIZONTAL:
                     setText(Messages.IpsTestRunnerViewPart_Menu_HorizontalOrientation);
                     setImageDescriptor(
-                            IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_horizontal.gif")); //$NON-NLS-1$
+                            IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_horizontal.svg")); //$NON-NLS-1$
                     break;
                 case IpsTestRunnerViewPart.VIEW_ORIENTATION_VERTICAL:
                     setText(Messages.IpsTestRunnerViewPart_Menu_VerticalOrientation);
-                    setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_vertical.gif")); //$NON-NLS-1$
+                    setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_vertical.svg")); //$NON-NLS-1$
                     break;
                 case IpsTestRunnerViewPart.VIEW_ORIENTATION_AUTOMATIC:
                     setText(Messages.IpsTestRunnerViewPart_Menu_AutomaticOrientation);
-                    setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_automatic.gif")); //$NON-NLS-1$
+                    setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor("elcl16/th_automatic.svg")); //$NON-NLS-1$
                     break;
                 default:
                     break;
