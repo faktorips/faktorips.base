@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,9 +22,11 @@ import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * The kind of value set.
- * 
+ *
  * @author Jan Ortmann
  */
 public enum ValueSetType {
@@ -63,7 +65,7 @@ public enum ValueSetType {
     /**
      * Defines the value set type derived. Values are not configured but determined at runtime by
      * implementing the getValueSet method.
-     * 
+     *
      * @since 20.6
      */
     DERIVED("derived", Messages.ValueSetType_derived, ValueToXmlHelper.XML_TAG_DERIVED) { //$NON-NLS-1$
@@ -75,7 +77,7 @@ public enum ValueSetType {
 
     /**
      * Defines the value set type stringLength. String values are restricted by maximum length.
-     * 
+     *
      * @since 20.6
      */
     STRINGLENGTH("stringLength", Messages.ValueSetType_stringLength, ValueToXmlHelper.XML_TAG_STRINGLENGTH) { //$NON-NLS-1$
@@ -105,12 +107,29 @@ public enum ValueSetType {
     /**
      * Creates a new <code>IValueSet</code> - the type of the value set is derived from the given
      * XML element.
-     * 
+     *
      * @param valueSetNode The node describing the value set.
      * @param parent The parent for the new value set.
      * @param id The IPS object part id for the new value set.
+     * @see #findValueSetType(Element)
      */
     public static IValueSet newValueSet(Element valueSetNode, IValueSetOwner parent, String id) {
+        ValueSetType type = findValueSetType(valueSetNode);
+        return type == null ? null : type.newValueSet(parent, id);
+    }
+
+    /**
+     * Returns the {@link ValueSetType} described by the given XML element, or {@code null} if the
+     * element describes no known type.
+     *
+     * @param valueSetNode The node describing the value set.
+     *
+     * @since 27.1
+     *
+     * @see #newValueSet(Element, IValueSetOwner, String)
+     */
+    @CheckForNull
+    public static ValueSetType findValueSetType(Element valueSetNode) {
         Element element = DescriptionHelper.getFirstNoneDescriptionElement(valueSetNode);
         if (element == null) {
             return null;
@@ -119,7 +138,6 @@ public enum ValueSetType {
         return Arrays.stream(values())
                 .filter(v -> v.xmlTag.equals(tagName))
                 .findFirst()
-                .map(v -> v.newValueSet(parent, id))
                 .orElse(null);
     }
 

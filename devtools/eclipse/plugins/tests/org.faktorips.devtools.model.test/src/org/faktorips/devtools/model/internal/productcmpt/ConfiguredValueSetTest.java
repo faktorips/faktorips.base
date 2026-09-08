@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.contains;
@@ -97,6 +98,41 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
         productCmpt.getIpsSrcFile().save(null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
+    }
+
+    @Test
+    public void testInitFromXml_ValueSetTypeUnchanged_PreservesInstanceIdentity() {
+        configuredValueSet.setValueSetType(ValueSetType.RANGE);
+        IValueSet valueSetBefore = configuredValueSet.getValueSet();
+
+        // IpsSrcFileContent#save strips all ids, so the reload path from disk must work without
+        // them
+        Element element = productCmpt.toXml(newDocument());
+        org.faktorips.devtools.model.util.XmlUtil.removeIds(element);
+        productCmpt.initFromXml(element);
+
+        IConfiguredValueSet configuredValueSetAfter = productCmpt.getProductCmptGeneration(0)
+                .getPropertyValue(attribute.getName(), IConfiguredValueSet.class);
+        assertThat(configuredValueSetAfter.getValueSet(), is(sameInstance(valueSetBefore)));
+        assertThat(valueSetBefore.isDeleted(), is(false));
+    }
+
+    @Test
+    public void testInitFromXml_ValueSetTypeChanged_ReplacesInstance() {
+        configuredValueSet.setValueSetType(ValueSetType.RANGE);
+        Element element = productCmpt.toXml(newDocument());
+        org.faktorips.devtools.model.util.XmlUtil.removeIds(element);
+
+        configuredValueSet.setValueSetType(ValueSetType.UNRESTRICTED);
+        IValueSet valueSetBefore = configuredValueSet.getValueSet();
+
+        productCmpt.initFromXml(element);
+
+        IValueSet valueSetAfter = productCmpt.getProductCmptGeneration(0)
+                .getPropertyValue(attribute.getName(), IConfiguredValueSet.class).getValueSet();
+        assertThat(valueSetAfter, is(not(sameInstance(valueSetBefore))));
+        assertThat(valueSetAfter.getValueSetType(), is(ValueSetType.RANGE));
+        assertThat(valueSetBefore.isDeleted(), is(true));
     }
 
     @Test

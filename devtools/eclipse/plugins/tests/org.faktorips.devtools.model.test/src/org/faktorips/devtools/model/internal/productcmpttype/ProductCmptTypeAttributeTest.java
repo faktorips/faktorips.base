@@ -13,12 +13,11 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -92,8 +92,45 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     @Test
     public void testDelete() {
         productAttribute.delete();
-        assertNull(productCmptType.getProductCmptTypeAttribute(productAttribute.getName()));
-        assertEquals(0, productCmptType.getNumOfAttributes());
+        assertThat(productCmptType.getProductCmptTypeAttribute(productAttribute.getName()), is(nullValue()));
+        assertThat(productCmptType.getNumOfAttributes(), is(0));
+    }
+
+    @Test
+    public void testInitFromXml_ValueSetTypeUnchanged_PreservesInstanceIdentity() {
+        productAttribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        productAttribute.setValueSetType(ValueSetType.RANGE);
+        IValueSet valueSetBefore = productAttribute.getValueSet();
+
+        // IpsSrcFileContent#save strips all ids, so the reload path from disk must work without
+        // them
+        Element element = productCmptType.toXml(newDocument());
+        org.faktorips.devtools.model.util.XmlUtil.removeIds(element);
+        productCmptType.initFromXml(element);
+
+        IProductCmptTypeAttribute attributeAfter = productCmptType
+                .getProductCmptTypeAttribute("productAttribute");
+        assertThat(attributeAfter.getValueSet(), is(sameInstance(valueSetBefore)));
+        assertThat(valueSetBefore.isDeleted(), is(false));
+    }
+
+    @Test
+    public void testInitFromXml_ValueSetTypeChanged_ReplacesInstance() {
+        productAttribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        productAttribute.setValueSetType(ValueSetType.RANGE);
+        Element element = productCmptType.toXml(newDocument());
+        org.faktorips.devtools.model.util.XmlUtil.removeIds(element);
+
+        productAttribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        IValueSet valueSetBefore = productAttribute.getValueSet();
+
+        productCmptType.initFromXml(element);
+
+        IValueSet valueSetAfter = productCmptType.getProductCmptTypeAttribute("productAttribute")
+                .getValueSet();
+        assertThat(valueSetAfter, is(not(sameInstance(valueSetBefore))));
+        assertThat(valueSetAfter.getValueSetType(), is(ValueSetType.RANGE));
+        assertThat(valueSetBefore.isDeleted(), is(true));
     }
 
     @Test
@@ -103,10 +140,10 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         IProductCmptTypeAttribute a = productCmptType.newProductCmptTypeAttribute();
         a.initFromXml(el);
-        assertEquals(productAttribute.getName(), a.getName());
-        assertEquals(productAttribute.getModifier(), a.getModifier());
-        assertEquals(productAttribute.getDatatype(), a.getDatatype());
-        assertEquals(productAttribute.getCategory(), a.getCategory());
+        assertThat(a.getName(), is(productAttribute.getName()));
+        assertThat(a.getModifier(), is(productAttribute.getModifier()));
+        assertThat(a.getDatatype(), is(productAttribute.getDatatype()));
+        assertThat(a.getCategory(), is(productAttribute.getCategory()));
     }
 
     /**
@@ -122,7 +159,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsPolicyCmptTypeProperty() {
-        assertFalse(productAttribute.isPolicyCmptTypeProperty());
+        assertThat(productAttribute.isPolicyCmptTypeProperty(), is(false));
     }
 
     @Test
@@ -131,7 +168,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newAttributeValue(productAttribute);
 
-        assertTrue(productAttribute.isPropertyFor(propertyValue));
+        assertThat(productAttribute.isPropertyFor(propertyValue), is(true));
     }
 
     @Test
@@ -142,19 +179,22 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productCmptType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        assertNull(productAttribute.findOverwrittenAttribute(ipsProject));
+        assertThat(productAttribute.findOverwrittenAttribute(ipsProject), is(nullValue()));
 
         IProductCmptTypeAttribute aInSupertype = supersupertype.newProductCmptTypeAttribute();
         aInSupertype.setName("a");
 
-        assertEquals(aInSupertype, productAttribute.findOverwrittenAttribute(ipsProject));
+        assertThat(productAttribute.findOverwrittenAttribute(ipsProject), is(aInSupertype));
 
         // cycle in type hierarchy
         supersupertype.setSupertype(productCmptType.getQualifiedName());
-        assertEquals(aInSupertype, productAttribute.findOverwrittenAttribute(ipsProject));
+        assertThat(productAttribute.findOverwrittenAttribute(ipsProject), is(aInSupertype));
 
         aInSupertype.delete();
-        assertNull(productAttribute.findOverwrittenAttribute(ipsProject)); // this should not return
+        assertThat(productAttribute.findOverwrittenAttribute(ipsProject), is(nullValue())); // this
+                                                                                            // should
+                                                                                            // not
+                                                                                            // return
         // itself!
     }
 
@@ -166,8 +206,9 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setOverwrite(true);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES));
+        assertThat(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES),
+                is(nullValue()));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
@@ -177,20 +218,23 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setMultiValueAttribute(true);
 
         ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES));
+        assertThat(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES),
+                is(not(nullValue())));
 
         productAttribute.setMultiValueAttribute(true);
         superAttr.setMultiValueAttribute(false);
 
         ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES));
+        assertThat(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES),
+                is(not(nullValue())));
 
         productAttribute.setMultiValueAttribute(superAttr.isMultiValueAttribute());
         ml = productAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES));
+        assertThat(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES),
+                is(nullValue()));
     }
 
     @Test
@@ -450,26 +494,26 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetVisible() {
-        assertTrue(productAttribute.isVisible());
+        assertThat(productAttribute.isVisible(), is(true));
         productAttribute.setVisible(false);
-        assertFalse(productAttribute.isVisible());
+        assertThat(productAttribute.isVisible(), is(false));
     }
 
     @Test
     public void testSetMultilingual() {
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setMultilingual(true);
-        assertTrue(productAttribute.isMultilingual());
+        assertThat(productAttribute.isMultilingual(), is(true));
         productAttribute.setMultilingual(false);
-        assertFalse(productAttribute.isMultilingual());
+        assertThat(productAttribute.isMultilingual(), is(false));
     }
 
     @Test
     public void testSetMultilingual_notString() {
         productAttribute.setMultilingual(true);
-        assertFalse(productAttribute.isMultilingual());
+        assertThat(productAttribute.isMultilingual(), is(false));
         productAttribute.setMultilingual(false);
-        assertFalse(productAttribute.isMultilingual());
+        assertThat(productAttribute.isMultilingual(), is(false));
     }
 
     @Test
@@ -488,8 +532,9 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setVisible(false);
         ((ProductCmptTypeAttribute)productAttribute).validateDefaultValue("testTest", data, list, ipsProject);
 
-        assertFalse(list.isEmpty());
-        assertNotNull(list.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(list.isEmpty(), is(false));
+        assertThat(list.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN),
+                is(not(nullValue())));
 
     }
 
@@ -499,29 +544,33 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setChangingOverTime(false);
 
         MessageList ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME),
+                is(nullValue()));
 
         productCmptType.setChangingOverTime(true);
         productAttribute.setChangingOverTime(true);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME),
+                is(nullValue()));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(false);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME),
+                is(nullValue()));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(true);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNotNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(
+                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME),
+                is(not(nullValue())));
     }
 
     @Test
@@ -529,12 +578,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productCmptType.setChangingOverTime(false);
         productAttribute = productCmptType.newProductCmptTypeAttribute();
 
-        assertFalse(productAttribute.isChangingOverTime());
+        assertThat(productAttribute.isChangingOverTime(), is(false));
 
         productCmptType.setChangingOverTime(true);
         productAttribute = productCmptType.newProductCmptTypeAttribute();
 
-        assertTrue(productAttribute.isChangingOverTime());
+        assertThat(productAttribute.isChangingOverTime(), is(true));
     }
 
     @Test
@@ -591,11 +640,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         MessageList list = productCmptType.validate(ipsProject);
 
         Message message = list.getMessageByCode(IType.MSGCODE_ABSTRACT_MISSING);
-        assertNotNull(message);
-        assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE),
-                message.getInvalidObjectProperties().get(0));
-        assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
-                message.getInvalidObjectProperties().get(1));
+        assertThat(message, is(not(nullValue())));
+        assertThat(message.getInvalidObjectProperties().get(0),
+                is(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE)));
+        assertThat(message.getInvalidObjectProperties().get(1),
+                is(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT)));
     }
 
     @Test
@@ -607,9 +656,9 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = productAttribute.validate(ipsProject);
 
-        assertNull(productAttribute.getDefaultValue());
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(productAttribute.getDefaultValue(), is(nullValue()));
+        assertThat(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE), is(nullValue()));
+        assertThat(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET), is(nullValue()));
 
     }
 

@@ -33,3 +33,4 @@ org.moreunit.prefs
 # Claude
 .superpowers
 .remember
+.claude/settings.local.json

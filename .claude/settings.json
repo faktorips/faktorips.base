@@ -1,0 +1,5 @@
+{
+  "enabledPlugins": {
+    "f10-fips@f10-claude-marketplace": true
+  }
+}

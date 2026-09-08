@@ -67,6 +67,8 @@ import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
@@ -115,6 +117,7 @@ public interface Identifier {
                     IPersistentAttributeInfo.XML_TAG);
             case IPersistentAssociationInfo persistentAssociationInfo -> new ByTypeIdentifier(
                     IPersistentAssociationInfo.XML_TAG);
+            case IValueSet valueSet -> ValueSetIdentifier.of(valueSet);
             case IPartIdentifiedByIndex indexedPart -> new IndexedIdentifier(index.getAndIncrement());
             default -> getIdProviders().stream()
                     .map(idProvider -> idProvider.getIdentity(part))
@@ -174,6 +177,7 @@ public interface Identifier {
             case IEnumLiteralNameAttributeValue.XML_TAG -> new ByTypeIdentifier(IEnumAttributeValue.XML_TAG);
             case IPersistentTypeInfo.XML_TAG, IPersistentAttributeInfo.XML_TAG,
                     IPersistentAssociationInfo.XML_TAG -> new ByTypeIdentifier(partEl.getNodeName());
+            case ValueToXmlHelper.XML_TAG_VALUE_SET -> ValueSetIdentifier.of(partEl);
             case Row.TAG_NAME, IEnumAttributeValue.XML_TAG -> new IndexedIdentifier(index.getAndIncrement());
             default -> getIdProviders().stream()
                     .map(idProvider -> idProvider.getIdentity(partEl))
@@ -541,6 +545,22 @@ public interface Identifier {
             String localeCode = getAttribute(partEl, IDescription.PROPERTY_LOCALE);
             return new DescriptionIdentifier(
                     IpsStringUtils.isNotEmpty(localeCode) ? Locale.forLanguageTag(localeCode) : null);
+        }
+    }
+
+    /**
+     * A container holds at most one value set, but the concrete {@link IValueSet} implementation
+     * depends on the {@link ValueSetType}. Including the type makes sure an existing instance is
+     * only reused while the type is unchanged.
+     */
+    record ValueSetIdentifier(ValueSetType valueSetType) implements Identifier {
+
+        static ValueSetIdentifier of(IValueSet valueSet) {
+            return new ValueSetIdentifier(valueSet.getValueSetType());
+        }
+
+        static ValueSetIdentifier of(Element partEl) {
+            return new ValueSetIdentifier(ValueSetType.findValueSetType(partEl));
         }
     }
 

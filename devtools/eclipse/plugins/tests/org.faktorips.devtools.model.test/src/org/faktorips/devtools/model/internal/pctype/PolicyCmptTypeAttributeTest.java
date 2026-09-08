@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -40,8 +41,10 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
@@ -281,6 +284,43 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         attribute.initFromXml((Element)nl.item(7));
         assertThat(attribute.isGenericValidationEnabled(), is(true));
+    }
+
+    @Test
+    public void testInitFromXml_ValueSetTypeUnchanged_PreservesInstanceIdentity() {
+        attribute.setName("age");
+        attribute.setDatatype("decimal");
+        attribute.setValueSetType(ValueSetType.RANGE);
+        IValueSet valueSetBefore = attribute.getValueSet();
+
+        // IpsSrcFileContent#save strips all ids, so the reload path from disk must work without
+        // them
+        Element element = pcType.toXml(newDocument());
+        XmlUtil.removeIds(element);
+        pcType.initFromXml(element);
+
+        IPolicyCmptTypeAttribute attributeAfter = pcType.getPolicyCmptTypeAttribute("age");
+        assertThat(attributeAfter.getValueSet(), is(sameInstance(valueSetBefore)));
+        assertThat(valueSetBefore.isDeleted(), is(false));
+    }
+
+    @Test
+    public void testInitFromXml_ValueSetTypeChanged_ReplacesInstance() {
+        attribute.setName("age");
+        attribute.setDatatype("decimal");
+        attribute.setValueSetType(ValueSetType.RANGE);
+        Element element = pcType.toXml(newDocument());
+        XmlUtil.removeIds(element);
+
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        IValueSet valueSetBefore = attribute.getValueSet();
+
+        pcType.initFromXml(element);
+
+        IValueSet valueSetAfter = pcType.getPolicyCmptTypeAttribute("age").getValueSet();
+        assertThat(valueSetAfter, is(not(sameInstance(valueSetBefore))));
+        assertThat(valueSetAfter.getValueSetType(), is(ValueSetType.RANGE));
+        assertThat(valueSetBefore.isDeleted(), is(true));
     }
 
     @Test
