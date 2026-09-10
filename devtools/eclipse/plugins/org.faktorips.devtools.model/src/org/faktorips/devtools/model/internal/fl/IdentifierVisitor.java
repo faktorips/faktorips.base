@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierParser;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.parser.ASTAddNode;
 import org.faktorips.fl.parser.ASTArgListNode;
 import org.faktorips.fl.parser.ASTBooleanNode;
@@ -41,6 +42,7 @@ import org.faktorips.fl.parser.ASTStringNode;
 import org.faktorips.fl.parser.ASTSubNode;
 import org.faktorips.fl.parser.FlParserVisitor;
 import org.faktorips.fl.parser.SimpleNode;
+import org.faktorips.fl.parser.Token;
 
 /**
  * This implementation of {@link FlParserVisitor} visits the parsed AST and finds
@@ -57,6 +59,8 @@ import org.faktorips.fl.parser.SimpleNode;
 public class IdentifierVisitor implements FlParserVisitor {
 
     private Map<IdentifierNode, Integer> identifiers = new HashMap<>();
+
+    private final Map<String, TextRegion> tableFunctionCalls = new HashMap<>();
 
     private final String expressionText;
 
@@ -82,6 +86,17 @@ public class IdentifierVisitor implements FlParserVisitor {
      */
     public Map<IdentifierNode, Integer> getIdentifiers() {
         return identifiers;
+    }
+
+    /**
+     * After the visitor was accepted by the AST nodes, this method returns a map containing all
+     * found table access function calls (e.g. table access functions in a formula) and the
+     * corresponding {@link TextRegion} of the function name within the expression text.
+     *
+     * @return The map of found table function call names and their text region.
+     */
+    public Map<String, TextRegion> getTableFunctionCalls() {
+        return tableFunctionCalls;
     }
 
     @Override
@@ -189,6 +204,10 @@ public class IdentifierVisitor implements FlParserVisitor {
 
     @Override
     public Object visit(ASTFunctionCallNode node, Object data) {
+        Token nameToken = node.getFirstToken();
+        int start = nameToken.getStartPositionRelativeTo(expressionText);
+        int end = nameToken.getEndPositionRelativeTo(expressionText);
+        tableFunctionCalls.put(nameToken.toString(), new TextRegion(expressionText, start, end));
         return visit((SimpleNode)node, data);
     }
 

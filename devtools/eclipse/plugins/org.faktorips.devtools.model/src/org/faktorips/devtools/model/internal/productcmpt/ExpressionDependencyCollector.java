@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,9 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierParser;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
@@ -25,6 +30,9 @@ import org.faktorips.devtools.model.internal.fl.IdentifierVisitor;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.parser.FlParser;
 import org.faktorips.fl.parser.ParseException;
@@ -38,7 +46,7 @@ import org.faktorips.fl.parser.SimpleNode;
  * The dependencies are returned as a {@link IpsObjectDependency}. For each IPS object used in the
  * expression a dependency detail is added. These details are of type
  * {@link ExpressionDependencyDetail} and can be used by the refactoring framework.
- * 
+ *
  * @author dirmeier
  */
 public class ExpressionDependencyCollector {
@@ -52,7 +60,7 @@ public class ExpressionDependencyCollector {
     /**
      * Creates a new {@link ExpressionDependencyCollector} for the given {@link Expression} and uses
      * the specified {@link IdentifierVisitor} to find the identifiers within the expression text.
-     * 
+     *
      * @param expression The expression for which we need to get the dependencies
      * @param identifierVisitor An {@link IdentifierVisitor} that is used to find the identifiers
      */
@@ -64,7 +72,7 @@ public class ExpressionDependencyCollector {
     /**
      * Creates a new {@link ExpressionDependencyCollector} for the given {@link Expression} using a
      * new {@link IdentifierVisitor} to search for identifiers within the formula expression.
-     * 
+     *
      * @param expression The expression for which we need to get the dependencies
      */
     protected ExpressionDependencyCollector(Expression expression) {
@@ -84,7 +92,7 @@ public class ExpressionDependencyCollector {
     /**
      * Start collecting the dependencies: parse the expression text, parse the identifier nodes to
      * search for identifier parts that reference other {@link IIpsObject}.
-     * 
+     *
      * @return A map of found dependencies pointing to a list of corresponding dependency details.
      */
     public Map<IDependency, IExpressionDependencyDetail> collectDependencies() {
@@ -119,7 +127,7 @@ public class ExpressionDependencyCollector {
      * Starts collecting the dependencies using the {@link SimpleNode} from the previously parsed
      * expression text. The method visits the nodes and parses the identifier nodes to search for
      * identifier parts that reference other {@link IIpsObject IPS objects}.
-     * 
+     *
      * @param node The {@link SimpleNode} that is the entry point of a previously parsed expression
      *            text.
      * @return A map of found dependencies pointing to a list of corresponding dependency details.
@@ -130,6 +138,7 @@ public class ExpressionDependencyCollector {
         for (Entry<IdentifierNode, Integer> identifierEntry : identifiers.entrySet()) {
             collectDependencies(identifierEntry.getKey(), identifierEntry.getValue());
         }
+        collectTableDependencies();
         return getResult();
     }
 
@@ -138,6 +147,13 @@ public class ExpressionDependencyCollector {
             IpsObjectDependency dependency = createQualifiedNodeDependency(identifierNode);
             TextRegion textRegion = getTextRegion(identifierNode, identifierOffset, 1, -2);
             getDependencyDetail(dependency).addTextRegion(textRegion);
+        }
+        if (identifierNode instanceof AssociationNode associationNode) {
+            addAssociationTargetDependency(associationNode);
+        }
+
+        if (identifierNode instanceof EnumValueNode enumValueNode) {
+            addEnumTargetDependency(enumValueNode);
         }
         if (identifierNode.hasSuccessor()) {
             collectDependencies(identifierNode.getSuccessor(), identifierOffset);
@@ -158,6 +174,52 @@ public class ExpressionDependencyCollector {
     private IExpressionDependencyDetail getDependencyDetail(IpsObjectDependency dependency) {
         return getResult().computeIfAbsent(dependency,
                 $ -> new ExpressionDependencyDetail(expression));
+    }
+
+    private void addAssociationTargetDependency(AssociationNode associationNode) {
+        IType target = associationNode.getAssociation().findTarget(associationNode.getIpsProject());
+        if (target == null) {
+            return;
+        }
+
+        IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
+                expression.getIpsObject().getQualifiedNameType(), target.getQualifiedNameType());
+        getDependencyDetail(dependency);
+    }
+
+    private void addEnumTargetDependency(EnumValueNode enumValueNode) {
+        EnumDatatype enumDataType = enumValueNode.getDatatype();
+        if (!(enumDataType instanceof EnumTypeDatatypeAdapter adapter)) {
+            return;
+        }
+        IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
+                expression.getIpsObject().getQualifiedNameType(), adapter.getEnumType().getQualifiedNameType());
+        getDependencyDetail(dependency);
+    }
+
+    private void collectTableDependencies() {
+        Map<String, ITableContentUsage> usagesByRole = new HashMap<>();
+        for (ITableContentUsage tableContentUsage : expression.getTableContentUsages()) {
+            usagesByRole.put(StringUtils.capitalize(tableContentUsage.getStructureUsage()), tableContentUsage);
+        }
+        for (Entry<String, TextRegion> functionCall : identifierVisitor.getTableFunctionCalls().entrySet()) {
+            String roleName = StringUtils.substringBefore(functionCall.getKey(), '.');
+            ITableContentUsage tableContentUsage = usagesByRole.get(roleName);
+            if (tableContentUsage != null) {
+                addTableTargetDependency(tableContentUsage);
+            }
+        }
+    }
+
+    private void addTableTargetDependency(ITableContentUsage tableContentUsage) {
+        ITableContents tableContents = tableContentUsage.findTableContents(expression.getIpsProject());
+        if (tableContents == null) {
+            return;
+        }
+        IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
+                expression.getIpsObject().getQualifiedNameType(), tableContents.getQualifiedNameType());
+        getDependencyDetail(dependency);
+
     }
 
 }

@@ -28,6 +28,8 @@ import org.eclipse.search.ui.text.MatchEvent;
 import org.eclipse.search.ui.text.RemoveAllEvent;
 import org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.internal.method.BaseMethod;
+import org.faktorips.devtools.model.internal.productcmpttype.TableStructureUsage.TableStructureReference;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -64,14 +66,14 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
 
     private void addElements(Object[] elements) {
         for (Object object : elements) {
-            IIpsElement element = (IIpsElement)object;
+            IIpsElement element = unwrapTechnicalPart((IIpsElement)object);
             addMatchedElement(element, null);
         }
     }
 
     private void addMatches(Match[] matches) {
         for (Match match : matches) {
-            IIpsElement element = (IIpsElement)match.getElement();
+            IIpsElement element = unwrapTechnicalPart((IIpsElement)match.getElement());
             addMatchedElement(element, null);
         }
     }
@@ -97,7 +99,25 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
         if (element instanceof IIpsObject ipsSrcFile) {
             return ipsSrcFile.getIpsPackageFragment();
         }
-        return element.getParent();
+        return unwrapTechnicalPart(element.getParent());
+    }
+
+    /**
+     * Some {@link IIpsElement}s are purely technical implementation details (e.g. the internal
+     * {@link BaseMethod} delegate of a {@link org.faktorips.devtools.model.type.IMethod} or a single
+     * {@link TableStructureReference} entry of a table structure usage) that were never meant to be
+     * displayed as a node of their own. Neither has a decorator/label registered, so they would show
+     * up in the tree as an unlabeled node with a missing-image icon. Instead, the nearest
+     * user-facing ancestor is used.
+     */
+    private static IIpsElement unwrapTechnicalPart(IIpsElement element) {
+        if (element instanceof BaseMethod baseMethod) {
+            return unwrapTechnicalPart(baseMethod.getParent());
+        }
+        if (element instanceof TableStructureReference tableStructureReference) {
+            return unwrapTechnicalPart(tableStructureReference.getParent());
+        }
+        return element;
     }
 
     private synchronized void initialize(ISearchResult result) {
@@ -195,6 +215,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             if (updatedElement == null) {
                 continue;
             }
+            updatedElement = unwrapTechnicalPart(updatedElement);
 
             if (page.getDisplayedMatchCount(updatedObject) > 0) {
                 if (viewer.testFindItem(updatedElement) != null) {

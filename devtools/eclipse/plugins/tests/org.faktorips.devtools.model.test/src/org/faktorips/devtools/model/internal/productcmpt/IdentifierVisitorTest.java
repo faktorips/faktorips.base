@@ -159,7 +159,7 @@ public class IdentifierVisitorTest {
         aSTArgListNode = new ASTArgListNode(0);
         aSTArgListNode.jjtAddChild(aSTBooleanNode, 0);
 
-        aSTFunctionCallNode = new ASTFunctionCallNode(0);
+        aSTFunctionCallNode = spy(new ASTFunctionCallNode(0));
         aSTFunctionCallNode.jjtAddChild(aSTArgListNode, 0);
 
         aSTParenthesisNode = new ASTParenthesisNode(0);
@@ -224,6 +224,12 @@ public class IdentifierVisitorTest {
         newToken2.image = MY_IDENTIFIER_TEXT2;
         when(aSTIdentifierNode2.getLastToken()).thenReturn(newToken2);
         newToken2.beginColumn = TOKEN_2_COL;
+
+        Token functionCallToken = Token.newToken(0);
+        functionCallToken.image = "Rate.KQV";
+        functionCallToken.beginColumn = 1;
+        functionCallToken.endColumn = functionCallToken.image.length();
+        when(aSTFunctionCallNode.getFirstToken()).thenReturn(functionCallToken);
     }
 
     @Test

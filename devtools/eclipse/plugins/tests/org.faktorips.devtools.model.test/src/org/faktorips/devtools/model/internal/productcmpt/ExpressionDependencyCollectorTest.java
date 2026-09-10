@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,12 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.dependency.IDependency;
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
+import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
@@ -34,8 +39,13 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.parser.ASTAddNode;
 import org.faktorips.fl.parser.ASTIntegerNode;
@@ -49,7 +59,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoSession;
 
 public class ExpressionDependencyCollectorTest {
-
 
     private static final String MY_EXPRESSION = "1 + 2";
 
@@ -88,6 +97,36 @@ public class ExpressionDependencyCollectorTest {
     @Mock
     private Expression expression;
 
+    @Mock
+    private AssociationNode associationNode;
+
+    @Mock
+    private IAssociation association;
+
+    @Mock
+    private IType targetType;
+
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
+    private EnumValueNode enumValueNode;
+
+    @Mock
+    private EnumTypeDatatypeAdapter enumTypeDatatypeAdapter;
+
+    @Mock
+    private IEnumType targetEnumType;
+
+    @Mock
+    private EnumDatatype plainEnumDatatype;
+
+    @Mock
+    private ITableContentUsage tableContentUsage;
+
+    @Mock
+    private ITableContents tableContents;
+
     private MockitoSession mockito;
 
     private ExpressionDependencyCollector expressionDependencyCollector;
@@ -97,8 +136,11 @@ public class ExpressionDependencyCollectorTest {
         mockito = createMocks(this);
         identifiers = new HashMap<>();
         lenient().when(identifierVisitor.getIdentifiers()).thenReturn(identifiers);
+        lenient().when(identifierVisitor.getTableFunctionCalls()).thenReturn(new HashMap<>());
+        lenient().when(expression.getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
         lenient().when(expression.getIpsObject()).thenReturn(ipsObject);
-        lenient().when(ipsObject.getQualifiedNameType()).thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
+        lenient().when(ipsObject.getQualifiedNameType())
+                .thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
         lenient().when(qualifierNode.getProductCmpt()).thenReturn(targetProductCmpt);
         lenient().when(targetProductCmpt.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType(MY_TARGET_NAME, IpsObjectType.PRODUCT_CMPT));
@@ -170,6 +212,33 @@ public class ExpressionDependencyCollectorTest {
     }
 
     @Test
+    public void testCollectDependencies_associationNode() throws Exception {
+        when(associationNode.getAssociation()).thenReturn(association);
+        when(associationNode.getIpsProject()).thenReturn(ipsProject);
+        when(association.findTarget(ipsProject)).thenReturn(targetType);
+        when(targetType.getQualifiedNameType())
+                .thenReturn(new QualifiedNameType("TargetPolicyCmptType", IpsObjectType.POLICY_CMPT_TYPE));
+
+        expressionDependencyCollector.collectDependencies(associationNode, 0);
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
+
+        IDependency dependency = getDependency(targetType.getQualifiedNameType());
+        assertThat(dependencies.keySet(), hasItem(dependency));
+    }
+
+    @Test
+    public void testCollectDependencies_associationNode_no_target() {
+        when(associationNode.getAssociation()).thenReturn(association);
+        when(associationNode.getIpsProject()).thenReturn(ipsProject);
+        when(association.findTarget(ipsProject)).thenReturn(null);
+
+        expressionDependencyCollector.collectDependencies(associationNode, 0);
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
+
+        assertTrue(dependencies.isEmpty());
+    }
+
+    @Test
     public void testCollectDependencies_oneNestedNode() throws Exception {
         when(identifierNode.getSuccessor()).thenReturn(qualifierNode);
         when(identifierNode.hasSuccessor()).thenReturn(true);
@@ -195,6 +264,80 @@ public class ExpressionDependencyCollectorTest {
         assertThat(dependencies.keySet(), hasItem(dependency));
         IDependency dependency2 = getDependency(targetProductCmpt2.getQualifiedNameType());
         assertThat(dependencies.keySet(), hasItem(dependency2));
+    }
+
+    @Test
+    public void testCollectDependencies_enum() {
+        when(enumValueNode.getDatatype()).thenReturn(enumTypeDatatypeAdapter);
+        when(enumTypeDatatypeAdapter.getEnumType()).thenReturn(targetEnumType);
+        when(targetEnumType.getQualifiedNameType())
+                .thenReturn(new QualifiedNameType("TargetEnumType", IpsObjectType.ENUM_TYPE));
+
+        expressionDependencyCollector.collectDependencies(enumValueNode, 0);
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
+
+        IDependency dependency = getDependency(targetEnumType.getQualifiedNameType());
+        assertThat(dependencies.keySet(), hasItem(dependency));
+    }
+
+    @Test
+    public void testCollectDependencies_enum_wrong_enumDataType() {
+        when(enumValueNode.getDatatype()).thenReturn(plainEnumDatatype);
+
+        expressionDependencyCollector.collectDependencies(enumValueNode, 0);
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector.getResult();
+
+        assertTrue(dependencies.isEmpty());
+    }
+
+    @Test
+    public void testCollectDependencies_tableFunctionCall() throws Exception {
+        Map<String, TextRegion> tableFunctionCalls = new HashMap<>();
+        TextRegion textRegion = new TextRegion(MY_EXPRESSION, 0, 12);
+        tableFunctionCalls.put("Rate.KQV", textRegion);
+        when(identifierVisitor.getTableFunctionCalls()).thenReturn(tableFunctionCalls);
+        when(expression.getTableContentUsages()).thenReturn(new ITableContentUsage[] { tableContentUsage });
+        when(tableContentUsage.getStructureUsage()).thenReturn("rate");
+        when(expression.getIpsProject()).thenReturn(ipsProject);
+        when(tableContentUsage.findTableContents(ipsProject)).thenReturn(tableContents);
+        when(tableContents.getQualifiedNameType())
+                .thenReturn(new QualifiedNameType("TargetTableContents", IpsObjectType.TABLE_CONTENTS));
+
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector
+                .collectDependencies(simpleNode);
+
+        IDependency dependency = getDependency(tableContents.getQualifiedNameType());
+        assertThat(dependencies.keySet(), hasItem(dependency));
+    }
+
+    @Test
+    public void testCollectDependencies_tableFunctionCall_noMatchingUsage() throws Exception {
+        Map<String, TextRegion> tableFunctionCalls = new HashMap<>();
+        tableFunctionCalls.put("Rate.KQV", new TextRegion(MY_EXPRESSION, 0, 12));
+        when(identifierVisitor.getTableFunctionCalls()).thenReturn(tableFunctionCalls);
+        when(expression.getTableContentUsages()).thenReturn(new ITableContentUsage[] { tableContentUsage });
+        when(tableContentUsage.getStructureUsage()).thenReturn("other");
+
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector
+                .collectDependencies(simpleNode);
+
+        assertTrue(dependencies.isEmpty());
+    }
+
+    @Test
+    public void testCollectDependencies_tableFunctionCall_tableContentsNotFound() throws Exception {
+        Map<String, TextRegion> tableFunctionCalls = new HashMap<>();
+        tableFunctionCalls.put("Rate.KQV", new TextRegion(MY_EXPRESSION, 0, 12));
+        when(identifierVisitor.getTableFunctionCalls()).thenReturn(tableFunctionCalls);
+        when(expression.getTableContentUsages()).thenReturn(new ITableContentUsage[] { tableContentUsage });
+        when(tableContentUsage.getStructureUsage()).thenReturn("rate");
+        when(expression.getIpsProject()).thenReturn(ipsProject);
+        when(tableContentUsage.findTableContents(ipsProject)).thenReturn(null);
+
+        Map<IDependency, IExpressionDependencyDetail> dependencies = expressionDependencyCollector
+                .collectDependencies(simpleNode);
+
+        assertTrue(dependencies.isEmpty());
     }
 
     @Test
