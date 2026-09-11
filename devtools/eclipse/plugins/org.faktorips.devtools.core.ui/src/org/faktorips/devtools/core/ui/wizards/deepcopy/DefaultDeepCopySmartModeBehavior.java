@@ -44,9 +44,9 @@ public class DefaultDeepCopySmartModeBehavior implements IDeepCopySmartModeBehav
     }
 
     /**
-     * Returns {@code true} if the given reference package is the package of the copied root
-     * product component or a sub-package of it, so that the package structure below the root is
-     * preserved for elements that are copied along with it.
+     * Returns {@code true} if the given reference package is the package of the copied root product
+     * component or a sub-package of it, so that the package structure below the root is preserved
+     * for elements that are copied along with it.
      */
     private boolean isSamePackageOrSubPackage(IIpsPackageFragment referencePackage,
             IProductCmptStructureReference reference) {

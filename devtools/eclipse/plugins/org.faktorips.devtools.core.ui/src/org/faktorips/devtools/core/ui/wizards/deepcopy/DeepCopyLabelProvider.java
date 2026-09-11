@@ -148,8 +148,8 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     private String getSuffixFor(Object item) {
         return switch (item) {
             case IProductCmptReference productCmptReference -> buildPackageNameSuffix(productCmptReference);
-            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference ->
-                buildPackageNameSuffix(productCmptStructureTblUsageReference);
+            case IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference -> buildPackageNameSuffix(
+                    productCmptStructureTblUsageReference);
             default -> IpsStringUtils.EMPTY;
         };
     }

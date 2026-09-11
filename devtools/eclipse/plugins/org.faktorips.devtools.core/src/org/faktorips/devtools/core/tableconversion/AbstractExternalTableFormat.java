@@ -169,7 +169,11 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     }
 
     protected Datatype[] getDatatypes(IEnumType structure) {
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
+        return getDatatypes(structure, true);
+    }
+
+    protected Datatype[] getDatatypes(IEnumType structure, boolean includeLiteralName) {
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
         Datatype[] datatypes = new Datatype[enumAttributes.size()];
         for (int i = 0; i < datatypes.length; i++) {
             IEnumAttribute enumAttribute = enumAttributes.get(i);

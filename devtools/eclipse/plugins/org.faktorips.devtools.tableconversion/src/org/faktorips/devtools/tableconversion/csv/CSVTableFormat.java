@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.tableconversion.csv;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.Locale;
 
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.ICSVParser;
 import com.opencsv.exceptions.CsvValidationException;
 
 import org.eclipse.core.runtime.IPath;
@@ -202,6 +203,23 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<String[]> getImportEnumPreview(IEnumType structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation,
+            boolean includeLiteralName) {
+        try {
+            Datatype[] datatypes = getDatatypes(structure, includeLiteralName);
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
+        } catch (IpsException e) {
+            IpsPlugin.log(e);
+            return Collections.EMPTY_LIST;
+        }
+    }
+
     /**
      * @return A preview of the imported data to be imported using the given structure which can be
      *             an {@link ITableStructure} or an {@link IEnumType}.
@@ -236,7 +254,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             boolean ignoreColumnHeaderRow,
             String nullRepresentation) {
 
-        if (datatypes == null || filename == null || !isValidImportSource(filename.toOSString())) {
+        if (datatypes == null || filename == null) {
             return Collections.EMPTY_LIST;
         }
 
@@ -246,33 +264,46 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         if (getProperty(PROPERTY_FIELD_DELIMITER).length() == 1) {
             fieldDelimiter = getProperty(PROPERTY_FIELD_DELIMITER).charAt(0);
         }
-        try (CSVReader reader = new CSVReaderBuilder(new FileReader(filename.toOSString()))
-                .withCSVParser(new CSVParserBuilder()
-                        .withSeparator(fieldDelimiter)
-                        .build())
-                .build()) {
+        // Every physical line is parsed on its own (instead of using a single CSVReader for the
+        // whole file) so that a malformed line (e.g. an unterminated quote) only affects that one
+        // line instead of swallowing the rest of the file while searching for a closing quote.
+        // Trade-off: an embedded newline is no longer recognized as one logical record.
+        //  each of its physical lines is instead reported as a broken cell.
+        ICSVParser parser = new CSVParserBuilder().withSeparator(fieldDelimiter).build();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename.toOSString()))) {
 
-            String[] line = (ignoreColumnHeaderRow) ? reader.readNext() : null;
+            String rawLine = (ignoreColumnHeaderRow) ? reader.readLine() : null;
             int linesLeft = maxNumberOfRows;
-            while ((line = reader.readNext()) != null) {
+            while ((rawLine = reader.readLine()) != null) {
                 if (linesLeft-- <= 0) {
                     break;
+                }
+                String[] line;
+                try {
+                    line = parser.parseLine(rawLine);
+                } catch (IOException e) {
+                    IpsPlugin.log(e);
+                    result.add(CSVErrorRowBuilder.buildErrorRow(rawLine, parser, datatypes.length));
+                    continue;
                 }
                 if (isEmptyRow(line)) {
                     continue;
                 }
                 String[] convertedLine = new String[line.length];
-                for (int i = 0; i < line.length; i++) {
+                for (int i = 0; i < Math.min(line.length, datatypes.length); i++) {
                     if (nullRepresentation.equals(line[i])) {
                         convertedLine[i] = nullRepresentation;
                     } else {
                         convertedLine[i] = getIpsValue(line[i], datatypes[i], ml);
                     }
                 }
+                for (int i = datatypes.length; i < line.length; i++) {
+                    convertedLine[i] = line[i];
+                }
 
                 result.add(convertedLine);
             }
-        } catch (IOException | CsvValidationException e) {
+        } catch (IOException e) {
             // serious problem, report
             IpsPlugin.log(e);
         }

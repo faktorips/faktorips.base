@@ -102,12 +102,12 @@ public class TableImportWizard extends IpsObjectImportWizard {
             ITableStructure tableStructure = getTableStructure();
             if (tablePreviewPage == null) {
                 tablePreviewPage = new ImportPreviewPage(startingPage.getFilename(), startingPage.getFormat(),
-                        tableStructure, startingPage.isImportIgnoreColumnHeaderRow());
+                        tableStructure, startingPage.isImportIgnoreColumnHeaderRow(), true);
 
                 addPage(tablePreviewPage);
             } else {
                 tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), tableStructure,
-                        startingPage.isImportIgnoreColumnHeaderRow());
+                        startingPage.isImportIgnoreColumnHeaderRow(), true);
                 tablePreviewPage.validatePage();
             }
             tablePreviewPage.validatePage();
@@ -121,23 +121,6 @@ public class TableImportWizard extends IpsObjectImportWizard {
     @Override
     public IWizardPage getStartingPage() {
         return getIpsOIWStartingPage();
-    }
-
-    @Override
-    public boolean canFinish() {
-        if (isExcelTableFormatSelected()) {
-            if (getContainer().getCurrentPage() == selectContentsPage) {
-                if (selectContentsPage.isPageComplete()) {
-                    return true;
-                }
-            }
-            if (getContainer().getCurrentPage() == newTableContentsPage) {
-                if (newTableContentsPage.isPageComplete()) {
-                    return true;
-                }
-            }
-        }
-        return super.canFinish();
     }
 
     @Override

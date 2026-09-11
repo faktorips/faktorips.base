@@ -229,8 +229,8 @@ public class DeepCopyWizard extends ResizableWizard {
     }
 
     /**
-     * Like {@link #extractYear(String)}, but additionally falls back to a 2-digit year token
-     * (e.g. "27") if no 4-digit token is found, resolving its century from the given
+     * Like {@link #extractYear(String)}, but additionally falls back to a 2-digit year token (e.g.
+     * "27") if no 4-digit token is found, resolving its century from the given
      * {@code referenceYear}.
      */
     static OptionalInt extractYear(String packageName, int referenceYear) {
@@ -248,7 +248,8 @@ public class DeepCopyWizard extends ResizableWizard {
      * year via {@code toYear} and returns the last (rightmost) one that is plausible (see
      * {@link #MIN_PLAUSIBLE_YEAR}, {@link #MAX_PLAUSIBLE_YEAR}), if any.
      */
-    private static OptionalInt lastPlausibleYear(String packageName, Pattern yearTokenPattern,
+    private static OptionalInt lastPlausibleYear(String packageName,
+            Pattern yearTokenPattern,
             IntUnaryOperator toYear) {
         return yearTokenPattern.matcher(packageName)
                 .results()
@@ -258,9 +259,8 @@ public class DeepCopyWizard extends ResizableWizard {
     }
 
     /**
-     * Replaces the given old year in the given package name with the new year 
-     * Returns <code>null</code> if neither representation of the old year is contained in the
-     * package name.
+     * Replaces the given old year in the given package name with the new year Returns
+     * <code>null</code> if neither representation of the old year is contained in the package name.
      */
     static String replaceYearToken(String packageName, int oldYear, int newYear) {
         String oldYear4 = String.format("%04d", oldYear); //$NON-NLS-1$

@@ -13,6 +13,9 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -158,6 +161,22 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         return getImportPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
     }
 
+    @Override
+    public List<String[]> getImportEnumPreview(IEnumType structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentation,
+            boolean includeLiteralName) {
+        try {
+            Datatype[] datatypes = getDatatypes(structure, includeLiteralName);
+            return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
+        } catch (IpsException e) {
+            IpsPlugin.log(e);
+            return Collections.emptyList();
+        }
+    }
+
     private List<String[]> getImportPreview(IIpsObject structure,
             IPath filename,
             int maxNumberOfRows,
@@ -211,8 +230,8 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             }
             int numberOfCells = sheetRow.getLastCellNum();
             if (numberOfCells > 0) {
-                String[] convertedLine = new String[numberOfCells];
-                for (int j = 0; j < numberOfCells; j++) {
+                String[] convertedLine = new String[datatypes.length];
+                for (int j = 0; j < datatypes.length; j++) {
                     Cell cell = sheetRow.getCell(j);
                     String cellString = readCell(cell, datatypes[j], ml, nullRepresentation);
                     convertedLine[j] = cellString;
@@ -227,11 +246,14 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 
     // TODO FIPS-7992: code duplication in AbstractExcelImportOperation
     private String readCell(Cell cell, Datatype datatype, MessageList messageList, String nullRepresentation) {
+        if (cell == null) {
+            return nullRepresentation;
+        }
         if (cell.getCellType() == CellType.NUMERIC) {
             if (DateUtil.isCellDateFormatted(cell)) {
                 return getIpsValue(cell.getDateCellValue(), datatype, messageList);
             }
-            return getIpsValue(Double.valueOf(cell.getNumericCellValue()), datatype, messageList);
+            return getIpsValue(roundNumericCellValue(cell.getNumericCellValue()), datatype, messageList);
         } else if (cell.getCellType() == CellType.BOOLEAN) {
             return getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
@@ -241,5 +263,14 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             }
             return getIpsValue(value, datatype, messageList);
         }
+    }
+
+    private BigDecimal roundNumericCellValue(double numericCellValue) {
+        BigDecimal bigDecimal = new BigDecimal(numericCellValue, new MathContext(15, RoundingMode.HALF_UP));
+        BigDecimal formattedBigDecimal = bigDecimal.stripTrailingZeros();
+        if (formattedBigDecimal.scale() < 0) {
+            formattedBigDecimal = formattedBigDecimal.setScale(0);
+        }
+        return formattedBigDecimal;
     }
 }

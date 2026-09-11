@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -35,6 +36,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.wizards.AbstractIpsObjectNewWizardPage;
+import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -186,6 +188,19 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         } else {
             ((IpsObjectRefControl)enumTypeField.getControl()).setIpsProjects();
         }
+    }
+
+    @Override
+    public boolean canFlipToNextPage() {
+        IWizard wizard = getWizard();
+        if (wizard instanceof IpsObjectImportWizard) {
+            if (((IpsObjectImportWizard)wizard).isExcelTableFormatSelected()) {
+                // do not show the configuration/preview page for excel
+                return false;
+            }
+        }
+
+        return super.canFlipToNextPage();
     }
 
     @Override

@@ -317,9 +317,9 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     /**
-     * Returns whether the given key currently identifies a visible edit field or - if the
-     * attribute is hidden by the input/expected-result content filter - a model object that can
-     * be updated directly.
+     * Returns whether the given key currently identifies a visible edit field or - if the attribute
+     * is hidden by the input/expected-result content filter - a model object that can be updated
+     * directly.
      */
     private boolean editFieldOrModelObjectExists(String uniqueEditFieldKey) {
         return testCaseDetailArea.getEditField(uniqueEditFieldKey) != null

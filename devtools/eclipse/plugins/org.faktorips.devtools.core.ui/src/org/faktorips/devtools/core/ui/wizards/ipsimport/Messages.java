@@ -44,5 +44,8 @@ public class Messages extends NLS {
     public static String ImportPreviewPage_pageTitle;
     public static String ImportPreviewPage_validationWarningInvalidFile;
     public static String ImportPreviewPage_warnFileInvalid;
+    public static String ImportPreviewPage_brokenCellTooltip;
+    public static String ImportPreviewPage_emptyUniqueIdentifierTooltip;
+    public static String ImportPreviewPage_invalidValuesFound;
 
 }

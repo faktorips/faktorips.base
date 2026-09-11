@@ -106,14 +106,15 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
         if (page == selectContentsPage || page == newEnumContentPage) {
             IEnumType enumType = getEnumType();
+            boolean includeLiteralName = isIncludeLiteralName();
             if (tablePreviewPage == null) {
                 tablePreviewPage = new ImportPreviewPage(startingPage.getFilename(), startingPage.getFormat(),
-                        enumType, startingPage.isImportIgnoreColumnHeaderRow());
+                        enumType, startingPage.isImportIgnoreColumnHeaderRow(), includeLiteralName);
 
                 addPage(tablePreviewPage);
             } else {
                 tablePreviewPage.reinit(startingPage.getFilename(), startingPage.getFormat(), enumType,
-                        startingPage.isImportIgnoreColumnHeaderRow());
+                        startingPage.isImportIgnoreColumnHeaderRow(), includeLiteralName);
                 tablePreviewPage.validatePage();
             }
             tablePreviewPage.validatePage();
@@ -135,23 +136,6 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             }
         }
         super.init(workbench, structuredSelection);
-    }
-
-    @Override
-    public boolean canFinish() {
-        if (isExcelTableFormatSelected()) {
-            if (getContainer().getCurrentPage() == selectContentsPage) {
-                if (selectContentsPage.isPageComplete()) {
-                    return true;
-                }
-            }
-            if (getContainer().getCurrentPage() == newEnumContentPage) {
-                if (newEnumContentPage.isPageComplete()) {
-                    return true;
-                }
-            }
-        }
-        return super.canFinish();
     }
 
     @Override
@@ -237,6 +221,27 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             IpsPlugin.log(e);
         }
         return null;
+    }
+
+    /**
+     * Returns whether the enum literal name attribute is expected as a column in the file to be
+     * imported. This is only the case if the import target is the {@link IEnumType} itself, not an
+     * {@code IEnumContent} referencing it, as the literal name is only relevant for generated code
+     * and an {@code IEnumContent} does not generate code. Mirrors the {@code includeLiteralName}
+     * computation in {@code CSVEnumImportOperation} and {@code ExcelEnumImportOperation}, but
+     * without the side effects of {@link #getEnumValueContainer()} (which creates the new
+     * {@code IEnumContent} eagerly), so it is safe to call while the preview page is being shown.
+     */
+    private boolean isIncludeLiteralName() {
+        try {
+            if (getIpsOIWStartingPage().isImportIntoExisting()) {
+                return selectContentsPage.getTargetForImport() instanceof IEnumType;
+            }
+        } catch (IpsException e) {
+            IpsPlugin.log(e);
+        }
+        // the "import into a new enum content" flow always creates an IEnumContent
+        return false;
     }
 
     /**

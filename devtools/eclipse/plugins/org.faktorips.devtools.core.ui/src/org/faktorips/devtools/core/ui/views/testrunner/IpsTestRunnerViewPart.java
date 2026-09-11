@@ -947,7 +947,8 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
                     "elcl16/select_prev.svg"); //$NON-NLS-1$
             setHoverImageDescriptor(createImageDescriptor);
             setImageDescriptor(createImageDescriptor);
-            setDisabledImageDescriptor(IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(createImageDescriptor));
+            setDisabledImageDescriptor(
+                    IpsUIPlugin.getImageHandling().getDisabledImageDescriptor(createImageDescriptor));
             setEnabled(false);
         }
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,6 +27,14 @@ import org.faktorips.runtime.MessageList;
 public interface ITableFormat {
 
     /**
+     * Prefix that can be used by {@link #getImportTablePreview} / {@link #getImportEnumPreview} to
+     * mark a cell value as unparsable (e.g. because of a syntax error in the source file). The
+     * actual (partial) value follows the marker so the UI can still display it, highlighted as an
+     * error.
+     */
+    String PREVIEW_ERROR_CELL_MARKER = "IPS-PREVIEW-ERROR:"; //$NON-NLS-1$
+
+    /**
      * Returns the human readable name of this external table format.
      */
     String getName();
@@ -34,7 +42,7 @@ public interface ITableFormat {
     /**
      * Set the (human readable) name of this external table format. This name might be used to
      * identify this in the UI.
-     * 
+     *
      * @param name The name to use.
      */
     void setName(String name);
@@ -43,7 +51,7 @@ public interface ITableFormat {
      * Set the default extension to use if a proposal for the name of the file to export ist
      * generated. If the file is, for example, an excel-file, the default-extension is ".XLS" (note
      * the included dot as first char).
-     * 
+     *
      * @param extension The new default-extension.
      */
     void setDefaultExtension(String extension);
@@ -63,7 +71,7 @@ public interface ITableFormat {
      * Adds a converter to transform external values to internal values (and vice versa). This
      * method also sets the table format in the given converter via its
      * {@link IValueConverter#setTableFormat(ITableFormat)} method.
-     * 
+     *
      * @param converter The additional converter.
      */
     void addValueConverter(IValueConverter converter);
@@ -71,7 +79,7 @@ public interface ITableFormat {
     /**
      * Returns a string representing the given external value which can be parsed by the given data
      * type.
-     * 
+     *
      * @param externalValue The external representation of the value.
      * @param datatype The data type for the given external value.
      * @param messageList A list for messages to add if anything happens that should be reported to
@@ -82,7 +90,7 @@ public interface ITableFormat {
 
     /**
      * Returns the external representation for the given string respecting the given data type.
-     * 
+     *
      * @param ipsValue The string-representation of a value.
      * @param datatype The data type the given string is a value for.
      * @param messageList A list for messages to add if anything happens that should be reported to
@@ -94,7 +102,7 @@ public interface ITableFormat {
     /**
      * Returns <code>true</code> if the export operation was successful, <code>false</code>
      * otherwise.
-     * 
+     *
      * @param contents The contents of the table to export.
      * @param filename The name of the file to export to. The file can exist already and might or
      *            might not be overwritten, the choice is up to the runnable.
@@ -129,11 +137,11 @@ public interface ITableFormat {
      *            successful.
      * @param importIntoExisting <code>true</code> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
-     * 
+     *
      * @throws IpsException If the file could not be imported. This can happen for instance if the
      *             file referenced by <code>filename</code> is an Excel file and one tries to import
      *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
-     * 
+     *
      */
     void executeTableImport(ITableStructure structure,
             IPath filename,
@@ -147,7 +155,7 @@ public interface ITableFormat {
      * The file to import can either contain attributes of an enumeration (therefore defining a
      * structure) or enumeration values. In case of enumeration values the decision where to store
      * them is based on {@link IEnumType#isExtensible()}.
-     * 
+     *
      * @param valueContainer The destination of the import.
      * @param filename The name of the file to import from.
      * @param nullRepresentationString The string to use to replace <code>null</code>. This value
@@ -161,13 +169,13 @@ public interface ITableFormat {
      *            successful.
      * @param importIntoExisting <code>true</code> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
-     * 
+     *
      * @throws IpsException If the file could not be imported. This can happen for instance if the
      *             file referenced by <code>filename</code> is an Excel file and one tries to import
      *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
-     * 
+     *
      * @since 2.3
-     * 
+     *
      * @see IEnumValueContainer
      * @see IEnumType
      * @see IEnumContent
@@ -183,7 +191,7 @@ public interface ITableFormat {
      * The file to export can either contain attributes of an enumeration (therefore defining a
      * structure) or enumeration values. In case of enumeration values the decision where to store
      * them is based on {@link IEnumType#isExtensible()}.
-     * 
+     *
      * @param valueContainer The destination of the export.
      * @param filename The name of the file to export from.
      * @param nullRepresentationString The string to use to replace <code>null</code>. This value
@@ -195,9 +203,9 @@ public interface ITableFormat {
      * @param list A list for messages describing any problems occurred during the export. If no
      *            messages of severity ERROR are contained in this list, the export is considered
      *            successful.
-     * 
+     *
      * @since 2.3
-     * 
+     *
      * @see IEnumValueContainer
      * @see IEnumType
      * @see IEnumContent
@@ -211,7 +219,7 @@ public interface ITableFormat {
     /**
      * Returns <code>true</code> if the given resource is a valid source for import,
      * <code>false</code> otherwise.
-     * 
+     *
      * @param source The identification of the resource to check (for example, a qualified
      *            filename).
      */
@@ -220,16 +228,16 @@ public interface ITableFormat {
     /**
      * Retrieves a table format specific property using the given property name. Returns the
      * property value if defined, or <code>null</code> if the property could not be found.
-     * 
+     *
      * @param propertyName The name of the property to be retrieved.
-     * 
+     *
      * @throws NullPointerException if the given <code>propertyName</code> is <code>null</code>.
      */
     String getProperty(String propertyName);
 
     /**
      * Changes a property or defines a new property for this table format.
-     * 
+     *
      * @param propertyName The name of the property to be set/changed.
      * @param propertyValue The value to set for the given <code>propertyName</code>.
      */
@@ -237,7 +245,7 @@ public interface ITableFormat {
 
     /**
      * Computes a preview for the table to be imported.
-     * 
+     *
      * @param structure The table structure to use for the preview.
      * @param filename The filename of the file to be previewed.
      * @param maxNumberOfRows Limit the number of returned rows to maxNumberOfRows.
@@ -245,7 +253,7 @@ public interface ITableFormat {
      *            should be ignored <code>false</code> if the to be imported content contains no
      *            column header row.
      * @param nullRepresentationString The string to use to replace <code>null</code>.
-     * 
+     *
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
      *             <code>Collections.EMPTY_LIST</code> if the preview could not be computed or the
      *             file contains no entries.
@@ -260,7 +268,7 @@ public interface ITableFormat {
      * Computes a preview for the enumeration to be imported and returns <code>List</code>
      * containing a <code>String[]</code> for each row, or <code>Collections.EMPTY_LIST</code> if
      * the preview could not be computed or the file contains no entries.
-     * 
+     *
      * @param structure The enumeration type to use (derive data types) for the preview.
      * @param filename The filename of the file to be previewed.
      * @param maxNumberOfRows Limit the number of returned rows to maxNumberOfRows.
@@ -274,5 +282,32 @@ public interface ITableFormat {
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
             String nullRepresentationString);
+
+    /**
+     * Computes a preview for the enumeration to be imported and returns <code>List</code>
+     * containing a <code>String[]</code> for each row, or <code>Collections.EMPTY_LIST</code> if
+     * the preview could not be computed or the file contains no entries.
+     *
+     * @param structure The enumeration type to use (derive data types) for the preview.
+     * @param filename The filename of the file to be previewed.
+     * @param maxNumberOfRows Limit the number of returned rows to maxNumberOfRows.
+     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
+     *            should be ignored <code>false</code> if the to be imported content contains no
+     *            column header row.
+     * @param nullRepresentationString The string to use to replace <code>null</code>.
+     * @param includeLiteralName <code>true</code> if the enumeration's literal name attribute is
+     *            expected as a column in the file to be imported (only relevant when importing
+     *            directly into an {@link IEnumType}, not into a separate
+     *            {@code IEnumContent}), <code>false</code> otherwise.
+     */
+    default List<String[]> getImportEnumPreview(IEnumType structure,
+            IPath filename,
+            int maxNumberOfRows,
+            boolean ignoreColumnHeaderRow,
+            String nullRepresentationString,
+            boolean includeLiteralName) {
+        return getImportEnumPreview(structure, filename, maxNumberOfRows, ignoreColumnHeaderRow,
+                nullRepresentationString);
+    }
 
 }

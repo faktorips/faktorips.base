@@ -44,9 +44,9 @@ public class InternationalStringCellEditor extends AbstractLocalizedStringCellEd
     }
 
     /**
-     * Removes the given {@link TraversalStrategy} as listener from the text control.
-     * Overrides the behavior of the superclass to register on the text control instead of the
-     * composite control to allow proper "tab" use on {@link InternationalString} cells. 
+     * Removes the given {@link TraversalStrategy} as listener from the text control. Overrides the
+     * behavior of the superclass to register on the text control instead of the composite control
+     * to allow proper "tab" use on {@link InternationalString} cells.
      */
     private void removeStrategyAsListener(TraversalStrategy strategy) {
         if (strategy != null && !getTextControl().isDisposed()) {
