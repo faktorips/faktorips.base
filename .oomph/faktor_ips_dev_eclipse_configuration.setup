@@ -8,8 +8,8 @@
       name="faktor.ips.dev.eclipse.installation"
       label="Eclipse IDE for developing Faktor-IPS">
     <productVersion
-        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.rcp']/@versions[name='2026-06']"/>
-    <description>Installation based on Eclipse IDE for RCP and RAP Developers 2026-06.</description>
+        href="index:/org.eclipse.setup#//@productCatalogs[name='org.eclipse.products']/@products[name='epp.package.rcp']/@versions[name='2026-09']"/>
+    <description>Installation based on Eclipse IDE for RCP and RAP Developers 2026-09.</description>
   </installation>
   <workspace
       name="faktor.ips.dev.eclipse.workspace"
