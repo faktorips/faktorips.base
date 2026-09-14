@@ -82,8 +82,8 @@ public class MsgCodePmoTest {
     }
 
     @Test
-    public void updateMsgCodeEntry_Empty() throws Exception {
-        when(rule.getMessageCode()).thenReturn(IpsStringUtils.EMPTY);
+    public void updateMsgCode_WhenDerivedFromNameIsTrue() throws Exception {
+        when(rule.isMessageCodeDerivedFromName()).thenReturn(true);
 
         msgCodePmo.partHasChanged();
 
@@ -91,35 +91,8 @@ public class MsgCodePmoTest {
     }
 
     @Test
-    public void updateMsgCodeEntry_SeverityAndNameEqual() throws Exception {
-        when(rule.getMessageCode()).thenReturn(severity + DELIMITER + pcType + DELIMITER + "test");
-
-        msgCodePmo.partHasChanged();
-
-        verify(rule).setMessageCode(generatedMsgCode);
-    }
-
-    @Test
-    public void updateMsgCodeEntry_NameAndRuleNameEqual() throws Exception {
-        when(rule.getMessageCode()).thenReturn("test" + DELIMITER + pcType + DELIMITER + nameOfRule);
-
-        msgCodePmo.partHasChanged();
-
-        verify(rule).setMessageCode(generatedMsgCode);
-    }
-
-    @Test
-    public void noUpdateMsgCodeEntry_LessThanTwoPoints() throws Exception {
-        when(rule.getMessageCode()).thenReturn("test");
-
-        msgCodePmo.partHasChanged();
-
-        verify(rule, times(0)).setMessageCode(generatedMsgCode);
-    }
-
-    @Test
-    public void noUpdateMsgCodeEntry_MoreThanTwoPoints() throws Exception {
-        when(rule.getMessageCode()).thenReturn("test.test.test.test");
+    public void noUpdateMsgCode_WhenDerivedFromNameIsFalse() throws Exception {
+        when(rule.isMessageCodeDerivedFromName()).thenReturn(false);
 
         msgCodePmo.partHasChanged();
 
