@@ -88,6 +88,7 @@
             <xsd:attribute name="configurableByProductComponent" type="boolean" use="optional" />
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="messageCode" type="string" use="required" />
+            <xsd:attribute name="messageCodeDerivedFromName" type="boolean" use="optional" />
             <xsd:attribute name="messageSeverity" use="required">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
