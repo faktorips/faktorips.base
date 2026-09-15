@@ -16,7 +16,10 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.runtime.MessageList;
@@ -41,6 +44,15 @@ public class Migration_27_1_0 extends MarkAsDirtyMigration {
     public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         updateManifest();
         return super.migrate(monitor);
+    }
+
+    @Override
+    protected void migrate(IIpsSrcFile srcFile) {
+        super.migrate(srcFile);
+        if (IpsObjectType.POLICY_CMPT_TYPE.equals(srcFile.getIpsObjectType())) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)srcFile.getIpsObject();
+            policyCmptType.getValidationRules().forEach(rule -> rule.setMessageCodeDerivedFromName(false));
+        }
     }
 
     /**

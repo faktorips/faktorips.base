@@ -72,6 +72,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private boolean activatedByDefault = true;
 
+    private boolean messageCodeDerivedFromName = true;
+
     private boolean changingOverTime = true;
 
     /** The markers that are applied to this rule. */
@@ -316,6 +318,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
              */
             activatedByDefault = true;
         }
+        if (element.hasAttribute(PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME)) {
+            messageCodeDerivedFromName = Boolean
+                    .parseBoolean(element.getAttribute(PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME));
+        } else {
+            messageCodeDerivedFromName = true;
+        }
 
         NodeList nl = element.getChildNodes();
         validatedAttributes.clear();
@@ -375,6 +383,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                     String.valueOf(configurableByProductComponent));
         }
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
+        newElement.setAttribute(PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME, String.valueOf(messageCodeDerivedFromName));
         newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
         appendChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
         appendChildrenForMarkers(newElement);
@@ -481,6 +490,18 @@ public class ValidationRule extends TypePart implements IValidationRule {
         boolean oldValue = isActivatedByDefault();
         activatedByDefault = activated;
         valueChanged(oldValue, activated);
+    }
+
+    @Override
+    public boolean isMessageCodeDerivedFromName() {
+        return messageCodeDerivedFromName;
+    }
+
+    @Override
+    public void setMessageCodeDerivedFromName(boolean messageCodeDerivedFromName) {
+        boolean oldValue = isMessageCodeDerivedFromName();
+        this.messageCodeDerivedFromName = messageCodeDerivedFromName;
+        valueChanged(oldValue, messageCodeDerivedFromName);
     }
 
     @Override

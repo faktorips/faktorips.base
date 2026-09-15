@@ -301,6 +301,7 @@ public class Messages extends NLS {
     public static String RuleEditDialog_contains;
     public static String RuleEditDialog_labelCode;
     public static String RuleEditDialog_labelName;
+    public static String RuleEditDialog_MessageCodeDerivedFromName_CheckboxLabel;
     public static String RuleEditDialog_overwritesNote;
     public static String RuleEditDialog_labelCategory;
     public static String RuleEditDialog_labelSeverity;

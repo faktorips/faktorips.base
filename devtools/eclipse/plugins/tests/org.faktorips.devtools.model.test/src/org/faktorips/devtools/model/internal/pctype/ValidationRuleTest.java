@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.pctype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -72,14 +72,14 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     @Test
     public void testRemove() {
         validationRule.delete();
-        assertEquals(0, policyCmptType.getValidationRules().size());
+        assertThat(policyCmptType.getValidationRules().size(), is(0));
         assertTrue(ipsSrcFile.isDirty());
     }
 
     @Test
     public void testSetName() {
         validationRule.setName("newName");
-        assertEquals("newName", validationRule.getName());
+        assertThat(validationRule.getName(), is("newName"));
         assertTrue(ipsSrcFile.isDirty());
     }
 
@@ -87,8 +87,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testAddValidatedAttribute() {
         validationRule.addValidatedAttribute("a");
         validationRule.addValidatedAttribute("b");
-        assertEquals("a", validationRule.getValidatedAttributes()[0]);
-        assertEquals("b", validationRule.getValidatedAttributes()[1]);
+        assertThat(validationRule.getValidatedAttributes()[0], is("a"));
+        assertThat(validationRule.getValidatedAttributes()[1], is("b"));
         assertTrue(ipsSrcFile.isDirty());
     }
 
@@ -97,7 +97,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.addValidatedAttribute("a");
         validationRule.addValidatedAttribute("b");
         validationRule.setValidatedAttributeAt(1, "c");
-        assertEquals("c", validationRule.getValidatedAttributes()[1]);
+        assertThat(validationRule.getValidatedAttributes()[1], is("c"));
         assertTrue(ipsSrcFile.isDirty());
     }
 
@@ -105,8 +105,8 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     public void testGetValidatedAttributeAt() {
         validationRule.addValidatedAttribute("a");
         validationRule.addValidatedAttribute("b");
-        assertEquals("a", validationRule.getValidatedAttributeAt(0));
-        assertEquals("b", validationRule.getValidatedAttributeAt(1));
+        assertThat(validationRule.getValidatedAttributeAt(0), is("a"));
+        assertThat(validationRule.getValidatedAttributeAt(1), is("b"));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.addValidatedAttribute("a");
         validationRule.addValidatedAttribute("b");
         validationRule.removeValidatedAttribute(0);
-        assertEquals("b", validationRule.getValidatedAttributeAt(0));
+        assertThat(validationRule.getValidatedAttributeAt(0), is("b"));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertFalse(ipsSrcFile.isDirty());
         validationRule.setValidatedAttrSpecifiedInSrc(true);
         assertTrue(ipsSrcFile.isDirty());
-        assertEquals(true, validationRule.isValidatedAttrSpecifiedInSrc());
+        assertThat(validationRule.isValidatedAttrSpecifiedInSrc(), is(true));
     }
 
     @Test
@@ -130,17 +130,17 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         Document doc = getTestDocument();
         validationRule.setChangingOverTime(false);
         validationRule.initFromXml(doc.getDocumentElement());
-        assertEquals("42", validationRule.getId());
-        assertEquals("checkAge", validationRule.getName());
-        assertEquals("ageMissing", validationRule.getMessageCode());
-        assertEquals("messageText", validationRule.getMessageText().get(Locale.GERMAN).getValue());
-        assertEquals(MessageSeverity.WARNING, validationRule.getMessageSeverity());
+        assertThat(validationRule.getId(), is("42"));
+        assertThat(validationRule.getName(), is("checkAge"));
+        assertThat(validationRule.getMessageCode(), is("ageMissing"));
+        assertThat(validationRule.getMessageText().get(Locale.GERMAN).getValue(), is("messageText"));
+        assertThat(validationRule.getMessageSeverity(), is(MessageSeverity.WARNING));
         assertTrue(validationRule.isChangingOverTime());
         String[] validatedAttributes = validationRule.getValidatedAttributes();
-        assertEquals("a", validatedAttributes[0]);
-        assertEquals("b", validatedAttributes[1]);
+        assertThat(validatedAttributes[0], is("a"));
+        assertThat(validatedAttributes[1], is("b"));
         List<String> markers = validationRule.getMarkers();
-        assertEquals(2, markers.size());
+        assertThat(markers.size(), is(2));
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
     }
@@ -161,6 +161,22 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
         validationRule.initFromXml(doc.getDocumentElement());
         assertFalse(validationRule.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitFromXml_MessageCodeDerivedFromNameDefaultsToTrueIfNotConfigured() {
+        Document doc = getTestDocument();
+        doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME);
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertTrue(validationRule.isMessageCodeDerivedFromName());
+    }
+
+    @Test
+    public void testInitFromXml_MessageCodeDerivedFromNameFalse() {
+        Document doc = getTestDocument();
+        doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME, "false");
+        validationRule.initFromXml(doc.getDocumentElement());
+        assertFalse(validationRule.isMessageCodeDerivedFromName());
     }
 
     @Test
@@ -185,6 +201,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.setMessageSeverity(MessageSeverity.WARNING);
         validationRule.addValidatedAttribute("a");
         validationRule.setCheckValueAgainstValueSetRule(true);
+        validationRule.setMessageCodeDerivedFromName(false);
         validationRule.setCategory("foo");
         validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
 
@@ -192,18 +209,19 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         ValidationRule copy = new ValidationRule(policyCmptType, "");
         copy.initFromXml(element);
-        assertEquals(validationRule.getId(), copy.getId());
-        assertEquals("checkAge", copy.getName());
-        assertEquals("ageMissing", copy.getMessageCode());
-        assertEquals("messageText", copy.getMessageText().get(Locale.GERMAN).getValue());
-        assertEquals(MessageSeverity.WARNING, copy.getMessageSeverity());
+        assertThat(copy.getId(), is(validationRule.getId()));
+        assertThat(copy.getName(), is("checkAge"));
+        assertThat(copy.getMessageCode(), is("ageMissing"));
+        assertThat(copy.getMessageText().get(Locale.GERMAN).getValue(), is("messageText"));
+        assertThat(copy.getMessageSeverity(), is(MessageSeverity.WARNING));
         assertTrue(copy.isChangingOverTime());
         String[] validationAttributes = copy.getValidatedAttributes();
-        assertEquals("a", validationAttributes[0]);
+        assertThat(validationAttributes[0], is("a"));
         assertTrue(copy.isCheckValueAgainstValueSetRule());
-        assertEquals("foo", copy.getCategory());
+        assertFalse(copy.isMessageCodeDerivedFromName());
+        assertThat(copy.getCategory(), is("foo"));
         List<String> markers = copy.getMarkers();
-        assertEquals(2, markers.size());
+        assertThat(markers.size(), is(2));
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
     }
@@ -216,7 +234,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         // PolicyCmptType
         MessageList messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
                 "validatedAttributes");
-        assertEquals(1, messageList.size());
+        assertThat(messageList.size(), is(1));
 
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("a");
@@ -225,13 +243,13 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
         messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
                 "validatedAttributes");
-        assertEquals(0, messageList.size());
+        assertThat(messageList.size(), is(0));
 
         // validation is expected to fail because of duplicate attribute entries
         validationRule.addValidatedAttribute("a");
         messageList = validationRule.validate(ipsSrcFile.getIpsProject()).getMessagesFor(validationRule,
                 "validatedAttributes");
-        assertEquals(1, messageList.size());
+        assertThat(messageList.size(), is(1));
     }
 
     @Test
@@ -337,13 +355,13 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.setMarkers(Arrays.asList("marker1", "marker2"));
 
         List<String> markers = validationRule.getMarkers();
-        assertEquals(2, markers.size());
+        assertThat(markers.size(), is(2));
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
 
         validationRule.setMarkers(Arrays.asList("otherMarker", "marker2", "anotherMarker"));
         markers = validationRule.getMarkers();
-        assertEquals(3, markers.size());
+        assertThat(markers.size(), is(3));
         assertTrue(markers.contains("otherMarker"));
         assertTrue(markers.contains("marker2"));
         assertTrue(markers.contains("anotherMarker"));
@@ -354,7 +372,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.setMarkers(Arrays.asList("marker1", "marker2", "marker3"));
 
         List<String> markers = validationRule.getMarkers();
-        assertEquals(3, markers.size());
+        assertThat(markers.size(), is(3));
         assertTrue(markers.contains("marker1"));
         assertTrue(markers.contains("marker2"));
         assertTrue(markers.contains("marker3"));

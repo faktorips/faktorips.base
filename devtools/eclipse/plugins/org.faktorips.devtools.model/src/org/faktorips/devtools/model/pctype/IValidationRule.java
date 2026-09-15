@@ -45,6 +45,8 @@ public interface IValidationRule extends IProductCmptProperty, IOverridableLabel
 
     String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
 
+    String PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME = "messageCodeDerivedFromName"; //$NON-NLS-1$
+
     String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
 
     String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
@@ -240,6 +242,23 @@ public interface IValidationRule extends IProductCmptProperty, IOverridableLabel
      *
      */
     void setActivatedByDefault(boolean activated);
+
+    /**
+     * Returns whether the message code of this rule is automatically derived from the message
+     * severity, the name of the {@link IPolicyCmptType} and the name of this rule.
+     *
+     * @return <code>true</code> if the message code is derived from the rule's name,
+     *             <code>false</code> if it can be edited freely.
+     */
+    boolean isMessageCodeDerivedFromName();
+
+    /**
+     * Sets a flag indicating whether the message code of this rule is automatically derived from
+     * the message severity, the name of the {@link IPolicyCmptType} and the name of this rule.
+     *
+     * @see #isMessageCodeDerivedFromName()
+     */
+    void setMessageCodeDerivedFromName(boolean messageCodeDerivedFromName);
 
     /**
      * Returns the qualified name of the rule. The qualified name of the rule contains the qualified

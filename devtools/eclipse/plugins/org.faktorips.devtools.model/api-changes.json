@@ -74,6 +74,26 @@
                       "code": "java.class.removed",
                       "old": "class org.faktorips.devtools.model.internal.productcmpt.LegacyConfigElement",
                       "justification": "FIPS-15322/FIPS-15323: The ConfigElement was split into ConfiguredDefault and ConfiguredValueSet in 3.19. Migrations are only supported from 24.1 onwards, so the legacy XML reading code is unreachable."
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.faktorips.devtools.model.pctype.IValidationRule::isMessageCodeDerivedFromName()",
+                      "justification": "FIPS-14098: Checkbox to control whether the message code is derived from the rule's name"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.pctype.IValidationRule::setMessageCodeDerivedFromName(boolean)",
+                      "justification": "FIPS-14098: Checkbox to control whether the message code is derived from the rule's name"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method boolean org.faktorips.devtools.model.pctype.IValidationRule::isMessageCodeDerivedFromName()",
+                      "justification": "FIPS-14098: Checkbox to control whether the message code is derived from the rule's name"
+                    },
+                    {
+                      "code": "java.method.addedToInterface",
+                      "new": "method void org.faktorips.devtools.model.pctype.IValidationRule::setMessageCodeDerivedFromName(boolean)",
+                      "justification": "FIPS-14098: Checkbox to control whether the message code is derived from the rule's name"
                     }
                 ]
             }

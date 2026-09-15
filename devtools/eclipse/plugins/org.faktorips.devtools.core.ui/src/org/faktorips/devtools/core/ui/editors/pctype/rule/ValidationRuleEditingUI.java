@@ -79,6 +79,7 @@ public class ValidationRuleEditingUI {
     private Checkbox changingOverTimeBox;
     private Checkbox configurableByProductBox;
     private Checkbox defaultActivationBox;
+    private Checkbox messageCodeDerivedFromNameBox;
 
     private ComboViewerField<Locale> localeComboField;
 
@@ -117,6 +118,12 @@ public class ValidationRuleEditingUI {
         Text codeText = uiToolkit.createText(msgComposite);
         uiToolkit.createFormLabel(msgComposite, Messages.RuleEditDialog_labelSeverity);
         Combo severityCombo = uiToolkit.createCombo(msgComposite);
+
+        messageCodeDerivedFromNameBox = uiToolkit.createCheckbox(msgComposite,
+                Messages.RuleEditDialog_MessageCodeDerivedFromName_CheckboxLabel);
+        GridData msgCodeCheckboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        msgCodeCheckboxLayoutData.horizontalSpan = 2;
+        messageCodeDerivedFromNameBox.setLayoutData(msgCodeCheckboxLayoutData);
 
         // text group
         Group textGroup = uiToolkit.createGroup(msgComposite, Messages.RuleEditDialog_groupText);
@@ -264,6 +271,11 @@ public class ValidationRuleEditingUI {
         bindingContext.bindContent(categoryField, categoryPmo, CategoryPmo.PROPERTY_CATEGORY);
         MsgCodePMO msgCodePmo = new MsgCodePMO(rule);
         bindingContext.bindContent(msgCodeField, msgCodePmo, MsgCodePMO.MSG_CODE);
+
+        bindingContext.bindContent(new CheckboxField(messageCodeDerivedFromNameBox), rule,
+                IValidationRule.PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME);
+        bindingContext.bindEnabled(msgCodeField.getControl(), rule,
+                IValidationRule.PROPERTY_MESSAGE_CODE_DERIVED_FROM_NAME, false);
     }
 
     private Locale[] getSupportedLocales(IIpsProject ipsProject) {
@@ -307,6 +319,7 @@ public class ValidationRuleEditingUI {
         bindingContext.removeBindings(configurableByProductBox);
         bindingContext.removeBindings(changingOverTimeBox);
         bindingContext.removeBindings(defaultActivationBox);
+        bindingContext.removeBindings(messageCodeDerivedFromNameBox);
         bindingContext.removeBindings(localeComboField.getControl());
         bindingContext.removeBindings(msgTextField.getControl());
     }
@@ -340,8 +353,6 @@ public class ValidationRuleEditingUI {
 
         private static final String DELIMITER = "."; //$NON-NLS-1$
 
-        private static final String DELIMITER_REGEXT = "\\" + DELIMITER; //$NON-NLS-1$
-
         private static final String MSG_CODE = "messageCode"; //$NON-NLS-1$
 
         private IValidationRule validationRule;
@@ -365,51 +376,9 @@ public class ValidationRuleEditingUI {
         }
 
         private void checkMessageCode() {
-            String codeText = validationRule.getMessageCode();
-            if (needToUpdateMsgCode(codeText)) {
+            if (validationRule.isMessageCodeDerivedFromName()) {
                 updateMessageCode();
             }
-        }
-
-        private boolean needToUpdateMsgCode(String codeText) {
-            if (codeText.isEmpty()) {
-                return true;
-            } else {
-                return isGeneratedMsgCode(codeText);
-            }
-        }
-
-        private boolean isGeneratedMsgCode(String codeText) {
-            String[] splittedMsgCode = splitCodeMsgByPointsInText(codeText);
-            if (splittedMsgCode.length == 3) {
-                if (isPolicyNameInMsgCode(splittedMsgCode)) {
-                    if (isSeverityOrNameInMsgCode(splittedMsgCode)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        private String[] splitCodeMsgByPointsInText(String codeText) {
-            return codeText.split(DELIMITER_REGEXT);
-        }
-
-        private boolean isSeverityOrNameInMsgCode(String[] splittedMsgCode) {
-            return isSeverityInMsgCode(splittedMsgCode) || isRuleNameInMsgCode(splittedMsgCode);
-        }
-
-        private boolean isSeverityInMsgCode(String[] splittedMsgCode) {
-            return splittedMsgCode[0].equals(validationRule.getMessageSeverity().getId());
-        }
-
-        private boolean isRuleNameInMsgCode(String[] splittedMsgCode) {
-            return splittedMsgCode[2].equals(validationRule.getName());
-        }
-
-        private boolean isPolicyNameInMsgCode(String[] splittedMsgCode) {
-            String unqualifiedPolicyName = validationRule.getIpsObject().getQualifiedNameType().getUnqualifiedName();
-            return unqualifiedPolicyName.equals(splittedMsgCode[1]);
         }
 
         private void updateMessageCode() {
