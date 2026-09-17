@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -43,7 +43,7 @@ import org.faktorips.devtools.core.IpsProductDefinitionPerspectiveFactory;
 
 /**
  * Provides the actions available for FaktorIps as Eclipse-Product
- * 
+ *
  * @author Thorsten Guenther
  */
 class IpsActionBarAdvisor extends ActionBarAdvisor {
@@ -79,6 +79,8 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
     private OpenPerspectiveAction openSynchronizePerspectiveAction;
 
     private OpenPerspectiveAction openCVSPerspectiveAction;
+
+    private OpenPerspectiveAction openGITPerspectiveAction;
 
     private OpenPerspectiveAction openProductDefinitionPerspectiveAction;
 
@@ -197,7 +199,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     /**
      * Constructs a new action builder which contributes actions to the given window.
-     * 
+     *
      * @param configurer the action bar configurer for the window
      */
     public IpsActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -433,10 +435,18 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         MenuManager menu = new MenuManager(Messages.IpsActionBarAdvisor_Window, IWorkbenchActionConstants.M_WINDOW);
 
         menu.add(resetPerspectiveAction);
-        // menu.add(editActionSetAction);
-        menu.add(openProductDefinitionPerspectiveAction);
-        menu.add(openSynchronizePerspectiveAction);
-        menu.add(openCVSPerspectiveAction);
+        if (openProductDefinitionPerspectiveAction != null) {
+            menu.add(openProductDefinitionPerspectiveAction);
+        }
+        if (openSynchronizePerspectiveAction != null) {
+            menu.add(openSynchronizePerspectiveAction);
+        }
+        if (openCVSPerspectiveAction != null) {
+            menu.add(openCVSPerspectiveAction);
+        }
+        if (openGITPerspectiveAction != null) {
+            menu.add(openGITPerspectiveAction);
+        }
         menu.add(new Separator());
         addKeyboardShortcuts(menu);
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
@@ -500,7 +510,7 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
      * Adds a <code>GroupMarker</code> or <code>Separator</code> to a menu. The test for whether a
      * separator should be added is done by checking for the existence of a preference matching the
      * string useSeparator.MENUID.GROUPID that is set to <code>true</code>.
-     * 
+     *
      * @param menu the menu to add to
      * @param groupId the group id for the added separator or group marker
      */
@@ -773,17 +783,38 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         cleanProjectsAction = IDEActionFactory.BUILD_CLEAN.create(window);
         register(cleanProjectsAction);
 
-        PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
-        openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
-                .getPerspectiveRegistry()
-                .findPerspectiveWithId(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID), m);
-        openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
-                .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"), m); //$NON-NLS-1$
-        openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), PlatformUI.getWorkbench()
-                .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.cvs.ui.cvsPerspective"), m); //$NON-NLS-1$
+        createSynchronizePerspectiveActions();
 
         pinEditorContributionItem = ContributionItemFactory.PIN_EDITOR.create(window);
 
+    }
+
+    private void createSynchronizePerspectiveActions() {
+        PerspectiveMenu m = new PerspecitveHandler(getWindow(), "unknown"); //$NON-NLS-1$
+
+        IPerspectiveDescriptor productDefinition = PlatformUI.getWorkbench().getPerspectiveRegistry()
+                .findPerspectiveWithId(IpsProductDefinitionPerspectiveFactory.PRODUCTDEFINITIONPERSPECTIVE_ID);
+        if (productDefinition != null) {
+            openProductDefinitionPerspectiveAction = new OpenPerspectiveAction(getWindow(), productDefinition, m);
+        }
+
+        IPerspectiveDescriptor teamSynchronizing = PlatformUI.getWorkbench().getPerspectiveRegistry()
+                .findPerspectiveWithId("org.eclipse.team.ui.TeamSynchronizingPerspective"); //$NON-NLS-1$
+        if (teamSynchronizing != null) {
+            openSynchronizePerspectiveAction = new OpenPerspectiveAction(getWindow(), teamSynchronizing, m);
+        }
+
+        IPerspectiveDescriptor cvs = PlatformUI.getWorkbench()
+                .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.team.cvs.ui.cvsPerspective"); //$NON-NLS-1$
+        if (cvs != null) {
+            openCVSPerspectiveAction = new OpenPerspectiveAction(getWindow(), cvs, m);
+        }
+
+        IPerspectiveDescriptor git = PlatformUI.getWorkbench()
+                .getPerspectiveRegistry().findPerspectiveWithId("org.eclipse.egit.ui.GitRepositoryExploring"); //$NON-NLS-1$
+        if (git != null) {
+            openGITPerspectiveAction = new OpenPerspectiveAction(getWindow(), git, m);
+        }
     }
 
     private void disableUnwantedActionSets(IWorkbenchPage page) {
