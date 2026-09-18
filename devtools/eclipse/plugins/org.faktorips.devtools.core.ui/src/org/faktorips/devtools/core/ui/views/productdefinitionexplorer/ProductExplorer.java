@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -47,7 +47,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
  * A <code>ModelExplorer</code> that displays product definition projects along with all contained
  * <code>ProductCmpt</code>s, <code>TableContents</code>, <code>TestCases</code> and
  * <code>TestCaseTypes</code>.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class ProductExplorer extends ModelExplorer {
@@ -198,6 +198,8 @@ public class ProductExplorer extends ModelExplorer {
         private static final String TEAM_GROUP_4                        = "group4"; //$NON-NLS-1$
         private static final String TEAM_GROUP_6                        = "group6"; //$NON-NLS-1$
 
+        private static final String EGIT_SUBMENU                        = "org.eclipse.egit"; //$NON-NLS-1$
+
         private static final String CVS_SYNC                            = "org.eclipse.team.cvs.ui.sync"; //$NON-NLS-1$
         private static final String CVS_COMMIT                          = "org.eclipse.team.ccvs.ui.commit"; //$NON-NLS-1$
         private static final String CVS_UPDATE                          = "org.eclipse.team.ccvs.ui.update"; //$NON-NLS-1$
@@ -304,6 +306,7 @@ public class ProductExplorer extends ModelExplorer {
         private void configureTeamCleaner(IStructuredSelection structuredSelection) {
             teamCleaner.setWhiteListMode(true);
             teamCleaner.clearFilteredPrefixes();
+            teamCleaner.addFilteredPrefix(EGIT_SUBMENU);
 
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
                     .isAvancedTeamFunctionsForProductDefExplorerEnabled();
