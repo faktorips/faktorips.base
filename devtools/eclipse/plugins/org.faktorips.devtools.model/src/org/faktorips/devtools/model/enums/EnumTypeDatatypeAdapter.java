@@ -22,6 +22,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -40,6 +41,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     private IEnumContent enumContent;
 
     private IEnumAttribute nameAttribute;
+
+    private IEnumAttribute identifierAttribute;
 
     /**
      * Creates a new <code>EnumTypeDatatypeAdapter</code>.
@@ -439,5 +442,41 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 .filter(v -> Objects.equals(name, getValueName(ipsProject, v)))
                 .findFirst()
                 .orElse(null);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the given value is an {@link IEnumValue}, returns its identifier attribute value (the ID)
+     * instead of the object's {@link Object#toString()}, which would otherwise return the
+     * {@link IEnumValue}'s path. Returns <code>null</code> if the adapted enumeration type has no
+     * identifier attribute, or if the given {@link IEnumValue} has no value for that identifier
+     * attribute.
+     */
+    @Override
+    public String valueToString(Object value) {
+        if (value instanceof IEnumValue enumValue) {
+            return getValueId(getEnumValueContainer().getIpsProject(), enumValue);
+        }
+        return value == null ? IpsStringUtils.EMPTY : value.toString();
+    }
+
+    private String getValueId(IIpsProject ipsProject, IEnumValue enumValue) {
+        IEnumAttribute attribute = getIdentifierAttribute(ipsProject);
+        if (attribute == null) {
+            return null;
+        }
+        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(attribute);
+        if (enumAttributeValue == null || enumAttributeValue.getValue() == null) {
+            return null;
+        }
+        return enumAttributeValue.getValue().getDefaultLocalizedContent(ipsProject);
+    }
+
+    private IEnumAttribute getIdentifierAttribute(IIpsProject ipsProject) {
+        if (identifierAttribute == null || !identifierAttribute.findIsIdentifier(ipsProject)) {
+            identifierAttribute = enumType.findIdentiferAttribute(ipsProject);
+        }
+        return identifierAttribute;
     }
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,12 +11,18 @@
 package org.faktorips.devtools.model.enums;
 
 import static org.faktorips.abstracttest.MockUtil.createMocks;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -36,7 +42,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoSession;
 
 public class EnumTypeDatatypeAdapterTest {
-
 
     @Mock
     private IEnumContent covariantEnumContent;
@@ -69,6 +74,15 @@ public class EnumTypeDatatypeAdapterTest {
 
     @Mock
     private IValue<IInternationalString> resultValue;
+
+    @Mock
+    private IEnumAttribute identifierAttribute;
+
+    @Mock
+    private IEnumAttributeValue identifierAttributeValue;
+
+    @Mock
+    private IValue<IInternationalString> identifierValue;
 
     private MockitoSession mockito;
 
@@ -216,6 +230,105 @@ public class EnumTypeDatatypeAdapterTest {
         when(enumValue.getEnumAttributeValue(displayNameAttribute)).thenReturn(null);
 
         assertTrue(adapterWithContent.getValueName("testValue") == null);
+    }
+
+    @Test
+    public void test_valueToString_returnsIdentifierId_notPath() {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        when(enumValue.getEnumAttributeValue(identifierAttribute)).thenReturn(identifierAttributeValue);
+        doReturn(identifierValue).when(identifierAttributeValue).getValue();
+        when(identifierValue.getDefaultLocalizedContent(ipsProject)).thenReturn("testValue");
+        // simulates the real IEnumValue#toString(), which returns the element's path, not its ID
+        lenient().when(enumValue.toString()).thenReturn("model/enums/testEnumType/testValue");
+
+        assertThat(adapterWithContent.valueToString(enumValue), is("testValue"));
+    }
+
+    @Test
+    public void test_valueToString_noIdentifierAttribute_returnsNull() {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(null);
+
+        assertThat(adapterWithContent.valueToString(enumValue), is(nullValue()));
+    }
+
+    @Test
+    public void test_valueToString_identifierAttributeValueHasNullValue_returnsNull() {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        when(enumValue.getEnumAttributeValue(identifierAttribute)).thenReturn(identifierAttributeValue);
+        doReturn(null).when(identifierAttributeValue).getValue();
+
+        assertThat(adapterWithContent.valueToString(enumValue), is(nullValue()));
+    }
+
+    @Test
+    public void test_valueToString_noEnumAttributeValueForIdentifier_returnsNull() {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        when(enumValue.getEnumAttributeValue(identifierAttribute)).thenReturn(null);
+
+        assertThat(adapterWithContent.valueToString(enumValue), is(nullValue()));
+    }
+
+    @Test
+    public void test_valueToString_null_returnsEmptyString() {
+        assertThat(adapter.valueToString(null), is(""));
+    }
+
+    @Test
+    public void test_valueToString_nonEnumValue_returnsToString() {
+        assertThat(adapter.valueToString("plainValue"), is("plainValue"));
+    }
+
+    @Test
+    public void test_valueToString_cachesIdentifierAttribute() {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        when(identifierAttribute.findIsIdentifier(ipsProject)).thenReturn(true);
+        when(enumValue.getEnumAttributeValue(identifierAttribute)).thenReturn(identifierAttributeValue);
+        doReturn(identifierValue).when(identifierAttributeValue).getValue();
+        when(identifierValue.getDefaultLocalizedContent(ipsProject)).thenReturn("testValue");
+
+        adapterWithContent.valueToString(enumValue);
+        adapterWithContent.valueToString(enumValue);
+
+        verify(enumType, times(1)).findIdentiferAttribute(ipsProject);
+    }
+
+    @Test
+    public void test_valueToString_reLooksUpIdentifierAttribute_whenNoLongerIdentifier() {
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        when(identifierAttribute.findIsIdentifier(ipsProject)).thenReturn(false);
+        when(enumValue.getEnumAttributeValue(identifierAttribute)).thenReturn(identifierAttributeValue);
+        doReturn(identifierValue).when(identifierAttributeValue).getValue();
+        when(identifierValue.getDefaultLocalizedContent(ipsProject)).thenReturn("testValue");
+
+        adapterWithContent.valueToString(enumValue);
+        adapterWithContent.valueToString(enumValue);
+
+        verify(enumType, times(2)).findIdentiferAttribute(ipsProject);
+    }
+
+    @Test
+    public void test_getValueByName_thenValueToString_roundTripsToId() {
+        initEnumContentAndType();
+        when(enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject)).thenReturn(displayNameAttribute);
+        when(enumValue.getEnumAttributeValue(displayNameAttribute)).thenReturn(enumAttributeValue);
+        doReturn(resultValue).when(enumAttributeValue).getValue();
+        when(resultValue.getDefaultLocalizedContent(ipsProject)).thenReturn("theDisplayName");
+
+        when(enumContent.findAllIdentifierAttributeValues(ipsProject)).thenReturn(List.of("testValue"));
+
+        when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
+        when(enumValue.getEnumAttributeValue(identifierAttribute)).thenReturn(identifierAttributeValue);
+        doReturn(identifierValue).when(identifierAttributeValue).getValue();
+        when(identifierValue.getDefaultLocalizedContent(ipsProject)).thenReturn("testValue");
+
+        Object value = adapterWithContent.getValueByName("theDisplayName");
+        assertThat(adapterWithContent.valueToString(value), is("testValue"));
     }
 
     @Test
