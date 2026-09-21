@@ -130,6 +130,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         if (isAbstract) {
             removePartThis(getEnumLiteralNameAttribute());
+            setExtensible(false);
         }
 
         valueChanged(oldIsAbstract, isAbstract);

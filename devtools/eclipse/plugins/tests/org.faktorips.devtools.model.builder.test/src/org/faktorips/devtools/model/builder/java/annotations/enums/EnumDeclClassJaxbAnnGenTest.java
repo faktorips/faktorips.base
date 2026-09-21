@@ -73,6 +73,7 @@ public class EnumDeclClassJaxbAnnGenTest extends AbstractJavaBuilderPluginTest {
         assertThat(enumDeclClassJaxbAnnGen.isGenerateAnnotationFor(xEnumType), is(false));
 
         enumType.setAbstract(false);
+        enumType.setExtensible(true);
         assertThat(enumDeclClassJaxbAnnGen.isGenerateAnnotationFor(xEnumType), is(true));
     }
 

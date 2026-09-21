@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -44,11 +44,11 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The wizard page for the <code>NewEnumTypeWizard</code>.
- * 
+ *
  * @see NewEnumTypeWizard
- * 
+ *
  * @author Alexander Weickmann
- * 
+ *
  * @since 2.3
  */
 public class EnumTypePage extends IpsObjectPage {
@@ -88,7 +88,7 @@ public class EnumTypePage extends IpsObjectPage {
 
     /**
      * Creates the <code>EnumTypePage</code>.
-     * 
+     *
      * @param selection Active user selection.
      */
     public EnumTypePage(IStructuredSelection selection) {
@@ -111,6 +111,7 @@ public class EnumTypePage extends IpsObjectPage {
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
         isAbstractField.addChangeListener($ -> enableEnumContentControls());
+        isAbstractField.addChangeListener($ -> updateExtensibleFieldEnablement());
 
         createIdAndNameGenerationFields(nameComposite, toolkit);
     }
@@ -164,6 +165,18 @@ public class EnumTypePage extends IpsObjectPage {
             enumContentQualifiedNameField.getTextControl().setEnabled(false);
         } else {
             enumContentQualifiedNameField.getTextControl().setEnabled(isExtensible);
+        }
+    }
+
+    /**
+     * An abstract {@code IEnumType} cannot be extensible, so the checkbox is disabled and unchecked
+     * while "Abstract" is checked.
+     */
+    private void updateExtensibleFieldEnablement() {
+        boolean isAbstract = isAbstractField.getValue();
+        extensibleField.getCheckbox().setEnabled(!isAbstract);
+        if (isAbstract) {
+            extensibleField.setValue(false);
         }
     }
 
@@ -244,9 +257,9 @@ public class EnumTypePage extends IpsObjectPage {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
-        // Set properties.
-        newEnumType.setAbstract(isAbstractField.getValue());
+        // Set properties. setAbstract must be called last, since it forces extensible to false.
         newEnumType.setExtensible(extensibleField.getValue().booleanValue());
+        newEnumType.setAbstract(isAbstractField.getValue());
         newEnumType.setSuperEnumType(supertypeField.getText());
         newEnumType.setEnumContentName(enumContentQualifiedNameField.getText());
 

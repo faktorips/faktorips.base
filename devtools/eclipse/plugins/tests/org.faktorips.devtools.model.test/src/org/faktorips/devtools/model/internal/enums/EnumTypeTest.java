@@ -84,6 +84,16 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testSetAbstract_disablesExtensible() {
+        assertThat(genderEnumType.isExtensible(), is(true));
+
+        genderEnumType.setAbstract(true);
+
+        assertThat(genderEnumType.isAbstract(), is(true));
+        assertThat(genderEnumType.isExtensible(), is(false));
+    }
+
+    @Test
     public void testGetSetIdentifierBoundary() {
         assertThat(genderEnumType.getIdentifierBoundary(), is(nullValue()));
         genderEnumType.setIdentifierBoundary("100");

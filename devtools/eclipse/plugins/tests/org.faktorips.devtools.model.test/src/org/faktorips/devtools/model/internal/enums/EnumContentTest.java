@@ -310,7 +310,9 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
 
         genderEnumType.setAbstract(true);
         assertTrue(genderEnumContent.isFixToModelRequired());
+        // setAbstract(true) forces extensible to false, so it must be set again explicitly.
         genderEnumType.setAbstract(false);
+        genderEnumType.setExtensible(true);
         assertFalse(genderEnumContent.isFixToModelRequired());
 
         genderEnumType.setExtensible(false);
