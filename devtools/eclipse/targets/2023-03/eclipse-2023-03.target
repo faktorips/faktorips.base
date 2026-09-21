@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2023-03)" sequenceNumber="49">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2023-03)" sequenceNumber="50">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -95,7 +95,7 @@
       <unit id="org.eclipse.babel.nls_tools.gef_de.feature.group" version="0.0.0"/>
       <repository location="https://update.faktorzehn.org/p2repositories/babel/2022-12"/>
     </location>
-    <location type="Target" uri="mvn:org.faktorips:thirdparty:24.1.20-SNAPSHOT:target"/>
+    <location type="Target" uri="mvn:org.faktorips:thirdparty:24.1.20.release:target"/>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <repository location="https://update.faktorzehn.org/p2repositories/eclipse-cvs-plugin"/>
       <unit id="org.eclipse.cvs.feature.group" version="1.4.2301.202607301421"/>
