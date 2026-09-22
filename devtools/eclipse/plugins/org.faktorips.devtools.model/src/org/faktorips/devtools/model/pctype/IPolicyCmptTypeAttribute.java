@@ -249,6 +249,11 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
      * attribute's data type. However if the data type is defined by an {@link IEnumType} with
      * values stored in a separate content, then only {@link ValueSetType#UNRESTRICTED} is allowed.
+     * <p>
+     * If the attribute's data type cannot be resolved at all, the returned list is the fall back of
+     * {@link ValueSetType#DERIVED} and {@link ValueSetType#UNRESTRICTED}, extended by the type of
+     * the value set currently configured. The current type is therefore always contained, so
+     * callers may offer the list as a choice without replacing the configured value set.
      *
      * @throws IpsException if an error occurs.
      */

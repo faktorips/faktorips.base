@@ -224,7 +224,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) {
         ValueDatatype datatype = findDatatype(ipsProject);
-        List<ValueSetType> types = ipsProject.getValueSetTypes(datatype);
+        List<ValueSetType> types = getValueSetTypesToleratingUnresolvableDatatype(ipsProject, datatype);
         if (isEnumValueSetIllegal(datatype)) {
             types.remove(ValueSetType.ENUM);
         }

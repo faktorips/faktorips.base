@@ -1122,7 +1122,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return types;
         }
         if (datatype instanceof NumericDatatype) {
-            return ValueSetType.getNumericValueSetTypesAsList();
+            return new ArrayList<>(ValueSetType.getNumericValueSetTypesAsList());
         }
         if (datatype instanceof ArrayOfValueDatatype) {
             types.add(ValueSetType.UNRESTRICTED);

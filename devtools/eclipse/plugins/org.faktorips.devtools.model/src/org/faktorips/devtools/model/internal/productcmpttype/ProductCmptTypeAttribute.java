@@ -136,7 +136,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             types.add(ValueSetType.UNRESTRICTED);
             return types;
         } else {
-            return ipsProject.getValueSetTypes(findDatatype(ipsProject));
+            return getValueSetTypesToleratingUnresolvableDatatype(ipsProject, findDatatype(ipsProject));
         }
     }
 

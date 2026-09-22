@@ -11,16 +11,22 @@
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl.ValueSetPmo;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.internal.valueset.DerivedValueSet;
@@ -36,6 +42,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +53,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     private ProductCmptType superProductCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
+    private Shell shell;
 
     @Override
     @BeforeEach
@@ -60,6 +68,12 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         generation = productCmpt.getProductCmptGeneration(0);
         productCmpt.getIpsSrcFile().save(null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
+        shell = new Shell(Display.getCurrent());
+    }
+
+    @AfterEach
+    public void disposeShell() {
+        shell.dispose();
     }
 
     @Test
@@ -178,9 +192,80 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
     }
 
+    @Test
+    public void testSetAllowedValueSetTypes_KeepsCurrentSelectionWhenStillAllowed() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        ValueSetSpecificationControl control = newControl(attribute, ValueSetType.ENUM, ValueSetType.UNRESTRICTED);
+
+        control.setAllowedValueSetTypes(Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED,
+                ValueSetType.DERIVED));
+
+        assertThat(control.getValueSetType(), is(ValueSetType.ENUM));
+        assertThat(attribute.getValueSet().getValueSetType(), is(ValueSetType.ENUM));
+    }
+
+    @Test
+    public void testSetAllowedValueSetTypes_LeavesValueSetUnchangedWhenCurrentTypeNoLongerAllowed() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        ValueSetSpecificationControl control = newControl(attribute, ValueSetType.ENUM, ValueSetType.UNRESTRICTED);
+
+        control.setAllowedValueSetTypes(Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.DERIVED));
+
+        assertThat(attribute.getValueSet().getValueSetType(), is(ValueSetType.ENUM));
+        assertThat(control.getAllowedValueSetTypes(), is(Arrays.asList(ValueSetType.UNRESTRICTED,
+                ValueSetType.DERIVED)));
+    }
+
+    @Test
+    public void testSyncSelectionToModel_EmptyAllowedTypes_DoesNothing() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        ValueSetSpecificationControl control = newControl(attribute, ValueSetType.ENUM);
+        control.setAllowedValueSetTypes(new ArrayList<>());
+
+        control.syncSelectionToModel();
+
+        assertThat(attribute.getValueSet().getValueSetType(), is(ValueSetType.ENUM));
+    }
+
+    @Test
+    public void testSyncSelectionToModel_CurrentTypeStillAllowed_DoesNothing() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        ValueSetSpecificationControl control = newControl(attribute, ValueSetType.ENUM, ValueSetType.UNRESTRICTED);
+
+        control.syncSelectionToModel();
+
+        assertThat(attribute.getValueSet().getValueSetType(), is(ValueSetType.ENUM));
+    }
+
+    @Test
+    public void testSyncSelectionToModel_CurrentTypeNotAllowed_SwitchesToFirstAllowedType() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+        ValueSetSpecificationControl control = newControl(attribute, ValueSetType.ENUM);
+        control.setAllowedValueSetTypes(Arrays.asList(ValueSetType.DERIVED, ValueSetType.UNRESTRICTED));
+
+        control.syncSelectionToModel();
+
+        assertThat(attribute.getValueSet().getValueSetType(), is(ValueSetType.DERIVED));
+    }
+
+    private ValueSetSpecificationControl newControl(IValueSetOwner owner, ValueSetType... allowedTypes) {
+        return new ValueSetSpecificationControl(shell, new UIToolkit(null), new BindingContext(), owner,
+                Arrays.asList(allowedTypes), ValueSetControlEditMode.ALL_KIND_OF_SETS);
+    }
+
     private void assertHasNullNotAllowedMessage(IValueSetOwner valueSetOwner) {
         MessageList messageList = new ValueSetSpecificationControl.ValueSetPmo(valueSetOwner).validate(ipsProject);
-        assertNotNull(messageList.getMessageByCode(ValueSetPmo.MSG_CODE_NULL_NOT_ALLOWED));
+        assertThat(messageList.getMessageByCode(ValueSetPmo.MSG_CODE_NULL_NOT_ALLOWED), is(not(nullValue())));
     }
 
     private List<String> list(String... values) {

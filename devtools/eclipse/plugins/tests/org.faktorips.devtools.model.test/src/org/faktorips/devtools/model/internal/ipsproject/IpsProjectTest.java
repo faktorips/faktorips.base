@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -315,6 +316,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(types.contains(ValueSetType.UNRESTRICTED));
         assertTrue(types.contains(ValueSetType.RANGE));
         assertTrue(types.contains(ValueSetType.ENUM));
+    }
+
+    @Test
+    public void testGetValueSetTypes_Numeric_IsModifiable() {
+        List<ValueSetType> types = ipsProject.getValueSetTypes(Datatype.INTEGER);
+        assertThat(types, hasItem(ValueSetType.ENUM));
+
+        assertDoesNotThrow(() -> types.remove(ValueSetType.ENUM));
+
+        assertThat(types, not(hasItem(ValueSetType.ENUM)));
     }
 
     @Test

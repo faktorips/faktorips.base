@@ -328,23 +328,39 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     /**
-     * Sets the list of value set types the user can select in the Combo box.
+     * Sets the list of value set types the user can select in the Combo box. The owner's value set is
+     * left alone: the combo only follows the configured type if that type is among the given ones.
+     * <p>
+     * Call {@link #syncSelectionToModel()} to also switch a value set whose type is no longer
+     * allowed.
      */
     public void setAllowedValueSetTypes(List<ValueSetType> valueSetTypes) {
         allowedValueSetTypes.clear();
         allowedValueSetTypes.addAll(valueSetTypes);
-        ValueSetType oldType = getValueSetType();
-        ValueSetType newType = valueSetTypes.get(0);
 
         valueSetTypesCombo.removeAll();
         for (ValueSetType type : valueSetTypes) {
             valueSetTypesCombo.add(type.getName());
-            if (oldType == type) {
-                newType = oldType;
-            }
         }
-        valueSetTypeField.setText(newType.getName());
         valueSetTypesCombo.setEnabled(valueSetTypes.size() > 1);
+        if (valueSetTypes.contains(getValueSetType())) {
+            valueSetTypeField.setText(getValueSetType().getName());
+        }
+    }
+
+    /**
+     * Switches the owner's value set to the first allowed type if the configured type is not among
+     * the types set with {@link #setAllowedValueSetTypes(List)}.
+     * <p>
+     * This <strong>replaces the value set and discards the values configured for it</strong>, so it
+     * must only be called once the allowed types are known to be correct. In particular a data type
+     * that cannot be resolved yields a fall back list that does not describe what the user configured.
+     */
+    public void syncSelectionToModel() {
+        if (allowedValueSetTypes.isEmpty() || allowedValueSetTypes.contains(getValueSetType())) {
+            return;
+        }
+        valueSetTypeField.setText(allowedValueSetTypes.get(0).getName());
     }
 
     /**

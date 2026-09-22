@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -98,6 +99,42 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         configuredValueSet = generation.newPropertyValue(attribute, IConfiguredValueSet.class);
         productCmpt.getIpsSrcFile().save(null);
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
+    }
+
+    /**
+     * The comparator handed out here is what the product template machinery uses to decide whether a
+     * product component still matches its template. It must tolerate an attribute whose datatype no
+     * longer resolves, because the UI's product template view and the product component editor
+     * compare through it while merely rendering.
+     */
+    @Test
+    public void testGetValueComparator_UnresolvableDatatype_ComparesEnumValueSetsWithoutThrowing() {
+        IValueSet unresolvable = newUnresolvableEnumValueSet("first", "1", "2");
+        IValueSet otherUnresolvable = newUnresolvableEnumValueSet("second", "1", "2");
+
+        Comparator<Object> comparator = configuredValueSet.getValueComparator();
+
+        assertThat(comparator.compare(unresolvable, otherUnresolvable), is(0));
+    }
+
+    @Test
+    public void testGetValueComparator_UnresolvableDatatype_StillOrdersDifferentValues() {
+        IValueSet unresolvable = newUnresolvableEnumValueSet("first", "1", "2");
+        IValueSet otherUnresolvable = newUnresolvableEnumValueSet("second", "1", "3");
+
+        Comparator<Object> comparator = configuredValueSet.getValueComparator();
+
+        assertThat(comparator.compare(unresolvable, otherUnresolvable), is(not(0)));
+    }
+
+    private IValueSet newUnresolvableEnumValueSet(String attributeName, String... values) {
+        IPolicyCmptTypeAttribute owningAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        owningAttribute.setName(attributeName);
+        owningAttribute.setDatatype("ThisDatatypeDoesNotExist");
+        IConfiguredValueSet configured = generation.newPropertyValue(owningAttribute, IConfiguredValueSet.class);
+        configured.setValueSetType(ValueSetType.ENUM);
+        ((IEnumValueSet)configured.getValueSet()).addValues(Arrays.asList(values));
+        return configured.getValueSet();
     }
 
     @Test

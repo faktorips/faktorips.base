@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -58,6 +57,7 @@ import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
+import org.faktorips.devtools.core.ui.editors.DatatypeFieldEditGuard;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.editors.LabelEditComposite;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleEditingUI;
@@ -90,7 +90,6 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.model.util.QNameUtil;
-import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -111,7 +110,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private final String initialName;
 
-    private IIpsProject ipsProject;
+    private final IIpsProject ipsProject;
 
     private Text nameText;
 
@@ -120,6 +119,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private ValueSetSpecificationControl valueSetSpecificationControl;
 
     private DatatypeRefControl datatypeControl;
+
+    private DatatypeFieldEditGuard datatypeFieldEditGuard;
 
     private Label labelDefaultValue;
 
@@ -340,6 +341,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         datatypeControl.setAbstractAllowed(true);
         getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+        datatypeFieldEditGuard = new DatatypeFieldEditGuard(datatypeControl.getTextControl(),
+                this::updateAllowedValueSetTypes);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelModifier);
         Combo modifierCombo = getToolkit().createCombo(workArea);
@@ -458,18 +461,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createValueSetConfiguredByProductCheckbox(Composite parent) {
-        createConfiguredByProductCheckbox(parent, Messages.AttributeEditDialog_ValueSetConfiguredByProduct,
+        createCheckbox(parent, Messages.AttributeEditDialog_ValueSetConfiguredByProduct,
                 IPolicyCmptTypeAttribute.PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT);
     }
 
     private void createRelevanceConfiguredByProductCheckbox(Composite parent) {
-        createConfiguredByProductCheckbox(parent, Messages.AttributeEditDialog_RelevanceConfiguredByProduct,
+        createCheckbox(parent, Messages.AttributeEditDialog_RelevanceConfiguredByProduct,
                 IPolicyCmptTypeAttribute.PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT);
-    }
-
-    private void createConfiguredByProductCheckbox(Composite parent, String label, String property) {
-        Checkbox checkbox = createCheckbox(parent, label, property);
-        bindRefreshAllowedValueSetTypes(checkbox);
     }
 
     private Checkbox createCheckbox(Composite parent, String label, String property) {
@@ -486,19 +484,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
         Checkbox checkbox = createCheckbox(parent, checkboxLabel, IPolicyCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
         getBindingContext().bindEnabled(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, true);
-    }
-
-    private void bindRefreshAllowedValueSetTypes(Checkbox checkbox) {
-        getBindingContext().add(new ControlPropertyBinding(checkbox, attribute,
-                IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, Boolean.TYPE) {
-
-            @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
-                    updateAllowedValueSetTypes();
-                }
-            }
-        });
     }
 
     private IProductCmptType getProductCmptType() {
@@ -598,9 +583,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultEditFieldPlaceholder.setLayout(getToolkit().createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
         valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, getToolkit(), getBindingContext(),
-                attribute, valueSetTypes, ValueSetControlEditMode.ALL_KIND_OF_SETS);
+                attribute, attribute.getAllowedValueSetTypes(ipsProject), ValueSetControlEditMode.ALL_KIND_OF_SETS);
 
         updateDefaultAndValueSet();
 
@@ -695,8 +679,28 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             disposeChildrenOf(defaultEditFieldPlaceholder);
             createDefaultValueEditField(defaultEditFieldPlaceholder);
         }
-        updateAllowedValueSetTypes();
+        if (!isEditingDatatype()) {
+            updateAllowedValueSetTypes();
+        }
         enableValueFieldAndValueSetControl(enabled);
+    }
+
+    /**
+     * While the user edits the datatype field, every keystroke writes an intermediate name to the
+     * model. Adjusting the value set on such an intermediate state switches its type and discards
+     * the configured values, so the adjustment is deferred until the field is left. See
+     * {@link #okPressed()} for the case that the dialog is confirmed without ever leaving the field.
+     */
+    boolean isEditingDatatype() {
+        return datatypeFieldEditGuard.isEditing();
+    }
+
+    ValueSetSpecificationControl getValueSetSpecificationControl() {
+        return valueSetSpecificationControl;
+    }
+
+    DatatypeRefControl getDatatypeControl() {
+        return datatypeControl;
     }
 
     private void disposeChildrenOf(Composite composite) {
@@ -723,19 +727,16 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void updateAllowedValueSetTypes() {
-        ValueSetType currentValueSetType = valueSetSpecificationControl.getValueSetType();
+        if (valueSetSpecificationControl == null) {
+            return;
+        }
         try {
-            valueSetSpecificationControl
-                    .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
+            valueSetSpecificationControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(ipsProject));
         } catch (IpsException e) {
             IpsPlugin.log(e);
             valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<>());
         }
-        if (currentValueSetType != null) {
-            // if the previous selection was a valid selection use this one as new selection in drop
-            // down, otherwise the default (first one) is selected
-            valueSetSpecificationControl.setValueSetType(currentValueSetType);
-        }
+        valueSetSpecificationControl.syncSelectionToModel();
     }
 
     private Control createValidationRulePage(TabFolder folder, TabItem tab) {
@@ -1031,6 +1032,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     @Override
     protected void okPressed() {
+        datatypeFieldEditGuard.settleNow();
         if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
             String newName = attribute.getName();
             if (!(newName.equals(initialName))) {

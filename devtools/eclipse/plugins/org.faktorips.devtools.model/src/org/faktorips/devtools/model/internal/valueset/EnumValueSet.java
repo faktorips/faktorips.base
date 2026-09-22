@@ -42,6 +42,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -66,6 +67,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     private static final String XML_DATA = ValueToXmlHelper.XML_TAG_DATA;
 
     private static final String XML_VALUE = ValueToXmlHelper.XML_TAG_VALUE;
+
+    private static final Comparator<ValueDatatype> DATATYPE_COMPARATOR = Comparator
+            .nullsFirst(Comparator.naturalOrder());
+
+    private static final Comparator<String> RAW_VALUE_COMPARATOR = Comparator
+            .nullsFirst(Comparator.naturalOrder());
 
     /** The values in the set as list */
     private List<String> values = new ArrayList<>();
@@ -462,12 +469,16 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * Compare two enum value sets by comparing their values with each other one by one. Uses the
      * value set's data type to parse values where possible, otherwise compares the raw values
      * (strings).
+     * <p>
+     * A data type that cannot be resolved is treated as unknown and sorts before every known data
+     * type, so that value sets a user still has to repair show up first wherever value sets are
+     * ordered.
      */
     protected int compareValueSetValues(IEnumValueSet otherEnum) {
         ValueDatatype datatype = findValueDatatype(getIpsProject());
         ValueDatatype otherDatatype = otherEnum.findValueDatatype(getIpsProject());
-        if (!datatype.equals(otherDatatype)) {
-            return datatype.compareTo(otherDatatype);
+        if (!Objects.equals(datatype, otherDatatype)) {
+            return DATATYPE_COMPARATOR.compare(datatype, otherDatatype);
         } else {
             ListComparator<String> listComparator = ListComparator.listComparator(new ValueComparator(datatype));
             return listComparator.compare(values, otherEnum.getValuesAsList());
@@ -477,18 +488,20 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
     private static class ValueComparator implements Comparator<String> {
 
+        @CheckForNull
         private final ValueDatatype datatype;
 
-        public ValueComparator(ValueDatatype datatype) {
+        public ValueComparator(@CheckForNull ValueDatatype datatype) {
             this.datatype = datatype;
         }
 
         @Override
         public int compare(String value, String otherValue) {
-            if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
+            if (datatype != null && datatype.supportsCompare() && datatype.isParsable(value)
+                    && datatype.isParsable(otherValue)) {
                 return datatype.compare(value, otherValue);
             } else {
-                return Comparator.nullsFirst(Comparator.<String> naturalOrder()).compare(value, otherValue);
+                return RAW_VALUE_COMPARATOR.compare(value, otherValue);
             }
         }
 

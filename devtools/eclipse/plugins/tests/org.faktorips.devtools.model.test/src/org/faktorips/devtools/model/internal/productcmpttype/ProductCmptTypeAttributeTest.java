@@ -249,6 +249,60 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetAllowedValueSetTypes_UnresolvableDatatype_ContainsCurrentType() {
+        productAttribute.setDatatype("ThisDatatypeDoesNotExist");
+        productAttribute.setValueSetType(ValueSetType.ENUM);
+
+        List<ValueSetType> allowedTypes = productAttribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedTypes, hasItem(ValueSetType.ENUM));
+        assertThat(allowedTypes, hasItem(ValueSetType.DERIVED));
+        assertThat(allowedTypes, hasItem(ValueSetType.UNRESTRICTED));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_UnresolvableDatatype_DoesNotDuplicateCurrentType() {
+        productAttribute.setDatatype("ThisDatatypeDoesNotExist");
+        productAttribute.setValueSetType(ValueSetType.UNRESTRICTED);
+
+        List<ValueSetType> allowedTypes = productAttribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedTypes, is(Arrays.asList(ValueSetType.DERIVED, ValueSetType.UNRESTRICTED)));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_ResolvableDatatype_IsModifiable() {
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        List<ValueSetType> allowedTypes = productAttribute.getAllowedValueSetTypes(ipsProject);
+        allowedTypes.remove(ValueSetType.ENUM);
+
+        assertThat(allowedTypes, not(hasItem(ValueSetType.ENUM)));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_ResolvableDatatype_IsUnaffected() {
+        productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        productAttribute.setValueSetType(ValueSetType.ENUM);
+
+        List<ValueSetType> allowedTypes = productAttribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedTypes, is(ValueSetType.getNumericValueSetTypesAsList()));
+    }
+
+    @Test
+    public void testValidate_UnresolvableDatatype_DoesNotReportInvalidValueSet() {
+        productAttribute.setName("name");
+        productAttribute.setDatatype("ThisDatatypeDoesNotExist");
+        productAttribute.setChangingOverTime(false);
+        productAttribute.setValueSetType(ValueSetType.ENUM);
+
+        MessageList ml = productAttribute.validate(ipsProject);
+
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
+    }
+
+    @Test
     public void testValidate_EnumValueSet_Hidden_DefaultValueNullNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());

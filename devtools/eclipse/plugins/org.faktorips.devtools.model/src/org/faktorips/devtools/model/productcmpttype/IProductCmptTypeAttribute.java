@@ -115,7 +115,15 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      *
      * For component type attributes the allowed values set types are the types returned by
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
-     * attribute's data type.
+     * attribute's data type. A multilingual attribute is the exception: only
+     * {@link ValueSetType#UNRESTRICTED} is ever allowed for it, regardless of its data type or
+     * currently configured value set type.
+     * <p>
+     * For a non-multilingual attribute whose data type cannot be resolved at all, the returned list
+     * is the fall back of {@link ValueSetType#DERIVED} and {@link ValueSetType#UNRESTRICTED},
+     * extended by the type of the value set currently configured. The current type is therefore
+     * always contained in that case, so callers may offer the list as a choice without replacing the
+     * configured value set.
      *
      * @throws IpsException if an error occurs.
      */

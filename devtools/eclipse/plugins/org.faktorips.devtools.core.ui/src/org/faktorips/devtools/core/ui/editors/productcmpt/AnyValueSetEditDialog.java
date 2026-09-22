@@ -99,7 +99,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
         ValueSetSpecificationControl vsEdit = new ValueSetSpecificationControl(parent, getToolkit(),
                 getBindingContext(), configuredValueSet, allowedValuesSetTypes,
                 ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
-        vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
+        vsEdit.syncSelectionToModel();
         vsEdit.setEnabled(!viewOnly);
         Object layoutData = vsEdit.getLayoutData();
         if (layoutData instanceof GridData gd) {

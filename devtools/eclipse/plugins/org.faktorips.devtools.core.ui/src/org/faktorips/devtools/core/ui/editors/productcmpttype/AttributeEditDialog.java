@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
+import org.faktorips.devtools.core.ui.editors.DatatypeFieldEditGuard;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.model.ContentChangeEvent;
@@ -57,7 +58,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
-import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -77,8 +77,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private final String initialName;
 
-    private IIpsProject ipsProject;
-    private IProductCmptTypeAttribute attribute;
+    private final IIpsProject ipsProject;
+    private final IProductCmptTypeAttribute attribute;
 
     /**
      * placeholder for the default edit field, the edit field for the default value depends on the
@@ -89,8 +89,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private ValueSetSpecificationControl valueSetEditControl;
 
+    private DatatypeRefControl datatypeControl;
+
+    private DatatypeFieldEditGuard datatypeFieldEditGuard;
+
     private ValueDatatype currentDatatype;
-    private ValueSetType currentValueSetType;
 
     private ExtensionPropertyControlFactory extFactory;
     private ProductCmptTypeAttributePmo attributePmo;
@@ -103,8 +106,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ipsProject = attribute.getIpsProject();
 
         currentDatatype = productCmptTypeAttribute.findDatatype(ipsProject);
-
-        currentValueSetType = productCmptTypeAttribute.getValueSet().getValueSetType();
         extFactory = new ExtensionPropertyControlFactory(attribute);
         attributePmo = new ProductCmptTypeAttributePmo(attribute);
     }
@@ -145,11 +146,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(checkbox, attribute, IAttribute.PROPERTY_OVERWRITES);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
-        DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
+        datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
         datatypeControl.setAbstractAllowed(true);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
+        datatypeFieldEditGuard = new DatatypeFieldEditGuard(datatypeControl.getTextControl(),
+                this::updateValueSetTypes);
 
         getToolkit().createVerticalSpacer(workArea, 0);
         Composite radioComposite = getToolkit().createGridComposite(workArea, 2, false, false);
@@ -218,9 +221,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite temp = getToolkit().createGridComposite(c, 1, true, false);
         getToolkit().createLabel(temp, Messages.AttributeEditDialog_valueSetSection);
         getToolkit().createVerticalSpacer(temp, 8);
-        List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
         valueSetEditControl = new ValueSetSpecificationControl(temp, getToolkit(), getBindingContext(), attribute,
-                valueSetTypes, ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                attribute.getAllowedValueSetTypes(ipsProject), ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
         updateValueSetTypes();
 
         getBindingContext().bindEnabled(valueSetEditControl, attributePmo,
@@ -339,8 +341,27 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         createDefaultValueEditField();
-        updateValueSetTypes();
+        if (!isEditingDatatype()) {
+            updateValueSetTypes();
+        }
+    }
 
+    /**
+     * While the user edits the datatype field, every keystroke writes an intermediate name to the
+     * model. Adjusting the value set on such an intermediate state switches its type and discards
+     * the configured values, so the adjustment is deferred until the field is left. See
+     * {@link #okPressed()} for the case that the dialog is confirmed without ever leaving the field.
+     */
+    boolean isEditingDatatype() {
+        return datatypeFieldEditGuard.isEditing();
+    }
+
+    ValueSetSpecificationControl getValueSetEditControl() {
+        return valueSetEditControl;
+    }
+
+    DatatypeRefControl getDatatypeControl() {
+        return datatypeControl;
     }
 
     private void disposeChildrenOf(Composite composite) {
@@ -358,20 +379,19 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (valueSetEditControl == null) {
             return;
         }
-        currentValueSetType = valueSetEditControl.getValueSetType();
-        valueSetEditControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(ipsProject));
-        if (currentValueSetType != null) {
-            /*
-             * If the previous selection was a valid selection use this one as new selection in drop
-             * down, otherwise the default (first one) is selected.
-             */
-            valueSetEditControl.setValueSetType(currentValueSetType);
+        try {
+            valueSetEditControl.setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(ipsProject));
+        } catch (IpsException e) {
+            IpsPlugin.log(e);
+            valueSetEditControl.setAllowedValueSetTypes(new ArrayList<>());
         }
+        valueSetEditControl.syncSelectionToModel();
         valueSetEditControl.setDataChangeable(true);
     }
 
     @Override
     protected void okPressed() {
+        datatypeFieldEditGuard.settleNow();
         if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
             String newName = attribute.getName();
             if (!(newName.equals(initialName))) {

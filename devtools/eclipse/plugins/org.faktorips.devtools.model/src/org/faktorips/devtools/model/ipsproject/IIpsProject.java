@@ -777,9 +777,11 @@ public interface IIpsProject extends IIpsElement {
     DatatypeHelper findDatatypeHelper(String qName);
 
     /**
-     * Returns the value set types that are allowed for the given data type. The type
-     * {@link ValueSetType#UNRESTRICTED} is always returned and is the first element in the array.
-     * If data type is <code>null</code> then an array with <code>UNRESTRICTED</code> is returned.
+     * Returns the value set types that are allowed for the given data type. The types
+     * {@link ValueSetType#DERIVED} and {@link ValueSetType#UNRESTRICTED} are always returned. If
+     * data type is <code>null</code> then those two are the only ones returned.
+     * <p>
+     * The returned list is a modifiable copy, so callers may narrow it down further.
      *
      * @throws IpsException if an error occurs while retrieving the value set types, possible
      *             reasons are that the data types files can't be read or the XML can't be parsed.

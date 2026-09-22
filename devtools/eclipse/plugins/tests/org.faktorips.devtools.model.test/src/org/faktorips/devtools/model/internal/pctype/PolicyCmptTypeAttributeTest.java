@@ -16,9 +16,13 @@ import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -683,6 +687,66 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         assertThat(messageList.size(), is(1));
         assertThat(messageList, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_UnresolvableDatatype_ContainsCurrentType() {
+        attribute.setDatatype("ThisDatatypeDoesNotExist");
+        attribute.setValueSetType(ValueSetType.ENUM);
+
+        List<ValueSetType> allowedTypes = attribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedTypes, hasItem(ValueSetType.ENUM));
+        assertThat(allowedTypes, hasItem(ValueSetType.DERIVED));
+        assertThat(allowedTypes, hasItem(ValueSetType.UNRESTRICTED));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_UnresolvableDatatype_DoesNotDuplicateCurrentType() {
+        attribute.setDatatype("ThisDatatypeDoesNotExist");
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+
+        List<ValueSetType> allowedTypes = attribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedTypes, is(Arrays.asList(ValueSetType.DERIVED, ValueSetType.UNRESTRICTED)));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_ResolvableDatatype_IsUnaffected() {
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        attribute.setValueSetType(ValueSetType.ENUM);
+
+        List<ValueSetType> allowedTypes = attribute.getAllowedValueSetTypes(ipsProject);
+
+        assertThat(allowedTypes, is(ValueSetType.getNumericValueSetTypesAsList()));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_ResolvableDatatype_IsModifiable() {
+        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+
+        List<ValueSetType> allowedTypes = attribute.getAllowedValueSetTypes(ipsProject);
+        allowedTypes.remove(ValueSetType.ENUM);
+
+        assertThat(allowedTypes, not(hasItem(ValueSetType.ENUM)));
+    }
+
+    /**
+     * Unlike {@code ProductCmptTypeAttribute}, {@code validateThis} only calls
+     * {@code validateValueSetType} when {@code getValueDatatype()} resolves, so an unresolvable
+     * datatype never reaches the check at all. This pins that pre-existing skip down so the
+     * tolerant {@link IPolicyCmptTypeAttribute#getAllowedValueSetTypes(IIpsProject)} fallback is not
+     * accidentally relied upon for this particular message.
+     */
+    @Test
+    public void testValidate_UnresolvableDatatype_DoesNotReportIllegalValueSetType() {
+        attribute.setName("attr");
+        attribute.setDatatype("ThisDatatypeDoesNotExist");
+        attribute.setValueSetType(ValueSetType.ENUM);
+
+        MessageList messageList = attribute.validate(ipsProject);
+
+        assertThat(messageList, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE));
     }
 
     @Test

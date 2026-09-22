@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.type;
 
 import java.text.MessageFormat;
 import java.util.EnumSet;
+import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -27,12 +28,15 @@ import org.faktorips.devtools.model.util.DatatypeUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Implementation of IAttribute.
@@ -88,6 +92,27 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     public ValueDatatype findValueDatatype(IIpsProject project) {
         return project.findValueDatatype(datatype);
+    }
+
+    /**
+     * Returns the value set types the given project allows for the given data type, extended by the
+     * type of this attribute's current value set if the data type could not be resolved.
+     * <p>
+     * Without that extension an unresolvable data type would make the configured value set look
+     * disallowed, and a caller offering the result as a choice would switch the value set to another
+     * type and discard the values configured for it. The returned list is modifiable, so subclasses
+     * may narrow it down further.
+     * <p>
+     * Relies on {@link #getValueSet()} never being {@code null}, which every {@link Attribute}
+     * subclass guarantees by initializing it in its constructor.
+     */
+    protected List<ValueSetType> getValueSetTypesToleratingUnresolvableDatatype(IIpsProject ipsProject,
+            @CheckForNull ValueDatatype datatype) {
+        List<ValueSetType> types = ipsProject.getValueSetTypes(datatype);
+        if (datatype == null && !types.contains(getValueSet().getValueSetType())) {
+            types.add(getValueSet().getValueSetType());
+        }
+        return types;
     }
 
     @Override

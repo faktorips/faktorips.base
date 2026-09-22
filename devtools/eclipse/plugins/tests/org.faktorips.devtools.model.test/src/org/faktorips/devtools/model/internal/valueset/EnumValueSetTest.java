@@ -13,6 +13,9 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -946,9 +949,8 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         IEnumValueSet enum1 = createEnumValueSet("123");
         IEnumValueSet enum2 = createEnumValueSet("312");
 
-        // less-than matcher not available in current hamcrest version
-        assertTrue(enum1.compareTo(enum2) < 0);
-        assertTrue(enum2.compareTo(enum1) > 0);
+        assertThat(enum1.compareTo(enum2), is(lessThan(0)));
+        assertThat(enum2.compareTo(enum1), is(greaterThan(0)));
     }
 
     @Test
@@ -1022,8 +1024,73 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         EnumValueSet enum2 = new EnumValueSet(cValueSet2, "id");
         enum2.addValues(Arrays.asList("1", "2", "3"));
 
-        assertTrue(enum1.compareTo(enum2) > 0);
-        assertTrue(enum2.compareTo(enum1) < 0);
+        assertThat(enum1.compareTo(enum2), is(greaterThan(0)));
+        assertThat(enum2.compareTo(enum1), is(lessThan(0)));
+    }
+
+    @Test
+    public void testEquals_UnresolvableDatatype_DoesNotThrow() {
+        attr.setDatatype("ThisDatatypeDoesNotExist");
+        IEnumValueSet enumValueSet = createEnumValueSet("1", "2", "4", "12");
+
+        assertDoesNotThrow(() -> enumValueSet.equals(enumValueSet));
+    }
+
+    @Test
+    public void testCompareTo_UnresolvableDatatype_SameValues() {
+        attr.setDatatype("ThisDatatypeDoesNotExist");
+        IEnumValueSet enum1 = createEnumValueSet("1", "2", "4", "12");
+        IEnumValueSet enum2 = createEnumValueSet("1", "2", "4", "12");
+
+        assertThat(enum1.compareTo(enum2), is(0));
+        assertThat(enum2.compareTo(enum1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_UnresolvableDatatype_DifferentValues() {
+        attr.setDatatype("ThisDatatypeDoesNotExist");
+        IEnumValueSet enum1 = createEnumValueSet("1", "2");
+        IEnumValueSet enum2 = createEnumValueSet("1", "3");
+
+        assertThat(enum1.compareTo(enum2), is(lessThan(0)));
+        assertThat(enum2.compareTo(enum1), is(greaterThan(0)));
+    }
+
+    @Test
+    public void testCompareTo_OneUnresolvableDatatype_SortsUnresolvableFirst() {
+        attr.setDatatype("ThisDatatypeDoesNotExist");
+        IEnumValueSet unresolvable = createEnumValueSet("1", "2");
+
+        IPolicyCmptTypeAttribute resolvableAttr = policyCmptType.newPolicyCmptTypeAttribute();
+        resolvableAttr.setName("resolvableAttr");
+        resolvableAttr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IConfiguredValueSet resolvableConfiguredValueSet = generation.newPropertyValue(resolvableAttr,
+                IConfiguredValueSet.class);
+        EnumValueSet resolvable = new EnumValueSet(resolvableConfiguredValueSet, "id");
+        resolvable.addValues(Arrays.asList("1", "2"));
+
+        assertThat(unresolvable.compareTo(resolvable), is(lessThan(0)));
+        assertThat(resolvable.compareTo(unresolvable), is(greaterThan(0)));
+    }
+
+    @Test
+    public void testCompareTo_UnresolvableDatatype_NullValueSortsFirst() {
+        attr.setDatatype("ThisDatatypeDoesNotExist");
+        IEnumValueSet withNull = createEnumValueSet(null, "2");
+        IEnumValueSet withoutNull = createEnumValueSet("1", "2");
+
+        assertThat(withNull.compareTo(withoutNull), is(lessThan(0)));
+        assertThat(withoutNull.compareTo(withNull), is(greaterThan(0)));
+    }
+
+    @Test
+    public void testEquals_UnresolvableDatatype_DistinctInstancesWithSameValues() {
+        attr.setDatatype("ThisDatatypeDoesNotExist");
+        IEnumValueSet enum1 = createEnumValueSet("1", "2", "4", "12");
+        IEnumValueSet enum2 = createEnumValueSet("1", "2", "4", "12");
+
+        assertThat(enum1, is(enum2));
+        assertThat(enum2, is(enum1));
     }
 
     private IEnumValueSet createEnumValueSet(String... values) {
