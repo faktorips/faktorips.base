@@ -88,6 +88,8 @@ import org.faktorips.runtime.Severity;
 public class UIToolkit {
 
     public static final int DEFAULT_WIDTH = 100;
+    public static final int ELLIPSIS_BUTTON_HEIGHT = 15;
+    public static final String ELLIPSIS_BUTTON_TEXT = "...";
     private static final int DEFAULT_MULTILINE_HEIGHT = 60;
     private static final String READONLY_FOREGROUND_COLOR = "READONLY_FOREGROUND_COLOR"; //$NON-NLS-1$
     private static final String READONLY_BACKGROUND_COLOR = "READONLY_BACKGROUND_COLOR"; //$NON-NLS-1$

@@ -501,7 +501,7 @@ public class TestCaseDetailArea {
             String hyperLinklabel = hyperLinkPath;
             if (hyperLinklabel.length() > 60) {
                 hyperLinklabel = hyperLinkPath.substring(0, 27);
-                hyperLinklabel += "..."; //$NON-NLS-1$
+                hyperLinklabel += UIToolkit.ELLIPSIS_BUTTON_TEXT;
                 hyperLinklabel += hyperLinkPath.substring(hyperLinkPath.length() - 30);
             }
             Label label = toolkit.createLabel(hyperlinkArea, hyperLinklabel);
