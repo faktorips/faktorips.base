@@ -18,11 +18,11 @@ public class NullSafeComparableComparator<T> implements Comparator<T>, Serializa
     private static final long serialVersionUID = 1L;
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     public int compare(T o1, T o2) {
         Comparable<T> c1 = (Comparable<T>)o1;
         Comparable<T> c2 = (Comparable<T>)o2;
-        return Comparator.nullsFirst(Comparator.<Comparable> naturalOrder()).compare(c1, c2);
+        return ((Comparator<Comparable<T>>)Comparator.nullsFirst(Comparator.naturalOrder())).compare(c1, c2);
     }
 
 }

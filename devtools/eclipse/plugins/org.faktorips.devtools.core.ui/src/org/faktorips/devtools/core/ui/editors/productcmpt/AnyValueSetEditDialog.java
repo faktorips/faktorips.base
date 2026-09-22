@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -20,9 +20,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 
@@ -53,6 +55,8 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
     /** true if the dialog is used to just display the value set, no editing is possible */
     private boolean viewOnly;
 
+    private final ExtensionPropertyControlFactory extPropControlFactory;
+
     public AnyValueSetEditDialog(IConfiguredValueSet configuredValueSet, List<ValueSetType> allowedTypes,
             Shell parentShell) {
         this(configuredValueSet, allowedTypes, parentShell, false);
@@ -67,6 +71,7 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
         allowedValuesSetTypes = allowedTypes;
         enableDialogSizePersistence(SETTINGS_KEY_PREFIX, configuredValueSet.getPropertyName(), new Point(INITIAL_WIDTH,
                 INITIAL_HEIGHT), null);
+        extPropControlFactory = new ExtensionPropertyControlFactory(configuredValueSet);
     }
 
     @Override
@@ -82,6 +87,11 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
     private Control createFirstPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
         createValueSetControl(c);
+        extPropControlFactory.createControls(c, getToolkit(), configuredValueSet,
+                IExtensionPropertyDefinition.POSITION_TOP);
+        extPropControlFactory.createControls(c, getToolkit(), configuredValueSet,
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extPropControlFactory.bind(getBindingContext());
         return c;
     }
 

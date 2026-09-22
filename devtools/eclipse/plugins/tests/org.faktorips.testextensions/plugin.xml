@@ -21,6 +21,17 @@
       </factory>
    </extension>
    <extension
+         id="TestExtensionForIConfiguredValueSet"
+         name="TestExtension@IConfiguredValueSet"
+         point="org.faktorips.devtools.model.objectExtensionProperty">
+      <property
+            class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIConfiguredValueSet"
+            extendedType="org.faktorips.devtools.model.productcmpt.IConfiguredValueSet"
+            position="top"
+            retention="DEFINITION">
+      </property>
+   </extension>
+   <extension
          id="TestExtensionForIAttribute"
          name="TestExtension@IAttribute"
          point="org.faktorips.devtools.model.objectExtensionProperty">

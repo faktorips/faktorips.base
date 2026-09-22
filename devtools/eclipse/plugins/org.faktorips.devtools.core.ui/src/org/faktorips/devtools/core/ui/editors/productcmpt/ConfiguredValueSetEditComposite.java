@@ -13,7 +13,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 import java.util.function.Function;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -87,13 +90,41 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
 
     private BooleanValueSetField createValueSetEditFieldForBoolean() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
-        BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
-                getPropertyValue());
+
+        boolean showExtensionPropertiesButton = hasExtensionProperties(getPropertyValue());
+        Composite valueSetArea = showExtensionPropertiesButton
+                ? getToolkit().createGridComposite(this, 2, false, false)
+                : this;
+
+        BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(valueSetArea, getToolkit(),
+                getProperty(), getPropertyValue());
         BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
 
         getBindingContext().bindContent(field, getPropertyValue(), IConfiguredValueSet.PROPERTY_VALUE_SET);
 
+        if (showExtensionPropertiesButton) {
+            ((GridData)booleanValueSetControl.getLayoutData()).grabExcessHorizontalSpace = true;
+            createExtensionPropertiesButton(valueSetArea);
+        }
+
         return field;
+    }
+
+    private void createExtensionPropertiesButton(Composite parent) {
+        Button button = getToolkit().createButton(parent, UIToolkit.ELLIPSIS_BUTTON_TEXT);
+        GridData buttonLayoutData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
+        buttonLayoutData.heightHint = UIToolkit.ELLIPSIS_BUTTON_HEIGHT;
+        button.setLayoutData(buttonLayoutData);
+        button.addSelectionListener(SelectionListener.widgetSelectedAdapter($ -> {
+            BooleanValueSetExtensionPropertiesDialog dialog = new BooleanValueSetExtensionPropertiesDialog(
+                    getPropertyValue(), getShell());
+            dialog.setDataChangeable(getToolkit().isDataChangeable(button));
+            dialog.open();
+        }));
+    }
+
+    static boolean hasExtensionProperties(IConfiguredValueSet configuredValueSet) {
+        return !configuredValueSet.getExtensionPropertyDefinitions().isEmpty();
     }
 
     private ConfiguredValueSetField createValueSetField() {

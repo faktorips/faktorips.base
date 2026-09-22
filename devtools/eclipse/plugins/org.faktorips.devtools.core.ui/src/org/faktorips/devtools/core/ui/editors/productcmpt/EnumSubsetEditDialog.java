@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,15 +19,17 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.controls.chooser.AbstractSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 
 /**
  * A dialog that allows to specify a subset of values available in a given enum data type.
- * 
+ *
  * @author Jan Ortmann
  */
 public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
@@ -49,6 +51,8 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
 
     private final IEnumValueSetProvider enumValueSetProvider;
 
+    private final ExtensionPropertyControlFactory extPropControlFactory;
+
     public EnumSubsetEditDialog(IEnumValueSetProvider provider, ValueDatatype datatype, Shell parentShell,
             boolean viewOnly) {
         super(provider.getTargetConfiguredValueSet(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
@@ -57,6 +61,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
         this.viewOnly = viewOnly;
         enableDialogSizePersistence(SETTINGS_KEY_PREFIX, datatype.getQualifiedName(), new Point(INITIAL_WIDTH,
                 INITIAL_HEIGHT), null);
+        extPropControlFactory = new ExtensionPropertyControlFactory(provider.getTargetConfiguredValueSet());
     }
 
     @Override
@@ -76,6 +81,11 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
         valueSetGridData.horizontalSpan = 2;
         valueSetControl.setLayoutData(valueSetGridData);
         valueSetControl.setEnabled(!viewOnly);
+        extPropControlFactory.createControls(c, getToolkit(), enumValueSetProvider.getTargetConfiguredValueSet(),
+                IExtensionPropertyDefinition.POSITION_TOP);
+        extPropControlFactory.createControls(c, getToolkit(), enumValueSetProvider.getTargetConfiguredValueSet(),
+                IExtensionPropertyDefinition.POSITION_BOTTOM);
+        extPropControlFactory.bind(getBindingContext());
         return c;
     }
 

@@ -38,6 +38,8 @@ public class Messages extends NLS {
 
     public static String AttributeRelevanceControl_Irrelevant;
 
+    public static String BooleanValueSetExtensionPropertiesDialog_title;
+
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
     public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;

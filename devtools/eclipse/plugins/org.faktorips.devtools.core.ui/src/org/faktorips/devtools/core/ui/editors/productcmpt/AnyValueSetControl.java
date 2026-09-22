@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,9 +34,9 @@ import org.faktorips.util.memento.Memento;
  * Control to define any kind of value set in the product component editor. A text field followed by
  * a button is provided. If the button is clicked, a special dialog to define the value set opens.
  * In the dialog it is also possible to switch the type of value set!
- * 
+ *
  * @see AnyValueSetEditDialog
- * 
+ *
  * @author Thorsten Guenther
  * @author Jan Ortmann
  */
@@ -70,7 +70,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
 
     /**
      * Creates a new control to show and edit the value set owned by the config element.
-     * 
+     *
      * @param parent The parent composite to add this control to.
      * @param toolkit The toolkit used to create controls.
      * @param configuredValueSet The {@link IConfiguredValueSet} that contains the value set.
@@ -78,7 +78,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
      */
     public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet,
             Shell shell) {
-        super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
+        super(parent, toolkit, UIToolkit.ELLIPSIS_BUTTON_TEXT, true, UIToolkit.ELLIPSIS_BUTTON_HEIGHT);
         configValueSet = configuredValueSet;
         this.shell = shell;
         getTextControl().setEditable(true);

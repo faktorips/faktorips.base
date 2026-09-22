@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,7 +25,7 @@ import org.faktorips.devtools.model.productcmpt.IFormula;
 /**
  * Control to edit the value of an formula. A textfeld followed by a button is provided. If the
  * button is clicked, an special Editor for editing the formula with support is opened.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class FormulaEditControl extends StyledTextButtonControl implements IDataChangeableReadWriteAccess {
@@ -41,7 +41,7 @@ public class FormulaEditControl extends StyledTextButtonControl implements IData
     public FormulaEditControl(Composite parent, UIToolkit toolkit, IFormula formula, Shell shell,
             IpsSection parentSection) {
 
-        super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
+        super(parent, toolkit, UIToolkit.ELLIPSIS_BUTTON_TEXT, true, UIToolkit.ELLIPSIS_BUTTON_HEIGHT);
         this.formula = formula;
         this.shell = shell;
         this.parentSection = parentSection;
