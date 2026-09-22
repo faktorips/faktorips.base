@@ -413,6 +413,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         <skipPublishing>${skip-publish}</skipPublishing>
                         <deploymentName>Faktor-IPS ${project.version}</deploymentName>
                         <excludeArtifacts>faktorips-abstraction-testsetup,faktorips-devtools-parent,faktorips-maven,faktorips-model-test,faktorips-runtime-parent,targets</excludeArtifacts>
+                        <checksums>required</checksums>
                     </configuration>
                 </plugin>
             </plugins>
