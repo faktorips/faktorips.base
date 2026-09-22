@@ -120,6 +120,37 @@
             </build>
         </profile>
         <profile>
+            <id>update-all-composite</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-p2-repository-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>all-composite</id>
+                                <goals><goal>modify-composite-repository</goal></goals>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <repository>
+                                        <id>all-composite</id>
+                                        <url>https://update.faktorzehn.org/faktorips/all</url>
+                                    </repository>
+                                    <outputLocation>${project.basedir}/org.faktorips.p2repository/target/composite-out/all</outputLocation>
+                                    <repositoryName>Faktor-IPS all Versions and Addons</repositoryName>
+                                    <childrenToAdd>
+                                        <child>../v${major}_${minor}</child>
+                                    </childrenToAdd>
+                                    <validateChildren>false</validateChildren>
+                                    <compress>false</compress>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>mavenCentralRelease</id>
             <build>
                 <plugins>

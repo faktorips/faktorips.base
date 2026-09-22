@@ -201,6 +201,11 @@ pipeline {
                         sh "mvn -P update-composite -pl :faktorips-devtools-eclipse-sites -Dmajor=${major} -Dminor=${minor} -Drelease.version=${params.RELEASE_VERSION} --no-transfer-progress generate-resources"
                         sh "scp ${p2RepositoryFolder}/target/composite-out/v${major}_${minor}/composite*.xml ${p2RepositoryFolder}/target/composite-out/v${major}_${minor}/p2.index ${p2Server}:${ps2DeployDir}/"
                         def isMainBranch = env.GIT_BRANCH == 'main' || env.GIT_BRANCH == 'origin/main'
+                        def isMajorRelease = patch == '0'
+                        if (isMainBranch && isRelease && isMajorRelease) {
+                            sh "mvn -P update-all-composite -pl :faktorips-devtools-eclipse-sites -Dmajor=${major} -Dminor=${minor} --no-transfer-progress generate-resources"
+                            sh "scp ${p2RepositoryFolder}/target/composite-out/all/composite*.xml ${p2RepositoryFolder}/target/composite-out/all/p2.index ${p2Server}:/var/www/update.faktorzehn.org/faktorips/all/"
+                        }
                         def isUpdateLatest = isMainBranch && isRelease
                         if(isUpdateLatest) {
                             // set latest symlink
