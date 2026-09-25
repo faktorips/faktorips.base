@@ -19,6 +19,7 @@ def setVersionForPlatformBoms(String newVersion) {
 def configureRelease() {
     withMaven(publisherStrategy: 'EXPLICIT') {
         def oldVersion = sh(script: "mvn help:evaluate -Dexpression=project.version -q -DforceStdout", returnStdout: true).trim()
+        sh "mvn -N install"
         sh "mvn -U -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.RELEASE_VERSION} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
         // see https://github.com/eclipse-tycho/tycho/issues/1677
         sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${params.RELEASE_VERSION}/' {} \\;"
@@ -35,6 +36,7 @@ def configureDevelopment() {
         withMaven(publisherStrategy: 'EXPLICIT') {
             // install targets, as they are resolved by tycho when setting the versions back, which won't work if they are missing
             sh "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore"
+            sh "mvn -N install"
             sh "mvn -V org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas,faktorips-runtime-bom,faktorips-devtools-bom"
         }
         // see https://github.com/eclipse-tycho/tycho/issues/1677
