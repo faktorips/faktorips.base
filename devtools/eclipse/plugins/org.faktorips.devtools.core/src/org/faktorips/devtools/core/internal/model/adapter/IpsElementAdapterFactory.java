@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 /**
  * This {@link IAdapterFactory} is able to adapt {@link IIpsElement}s to other objects like
  * {@link IResource}
- * 
+ *
  * @author dirmeier
  */
 public class IpsElementAdapterFactory implements IAdapterFactory {
@@ -38,11 +38,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-        if (!(adaptableObject instanceof IIpsElement ipsElement)) {
-            return null;
-        }
-
-        if (ipsElement instanceof IIpsObjectPart) {
+        if (!(adaptableObject instanceof IIpsElement ipsElement) || (ipsElement instanceof IIpsObjectPart)) {
             return null;
         }
 
@@ -99,6 +95,9 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         @Override
         public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) {
             Object modelObject = getModelObject();
+            if (modelObject instanceof AResource aresource) {
+                modelObject = aresource.unwrap();
+            }
             if (modelObject instanceof IResource resource) {
                 if (resource.getType() == IResource.ROOT) {
                     return new ResourceTraversal[] { new ResourceTraversal(((IWorkspaceRoot)resource).getProjects(),
@@ -107,7 +106,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
                 return new ResourceTraversal[] { new ResourceTraversal(new IResource[] { resource },
                         IResource.DEPTH_INFINITE, IResource.NONE) };
             }
-            return null;
+            return new ResourceTraversal[0];
         }
 
     }
