@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,11 +11,20 @@
 package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.DecimalFormatSymbols;
 import java.util.Currency;
 import java.util.Locale;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -135,6 +144,30 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void test_parse_NonBreakingSpace() {
+        // non-breaking space (U+00A0) between amount and currency, as left over when pasting a
+        // formatted amount using the JDK's CLDR locale provider
+        moneyFormat.initFormat(Locale.GERMANY);
+        String input = "1" + ' ' + "EUR";
+        String parsed = moneyFormat.parse(input);
+        assertEquals("1.00 EUR", parsed);
+    }
+
+    @Test
+    public void test_parse_NarrowNonBreakingSpaceGroupingSeparator() {
+        // locales (e.g. French) may use the narrow non-breaking space (U+202F) as grouping
+        // separator within the amount; use the locale's actual symbols so the test does not
+        // depend on a particular CLDR data version using U+00A0 vs. U+202F
+        Locale locale = Locale.FRANCE;
+        moneyFormat.initFormat(locale);
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+        String input = "1" + symbols.getGroupingSeparator() + "234" + symbols.getDecimalSeparator() + "56"
+                + ' ' + "EUR";
+        String parsed = moneyFormat.parse(input);
+        assertEquals("1234.56 EUR", parsed);
+    }
+
+    @Test
     public void testFormatT() {
         moneyFormat.initFormat(Locale.GERMANY);
         String input = "1 EUR";
@@ -235,7 +268,7 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void test_getEnteredCurrency_CurrencyCode() {
+    public void testGetEnteredCurrencyCurrencyCode() {
         String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30EUR");
 
         assertEquals("2,000,000.30", enteredCurrency[0]);
@@ -243,7 +276,7 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void test_getEnteredCurrency_Symbol() {
+    public void testGetEnteredCurrencySymbol() {
         String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2.98€");
 
         assertEquals("2.98", enteredCurrency[0]);
@@ -251,7 +284,7 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void test_getEnteredCurrency_TestWhitespace() {
+    public void testGetEnteredCurrencyTestWhitespace() {
         String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30 EUR");
 
         assertEquals("2,000,000.30", enteredCurrency[0]);
@@ -259,12 +292,95 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void test_getEnteredCurrency_invalidRegextChar() {
+    public void testGetEnteredCurrencyNonBreakingSpace() {
+        // non-breaking space (U+00A0), as used by the JDK's CLDR locale provider as a
+        // grouping/currency separator and left over when pasting a formatted amount
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30 EUR");
+
+        assertEquals("2,000,000.30", enteredCurrency[0]);
+        assertEquals("EUR", enteredCurrency[1]);
+    }
+
+    @Test
+    public void testGetEnteredCurrencyNarrowNonBreakingSpaceGroupingSeparator() {
+        // narrow non-breaking space (U+202F), used as a grouping separator by some locales
+        String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2 000 000.30 EUR");
+
+        assertEquals("2 000 000.30", enteredCurrency[0]);
+        assertEquals("EUR", enteredCurrency[1]);
+    }
+
+    @Test
+    public void testGetEnteredCurrencyInvalidRegextChar() {
         String[] enteredCurrency = moneyFormat.splitStringToBeParsed("2,000,000.30EUR");
 
         enteredCurrency = moneyFormat.splitStringToBeParsed("2(€");
 
         assertEquals("2", enteredCurrency[0]);
         assertEquals("(€", enteredCurrency[1]);
+    }
+
+    @Test
+    public void testVerifyInternalFormatsCorrectlyAfterInput() {
+        moneyFormat.initFormat(Locale.GERMANY);
+        VerifyEvent verifyEvent = createVerifyEvent("1,2 EUR", 3, 3, "3");
+
+        moneyFormat.verifyInternal(verifyEvent, "1,23 EUR");
+
+        assertTrue(verifyEvent.doit);
+    }
+
+    @Test
+    public void testVerifyInternalToManyDecimalPlaces() {
+        moneyFormat.initFormat(Locale.GERMANY);
+        VerifyEvent verifyEvent = createVerifyEvent("1,23 EUR", 4, 4, "4");
+
+        moneyFormat.verifyInternal(verifyEvent, "1,234 EUR");
+
+        assertFalse(verifyEvent.doit);
+    }
+
+    @Test
+    public void testVerifyInternalParseException() {
+        moneyFormat.initFormat(Locale.GERMANY);
+        VerifyEvent verifyEvent = createVerifyEvent("", 0, 0, "-");
+
+        moneyFormat.verifyInternal(verifyEvent, "-");
+
+        assertTrue(verifyEvent.doit);
+    }
+
+    @Test
+    public void testVerifyInternalCurrencyPartToLong() {
+        moneyFormat.initFormat(Locale.GERMANY);
+        VerifyEvent verifyEvent = createVerifyEvent("1,23 EUR", 8, 8, "O");
+
+        moneyFormat.verifyInternal(verifyEvent, "1,23 EURO");
+
+        assertFalse(verifyEvent.doit);
+    }
+
+    @Test
+    public void testVerifyInternalWrongSeperator() {
+        moneyFormat.initFormat(Locale.GERMANY);
+        VerifyEvent verifyEvent = createVerifyEvent("1 EUR", 1, 1, ".");
+
+        moneyFormat.verifyInternal(verifyEvent, "1. EUR");
+
+        assertFalse(verifyEvent.doit);
+    }
+
+    private VerifyEvent createVerifyEvent(String currentText, int start, int end, String insertedText) {
+        Shell shell = PlatformUI.getWorkbench().getDisplay().getShells()[0];
+        Text text = new Text(shell, SWT.NONE);
+        text.setText(currentText);
+
+        Event event = new Event();
+        event.widget = text;
+        event.start = start;
+        event.end = end;
+        event.text = insertedText;
+        event.doit = true;
+        return new VerifyEvent(event);
     }
 }

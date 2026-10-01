@@ -16,6 +16,7 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
@@ -36,7 +37,23 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     private static final String CURRENCY_SEPARATOR = " "; //$NON-NLS-1$
 
-    private static final String VALID_AMOUNT_CHARS = "[-,.\\d]"; //$NON-NLS-1$
+    private static final int MAX_CURRENCY_PART_LENGTH = 3;
+
+    /**
+     * Chars that may occur within the amount part of a money string: digits, decimal/grouping
+     * separators and the minus sign, as well as whitespace. Since Java 9 switched to the CLDR
+     * locale provider, several locales (e.g. French) use a non-breaking space ({@code U+00A0}) or
+     * narrow non-breaking space ({@code U+202F}) as grouping separator, and the same characters can
+     * show up when copy-pasting a formatted amount/currency pair. {@link String#trim()} does not
+     * strip these, so they must be matched here to be reliably separated from the currency part.
+     */
+    private static final Pattern VALID_AMOUNT_CHARS = Pattern.compile("[-,.\\s\\u00A0\\u202F\\d]"); //$NON-NLS-1$
+
+    /**
+     * Matches leading/trailing whitespace including non-breaking variants, which
+     * {@link String#trim()} does not strip.
+     */
+    private static final Pattern EDGE_WHITESPACE = Pattern.compile("^[\\s\\u00A0\\u202F]+|[\\s\\u00A0\\u202F]+$"); //$NON-NLS-1$
 
     private static Map<String, Currency> currencySymbols = new ConcurrentHashMap<>(4, 0.9f, 1);
 
@@ -135,9 +152,10 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     }
 
     protected String[] splitStringToBeParsed(String value) {
-        String currency = value.replaceAll(VALID_AMOUNT_CHARS, IpsStringUtils.EMPTY).trim();
+        String currency = VALID_AMOUNT_CHARS.matcher(value).replaceAll(IpsStringUtils.EMPTY);
         String[] splittedString = new String[2];
-        splittedString[0] = value.replace(currency, IpsStringUtils.EMPTY).trim();
+        splittedString[0] = EDGE_WHITESPACE.matcher(value.replace(currency, IpsStringUtils.EMPTY))
+                .replaceAll(IpsStringUtils.EMPTY);
         splittedString[1] = currency;
         return splittedString;
     }
@@ -167,29 +185,25 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
     @Override
     protected void verifyInternal(VerifyEvent e, String resultingText) {
-        amountFormat.verifyInternal(e, resultingText);
+        String[] splitResult = splitStringToBeParsed(resultingText);
+        String amountPart = splitResult[0];
+        String currencyPart = splitResult[1];
+
+        amountFormat.verifyInternal(e, amountPart);
 
         if (e.doit) {
             try {
-                BigDecimal number = (BigDecimal)amountFormat.getNumberFormat().parse(resultingText);
+                BigDecimal number = (BigDecimal)amountFormat.getNumberFormat().parse(amountPart);
                 e.doit = (number.scale() <= currentCurrency.getDefaultFractionDigits());
             } catch (ParseException e1) {
                 e.doit = true;
             }
-
         }
-        // allow entering another currency
-        if (!e.doit) {
-            if (resultingText.lastIndexOf(CURRENCY_SEPARATOR) == resultingText.length() - 1) {
-                e.doit = true;
-            }
-            String[] split = resultingText.split(CURRENCY_SEPARATOR);
-            if (split.length != 2) {
-                return;
-            }
-            if (isParsable(amountFormat.getNumberFormat(), split[0]) && split[1].length() <= 3) {
-                e.doit = true;
-            }
+
+        // limit how much of the currency symbol/ISO-code may be entered, regardless of whether a
+        // separator between amount and currency is already present
+        if (e.doit && !currencyPart.isEmpty()) {
+            e.doit = currencyPart.length() <= MAX_CURRENCY_PART_LENGTH;
         }
     }
 
