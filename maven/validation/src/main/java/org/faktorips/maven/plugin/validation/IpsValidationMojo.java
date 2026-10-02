@@ -114,18 +114,23 @@ public class IpsValidationMojo extends AbstractMojo {
         }
 
         initWorkspace();
-        AProject aProject = Abstractions.getWorkspace().getRoot()
-                .getProject(MavenWorkspaceRoot.toProjectName(project));
+        // The shared IIpsModel singleton (and the IIpsProjects/IpsSrcFileContents it caches) is not
+        // safe for true concurrent access across reactor threads, so the actual validation work -
+        // not just the one-time setup above - has to be serialized the same way.
+        synchronized (session) {
+            AProject aProject = Abstractions.getWorkspace().getRoot()
+                    .getProject(MavenWorkspaceRoot.toProjectName(project));
 
-        if (!aProject.isIpsProject()) {
-            log.info("Skipping Faktor-IPS validation as \"" + project.getBasedir()
-                    + "\" is not a Faktor-IPS project (no .ipsproject file found).");
-            return;
+            if (!aProject.isIpsProject()) {
+                log.info("Skipping Faktor-IPS validation as \"" + project.getBasedir()
+                        + "\" is not a Faktor-IPS project (no .ipsproject file found).");
+                return;
+            }
+
+            IIpsProject ipsProject = IIpsModel.get().getIpsProject(aProject);
+
+            new IpsProjectValidator(ipsProject, project, log).validate(!ignoreValidationErrors);
         }
-
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(aProject);
-
-        new IpsProjectValidator(ipsProject, project, log).validate(!ignoreValidationErrors);
     }
 
     private void initWorkspace() {

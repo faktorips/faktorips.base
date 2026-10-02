@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -25,6 +26,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.util.ArgumentCheck;
@@ -145,7 +148,7 @@ public class TableContentsStructureCache {
      * @param tableStructure The new table structure
      */
     public void newTableStructure(IIpsSrcFile tableStructure) {
-        for (IIpsSrcFile tableContent : tableStructureMap.contentWithInvlidStructure) {
+        for (IIpsSrcFile tableContent : tableStructureMap.contentWithInvalidStructure) {
             String tableStructureName = getTableStructureName(tableContent);
             if (Objects.equals(tableStructure.getIpsObjectName(), tableStructureName)) {
                 // call putTableContent without the structure to search the structure again. The
@@ -162,6 +165,18 @@ public class TableContentsStructureCache {
 
     private IIpsSrcFile getReferencedTableStructure(IIpsSrcFile tableContent) {
         String structureName = getTableStructureName(tableContent);
+        if (structureName == null) {
+            /*
+             * Should only happen for an actually incomplete table content, but may also indicate
+             * that the root properties of tableContent could not be read, e.g. due to a transient
+             * I/O or resource-synchronization problem - log it so a recurrence can be traced back
+             * to this file instead of surfacing only as a downstream NullPointerException.
+             */
+            IpsLog.log(new IpsStatus(IStatus.WARNING,
+                    "Could not determine table structure for " + tableContent //$NON-NLS-1$
+                            + ", treating it as having no (valid) table structure.")); //$NON-NLS-1$
+            return null;
+        }
         return tableContent.getIpsProject().findIpsSrcFile(
                 new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE));
     }
@@ -204,7 +219,7 @@ public class TableContentsStructureCache {
 
         private final ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile> tableContentsToStructure = new ConcurrentHashMap<>();
 
-        private final Set<IIpsSrcFile> contentWithInvlidStructure = new HashSet<>();
+        private final Set<IIpsSrcFile> contentWithInvalidStructure = new HashSet<>();
 
         /**
          * Returns the set of table contents for the given table structure.
@@ -223,7 +238,7 @@ public class TableContentsStructureCache {
         public void clear() {
             structureToContentMap.clear();
             tableContentsToStructure.clear();
-            contentWithInvlidStructure.clear();
+            contentWithInvalidStructure.clear();
         }
 
         public IIpsSrcFile getTableStructure(IIpsSrcFile tableContent) {
@@ -232,7 +247,7 @@ public class TableContentsStructureCache {
 
         public synchronized void put(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
             if (tableStructure == null) {
-                contentWithInvlidStructure.add(tableContent);
+                contentWithInvalidStructure.add(tableContent);
             } else {
                 structureToContentMap.put(tableStructure, tableContent);
                 tableContentsToStructure.put(tableContent, tableStructure);
@@ -245,7 +260,7 @@ public class TableContentsStructureCache {
                 structureToContentMap.remove(tableStructure, tableContent);
             }
             tableContentsToStructure.remove(tableContent);
-            contentWithInvlidStructure.remove(tableContent);
+            contentWithInvalidStructure.remove(tableContent);
         }
 
         public synchronized void removeTableStructure(IIpsSrcFile tableStructure) {
