@@ -58,6 +58,8 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
     private static final String PATH_WIZBAN = ICONS_PATH + "wizban/"; // Wizard icons//$NON-NLS-1$
     private static final String PATH_EVIEW = ICONS_PATH + "eview16/"; // View icons, //$NON-NLS-1$
                                                                       // since eclipse 3.7
+    private static final String PATH_MARKERS = ICONS_PATH + "markers/"; // Marker-related//$NON-NLS-1$
+                                                                         // icons.
 
     @Override
     public void initialize(IWorkbenchConfigurer configurer) {
@@ -112,24 +114,24 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         Bundle ideBundle = Platform.getBundle("org.eclipse.ui.ide"); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC,
-                PATH_ETOOL + "build_exec.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "build_exec.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC_HOVER, PATH_ETOOL
-                + "build_exec.gif", false); //$NON-NLS-1$
+                + "build_exec.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_BUILD_EXEC_DISABLED, PATH_DTOOL
-                + "build_exec.gif", false); //$NON-NLS-1$
+                + "build_exec.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_SEARCH_SRC,
-                PATH_ETOOL + "search_src.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "search_src.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_SEARCH_SRC_HOVER, PATH_ETOOL
-                + "search_src.gif", false); //$NON-NLS-1$
+                + "search_src.png", false); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_SEARCH_SRC_DISABLED, PATH_DTOOL
-                + "search_src.gif", false); //$NON-NLS-1$
+                + "search_src.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_NEXT_NAV,
-                PATH_ETOOL + "next_nav.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "next_nav.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PREVIOUS_NAV,
-                PATH_ETOOL + "prev_nav.gif", false); //$NON-NLS-1$
+                PATH_ETOOL + "prev_nav.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_WIZBAN_NEWPRJ_WIZ, PATH_WIZBAN
                 + "newprj_wiz.png", false); //$NON-NLS-1$
@@ -157,15 +159,15 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_DLGBAN_QUICKFIX_DLG, PATH_WIZBAN
                 + "quick_fix.png", false); //$NON-NLS-1$
 
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OPEN_MARKER, PATH_ELOCALTOOL + "gotoobj_tsk.gif", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT, PATH_OBJECT + "prj_obj.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED, PATH_OBJECT + "cprj_obj.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OPEN_MARKER, PATH_ELOCALTOOL + "gotoobj_tsk.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ELCL_QUICK_FIX_ENABLED, PATH_ELOCALTOOL
-                + "smartmode_co.gif", true); //$NON-NLS-1$
+                + "smartmode_co.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_DLCL_QUICK_FIX_DISABLED, PATH_DLOCALTOOL
-                + "smartmode_co.gif", true); //$NON-NLS-1$
+                + "smartmode_co.png", true); //$NON-NLS-1$
 
         // task objects
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_HPRIO_TSK,
@@ -175,41 +177,41 @@ class IpsWorkbenchAdvisor extends WorkbenchAdvisor {
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_LPRIO_TSK,
         // PATH_OBJECT+"lprio_tsk.gif");
 
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_TASK_TSK, PATH_OBJECT + "taskmrk_tsk.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_BKMRK_TSK, PATH_OBJECT + "bkmrk_tsk.gif", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_TASK_TSK, PATH_OBJECT + "taskmrk_tsk.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDE.SharedImages.IMG_OBJS_BKMRK_TSK, PATH_OBJECT + "bkmrk_tsk.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_COMPLETE_TSK, PATH_OBJECT
-                + "complete_tsk.gif", true); //$NON-NLS-1$
+                + "complete_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_INCOMPLETE_TSK, PATH_OBJECT
-                + "incomplete_tsk.gif", true); //$NON-NLS-1$
+                + "incomplete_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_WELCOME_ITEM, PATH_OBJECT
-                + "welcome_item.gif", true); //$NON-NLS-1$
+                + "welcome_item.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_WELCOME_BANNER, PATH_OBJECT
-                + "welcome_banner.gif", true); //$NON-NLS-1$
+                + "welcome_banner.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_ERROR_PATH,
-                PATH_OBJECT + "error_tsk.gif", true); //$NON-NLS-1$
+                PATH_OBJECT + "error_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_WARNING_PATH,
-                PATH_OBJECT + "warn_tsk.gif", true); //$NON-NLS-1$
+                PATH_OBJECT + "warn_tsk.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_OBJS_INFO_PATH,
-                PATH_OBJECT + "info_tsk.gif", true); //$NON-NLS-1$
+                PATH_OBJECT + "info_tsk.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_FLAT_LAYOUT, PATH_ELOCALTOOL
-                + "flatLayout.gif", true); //$NON-NLS-1$
+                + "flatLayout.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_HIERARCHICAL_LAYOUT, PATH_ELOCALTOOL
-                + "hierarchicalLayout.gif", true); //$NON-NLS-1$
+                + "hierarchicalLayout.png", true); //$NON-NLS-1$
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEM_CATEGORY, PATH_ETOOL
-                + "problem_category.gif", true); //$NON-NLS-1$
-        declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_LINKTO_HELP, PATH_ELOCALTOOL
-                + "linkto_help.gif", false); //$NON-NLS-1$
+                + "problem_category.png", true); //$NON-NLS-1$
+        declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_LCL_LINKTO_HELP, PATH_MARKERS
+                + "help_small.png", false); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW, PATH_EVIEW
-                + "problems_view.gif", true); //$NON-NLS-1$
+                + "problems_view.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW_ERROR, PATH_EVIEW
-                + "problems_view_error.gif", true); //$NON-NLS-1$
+                + "problems_view_error.png", true); //$NON-NLS-1$
 
         declareWorkbenchImage(ideBundle, IDEInternalWorkbenchImages.IMG_ETOOL_PROBLEMS_VIEW_WARNING, PATH_EVIEW
-                + "problems_view_warning.gif", true); //$NON-NLS-1$
+                + "problems_view_warning.png", true); //$NON-NLS-1$
 
         // synchronization indicator objects
         // declareRegistryImage(IDEInternalWorkbenchImages.IMG_OBJS_WBET_STAT,

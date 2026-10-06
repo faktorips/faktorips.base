@@ -71,16 +71,7 @@
                name="windowImages"
                value="platform:/plugin/org.faktorips.devtools.core/icons/fips_window16.png,platform:/plugin/org.faktorips.devtools.core/icons/fips_window32.png,platform:/plugin/org.faktorips.devtools.core/icons/fips_window64.png">
          </property>
-         
          <property
-		    name="cssTheme"
-		    value="org.eclipse.e4.ui.css.theme.e4_default">
-		</property>
-		<property
-		    name="applicationCSSResources"
-		    value="platform:/plugin/org.eclipse.platform/images/">
-		</property>
-		<property
 			name="startupForegroundColor"
 			value="565656"/>
 		<property
