@@ -97,6 +97,9 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         @Override
         public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) {
             Object modelObject = getModelObject();
+            if (modelObject instanceof AResource aresource) {
+                modelObject = aresource.unwrap();
+            }
             if (modelObject instanceof IResource resource) {
                 if (resource.getType() == IResource.ROOT) {
                     return new ResourceTraversal[] { new ResourceTraversal(((IWorkspaceRoot)resource).getProjects(),
@@ -105,7 +108,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
                 return new ResourceTraversal[] { new ResourceTraversal(new IResource[] { resource },
                         IResource.DEPTH_INFINITE, IResource.NONE) };
             }
-            return null;
+            return new ResourceTraversal[0];
         }
 
     }

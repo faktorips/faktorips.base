@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -419,7 +420,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
                     // store elements for product definition view
                     elementsInTree.put(root, root);
                     // store to be mapped objects
-                    elementsInTree.put(root.getEnclosingResource(), root);
+                    elementsInTree.put(Wrappers.unwrap(root.getEnclosingResource()), root);
                 }
                 return rootResult.toArray();
             }
