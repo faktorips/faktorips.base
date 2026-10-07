@@ -128,6 +128,9 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     private static IpsModel theInstance;
 
+    private static final Object LOCK = new Object();
+    private final Object lock = new Object();
+
     /** set of model change listeners that are notified about model changes */
     private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<>();
 
@@ -205,12 +208,14 @@ public class IpsModel extends IpsElement implements IIpsModel {
      *                 environment.</em></strong>
      */
     @Deprecated
-    public static synchronized void reInit() {
-        if (theInstance != null) {
-            theInstance.stopListeningToResourceChanges();
+    public static void reInit() {
+        synchronized (LOCK) {
+            if (theInstance != null) {
+                theInstance.stopListeningToResourceChanges();
+            }
+            theInstance = WorkspaceAbstractions.createIpsModel();
+            theInstance.startListeningToResourceChanges();
         }
-        theInstance = WorkspaceAbstractions.createIpsModel();
-        theInstance.startListeningToResourceChanges();
     }
 
     /**
@@ -221,11 +226,13 @@ public class IpsModel extends IpsElement implements IIpsModel {
      *                 implementation details, otherwise use {@link IIpsModel#get}!</em></strong>
      */
     @Deprecated
-    public static final synchronized IpsModel get() {
-        if (theInstance == null) {
-            theInstance = WorkspaceAbstractions.createIpsModel();
+    public static final IpsModel get() {
+        synchronized (LOCK) {
+            if (theInstance == null) {
+                theInstance = WorkspaceAbstractions.createIpsModel();
+            }
+            return theInstance;
         }
-        return theInstance;
     }
 
     /**
@@ -785,23 +792,25 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * returned. If the builder set for the current builder set id is not found in the set of
      * registered builder sets a warning is logged and an EmptyBuilderSet will be returned.
      */
-    public synchronized IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
-        ArgumentCheck.notNull(project, this);
-        reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
-        IIpsArtefactBuilderSet builderSet = getIpsProjectData(project).getIpsArtefactBuilderSet();
-        if (builderSet == null) {
-            return registerBuilderSet(project);
-        }
+    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet(IIpsProject project, boolean reinit) {
+        synchronized (lock) {
+            ArgumentCheck.notNull(project, this);
+            reinitIpsProjectPropertiesIfNecessary((IpsProject)project);
+            IIpsArtefactBuilderSet builderSet = getIpsProjectData(project).getIpsArtefactBuilderSet();
+            if (builderSet == null) {
+                return registerBuilderSet(project);
+            }
 
-        IIpsProjectProperties data = getIpsProjectProperties(project);
-        if (!builderSet.getId().equals(getBuilderSetId(data))) {
-            return registerBuilderSet(project);
-        }
+            IIpsProjectProperties data = getIpsProjectProperties(project);
+            if (!builderSet.getId().equals(getBuilderSetId(data))) {
+                return registerBuilderSet(project);
+            }
 
-        if (reinit) {
-            initBuilderSet(builderSet, project, data);
+            if (reinit) {
+                initBuilderSet(builderSet, project, data);
+            }
+            return builderSet;
         }
-        return builderSet;
     }
 
     @Override
@@ -1172,9 +1181,11 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Removes the content for the given IpsSrcFile.
      */
-    public synchronized void removeIpsSrcFileContent(IIpsSrcFile file) {
-        if (file != null) {
-            ipsObjectsMap.remove(file);
+    public void removeIpsSrcFileContent(IIpsSrcFile file) {
+        synchronized (lock) {
+            if (file != null) {
+                ipsObjectsMap.remove(file);
+            }
         }
     }
 
@@ -1196,41 +1207,43 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * @param loadCompleteContent <code>true</code> if the completely file should be read,
      *            <code>false</code> if only the properties will be read
      */
-    public synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file, boolean loadCompleteContent) {
-        if (file == null) {
-            return null;
-        }
-
-        IpsSrcFileContent content = ipsObjectsMap.get(file);
-        if (content == null) {
-            if (file.exists()) {
-                // new content
-                content = readContentFromFile(file, loadCompleteContent);
-                cache(file, content);
-                return content;
-            } else {
+    public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file, boolean loadCompleteContent) {
+        synchronized (lock) {
+            if (file == null) {
                 return null;
             }
-        }
 
-        AResource enclResource = file.getEnclosingResource();
-        if (enclResource == null) {
+            IpsSrcFileContent content = ipsObjectsMap.get(file);
+            if (content == null) {
+                if (file.exists()) {
+                    // new content
+                    content = readContentFromFile(file, loadCompleteContent);
+                    cache(file, content);
+                    return content;
+                } else {
+                    return null;
+                }
+            }
+
+            AResource enclResource = file.getEnclosingResource();
+            if (enclResource == null) {
+                return content;
+            }
+
+            long resourceModStamp = enclResource.getModificationStamp();
+            // existing, synchronized content
+            if (content.getModificationStamp() == resourceModStamp) {
+                return checkSynchronizedContent(content, loadCompleteContent);
+            }
+
+            // existing, but unsynchronized content
+            if (loadCompleteContent) {
+                content.initContentFromFile();
+            } else {
+                content.initRootPropertiesFromFile();
+            }
             return content;
         }
-
-        long resourceModStamp = enclResource.getModificationStamp();
-        // existing, synchronized content
-        if (content.getModificationStamp() == resourceModStamp) {
-            return checkSynchronizedContent(content, loadCompleteContent);
-        }
-
-        // existing, but unsynchronized content
-        if (loadCompleteContent) {
-            content.initContentFromFile();
-        } else {
-            content.initRootPropertiesFromFile();
-        }
-        return content;
     }
 
     /**
@@ -1279,8 +1292,10 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     @Override
-    public synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
-        return getIpsSrcFileContent(file, true);
+    public IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
+        synchronized (lock) {
+            return getIpsSrcFileContent(file, true);
+        }
     }
 
     public void ipsSrcFileContentHasChanged(ContentChangeEvent event) {

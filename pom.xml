@@ -1,15 +1,4 @@
-<!-- ######################################################################## -->
-<!-- -->
-<!-- Copyright (c) Faktor Zehn GmbH - faktorzehn.org -->
-<!-- -->
-<!-- This source code is available under the terms of the AGPL Affero General -->
-<!-- Public License version 3.0 -->
-<!-- -->
-<!-- Please see LICENSE.txt for full license terms, including the additional -->
-<!-- permissions and -->
-<!-- restrictions as well as the possibility of alternative license terms. -->
-<!-- -->
-<!-- ########################################################################### -->
+<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          child.project.url.inherit.append.path="false">
@@ -88,36 +77,36 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <!-- plugin versions -->
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
+        <maven-deploy-plugin.version>3.2.0</maven-deploy-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+        <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
-        <maven-site-plugin.version>3.21.0</maven-site-plugin.version>
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-        <maven-plugin-dependency-jcl-over-slf4j.version>2.0.16</maven-plugin-dependency-jcl-over-slf4j.version>
+        <maven-plugin-dependency-jcl-over-slf4j.version>2.0.20</maven-plugin-dependency-jcl-over-slf4j.version>
         <maven-plugin-dependency-commons-collections.version>3.2.2</maven-plugin-dependency-commons-collections.version>
         <maven-plugin-dependency-commons-pool2.version>2.12.1</maven-plugin-dependency-commons-pool2.version>
-        <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
+        <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
         <!-- Code quality -->
         <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
-        <checkstyle.version>10.21.4</checkstyle.version>
-        <jacoco.version>0.8.12</jacoco.version>
-        <spotbugs-maven-plugin.version>4.9.2.0</spotbugs-maven-plugin.version>
-        <spotbugs.version>4.9.2</spotbugs.version>
+        <checkstyle.version>10.26.1</checkstyle.version>
+        <jacoco.version>0.8.15</jacoco.version>
+        <spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
+        <spotbugs.version>4.10.4</spotbugs.version>
         <!-- Tycho & Eclipse-->
         <!-- tycho.version is defined in maven.config for both .mvn/extensions.xml && pom.xml -->
-        <xtend-maven-plugin.version>2.38.0</xtend-maven-plugin.version>
+        <xtend-maven-plugin.version>2.44.0</xtend-maven-plugin.version>
         <!-- Others -->
-        <moditect-maven-plugin.version>1.2.2.Final</moditect-maven-plugin.version>
-        <flatten-maven-plugin.version>1.7.2</flatten-maven-plugin.version>
+        <moditect-maven-plugin.version>1.3.0.Final</moditect-maven-plugin.version>
+        <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
         <auto-service.version>1.1.1</auto-service.version>
-        <build-helper-maven-plugin.version>3.6.0</build-helper-maven-plugin.version>
-        <revapi-maven-plugin.version>0.15.0</revapi-maven-plugin.version>
-        <revapi-java.version>0.28.1</revapi-java.version>
+        <build-helper-maven-plugin.version>3.6.2</build-helper-maven-plugin.version>
+        <revapi-maven-plugin.version>0.15.1</revapi-maven-plugin.version>
+        <revapi-java.version>0.28.4</revapi-java.version>
     </properties>
 
     <distributionManagement>
@@ -147,8 +136,7 @@
         <module>faktorips-coverage</module>
     </modules>
 
-    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false"
-         child.scm.url.inherit.append.path="false">
+    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
         <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
         <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
         <url>https://github.com/faktorips/faktorips.base</url>

@@ -1,0 +1,54 @@
+{
+    "27.1.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                      "code": "java.annotation.added",
+                      "old": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaContainer",
+                      "new": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaContainer",
+                      "annotation": "@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {\"USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION\"}, justification = \"markers is not exposed\")",
+                      "justification": "Faulty SpotBugs analysis"
+                    },
+                    {
+                      "code": "java.annotation.added",
+                      "old": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFile",
+                      "new": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFile",
+                      "annotation": "@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {\"USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION\"}, justification = \"markers is not exposed\")",
+                      "justification": "Faulty SpotBugs analysis"
+                    },
+                    {
+                      "code": "java.annotation.added",
+                      "old": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFolder",
+                      "new": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFolder",
+                      "annotation": "@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {\"USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION\"}, justification = \"markers is not exposed\")",
+                      "justification": "Faulty SpotBugs analysis"
+                    },
+                    {
+                      "code": "java.annotation.added",
+                      "old": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject",
+                      "new": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject",
+                      "annotation": "@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {\"USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION\"}, justification = \"markers is not exposed\")",
+                      "justification": "Faulty SpotBugs analysis"
+                    },
+                    {
+                      "code": "java.annotation.added",
+                      "old": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker)",
+                      "new": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker)",
+                      "annotation": "@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {\"USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION\"}, justification = \"markers is not exposed\")",
+                      "justification": "Faulty SpotBugs analysis"
+                    },
+                    {
+                      "code": "java.annotation.added",
+                      "old": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaWorkspaceRoot",
+                      "new": "method void org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource::deleteMarker(org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaMarker) @ org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaWorkspaceRoot",
+                      "annotation": "@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = {\"USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION\"}, justification = \"markers is not exposed\")",
+                      "justification": "Faulty SpotBugs analysis"
+                    }
+                ]
+            }
+        }
+    ]
+}

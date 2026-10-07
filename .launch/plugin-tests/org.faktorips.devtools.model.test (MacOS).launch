@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
+    <booleanAttribute key="add_console" value="false"/>
     <booleanAttribute key="append.args" value="true"/>
     <booleanAttribute key="askclear" value="false"/>
     <booleanAttribute key="automaticAdd" value="false"/>
@@ -65,8 +66,7 @@
         <setEntry value="jakarta.inject.jakarta.inject-api*1.0.5@default:default"/>
         <setEntry value="jakarta.inject.jakarta.inject-api*2.0.1@default:default"/>
         <setEntry value="jakarta.servlet-api@default:default"/>
-        <setEntry value="jakarta.servlet-api*6.1.0@default:default"/>
-        <setEntry value="jakarta.xml.bind-api@default:default"/>
+        <setEntry value="jakarta.xml.bind-api*4.0.2@default:default"/>
         <setEntry value="javax.servlet.jsp-api@default:default"/>
         <setEntry value="jaxb-api@default:default"/>
         <setEntry value="jaxen@default:default"/>
@@ -89,8 +89,8 @@
         <setEntry value="org.apache.commons.commons-codec@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4*4.5.0@default:default"/>
         <setEntry value="org.apache.commons.commons-io*2.18.0@default:default"/>
-        <setEntry value="org.apache.commons.lang3*3.20.0@default:default"/>
         <setEntry value="org.apache.commons.commons-logging@default:default"/>
+        <setEntry value="org.apache.commons.lang3*3.20.0@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.commons.text*1.15.0@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
@@ -237,7 +237,7 @@
         <setEntry value="org.eclipse.platform@default:default"/>
         <setEntry value="org.eclipse.search.core@default:default"/>
         <setEntry value="org.eclipse.search@default:default"/>
-        <setEntry value="org.eclipse.swt.svg@default:default"/>
+        <setEntry value="org.eclipse.swt.svg@default:false"/>
         <setEntry value="org.eclipse.swt@default:default"/>
         <setEntry value="org.eclipse.team.core@default:default"/>
         <setEntry value="org.eclipse.team.ui@default:default"/>
@@ -279,7 +279,6 @@
         <setEntry value="org.objenesis@default:default"/>
         <setEntry value="org.opentest4j@default:default"/>
         <setEntry value="org.osgi.service.cm@default:default"/>
-        <setEntry value="org.osgi.service.component.annotations@default:default"/>
         <setEntry value="org.osgi.service.component@default:default"/>
         <setEntry value="org.osgi.service.device@default:default"/>
         <setEntry value="org.osgi.service.event@default:default"/>

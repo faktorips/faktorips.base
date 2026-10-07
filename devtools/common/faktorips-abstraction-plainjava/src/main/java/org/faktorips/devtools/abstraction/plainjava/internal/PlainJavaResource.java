@@ -31,6 +31,7 @@ import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public abstract class PlainJavaResource extends AWrapper<File> implements AResource {
 
@@ -234,6 +235,7 @@ public abstract class PlainJavaResource extends AWrapper<File> implements AResou
         }
     }
 
+    @SuppressFBWarnings(value = "USO_UNSAFE_ACCESSIBLE_OBJECT_SYNCHRONIZATION", justification = "markers is not exposed")
     public void deleteMarker(PlainJavaMarker plainJavaMarker) {
         if (markers != null) {
             synchronized (markers) {

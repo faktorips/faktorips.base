@@ -94,6 +94,30 @@
                       "code": "java.method.addedToInterface",
                       "new": "method void org.faktorips.devtools.model.pctype.IValidationRule::setMessageCodeDerivedFromName(boolean)",
                       "justification": "FIPS-14098: Checkbox to control whether the message code is derived from the rule's name"
+                    },
+                    {
+                      "code": "java.method.varargOverloadsOnlyDifferInVarargParameter",
+                      "old": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.Class<?>[])",
+                      "new": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.Class<?>[])",
+                      "justification": "Weird RevAPI"
+                    },
+                    {
+                      "code": "java.method.varargOverloadsOnlyDifferInVarargParameter",
+                      "old": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.String[])",
+                      "new": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.String[])",
+                      "justification": "Weird RevAPI"
+                    },
+                    {
+                      "code": "java.method.varargOverloadsOnlyDifferInVarargParameter",
+                      "old": "method java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, java.lang.Object[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+                      "new": "method <T> java.lang.String org.eclipse.osgi.util.NLS::bind(java.lang.String, T[]) @ org.faktorips.devtools.model.internal.ipsproject.Messages",
+                      "justification": "OSGI Framework update"
+                    },
+                    {
+                      "code": "java.method.varargOverloadsOnlyDifferInVarargParameter",
+                      "old": "method java.lang.String org.faktorips.devtools.model.internal.ipsproject.Messages::bind(java.lang.String, java.lang.String[])",
+                      "new": "method java.lang.String org.faktorips.devtools.model.internal.ipsproject.Messages::bind(java.lang.String, java.lang.String[])",
+                      "justification": "Weird RevAPI"
                     }
                 ]
             }

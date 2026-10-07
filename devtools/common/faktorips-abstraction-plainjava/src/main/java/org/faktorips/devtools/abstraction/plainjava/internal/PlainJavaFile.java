@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 
@@ -50,7 +51,10 @@ public class PlainJavaFile extends PlainJavaResource implements AFile {
     @Override
     public void create(InputStream source, IProgressMonitor monitor) {
         withMonitor(file(), monitor, "Creating", p -> { //$NON-NLS-1$
-            p.getParent().toFile().mkdirs();
+            Path parent = p.getParent();
+            if (parent != null) {
+                parent.toFile().mkdirs();
+            }
             if (source == null) {
                 File file = p.toFile();
                 if (!file.exists()) {

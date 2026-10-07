@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -12,12 +12,16 @@
 
     <packaging>eclipse-plugin</packaging>
 
+    <properties>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+    </properties>
+  
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.6</version>
+                <version>${maven-antrun-plugin.version}</version>
                 <executions>
 
                     <!-- Change the plugin.properties -->
@@ -26,10 +30,10 @@
                         <phase>validate</phase>
                         <configuration>
                             <target>
-                                <copy file="${basedir}/about.mappings" tofile="${basedir}/about.mappings.backup" />
+                                <copy file="${basedir}/about.mappings" tofile="${basedir}/about.mappings.backup"/>
                                 <replace file="${basedir}/about.mappings">
-                                    <replacefilter token="@version@" value="${unqualifiedVersion}" />
-                                    <replacefilter token="@buildId@" value="${buildQualifier}" />
+                                    <replacefilter token="@version@" value="${unqualifiedVersion}"/>
+                                    <replacefilter token="@buildId@" value="${buildQualifier}"/>
                                 </replace>
 
                             </target>
@@ -45,8 +49,8 @@
                         <phase>verify</phase>
                         <configuration>
                             <target>
-                                <delete file="${basedir}/about.mappings" />
-                                <move file="${basedir}/about.mappings.backup" tofile="${basedir}/about.mappings" />
+                                <delete file="${basedir}/about.mappings"/>
+                                <move file="${basedir}/about.mappings.backup" tofile="${basedir}/about.mappings"/>
                             </target>
                         </configuration>
                         <goals>

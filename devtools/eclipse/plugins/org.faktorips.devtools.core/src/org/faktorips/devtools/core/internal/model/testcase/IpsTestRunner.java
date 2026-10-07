@@ -125,6 +125,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner"));
     }
 
+    private final Object lock = new Object();
     private int port;
     private IIpsProject ipsProject;
     private BufferedReader reader;
@@ -950,79 +951,80 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Starts the test runner.
      */
     @Override
-    public synchronized void startTestRunnerJob(String classpathRepository,
+    public void startTestRunnerJob(String classpathRepository,
             String testsuite,
             String mode,
             ILaunch launch) throws CoreException {
+        synchronized (lock) {
+            trace("Start test runner Job"); //$NON-NLS-1$
 
-        trace("Start test runner Job"); //$NON-NLS-1$
+            if (isRunningTestRunner()) {
+                MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
+                        Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Text);
+                trace("Cancel test runner start because a test run is already started."); //$NON-NLS-1$
+                // terminate the given jobLaunch if possible
+                terminateLaunch(launch);
+                return;
+            }
 
-        if (isRunningTestRunner()) {
-            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
-                    Messages.IpsTestRunner_InfoDialogTestAlreadyRunning_Text);
-            trace("Cancel test runner start because a test run is already started."); //$NON-NLS-1$
-            // terminate the given jobLaunch if possible
-            terminateLaunch(launch);
-            return;
-        }
+            if (ipsProject == null) {
+                /*
+                 * if no project is given, try to extract and find the project from the given
+                 * classpath repository, this could be happen if the test case are started directly
+                 * by using the run history without further project information
+                 */
+                ipsProject = getIpsProjectFromTocPath(classpathRepository);
+            }
 
-        if (ipsProject == null) {
+            if (ipsProject == null) {
+                MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
+                        Messages.IpsTestRunner_Error_ProjectTheTestBelongsToNotFound);
+                trace("Cancel test run, no project found."); //$NON-NLS-1$
+                // terminate the given jobLaunch if possible
+                terminateLaunch(launch);
+                return;
+            }
+
+            Boolean javaProjectErrorFree = ipsProject.isJavaProjectErrorFree(true);
+            // check if there are errors in the java project and referenced java projects
+            if (Boolean.FALSE.equals(javaProjectErrorFree)) {
+                MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
+                        Messages.IpsTestRunner_InfoDialogErrorsInProject_Text);
+                trace("Cancel test runner start because the project contains errors."); //$NON-NLS-1$
+                terminateLaunch(launch);
+                return;
+            }
+            // check if the java project was build
+            if (javaProjectErrorFree == null) {
+                MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
+                        Messages.IpsTestRunner_InfoDialogProjectWasNotBuild_Text);
+                trace("Cancel test runner start because the project wasn't build."); //$NON-NLS-1$
+                terminateLaunch(launch);
+                return;
+            }
+
+            validateMaxHeapSize();
+
+            job = new TestRunnerJob(this, classpathRepository, testsuite, mode, launch);
+
+            job.setSystem(false);
             /*
-             * if no project is given, try to extract and find the project from the given classpath
-             * repository, this could be happen if the test case are started directly by using the
-             * run history without further project information
+             * we don't need to specify a rule here, because the ips test runner didn't depend on a
+             * rule, there will be no blocking events (e.g. builder could be depend on job finishing
+             * or something else) IWorkspace workspace = ResourcesPlugin.getWorkspace();
+             * job.setRule(workspace.getRoot());
              */
-            ipsProject = getIpsProjectFromTocPath(classpathRepository);
+            try {
+                /*
+                 * wait until the build has finished, the join invocation will block until the
+                 * auto-build job completes, or until the join is interrupted or canceled.
+                 */
+                Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
+            } catch (OperationCanceledException | InterruptedException ignored) {
+                IpsPlugin.log(ignored);
+            }
+            job.schedule();
         }
-
-        if (ipsProject == null) {
-            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
-                    Messages.IpsTestRunner_Error_ProjectTheTestBelongsToNotFound);
-            trace("Cancel test run, no project found."); //$NON-NLS-1$
-            // terminate the given jobLaunch if possible
-            terminateLaunch(launch);
-            return;
-        }
-
-        Boolean javaProjectErrorFree = ipsProject.isJavaProjectErrorFree(true);
-        // check if there are errors in the java project and referenced java projects
-        if (Boolean.FALSE.equals(javaProjectErrorFree)) {
-            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
-                    Messages.IpsTestRunner_InfoDialogErrorsInProject_Text);
-            trace("Cancel test runner start because the project contains errors."); //$NON-NLS-1$
-            terminateLaunch(launch);
-            return;
-        }
-        // check if the java project was build
-        if (javaProjectErrorFree == null) {
-            MessageDialog.openWarning(null, Messages.IpsTestRunner_InfoDialogTestCouldNotStarted_Title,
-                    Messages.IpsTestRunner_InfoDialogProjectWasNotBuild_Text);
-            trace("Cancel test runner start because the project wasn't build."); //$NON-NLS-1$
-            terminateLaunch(launch);
-            return;
-        }
-
-        validateMaxHeapSize();
-
-        job = new TestRunnerJob(this, classpathRepository, testsuite, mode, launch);
-
-        job.setSystem(false);
-        /*
-         * we don't need to specify a rule here, because the ips test runner didn't depend on a
-         * rule, there will be no blocking events (e.g. builder could be depend on job finishing or
-         * something else) IWorkspace workspace = ResourcesPlugin.getWorkspace();
-         * job.setRule(workspace.getRoot());
-         */
-        try {
-            /*
-             * wait until the build has finished, the join invocation will block until the
-             * auto-build job completes, or until the join is interrupted or canceled.
-             */
-            Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-        } catch (OperationCanceledException | InterruptedException ignored) {
-            IpsPlugin.log(ignored);
-        }
-        job.schedule();
     }
 
     /**

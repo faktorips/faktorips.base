@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,6 +16,11 @@
     <description>Deprecated for removal since 26.7: Use faktorips-runtime-jakarta-xml instead. Faktor-IPS Runtime Extension for XML binding with classic JAXB as included in Java 8 and Java EE up to 8.
     You need to provide the jaxb-api as dependency. It is marked as provided here because it is often included in application servers and any version required by Faktor-IPS might collide with them.
     </description>
+
+    <properties>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jaxb-runtime.version>2.3.9</jaxb-runtime.version>
+    </properties>
 
     <build>
         <plugins>
@@ -112,7 +117,7 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <version>${jaxb-api.version}</version>
             <scope>provided</scope>
         </dependency>
         <!-- Test -->
@@ -120,7 +125,7 @@
             <!-- needed when running the tests with Java > 8 -->
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.9</version>
+            <version>${jaxb-runtime.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

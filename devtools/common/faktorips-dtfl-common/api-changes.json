@@ -1,4 +1,26 @@
 {
+    "27.1.0": [
+        {
+            "extension": "revapi.differences",
+            "configuration": {
+                "criticality": "documented",
+                "differences": [
+                    {
+                        "code": "java.method.varargOverloadsOnlyDifferInVarargParameter",
+                        "old": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.Class<?>[])",
+                        "new": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.Class<?>[])",
+                        "justification": "Weird RevAPI"
+                    },
+                    {
+                        "code": "java.method.varargOverloadsOnlyDifferInVarargParameter",
+                        "old": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.String[])",
+                        "new": "method org.faktorips.codegen.JavaCodeFragmentBuilder org.faktorips.codegen.JavaCodeFragmentBuilder::appendGenerics(java.lang.String[])",
+                        "justification": "Weird RevAPI"
+                    }
+                ]
+            }
+        }
+    ],
     "26.7.0": [
         {
             "extension": "revapi.differences",

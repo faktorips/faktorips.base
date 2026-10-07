@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -54,7 +54,7 @@ public class SingletonMockHelper {
      * If you want to mock something which usually has heavyweight initialization, you should do
      * that initialization in it's constructor and only instantiate the instance on the first call
      * to getInstance() and then set the instance via this helper before calling getInstance().
-     * 
+     *
      * @param <T> the type of the singleton class
      * @param clazz the singleton class
      * @param instance the new instance
@@ -65,7 +65,8 @@ public class SingletonMockHelper {
         Field[] fields = clazz.getDeclaredFields();
         Field singletonField = null;
         for (Field field : fields) {
-            if (field.getType().isAssignableFrom(clazz) && Modifier.isStatic(field.getModifiers())) {
+            if (field.getType().isAssignableFrom(clazz) && Modifier.isStatic(field.getModifiers())
+                    && !field.getType().isAssignableFrom(Object.class)) {
                 if (singletonField != null) {
                     throw new IllegalArgumentException(
                             "The class %s has more than one field of it's type, so the field to be set for the singleton pattern could not be determined."
