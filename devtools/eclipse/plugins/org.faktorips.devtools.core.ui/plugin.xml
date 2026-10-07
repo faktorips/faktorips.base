@@ -3270,4 +3270,13 @@
           class="org.faktorips.devtools.core.ui.EclipseIpsWorkspaceInteractions">
     </workspaceInteractions>
  </extension>
+ <extension
+       id="org.faktorips.devtools.core.ui.IconUriMigrationProcessor"
+       point="org.eclipse.e4.workbench.model">
+    <processor
+          apply="always"
+          beforefragment="false"
+          class="org.faktorips.devtools.core.ui.internal.IconUriMigrationProcessor">
+    </processor>
+ </extension>
 </plugin>
