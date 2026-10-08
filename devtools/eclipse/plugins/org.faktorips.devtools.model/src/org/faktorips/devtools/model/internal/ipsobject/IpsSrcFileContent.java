@@ -305,19 +305,22 @@ public class IpsSrcFileContent {
         if (initialized) {
             return getPropertyFromIpsObject(propertyName);
         }
-        if (rootProperties == null) {
+        Map<String, String> currentRootProperties = rootProperties;
+        if (currentRootProperties == null) {
             synchronized (this) {
-                if (rootProperties == null) {
+                currentRootProperties = rootProperties;
+                if (currentRootProperties == null) {
                     // Lazy load root properties.
                     initRootPropertiesFromFile();
+                    currentRootProperties = rootProperties;
                 }
             }
         }
         /*
-         * rootProperties could be null if the workspace is out of sync and the file doesn't exist
-         * anymore.
+         * currentRootProperties could still be null if the workspace is out of sync and the file
+         * doesn't exist anymore.
          */
-        return (rootProperties != null ? rootProperties.get(propertyName) : null);
+        return (currentRootProperties != null ? currentRootProperties.get(propertyName) : null);
     }
 
     private String getPropertyFromIpsObject(String propertyName) {

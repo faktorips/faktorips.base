@@ -10,22 +10,28 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.junit.Before;
 import org.junit.Test;
@@ -218,6 +224,28 @@ public class TableContentsStructureCacheTest {
         List<IIpsSrcFile> tableContentsNew = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(1, tableContentsNew.size());
         assertThat(tableContentsNew, hasItem(tableContent1));
+    }
+
+    @Test
+    public void testGetTableContents_structureNameNull_logsWarning() throws Exception {
+        setUpProjectWithTableContents(ipsProjectA, tableContent1);
+        lenient().when(tableContent1.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(null);
+
+        List<IStatus> logs = new ArrayList<>();
+        ALogListener logListener = (status, plugin) -> logs.add(status);
+        ALog log = IpsLog.get();
+        log.addLogListener(logListener);
+        try {
+            List<IIpsSrcFile> tableContents = tableContentsStructureCacheA.getTableContents(tableStructure);
+
+            assertTrue(tableContents.isEmpty());
+        } finally {
+            log.removeLogListener(logListener);
+        }
+
+        assertEquals(1, logs.size());
+        assertEquals(IStatus.WARNING, logs.get(0).getSeverity());
+        assertThat(logs.get(0).getMessage(), containsString("Could not determine table structure"));
     }
 
     @Test
