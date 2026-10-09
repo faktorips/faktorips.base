@@ -10,12 +10,17 @@
 
 package org.faktorips.devtools.model.builder.propertybuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
@@ -24,6 +29,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.builder.java.JavaBuilderSet;
 import org.faktorips.devtools.model.builder.labels.LabelAndDescriptionPropertiesBuilder;
+import org.faktorips.devtools.model.builder.plugin.IpsBuilderPlugin;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -31,6 +37,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
@@ -76,15 +83,54 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         super.beforeBuildProcess(project, buildKind);
         for (IIpsPackageFragmentRoot srcRoot : project.getSourceIpsPackageFragmentRoots()) {
             for (ISupportedLanguage supportedLanguage : project.getReadOnlyProperties().getSupportedLanguages()) {
-                if (buildKind == ABuildKind.FULL) {
-                    getMessagesGenerator(srcRoot, supportedLanguage).loadMessages();
-                }
                 AFile propertyFile = getPropertyFile(srcRoot, supportedLanguage);
-                if (propertyFile == null) {
-                    continue;
-                }
+                loadMessagesOrRecover(srcRoot, supportedLanguage, propertyFile, buildKind);
                 createFolderIfNotThere((AFolder)propertyFile.getParent());
             }
+        }
+    }
+
+    private void loadMessagesOrRecover(IIpsPackageFragmentRoot srcRoot,
+            ISupportedLanguage supportedLanguage,
+            AFile propertyFile,
+            ABuildKind buildKind) {
+        try {
+            AbstractPropertiesGenerator generator = getMessagesGenerator(srcRoot, supportedLanguage);
+            if (buildKind == ABuildKind.FULL) {
+                generator.loadMessages();
+            }
+            // CSOFF: Illegal Catch
+        } catch (RuntimeException e) {
+            // CSON: Illegal Catch
+            logAndDeleteCorruptedFile(propertyFile, e);
+            propertiesGeneratorMap.remove(propertyFile);
+            getMessagesGenerator(srcRoot, supportedLanguage);
+        }
+    }
+
+    private void logAndDeleteCorruptedFile(AFile propertyFile, RuntimeException cause) {
+        String content = readContentsQuietly(propertyFile);
+        IpsLog.get().log(new Status(IStatus.WARNING, IpsBuilderPlugin.PLUGIN_ID,
+                "Could not read generated file " + propertyFile + ", it will be deleted and regenerated. Content:\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + content,
+                cause));
+        try {
+            if (propertyFile.exists()) {
+                propertyFile.delete(null);
+            }
+        } catch (IpsException e) {
+            IpsLog.get().log(new Status(IStatus.ERROR, IpsBuilderPlugin.PLUGIN_ID,
+                    "Could not delete corrupted generated file " + propertyFile, e));
+        }
+    }
+
+    private String readContentsQuietly(AFile propertyFile) {
+        try (InputStream contents = propertyFile.getContents()) {
+            return new String(contents.readAllBytes(), StandardCharsets.ISO_8859_1);
+            // CSOFF: Illegal Catch
+        } catch (IOException | RuntimeException e) {
+            // CSON: Illegal Catch
+            return "<content could not be read: " + e.getMessage() + ">"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

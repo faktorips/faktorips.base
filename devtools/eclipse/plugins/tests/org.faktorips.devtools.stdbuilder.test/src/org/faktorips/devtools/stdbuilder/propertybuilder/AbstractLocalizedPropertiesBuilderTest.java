@@ -11,11 +11,14 @@
 package org.faktorips.devtools.stdbuilder.propertybuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayInputStream;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -69,6 +72,32 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
     }
 
     @Test
+    public void testBeforeBuildProcess_CorruptedFile_IsDeleted() throws Exception {
+        setUpBuilderAndDependencies();
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
+        propertyFile.create(new ByteArrayInputStream("<<<<<<< HEAD\n=======\n>>>>>>> branch".getBytes()), null);
+        doThrow(new ArrayIndexOutOfBoundsException()).when(builder.generator).loadMessages();
+
+        builder.beforeBuildProcess(ipsProject, ABuildKind.FULL);
+
+        assertFalse(propertyFile.exists());
+    }
+
+    @Test
+    public void testBeforeBuildProcess_GeneratorCreationFails_FileIsDeleted() throws Exception {
+        setUpBuilderAndDependencies();
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
+        propertyFile.create(new ByteArrayInputStream("<<<<<<< HEAD".getBytes()), null);
+        TestBuilder failingBuilder = new TestBuilder(ipsProject.getIpsArtefactBuilderSet());
+        failingBuilder.failOnNextCreate = true;
+
+        failingBuilder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
+
+        assertFalse(propertyFile.exists());
+        assertFalse(failingBuilder.failOnNextCreate);
+    }
+
+    @Test
     public void testAfterBuildProcess() throws Exception {
         setUpBuilderAndDependencies();
 
@@ -102,6 +131,8 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
 
         private AbstractPropertiesGenerator generator = mock(AbstractPropertiesGenerator.class);
 
+        private boolean failOnNextCreate;
+
         public TestBuilder(IIpsArtefactBuilderSet builderSet) {
             super(builderSet, new LocalizedStringsSet(AbstractLocalizedPropertiesBuilder.class));
         }
@@ -129,6 +160,10 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
         @Override
         protected AbstractPropertiesGenerator createNewMessageGenerator(AFile propertyFile,
                 ISupportedLanguage supportedLanguage) {
+            if (failOnNextCreate) {
+                failOnNextCreate = false;
+                throw new ArrayIndexOutOfBoundsException();
+            }
             return generator;
         }
 
