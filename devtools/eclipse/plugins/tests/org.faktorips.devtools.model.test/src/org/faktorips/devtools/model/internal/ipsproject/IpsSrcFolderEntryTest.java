@@ -14,11 +14,15 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -29,6 +33,8 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -346,5 +352,25 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
         assertThat(ipsSrcFolderEntry.getIpsPackageFragmentRootName(), is("src/main/ips"));
 
+    }
+
+    @Test
+    public void testExists_NameWithIllegalFileNameCharacter() {
+        AFolder sourceFolder = mock(AFolder.class);
+        IpsSrcFolderEntry ipsSrcFolderEntry = new IpsSrcFolderEntry(path, sourceFolder);
+
+        boolean exists = ipsSrcFolderEntry.exists(new QualifiedNameType("a.b.*", IpsObjectType.ENUM_TYPE));
+
+        assertThat(exists, is(false));
+        verify(sourceFolder, never()).getFile(any(Path.class));
+    }
+
+    @Test
+    public void testFindIpsSrcFile_NameWithIllegalFileNameCharacter() {
+        AFolder sourceFolder = mock(AFolder.class);
+        IpsSrcFolderEntry ipsSrcFolderEntry = new IpsSrcFolderEntry(path, sourceFolder);
+
+        assertThat(ipsSrcFolderEntry.findIpsSrcFile(new QualifiedNameType("*", IpsObjectType.ENUM_TYPE)),
+                is(nullValue()));
     }
 }

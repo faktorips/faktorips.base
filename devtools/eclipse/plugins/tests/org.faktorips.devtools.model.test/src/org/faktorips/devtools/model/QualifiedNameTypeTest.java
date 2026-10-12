@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,6 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Path;
 
+import org.faktorips.devtools.model.internal.ipsproject.DefaultIpsProjectNamingConventions;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.junit.jupiter.api.Test;
@@ -136,4 +139,37 @@ public class QualifiedNameTypeTest {
         assertEquals(type1.toString(), IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": test");
     }
 
+    @Test
+    public void testContainsIllegalFileNameCharacters_LegalName() {
+        assertThat(new QualifiedNameType("a.b.Test", IpsObjectType.ENUM_TYPE).containsIllegalFileNameCharacters(),
+                is(false));
+    }
+
+    @Test
+    public void testContainsIllegalFileNameCharacters_UnqualifiedNameWithAsterisk() {
+        assertThat(new QualifiedNameType("*", IpsObjectType.ENUM_TYPE).containsIllegalFileNameCharacters(), is(true));
+    }
+
+    @Test
+    public void testContainsIllegalFileNameCharacters_QualifiedNameWithAsterisk() {
+        assertThat(new QualifiedNameType("a.b.*", IpsObjectType.ENUM_TYPE).containsIllegalFileNameCharacters(),
+                is(true));
+    }
+
+    @Test
+    public void testContainsIllegalFileNameCharacters_PackageWithQuestionMark() {
+        assertThat(new QualifiedNameType("a?b.Test", IpsObjectType.ENUM_TYPE).containsIllegalFileNameCharacters(),
+                is(true));
+    }
+
+    @Test
+    public void testContainsIllegalFileNameCharacters_EveryIllegalCharacter() {
+        for (char illegalCharacter : DefaultIpsProjectNamingConventions.INVALID_RESOURCE_CHARACTERS) {
+            QualifiedNameType qnt = new QualifiedNameType("a.b.Te" + illegalCharacter + "st", IpsObjectType.ENUM_TYPE);
+
+            boolean illegal = qnt.containsIllegalFileNameCharacters();
+
+            assertThat("character code " + (int)illegalCharacter, illegal, is(true));
+        }
+    }
 }

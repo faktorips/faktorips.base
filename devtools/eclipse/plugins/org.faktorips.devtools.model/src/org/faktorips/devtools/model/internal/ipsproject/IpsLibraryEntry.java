@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,6 +40,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
         if (getIpsStorage() != null
                 && nameType != null
+                && !nameType.containsIllegalFileNameCharacters()
                 && getIpsStorage().contains(nameType.toPath())) {
             return getIpsPackageFragmentRoot().getIpsPackageFragment(nameType.getPackageName()).getIpsSrcFile(
                     nameType.getFileName());

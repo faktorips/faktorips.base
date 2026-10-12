@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,11 +12,17 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.nio.file.Path;
@@ -47,7 +53,7 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
@@ -185,4 +191,21 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         assertTrue(containsResource);
     }
 
+    @Test
+    public void testExists_NameWithIllegalFileNameCharacter() {
+        QualifiedNameType qnt = mock(QualifiedNameType.class);
+        when(qnt.containsIllegalFileNameCharacters()).thenReturn(true);
+
+        assertThat(entry.exists(qnt), is(false));
+        verify(qnt, never()).toPath();
+    }
+
+    @Test
+    public void testFindIpsSrcFile_NameWithIllegalFileNameCharacter() {
+        QualifiedNameType qnt = mock(QualifiedNameType.class);
+        when(qnt.containsIllegalFileNameCharacters()).thenReturn(true);
+
+        assertThat(entry.findIpsSrcFile(qnt), is(nullValue()));
+        verify(qnt, never()).toPath();
+    }
 }

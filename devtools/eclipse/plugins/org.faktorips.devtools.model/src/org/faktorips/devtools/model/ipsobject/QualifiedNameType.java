@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,8 +17,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsproject.DefaultIpsProjectNamingConventions;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
@@ -27,7 +29,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Combines the qualified name and IPS object type.
- * 
+ *
  * @author Jan Ortmann
  */
 public class QualifiedNameType implements Serializable, Comparable<QualifiedNameType> {
@@ -55,10 +57,10 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
 
     /**
      * Returns the qualified name type for he given path.
-     * 
+     *
      * @param pathToFile a relative path to an IPS source file, e.g. base/motor/MotorPolicy.ipspct
      * @return The qualified name type
-     * 
+     *
      * @throws IllegalArgumentException if the path can't be parsed to a qualified name type
      */
     public static final QualifiedNameType newQualifedNameType(String pathToFile) {
@@ -146,6 +148,17 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
                     + FILE_EXTENSION_SEPERATOR + type.getFileExtension());
         }
         return path;
+    }
+
+    /**
+     * Returns <code>true</code> if the qualified name contains characters that are not allowed in
+     * file names. Such a name can never denote an existing source file and must not be converted to
+     * a {@link Path} using {@link #toPath()}.
+     *
+     * @since 27.1
+     */
+    public boolean containsIllegalFileNameCharacters() {
+        return StringUtils.containsAny(qualifiedName, DefaultIpsProjectNamingConventions.INVALID_RESOURCE_CHARACTERS);
     }
 
     /**

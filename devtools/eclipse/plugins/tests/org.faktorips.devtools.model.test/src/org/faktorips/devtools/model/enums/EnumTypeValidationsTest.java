@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.enums;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -129,4 +131,21 @@ public class EnumTypeValidationsTest extends AbstractIpsPluginTest {
         assertNull(msgList.getMessageByCode(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY));
     }
 
+    @Test
+    public void testValidateSuperEnumType_NameWithAsterisk() {
+        MessageList msgList = new MessageList();
+
+        EnumTypeValidations.validateSuperEnumType(msgList, null, "*", ipsProject);
+
+        assertThat(msgList, hasMessageCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST));
+    }
+
+    @Test
+    public void testValidateSuperEnumType_QualifiedNameWithAsterisk() {
+        MessageList msgList = new MessageList();
+
+        EnumTypeValidations.validateSuperEnumType(msgList, null, "a.b.*", ipsProject);
+
+        assertThat(msgList, hasMessageCode(IEnumType.MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST));
+    }
 }

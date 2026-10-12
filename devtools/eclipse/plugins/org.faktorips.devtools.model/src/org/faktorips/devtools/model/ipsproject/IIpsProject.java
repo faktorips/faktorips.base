@@ -577,15 +577,18 @@ public interface IIpsProject extends IIpsElement {
     List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure);
 
     /**
-     * Returns the first IPS source file on the IPS object path with the the indicated qualified
-     * name and type. Returns <code>null</code> if no such file was found.
+     * Returns the first IPS source file on the IPS object path with the indicated qualified name
+     * and type. Returns <code>null</code> if no such file was found or if the name contains
+     * characters that are not allowed in file names, for example <code>*</code> or <code>?</code>.
      */
     IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType);
 
     /**
-     * Returns the first IPS source file with the the indicated IPS object type and qualified name
-     * found on the object path.<br>
-     * Returns <code>null</code> if the source file wasn't found (not exists).
+     * Returns the first IPS source file with the indicated IPS object type and qualified name found
+     * on the object path.<br>
+     * Returns <code>null</code> if the source file wasn't found (not exists) or if the name
+     * contains characters that are not allowed in file names, for example <code>*</code> or
+     * <code>?</code>.
      */
     IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
 

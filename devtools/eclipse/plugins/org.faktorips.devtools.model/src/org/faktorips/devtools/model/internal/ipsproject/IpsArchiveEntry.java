@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Ips object path entry for an archive.
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry {
@@ -85,7 +85,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
 
     @Override
     public boolean exists(QualifiedNameType qnt) {
-        if (archive == null || qnt == null) {
+        if (archive == null || qnt == null || qnt.containsIllegalFileNameCharacters()) {
             return false;
         }
         return archive.contains(qnt.toPath());

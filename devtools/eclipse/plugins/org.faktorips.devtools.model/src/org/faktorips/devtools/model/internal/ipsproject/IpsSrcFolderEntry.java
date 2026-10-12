@@ -255,7 +255,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public boolean exists(QualifiedNameType qnt) {
-        if (sourceFolder == null) {
+        if (sourceFolder == null || qnt.containsIllegalFileNameCharacters()) {
             return false;
         }
         return sourceFolder.getFile(qnt.toPath()).exists();
@@ -263,6 +263,9 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) {
+        if (qnt.containsIllegalFileNameCharacters()) {
+            return null;
+        }
         IIpsPackageFragment pack = root.getIpsPackageFragment(qnt.getPackageName());
         if (pack == null) {
             return null;

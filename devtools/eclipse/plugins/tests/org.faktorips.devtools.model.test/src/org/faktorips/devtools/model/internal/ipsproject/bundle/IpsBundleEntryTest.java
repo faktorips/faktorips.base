@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,8 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 import static org.faktorips.abstracttest.MockUtil.createMocks;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +46,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoSession;
 
 public class IpsBundleEntryTest {
-
 
     @Mock
     private IpsObjectPath ipsObjectPath;
@@ -146,6 +148,26 @@ public class IpsBundleEntryTest {
     }
 
     @Test
+    public void testExists_NameWithIllegalFileNameCharacter() throws Exception {
+        initStorage();
+        QualifiedNameType qnt = mock(QualifiedNameType.class);
+        when(qnt.containsIllegalFileNameCharacters()).thenReturn(true);
+
+        assertThat(ipsBundleEntry.exists(qnt), is(false));
+        verify(qnt, never()).toPath();
+    }
+
+    @Test
+    public void testFindIpsSrcFile_NameWithIllegalFileNameCharacter() throws Exception {
+        initStorage();
+        QualifiedNameType qnt = mock(QualifiedNameType.class);
+        when(qnt.containsIllegalFileNameCharacters()).thenReturn(true);
+
+        assertThat(ipsBundleEntry.findIpsSrcFile(qnt), is(nullValue()));
+        verify(qnt, never()).toPath();
+    }
+
+    @Test
     public void testInitStorage_folder() throws Exception {
         mockInitDependencies(true);
 
@@ -192,7 +214,8 @@ public class IpsBundleEntryTest {
         lenient().when(bundlePath.toFile()).thenReturn(file);
         ipsBundleEntry.setIpsStorageFactory(ipsStorageFactory);
         lenient().when(ipsStorageFactory.createFolderBundle(ipsProject, bundlePath)).thenReturn(ipsFolderBundle);
-        lenient().when(ipsStorageFactory.createJarBundle(eq(ipsProject), any(JarFileFactory.class))).thenReturn(ipsJarBundle);
+        lenient().when(ipsStorageFactory.createJarBundle(eq(ipsProject), any(JarFileFactory.class)))
+                .thenReturn(ipsJarBundle);
     }
 
     private void mockInitDependencies(boolean directory) {

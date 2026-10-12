@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -43,7 +43,7 @@ import org.faktorips.runtime.MessageList;
  * <code>
  * &lt;Entry type="bundle" bundlePath="path/to/grundmodell.jar"/&gt;
  * </code>
- * 
+ *
  * @author dirmeier
  */
 public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
@@ -58,7 +58,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
      * This constructor creates a new {@link IpsBundleEntry} for the given {@link IpsObjectPath}.
      * After you created the {@link IpsBundleEntry} you need to initialize the bundle by calling
      * {@link #initStorage(Path)}.
-     * 
+     *
      * @param ipsObjectPath The parent {@link IpsObjectPath} of this entry
      */
     public IpsBundleEntry(IpsObjectPath ipsObjectPath) {
@@ -124,7 +124,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
 
     @Override
     public boolean exists(QualifiedNameType qnt) {
-        return ipsBundle.contains(qnt.toPath());
+        return !qnt.containsIllegalFileNameCharacters() && ipsBundle.contains(qnt.toPath());
     }
 
     @Override
