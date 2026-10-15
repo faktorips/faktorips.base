@@ -152,7 +152,7 @@ public interface Identifier {
         return switch (partEl.getNodeName()) {
             case ILabel.XML_TAG_NAME -> LabelIdentifier.of(partEl);
             case IDescription.XML_TAG_NAME -> DescriptionIdentifier.of(partEl);
-            case IColumnRange.PROPERTY_NAME -> ColumnRangeIdentifier.of(partEl);
+            case IColumnRange.XML_TAG_NAME -> ColumnRangeIdentifier.of(partEl);
             case TestValue.TAG_NAME -> TestValueIdentifier.of(partEl);
             case IConfiguredDefault.TAG_NAME -> ConfiguredDefaultIdentifier.of(partEl);
             case IConfiguredValueSet.TAG_NAME -> ConfiguredValueSetIdentifier.of(partEl);
@@ -237,6 +237,21 @@ public interface Identifier {
             String[] keyItemNames = itemElements.stream().map(itemElement -> getAttribute(itemElement, "name"))
                     .toArray(String[]::new);
             return new KeyIdentifier(keyItemNames);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof KeyIdentifier other && Arrays.equals(keyItemNames, other.keyItemNames);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(keyItemNames);
+        }
+
+        @Override
+        public String toString() {
+            return "KeyIdentifier" + Arrays.toString(keyItemNames); //$NON-NLS-1$
         }
     }
 

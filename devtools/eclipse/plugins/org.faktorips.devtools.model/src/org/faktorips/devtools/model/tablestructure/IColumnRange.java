@@ -18,6 +18,9 @@ public interface IColumnRange extends IKeyItem {
     String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
     String PROPERTY_NAME = "Column"; //$NON-NLS-1$
 
+    /** The XML tag name of column range elements. */
+    String XML_TAG_NAME = "Range"; //$NON-NLS-1$
+
     /**
      * Prefix for all messages of this class.
      */

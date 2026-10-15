@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.tablestructure;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -261,6 +262,30 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         assertEquals("ageFrom-ageTo", table.getRanges()[0].getName());
 
         assertEquals(2, table.getIndices().size());
+    }
+
+    @Test
+    public void testInitFromXml_Reload_KeepsColumnAndRangeInstances() {
+        IColumn column1 = table.newColumn();
+        column1.setName("ageFrom");
+        IColumn column2 = table.newColumn();
+        column2.setName("ageTo");
+        IColumnRange range = table.newRange();
+        range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
+        range.setFromColumn("ageFrom");
+        range.setToColumn("ageTo");
+        IIndex index = table.newIndex();
+        index.setKeyItems(new String[] { "ageFrom", "ageTo" });
+
+        table.initFromXml(table.toXml(newDocument()));
+
+        assertThat(table.getColumns()[0], is(sameInstance(column1)));
+        assertThat(table.getColumns()[1], is(sameInstance(column2)));
+        assertThat(table.getRanges()[0], is(sameInstance(range)));
+        assertThat(column1.isDeleted(), is(false));
+        assertThat(range.isDeleted(), is(false));
+        assertThat(table.getIndices().get(0), is(sameInstance(index)));
+        assertThat(index.isDeleted(), is(false));
     }
 
     @Test

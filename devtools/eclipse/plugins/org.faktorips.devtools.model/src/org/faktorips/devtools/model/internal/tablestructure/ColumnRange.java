@@ -31,7 +31,7 @@ import org.w3c.dom.Element;
 
 public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
 
-    static final String TAG_NAME = "Range"; //$NON-NLS-1$
+    static final String TAG_NAME = XML_TAG_NAME;
 
     private String from = ""; //$NON-NLS-1$
     private String to = ""; //$NON-NLS-1$
