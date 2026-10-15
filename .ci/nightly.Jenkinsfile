@@ -41,7 +41,7 @@ pipeline {
                         post {
                             always {
                                 junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
-                                sh "mkdir -p eclipse-logs/${TARGET_PLATFORM} && find . -path '*/target/work/data/.metadata/.log' -exec cp --parents {} eclipse-logs/${TARGET_PLATFORM}/ \\; || true"
+                                sh "mkdir -p eclipse-logs/${TARGET_PLATFORM} && find . -path ./eclipse-logs -prune -o -path '*/target/work/data/.metadata/.log' -exec cp --parents {} eclipse-logs/${TARGET_PLATFORM}/ \\; || true"
                                 archiveArtifacts artifacts: "eclipse-logs/${TARGET_PLATFORM}/**", allowEmptyArchive: true
                             }
 
