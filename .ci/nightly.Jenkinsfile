@@ -27,7 +27,7 @@ pipeline {
                 stages {
                     stage('Build and Test') {
                         steps {
-                            echo "Building ${TARGET_PLATFORM}"
+                            echo "Building ${TARGET_PLATFORM} on ${env.NODE_NAME}"
                             script {
                                 sh 'rm -rf $HOME/.m2/repository/.meta'
                                 sh 'rm -rf $HOME/.m2/repository/.cache'
@@ -41,6 +41,8 @@ pipeline {
                         post {
                             always {
                                 junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+                                sh "mkdir -p eclipse-logs/${TARGET_PLATFORM} && find . -path '*/target/work/data/.metadata/.log' -exec cp --parents {} eclipse-logs/${TARGET_PLATFORM}/ \\; || true"
+                                archiveArtifacts artifacts: "eclipse-logs/${TARGET_PLATFORM}/**", allowEmptyArchive: true
                             }
 
                             unstable {
