@@ -11,11 +11,21 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasValue;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.associationsInXml;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.associationsOf;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.maxCardinalitiesOf;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.moveFirstCardinalityElementToEnd;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.newCardinalities;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.newCardinalitiesWithDescendingMax;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.newConfigurableAssociations;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.reverseCardinalityElements;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -52,6 +62,7 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
 import org.faktorips.devtools.model.productcmpt.IFormula;
+import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -830,5 +841,98 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         var linkCardinality = generation.newPolicyCmptLinkCardinality("target");
 
         assertThat(generation.getPolicyCmptLinkCardinality("target"), hasValue(linkCardinality));
+    }
+
+    @Test
+    public void testInitFromXml_PolicyCmptLinkCardinalitiesInUnsortedXmlAreSorted() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalities(generation, "Alpha", "Beta", "Gamma");
+        Element xmlWithUnsortedCardinalities = moveFirstCardinalityElementToEnd(generation.toXml(newDocument()));
+        IProductCmptGeneration reloadedGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
+
+        reloadedGeneration.initFromXml(xmlWithUnsortedCardinalities);
+
+        assertThat(associationsOf(reloadedGeneration), contains("Alpha", "Beta", "Gamma"));
+    }
+
+    @Test
+    public void testInitFromXml_PolicyCmptLinkCardinalitiesWithDifferentValuesInReversedXmlAreSortedByAssociation() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalitiesWithDescendingMax(generation, "Alpha", "Beta", "Gamma");
+        Element xmlWithReversedCardinalities = reverseCardinalityElements(generation.toXml(newDocument()));
+        IProductCmptGeneration reloadedGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
+
+        reloadedGeneration.initFromXml(xmlWithReversedCardinalities);
+
+        assertThat(associationsOf(reloadedGeneration), contains("Alpha", "Beta", "Gamma"));
+        assertThat(maxCardinalitiesOf(reloadedGeneration), contains(3, 2, 1));
+    }
+
+    @Test
+    public void testInitFromXml_ReloadOnSameGeneration_KeepsAllCardinalitiesSorted() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalitiesWithDescendingMax(generation, "Alpha", "Beta", "Gamma");
+        Element xmlWithReversedCardinalities = reverseCardinalityElements(generation.toXml(newDocument()));
+
+        generation.initFromXml(xmlWithReversedCardinalities);
+
+        assertThat(associationsOf(generation), contains("Alpha", "Beta", "Gamma"));
+        assertThat(maxCardinalitiesOf(generation), contains(3, 2, 1));
+    }
+
+    @Test
+    public void testToXml_PolicyCmptLinkCardinalitiesKeepOrderAfterReload() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalities(generation, "Alpha", "Beta", "Gamma");
+        IProductCmptGeneration reloadedGeneration = (IProductCmptGeneration)productCmpt.newGeneration();
+        reloadedGeneration.initFromXml(generation.toXml(newDocument()));
+
+        Element xmlWrittenAfterReload = reloadedGeneration.toXml(newDocument());
+
+        assertThat(associationsInXml(xmlWrittenAfterReload), contains("Alpha", "Beta", "Gamma"));
+    }
+
+    @Test
+    public void testNewPolicyCmptLinkCardinality_SameAssociationTwice_BothKeptInCreationOrder() {
+        newConfigurableAssociations(policyCmptType, "Alpha");
+        IPolicyCmptLinkCardinality first = generation.newPolicyCmptLinkCardinality("Alpha");
+        IPolicyCmptLinkCardinality second = generation.newPolicyCmptLinkCardinality("Alpha");
+
+        assertThat(generation.getPolicyCmptLinkCardinalities(), hasSize(2));
+        assertThat(List.copyOf(generation.getPolicyCmptLinkCardinalities()), contains(first, second));
+    }
+
+    @Test
+    public void testDelete_SecondOfTwoCardinalitiesWithSameAssociation_KeepsFirst() {
+        newConfigurableAssociations(policyCmptType, "Alpha");
+        IPolicyCmptLinkCardinality first = generation.newPolicyCmptLinkCardinality("Alpha");
+        IPolicyCmptLinkCardinality second = generation.newPolicyCmptLinkCardinality("Alpha");
+
+        second.delete();
+
+        assertThat(List.copyOf(generation.getPolicyCmptLinkCardinalities()), contains(first));
+    }
+
+    @Test
+    public void testDelete_PolicyCmptLinkCardinalityWithChangedAssociation_RemovesIt() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Aaa");
+        generation.newPolicyCmptLinkCardinality("Alpha");
+        IPolicyCmptLinkCardinality removedCardinality = generation.newPolicyCmptLinkCardinality("Beta");
+        removedCardinality.setAssociation("Aaa");
+
+        removedCardinality.delete();
+
+        assertThat(associationsOf(generation), contains("Alpha"));
+    }
+
+    @Test
+    public void testGetPolicyCmptLinkCardinalities_SortedAfterAssociationChange() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Zeta");
+        IPolicyCmptLinkCardinality renamedCardinality = generation.newPolicyCmptLinkCardinality("Alpha");
+        generation.newPolicyCmptLinkCardinality("Beta");
+
+        renamedCardinality.setAssociation("Zeta");
+
+        assertThat(associationsOf(generation), contains("Beta", "Zeta"));
     }
 }

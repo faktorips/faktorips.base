@@ -11,6 +11,14 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasValue;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.associationsInXml;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.associationsOf;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.maxCardinalitiesOf;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.moveFirstCardinalityElementToEnd;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.newCardinalities;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.newCardinalitiesWithDescendingMax;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.newConfigurableAssociations;
+import static org.faktorips.devtools.model.internal.productcmpt.PolicyCmptLinkCardinalityTestUtil.reverseCardinalityElements;
 import static org.faktorips.testsupport.IpsMatchers.containsText;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
@@ -22,6 +30,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -61,7 +71,6 @@ import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.model.internal.productcmpttype.TableStructureUsage;
-import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -815,7 +824,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         // the ID should NOT be the old ID of the valueSet to avoid ID collision
         assertThat(configuredValueSet.getId(), is(not("1")));
-        assertThat(configuredValueSet.getValueSet(), instanceOf(RangeValueSet.class));
+        assertThat(configuredValueSet.getValueSet(), instanceOf(IRangeValueSet.class));
         assertThat(configuredValueSet.getPolicyCmptTypeAttribute(), is(POLICY_ATTRIBUTE_NAME));
         assertThat(configuredDefault.getValue(), is("10"));
         assertThat(configuredDefault.getPolicyCmptTypeAttribute(), is(POLICY_ATTRIBUTE_NAME));
@@ -1724,5 +1733,110 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         assertThat(productCmpt.getPolicyCmptLinkCardinality("target"), hasValue(linkCardinality));
         assertThat(linkCardinality.getAssociation(), is("target"));
+    }
+
+    @Test
+    public void testInitFromXml_PolicyCmptLinkCardinalitiesKeepSortedOrder() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalities(productCmpt, "Alpha", "Beta", "Gamma");
+        Element xmlWithSortedCardinalities = productCmpt.toXml(newDocument());
+        ProductCmpt reloadedProductCmpt = newProductCmpt(ipsProject, "ReloadedProductCmpt");
+
+        reloadedProductCmpt.initFromXml(xmlWithSortedCardinalities);
+
+        assertThat(associationsOf(reloadedProductCmpt), contains("Alpha", "Beta", "Gamma"));
+    }
+
+    @Test
+    public void testInitFromXml_PolicyCmptLinkCardinalitiesInUnsortedXmlAreSorted() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalities(productCmpt, "Alpha", "Beta", "Gamma");
+        Element xmlWithUnsortedCardinalities = moveFirstCardinalityElementToEnd(productCmpt.toXml(newDocument()));
+        ProductCmpt reloadedProductCmpt = newProductCmpt(ipsProject, "ReloadedProductCmpt");
+
+        reloadedProductCmpt.initFromXml(xmlWithUnsortedCardinalities);
+
+        assertThat(associationsOf(reloadedProductCmpt), contains("Alpha", "Beta", "Gamma"));
+    }
+
+    @Test
+    public void testInitFromXml_PolicyCmptLinkCardinalitiesWithDifferentValuesInReversedXmlAreSortedByAssociation() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalitiesWithDescendingMax(productCmpt, "Alpha", "Beta", "Gamma");
+        Element xmlWithReversedCardinalities = reverseCardinalityElements(productCmpt.toXml(newDocument()));
+        ProductCmpt reloadedProductCmpt = newProductCmpt(ipsProject, "ReloadedProductCmpt");
+
+        reloadedProductCmpt.initFromXml(xmlWithReversedCardinalities);
+
+        assertThat(associationsOf(reloadedProductCmpt), contains("Alpha", "Beta", "Gamma"));
+        assertThat(maxCardinalitiesOf(reloadedProductCmpt), contains(3, 2, 1));
+    }
+
+    @Test
+    public void testInitFromXml_ReloadOnSameProductCmpt_KeepsAllCardinalitiesSorted() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalitiesWithDescendingMax(productCmpt, "Alpha", "Beta", "Gamma");
+        Element xmlWithReversedCardinalities = reverseCardinalityElements(productCmpt.toXml(newDocument()));
+
+        productCmpt.initFromXml(xmlWithReversedCardinalities);
+
+        assertThat(associationsOf(productCmpt), contains("Alpha", "Beta", "Gamma"));
+        assertThat(maxCardinalitiesOf(productCmpt), contains(3, 2, 1));
+    }
+
+    @Test
+    public void testToXml_PolicyCmptLinkCardinalitiesKeepOrderAfterReload() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Gamma");
+        newCardinalities(productCmpt, "Alpha", "Beta", "Gamma");
+        ProductCmpt reloadedProductCmpt = newProductCmpt(ipsProject, "ReloadedProductCmpt");
+        reloadedProductCmpt.initFromXml(productCmpt.toXml(newDocument()));
+
+        Element xmlWrittenAfterReload = reloadedProductCmpt.toXml(newDocument());
+
+        assertThat(associationsInXml(xmlWrittenAfterReload), contains("Alpha", "Beta", "Gamma"));
+    }
+
+    @Test
+    public void testGetPolicyCmptLinkCardinalities_SortedAfterAssociationChange() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Zeta");
+        IPolicyCmptLinkCardinality renamedCardinality = productCmpt.newPolicyCmptLinkCardinality("Alpha");
+        productCmpt.newPolicyCmptLinkCardinality("Beta");
+
+        renamedCardinality.setAssociation("Zeta");
+
+        assertThat(associationsOf(productCmpt), contains("Beta", "Zeta"));
+    }
+
+    @Test
+    public void testNewPolicyCmptLinkCardinality_SameAssociationTwice_BothKeptInCreationOrder() {
+        newConfigurableAssociations(policyCmptType, "Alpha");
+        IPolicyCmptLinkCardinality first = productCmpt.newPolicyCmptLinkCardinality("Alpha");
+        IPolicyCmptLinkCardinality second = productCmpt.newPolicyCmptLinkCardinality("Alpha");
+
+        assertThat(productCmpt.getPolicyCmptLinkCardinalities(), hasSize(2));
+        assertThat(List.copyOf(productCmpt.getPolicyCmptLinkCardinalities()), contains(first, second));
+    }
+
+    @Test
+    public void testDelete_SecondOfTwoCardinalitiesWithSameAssociation_KeepsFirst() {
+        newConfigurableAssociations(policyCmptType, "Alpha");
+        IPolicyCmptLinkCardinality first = productCmpt.newPolicyCmptLinkCardinality("Alpha");
+        IPolicyCmptLinkCardinality second = productCmpt.newPolicyCmptLinkCardinality("Alpha");
+
+        second.delete();
+
+        assertThat(List.copyOf(productCmpt.getPolicyCmptLinkCardinalities()), contains(first));
+    }
+
+    @Test
+    public void testDelete_PolicyCmptLinkCardinalityWithChangedAssociation_RemovesIt() {
+        newConfigurableAssociations(policyCmptType, "Alpha", "Beta", "Aaa");
+        productCmpt.newPolicyCmptLinkCardinality("Alpha");
+        IPolicyCmptLinkCardinality removedCardinality = productCmpt.newPolicyCmptLinkCardinality("Beta");
+        removedCardinality.setAssociation("Aaa");
+
+        removedCardinality.delete();
+
+        assertThat(associationsOf(productCmpt), contains("Alpha"));
     }
 }
