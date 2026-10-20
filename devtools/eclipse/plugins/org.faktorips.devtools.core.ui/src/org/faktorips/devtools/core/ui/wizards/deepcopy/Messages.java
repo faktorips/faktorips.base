@@ -46,6 +46,7 @@ public class Messages extends NLS {
     public static String SourcePage_tooltipCheckboxCopyExistingGenerations;
     public static String SourcePage_labelTargetRoot;
     public static String SourcePage_msgBadTargetPackage;
+    public static String SourcePage_msgInvalidTargetPackage;
     public static String SourcePage_msgCopyNotPossible;
     public static String SourcePage_msgMissingSourceFolder;
     public static String SourcePage_msgNothingSelected;

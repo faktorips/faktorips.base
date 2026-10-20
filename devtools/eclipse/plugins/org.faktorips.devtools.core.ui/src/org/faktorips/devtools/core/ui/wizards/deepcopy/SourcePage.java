@@ -389,6 +389,10 @@ public class SourcePage extends WizardPage {
         bindingContext.bindContent(packageRootField, getPresentationModel(),
                 DeepCopyPresentationModel.TARGET_PACKAGE_ROOT);
         bindingContext.bindContent(packageField, getPresentationModel(), DeepCopyPresentationModel.TARGET_PACKAGE);
+        targetPackageControl.getTextControl().addModifyListener(event -> {
+            validate();
+            updatePageComplete();
+        });
 
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             TextField searchInputField = new TextField(searchInput);
@@ -606,6 +610,10 @@ public class SourcePage extends WizardPage {
         return getPresentationModel().getTargetPackage();
     }
 
+    IpsPckFragmentRefControl getTargetPackageControl() {
+        return targetPackageControl;
+    }
+
     public IIpsPackageFragmentRoot getIIpsPackageFragmentRoot() {
         return getPresentationModel().getTargetPackageRoot();
     }
@@ -714,6 +722,11 @@ public class SourcePage extends WizardPage {
             return;
         } else if (ipsPckFragmentRoot == null) {
             setErrorMessage(Messages.SourcePage_msgSelectSourceFolder);
+            return;
+        }
+
+        if (targetPackageControl.getIpsPackageFragment() == null) {
+            setErrorMessage(NLS.bind(Messages.SourcePage_msgInvalidTargetPackage, targetPackageControl.getText()));
             return;
         }
 

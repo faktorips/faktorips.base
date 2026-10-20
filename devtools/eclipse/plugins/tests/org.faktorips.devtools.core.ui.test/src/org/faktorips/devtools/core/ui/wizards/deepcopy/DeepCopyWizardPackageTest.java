@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,9 +12,8 @@ package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -24,6 +23,7 @@ import java.util.ListIterator;
 import java.util.OptionalInt;
 
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for product component structure.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
@@ -96,7 +96,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
     @Test
     public void testGetPackage() throws Exception {
         SourcePage page = getSourcePageFor(inside);
-        assertEquals(inside.getIpsPackageFragment(), page.getTargetPackage());
+        assertThat(page.getTargetPackage(), is(inside.getIpsPackageFragment()));
     }
 
     @Test
@@ -140,6 +140,70 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
         SourcePage page = getSourcePageFor(root);
 
         assertThat(page.getTargetPackage(), is(root.getIpsPackageFragment()));
+    }
+
+    @Test
+    public void testValidate_InvalidTargetPackageName_ShowsErrorAndDisablesNext() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+
+        page.getTargetPackageControl().setText("produkte_2026-01");
+
+        assertThat(page.getErrorMessage(),
+                is(NLS.bind(Messages.SourcePage_msgInvalidTargetPackage, "produkte_2026-01")));
+        assertThat(page.isPageComplete(), is(false));
+    }
+
+    @Test
+    public void testValidate_PackageNameStartingWithDigit_ShowsError() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+
+        page.getTargetPackageControl().setText("1_invalid");
+
+        assertThat(page.getErrorMessage(), is(NLS.bind(Messages.SourcePage_msgInvalidTargetPackage, "1_invalid")));
+        assertThat(page.isPageComplete(), is(false));
+    }
+
+    @Test
+    public void testValidate_InvalidThenValidPackageName_ErrorIsReset() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+        page.getTargetPackageControl().setText("produkte_2026-01");
+
+        page.getTargetPackageControl().setText("produkte_2026");
+
+        assertThat(page.getErrorMessage(), is(nullValue()));
+        assertThat(page.isPageComplete(), is(true));
+    }
+
+    @Test
+    public void testValidate_EmptyPackageName_DefaultPackageIsValid() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+
+        page.getTargetPackageControl().setText("");
+
+        assertThat(page.getErrorMessage(), is(nullValue()));
+        assertThat(page.isPageComplete(), is(true));
+    }
+
+    @Test
+    public void testValidate_ValidNonExistingPackage_WarnsAfterDelayedModelUpdate() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+
+        page.getTargetPackageControl().setText("neues.paket");
+        IpsUIPlugin.getDefault().getEditFieldChangeBroadcaster().broadcastLastEvent();
+
+        assertThat(page.getTargetPackage().getName(), is("neues.paket"));
+        assertThat(page.getMessage(), is(NLS.bind(Messages.SourcePage_msgWarningTargetWillBeCreated, "neues.paket")));
+        assertThat(page.getErrorMessage(), is(nullValue()));
+    }
+
+    @Test
+    public void testValidate_ValidTargetPackageName_NoError() throws Exception {
+        SourcePage page = getSourcePageFor(inside);
+
+        page.getTargetPackageControl().setText("produkte_2026");
+
+        assertThat(page.getErrorMessage(), is(nullValue()));
+        assertThat(page.isPageComplete(), is(true));
     }
 
     @Test
@@ -283,7 +347,7 @@ public class DeepCopyWizardPackageTest extends AbstractIpsPluginTest {
 
         DeepCopyPreview deepCopyPreview = new DeepCopyPreview(deepCopyPresentationModel);
         String newName = deepCopyPreview.getNewName(null, usage.getIpsObject());
-        assertFalse(newName.equals(oldName));
+        assertThat(newName, is(not(oldName)));
     }
 
     private SourcePage getSourcePageFor(IProductCmpt cmpt) throws IllegalArgumentException,

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,10 +13,8 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +38,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * 
+ *
  * @author Daniel Hohenberger
  */
 public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
@@ -64,32 +62,38 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateIpsPackageName() {
         MessageList ml = namingConventions.validateIpsPackageName("validName");
-        assertFalse(ml.containsErrorMsg());
-        assertEquals(0, ml.size());
+        assertThat(ml.containsErrorMsg(), is(false));
+        assertThat(ml.size(), is(0));
 
         ml = namingConventions.validateIpsPackageName("1_invalid");
-        assertTrue(ml.containsErrorMsg());
-        assertEquals(1, ml.size());
-        assertEquals(Message.ERROR, ml.getSeverity());
-        assertEquals(IIpsProjectNamingConventions.INVALID_NAME, ml.getMessage(0).getCode());
+        assertThat(ml.containsErrorMsg(), is(true));
+        assertThat(ml.size(), is(1));
+        assertThat(ml.getSeverity(), is(Message.ERROR));
+        assertThat(ml.getMessage(0).getCode(), is(IIpsProjectNamingConventions.INVALID_NAME));
 
         ml = namingConventions.validateIpsPackageName("no blanks allowed");
-        assertTrue(ml.containsErrorMsg());
-        assertEquals(1, ml.size());
-        assertEquals(Message.ERROR, ml.getSeverity());
-        assertEquals(IIpsProjectNamingConventions.INVALID_NAME, ml.getMessage(0).getCode());
+        assertThat(ml.containsErrorMsg(), is(true));
+        assertThat(ml.size(), is(1));
+        assertThat(ml.getSeverity(), is(Message.ERROR));
+        assertThat(ml.getMessage(0).getCode(), is(IIpsProjectNamingConventions.INVALID_NAME));
+
+        ml = namingConventions.validateIpsPackageName("produkte_2026-01");
+        assertThat(ml.containsErrorMsg(), is(true));
+        assertThat(ml.size(), is(1));
+        assertThat(ml.getSeverity(), is(Message.ERROR));
+        assertThat(ml.getMessage(0).getCode(), is(IIpsProjectNamingConventions.INVALID_NAME));
 
         ml = namingConventions.validateIpsPackageName("new");
-        assertTrue(ml.containsErrorMsg());
-        assertEquals(1, ml.size());
-        assertEquals(Message.ERROR, ml.getSeverity());
-        assertEquals(IIpsProjectNamingConventions.INVALID_NAME, ml.getMessage(0).getCode());
+        assertThat(ml.containsErrorMsg(), is(true));
+        assertThat(ml.size(), is(1));
+        assertThat(ml.getSeverity(), is(Message.ERROR));
+        assertThat(ml.getMessage(0).getCode(), is(IIpsProjectNamingConventions.INVALID_NAME));
 
         ml = namingConventions.validateIpsPackageName("BIG");
-        assertFalse(ml.containsErrorMsg());
-        assertEquals(1, ml.size());
-        assertEquals(Message.WARNING, ml.getSeverity());
-        assertEquals(IIpsProjectNamingConventions.DISCOURAGED_NAME, ml.getMessage(0).getCode());
+        assertThat(ml.containsErrorMsg(), is(false));
+        assertThat(ml.size(), is(1));
+        assertThat(ml.getSeverity(), is(Message.WARNING));
+        assertThat(ml.getMessage(0).getCode(), is(IIpsProjectNamingConventions.DISCOURAGED_NAME));
     }
 
     @Test
@@ -251,7 +255,8 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             List<String> validNames,
             List<String> invalidNames,
             List<String> invalidNamesMsgCodes) {
-        assertEquals(invalidNames.size(), invalidNamesMsgCodes.size(), "Wrong usage of assert method, each invalid name should have a message code");
+        assertThat("Wrong usage of assert method, each invalid name should have a message code",
+                invalidNamesMsgCodes.size(), is(invalidNames.size()));
 
         for (String validName : validNames) {
             MessageList ml = null;
@@ -260,7 +265,7 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             } else {
                 ml = namingConventions.validateUnqualifiedIpsObjectName(type, validName);
             }
-            assertEquals(0, ml.size(), "\"" + validName + "\"" + " is invalid, expected was valid!");
+            assertThat("\"" + validName + "\"" + " is invalid, expected was valid!", ml.size(), is(0));
         }
 
         for (int i = 0; i < invalidNames.size(); i++) {
@@ -272,7 +277,8 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
             } else {
                 ml = namingConventions.validateUnqualifiedIpsObjectName(type, invalidName);
             }
-            assertNotNull(ml.getMessageByCode(msgCode), "\"" + invalidName + "\"" + " is valid against " + msgCode + ", expected was invalid!");
+            assertThat("\"" + invalidName + "\"" + " is valid against " + msgCode + ", expected was invalid!",
+                    ml.getMessageByCode(msgCode), is(notNullValue()));
         }
     }
 
@@ -295,8 +301,8 @@ public class IpsProjectNamingConventionsTest extends AbstractIpsPluginTest {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "test.1Product");
         ml = productCmptType.validate(ipsProject);
         assertThat(ml, hasMessageCode(IIpsProjectNamingConventions.INVALID_NAME));
-        assertEquals(IIpsElement.PROPERTY_NAME, ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME)
-                .getInvalidObjectProperties().get(0).getProperty());
+        assertThat(ml.getMessageByCode(IIpsProjectNamingConventions.INVALID_NAME).getInvalidObjectProperties().get(0)
+                .getProperty(), is(IIpsElement.PROPERTY_NAME));
         // testTypesCount ++; is currently no ips object type
 
         // Product cmpt
