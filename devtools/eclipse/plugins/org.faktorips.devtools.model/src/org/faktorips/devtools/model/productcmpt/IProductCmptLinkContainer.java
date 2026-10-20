@@ -236,6 +236,13 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * Returns the {@link IPolicyCmptLinkCardinality policy component cardinalities} for all
      * associations referring to a {@link IPolicyCmptTypeAssociation} marked as
      * {@link IPolicyCmptTypeAssociation#isCardinalityConfigurable() cardinality configurable}.
+     * <p>
+     * The result is sorted by association name ({@code null} first). Cardinalities for the same
+     * association keep their creation order.
+     * <p>
+     * The result is an unmodifiable snapshot, not a live view: it is not updated when
+     * cardinalities are added, removed or their association changes afterwards. Call this method
+     * again to get the current state.
      *
      * @since 26.7
      */

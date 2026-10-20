@@ -14,12 +14,15 @@ import static java.util.Comparator.comparing;
 import static java.util.Comparator.naturalOrder;
 import static java.util.Comparator.nullsFirst;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SequencedSet;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IPolicyCmptLinkCardinality;
@@ -32,14 +35,11 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  */
 class PolicyCmptLinkCardinalityCollection {
 
-    private final SortedSet<IPolicyCmptLinkCardinality> policyCmptLinkCardinalities = Collections
-            .synchronizedSortedSet(
-                    new TreeSet<>(
-                            (o1, o2) -> nullsFirst(comparing(IPolicyCmptLinkCardinality::getAssociation,
-                                    nullsFirst(naturalOrder())))
-                                            .thenComparing(IPolicyCmptLinkCardinality::getCardinality,
-                                                    nullsFirst(o1.getValueComparator()))
-                                            .compare(o1, o2)));
+    private static final Comparator<IPolicyCmptLinkCardinality> BY_ASSOCIATION = comparing(
+            IPolicyCmptLinkCardinality::getAssociation, nullsFirst(naturalOrder()));
+
+    private final List<IPolicyCmptLinkCardinality> policyCmptLinkCardinalities = Collections
+            .synchronizedList(new ArrayList<>());
 
     private final IProductCmptLinkContainer linkContainer;
 
@@ -90,15 +90,25 @@ class PolicyCmptLinkCardinalityCollection {
      *            the cardinality configuration for
      */
     Optional<IPolicyCmptLinkCardinality> getPolicyCmptLinkCardinality(String policyAssociationName) {
-        return policyCmptLinkCardinalities.stream()
-                .filter(c -> Objects.equals(policyAssociationName, c.getAssociation())).findFirst();
+        synchronized (policyCmptLinkCardinalities) {
+            return policyCmptLinkCardinalities.stream()
+                    .filter(c -> Objects.equals(policyAssociationName, c.getAssociation())).findFirst();
+        }
     }
 
     /**
-     * Returns all {@link IPolicyCmptLinkCardinality policy component cardinalities}.
+     * Returns a snapshot of all {@link IPolicyCmptLinkCardinality policy component cardinalities},
+     * sorted by association name with {@code null} first. Cardinalities with the same association
+     * keep their insertion order.
      */
     SequencedSet<IPolicyCmptLinkCardinality> getAll() {
-        return Collections.unmodifiableSequencedSet(policyCmptLinkCardinalities);
+        // sorted on every call because the association of a stored cardinality can change later,
+        // for example while being initialized from XML
+        synchronized (policyCmptLinkCardinalities) {
+            return Collections.unmodifiableSequencedSet(policyCmptLinkCardinalities.stream()
+                    .sorted(BY_ASSOCIATION)
+                    .collect(Collectors.toCollection(LinkedHashSet::new)));
+        }
     }
 
     /**
@@ -109,7 +119,7 @@ class PolicyCmptLinkCardinalityCollection {
     }
 
     /**
-     * Returns the number cardinalities currently stored in this collection.
+     * Returns the number of cardinalities currently stored in this collection.
      */
     public int size() {
         return policyCmptLinkCardinalities.size();
@@ -130,8 +140,8 @@ class PolicyCmptLinkCardinalityCollection {
      * Adds the given link cardinality to this collection.
      *
      * @param policyCmptLinkCardinality the link cardinality to be added
-     * @return {@code true} if the link cardinality could be added to this collection, {@code false}
-     *             otherwise.
+     * @return {@code true} if the link cardinality was added to this collection, {@code false} if
+     *             this collection already contains it.
      * @throws NullPointerException if the given link cardinality is {@code null}.
      * @throws IllegalArgumentException if the given link does not belong to any association (when
      *             {@link IPolicyCmptLinkCardinality#getAssociation()} returns {@code null} or an
@@ -142,6 +152,9 @@ class PolicyCmptLinkCardinalityCollection {
             throw new IllegalArgumentException("Can't add a " + IPolicyCmptLinkCardinality.class.getSimpleName()
                     + " that does not reference an association");
         }
-        return policyCmptLinkCardinalities.add(policyCmptLinkCardinality);
+        synchronized (policyCmptLinkCardinalities) {
+            return !policyCmptLinkCardinalities.contains(policyCmptLinkCardinality)
+                    && policyCmptLinkCardinalities.add(policyCmptLinkCardinality);
+        }
     }
 }
