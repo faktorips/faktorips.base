@@ -10,11 +10,6 @@
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Validation Maven Plugin</name>
 
-    
-    <properties>
-        <plexus-utils.version>3.6.2</plexus-utils.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -47,7 +42,6 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>${plexus-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jdt</groupId>
