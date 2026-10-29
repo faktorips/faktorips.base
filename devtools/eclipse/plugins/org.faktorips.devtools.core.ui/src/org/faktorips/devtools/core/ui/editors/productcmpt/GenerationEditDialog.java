@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -50,12 +50,13 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
 
     /**
      * Creates a new dialog to edit and create a product cmpt generation
-     * 
+     *
      * @param generation The generation to edit
      * @param parentShell The shell to be used as parent for the dialog
      * @param newGenerationDialog The flag indicates which the button in Editor was selected
-     *            (New=true,Edit=false)
-     * 
+     *            (New=true,Edit=false). If <code>true</code>, the dialog does not restore the state
+     *            on abortion, the caller has to roll back the creation of the new generation.
+     *
      */
     public GenerationEditDialog(IProductCmptGeneration generation, Shell parentShell, boolean newGenerationDialog) {
         super(generation, parentShell, Messages.GenerationEditDialog_titleChangeValidFromDate);
@@ -67,6 +68,12 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         this.newGenerationDialog = newGenerationDialog;
         pmo = new GenerationEditDialogPMO(generation);
         extFactory = new ExtensionPropertyControlFactory(generation);
+    }
+
+    @Override
+    protected boolean restoreStateOnAbortion() {
+        // the caller rolls back the creation of a new generation
+        return !newGenerationDialog;
     }
 
     @Override

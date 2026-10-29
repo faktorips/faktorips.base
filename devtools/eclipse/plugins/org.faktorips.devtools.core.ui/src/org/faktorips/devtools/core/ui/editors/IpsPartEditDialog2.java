@@ -151,12 +151,31 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         return super.close();
     }
 
+    /**
+     * @deprecated This method is never called and will be removed.
+     */
+    @Deprecated(since = "27.1", forRemoval = true)
     protected void handleAdditionalCleanupDuringAbortion() {
         // the default implementation does nothing
     }
 
+    /**
+     * Whether the state of the edited {@link IIpsObjectPart}'s IPS object is reset to the state
+     * before the dialog was opened when the dialog is aborted (cancel or closing the shell).
+     * <p>
+     * Subclasses may return <code>false</code> if the rollback is done by the caller instead. In
+     * that case the caller is responsible for restoring the state.
+     * 
+     * @return <code>true</code> by default
+     */
+    protected boolean restoreStateOnAbortion() {
+        return true;
+    }
+
     private void handleAbortion() {
-        // handleAdditionalCleanupDuringAbortion();
+        if (!restoreStateOnAbortion()) {
+            return;
+        }
         part.getIpsObject().setState(oldState);
         if (!dirty) {
             part.getIpsObject().getIpsSrcFile().markAsClean();
