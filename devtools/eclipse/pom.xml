@@ -174,6 +174,27 @@
     </build>
 
     <profiles>
+        <!-- Eclipse 2026-12 (4.42) bundles require osgi.ee JavaSE 25 -->
+        <profile>
+            <id>eclipse-2026-12</id>
+            <activation>
+                <property>
+                    <name>target-platform</name>
+                    <value>eclipse-2026-12</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>target-platform-configuration</artifactId>
+                        <configuration>
+                            <executionEnvironment>JavaSE-25</executionEnvironment>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!-- FIPS-14736: validate OSGi Require-Bundle constraints against the baseline using tycho-baseline-plugin -->
         <profile>
             <id>check-dependencies</id>

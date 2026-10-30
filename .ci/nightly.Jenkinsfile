@@ -21,7 +21,7 @@ pipeline {
                 axes {
                     axis {
                         name 'TARGET_PLATFORM'
-                        values '2026-03', '2026-06', '2026-09'
+                        values '2026-03', '2026-06', '2026-09', '2026-12'
                     }
                 }
                 stages {
@@ -35,7 +35,15 @@ pipeline {
                             }
 
                             withMaven(publisherStrategy: 'EXPLICIT') {
-                                sh "mvn -U -V -T 8 clean verify -Dtarget-platform=eclipse-${TARGET_PLATFORM} -Drevapi.skip=true"
+                                script {
+                                    def jdkEnv = []
+                                    if (TARGET_PLATFORM == '2026-12') {
+                                        jdkEnv = ["JAVA_HOME=${tool name: 'JDK25', type: 'jdk'}", "PATH+JAVA=${tool name: 'JDK25', type: 'jdk'}/bin"]
+                                    }
+                                    withEnv(jdkEnv) {
+                                        sh "mvn -U -V -T 8 clean verify -Dtarget-platform=eclipse-${TARGET_PLATFORM} -Drevapi.skip=true"
+                                    }
+                                }
                             }
                         }
                         post {

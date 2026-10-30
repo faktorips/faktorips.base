@@ -17,6 +17,7 @@
         <module>2026-03</module>
         <module>2026-06</module>
         <module>2026-09</module>
+        <module>2026-12</module>
     </modules>
 
     <build>
