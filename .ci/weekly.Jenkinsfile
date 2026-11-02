@@ -9,6 +9,13 @@ pipeline {
     }
 
     stages {
+        stage('Clean Maven Repository') {
+            steps {
+                // load all Maven artifacts fresh
+                sh 'rm -rf $HOME/.m2/repository'
+            }
+        }
+
         stage('Build') {
             steps {
                 withMaven(publisherStrategy: 'EXPLICIT') {

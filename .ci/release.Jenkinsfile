@@ -234,5 +234,9 @@ pipeline {
         unsuccessful {
             sendFailureEmail()
         }
+
+        cleanup {
+            sh '.ci/scripts/cleanup-tmp.sh'
+        }
     }
 }

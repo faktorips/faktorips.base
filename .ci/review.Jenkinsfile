@@ -76,5 +76,9 @@ pipeline {
                 archiveArtifacts artifacts: '**/target/*.jar, **/target/*.pom', fingerprint: true, onlyIfSuccessful: true
             }
         }
+
+        cleanup {
+            sh '.ci/scripts/cleanup-tmp.sh'
+        }
     }
 }

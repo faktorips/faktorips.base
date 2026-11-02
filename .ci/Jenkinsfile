@@ -73,5 +73,9 @@ pipeline {
         regression {
             sendFailureEmail()
         }
+
+        cleanup {
+            sh '.ci/scripts/cleanup-tmp.sh'
+        }
     }
 }

@@ -56,6 +56,10 @@ pipeline {
                             unstable {
                                 sendFailureEmail()
                             }
+
+                            cleanup {
+                                sh '.ci/scripts/cleanup-tmp.sh'
+                            }
                         }
                     }
                 }
