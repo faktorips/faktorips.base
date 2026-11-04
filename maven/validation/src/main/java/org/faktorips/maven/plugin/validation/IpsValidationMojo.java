@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
@@ -46,6 +47,9 @@ import org.apache.maven.shared.dependency.graph.DependencyGraphBuilder;
 import org.apache.maven.shared.dependency.graph.DependencyGraphBuilderException;
 import org.apache.maven.shared.dependency.graph.DependencyNode;
 import org.apache.maven.shared.dependency.graph.traversal.CollectingDependencyNodeVisitor;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.repository.LocalArtifactRequest;
+import org.eclipse.aether.repository.LocalRepositoryManager;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
@@ -210,7 +214,7 @@ public class IpsValidationMojo extends AbstractMojo {
         }
     }
 
-    private Set<IpsDependency> findIpsJars(MavenProject project, Set<IpsDependency> upstreamProjects) {
+    /* private */ Set<IpsDependency> findIpsJars(MavenProject project, Set<IpsDependency> upstreamProjects) {
         Set<IpsDependency> dependencies = new HashSet<>();
         ArtifactRepository repository = session.getLocalRepository();
         // don't let multiple runs of the validation plugin do this concurrently
@@ -223,13 +227,18 @@ public class IpsValidationMojo extends AbstractMojo {
                 }
                 File originalFile = artifact.getFile();
                 try {
-                    // find sets the artifact's file to the one expected in the repository,
-                    // even if it does not exist, so we have to reset this afterwards
-                    File fileFromRepository = repository.find(artifact).getFile();
                     if (upstreamProjects.stream().anyMatch(ipsDependency -> isItself(artifact, ipsDependency))) {
                         // already a local dependency
                         getLog().info("Using upstream project for " + artifact);
-                    } else if (fileFromRepository.exists() && isFipsProjectFromManifest(fileFromRepository)) {
+                        continue;
+                    }
+                    // the artifact's file is not set by the dependency graph, so it has to be
+                    // looked up in the local repository (including its tail repositories, see
+                    // maven.repo.local.tail)
+                    File fileFromRepository = findInLocalRepositories(project, artifact);
+                    if (fileFromRepository != null && fileFromRepository.exists()
+                            && isFipsProjectFromManifest(fileFromRepository)) {
+                        artifact.setFile(fileFromRepository);
                         dependencies.add(IpsDependency.create(artifact));
                     }
                 } finally {
@@ -239,6 +248,22 @@ public class IpsValidationMojo extends AbstractMojo {
         }
 
         return dependencies;
+    }
+
+    /**
+     * Finds the file of the given artifact using the {@link LocalRepositoryManager} of the current
+     * repository session. This also considers additional read-only local repositories configured
+     * with <code>-Dmaven.repo.local.tail</code>.
+     *
+     * @return the file of the artifact or <code>null</code> if it is not found in any local
+     *             repository
+     */
+    private File findInLocalRepositories(MavenProject project, Artifact artifact) {
+        RepositorySystemSession repositorySession = session.getRepositorySession();
+        LocalRepositoryManager localRepositoryManager = repositorySession.getLocalRepositoryManager();
+        LocalArtifactRequest request = new LocalArtifactRequest(RepositoryUtils.toArtifact(artifact),
+                project.getRemoteProjectRepositories(), null);
+        return localRepositoryManager.find(repositorySession, request).getFile();
     }
 
     private List<DependencyNode> getChildrenFromDependencyGraphBuilder(MavenProject project) {
