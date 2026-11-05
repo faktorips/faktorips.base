@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormat;
  * Control for date input providing a text control and a button. The Text control is used with a
  * {@link FormattingTextField} for locale specific date input. The button opens a calendar widget
  * that lets the user select a specific date in a calendar.
- * 
+ *
  * @author Stefan Widmaier
  * @since 3.2
  */
@@ -98,10 +98,12 @@ public class DateControl extends AbstractDateTimeControl {
             GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
                     dateWidget.getDay());
             Calendar oldCalendar = getOldCalendar();
-            if ((oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH) || oldCalendar
-                    .get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR))
-                    && oldCalendar.get(Calendar.DAY_OF_MONTH) == newCalendar.get(Calendar.DAY_OF_MONTH)) {
-                // only month or year changed --> the user did not selected a date
+            if (oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH)
+                    || oldCalendar.get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR)) {
+                // month or year changed --> the user navigated in the calendar and did not select
+                // a date. The day is deliberately not compared: depending on the platform the
+                // widget resets it (e.g. to the 1st) or clamps it (e.g. 31st -> 30th) on
+                // navigation.
                 setOldCalendar(newCalendar);
                 return;
             }
