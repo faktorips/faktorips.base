@@ -948,13 +948,6 @@
                 <version>${org-eclipse-ecf-provider-filetransfer.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.ecf</groupId>
-                <artifactId>
-                    org.eclipse.ecf.provider.filetransfer.httpclient5.win32</artifactId>
-                <version>
-                    ${org-eclipse-ecf-provider-filetransfer-httpclient5-win32.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ant</artifactId>
                 <version>${org-eclipse-emf-ant.version}</version>
