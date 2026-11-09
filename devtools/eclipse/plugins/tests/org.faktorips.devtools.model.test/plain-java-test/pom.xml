@@ -31,6 +31,22 @@
                     <dependenciesToScan>
                         <dependency>org.faktorips:org.faktorips.devtools.model.test</dependency>
                     </dependenciesToScan>
+                    <!-- Tycho adds the p2 bundles of the target platform as
+                    system dependencies next to the Maven Central jars of the BOM. If both are
+                    signed with different certificates, the JVM rejects split packages
+                    (org.eclipse.core.runtime) with a SecurityException. Therefore only use the
+                    Maven Central variants here. -->
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExclude>
+                            p2.eclipse.plugin:org.eclipse.equinox.common
+                        </classpathDependencyExclude>
+                        <classpathDependencyExclude>
+                            p2.eclipse.plugin:org.eclipse.equinox.registry
+                        </classpathDependencyExclude>
+                        <classpathDependencyExclude>
+                            p2.eclipse.plugin:org.eclipse.core.runtime
+                        </classpathDependencyExclude>
+                    </classpathDependencyExcludes>
                     <excludedTags>EclipseImplementation</excludedTags>
                     <excludes>
                         <exclude>**/IpsBuilderTest.java</exclude>
