@@ -57,7 +57,9 @@ public class DateControl extends AbstractDateTimeControl {
         dateWidget = new DateTime(calendarShell, SWT.CALENDAR | SWT.MEDIUM);
         initWidgetWithCurrentDate(dateWidget);
 
-        dateWidget.addMouseListener(new DateSelectionMouseAdapter(calendarShell));
+        final DateSelectionMouseAdapter mouseAdapter = new DateSelectionMouseAdapter(calendarShell);
+        dateWidget.addMouseListener(mouseAdapter);
+        refreshKnownCalendarAfterMouseWheel(calendarShell, mouseAdapter);
         dateWidget.addFocusListener(new FocusAdapter() {
 
             @Override
@@ -75,17 +77,36 @@ public class DateControl extends AbstractDateTimeControl {
         calendarShell.setVisible(true);
     }
 
-    private void setFieldValueToSelectedDate(final DateTime dateWidget) {
-        GregorianCalendar calendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
-                dateWidget.getDay());
-        setText(getDateFormat().formatDate(calendar.getTime()));
+    private void refreshKnownCalendarAfterMouseWheel(Shell calendarShell, DateSelectionMouseAdapter mouseAdapter) {
+        // scrolling changes the displayed month without a click, so it must not count as a date
+        // selection on the next click; the refresh waits until the widget has applied the scroll
+        dateWidget.addListener(SWT.MouseWheel, wheelEvent -> dateWidget.getDisplay().asyncExec(() -> {
+            if (!calendarShell.isDisposed()) {
+                mouseAdapter.rememberDisplayedCalendar();
+            }
+        }));
+    }
+
+    private void setFieldValueToSelectedDate() {
+        setText(getDateFormat().formatDate(getDisplayedCalendar().getTime()));
+    }
+
+    private GregorianCalendar getDisplayedCalendar() {
+        return new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(), dateWidget.getDay());
     }
 
     private final class DateSelectionMouseAdapter extends MouseAdapter {
         private final Shell calendarShell;
 
+        private Calendar lastKnownCalendar;
+
         private DateSelectionMouseAdapter(Shell calendarShell) {
             this.calendarShell = calendarShell;
+            rememberDisplayedCalendar();
+        }
+
+        private void rememberDisplayedCalendar() {
+            lastKnownCalendar = getDisplayedCalendar();
         }
 
         @Override
@@ -95,20 +116,20 @@ public class DateControl extends AbstractDateTimeControl {
                 return;
             }
 
-            GregorianCalendar newCalendar = new GregorianCalendar(dateWidget.getYear(), dateWidget.getMonth(),
-                    dateWidget.getDay());
-            Calendar oldCalendar = getOldCalendar();
-            if (oldCalendar.get(Calendar.MONTH) != newCalendar.get(Calendar.MONTH)
-                    || oldCalendar.get(Calendar.YEAR) != newCalendar.get(Calendar.YEAR)) {
-                // month or year changed --> the user navigated in the calendar and did not select
-                // a date. The day is deliberately not compared: depending on the platform the
-                // widget resets it (e.g. to the 1st) or clamps it (e.g. 31st -> 30th) on
-                // navigation.
-                setOldCalendar(newCalendar);
+            // month or year changed --> the user navigated and did not select a date.
+            // The day is not compared: the widget may reset it on navigation (seen on Windows).
+            final Calendar displayedCalendar = getDisplayedCalendar();
+            if (isMonthOrYearChanged(lastKnownCalendar, displayedCalendar)) {
+                lastKnownCalendar = displayedCalendar;
                 return;
             }
-            setFieldValueToSelectedDate(dateWidget);
+            setFieldValueToSelectedDate();
             closeCalendarShell(calendarShell);
+        }
+
+        private static boolean isMonthOrYearChanged(Calendar before, Calendar after) {
+            return before.get(Calendar.MONTH) != after.get(Calendar.MONTH)
+                    || before.get(Calendar.YEAR) != after.get(Calendar.YEAR);
         }
     }
 }
