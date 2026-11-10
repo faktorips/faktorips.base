@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,8 +12,10 @@ package org.faktorips.devtools.model.internal.type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -233,18 +235,18 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
 
         ArrayList<IType> all = new ArrayList<>();
-        addSubtypes(node, all);
+        addSubtypes(node, all, new HashSet<>());
         return all;
     }
 
-    private void addSubtypes(Node node, List<IType> list) {
-        if (node == null) {
+    private void addSubtypes(Node node, List<IType> list, Set<IType> visitedTypes) {
+        if (node == null || !visitedTypes.add(node.type)) {
             return;
         }
 
         list.addAll(node.subtypes);
         for (IType subtype : node.subtypes) {
-            addSubtypes(nodes.get(subtype), list);
+            addSubtypes(nodes.get(subtype), list, visitedTypes);
         }
     }
 

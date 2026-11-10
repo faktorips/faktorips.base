@@ -11,12 +11,16 @@
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Duration;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -42,6 +46,7 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.jupiter.api.Test;
 
@@ -68,12 +73,244 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         // Create another policy component type attribute to test against.
         IAttribute attribute = policyCmptType.newAttribute();
         attribute.setName("otherAttribute");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         IpsRenameProcessor ipsRenameProcessor = new RenameAttributeProcessor(policyCmptTypeAttribute);
         ipsRenameProcessor.setNewName("otherAttribute");
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
-        assertTrue(status.hasError());
+        assertThat(status.hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameEmpty() {
+        assertThat(validateUserInput(policyCmptTypeAttribute, "").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameEqualsOriginalName() {
+        assertThat(validateUserInput(policyCmptTypeAttribute, POLICY_CMPT_TYPE_ATTRIBUTE_NAME).hasFatalError(),
+                is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByOtherAttributeOfSameType() {
+        newPolicyCmptTypeAttribute(policyCmptType, "otherAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(policyCmptTypeAttribute, "otherAttribute"), policyCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByOtherAttributeDifferingOnlyInCase() {
+        newPolicyCmptTypeAttribute(policyCmptType, "otherAttribute");
+
+        assertThat(validateUserInput(policyCmptTypeAttribute, "OTHERATTRIBUTE").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByOtherProductCmptTypeAttributeOfSameType() {
+        newProductCmptTypeAttribute(productCmptType, "otherAttribute");
+
+        assertThat(validateUserInput(productCmptTypeAttribute, "otherAttribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfSupertype() {
+        newPolicyCmptTypeAttribute(superPolicyCmptType, "superAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(policyCmptTypeAttribute, "superAttribute"),
+                superPolicyCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfSubtype() {
+        IPolicyCmptType subPolicyCmptType = newSubtype("SubPolicyCmptType", policyCmptType);
+        newPolicyCmptTypeAttribute(subPolicyCmptType, "subAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(policyCmptTypeAttribute, "subAttribute"), subPolicyCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfSiblingOfRootOfOverwriteChain() {
+        newPolicyCmptTypeAttribute(superPolicyCmptType, "chainAttribute");
+        IPolicyCmptTypeAttribute overwritingAttribute = newPolicyCmptTypeAttribute(policyCmptType, "chainAttribute");
+        overwritingAttribute.setOverwrite(true);
+        IPolicyCmptType siblingPolicyCmptType = newSubtype("SiblingPolicyCmptType", superPolicyCmptType);
+        newPolicyCmptTypeAttribute(siblingPolicyCmptType, "siblingAttribute");
+
+        assertThat(validateUserInput(overwritingAttribute, "siblingAttribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfMatchingProductCmptType() {
+        assertFatalErrorNamesType(validateUserInput(policyCmptTypeAttribute, PRODUCT_CMPT_TYPE_ATTRIBUTE_NAME),
+                productCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfMatchingPolicyCmptType() {
+        assertFatalErrorNamesType(validateUserInput(productCmptTypeAttribute, POLICY_CMPT_TYPE_ATTRIBUTE_NAME),
+                policyCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfMatchingProductCmptTypeOfSupertype() {
+        newProductCmptTypeAttribute(superProductCmptType, "superProductAttribute");
+
+        assertThat(validateUserInput(policyCmptTypeAttribute, "superProductAttribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfMatchingProductCmptTypeOfSubtype() {
+        IPolicyCmptType subPolicyCmptType = newSubtype("SubPolicyCmptType", policyCmptType);
+        IProductCmptType subProductCmptType = newSubProductCmptType("SubProductCmptType", subPolicyCmptType);
+        newProductCmptTypeAttribute(subProductCmptType, "subProductAttribute");
+
+        assertThat(validateUserInput(policyCmptTypeAttribute, "subProductAttribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfSiblingOfRootOfThreeLevelOverwriteChain() {
+        newPolicyCmptTypeAttribute(superPolicyCmptType, "chainAttribute");
+        IPolicyCmptType middlePolicyCmptType = newSubtype("MiddlePolicyCmptType", superPolicyCmptType);
+        newPolicyCmptTypeAttribute(middlePolicyCmptType, "chainAttribute").setOverwrite(true);
+        IPolicyCmptType leafPolicyCmptType = newSubtype("LeafPolicyCmptType", middlePolicyCmptType);
+        IPolicyCmptTypeAttribute leafAttribute = newPolicyCmptTypeAttribute(leafPolicyCmptType, "chainAttribute");
+        leafAttribute.setOverwrite(true);
+        IPolicyCmptType siblingPolicyCmptType = newSubtype("SiblingPolicyCmptType", superPolicyCmptType);
+        newPolicyCmptTypeAttribute(siblingPolicyCmptType, "siblingAttribute");
+
+        assertThat(validateUserInput(leafAttribute, "siblingAttribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedMessageContainsNewName() {
+        newPolicyCmptTypeAttribute(policyCmptType, "otherAttribute");
+
+        RefactoringStatus status = validateUserInput(policyCmptTypeAttribute, "otherAttribute");
+
+        assertThat(status.getMessageMatchingSeverity(RefactoringStatus.FATAL), containsString("otherAttribute"));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByProductCmptTypeAttributeOfSupertype() {
+        newProductCmptTypeAttribute(superProductCmptType, "superProductAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(productCmptTypeAttribute, "superProductAttribute"),
+                superProductCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByProductCmptTypeAttributeOfSubtype() {
+        IProductCmptType subProductCmptType = newProductCmptType(ipsProject, "SubProductCmptType");
+        subProductCmptType.setSupertype(productCmptType.getQualifiedName());
+        newProductCmptTypeAttribute(subProductCmptType, "subProductAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(productCmptTypeAttribute, "subProductAttribute"),
+                subProductCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfMatchingPolicyCmptTypeOfSupertype() {
+        newPolicyCmptTypeAttribute(superPolicyCmptType, "superPolicyAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(productCmptTypeAttribute, "superPolicyAttribute"),
+                superPolicyCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfMatchingPolicyCmptTypeOfSubtype() {
+        IPolicyCmptType subPolicyCmptType = newSubtype("SubPolicyCmptType", policyCmptType);
+        newSubProductCmptType("SubProductCmptType", subPolicyCmptType);
+        newPolicyCmptTypeAttribute(subPolicyCmptType, "subPolicyAttribute");
+
+        assertFatalErrorNamesType(validateUserInput(productCmptTypeAttribute, "subPolicyAttribute"),
+                subPolicyCmptType);
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByTargetRoleOfAssociationNotBlocked() {
+        assertThat(validateUserInput(policyCmptTypeAttribute, "singular").hasFatalError(), is(false));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByAttributeOfUnrelatedTypeNotBlocked() {
+        newPolicyCmptTypeAttribute(otherPolicyCmptType, "unrelatedAttribute");
+
+        assertThat(validateUserInput(policyCmptTypeAttribute, "unrelatedAttribute").hasFatalError(), is(false));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByOverwrittenAttributeOnlyDifferingInCaseNotBlocked() {
+        newPolicyCmptTypeAttribute(superPolicyCmptType, "chainAttribute");
+        IPolicyCmptTypeAttribute overwritingAttribute = newPolicyCmptTypeAttribute(policyCmptType, "chainAttribute");
+        overwritingAttribute.setOverwrite(true);
+
+        assertThat(validateUserInput(overwritingAttribute, "ChainAttribute").hasFatalError(), is(false));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameUsedByOverwritingAttributeOfSubtypeNotBlocked() {
+        IPolicyCmptTypeAttribute attribute = newPolicyCmptTypeAttribute(policyCmptType, "chainAttribute");
+        IPolicyCmptType subPolicyCmptType = newSubtype("SubPolicyCmptType", policyCmptType);
+        newPolicyCmptTypeAttribute(subPolicyCmptType, "chainAttribute").setOverwrite(true);
+
+        assertThat(validateUserInput(attribute, "ChainAttribute").hasFatalError(), is(false));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameContainingHyphenIsInvalid() {
+        RefactoringStatus status = validateUserInput(policyCmptTypeAttribute, "my-attribute");
+
+        assertThat(status.hasFatalError(), is(true));
+        assertThat(status.getMessageMatchingSeverity(RefactoringStatus.FATAL), containsString("my-attribute"));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameContainingDotIsInvalid() {
+        assertThat(validateUserInput(policyCmptTypeAttribute, "my.attribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameStartingWithDigitIsInvalid() {
+        assertThat(validateUserInput(policyCmptTypeAttribute, "1attribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputNewNameOfProductCmptTypeAttributeContainingHyphenIsInvalid() {
+        assertThat(validateUserInput(productCmptTypeAttribute, "my-attribute").hasFatalError(), is(true));
+    }
+
+    @Test
+    public void testValidateUserInputUnusedNewName() {
+        assertThat(validateUserInput(policyCmptTypeAttribute, "unusedName").hasFatalError(), is(false));
+    }
+
+    @Test
+    public void testValidateUserInputSupertypeCycleOfTwoTypesTerminates() {
+        IPolicyCmptType firstPolicyCmptType = newPolicyCmptType(ipsProject, "FirstCyclePolicyCmptType");
+        IPolicyCmptType secondPolicyCmptType = newPolicyCmptType(ipsProject, "SecondCyclePolicyCmptType");
+        firstPolicyCmptType.setSupertype(secondPolicyCmptType.getQualifiedName());
+        secondPolicyCmptType.setSupertype(firstPolicyCmptType.getQualifiedName());
+        IPolicyCmptTypeAttribute firstAttribute = newPolicyCmptTypeAttribute(firstPolicyCmptType, "cycleAttribute");
+        newPolicyCmptTypeAttribute(secondPolicyCmptType, "cycleAttribute");
+
+        RefactoringStatus status = assertTimeoutPreemptively(Duration.ofSeconds(10),
+                () -> validateUserInput(firstAttribute, "unusedName"));
+
+        assertThat(status.hasFatalError(), is(false));
+    }
+
+    @Test
+    public void testValidateUserInputSupertypeCycleOfOneTypeTerminates() {
+        IPolicyCmptType selfCyclePolicyCmptType = newPolicyCmptType(ipsProject, "SelfCyclePolicyCmptType");
+        selfCyclePolicyCmptType.setSupertype(selfCyclePolicyCmptType.getQualifiedName());
+        IPolicyCmptTypeAttribute attribute = newPolicyCmptTypeAttribute(selfCyclePolicyCmptType, "cycleAttribute");
+
+        RefactoringStatus status = assertTimeoutPreemptively(Duration.ofSeconds(10),
+                () -> validateUserInput(attribute, "unusedName"));
+
+        assertThat(status.hasFatalError(), is(false));
     }
 
     @Test
@@ -142,8 +379,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
 
         // Manual Rule
-        IValidationRule validationRule;
-        validationRule = policyCmptType.newRule();
+        IValidationRule validationRule = policyCmptType.newRule();
         validationRule.setMessageCode(oldRuleName);
         new RenameValidationRuleProcessor(validationRule);
         validationRule.setName(oldRuleName);
@@ -472,6 +708,49 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertEquals(superAttribute, superPolicyCmptType.getAttribute(newAttributeName));
         assertEquals(attribute, policyCmptType.getAttribute(newAttributeName));
         assertEquals(deepAttribute, deepPolicyCmptType.getAttribute(newAttributeName));
+    }
+
+    private RefactoringStatus validateUserInput(IAttribute attribute, String newName) {
+        RenameAttributeProcessor processor = new RenameAttributeProcessor(attribute);
+        processor.setNewName(newName);
+        return processor.validateUserInput(new NullProgressMonitor());
+    }
+
+    private IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute(IPolicyCmptType type, String name) {
+        IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
+        attribute.setName(name);
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        attribute.setModifier(Modifier.PUBLISHED);
+        return attribute;
+    }
+
+    private IProductCmptTypeAttribute newProductCmptTypeAttribute(IProductCmptType type, String name) {
+        IProductCmptTypeAttribute attribute = type.newProductCmptTypeAttribute();
+        attribute.setName(name);
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
+        return attribute;
+    }
+
+    private IPolicyCmptType newSubtype(String name, IPolicyCmptType supertype) {
+        IPolicyCmptType subtype = newPolicyCmptType(ipsProject, name);
+        subtype.setSupertype(supertype.getQualifiedName());
+        return subtype;
+    }
+
+    private IProductCmptType newSubProductCmptType(String name, IPolicyCmptType configuredPolicyCmptType) {
+        IProductCmptType subProductCmptType = newProductCmptType(ipsProject, name);
+        subProductCmptType.setSupertype(productCmptType.getQualifiedName());
+        subProductCmptType.setConfigurationForPolicyCmptType(true);
+        subProductCmptType.setPolicyCmptType(configuredPolicyCmptType.getQualifiedName());
+        configuredPolicyCmptType.setConfigurableByProductCmptType(true);
+        configuredPolicyCmptType.setProductCmptType(subProductCmptType.getQualifiedName());
+        return subProductCmptType;
+    }
+
+    private void assertFatalErrorNamesType(RefactoringStatus status, IType type) {
+        assertThat(status.hasFatalError(), is(true));
+        assertThat(status.getMessageMatchingSeverity(RefactoringStatus.FATAL),
+                containsString("in the type " + type.getName() + " with"));
     }
 
 }

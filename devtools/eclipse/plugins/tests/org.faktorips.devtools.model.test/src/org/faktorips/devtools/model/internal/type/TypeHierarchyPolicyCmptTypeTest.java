@@ -1,15 +1,19 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.type;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -448,5 +452,27 @@ public class TypeHierarchyPolicyCmptTypeTest extends AbstractIpsPluginTest {
         assertEquals(2, types.size());
         assertSame(supertype, types.get(0));
         assertSame(pcType, types.get(1));
+    }
+
+    @Test
+    public void testGetAllSubtypes_TypeIsItsOwnSupertype() throws Exception {
+        pcType.setSupertype(pcType.getQualifiedName());
+
+        TypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchy(pcType);
+
+        assertThat(hierarchy.containsCycle(), is(true));
+        assertThat(hierarchy.getAllSubtypes(pcType), everyItem(is(pcType)));
+    }
+
+    @Test
+    public void testGetAllSubtypes_TypeIsItsOwnSupertypeInLongerChain() throws Exception {
+        pcType.setSupertype(supertype.getQualifiedName());
+        supertype.setSupertype(supersupertype.getQualifiedName());
+        supersupertype.setSupertype(supersupertype.getQualifiedName());
+
+        TypeHierarchy hierarchy = TypeHierarchy.getSubtypeHierarchy(supersupertype);
+
+        assertThat(hierarchy.containsCycle(), is(true));
+        assertThat(hierarchy.getAllSubtypes(supersupertype), hasItems(supertype, pcType));
     }
 }

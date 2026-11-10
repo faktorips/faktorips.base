@@ -13,12 +13,16 @@ package org.faktorips.devtools.core.internal.model.type.refactor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -55,6 +59,12 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     /** Set containing all potentially referencing policy component types. */
     private Set<IIpsSrcFile> typeSrcFiles;
 
+    /** The renamed attribute followed by the attributes it overwrites, determined on first use. */
+    private List<IAttribute> renamedAttributes;
+
+    /** The types that may not contain the new name, determined on first use. */
+    private List<IType> typesToCheck;
+
     public RenameAttributeProcessor(IAttribute attribute) {
         super(attribute, attribute.getName());
     }
@@ -90,6 +100,88 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     protected void validateIpsModel(MessageList validationMessageList) {
         validationMessageList.add(getAttribute().validate(getIpsProject()));
         validationMessageList.add(getType().validate(getIpsProject()));
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Additionally checks that the new name is not already used by another attribute in the type
+     * hierarchy, the sub types or the matching policy or product component type. The model
+     * validation cannot detect this beforehand, because it validates the model before the attribute
+     * is renamed.
+     */
+    @Override
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
+        super.validateUserInputThis(status, pm);
+        if (!status.hasFatalError() && !ValidationUtils.validateFieldName(getNewName(), getIpsProject())) {
+            status.addFatalError(NLS.bind(Messages.RenameAttributeProcessor_msgNewNameInvalid, getNewName()));
+        }
+        if (!status.hasFatalError()) {
+            findTypeUsingNewName().ifPresent(type -> status.addFatalError(
+                    NLS.bind(Messages.RenameAttributeProcessor_msgNewNameAlreadyUsed, getNewName(), type.getName())));
+        }
+    }
+
+    private Optional<IType> findTypeUsingNewName() {
+        List<IAttribute> attributes = getRenamedAttributes();
+        return getTypesToCheck().stream()
+                .flatMap(type -> findTypeUsingNewName(type, attributes).stream())
+                .findFirst();
+    }
+
+    private List<IAttribute> getRenamedAttributes() {
+        if (renamedAttributes == null) {
+            List<IAttribute> attributes = new ArrayList<>();
+            attributes.add(getAttribute());
+            attributes.addAll(getAllOverwrittenAttributes());
+            renamedAttributes = attributes;
+        }
+        return renamedAttributes;
+    }
+
+    private List<IType> getTypesToCheck() {
+        if (typesToCheck == null) {
+            typesToCheck = findTypesToCheck(getRenamedAttributes());
+        }
+        return typesToCheck;
+    }
+
+    private List<IType> findTypesToCheck(List<IAttribute> attributes) {
+        List<IType> types = new ArrayList<>();
+        for (IType type = getType(); type != null && !types.contains(type); type = type
+                .findSupertype(getIpsProject())) {
+            types.add(type);
+        }
+        IType rootType = attributes.get(attributes.size() - 1).getType();
+        types.addAll(rootType.searchSubtypes(true, false));
+        return types;
+    }
+
+    private Optional<IType> findTypeUsingNewName(IType type, List<IAttribute> attributes) {
+        if (isNewNameUsedByAttribute(type, attributes)) {
+            return Optional.of(type);
+        }
+        return findMatchingType(type).filter(this::hasAttributeWithNewName);
+    }
+
+    private boolean isNewNameUsedByAttribute(IType type, List<IAttribute> attributes) {
+        return type.getAttributes().stream()
+                .filter(attribute -> !attribute.isOverwrite() && !attributes.contains(attribute))
+                .anyMatch(attribute -> attribute.getName().equalsIgnoreCase(getNewName()));
+    }
+
+    private boolean hasAttributeWithNewName(IType type) {
+        return type.getAttributes().stream()
+                .anyMatch(attribute -> attribute.getName().equalsIgnoreCase(getNewName()));
+    }
+
+    private Optional<IType> findMatchingType(IType type) {
+        if (type instanceof IPolicyCmptType policyCmptType) {
+            return Optional.ofNullable(policyCmptType.findProductCmptType(getIpsProject()));
+        } else if (type instanceof IProductCmptType productCmptType) {
+            return Optional.ofNullable(productCmptType.findPolicyCmptType(getIpsProject()));
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -157,18 +249,13 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     private List<IAttribute> getAllOverwrittenAttributes() {
         List<IAttribute> attributesToRename = new ArrayList<>(1);
 
-        // Collect overwritten attributes
-        IAttribute overwrittenAttribute = null;
-        while (true) {
-            if (overwrittenAttribute == null) {
-                overwrittenAttribute = getAttribute().findOverwrittenAttribute(getIpsProject());
-            } else {
-                overwrittenAttribute = overwrittenAttribute.findOverwrittenAttribute(getIpsProject());
-            }
-            if (overwrittenAttribute == null) {
-                break;
-            }
+        // Collect overwritten attributes, stop if a cycle in the type hierarchy leads back to a
+        // known one
+        IAttribute overwrittenAttribute = getAttribute().findOverwrittenAttribute(getIpsProject());
+        while (overwrittenAttribute != null && !getAttribute().equals(overwrittenAttribute)
+                && !attributesToRename.contains(overwrittenAttribute)) {
             attributesToRename.add(overwrittenAttribute);
+            overwrittenAttribute = overwrittenAttribute.findOverwrittenAttribute(getIpsProject());
         }
         return attributesToRename;
     }
