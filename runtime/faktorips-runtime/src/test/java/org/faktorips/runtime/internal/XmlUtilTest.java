@@ -422,6 +422,24 @@ public class XmlUtilTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testNodeToString_CrLfInCDataUsesGivenLineSeparator() throws TransformerException {
+        for (String separator : new String[] { LF, CR_LF }) {
+            for (boolean escapeBlanks : new boolean[] { false, true }) {
+                Document doc = newDocument();
+                Element root = doc.createElement("root");
+                doc.appendChild(root);
+                root.appendChild(doc.createCDATASection("line1" + CR_LF + "line2" + LF + "line3" + CR_LF));
+
+                String result = XmlUtil.nodeToString(root, UTF8, separator, escapeBlanks);
+
+                assertThat(result, containsString("line1" + separator + "line2" + separator + "line3" + separator));
+                assertThat(result.replace(CR_LF, LF), not(containsString("\r")));
+                assertThat(result.replace(separator, ""), not(containsString("\n")));
+            }
+        }
+    }
+
+    @Test
     public void testConvertWindowsLinefeedsToLinuxLinefeeds() throws Exception {
         File xmlFile = createXmlFileAndSaveWithIdent();
         // simulate windows on build server

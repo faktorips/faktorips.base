@@ -100,6 +100,8 @@ public class XmlUtil {
     private static final String INDENTED_DATA_REPLACEMENT = "$1"; //$NON-NLS-1$
 
     private static final String CARRIAGE_RETURN = "\r"; //$NON-NLS-1$
+    private static final String CR_LF = "\r\n"; //$NON-NLS-1$
+    private static final String LF = "\n"; //$NON-NLS-1$
     private static final String DOUBLE_CARRIAGE_RETURN = "\r\r"; //$NON-NLS-1$
     private static final String IDEOGRAPHIC_ESC = "&#12288;"; //$NON-NLS-1$
     private static final String IDEOGRAPHIC = "\u3000"; //$NON-NLS-1$
@@ -443,11 +445,20 @@ public class XmlUtil {
         return removeOrEscapeUnwantedCharacters(xml, escapeBlanks, lineSeparator);
     }
 
+    /**
+     * Removes non-printable characters from all text nodes (including CDATA sections) and
+     * normalizes CRLF to LF, as an XML parser would do when reading the document. Otherwise the
+     * serializer would write an additional platform line separator for each LF of a CRLF inside a
+     * CDATA section, which results in {@code CR CR LF} and would not honor the requested line
+     * separator. The final line separator is applied in
+     * {@link #removeOrEscapeUnwantedCharacters(String, boolean, String)}.
+     */
     private static void sanitizeTextContent(Node node) {
         if (node instanceof Text) {
             var content = node.getTextContent();
             if (content != null) {
-                node.setTextContent(content.replaceAll(NONPRINTABLE_WITHOUT_LINE_CHARS, EMPTY_STRING));
+                node.setTextContent(content.replaceAll(NONPRINTABLE_WITHOUT_LINE_CHARS, EMPTY_STRING)
+                        .replace(CR_LF, LF));
             }
         }
         NodeList children = node.getChildNodes();
