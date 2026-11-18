@@ -96,6 +96,21 @@ public class DoubleRangeTest {
     }
 
     @Test
+    public void testGetValues_Empty() {
+        DoubleRange range = DoubleRange.empty();
+
+        assertThat(range.getValues(true), is(Set.of()));
+        assertThat(range.getValues(false), is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_Unlimited() {
+        DoubleRange range = DoubleRange.valueOf((Double)null, (Double)null, 1.0);
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(true));
+    }
+
+    @Test
     public void testGetValues() {
         DoubleRange range = DoubleRange.valueOf(0.0, 100.0, 20.0, false);
 

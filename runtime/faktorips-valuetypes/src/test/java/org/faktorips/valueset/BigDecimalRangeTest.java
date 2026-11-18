@@ -150,6 +150,21 @@ public class BigDecimalRangeTest {
     }
 
     @Test
+    public void testGetValues_Empty() {
+        BigDecimalRange range = BigDecimalRange.empty();
+
+        assertThat(range.getValues(true), is(Set.of()));
+        assertThat(range.getValues(false), is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_Unlimited() {
+        BigDecimalRange range = BigDecimalRange.valueOf((BigDecimal)null, (BigDecimal)null, BigDecimal.ONE);
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(true));
+    }
+
+    @Test
     public void testGetValues_NoStep() {
         BigDecimalRange range = BigDecimalRange.valueOf(BigDecimal.valueOf(10),
                 BigDecimal.valueOf(100));

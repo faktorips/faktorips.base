@@ -126,6 +126,21 @@ public class LongRangeTest {
     }
 
     @Test
+    public void testGetValues_Empty() {
+        LongRange range = LongRange.empty();
+
+        assertThat(range.getValues(true), is(Set.of()));
+        assertThat(range.getValues(false), is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_Unlimited() {
+        LongRange range = LongRange.valueOf((Long)null, (Long)null, 1L);
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(true));
+    }
+
+    @Test
     public void testGetValues() {
         LongRange range = LongRange.valueOf(100L, 1100L, 200L);
 

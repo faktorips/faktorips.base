@@ -485,12 +485,12 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             throw new IllegalStateException("This method cannot be called for ranges that are not discrete.");
         }
 
-        if (isLowerBoundNull() || isUpperBoundNull()) {
-            throw new IllegalStateException("This method cannot be called for unlimited ranges.");
-        }
-
         if (isEmpty()) {
             return Set.of();
+        }
+
+        if (isLowerBoundNull() || isUpperBoundNull()) {
+            throw new IllegalStateException("This method cannot be called for unlimited ranges.");
         }
 
         Set<T> values = new LinkedHashSet<>();

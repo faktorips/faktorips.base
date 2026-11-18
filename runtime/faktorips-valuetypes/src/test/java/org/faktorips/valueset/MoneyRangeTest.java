@@ -118,6 +118,21 @@ public class MoneyRangeTest {
     }
 
     @Test
+    public void testGetValues_Empty() {
+        MoneyRange range = MoneyRange.empty();
+
+        assertThat(range.getValues(true), is(Set.of()));
+        assertThat(range.getValues(false), is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_Unlimited() {
+        MoneyRange range = MoneyRange.valueOf((Money)null, (Money)null, Money.euro(1, 0));
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(true));
+    }
+
+    @Test
     public void testGetValues() {
         MoneyRange range = MoneyRange.valueOf(Money.euro(10, 0), Money.euro(100, 0), Money.euro(10, 0), false);
 

@@ -181,6 +181,21 @@ public class IntegerRangeTest {
     }
 
     @Test
+    public void testGetValues_Empty() {
+        IntegerRange range = IntegerRange.empty();
+
+        assertThat(range.getValues(true), is(Set.of()));
+        assertThat(range.getValues(false), is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_Unlimited() {
+        IntegerRange range = IntegerRange.valueOf((Integer)null, null, 1);
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(true));
+    }
+
+    @Test
     public void testGetValues_WithNull() {
         IntegerRange range = IntegerRange.valueOf(0, 100, 20, true);
 

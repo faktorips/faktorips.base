@@ -109,6 +109,21 @@ public class DecimalRangeTest {
     }
 
     @Test
+    public void testGetValues_Empty() {
+        DecimalRange range = DecimalRange.empty();
+
+        assertThat(range.getValues(true), is(Set.of()));
+        assertThat(range.getValues(false), is(Set.of()));
+    }
+
+    @Test
+    public void testGetValues_Unlimited() {
+        DecimalRange range = DecimalRange.valueOf((Decimal)null, (Decimal)null, Decimal.valueOf(1));
+
+        assertThrows(IllegalStateException.class, () -> range.getValues(true));
+    }
+
+    @Test
     public void testGetValues_NoStep() {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)),
                 Decimal.valueOf(Integer.valueOf(100)));
