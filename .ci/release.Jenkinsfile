@@ -62,7 +62,7 @@ pipeline {
     }
 
     environment {
-        REFERENCE_JOB = 'FaktorIPS_CI'
+        REFERENCE_JOB = 'FaktorIPS_hotfix_26.7'
         MAVEN_OPTS = '-Xmx4g'
         DISPLAY = ':0'
     }
